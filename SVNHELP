@@ -1,0 +1,35 @@
+# Help command
+svn help
+# Get help for svn checkout
+svn help checkout
+# Get help for svn log
+svn help log
+
+# Checkout command
+svn checkout file:///home/xiao/svn/research research
+svn checkout svn+ssh://xiao@pc17.cs.ucdavis.edu/home/xiao/svn/research research
+
+# Adding files to svn
+svn add <filename>
+
+# Basic commit command
+svn commit -m "<Note on what was modified>"
+
+# Update command
+svn up
+
+# Show a log of commits
+svn log
+svn log [PATH]
+svn log -r <revision number>[:<revision number>]
+
+# If update or commit results in conflict
+Choose postpone (p) when prompted
+Suppose the conflicting file is called foo.cpp
+Looking at the foo.cpp.mine and foo.cpp.r?? files, update foo.cpp.
+svn resolve --accept working foo.cpp
+
+# Commit as user:
+svn commit -m "<Note on what was modified>" --username tim
+svn commit -m "<Note on what was modified>" --username stanzsax
+
