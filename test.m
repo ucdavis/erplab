@@ -4,4 +4,6 @@
 % and a 5th
 % and a 6th
 % i am 12 and what is this?
+% this is my friend helping me learn svn the quick way!
+% Signed ~ your friendly neighbor, Stan
 
