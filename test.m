@@ -7,3 +7,4 @@
 % this is my friend helping me learn svn the quick way!
 % Signed ~ your friendly neighbor, Stan
 
+% Javier is just learning right now ~ from Stan
