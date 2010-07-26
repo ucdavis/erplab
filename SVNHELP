@@ -29,7 +29,6 @@ Suppose the conflicting file is called foo.cpp
 Looking at the foo.cpp.mine and foo.cpp.r?? files, update foo.cpp.
 svn resolve --accept working foo.cpp
 
-# Commit as user:
-svn commit -m "<Note on what was modified>" --username tim
+# Commit as user: (for example)
 svn commit -m "<Note on what was modified>" --username stanzsax
 
