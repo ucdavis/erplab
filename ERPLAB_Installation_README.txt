@@ -16,26 +16,45 @@ at javlopez@ucdavis.edu.
 Please indicate who you are and any additional information so that
 Javier can respond to you in a timely fashion.
 
----------------------------------------------------
+------------------------------------------------------------------------
 Installing EEGLAB:
 Unzip the file if necessary and then place the folder into the
 applications folder or whichever the directory that the MATLAB folder
-corresponds.
+corresponds. You may also place this folder in your applications folder
+if you have no direct MATLAB folder. 
+
+E.g If you have MATLAB2010, you
+are using a MAC, and can only view MATLAB's viewing the package contents
+indirectly, then place the EEGLAB folder in your Applications folder. You will
+have to set the path to here later
 
 Installing ERPLAB:
-Unzip the file if necessary and place the folder anywhere into the EEGLAB 
+Unzip the file if necessary and place the folder anywhere into EEGLAB's
 "plugin" folder.
 
-Also: Replace the eegplot.m in the directory of
+Replace: the eegplot.m in the directory of
 eeglabxx/functions/sigprocfunc/
 
+Check: If the folder version number of erplab matches version number in the file called eegplugin_erplab.m which located in ergplab_BETA_x.x.x.xx/eegplugin_erplab.m. 
 
-Then, load MATLAB and do the following:
+	You can open this file using MATLAB. Go to line 191 and make sure that the version is the same as the folder. If not, you can either manually change this yourself, or if you think you received an older version than you were supposed to receive, please let us know.
+       
+Once you have done these couple of things, load MATLAB and do the following:
 Go to File > Set Path...
-Click on Default
+
+Click on Default *Note, if you are using additional plug-ins, you will have to add them to your path as well
+
 Click on Add with Subfolders...
-Open the eeglabxx folder
+Open the eeglabxx folder *where xx represents the version number
 
 Highlight the eeglabxx\external (anything with external after it)
+
 Click on Remove and Save
-Restart up Matlab again
+
+Restart up MATLAB again
+------------------------------------------------------------------------
+
+Document Created by  : Stanley Huang
+Document Created on  : July 9th, 2010
+Document Modified on : July 29th, 2010
+Document Created in  : UC Davis Luck lab - 267 Cousteau Pl. Davis, CA 95616
