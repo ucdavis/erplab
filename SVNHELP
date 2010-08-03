@@ -6,8 +6,7 @@ svn help checkout
 svn help log
 
 # Checkout command
-svn checkout file:///home/xiao/svn/research research
-svn checkout svn+ssh://xiao@pc17.cs.ucdavis.edu/home/xiao/svn/research research
+svn co https://svn.erpinfo.org/ERPLab/trunk <Name of your Folder on your desktop>
 
 # Adding files to svn
 svn add <filename>
