@@ -56,4 +56,4 @@ svn commit -m "<Note on what was modified>" --username stanzsax
 # General Syntax commands
 cd # changes directory
 pad # display directory
-ls # typed LS (lowercase) to display contents in directory
+ls # type LS (lowercase) to display contents in directory
