@@ -240,7 +240,16 @@ else
       ELaux = [];
 end
 
-[EEG EVENTLIST binofbins] = binlister(EEG, file1, file2, file3, forbiddenCodeArray, ignoreCodeArray, reportable);
+if strcmp(strtrim(file3),'') || strcmp(strtrim(file3),'no')
+      disp('lite')
+      tic
+      [EEG EVENTLIST binofbins] = binlister_lite(EEG, file1, file2, file3, forbiddenCodeArray, ignoreCodeArray, reportable);
+      toc
+else
+      tic
+      [EEG EVENTLIST binofbins] = binlister(EEG, file1, file2, file3, forbiddenCodeArray, ignoreCodeArray, reportable);
+      toc
+end
 
 if nnz(binofbins)>=1
       

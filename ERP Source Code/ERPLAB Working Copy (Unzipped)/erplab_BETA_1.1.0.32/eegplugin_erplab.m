@@ -188,7 +188,7 @@
 
 function currvers = eegplugin_erplab(fig, trystrs, catchstrs)
 
-erplabver = '1.1.0.30';
+erplabver = '1.1.0.32';
 currvers  = ['erplab_BETA_' erplabver];
 
 if nargin < 3
@@ -337,6 +337,7 @@ comRSTAR   = [trystrs.no_check '[EEG LASTCOM] = pop_resetrej(EEG);' catchstrs.ne
 comEEC     = [trystrs.no_check '[EEG LASTCOM] = pop_eraseventcodes(EEG);' catchstrs.new_and_hist];
 comICOF    = [trystrs.no_check '[EEG LASTCOM] = pop_insertcodeonthefly(EEG);' catchstrs.new_and_hist];
 comICLA    = [trystrs.no_check '[EEG LASTCOM] = pop_insertcodearound(EEG);' catchstrs.new_and_hist];
+comICTTL   = [trystrs.no_check '[EEG LASTCOM] = pop_insertcodeatTTL(EEG);' catchstrs.new_and_hist];
 comEXRTeeg = [trystrs.no_check '[values LASTCOM] = pop_rt2text(EEG);' catchstrs.add_to_hist];
 comEEGBDR  = [trystrs.no_check '[LASTCOM]     = pop_bdfrecovery(EEG);' catchstrs.add_to_hist];
 comBCOL    = 'Bcolorerplab' ;
@@ -473,7 +474,8 @@ uimenu( mTK, 'Label', '<html><b>EEG</b> Linear Detrend'  , 'CallBack', comTK2);
 uimenu( mTK, 'Label', '<html><b>ERP</b> Linear Detrend'  , 'CallBack', comTK3, 'separator', 'on');
 mINS = uimenu( mUTI, 'Label',  'Insert Event Codes'  , 'tag', 'insertcodes', 'separator', 'on');
 uimenu( mINS, 'Label',  '<html>Insert event codes using threshold (continuous <b>EEG</b>)'  , 'CallBack', comICOF);
-uimenu( mINS, 'Label',  '<html>Insert event codes using latency(ies) (continuous <b>EEG</b>)'  , 'CallBack', comICLA, 'separator','on');
+uimenu( mINS, 'Label',  '<html>Insert event codes using latency(ies) (continuous <b>EEG</b>)'  , 'CallBack', comICLA);
+uimenu( mINS, 'Label',  '<html>Insert event codes at TTL onsets (continuous <b>EEG</b>)'  , 'CallBack', comICTTL);
 uimenu( mUTI, 'Label',  '<html>Erase undesired event codes (continuous <b>EEG</b>)'  , 'CallBack', comEEC, 'separator','on');
 uimenu( mUTI, 'Label',  '<html>Recover bin descriptor file from <b>EEG</b>'  , 'CallBack', comEEGBDR, 'separator','on');
 uimenu( mUTI, 'Label',  '<html>Recover bin descriptor file from <b>ERP</b>'  , 'CallBack', comERPBDR, 'separator','on');

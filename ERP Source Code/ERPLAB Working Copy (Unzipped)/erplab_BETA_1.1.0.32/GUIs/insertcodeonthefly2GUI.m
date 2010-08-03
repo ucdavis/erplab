@@ -25,19 +25,19 @@ function  varargout = insertcodeonthefly2GUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-        'gui_Singleton',  gui_Singleton, ...
-        'gui_OpeningFcn', @insertcodeonthefly2GUI_OpeningFcn, ...
-        'gui_OutputFcn',  @insertcodeonthefly2GUI_OutputFcn, ...
-        'gui_LayoutFcn',  [] , ...
-        'gui_Callback',   []);
+      'gui_Singleton',  gui_Singleton, ...
+      'gui_OpeningFcn', @insertcodeonthefly2GUI_OpeningFcn, ...
+      'gui_OutputFcn',  @insertcodeonthefly2GUI_OutputFcn, ...
+      'gui_LayoutFcn',  [] , ...
+      'gui_Callback',   []);
 if nargin && ischar(varargin{1})
-        gui_State.gui_Callback = str2func(varargin{1});
+      gui_State.gui_Callback = str2func(varargin{1});
 end
 
 if nargout
-        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+      [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
-        gui_mainfcn(gui_State, varargin{:});
+      gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
 
@@ -48,31 +48,37 @@ handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
 
-EEG = varargin{1};
-
+try
+      EEG = varargin{1};
+      nchan  = EEG.nbchan; % Total number of channels
+      
+catch
+      EEG = [];
+      EEG.chanlocs = [];
+      nchan  = 0;
+end
 %
 % Prepare List of current Channels
 %
 listch = [];
-nchan  = EEG.nbchan; % Total number of channels
 
 if isempty(EEG.chanlocs)
-        for e = 1:nchan
-                EEG.chanlocs(e).labels = ['Ch' num2str(e)];
-        end
+      for e = 1:nchan
+            EEG.chanlocs(e).labels = ['Ch' num2str(e)];
+      end
 end
 
 for ch =1:nchan
-        listch{ch} = [num2str(ch) ' = ' EEG.chanlocs(ch).labels ];
+      listch{ch} = [num2str(ch) ' = ' EEG.chanlocs(ch).labels ];
+      set(handles.popupmenu_channel,'String', listch)
+      set(handles.popupmenu_channel, 'Value', 1)
 end
 
-set(handles.popupmenu_channel,'String', listch)
 relalog = {'is equal to' 'is not equal to' 'is less than'...
-        'is less than or equal to' 'is greater than or equal to' 'is greater than'};
+      'is less than or equal to' 'is greater than or equal to' 'is greater than'};
 set(handles.popupmenu_logical, 'String', relalog)
 set(handles.popupmenu_logical, 'Value', 5) % default = 'is greater than or equal to'
 set(handles.edit_threshold, 'String', '100')
-set(handles.popupmenu_channel, 'Value', 1)
 set(handles.edit_newcode, 'String', '99')
 set(handles.edit_refractory, 'String', '600')
 
@@ -90,7 +96,7 @@ function varargout = insertcodeonthefly2GUI_OutputFcn(hObject, eventdata, handle
 varargout{1} = handles.output;
 % The figure can be deleted now
 delete(handles.figure1);
-pause(0.5)
+pause(0.1)
 
 % -------------------------------------------------------------------------
 function edit_threshold_Callback(hObject, eventdata, handles)
@@ -99,7 +105,7 @@ function edit_threshold_Callback(hObject, eventdata, handles)
 function edit_threshold_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 % -------------------------------------------------------------------------
@@ -109,7 +115,7 @@ function edit_newcode_Callback(hObject, eventdata, handles)
 function edit_newcode_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 % -------------------------------------------------------------------------
@@ -119,7 +125,7 @@ function edit_refractory_Callback(hObject, eventdata, handles)
 function edit_refractory_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 % -------------------------------------------------------------------------
@@ -138,18 +144,18 @@ channel = get(handles.popupmenu_channel,'Value');
 relopv  = get(handles.popupmenu_logical,'Value');
 
 switch relopv
-        case 1
-                relop = '==';
-        case 2
-                relop = '~=';
-        case 3
-                relop = '<';
-        case 4
-                relop = '<=';
-        case 5
-                relop = '>=';
-        case 6
-                relop = '>';
+      case 1
+            relop = '==';
+      case 2
+            relop = '~=';
+      case 3
+            relop = '<';
+      case 4
+            relop = '<=';
+      case 5
+            relop = '>=';
+      case 6
+            relop = '>';
 end
 
 thresh     = str2num(get(handles.edit_threshold,'String'));
@@ -159,37 +165,37 @@ windowms   = str2num(get(handles.edit_TWW,'String'));
 durapercen = str2num(get(handles.edit_duration,'String'));
 
 if isempty(newcode) || newcode==0
-        msgboxText{1} =  'For this version, "new code" must be an integer number except zero (even if your working codes are strings).';
-        title = 'ERPLAB: pop_insertcodeonthefly GUI';
-        errorfound(msgboxText, title)
-        return
+      msgboxText{1} =  'For this version, "new code" must be an integer number except zero (even if your working codes are strings).';
+      title = 'ERPLAB: pop_insertcodeonthefly GUI';
+      errorfound(msgboxText, title)
+      return
 end
 
 if ~isempty(durapercen) && ~isempty(windowms)
-        if durapercen<0 || durapercen>100
-                msgboxText{1} =  'Duration parameter is in percentage of Test window width.';
-                msgboxText{2} =  'It must be a number between (0 100)';
-                title = 'ERPLAB: pop_insertcodeonthefly GUI';
-                errorfound(msgboxText, title)
-                return
-        end
-        if durapercen==0
-                msgboxText{1} =  'Duration parameter is in percentage of Test window width.';
-                msgboxText{2} =  'Using 0% is meaningless.';
-                title = 'ERPLAB: pop_insertcodeonthefly GUI';
-                errorfound(msgboxText, title)
-                return
-        end
+      if durapercen<0 || durapercen>100
+            msgboxText{1} =  'Duration parameter is in percentage of Test window width.';
+            msgboxText{2} =  'It must be a number between (0 100)';
+            title = 'ERPLAB: pop_insertcodeonthefly GUI';
+            errorfound(msgboxText, title)
+            return
+      end
+      if durapercen==0
+            msgboxText{1} =  'Duration parameter is in percentage of Test window width.';
+            msgboxText{2} =  'Using 0% is meaningless.';
+            title = 'ERPLAB: pop_insertcodeonthefly GUI';
+            errorfound(msgboxText, title)
+            return
+      end
 elseif isempty(durapercen) && ~isempty(windowms)
-        msgboxText{1} =  'You have to enter a duration parameter in a percentage of Test window width.';
-        title = 'ERPLAB: pop_insertcodeonthefly GUI';
-        errorfound(msgboxText, title)
-        return
+      msgboxText{1} =  'You have to enter a duration parameter in a percentage of Test window width.';
+      title = 'ERPLAB: pop_insertcodeonthefly GUI';
+      errorfound(msgboxText, title)
+      return
 elseif ~isempty(durapercen) && isempty(windowms)
-        msgboxText{1} =  'You have to enter a Test window width in ms.';
-        title = 'ERPLAB: pop_insertcodeonthefly GUI';
-        errorfound(msgboxText, title)
-        return
+      msgboxText{1} =  'You have to enter a Test window width in ms.';
+      title = 'ERPLAB: pop_insertcodeonthefly GUI';
+      errorfound(msgboxText, title)
+      return
 end
 
 outcell = {newcode channel relop thresh refract, absolud, windowms, durapercen};
@@ -207,7 +213,7 @@ function popupmenu_logical_Callback(hObject, eventdata, handles)
 function popupmenu_logical_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 % -------------------------------------------------------------------------
@@ -217,21 +223,21 @@ function popupmenu_channel_Callback(hObject, eventdata, handles)
 function popupmenu_channel_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = '';
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.figure1);
+      %The GUI is still in UIWAIT, us UIRESUME
+      handles.output = '';
+      %Update handles structure
+      guidata(hObject, handles);
+      uiresume(handles.figure1);
 else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+      % The GUI is no longer waiting, just close it
+      delete(handles.figure1);
 end
 
 % -------------------------------------------------------------------------
@@ -244,7 +250,7 @@ function edit_TWW_Callback(hObject, eventdata, handles)
 function edit_TWW_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 % -------------------------------------------------------------------------
@@ -254,7 +260,7 @@ function edit_duration_Callback(hObject, eventdata, handles)
 function edit_duration_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+      set(hObject,'BackgroundColor','white');
 end
 
 % -------------------------------------------------------------------------
