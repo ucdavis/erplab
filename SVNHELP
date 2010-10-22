@@ -6,7 +6,7 @@
 # Using the Terminal for subversion commands
 
 # Use the bash shell
-bash
+bash  02345
 
 # Help command
 svn help
