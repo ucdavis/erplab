@@ -1,0 +1,644 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 12">
+<meta name=Originator content="Microsoft Word 12">
+<link rel=File-List href="Info_From_MATLAB_files/filelist.xml">
+<link rel=Preview href="Info_From_MATLAB_files/preview.wmf">
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Stanley Huang</o:Author>
+  <o:Template>Normal</o:Template>
+  <o:LastAuthor>Stanley Huang</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>5</o:TotalTime>
+  <o:Created>2010-08-18T00:48:00Z</o:Created>
+  <o:LastSaved>2010-08-18T00:48:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>651</o:Words>
+  <o:Characters>3714</o:Characters>
+  <o:Company>Center for Mind and Brain</o:Company>
+  <o:Lines>30</o:Lines>
+  <o:Paragraphs>8</o:Paragraphs>
+  <o:CharactersWithSpaces>4357</o:CharactersWithSpaces>
+  <o:Version>12.00</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]-->
+<link rel=themeData href="Info_From_MATLAB_files/themedata.thmx">
+<link rel=colorSchemeMapping
+href="Info_From_MATLAB_files/colorschememapping.xml">
+<!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:TrackMoves>false</w:TrackMoves>
+  <w:TrackFormatting/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>18 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>18 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:DoNotPromoteQF/>
+  <w:LidThemeOther>EN-US</w:LidThemeOther>
+  <w:LidThemeAsian>X-NONE</w:LidThemeAsian>
+  <w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:SnapToGridInCell/>
+   <w:WrapTextWithPunct/>
+   <w:UseAsianBreakRules/>
+   <w:DontGrowAutofit/>
+   <w:DontAutofitConstrainedTables/>
+   <w:DontVertAlignInTxbx/>
+  </w:Compatibility>
+  <w:DoNotOptimizeForBrowser/>
+  <m:mathPr>
+   <m:mathFont m:val="Cambria Math"/>
+   <m:brkBin m:val="before"/>
+   <m:brkBinSub m:val="&#45;-"/>
+   <m:smallFrac m:val="off"/>
+   <m:dispDef m:val="off"/>
+   <m:lMargin m:val="0"/>
+   <m:rMargin m:val="0"/>
+   <m:defJc m:val="centerGroup"/>
+   <m:wrapRight/>
+   <m:intLim m:val="subSup"/>
+   <m:naryLim m:val="subSup"/>
+  </m:mathPr></w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" DefUnhideWhenUsed="false"
+  DefSemiHidden="false" DefQFormat="false" LatentStyleCount="267">
+  <w:LsdException Locked="false" Priority="1" Name="Default Paragraph Font"/>
+  <w:LsdException Locked="false" Priority="99" Name="No List"/>
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Courier;
+	panose-1:2 7 4 9 2 2 5 2 4 4;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-pitch:variable;
+	mso-font-signature:-1610611985 1107304683 0 0 159 0;}
+@font-face
+	{font-family:Cambria;
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-pitch:variable;
+	mso-font-signature:-1610611985 1073741899 0 0 159 0;}
+@font-face
+	{font-family:"Lucida Grande";
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Arial Bold";
+	panose-1:2 11 7 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Cambria","serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-unhide:no;
+	mso-style-qformat:yes;
+	mso-style-link:"Heading 1 Char";
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:.25in;
+	text-align:justify;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	mso-list:l1 level1 lfo1;
+	font-size:16.0pt;
+	font-family:"Arial","sans-serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-font-kerning:16.0pt;}
+a:link, span.MsoHyperlink
+	{mso-style-unhide:no;
+	color:blue;
+	mso-themecolor:hyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-unhide:no;
+	color:purple;
+	mso-themecolor:followedhyperlink;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-link:"Balloon Text Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:9.0pt;
+	font-family:"Lucida Grande";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-link:"Heading 1";
+	mso-ansi-font-size:16.0pt;
+	mso-bidi-font-size:16.0pt;
+	font-family:"Arial","sans-serif";
+	mso-ascii-font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	mso-font-kerning:16.0pt;
+	font-weight:bold;}
+p.paragraph, li.paragraph, div.paragraph
+	{mso-style-name:paragraph;
+	mso-style-unhide:no;
+	mso-style-qformat:yes;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Cambria","serif";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.CommandWindowText, li.CommandWindowText, div.CommandWindowText
+	{mso-style-name:"Command Window Text";
+	mso-style-unhide:no;
+	mso-style-qformat:yes;
+	margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	font-size:9.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Courier;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-unhide:no;
+	mso-style-locked:yes;
+	mso-style-link:"Balloon Text";
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:"Lucida Grande";
+	mso-ascii-font-family:"Lucida Grande";
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:"Lucida Grande";
+	mso-bidi-font-family:"Times New Roman";}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-default-props:yes;
+	font-size:12.0pt;
+	mso-ansi-font-size:12.0pt;
+	mso-bidi-font-size:12.0pt;
+	mso-ascii-font-family:Cambria;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:Cambria;
+	mso-fareast-theme-font:minor-latin;
+	mso-hansi-font-family:Cambria;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.WordSection1
+	{page:WordSection1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:707801469;
+	mso-list-template-ids:-1933652824;}
+@list l0:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.55in;
+	text-indent:-.55in;}
+@list l0:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.85in;
+	text-indent:-.35in;}
+@list l0:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.2in;
+	text-indent:-.45in;}
+@list l0:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.55in;
+	text-indent:-.55in;}
+@list l0:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.9in;
+	text-indent:-.65in;}
+@list l0:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.75in;}
+@list l0:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.6in;
+	text-indent:-.85in;}
+@list l0:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.0in;
+	text-indent:-1.0in;}
+@list l1
+	{mso-list-id:1894384579;
+	mso-list-template-ids:-1769598868;}
+@list l1:level1
+	{mso-level-start-at:9;
+	mso-level-style-link:"Heading 1";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l1:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.55in;
+	text-indent:-.55in;}
+@list l1:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.85in;
+	text-indent:-.35in;}
+@list l1:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.2in;
+	text-indent:-.45in;}
+@list l1:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.55in;
+	text-indent:-.55in;}
+@list l1:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.9in;
+	text-indent:-.65in;}
+@list l1:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.75in;}
+@list l1:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.6in;
+	text-indent:-.85in;}
+@list l1:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.0in;
+	text-indent:-1.0in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Cambria","serif";
+	mso-ascii-font-family:Cambria;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Cambria;
+	mso-hansi-theme-font:minor-latin;}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="3074"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=WordSection1>
+
+<h1 align=center style='margin-left:0in;text-align:center;text-indent:0in;
+mso-list:none'><a name="_Toc131136013">Getting Useful Information from the
+Matlab Command Line</a></h1>
+
+<p class=paragraph>Even if you do not know anything about Matlab programming
+and only use ERPLAB from the GUI, you can use the Matlab command line to obtain
+useful information about the current <b style='mso-bidi-font-weight:normal'>EEG</b>
+and <b style='mso-bidi-font-weight:normal'>ERP</b> structures.<span
+style='mso-spacerun:yes'>  </span>You can simply type the name of a variable on
+the command line to see a summary of its contents.<span
+style='mso-spacerun:yes'>  </span>For example, here is an example of what you
+will see if you type “ERP” on the command line (when an ERPset is active in the
+ERPsets menu).</p>
+
+<p class=CommandWindowText>&gt;&gt; ERP</p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=CommandWindowText>ERP = </p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>      </span>erpname:
+'CNS Demo ERPs filtered difference wave'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>     </span>filename:
+[]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>     </span>filepath:
+[]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>    </span>workfiles:
+{''}</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>      </span>subject:
+''</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        </span>nchan:
+14</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         </span>nbin:
+3</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         </span>pnts:
+250</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        </span>srate:
+250</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         </span>xmin:
+-0.2000</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         </span>xmax:
+0.7960</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        </span>times:
+[1x250 double]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>      </span>bindata:
+[14x250x3 double]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>      </span>ntrials:
+[1x1 struct]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>       </span>isfilt:
+1</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>     </span>chanlocs:
+[1x14 struct]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>          </span>ref:
+'common'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>     </span>bindescr:
+{'Standard (correct)'<span style='mso-spacerun:yes'>  </span>'Target
+(correct)'<span style='mso-spacerun:yes'>  </span>'DIFF WAVE'}</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        </span>saved:
+'no'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'> </span><span
+style='mso-spacerun:yes'>     </span>history: [4x826 char]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>      </span>version:
+'1.2.0'</p>
+
+<p class=CommandWindowText><span style='font-size:11.0pt;mso-bidi-font-size:
+12.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=paragraph>Each line shows a field in the <b style='mso-bidi-font-weight:
+normal'>ERP</b> structure.<span style='mso-spacerun:yes'>  </span>When a given
+field contains relatively simple data, the values are shown for that
+field.<span style='mso-spacerun:yes'>  </span>In the current example, the
+values from the fields show that the currently active ERPset has 14 channels (<i
+style='mso-bidi-font-style:normal'>nchans</i>), 3 bins (<i style='mso-bidi-font-style:
+normal'>nbins</i>), 250 sample points per epoch (<i style='mso-bidi-font-style:
+normal'>pnts</i>), a sampling rate of 250 Hz (<i style='mso-bidi-font-style:
+normal'>srate</i>), a starting point of -0.2 seconds (200 ms; <i
+style='mso-bidi-font-style:normal'>xmin</i>), an ending point of 0.796 seconds
+(796 ms; <i style='mso-bidi-font-style:normal'>xmax</i>), has been filtered (<i
+style='mso-bidi-font-style:normal'>isfilt</i>), has not been saved to disk (<i
+style='mso-bidi-font-style:normal'>saved</i>).<span style='mso-spacerun:yes'> 
+</span>When a field contains complex data, a summary of the matrix for that
+field is shown (e.g., “[4x826 char]” means a 2-dimensional character array with
+4 rows and 826 columns).<span style='mso-spacerun:yes'>  </span>If you want to
+see the contents of one of these complex fields, you can type the name of the
+structure, a dot, and the name of the field.<span style='mso-spacerun:yes'> 
+</span>For example, to see the number of trials in each bin (in the <i
+style='mso-bidi-font-style:normal'>ntrials</i> field), you would type
+“ERP.ntrials”.<span style='mso-spacerun:yes'>  </span>The result would look
+like this:</p>
+
+<p class=CommandWindowText>&gt;&gt; ERP.ntrials</p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=CommandWindowText>ans = </p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>    </span>accepted:
+[246 63 309]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>    </span>rejected:
+[6 0 6]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>     </span>invalid:
+[0 0 0]</p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=paragraph>This means that there were 246 trials included in the
+average for bin 1, 63 for bin 2, and 309 for bin 3.<span
+style='mso-spacerun:yes'>  </span>The number of trials rejected because of
+artifacts was 6, 0, and 6, respectively.<span style='mso-spacerun:yes'> 
+</span>The “invalid” field is the count of trials that were rejected because of
+some kind of problem (e.g., the EEG epoch contained a <b style='mso-bidi-font-weight:
+normal'>boundary</b> event code).<span style='mso-spacerun:yes'>  </span>Note
+that bin 3 in this example is a difference wave created by subtracting bin 1
+from bin 2; the number of trials in such cases is the total number of trials
+contributing to the average (i.e., the sum of the trials in the individual
+averages that were combined to create the new bins).</p>
+
+<p class=paragraph>You can use this same approach to see the contents of the
+current <b style='mso-bidi-font-weight:normal'>EEG</b> structure.<span
+style='mso-spacerun:yes'>  </span>To see the <b style='mso-bidi-font-weight:
+normal'>EVENTLIST</b> that was created for the current <b style='mso-bidi-font-weight:
+normal'>EEG</b> structure, you can simply type “EEG.EVENTLIST”.<span
+style='mso-spacerun:yes'>  </span>The result would look something like this:</p>
+
+<p class=CommandWindowText>&gt;&gt; EEG.EVENTLIST</p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=CommandWindowText>ans = </p>
+
+<p class=CommandWindowText><o:p>&nbsp;</o:p></p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>           
+</span>nbin: 2</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>   
+</span>trialsperbin: [252 63]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        
+</span>setname: 'CNT file_elist'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         
+</span>report: 'ERPLAB Demo 3-09_REPORT.txt'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         </span>bdfname:
+'CNS Demo BDF.txt'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        
+</span>version: '1.2.0'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>        
+</span>account: 'luck'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>       
+</span>username: ''</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         
+</span>elname: 'ERPLAB Demo 3-09.txt'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>            
+</span>bdf: [1x2 struct]</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>         
+</span>eldate: '16-Jul-2009 09:22:37'</p>
+
+<p class=CommandWindowText><span style='mso-spacerun:yes'>      
+</span>eventinfo: [1x315 struct]</p>
+
+<p class=MsoNormal style='margin-left:-4.5pt;text-align:justify'><span
+style='font-size:9.0pt;mso-bidi-font-size:12.0pt;font-family:Courier'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='margin-left:-4.5pt;text-align:justify'><span
+style='font-size:11.0pt;mso-bidi-font-size:12.0pt'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>Note that the <i style='mso-bidi-font-style:normal'>setname</i>
+field stores the name of the dataset that was active when the <b
+style='mso-bidi-font-weight:normal'>EVENTLIST</b> structure was created, not
+the name of the currently active dataset.<span style='mso-spacerun:yes'> 
+</span>Also note that information from the bin descriptor file is present if BINLISTER
+has been run.<span style='mso-spacerun:yes'>  </span>That is, if you type
+“EEG.EVENTLIST.bdf”, you can see the bin description that was used to define
+each bin.<span style='mso-spacerun:yes'>  </span>This is helpful if you create
+the file one day and go back to it a year later, by which time you’ve forgotten
+exactly what you did to create the <b style='mso-bidi-font-weight:normal'>EVENTLIST</b>.<span
+style='mso-spacerun:yes'>  </span>You can even re-create the bin descriptor
+file using <b style='mso-bidi-font-weight:normal'>ERPLAB&gt;Utilities&gt;Recover
+bin descriptor file</b>.</p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><a
+href="Averaging_ERPs.htm"><span style='font-family:"Arial Bold"'>&lt;&lt;Previous
+Section</span></a><span style='font-family:"Arial Bold"'> <span
+style='mso-tab-count:1'>          </span></span><a href="Bin_Operations.htm"><span
+style='font-family:"Arial Bold"'>Next Section &gt;&gt;</span></a><span
+style='font-family:"Arial Bold"'> <o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial Bold"'><br>
+</span><a href="Manual_Cover.htm"><span style='font-family:"Arial Bold"'>Back
+to Table of Contents</span></a><span style='font-family:"Arial Bold"'><o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</body>
+
+</html>

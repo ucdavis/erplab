@@ -1,0 +1,67 @@
+Copyright Regents of the University of California, 2008-2010#
+#
+#
+Designed by Steve Luck and Javier Lopez-Calderon#
+Software written primarily by Javier Lopez-Calderon#
+Center for Mind and Brain, University of California, Davis#
+javlopez@ucdavis.edu, sjluck@ucdavis.edu#
+#
+#
+Inspired by the Event-Related Potential Software System (ERPSS)#
+designed by Jon Hansen in the lab of Steve Hillyard at UCSD,#
+and EEGLAB Toolbox designed by Scott Makeig and Arnauld Delorme#
+at UCSD.#
+#
+UC-Davis Alpha Testing Team:#
+Carly Leonard, Risa Sawaki, Emily Kappenman, Johanna Kreither,#
+Marissa Gamble, Valerie Beck, Candace Markley, Jesse Bengson,#
+Rick Addante, Ali Mazaheri, Eunike Jonathan, Katherine MacLean,#
+Brandon Loudermilk, Stanley Huang.#
+#
+Thanks to:#
+Scott Makeig and Arnauld Delorme#
+Srinivas Rachakonda and Kent Kiehl#
+#
+#
+#
+Because this is a first beta release, bugs are inevitable#
+In some cases,  errors will occur leading to a message that#
+instructs you to report the error to the EEGLAB developers.#
+If this happens, please report the error to erplab@erpinfo.org#
+and not to the EEGLAB developers. ERPLAB has primarily been#
+tested using EEG collected with a Biosemi ActiveTwo System,#
+along with a smaller amount of testing using EEG collected#
+with Neuroscan and EGI systems. Consequently, you should be#
+particularly careful when using this version of ERPLAB with#
+data collected with systems other than the Biosemi ActiveTwo.# 
+#
+#
+This program is free software: you can redistribute it and/or#
+modify it under the terms of the GNU General Public License#
+as published by the Free Software Foundation, either version#
+3 of the License, or at your option) any later version.#
+#
+This program is distributed in the hope that it will be useful,#
+but WITHOUT ANY WARRANTY; without even the implied warranty of#
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.#
+See the GNU General Public License for more details.#
+#
+This software is intended for research purposes only and is#
+not approved for use in medical diagnosis or treatment.#
+#
+You should have received a copy of the GNU General Public#
+License long with this program.  If not, see#
+<http://www.gnu.org/licenses/>.#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#Davis, California#
+#
+#2010

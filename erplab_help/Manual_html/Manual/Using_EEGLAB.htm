@@ -1,0 +1,1324 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+xmlns:css="http://macVmlSchemaUri" xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta name=Title content="">
+<meta name=Keywords content="">
+<meta http-equiv=Content-Type content="text/html; charset=macintosh">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 2008">
+<meta name=Originator content="Microsoft Word 2008">
+<link rel=File-List href="Using_EEGLAB_files/filelist.xml">
+<link rel=Edit-Time-Data href="Using_EEGLAB_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Stanley Huang</o:Author>
+  <o:Template>Normal.dotm</o:Template>
+  <o:LastAuthor>Steve Luck</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>3</o:TotalTime>
+  <o:Created>2010-08-18T23:18:00Z</o:Created>
+  <o:LastSaved>2010-08-18T23:18:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>1700</o:Words>
+  <o:Characters>9695</o:Characters>
+  <o:Company>Center for Mind and Brain</o:Company>
+  <o:Lines>173</o:Lines>
+  <o:Paragraphs>22</o:Paragraphs>
+  <o:CharactersWithSpaces>11906</o:CharactersWithSpaces>
+  <o:Version>12.0</o:Version>
+ </o:DocumentProperties>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+ </o:OfficeDocumentSettings>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:TrackMoves>false</w:TrackMoves>
+  <w:TrackFormatting/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>18 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>18 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>0</w:DisplayVerticalDrawingGridEvery>
+  <w:ValidateAgainstSchemas/>
+  <w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid>
+  <w:IgnoreMixedContent>false</w:IgnoreMixedContent>
+  <w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText>
+  <w:Compatibility>
+   <w:BreakWrappedTables/>
+   <w:DontGrowAutofit/>
+   <w:DontAutofitConstrainedTables/>
+   <w:DontVertAlignInTxbx/>
+  </w:Compatibility>
+ </w:WordDocument>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:LatentStyles DefLockedState="false" LatentStyleCount="276">
+ </w:LatentStyles>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Arial;
+	panose-1:2 11 6 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Courier New";
+	panose-1:2 7 3 9 2 2 5 2 4 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 2 1 2 1 8 4 8 7 8;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 0 65536 0 -2147483648 0;}
+@font-face
+	{font-family:Cambria;
+	panose-1:2 4 5 3 5 4 6 3 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Lucida Grande";
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:"Arial Bold";
+	panose-1:2 11 7 4 2 2 2 2 2 4;
+	mso-font-charset:0;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:3 0 0 0 1 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+h1
+	{mso-style-link:"Heading 1 Char";
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:12.0pt;
+	margin-left:0in;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Arial;
+	mso-font-kerning:16.0pt;
+	mso-bidi-font-weight:bold;}
+h3
+	{mso-style-link:"Heading 3 Char";
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Arial;
+	mso-bidi-font-weight:bold;}
+p.MsoToc1, li.MsoToc1, div.MsoToc1
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:.25in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:Arial;
+	text-transform:uppercase;
+	font-weight:bold;}
+p.MsoToc2, li.MsoToc2, div.MsoToc2
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoToc3, li.MsoToc3, div.MsoToc3
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:12.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc4, li.MsoToc4, div.MsoToc4
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:24.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc5, li.MsoToc5, div.MsoToc5
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc6, li.MsoToc6, div.MsoToc6
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:48.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc7, li.MsoToc7, div.MsoToc7
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:60.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc8, li.MsoToc8, div.MsoToc8
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:1.0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoToc9, li.MsoToc9, div.MsoToc9
+	{mso-style-update:auto;
+	mso-style-noshow:yes;
+	mso-style-next:Normal;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:84.0pt;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoFootnoteText, li.MsoFootnoteText, div.MsoFootnoteText
+	{mso-style-link:"Footnote Text Char1";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoCommentText, li.MsoCommentText, div.MsoCommentText
+	{mso-style-noshow:yes;
+	mso-style-link:"Comment Text Char1";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-noshow:yes;
+	mso-style-link:"Header Char1";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 3.0in right 6.0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-noshow:yes;
+	mso-style-link:"Footer Char1";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	tab-stops:center 3.0in right 6.0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.MsoFootnoteReference
+	{vertical-align:super;}
+span.MsoCommentReference
+	{mso-style-noshow:yes;
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+span.MsoPageNumber
+	{mso-style-noshow:yes;
+	font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{mso-style-noshow:yes;
+	font-family:"Times New Roman";
+	mso-bidi-font-family:"Times New Roman";
+	color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+p.MsoCommentSubject, li.MsoCommentSubject, div.MsoCommentSubject
+	{mso-style-noshow:yes;
+	mso-style-parent:"Comment Text";
+	mso-style-link:"Comment Subject Char1";
+	mso-style-next:"Comment Text";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+	{mso-style-noshow:yes;
+	mso-style-link:"Balloon Text Char1";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:9.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:"Lucida Grande";
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:"Lucida Grande";
+	mso-bidi-font-family:"Times New Roman";}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.Heading1Char
+	{mso-style-name:"Heading 1 Char";
+	mso-style-locked:yes;
+	mso-style-link:"Heading 1";
+	mso-ansi-font-size:16.0pt;
+	mso-bidi-font-size:16.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	mso-font-kerning:16.0pt;
+	font-weight:bold;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-locked:yes;
+	mso-style-link:"Heading 3";
+	mso-ansi-font-size:13.0pt;
+	mso-bidi-font-size:13.0pt;
+	font-family:Arial;
+	mso-ascii-font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Arial;
+	mso-bidi-font-family:Arial;
+	font-weight:bold;}
+span.HeaderChar
+	{mso-style-name:"Header Char";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:Header;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.HeaderChar1
+	{mso-style-name:"Header Char1";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:Header;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.FooterChar
+	{mso-style-name:"Footer Char";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:Footer;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.FooterChar1
+	{mso-style-name:"Footer Char1";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:Footer;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.BalloonTextChar
+	{mso-style-name:"Balloon Text Char";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:"Balloon Text";
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:"Lucida Grande";
+	mso-ascii-font-family:"Lucida Grande";
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:"Lucida Grande";
+	mso-bidi-font-family:"Times New Roman";}
+span.BalloonTextChar1
+	{mso-style-name:"Balloon Text Char1";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:"Balloon Text";
+	mso-ansi-font-size:9.0pt;
+	mso-bidi-font-size:9.0pt;
+	font-family:"Lucida Grande";
+	mso-ascii-font-family:"Lucida Grande";
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:"Lucida Grande";
+	mso-bidi-font-family:"Times New Roman";}
+span.CommentTextChar
+	{mso-style-name:"Comment Text Char";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:"Comment Text";
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.CommentTextChar1
+	{mso-style-name:"Comment Text Char1";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:"Comment Text";
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.CommentSubjectChar
+	{mso-style-name:"Comment Subject Char";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-parent:"Comment Text Char";
+	mso-style-link:"Comment Subject";
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+span.CommentSubjectChar1
+	{mso-style-name:"Comment Subject Char1";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-parent:"Comment Text Char1";
+	mso-style-link:"Comment Subject";
+	mso-ansi-font-size:10.0pt;
+	mso-bidi-font-size:10.0pt;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";
+	font-weight:bold;}
+span.FootnoteTextChar
+	{mso-style-name:"Footnote Text Char";
+	mso-style-noshow:yes;
+	mso-style-locked:yes;
+	mso-style-link:"Footnote Text";
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+span.FootnoteTextChar1
+	{mso-style-name:"Footnote Text Char1";
+	mso-style-locked:yes;
+	mso-style-link:"Footnote Text";
+	mso-ansi-font-size:10.0pt;
+	font-family:Cambria;
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.paragraph, li.paragraph, div.paragraph
+	{mso-style-name:paragraph;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.Note, li.Note, div.Note
+	{mso-style-name:Note;
+	mso-style-parent:paragraph;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:8.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";
+	font-style:italic;
+	mso-bidi-font-style:normal;}
+p.LiteralText, li.LiteralText, div.LiteralText
+	{mso-style-name:"Literal Text";
+	mso-style-parent:paragraph;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Helvetica;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Helvetica;
+	mso-bidi-font-family:"Times New Roman";}
+p.Steps, li.Steps, div.Steps
+	{mso-style-name:Steps;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.75in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	tab-stops:list .75in;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.BulletedList, li.BulletedList, div.BulletedList
+	{mso-style-name:"Bulleted List";
+	mso-style-parent:paragraph;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:4.0pt;
+	margin-left:.5in;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	mso-list:l3 level2 lfo4;
+	font-size:11.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Cambria;
+	mso-bidi-font-family:"Times New Roman";}
+p.CommandWindowText, li.CommandWindowText, div.CommandWindowText
+	{mso-style-name:"Command Window Text";
+	margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	text-indent:0in;
+	mso-pagination:widow-orphan;
+	mso-list:l6 level1 lfo2;
+	font-size:9.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Courier;
+	mso-fareast-font-family:"Times New Roman";
+	mso-hansi-font-family:Courier;
+	mso-bidi-font-family:"Times New Roman";}
+ /* Page Definitions */
+@page
+	{mso-footnote-separator:url(":Using_EEGLAB_files:header.htm") fs;
+	mso-footnote-continuation-separator:url(":Using_EEGLAB_files:header.htm") fcs;
+	mso-endnote-separator:url(":Using_EEGLAB_files:header.htm") es;
+	mso-endnote-continuation-separator:url(":Using_EEGLAB_files:header.htm") ecs;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:14968279;
+	mso-list-template-ids:-19379914;}
+@list l0:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.55in;
+	text-indent:-.55in;}
+@list l0:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.85in;
+	text-indent:-.35in;}
+@list l0:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.2in;
+	text-indent:-.45in;}
+@list l0:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.55in;
+	text-indent:-.55in;}
+@list l0:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.9in;
+	text-indent:-.65in;}
+@list l0:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.75in;}
+@list l0:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.6in;
+	text-indent:-.85in;}
+@list l0:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.0in;
+	text-indent:-1.0in;}
+@list l1
+	{mso-list-id:439110467;
+	mso-list-template-ids:-1933652824;}
+@list l1:level1
+	{mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l1:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.55in;
+	text-indent:-.55in;}
+@list l1:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.85in;
+	text-indent:-.35in;}
+@list l1:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.2in;
+	text-indent:-.45in;}
+@list l1:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.55in;
+	text-indent:-.55in;}
+@list l1:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.9in;
+	text-indent:-.65in;}
+@list l1:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.75in;}
+@list l1:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.6in;
+	text-indent:-.85in;}
+@list l1:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.0in;
+	text-indent:-1.0in;}
+@list l2
+	{mso-list-id:508178447;
+	mso-list-template-ids:-1830496236;}
+@list l2:level1
+	{mso-level-start-at:3;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l2:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.55in;
+	text-indent:-.55in;}
+@list l2:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.85in;
+	text-indent:-.35in;}
+@list l2:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.2in;
+	text-indent:-.45in;}
+@list l2:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.55in;
+	text-indent:-.55in;}
+@list l2:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.9in;
+	text-indent:-.65in;}
+@list l2:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.75in;}
+@list l2:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.6in;
+	text-indent:-.85in;}
+@list l2:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.0in;
+	text-indent:-1.0in;}
+@list l3
+	{mso-list-id:1420446457;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1784316944 67698703 -1197289356 67698689 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l3:level1
+	{mso-level-tab-stop:.25in;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l3:level2
+	{mso-level-number-format:alpha-lower;
+	mso-level-style-link:"Bulleted List";
+	mso-level-text:"%2\)";
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;}
+@list l3:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:99.0pt;
+	mso-level-number-position:left;
+	margin-left:99.0pt;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l4
+	{mso-list-id:1621958547;
+	mso-list-type:hybrid;
+	mso-list-template-ids:420626496 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l4:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.75in;
+	mso-level-number-position:left;
+	margin-left:.75in;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l5
+	{mso-list-id:1894384579;
+	mso-list-template-ids:-1356566602;}
+@list l5:level1
+	{mso-level-start-at:2;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.25in;
+	text-indent:-.25in;}
+@list l5:level2
+	{mso-level-text:"%1\.%2\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.55in;
+	text-indent:-.55in;}
+@list l5:level3
+	{mso-level-text:"%1\.%2\.%3\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:.85in;
+	text-indent:-.35in;}
+@list l5:level4
+	{mso-level-text:"%1\.%2\.%3\.%4\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.2in;
+	text-indent:-.45in;}
+@list l5:level5
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.55in;
+	text-indent:-.55in;}
+@list l5:level6
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:1.9in;
+	text-indent:-.65in;}
+@list l5:level7
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.75in;}
+@list l5:level8
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:2.6in;
+	text-indent:-.85in;}
+@list l5:level9
+	{mso-level-text:"%1\.%2\.%3\.%4\.%5\.%6\.%7\.%8\.%9\.";
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:3.0in;
+	text-indent:-1.0in;}
+@list l6
+	{mso-list-id:1980263015;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-739086544 534400138 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l6:level1
+	{mso-level-number-format:bullet;
+	mso-level-style-link:"Command Window Text";
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l6:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-ascii-font-family:Cambria;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Cambria;
+	mso-hansi-theme-font:minor-latin;}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1 align=center style='text-align:center'><a name="_Toc131135990"></a><a
+name="Loading_EEG"><span style='mso-bookmark:_Toc131135990'>Using EEGLAB</span></a></h1>
+
+<p class=paragraph><span style='mso-bookmark:Loading_EEG'><span
+style='mso-bookmark:_Toc131135990'><span style='color:black'>ERPLAB relies on
+EEGLAB for loading and displaying the EEG, and this section provides some
+useful information about using EEGLAB.<o:p></o:p></span></span></span></p>
+
+<h1><span style='mso-bookmark:Loading_EEG'><span style='mso-bookmark:_Toc131135990'>Loading
+EEG Data into EEGLAB</span></span></h1>
+
+<p class=paragraph><span style='color:black'>You will often start a data
+processing session by importing an EEG data file that was created by some data
+acquisition system or by opening a saved EEG file that was previously created
+in EEGLAB. This is accomplished with EEGLAB functions that are </span>not<span
+style='color:black'> a part of ERPLAB (see the EEGLAB documentation for
+details).<span style="mso-spacerun: yes">&nbsp; </span><o:p></o:p></span></p>
+
+<p class=paragraph><i style='mso-bidi-font-style:normal'><span
+style='color:black'>Hint: When you open or save files from within EEGLAB
+(including from within the ERPLAB), MATLAB’s current directory will be the
+default location for the files.<span style="mso-spacerun: yes">&nbsp;
+</span>You can navigate anywhere in the file system to open or save files, but
+you will save a lot of time if you set MATLAB’s current directory to the folder
+that contains the data you are currently processing.<span style="mso-spacerun:
+yes">&nbsp; </span>To do this, go to the top of the MATLAB </span>window<span
+style='color:black'>, where you will see a drop-down menu displaying your
+current directory.<span style="mso-spacerun: yes">&nbsp; </span>Click on the <b
+style='mso-bidi-font-weight:normal'>browse</b> button ‘…’ next to it to change
+the current directory. Choose the folder that contains the data you want to
+work with.<span style="mso-spacerun: yes">&nbsp; </span>Note, however, the
+EEGLAB (but not ERPLAB) sometimes overrides this current directory, instead
+continuing to use the folder in which the previous dataset was found.<span
+style="mso-spacerun: yes">&nbsp; </span>You can turn off this EEGLAB behavior
+by going to <b style='mso-bidi-font-weight:normal'>File &gt; Memory and other
+options </b>and unselecting “If set, when browsing to open a new dataset assume
+the folder/directory of previous dataset.”<o:p></o:p></span></i></p>
+
+<p class=paragraph>Now you are ready to open a file.<span style="mso-spacerun:
+yes">&nbsp; </span>If you are opening an EEG file that was saved from a
+previous EEGLAB session, you can simply choose <b style='mso-bidi-font-weight:
+normal'>File &gt; Load existing dataset</b> from EEGLAB. The dataset will then
+be visible in the <b style='mso-bidi-font-weight:normal'>Dataset</b> menu within
+EEGLAB. For loading multiple datasets in one step, select <b style='mso-bidi-font-weight:
+normal'>File &gt; Import data &gt; Load multiple EEGLAB/ERPLAB datasets</b>
+(see screenshot below).</p>
+
+<p class=paragraph><!--[if mso & !supportInlineShapes & supportFields]><span
+style='mso-element:field-begin;mso-field-lock:yes'></span><span
+style="mso-spacerun: yes">&nbsp;</span>SHAPE <span style="mso-spacerun:
+yes">&nbsp;</span>\* MERGEFORMAT <span style='mso-element:field-separator'></span><![endif]--><!--[if gte vml 1]><v:group
+ id="_x0000_s1026" style='width:477.35pt;height:182.65pt;
+ mso-position-horizontal-relative:char;mso-position-vertical-relative:line'
+ coordorigin="1354,8597" coordsize="9547,3653" wrapcoords="-33 0 -33 21422 21600 21422 21600 0 -33 0">
+ <v:shapetype id="_x0000_t75" coordsize="21600,21600" o:spt="75"
+  o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f">
+  <v:stroke joinstyle="miter"/>
+  <v:formulas>
+   <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+   <v:f eqn="sum @0 1 0"/>
+   <v:f eqn="sum 0 0 @1"/>
+   <v:f eqn="prod @2 1 2"/>
+   <v:f eqn="prod @3 21600 pixelWidth"/>
+   <v:f eqn="prod @3 21600 pixelHeight"/>
+   <v:f eqn="sum @0 0 1"/>
+   <v:f eqn="prod @6 1 2"/>
+   <v:f eqn="prod @7 21600 pixelWidth"/>
+   <v:f eqn="sum @8 21600 0"/>
+   <v:f eqn="prod @7 21600 pixelHeight"/>
+   <v:f eqn="sum @10 21600 0"/>
+  </v:formulas>
+  <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+  <o:lock v:ext="edit" aspectratio="t"/>
+ </v:shapetype><v:shape id="_x0000_s1027" type="#_x0000_t75" style='position:absolute;
+  left:1354;top:8597;width:4680;height:3653'>
+  <v:imagedata src="Using_EEGLAB_files/image001.jpg" o:title="screenshot_22"/>
+ </v:shape><v:shape id="_x0000_s1028" type="#_x0000_t75" style='position:absolute;
+  left:6221;top:8597;width:4680;height:3640'>
+  <v:imagedata src="Using_EEGLAB_files/image002.jpg" o:title="screenshot_23"/>
+ </v:shape><w:wrap type="none"/>
+ <w:anchorlock/>
+</v:group><![endif]--><!--[if mso & !supportInlineShapes & supportFields]><v:shape
+ id="_x0000_i1025" type="#_x0000_t75" style='width:477.35pt;height:182.65pt'>
+ <v:imagedata croptop="-65520f" cropbottom="65520f"/>
+</v:shape><span style='mso-element:field-end'></span><![endif]--></p>
+
+<p class=paragraph>If you are importing an EEG file for the first time into
+EEGLAB, choose <b style='mso-bidi-font-weight:normal'>File &gt; Import Data</b>.<span
+style="mso-spacerun: yes">&nbsp; </span>Choose the format of the data you want
+to import.<span style="mso-spacerun: yes">&nbsp; </span>In the browse window
+that appears, select the data file you wish to import and then click <b
+style='mso-bidi-font-weight:normal'>Open</b>.</p>
+
+<p class=BulletedList style='mso-list:l6 level1 lfo2'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>A window will probably appear asking you fill in
+certain criteria depending on how much of your data you would like to
+import.<span style="mso-spacerun: yes">&nbsp; </span>These options may vary by
+data file type.<span style="mso-spacerun: yes">&nbsp; </span>We typically find
+that the default settings are appropriate (but our experience is largely
+limited to Biosemi and Neuroscan files).<span style="mso-spacerun: yes">&nbsp;
+</span>Please refer to EEGLAB documentation for further instructions on
+importing data, setting import criteria, and accessing old datasets.</p>
+
+<p class=BulletedList style='mso-list:l6 level1 lfo2'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>Eventually, a window will appear that will ask
+you to name the dataset that you are importing and ask you if you would like to
+save this dataset as a file.<span style="mso-spacerun: yes">&nbsp; </span>You
+may choose to save this dataset if you would like to stop and continue working
+on this dataset at a later point.<span style="mso-spacerun: yes">&nbsp;
+</span>Not saving a dataset does not mean you will lose your original EEG data,
+because you will still have the original EEG data file.<span
+style="mso-spacerun: yes">&nbsp; </span>However, to avoid going through the
+importing process again, you will usually want to save the dataset you have
+created.</p>
+
+<h1><a name="_Toc131135991"></a><a name="Hints_About"><span style='mso-bookmark:
+_Toc131135991'>Hints About File Names, Datasets, Memory, and the Command Window</span></a></h1>
+
+<p class=paragraph><i style='mso-bidi-font-style:normal'>An Important Note
+about Datasets and the EEGLAB GUI</i>. A dataset is simply an EEGLAB-format EEG
+file.<span style="mso-spacerun: yes">&nbsp; </span>Many datasets may be open at
+a given time within EEGLAB, but only one of them is “active” at a given
+time.<span style="mso-spacerun: yes">&nbsp; </span>That is, almost all
+operations that you will perform in EEGLAB and ERPLAB will operate on the
+currently active dataset.<span style="mso-spacerun: yes">&nbsp; </span>You can
+select which dataset is active from the <b style='mso-bidi-font-weight:normal'>Datasets</b>
+menu.<span style="mso-spacerun: yes">&nbsp; </span>Many operations will create
+a new dataset, which then becomes the active dataset.<span style="mso-spacerun:
+yes">&nbsp; </span>For example, if you tell EEGLAB to run a filter, the filter
+will be applied to the active dataset, and this will create a new dataset that
+will now be the active dataset.<span style="mso-spacerun: yes">&nbsp; </span>In
+almost all cases, operations that create new datasets will give you the option
+of saving the dataset to a file.<span style="mso-spacerun: yes">&nbsp;
+</span>This is not mandatory, however.<span style="mso-spacerun: yes">&nbsp;
+</span>Thus, it is possible to create a dataset without saving it. <span
+style="mso-spacerun: yes">&nbsp;</span>This is convenient, because you can
+perform a sequence of operations without having to create a large number of
+files.<span style="mso-spacerun: yes">&nbsp; </span>However, it is very
+important to keep in mind that a dataset that has not been saved will be lost
+of you quit from EEGLAB or from MATLAB (or if your computer hangs, turns off,
+loses power, restarts, etc.).<span style="mso-spacerun: yes">&nbsp; </span></p>
+
+<p class=paragraph><i style='mso-bidi-font-style:normal'><span
+style='color:black'>Hints about Filenames</span></i><span style='color:black'>.<span
+style="mso-spacerun: yes">&nbsp; </span>EEGLAB and ERPLAB allow you to give
+files any names that are allowed by your operating system and by Matlab.<span
+style="mso-spacerun: yes">&nbsp; </span>However, white space and special
+characters in file names can lead to unanticipated problems, especially if you transfer
+your files to a different operating system.<span style="mso-spacerun:
+yes">&nbsp; </span>We therefore suggest that you not use spaces in </span>your<span
+style='color:black'> file names (or folder names) and that you limit special
+characters to ‘_’, ‘.’, and ‘-‘ (underscore, period, and dash).<span
+style="mso-spacerun: yes">&nbsp; </span>For example, avoid file names such as
+‘my big $$$ file.txt’ and instead use names such as
+‘my_big_money_file.txt’.<span style="mso-spacerun: yes">&nbsp; </span>Also, it
+is a good idea to use the suffix ‘.txt’ for text files (especially in Windows,
+but also on other platforms).<span style="mso-spacerun: yes">&nbsp;
+</span>Averaged ERPs are stored on disk in Matlab’s intrinsic binary file
+format (.mat).<span style="mso-spacerun: yes">&nbsp; </span>However, we
+recommend that you use the suffix <b style='mso-bidi-font-weight:normal'>.erp</b>
+instead of <b style='mso-bidi-font-weight:normal'>.mat</b> for these
+files.<span style="mso-spacerun: yes">&nbsp; </span>Similarly, EEGLAB dataset
+filenames typically have a <b style='mso-bidi-font-weight:normal'>.set</b>
+suffix.<o:p></o:p></span></p>
+
+<p class=paragraph><span style='color:black'>EEGLAB datasets have a name that
+is stored in the dataset structure and is used to identify the dataset in the <b
+style='mso-bidi-font-weight:normal'>Datasets</b> menu. Similarly, each </span>ERPset<span
+style='color:black'> has a name that is used to identify it in the <b
+style='mso-bidi-font-weight:normal'>ERPsets</b> menu.<span style="mso-spacerun:
+yes">&nbsp; </span>In both cases, the name of the dataset or ERPset is not
+necessarily the same as the name of the file in which the data are stored.<span
+style="mso-spacerun: yes">&nbsp; </span>This has the potential to lead to
+confusion.<span style="mso-spacerun: yes">&nbsp; </span>Consequently, we
+recommend that you use the same string to name both the dataset/ERPset and file
+in with the dataset/ERPset is stored.<span style="mso-spacerun: yes">&nbsp;
+</span>The ERPLAB functions that create files are designed to make this the
+default behavior.<o:p></o:p></span></p>
+
+<p class=paragraph><span style='color:black'>In addition, when you use any of
+the ERPLAB functions to create a new dataset/ERPset from a current dataset/ERPset,
+the function will suggest a name for the new dataset/ERPset by appending a
+descriptive string onto the old dataset/ERPset name.<span style="mso-spacerun:
+yes">&nbsp; </span>For </span>example<span style='color:black'>, if you add an <b
+style='mso-bidi-font-weight:normal'>EVENTLIST</b> structure to a dataset named
+‘dataset3’, ERPLAB will suggest that you name the new dataset
+‘dataset3_elist’.<span style="mso-spacerun: yes">&nbsp; </span>These naming
+conventions are not mandatory, but they can be useful in keeping track of what
+is in each file.<o:p></o:p></span></p>
+
+<p class=paragraph><!--[if gte vml 1]><v:shape id="Picture_x0020_5" o:spid="_x0000_s1031"
+ type="#_x0000_t75" style='position:absolute;margin-left:0;margin-top:40.05pt;
+ width:467.7pt;height:174pt;z-index:2;visibility:visible;mso-wrap-style:square;
+ mso-wrap-distance-left:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;
+ mso-wrap-distance-bottom:0;mso-position-horizontal:absolute;
+ mso-position-horizontal-relative:text;mso-position-vertical:absolute;
+ mso-position-vertical-relative:text'>
+ <v:imagedata src="Using_EEGLAB_files/image003.png" o:title=""/>
+ <v:textbox style='mso-rotate-with-shape:t'/>
+ <w:wrap type="square"/>
+</v:shape><![endif]--><![if !vml]><img width=470 height=176
+src="Using_EEGLAB_files/image004.png" align=left hspace=9 v:shapes="Picture_x0020_5"><![endif]><i
+style='mso-bidi-font-style:normal'>Hint about datasets:</i><span
+style="mso-spacerun: yes">&nbsp; </span>Most EEGLAB and ERPLAB routines that
+operate on datasets will create a new dataset.<span style="mso-spacerun:
+yes">&nbsp; </span>When this happens, you will see a window that looks
+something like this screenshot:</p>
+
+<p class=paragraph><o:p>&nbsp;</o:p></p>
+
+<p class=paragraph>This window allows you to name the new dataset (this name
+will appear in the <b style='mso-bidi-font-weight:normal'>Datasets</b>
+menu).<span style="mso-spacerun: yes">&nbsp; </span>It also lets you decide if
+you want to save it as a file.<span style="mso-spacerun: yes">&nbsp; </span>If
+you save it as a file, you can either type in the filename (in which case it will
+be saved in the current folder, as set from the main Matlab command window) or
+click the <b style='mso-bidi-font-weight:normal'>Browse</b> button to navigate
+anywhere in your file system.<span style="mso-spacerun: yes">&nbsp;
+</span>Should you save it as a file?<span style="mso-spacerun: yes">&nbsp;
+</span>If you do, this will take time, and you may end up with a lot of big
+files that clog up your file system.<span style="mso-spacerun: yes">&nbsp;
+</span>If you don’t, you will no longer have that dataset once you quit from
+EEGLAB (or if EEGLAB or the computer crashes).<span style="mso-spacerun:
+yes">&nbsp; </span>So you need to balance these two sets of constraints.<span
+style="mso-spacerun: yes">&nbsp; </span>Generally speaking, you will want to
+save the initially imported dataset, the final result of your EEG processing
+sequence (e.g., the version that you will be converting into a set of averaged
+ERPs), and any intermediate stages that took a long time to generate.<span
+style="mso-spacerun: yes">&nbsp; </span>You can always recreate a dataset from
+an earlier version (assuming you remember what you did to create it), so you
+should not bother saving a lot of intermediate datasets.</p>
+
+<p class=paragraph>This window also lets you decide what to do with the dataset
+that was used as the input to the current processing step.<span
+style="mso-spacerun: yes">&nbsp; </span>One possibility is to keep the old
+dataset in memory, in which case the result of the processing step becomes a
+new dataset.<span style="mso-spacerun: yes">&nbsp; </span>The other possibility
+is to overwrite the old dataset with the result of the processing step (in
+memory, not on the disk).<span style="mso-spacerun: yes">&nbsp; </span>We tend
+to just keep the old datasets, which makes it easy to back up and repeat a
+step.<span style="mso-spacerun: yes">&nbsp; </span>However, this may lead to
+problems if memory is tight.</p>
+
+<p class=paragraph>In most cases, you will just click the <b style='mso-bidi-font-weight:
+normal'>OK</b> button with the default values, which will not save the new
+dataset to disk and will keep the old dataset in memory.</p>
+
+<p class=paragraph><i style='mso-bidi-font-style:normal'>Hint about the command
+window:</i><span style="mso-spacerun: yes">&nbsp; </span>When you run an EEGLAB
+or ERPLAB function from the EEGLAB GUI, the function may run for several
+seconds before it finishes.<span style="mso-spacerun: yes">&nbsp; </span>Do to
+the nature of the Matlab environment, you will not receive very obvious
+feedback from the GUI that the function is still running or that it has
+finished (e.g., the mouse pointer will not turn into a watch or clock icon, and
+there will be no progress bar).<span style="mso-spacerun: yes">&nbsp;
+</span>However, many routines print tidbits of information to the Matlab
+command window while they are running, and many will print <b style='mso-bidi-font-weight:
+normal'>Done</b> (or something to that effect) in the command window when they
+have finished.<span style="mso-spacerun: yes">&nbsp; </span>If you watch the
+command window, you will be able to see the progress of these commands.<span
+style="mso-spacerun: yes">&nbsp; </span>If you do not pay attention to the
+command window, you may try to select a new function from one of the EEGLAB
+menus before the current function is complete, and this can cause the program
+to choke, hang, quit, die, or otherwise make your life miserable.<span
+style="mso-spacerun: yes">&nbsp; </span>So have a little patience, and watch
+the command window.</p>
+
+<p class=paragraph><i style='mso-bidi-font-style:normal'>Hints about memory</i>.
+<span style='color:black'>Memory limitations can be a significant problem in
+EEGLAB.<span style="mso-spacerun: yes">&nbsp; </span>With a 32-bit version of
+Matlab, you will have access to only 2-3 GB of RAM.<span style="mso-spacerun:
+yes">&nbsp; </span>An EEG file can take up a lot of RAM, especially if you have
+a lot of channels, a long session length, and/or a high sampling rate.<span
+style="mso-spacerun: yes">&nbsp; </span>This can lead EEGLAB to become verrrrry
+slooooow or even crash.<span style="mso-spacerun: yes">&nbsp; </span>There are
+several things you can do to reduce this problem.<span style="mso-spacerun:
+yes">&nbsp; </span>First, make sure that you have enough RAM that at least 4 GB
+are available to Matlab (this is more than Matlab can use, but this might be
+helpful if memory becomes fragmented).<span style="mso-spacerun: yes">&nbsp;
+</span>Second, you can get a 64-bit version of Matlab for some operating
+systems, allowing you to access a much larger amount of RAM. <span
+style="mso-spacerun: yes">&nbsp;</span>Third, you can reduce the size of your
+EEG files by reducing the number of channels and/or the sample rate, or by
+dividing a recording session into multiple files.<span style="mso-spacerun:
+yes">&nbsp; </span>However, having multiple files can mean that you have to go
+through each processing step multiple times (once for each file), which can
+also be slow.<span style="mso-spacerun: yes">&nbsp; </span>But this is slow
+primarily when you are working with the GUI; scripts may run almost as fast (or
+sometimes faster) when the data are broken into multiple EEG files per
+subject.<span style="mso-spacerun: yes">&nbsp; </span>On the bright side, ERP
+files are typically much than EEG files, so memory is not usually an issue when
+you are processing averaged ERPs.<o:p></o:p></span></p>
+
+<p class=paragraph><span style='color:black'>Some helpful EEGLAB settings are
+available via <b style='mso-bidi-font-weight:normal'>File &gt; Memory and other
+options</b>, as shown in the screenshot below.<span style="mso-spacerun:
+yes">&nbsp; </span>First, you can use single-precision representations of the
+data values, which halves the memory needed to store the data. We recommend
+this for the vast majority of cases.<span style="mso-spacerun: yes">&nbsp;
+</span>Second, you can use “memory mapping.”<span style="mso-spacerun:
+yes">&nbsp; </span>This will usually speed things up if you have large files,
+but it can actually slow things down if you don’t have large files.<span
+style="mso-spacerun: yes">&nbsp; </span>We recommend that you try it both ways
+and see which way works best for you.<o:p></o:p></span></p>
+
+<p class=paragraph><span style='mso-no-proof:yes'><!--[if gte vml 1]><v:shape
+ id="Picture_x0020_4" o:spid="_x0000_i1026" type="#_x0000_t75" style='width:439pt;
+ height:159pt;visibility:visible;mso-wrap-style:square'>
+ <v:imagedata src="Using_EEGLAB_files/image005.png" o:title=""/>
+ <v:textbox style='mso-rotate-with-shape:t'/>
+</v:shape><![endif]--><![if !vml]><img width=441 height=161
+src="Using_EEGLAB_files/image006.png" v:shapes="Picture_x0020_4"><![endif]></span></p>
+
+<p class=paragraph><span style='color:black'>To learn more about memory, see
+the following Matlab technical notes:<o:p></o:p></span></p>
+
+<p class=paragraph><a
+href="http://www.mathworks.com/support/tech-notes/1100/1106.shtml">http://www.mathworks.com/support/tech-notes/1100/1106.shtml</a><span
+style='color:black'><o:p></o:p></span></p>
+
+<p class=paragraph>http://www.mathworks.com/support/solutions/en/data/1-18I2C/index.html</p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial Bold"'><a href="Processing_Steps.htm">&lt;&lt;Previous
+Section </a><span style='mso-tab-count:1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><a
+href="Eventlist_Structure.htm">Next Section &gt;&gt; </a><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='font-family:"Arial Bold"'><br>
+</span><a href="Manual_Cover.htm"><span style='font-family:"Arial Bold"'>Back
+to Table of Contents</span></a></p>
+
+</div>
+
+</body>
+
+</html>
