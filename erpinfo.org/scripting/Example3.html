@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Example 3: A Simple Script That Actually Does Something Useful</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+text-align:justify;
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph"><em>Note: A complete version of this script is available in <strong>Test_Data &gt; Script_Examples &gt; Script3.m</strong>.  However, this script may not work on your computer, because it assumes that the <strong>Test_Data</strong> folder is in a specific location.  See instructions below for details.</em></p>
+<p class="paragraph">Now we're ready to make a slightly more complicated script that actually does something useful: It does all the processing steps between loading an EEG and making an average for a single subject.  Why is this useful?  Imagine that you've spent 30 minutes processing a subject's data with the EEGLAB GUI, and then you decide you want to change something at an early stage of the processing sequence.  Repeating all the subsequent steps can be boring and time-consuming, and using a script can save you time and aggravation.  In addition, the script then becomes a record of exactly how the data were processed, which can be useful 3 years later when you finally write a paper.  An even bigger benefit comes with slightly more complex scripts that can loop through all of your subjects.  And once you master that, you will be ready to write scripts that process the data in completely new ways that would not be possible from the GUI.</p>
+<p class="paragraph">In this example, we will use the GUI to do several processing steps on an EEG dataset for one subject, look at the history, and then use the history to create a simple script that can be used to repeat these steps on another subject.  The processing steps will be the first few steps from the ERPLAB Tutorial.  Specifically, we'll load an EEG dataset (S1_EEG.set), add channel location information, add a simple EVENTLIST structure, run BINLISTER to assign events to bins, epoch the data, perform artifact detection, and average the epochs to create an ERPset.  Here we will provide an abbreviated description of how to accomplish each step in the GUI; see the ERPLAB Tutorial for a more detailed explanation.</p>
+<h2><a name="start" id="start"></a>Getting Started</h2>
+<p class="paragraph">To begin, launch Matlab and eeglab; if they have already been launched, quit from eeglab, type <strong>clear all</strong>, and launch eeglab again.  This will make sure that you are &quot;starting from scratch&quot; and won't get confused by old things in the history.  Now set Matlab's current directory to be the folder with the tutorial data from subject S1.  To do this, look at<span style="color:black; "> the top of the Matlab command </span>window<span style="color:black; ">, where you will see a drop-down menu displaying the current directory (see screenshot below).  Click on the <strong>browse</strong> button (labeled with '…') to the right of the current directly and choose the <strong>S1</strong> folder.  The top of the window will then look something like this (although the details depend on what operating system you are using and where you've put the tutorial data):</span></p>
+<p><img src="images/Set_Current_Folder.jpg" alt="set current folder" width="817" height="63" /></p>
+<h2><a name="history" id="history"></a>Doing the processing steps with the GUI to create a history</h2>
+<p class="paragraph">Now we will do several processing steps in the GUI so that we can create a history that will be the basis of the script.  </p>
+<p class="paragraph"><em>Step 1: Load the original EEG dataset. </em>Our first step is to load the original EEG file using <strong>FILE &gt; Load existing dataset</strong> to load the file named <strong>S1_EEG.set</strong>.  After you do this, typing <strong>eegh</strong> will show you the script command for this step:</p>
+<p class="LiteralText">&gt;&gt; eegh</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;</p>
+<p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/documentation/Scripting/Examples/S1/');</p>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph"><em>Step 2: Adding channel locations. </em>Our next step is to add location coordinates for each electrode site<span style="color:black; ">.  Select <strong>Edit &gt; Channel locations</strong>, which will bring up the window shown here:</span></p>
+<p><img src="images/lookup.jpg" alt="lookup" width="600" height="257" /></p>
+<p class="paragraph">Click <strong>Ok</strong>, and you will see the window shown here:</p>
+<p><img src="images/chanedit.jpg" alt="chanedit" width="685" height="473" /></p>
+<p class="paragraph">Accept all of the default values and simply click <strong>Ok</strong>.  This will add the coordinates to the current dataset.</p>
+<p class="paragraph">Next, you should change the name of the dataset to <strong>S1_Chan</strong> so that you can differentiate between this version and the original version.  To do this, select <strong>Edit &gt; Dataset info</strong>.  This will bring up the window shown below, and you should enter <strong>S1_Chan</strong> in the <strong>Dataset name</strong> field.  Click <strong>Ok</strong>, and then look in the <strong>Datasets</strong> menu.  You should now see that it is named <strong>S1_Chan</strong>.</p>
+<p class="paragraph"><span style="font-family:Cambria; font-size:12.0pt; "><img src="images/editset.jpg" alt="editset" width="728" height="318" /></span></p>
+<p class="paragraph">You can now save the modified dataset by selecting <strong>File &gt; Save current dataset as</strong>, naming the file <strong>S1_Chan.set</strong>. </p>
+<p class="paragraph">Now if you type <strong>eegh</strong>, you will see several additional commands have been added, corresponding to adding the electrode locations, changing the name of the dataset, and saving it as a file:</p>
+<p class="LiteralText">&gt;&gt; eegh</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;</p>
+<p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/documentation/Scripting/Examples/S1/');</p>
+<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );</p>
+<p class="LiteralText">EEG=pop_chanedit(EEG, 'lookup','/Users/luck/Documents/Software_Development/eeglab9_0_2_3b/plugins/dipfit2.2/standard_BESA/standard-10-5-cap385.elp');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = eeg_checkset( EEG );</p>
+<p class="LiteralText">EEG = pop_editset(EEG, 'setname', 'S1_Chan');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = eeg_checkset( EEG );</p>
+<p class="LiteralText">EEG = pop_saveset( EEG, 'filename','S1_Chan.set','filepath','/Users/luck/');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph"><em>Step 3: Creating the EVENTLIST structure. </em>Next you will add an EVENTLIST structure to the EEG structure.  We will do a very simple version of this here (without adding text labels for the events).  To do this, select <strong>ERPLAB &gt; EventList &gt; Create EEG EventList – Basic</strong>, and just run it with the default parameters as shown in the screenshot below:</p>
+<p><img src="images/create_eventlist.jpg" alt="create_eventlist" width="480" height="233" /></p>
+<p class="paragraph">This will create a new dataset, and ERPLAB will suggest that you name it S1_Chan_elist.  Go ahead and use this name.  You do not need to save it as a file.  You will be able to see this new dataset in the <strong>Datasets</strong> menu.</p>
+<p class="paragraph"><em>Step 4: Assigning events to bins with BINLISTER. </em>The next step is to use BINLISTER to figure out which events belong in which bins.  In the parent directory, you should find a bin descriptor file named <strong>binlist_demo_1.txt</strong>.  If you can't find it, you can create it with the following contents: </p>
+<p class="LiteralText">bin 1</p>
+<p class="LiteralText">Frequent followed by correct response</p>
+<p class="LiteralText">.{11;122;22;111}{9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">bin 2</p>
+<p class="LiteralText">Rare followed by correct response</p>
+<p class="LiteralText">.{21;112;12;121}{9}</p>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">Run BINLISTER by selecting <strong>ERPLAB &gt; Assign Bins (BINLSTER)</strong>.  Tell BINLISTER to load the bin descriptor file from <strong>binlist_demo_1.txt</strong> (or the file you created) and then run it with the default parameters, as shown in the following screen shot:</p>
+<p><img src="images/binlister.jpg" alt="binlister" width="554" height="417" /></p>
+<p class="paragraph">When it is done, BINLISTER will suggest <strong>S1_Chan_elist_nelist</strong> as the name of the dataset, and you should use this name.</p>
+<p class="paragraph"><em>Step 5: Epoching the data. </em>The next step is to extract epochs based on the bins created in the previous step.  To do this, select <strong>ERPLAB &gt; Extract Bin-based Epochs</strong> and enter the parameters shown in the screen shot:</p>
+<p><img src="images/epoch.jpg" alt="epoch" width="390" height="231" /></p>
+<p class="paragraph">The epoching routine will suggest <strong>S1_Chan_elist_nelist_be</strong> as the name of the dataset, and you should use this name. </p>
+<p class="paragraph"><em>Step 6: Artifact Detection. </em>The next step is to detect artifacts with <strong>ERPLAB &gt; Artifact Detection &gt; Moving window peak-to-peak threshold</strong> with the parameters shown in the screen shot:</p>
+<p><img src="images/reject.jpg" alt="reject" width="305" height="395" /></p>
+<p class="paragraph">It should reject 28.8% of the trials (as indicated in the command window).  Accept the results and use the recommended name of <strong>S1_Chan_elist_nelist_be_ar</strong> for the dataset.</p>
+<p class="paragraph"><em>Step 6: Averaging. </em>We are now ready to average the data with <strong>ERPLAB &gt; Compute averaged ERP</strong> with the default parameters (which should look something like the following screenshot):</p>
+<p><img src="images/average.jpg" alt="average" width="425" height="180" /></p>
+<p class="paragraph">Use S1_ERP as the name of the ERPset and save it in a file named S1_ERP.erp, as shown here:</p>
+<p><img src="images/save_erp.jpg" alt="save_erp" width="424" height="292" /></p>
+<p class="paragraph">You can see the whole series of commands prior to creating the average by typing <strong>eegh</strong> in the command window, which should produce something like this:</p>
+<p class="LiteralText">&gt;&gt; eegh</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;</p>
+<p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
+<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );</p>
+<p class="LiteralText">EEG=pop_chanedit(EEG, 'lookup','/Users/luck/Documents/Software_Development/eeglab9_0_2_3b/plugins/dipfit2.2/standard_BESA/standard-10-5-cap385.elp');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = eeg_checkset( EEG );</p>
+<p class="LiteralText">EEG = pop_editset(EEG, 'setname', 'S1_Chan');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = eeg_checkset( EEG );</p>
+<p class="LiteralText">EEG = pop_saveset( EEG, 'filename','S1_Chan.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_creabasiceventlist(EEG, '', {'boundary'}, {-99}, 1);</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off'); </p>
+<p class="LiteralText">EEG = pop_binlister( EEG, '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'no', '', 0, [], [], 0, 0, 0);</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre');</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'gui','off'); </p>
+<p class="LiteralText">EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:16,  1);</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'gui','off');</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">This does not include the command for computing the averaged ERP, because the result of that command is an ERP structure, not a new EEG structure.  Any commands that operate on the ERP structure can be seen with the <strong>erph</strong> command.  If you type <strong>erph</strong> in the command window, you will see something like this:</p>
+<p class="LiteralText">&gt;&gt; erph</p>
+<p class="LiteralText">ERP = pop_averager( ALLEEG,4, 1, 1 );</p>
+<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/S1_ERP.erp', 'gui', 'erplab');</span></p>
+<p class="LiteralText">&nbsp;</p>
+<h2><a name="script" id="script"></a>Using the history to make a script</h2>
+<p class="paragraph">We are now (finally!) ready to turn this history into a script.  You can simply copy the output of the <strong>eegh</strong> and <strong>erph</strong> commands into a new script file.  You can leave out the first line of the EEGLAB history (the line that launches EEGLAB).  You can also leave out the line that says <strong>EEG = eeg_checkset(EEG)</strong>, which is just some EEGLAB housekeeping that you can usually ignore.  And you can add <strong>eeglab redraw</strong> at the end.  The whole script should look something like this, but with a different path to the <strong>S1</strong> folder, reflecting the fact that the files are not stored in exactly the same place on your computer that they are stored in my computer.  In addition, the file <strong>standard-10-5-cap385.elp</strong>, which is used for determining electrode locations, will probably be in a different place in your file system (but your history should give the correct location).</p>
+<p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
+<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );</p>
+<p class="LiteralText">EEG=pop_chanedit(EEG, 'lookup','/Users/luck/Documents/Software_Development/eeglab9_0_2_3b/plugins/dipfit2.2/standard_BESA/standard-10-5-cap385.elp');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_editset(EEG, 'setname', 'S1_Chan');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_saveset( EEG, 'filename','S1_Chan.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_creabasiceventlist(EEG, '', {'boundary'}, {-99}, 1);</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off'); </p>
+<p class="LiteralText">EEG = pop_binlister( EEG, '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'no', '', 0, [], [], 0, 0, 0);</p>
+<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre');</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'gui','off'); </p>
+<p class="LiteralText">EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:16,  1);</p>
+<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'gui','off');</p>
+<p class="LiteralText">ERP = pop_averager( ALLEEG,4, 1, 1 );</p>
+<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/S1_ERP.erp', 'gui', 'erplab');</span></p>
+<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">eeglab redraw;</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="paragraph">Before running this script, close EEGLAB, type <strong>clear all</strong> in the Matlab command window, and restart EEGLAB.   This way we can avoid being confused by the datasets that you created in the EEGLAB GUI.  Now go ahead and run your new script.  You should see lots of information being printed in the command window as the various commands run.  At the end, when the <strong>pop_averager()</strong> command has finished averaging, it will put up a window asking you to name and save the averaged ERP.  It should have the correct name (S1_ERP) already, and you can go ahead and save it.  It might ask you if you want to overwrite an existing file (that you created previously), and you can go ahead and do that.</p>
+<p class="paragraph">If your script generates error messages, you should make sure that it is exactly like the script shown above, except with path information that matches the location of the <strong>S1</strong> folder on your computer.</p>
+<p class="paragraph">Once the script is done running, you will be able to see the <strong>S1_ERP</strong> ERPset in the <strong>ERPsets</strong> menu and four different datasets in the <strong>Datasets</strong> menu (assuming that you included <strong>eeglab redraw</strong> in your script; if not, type it in the command window now).</p>
+<p class="paragraph">Ordinarily, you will not want your scripts to put up windows that require your intervention; you'll want your scripts to run completely automatically.  You can eliminate the window for naming and saving the ERP by eliminating the <strong>'gui', 'erplab'</strong> portion of the <strong>pop_averager()</strong> command.  However, if you do this, you won't be able to see the newly created ERP structure in the <strong>ERPsets</strong> menu (ERPLAB doesn't yet have an equivalent of <strong>eeglab redraw</strong>).  However, you can simply load the ERP into ERPLAB after the script is complete with <strong>ERPLAB &gt; Load existing ERPset</strong>.</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Example2.html">&lt;&lt;Example 2</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Example3b.html">Example 3b&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

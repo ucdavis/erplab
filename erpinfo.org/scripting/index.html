@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ERPLAB Toolbox Scripting Guide</title>
+
+<style type="text/css">
+p.paragraph {margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+</style>
+</head>
+
+<body>
+<p class="MsoNormal" align="center" style="text-align:center;"><a><span style="font-size:26.0pt; ">ERPLAB TOOLBOX </span></a><span style="font-size:26.0pt;">SCRIPTING GUIDE</span></p>
+<div style="border:none;border-bottom:solid windowtext 1.0pt;padding:0in 0in 1.0pt 0in;">
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">Version<span style="font-family:'Monotype Corsiva'; font-size:18.0pt; "> 2.0</span></p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">12 October 2011</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">&nbsp;</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">Scripting Guide written by  Steve Luck</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">ERPLAB Toolbox core designed by Javier Lopez-Calderon and Steve Luck</p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph"><strong>Important note: <span style="color:black; ">Because this is not commercial software, bugs are inevitable. </span>In some cases, errors will occur leading to a message that instructs you to report the error to the EEGLAB developers.  If this happens, please report the error to us at erplab@erpinfo.org and not to the EEGLAB developers. ERPLAB has primarily been tested using EEG collected with a Biosemi ActiveTwo System, along with a smaller amount of testing using EEG collected with Neuroscan and EGI systems.</strong></p>
+<p class="paragraph">ERPLAB is in a rapid period of transition, particularly with respect to scripting.  The documentation, like the software, is a work in progress. Thus, you may find some discrpancies between the documentation and the software.</p>
+<p class="paragraph">You can do a lot in ERPLAB without ever writing a script.  However, scripting can save you a lot of time by automating the processing of each subject.  That way, when a reviewer asks you to reanalyze all of your data with different EEG filter settings, you won't have to manually re-do every subsequent processing step for every subject.  In addition, scripting can allow you to perform analyses that aren't built into ERPLAB (or that have never been done before).</p>
+<p class="paragraph">Scripting sounds complicated, but EEGLAB includes some features that make it easy, and ERPLAB inherits and extends those features.  Specifically, when you perform a set of steps in the GUI, these steps are equivalent to a set of script commands, and EEGLAB and ERPLAB save the equivalent scripts in a <em>history</em>.  You can then use the history to figure out the appropriate script commands.  The next section will explain how to access the history, and then we will go through some examples.</p>
+<p class="paragraph"><strong><em><u>Very Important Note:</u></em></strong><em> The histories and script examples given here won't look exactly like your histories and scripts, mainly because of differences in where the files and folders are stored.  If the scripts aren't working correctly, this is likely the source of the problem.  Also, Matlab often has problems when special characters (especially spaces) are in a filename or folder name.  So, if the same data are stored in a folder named 'Sample' that is inside a folder named 'ERPLAB' that is inside a folder named 'In Progress (new)', you may need to change the name of the 'In Progress (new)' folder to 'In_Progress_new'.</em></p>
+<hr>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; ; font-family: 'Arial Bold'; font-size: 16pt;">Table of Contents</p>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Getting_Started.html"><span style="font-family:'Arial Bold';">Getting Started With This Scripting Guide</span></a></p>
+<ul>
+  <li><a href="Getting_Started.html#download">Downloading the example data</a></li>
+  <li><a href="Getting_Started.html#access_history">Accessing the history</a></li>
+  <li><a href="Getting_Started.html#organizing">Organizing your files</a></li>
+  <li><a href="Getting_Started.html#sync">Keeping the GUI synced with your scripts</a></li>
+  <li><a href="Getting_Started.html#know">If you already know a little about scripts or programming…</a></li>
+</ul>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Example1.html"><span style="font-family:'Arial Bold'; ">Example 1: The World's Simplest EEGLAB/ERPLAB Script </span></a></p>
+<ul>
+  <li><a href="Example1.html#start">Getting started</a></li>
+  <li><a href="Example1.html#load">Loading a dataset with the GUI to create a history</a></li>
+  <li><a href="Example1.html#command">Executing a command from the command line</a></li>
+  <li><a href="Example1.html#redraw">Using eeglab redraw to synchronize with the GUI</a></li>
+  <li><a href="Example1.html#create">Creating and executing the script</a></li>
+</ul>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><span class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Example2.html"><span style="font-family:'Arial Bold'; ">Example 2: An Even Simpler EEGLAB Script</span></a> </span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><span class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Example3.html"><span style="font-family:'Arial Bold'; ">Example 3: A Simple Script That Actually Does Something Useful</span></a></span></p>
+<ul>
+  <li><a href="Example3.html#start">Getting Started</a></li>
+  <li><a href="Example3.html#history">Doing the processing steps with the GUI to create a history</a></li>
+  <li><a href="Example3.html#script">Using the history to make a script</a></li>
+</ul>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Example3b.html"><span style="font-family:'Arial Bold'; ">Example 3b: Modifying the Script to Work for Different Subjects</span></a><span style="font-family:'Arial Bold'; "> </span></p>
+<ul>
+  <li><a href="Example3b.html#learning">Learning a little Matlab trick</a></li>
+  <li><a href="Example3b.html#adding">Adding subject and path variables to the script</a></li>
+  <li><a href="Example3b.html#avg">Averaging from EEG instead of ALLEEG</a></li>
+  <li><a href="Example3b.html#bdf">Putting the bin descriptor file in the parent folder</a></li>
+  <li><a href="Example3b.html#path">Changing the path for the electrode locations file</a></li>
+</ul>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Example3c.html"><span style="font-family:'Arial Bold'; ">Example 3c: Looping Through  Multiple Subjects</span></a></p>
+<ul>
+  <li><a href="Example3c.html#cell">Cell arrays</a></li>
+  <li><a href="Example3c.html#fprintf">The fprintf() command</a></li>
+  <li><a href="Example3c.html#loops">Loops</a></li>
+  <li><a href="Example3c.html#adding">Adding a loop to the script</a></li>
+</ul>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Example4.html"><span style="font-family:'Arial Bold'; ">Example 4: A Complete Data Processing Script</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; font-size: larger;"><a href="Debugging.html"><span style="font-family:'Arial Bold';">Hints About Debugging Your Scripts</span></a></p>
+</body>
+</html>

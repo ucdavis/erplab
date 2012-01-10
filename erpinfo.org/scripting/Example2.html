@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Example 2: An Even Simpler EEGLAB Script</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+text-align:justify;
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph"><em>Note: A complete version of this script is available in <strong>Test_Data &gt; Script_Examples &gt; Script2.m</strong>.  However, this script may not work on your computer, because it assumes that the <strong>Test_Data</strong> folder is in a specific location.  See instructions below for details.</em></p>
+<p class="paragraph">I know I said that the last example was the world's simplest EEGLAB script, but now we're going to make that script even simpler as a way of learning a little bit more about Matlab commands.  Remember that your script looks something like this:</p>
+<p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
+<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">The first line says to run the <strong>pop_loadset</strong> command and save the result in the variable named <strong>EEG</strong>.  (You won't need to worry about the nature of the EEG structure unless you start doing very advanced scripting.)</p>
+<p class="paragraph">The complicated part of the <strong>pop_loadset</strong> command is the stuff between the parentheses.  In Matlab (like most computer languages), you send various pieces of information to a command by putting them between the parentheses.  Each piece of information is called an <em>argument</em> (sometimes called a <em>parameter</em>), and the arguments are separated by parentheses.  For example, a simple Matlab command would be  <strong>X = power(2, 3)</strong>, which would compute 2 to the 3<sup>rd</sup> power (2<sup>3</sup>) and assign this value to the variable <strong>X</strong>.  The <strong>power()</strong> function is sent two arguments, the base (2 in this example) and the exponent (3 in this example).  For many commands, the arguments are numbers or text strings that must occur in a particular order, and you need to remember the order to avoid computing the wrong thing (e.g., if the 2 and 3 were reversed, we would get 3<sup>2</sup> instead of 2<sup>3</sup>).  Many EEGLAB and ERPLAB commands try to make things simpler by having you specify pairs of arguments, the first indicating what the argument represents and the second indicating the value.  For example, in our very simple script, the first argument sent to <strong>pop_loadset</strong> is <strong>'filename'</strong> and the second is <strong>'S1_EEG.set'</strong>.  This tells the <strong>pop_loadset</strong> command that the filename is <strong>S1_EEG.set</strong>.  (Note that these are enclosed in single quote marks to indicate that they are text strings; without the quote marks, Matlab would think that they are variables.)  With this approach, the arguments can be presented in any order (as long as the first in each pair begins with the name of the argument and the second is the value).<strong></strong></p>
+<p class="paragraph">To learn about the arguments for a given command, you can type <strong>help <em>commandname</em></strong> in the command window for a description of the command and its arguments.  Try typing <strong>help pop_loadset</strong> and see what it says about this command.  </p>
+<p class="paragraph">In our simple script, we're sending both the filename and the path to <strong>pop_loadset()</strong>.  We can simplify the script by getting rid of the specification of the path.  To do this, edit the <strong>myscript.m</strong> file that you created before, deleting the <strong>'filepath'</strong> argument and the path that follows it.  The result should look like this:</p>
+<p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set');</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">If you don't specify the path, how will EEGLAB know where to look for the <strong>S1_EEG.set</strong> file?  Well, it will first look in Matlab's current folder.  You may recall that, at an earlier step, you set the current folder to be the <strong>S1</strong> folder that contains the <strong>S1_EEG.set</strong> file.  Try running the newly modified script and make sure that it still works.  If it doesn't, check the current folder (which is indicated near the top of the command window; you can also type <strong>pwd</strong> [<em>print working directory</em>] on the command line).  If necessary, change the current folder so that it is the one that contains the <strong>S1_EEG.set</strong> file.</p>
+<p class="paragraph">If EEGLAB can't find the file in the current folder, it will look through its path for the file.  You can experiment with this by moving <strong>S1_EEG.set</strong> to other locations that are in (or not in) your path.</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Example1.html">&lt;&lt;Example 1</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Example3.html">Example 3&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

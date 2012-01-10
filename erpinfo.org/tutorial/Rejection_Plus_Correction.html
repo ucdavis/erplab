@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Exporting and Importing EventLists to Combine Artifact Rejection and Artifact Correction</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+table.MsoNormalTable {
+font-size:10.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.CommandWindowText {
+margin:0in;
+margin-bottom:.0001pt;
+text-align:justify;
+font-size:9.0pt;
+font-family:Courier;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+.excel1 {
+padding-top:1px;
+padding-right:1px;
+padding-left:1px;
+color:black;
+font-size:12.0pt;
+font-weight:400;
+font-style:normal;
+text-decoration:none;
+font-family:Calibri, sans-serif;
+text-align:general;
+vertical-align:bottom;
+border:none;
+white-space:nowrap;
+}
+.excel2 {
+padding-top:1px;
+padding-right:1px;
+padding-left:1px;
+color:black;
+font-size:12.0pt;
+font-weight:400;
+font-style:normal;
+text-decoration:none;
+font-family:Calibri, sans-serif;
+text-align:left;
+vertical-align:bottom;
+border:none;
+white-space:nowrap;
+}
+.excel3 {
+padding-top:1px;
+padding-right:1px;
+padding-left:1px;
+color:black;
+font-size:12.0pt;
+font-weight:400;
+font-style:normal;
+text-decoration:none;
+font-family:Calibri, sans-serif;
+text-align:left;
+vertical-align:bottom;
+border:none;
+white-space:nowrap;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">In this section, we will show how EEGLAB's artifact correction using Independent Component Analysis (ICA) can be combined with ERPLAB's artifact detection and rejection abilities.  This is a somewhat complicated example, but it illustrates two important aspects of the EEGLAB/ERPLAB combination.  First, it shows how (and why) to take an EventList text file that was created in one dataset, export it, and then import it back into another dataset.  Second, it shows how you can use artifact correction to avoid throwing out a lot of data, while still eliminating trials on which the eyes were closed when the stimulus was presented. Note that, before attempting this exercise, you should become familiar with how to perform ICA-based artifact correction in EEGLAB (see the EEGLAB documentation).   Here we will only cover the aspects of artifact correction necessary for illustrating how to combine it with artifact rejection.</p>
+<p class="paragraph">If you take a look at <a href="#_Artifact_Detection">the first example of artifact detection in this tutorial</a>, you will see that 29.7% of the epochs for subject S1 were detected as containing artifacts using the Moving Window Peak-to-Peak function.  By scrolling through the data, it is obvious that many of these were detected due to blinks occurring during the epoch.  Because the activity generated during a blink is stereotyped, a single component can usually be identified and removed to eliminate the influence of the artifact.  However, the removal of a blink component does not mean that we should necessarily include all corrected trials in our analysis.  For example, if the participant blinks during the presentation of a stimulus, this trial  should not be included because a participant can't see a stimulus if his or her eyes are closed due to a blink.  It is important to keep in mind that artifact correction can correct the artifactual voltage associated with an ocular artifact, but it cannot correct the change in sensory input caused by an eye blink or eye movement. </p>
+<p class="paragraph">The tricky part of combining artifact rejection and artifact correction is that, once the artifact correction has been performed, it is impossible to detect which trials contained a blink at the time of the stimulus.  Thus, we need to perform artifact detection on uncorrected data and merge this information with the corrected EEG.  This is made even more complicated by the fact that we detect artifacts after epoching the EEG, but artifact correction is usually best performed on the continuous EEG. Accomplishing this involves the following set of steps:</p>
+<ul>
+  <li>Use ICA to create a continuous EEG file in which the blinks have been corrected</li>
+  <li>Using the uncorrected, epoched EEG file, find trials with a blink at the time of the stimulus</li>
+  <li>Save the EventList from this file, which marks which events contained the artifacts</li>
+  <li>Import the EventList that marks the artifactual trials into the corrected continuous EEG file</li>
+  <li>Epoch and average this corrected EEG file</li>
+</ul>
+<p class="paragraph">To start, you will need to load the file <strong>S1_Chan.set</strong>, which was <a href="#_Adding_Channel_Locations">created earlier</a>. Because running ICA will take a fair amount of time (more or less so depending on the specifics of your computer), be prepared to let it work while you go to lunch (or to sleep).  To begin the procedure, select <strong>Tools &gt; Run ICA</strong>.  Most of the default settings can be left untouched, but it is important to only include channels that have the same reference electrode.  To do this, click on <strong>…channels</strong>, and select all except HEOG (which is a bipolar channel created between the left and right eye channels).  </p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Load S1_Chan</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset( </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:black; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset( </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan.set'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+</div>
+<p><img src="images/runica.jpg" alt="runica" width="682" height="231" /></p>
+<p class="paragraph">When ICA is complete, 'Done.' will be displayed in the Matlab Command Window.  Make sure to save this dataset by selecting <strong>File &gt; Save current dataset as</strong> and entering the filename <strong>S1_Chan_ica.set</strong>.  You will notice in the main EEGLAB window that there is now a 'Yes' next to 'ICA weights'. </p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Run ICA</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_runica(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'icatype'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:#A020F0; ">'runica'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'dataset'</span><span style="font-size:11.0pt; color:black; ">,1,</span><span style="font-size:11.0pt; color:#A020F0; ">'options'</span><span style="font-size:11.0pt; color:black; ">,{</span><span style="font-size:11.0pt; color:#A020F0; ">'extended'</span><span style="font-size:11.0pt; color:black; "> 1});</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">Next, you should plot the continuous EEG data and the ICA component time courses.   This can be done by selecting <strong>Plot &gt; Channel Data (scroll)</strong> and <strong>Plot &gt; Component Activations (scroll).</strong>  Align the two windows to make for easy visual comparison.  You may wish to change the scaling of these plots in order to better view the data.  You will see something very similar to the figure below (although likely not identical since ICA does not always return precisely the same solution).  It is clear that the activations of component #1 line up in time with the occurrence of blinks in the data.  </p>
+<p><img src="images/eeg11.jpg" alt="eeg11" width="627" height="853" /></p>
+<p class="paragraph">Next, we want to remove this component from the data.  To do this, select <strong>Tools &gt; Remove Components</strong> and enter '<strong>1</strong>' in the uppermost box (assuming it was component 1 that resembled blinks in your ICA results as well).  After selecting <strong>Ok</strong>, a window will appear asking you to confirm this decision.</p>
+<p><img src="images/confirmation.jpg" alt="confirmation" width="383" height="68" /></p>
+<p class="paragraph">If you click on the button <strong>Plot single trials</strong>, you can view the original EEG superimposed with the corrected EEG that results from removing the component(s) that you have selected.  It will look something like this screenshot:</p>
+<p><img src="images/eeg12.jpg" alt="eeg12" width="653" height="445" /></p>
+<p class="paragraph">You can see that the large blinks in some channels of the original EEG (blue traces) are eliminated in the corrected EEG (red traces).  If you are satisfied with the components you have selected, click on <strong>Accept</strong> and save this new file as <strong>S1_EEG_Chan_icapruned.set</strong>.  We now have the corrected dataset that we will use for the final analysis.</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Setname is S1_EEG_Chan_icapruned.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Filename is S1_EEG_Chan_icapruned.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG.setname=</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_icapruned'</span><span style="font-size:11.0pt; color:black; ">; </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG=pop_saveset(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_icapruned.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG.setname=</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_icapruned'</span><span style="font-size:11.0pt; color:black; ">; </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG=pop_saveset(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_icapruned.set'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">Now that the artifactual voltages produced by the blinks have been eliminated, we need to mark the trials in which blinks occur during stimulus presentation so that these trials can be rejected.  Blinks will no longer be apparent in the corrected (i.e., pruned) file, so we will use a previous version of the EEG file to determine which trials contained blinks at the time of the stimulus and export an EventList that marks those trials.  To do this, select <strong>File &gt; Load existing dataset</strong> and open the file <strong>S1_EEG_elist_be</strong> (which you created earlier in <a href="#_Creating_Bin-Based_EEG_1">the epoching example</a>)<strong>.  </strong>Recall that in this version of the data, EventList information is already stored in the EEG.event structure, the bins have been defined, and the dataset has been epoched (we need the epoched version of the dataset because ERPLAB's artifact detection routines require epoched data).</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Load S1_EEG_elist_be.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Filename is S1_EEG_elist_be.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset( </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_elist_be.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset( </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_elist_be.set'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">We will locate epochs with blinks occurring near the stimulus by selecting <strong>ERPLAB &gt; Artifact Detection &gt; Blink rejection (alpha version).  </strong> You should enter the parameters shown in the screenshot below.  Because we are only concerned with marking those trials in which a blink occurred during the stimulus presentation, we will limit the test period to the time range immediately surrounding the stimulus event code, -200 to 200 ms (optimal parameters will depend on the duration of the blink; you can try varying this window to see whether it reliably detects blinks at the time of the stimulus and not blinks at other times).  We will use only the VEOG (channel 14) to detect blinks.  Finally, be sure to select a flag, so that we can uniquely label epochs in which blinks occurred.  Here we have chosen Flag 8.    </p>
+<p><img src="images/blink.jpg" alt="blink" width="320" height="418" /></p>
+<p class="paragraph">After clicking on <strong>Accept</strong>, you can see in the command window output that 1.6% of trials are detected as having blinks in this time period.  Scroll through the EEG data viewer window that has appeared and see which epochs have been marked, as we did in the earlier examples of artifact detection.  Note that most of the blinks have not been detected, because they did not occur at the time of the stimulus.  However, blinks at the time of the stimulus were rejected.  In particular, note epoch numbers 68, 121, 166, 221, 262.  Epoch 68 is shown below, and it is clear that this blink occurred at the time of stimulus presentation, as indicated by the fact that it surrounds the stimulus event code.  (Note that the bin marker has replaced the stimulus event code).  </p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command</strong><span style="font-size:11.0pt; color:forestgreen; "> :</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Artifact Detection Blink rejection</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Test period [-200 200], Blink width 400, </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Normalized cross covariance threshold 0.7, channel 14</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Mark flag 1 and 8</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_artblink( EEG, [-200  200], 400, 0.7,  14, [ 1 8]);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph"><strong>&nbsp;</strong></p>
+<img src="images/eeg13.jpg" alt="eeg13" width="627" height="418" />
+<p class="paragraph">Now that we've detected the trials that we want to exclude in the uncorrected EEG data, we need to save the current EventList to a text file so that we can import it back into our ICA-corrected dataset.  To do this, select <strong>ERPLAB &gt; EventList &gt; Export EEG EventList to text file.  </strong>Enter <strong>EventList_blinkdetection.txt </strong>as the filename and click <strong>Save</strong>.   If you open this text file in your favorite text editor, you can scroll down to the event numbered 135 (this was event #135 prior to epoching, but it was event #68 after epoching because the response events were not assigned to bins and did not generate epochs).  As you can see, this was one of the events we detected.  Both the 1<sup>st</sup> and 8<sup>th</sup> flags are present (Remember the 1<sup>st</sup> is always flagged when an artifact is detected for that bin.  We chose also to label the artifacts detected by this step with the 8<sup>th</sup> flag).  </p>
+<table cellspacing="0" cellpadding="0" class="excel1">
+  <col width="65" span="11" style="width:65pt;" />
+  <tr style="height:15.0pt;">
+    <td class="excel2" width="65" style="height:15.0pt;width:65pt;">#item</td>
+    <td class="excel2" width="65" style="width:65pt;">bepoch</td>
+    <td class="excel2" width="65" style="width:65pt;">ecode</td>
+    <td class="excel2" width="65" style="width:65pt;">label</td>
+    <td class="excel2" width="65" style="width:65pt;">onset</td>
+    <td class="excel2" width="65" style="width:65pt;">diff</td>
+    <td class="excel2" width="65" style="width:65pt;">dura</td>
+    <td class="excel2" width="65" style="width:65pt;">b_flags</td>
+    <td class="excel2" width="65" style="width:65pt;">a_flags</td>
+    <td class="excel2" width="65" style="width:65pt;">enable</td>
+    <td class="excel2" width="65" style="width:65pt;">bin</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td class="excel2" style="height:15.0pt;">#</td>
+    <td class="excel2"></td>
+    <td class="excel2"></td>
+    <td class="excel2"></td>
+    <td class="excel2"></td>
+    <td class="excel2">(sec)</td>
+    <td class="excel2">(sec)</td>
+    <td class="excel2">(msec)</td>
+    <td class="excel2">(binary)</td>
+    <td class="excel2">(binary)</td>
+    <td class="excel2"></td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td class="excel2" style="height:15.0pt;">132</td>
+    <td class="excel2">0</td>
+    <td class="excel2">9</td>
+    <td class="excel2">       Corr_Resp</td>
+    <td class="excel2">100.204</td>
+    <td class="excel2">594</td>
+    <td class="excel2">0</td>
+    <td class="excel3">00000000</td>
+    <td class="excel3">00000000</td>
+    <td class="excel2">1</td>
+    <td class="excel2">[       ]</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td class="excel2" style="height:15.0pt;">133</td>
+    <td class="excel2">67</td>
+    <td class="excel2">22</td>
+    <td class="excel2">  Frequent_Digit</td>
+    <td class="excel2">100.916</td>
+    <td class="excel2">712</td>
+    <td class="excel2">0</td>
+    <td class="excel3">00000000</td>
+    <td class="excel3">00000000</td>
+    <td class="excel2">1</td>
+    <td class="excel2">[      1]</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td class="excel2" style="height:15.0pt;">134</td>
+    <td class="excel2">0</td>
+    <td class="excel2">9</td>
+    <td class="excel2">       Corr_Resp</td>
+    <td class="excel2">101.704</td>
+    <td class="excel2">788</td>
+    <td class="excel2">0</td>
+    <td class="excel3">00000000</td>
+    <td class="excel3">00000000</td>
+    <td class="excel2">1</td>
+    <td class="excel2">[       ]</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td class="excel2" style="height:15.0pt;">135</td>
+    <td class="excel2">68</td>
+    <td class="excel2">22</td>
+    <td class="excel2">  Frequent_Digit</td>
+    <td class="excel2">102.342</td>
+    <td class="excel2">638</td>
+    <td class="excel2">0</td>
+    <td class="excel3">00000000</td>
+    <td class="excel3">10000001</td>
+    <td class="excel2">1</td>
+    <td class="excel2">[      1]</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td class="excel2" style="height:15.0pt;">136</td>
+    <td class="excel2">0</td>
+    <td class="excel2">9</td>
+    <td class="excel2">       Corr_Resp</td>
+    <td class="excel2">103.296</td>
+    <td class="excel2">953.99</td>
+    <td class="excel2">0</td>
+    <td class="excel3">00000000</td>
+    <td class="excel3">00000000</td>
+    <td class="excel2">1</td>
+    <td class="excel2">[       ]</td>
+  </tr>
+</table>
+<p class="CommandWindowText"><span style="font-size:8.0pt; ">&nbsp;</span></p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Export eventList</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save as EventList_blinkdetection.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_exporteegeventlist(EEG,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/EventList_blinkdetection.txt'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_exporteegeventlist(EEG,</span><span style="font-size:11.0pt; color:#A020F0; ">'EventList_blinkdetection.txt'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">The final step is to import this EventList into the ICA-corrected dataset so that we can be sure to exclude the trials in which blinks occurred during the stimulus when we create ERPs from this dataset.  To do this, select <strong>File &gt; Load existing dataset</strong> and open the file <strong>S1_EEG_icapruned</strong> (or simply select It from the Datasets menu if it is still there)<strong>.   </strong>Next, select<strong> ERPLAB &gt; EventList &gt; Import EEG EventList from text file.   </strong>Choose the EventList that we just exported<strong>, EventList_blinkdetection.txt. </strong>  A warning window will appear, asking you to confirm that you would like to replace the EEG.EVENTLIST field with this file.  Select  <strong>Yes.  </strong>Finally, we will need to select <strong>ERPLAB &gt; Extract Bin-based Epochs</strong> as <a href="#_Creating_Bin-Based_EEG">we did previously</a> (epoch from -200 to  800 ms, with a pre-trial baseline). </p>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command:</strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Load S1_EEG_icapruned</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset(</span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_icapruned.set'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset(</span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_icapruned.set'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Import EventList_blinkdetection.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/EventList_blinkdetection.txt.</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_importeegeventlist( EEG,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/EventList_blinkdetection.txt'</span><span style="font-size:11.0pt; color:black; ">,1);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_importeegeventlist( EEG,</span><span style="font-size:11.0pt; color:#A020F0; ">'EventList_blinkdetection.txt'</span><span style="font-size:11.0pt; color:black; ">,1);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Extracts bin based epoch [-200 800] prebaseline correction</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_epochbin(EEG , [-200.0  800.0],  </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">You could then average the data using <strong>ERPLAB &gt; Compute Averaged ERPs</strong>.  However, some other artifacts may remain in the data (e.g., movement artifacts).  Thus, before averaging we will rerun the same artifact detection procedures done in the <a href="#_Artifact_Detection_1">section on artifact detection</a>.  Please look back to remind your self of these parameters and run both the Moving Window Peak-to-Peak Threshold and Step-like artifact detection procedures.  When the Moving Window procedure was applied to the unrejected data in the original example of artifact detection, it detected artifacts in 29.7% of epochs.  Now only 10% are marked, because the blinks have been eliminated by the artifact correction process.  Those epochs in which a blink occurred near to the target stimulus will also be marked as artifacts, thanks to the fact that we imported the EventList already containing these as flagged.  </p>
+<p class="paragraph">From here, one can proceed as before and compute average ERPs for those trials without artifacts.  </p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Compute Averaged ERP</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">ERP = pop_averager(EEG, 1, 1, 1 );  </span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Measurement_Tool.html">&lt;&lt;Measuring Amplitudes and Latencies</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

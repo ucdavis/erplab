@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Adding Channel Locations</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">Before we start using ERPLAB's functions, we'll use one of EEGLAB's functions that will prove useful at a later stage.  Specifically, we will add location coordinates for each electrode site <span style="color:black; "> (see the </span><a href="http://sccn.ucsd.edu/wiki/EEGLAB">EEGLAB documentation</a><span style="color:black; "> for more information).  Our original data file contained electrode labels conforming to the International 10/20 System, and EEGLAB can automatically determine standard coordinates on the basis of these labels.  These coordinates are not guaranteed to be exact, but they are a reasonable approximation for simple procedures such as plotting scalp maps.  If you want exact electrode locations, you will need to use a 3-D digitizer and measure the locations for each subject.</span></p>
+<p class="paragraph"><span style="color:black; ">To add coordinates based on the electrode labels, select <strong>Edit &gt; Channel locations</strong>, which will bring up the window shown here:</span></p>
+<p class="paragraph"><img src="images/chanlocs1.jpg" alt="chanlocs1" width="600" height="257" /></p>
+<p class="paragraph">Click <strong>Ok</strong>, and you will see the window shown here: </p>
+<p><img src="images/chanlocs2.jpg" alt="chanlocs2" width="685" height="473" /></p>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 6.0pt 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command:</strong><span style="font-family:Courier; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-family:Courier; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Adding Channel Locations to Dataset</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Make sure that you change the path to indicate the location of eeglab within your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG=pop_chanedit(EEG,</span><span style="font-size:11.0pt; color:#A020F0; ">'lookup'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Documents/MATLAB/eeglab9_0_2_3b/plugins/dipfit2.2/standard_BESA/standard-10-5-cap385.elp'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:blue; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">For simple data files such as the one used in this tutorial, you can accept all of the default values and simply click <strong>Ok</strong>.  This will add the coordinates to the current dataset.  </p>
+<p class="paragraph">EEGLAB and ERPLAB require electrode coordinates for plotting topographic maps; you will get an error message if you try to plot a topographic map before you've added the coordinates.  You can verify that the coordinates have been added by running a routine that plots topographic maps.  For example, if you select <strong>Plot &gt; Channel spectra and maps</strong> and select the default parameters in the window that appears, as shown in the screenshot below:</p>
+<p><img src="images/spectra.jpg" alt="spectra" width="455" height="162" /></p>
+<p class="paragraph">Click <strong>OK</strong> and you will see the following plot:</p>
+<p><img src="images/spectra_topo.jpg" alt="spectra_topo" width="458" height="402" /></p>
+<p class="paragraph">&nbsp;</p>
+<p class="MsoNormal" style="text-autospace:none;"><span style="font-family:Courier; color:forestgreen; ">&nbsp;</span></p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command:</strong><span style="font-family:Courier; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-family:Courier; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Plot Channel Spectra and maps</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">figure; pop_spectopo(EEG, 1, [0  2139038], </span><span style="font-size:11.0pt; color:#A020F0; ">'EEG'</span><span style="font-size:11.0pt; color:black; "> , </span><span style="font-size:11.0pt; color:#A020F0; ">'percent'</span><span style="font-size:11.0pt; color:black; ">, 15, </span><span style="font-size:11.0pt; color:#A020F0; ">'freq'</span><span style="font-size:11.0pt; color:black; ">, [6 10 22], </span><span style="font-size:11.0pt; color:#A020F0; ">'freqrange'</span><span style="font-size:11.0pt; color:black; ">,[2 25],</span><span style="font-size:11.0pt; color:#A020F0; ">'electrodes'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:#A020F0; ">'off'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="MsoNormal" style="text-autospace:none;"><span style="font-family:Courier; ">&nbsp;</span></p>
+<p class="paragraph">Later parts of this tutorial will make use of this dataset, so you should save it to disk.  First, however, you should change the name of the dataset to <strong>S1_Chan</strong> so that you can differentiate between this version and the original version.  To do this, select <strong>Edit &gt; Dataset info</strong>.  This will bring up the window shown below, and you should enter <strong>S1_Chan</strong> in the <strong>Dataset name</strong> field.  Click <strong>Ok</strong>, and then look in the <strong>Datasets</strong> menu.  You should now see that it is named <strong>S1_Chan</strong>.</p>
+<p><img src="images/edit.jpg" alt="edit" width="728" height="318" /></p>
+<p class="paragraph">You can now save the modified dataset by selecting <strong>File &gt; Save current dataset as</strong>.  We recommend that you give the file the same name as the dataset, but with a <strong>.set</strong> extension (<strong>S1_Chan.set</strong>). </p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command:</strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-family:Courier; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Setname is S1_Chan</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Filename is S1_Chan.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/ </span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG.setname=</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan'</span><span style="font-size:11.0pt; color:black; ">; </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG=pop_saveset(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Alternatively, the following version will put the file in Matlab's Current Folder</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG.setname=</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan'</span><span style="font-size:11.0pt; color:black; ">; </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG=pop_saveset(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan.set'</span><span style="font-size:11.0pt; ">);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Example_Experiment.html">&lt;&lt;Example Experiment</a><a href="Overview.html"></a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Background.html">Background Concepts&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

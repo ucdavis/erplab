@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Example 3c: Looping Through Multiple Subjects</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+text-align:justify;
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph"><em>Note: A complete version of this script is available in <strong>Test_Data &gt; Script_Examples &gt; Script3c.m</strong>.</em></p>
+<p class="paragraph">The script you made in the previous step can process the data for one subject at a time.  To process the next subject, you need to open the script, change the value of the <strong>subject</strong> variable, and then run the script again.  There must be an easier way!</p>
+<p class="paragraph">Of course, there is an easier way.  You can create a list of all the subject folder names in your script and <em>loop</em> through them.  To understand how to do this, we first need to explain two Matlab concepts, <em>cell arrays</em> and <em>looping</em>.  We also need to go over a useful function, <strong>fprintf()</strong>, that provides a convenient way to print information to the command window so that you can monitor the operation of a script.  If you already understand these concepts, feel free to skip ahead to the part where we talk about the actual script. </p>
+<h2><a name="cell" id="cell"></a>Cell arrays</h2>
+<p class="paragraph">An array is simply a variable that holds an ordered list of other variables.  Ordinarily, all of the variables in an array must be the same type and size (e.g., all numbers, or all 3-character strings).  However, a <em>cell array</em> can hold a list of miscellaneous variables without any real constraints.  This makes it quite flexible.</p>
+<p class="paragraph">To see how a cell array works, go to the Matlab command line and type the following:</p>
+<p class="LiteralText">x = {7, 'hi', 'dude', 1.1};</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">You have now created a cell array named <strong>x</strong>, which contains a list of 4 items: the number 7, the string 'hi', the string 'dude', and the number 1.1.  To access the 4<sup>th</sup> element in this list, you would refer to <strong>x{4}</strong>.  For example, type <strong>x{4} + 1</strong> into the command line (not followed by a semicolon).  The result should look like this:</p>
+<p class="LiteralText">&gt;&gt; x{4} + 1</p>
+<p class="LiteralText">ans =</p>
+<p class="LiteralText">    2.1000</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">This is telling you that the answer to the equation <strong>x{4} + 1</strong> is 2.1000 (because <strong>x{4}</strong> is equal to 1.1).</p>
+<p class="paragraph">Now type the following into the command window:</p>
+<p class="LiteralText">subject_list = {<span style="color:#A020F0; ">'S1'</span>, <span style="color:#A020F0; ">'S2'</span>, <span style="color:#A020F0; ">'S3'</span>, <span style="color:#A020F0; ">'S4'</span>, <span style="color:#A020F0; ">'S5'</span>, <span style="color:#A020F0; ">'S6'</span>};</p>
+<p class="LiteralText">numsubjects = length(subject_list);</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">You have now created a cell array named <strong>subject_list</strong> that contains the names of all the subject folders for our example experiment.  You have also created a variable named <strong>numsubjects</strong> that is equal to the number of elements in the cell array (which is 6 in this example).  You already knew there were 6 subjects in the experiment, so why compute it with the <strong>length</strong> function?  The answer is that if you add another subject to the <strong>subject_list</strong> variable, the <strong>numsubjects</strong> variable will automatically reflect the new number of subjects, which might prevent you from making an error later.  Here's a very very <strong>VERY</strong> important programming hint: You should not ordinarily have &quot;raw&quot; numbers embedded in your scripts (unless they are things like 0's or 1's that tell a command whether a given option should be off or on).  Whenever possible, values should be assigned to variables at the top of the script or computed from other variables.  This is a little bit of extra work, but it dramatically reduces the likelihood of bugs (especially as a script evolves over a period of weeks or months), and it can save you hours and hours of mindnumbing debugging later.</p>
+<p class="paragraph">Now that you have created the <strong>subject_list</strong> cell array, practice accessing various items from this list (e.g., by typing things like <strong>subject_list{3}</strong> on the command line).</p>
+<h2><a name="fprintf" id="fprintf"></a>The fprintf() command</h2>
+<p class="paragraph">As you have seen, it is possible to print the output of a command or the value of a variable in the command window by just giving the command or variable name without a semicolon at the end.  But sometimes it's useful to print something a little more complex.  You can use the <strong>fprintf()</strong> function for this.  You can look up the details in a Matlab book, but the basic idea is that you send this function a formatting string and then a bunch of variables, and it then prints the variables to the command window (or to a file) in a manner that is specified by the formatting string.  To see how this works, try typing the following into the command window:</p>
+<p class="LiteralText">fprintf('%s\n', subject_list{1});</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Matlab should then print <strong>S1</strong> in the command window (because <strong>S1</strong> is the first element in the <strong>subject_list</strong> cell array).  In this example, the <strong>%s</strong> tells <strong>fprintf</strong> that the variable is a string (you could use <strong>%d</strong> or <strong>%f</strong> to print a number).  The <strong>\n</strong> tells <strong>fprintf</strong> to print a newline (return) at the end (the other command special character is <strong>\t</strong>, which means TAB).  Here's a slightly more complex example:</p>
+<p class="LiteralText">fprintf('subject %d is named &quot;%s&quot;\n', 1, subject_list{1});</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">This will print <strong>subject 1 is named &quot;S1&quot;</strong> in the command window.  This shows that you can use either values or variables.  But if you want to use a string, make sure to enclose it in single quote marks.</p>
+<h2><a name="loops" id="loops"></a>Loops</h2>
+<p class="paragraph">Loops are a very important programming element that are present in almost every programming language.  A loop is basically an element of a script that causes a part of the script to repeat multiple times until some condition is met.  Here, we will use a very common type of loop called a <strong>For</strong> loop.  A <strong>For</strong> loop involves a variable that increments each time through the loop, and the loop ends when this variable reaches a specific value.  The easiest way to see this is with an example.  Make sure that you still have <strong>subject_list</strong> and <strong>numsubjects</strong> defined from the previous step.  Now type the following in the command window:</p>
+<p class="LiteralText">for s=1:numsubjects</p>
+<p class="LiteralText">fprintf('subject %d: %s\n', s, subject_list{s});</p>
+<p class="LiteralText">end;</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">This tells Matlab to start by creating a variable named <strong>s</strong> and setting its value to 1.  Then Matlab iterates through the <strong>fprintf</strong> command, incrementing the value of <strong>s</strong> by 1 at the end of each iteration, until <strong>s</strong> is greater than <strong>numsubjects</strong>.  We only have one command here, but you could have many lines of commands between the <strong>for</strong> line and the <strong>end</strong> line.</p>
+<p class="paragraph">Once you finish typing <strong>end;</strong> and press RETURN or ENTER, you should see the following in the command window:</p>
+<p class="LiteralText">subject 1: S1</p>
+<p class="LiteralText">subject 2: S2</p>
+<p class="LiteralText">subject 3: S3</p>
+<p class="LiteralText">subject 4: S4</p>
+<p class="LiteralText">subject 5: S5</p>
+<p class="LiteralText">subject 6: S6</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">The value of <strong>s</strong> was 1 the first time through the loop, so Matlab prints out this value along with the value of <strong>subject_list{1}</strong>, which is <strong>S1</strong>.  Then it increments <strong>s</strong> so that it now equals 2 and compares it against the value of <strong>numsubjects</strong>.  Since <strong>numsubjects</strong> has a value of 6, and 2 is less than 6, the loop keeps going.  Now when Matlab executes the<strong> fprintf()</strong> command, <strong>s</strong> has a value of 2, so it prints out the value of <strong>subject_list{2}</strong>, which is <strong>S2</strong>.  It keeps looping until incrementing <strong>s</strong> leads to a value that exceeds the value of <strong>numsubjects</strong>, at which point the loop ends.  (Note: This is only an approximate description of how a <strong>for</strong> loop works; for the precise definition, see a Matlab book or manual).</p>
+<h2><a name="adding" id="adding"></a>Adding a loop to the script</h2>
+<p class="paragraph">Now we're ready to update the script so that it loops through the subjects.  This is really very easy.  The first step is to put the <strong>subject_list </strong>cell array and <strong>numsubjects</strong> variable at the top of the script.  You should just be able to copy them from the command window (where you defined them before) and paste them into your script.  These should be followed by the definition of the parent folder.  The first three lines of your script should look like this:</p>
+<p class="LiteralText">subject_list = {<span style="color:#A020F0; ">'S1'</span>, <span style="color:#A020F0; ">'S2'</span>, <span style="color:#A020F0; ">'S3'</span>, <span style="color:#A020F0; ">'S4'</span>, <span style="color:#A020F0; ">'S5'</span>, <span style="color:#A020F0; ">'S6'</span>};</p>
+<p class="LiteralText">numsubjects  = length(subject_list); <span style="color:forestgreen; ">% number of subjects</span></p>
+<p class="LiteralText">parentfolder = '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/';</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Now, put the following after these three lines:</p>
+<p class="LiteralText"><span style="color:blue; ">for</span><span style="color:black; "> s=1:numsubjects </span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">    subject = subject_list{s};</span></p>
+<p class="LiteralText"><span style="color:black; ">    subjectfolder = [parentfolder subject </span><span style="color:#A020F0; ">'/'</span><span style="color:black; ">];</span></p>
+<p class="LiteralText"><span style="color:black; ">    fprintf(</span><span style="color:#A020F0; ">'\n\n\n*** Processing subject %d (%s) ***\n\n\n'</span><span style="color:black; ">, s, subject);</span></p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">The first line is the start of the for loop.  It defines a variable s, which will go from 1 on the first iteration to 6 on the last iteration (because numsubjects should have a value of 6).</p>
+<p class="paragraph">The next line sets the <strong>subject</strong> variable equal to the current member of the <strong>subject_list</strong> cell array.  On the first iteration, <strong>s</strong> will be equal to 1, so <strong>subject_list{s}</strong> will be the first subject, <strong>S1</strong>.  Thus, the first time through, <strong>subject</strong> will have a value of <strong>S1</strong>.</p>
+<p class="paragraph">The next line sets the <strong>subjectfolder</strong> variable equal to the parentfolder plus the <strong>subject</strong> plus a slash.  This will result in a value of something like <strong>/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1</strong>.  Notice that this needs to go inside the loop, rather than before the <strong>for</strong> statement, because it will be updated on each iteration of the loop.</p>
+<p class="paragraph">The last line will print a message to the command line near the beginning of each iteration, letting you know which subject is currently being processed.  On the 6<sup>th</sup> iteration, for example, it will print the following to the command window:</p>
+<p class="LiteralText">*** Processing subject 6 (S6) ***</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">The next step is to place an <strong>end;</strong> statement near the end of the script, after the line with the <strong>pop_savemyerp()</strong> command and before the line with the <strong>eeglab redraw</strong> command.  It needs to go before the <strong>eeglab redraw</strong> command, because you only want to update the EEGLAB GUI after you've finished looping through all the subjects.</p>
+<p class="paragraph">We need to make one final tweak to the script.  Recall that, when you ran the previous versions on a single subject, a window popped up at the end asking you to save the file.  When you have an automated script, you don't usually want it to ask for interaction – you just want it to run autonomously.  To get rid of this window, just delete the <strong>, 'gui', 'erplab'</strong> at the end of the <strong>pop_savemyerp()</strong> command.  The whole script should look something like this:</p>
+<p class="LiteralText">subject_list = {<span style="color:#A020F0; ">'S1'</span>, <span style="color:#A020F0; ">'S2'</span>, <span style="color:#A020F0; ">'S3'</span>, <span style="color:#A020F0; ">'S4'</span>, <span style="color:#A020F0; ">'S5'</span>, <span style="color:#A020F0; ">'S6'</span>};</p>
+<p class="LiteralText">numsubjects  = length(subject_list); <span style="color:forestgreen; ">% number of subjects</span></p>
+<p class="LiteralText">parentfolder = <span style="color:#A020F0; ">'/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/'</span>;</p>
+<p class="LiteralText"> </p>
+<p class="LiteralText"><span style="color:blue; ">for</span> s=1:numsubjects </p>
+<p class="LiteralText"> </p>
+<p class="LiteralText">    subject = subject_list{s};</p>
+<p class="LiteralText">    subjectfolder = [parentfolder subject <span style="color:#A020F0; ">'/'</span>];</p>
+<p class="LiteralText">    fprintf(<span style="color:#A020F0; ">'\n\n\n*** Processing subject %d (%s) ***\n\n\n'</span>, s, subject);</p>
+<p class="LiteralText"> </p>
+<p class="LiteralText">    EEG = pop_loadset(<span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_EEG.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
+<p class="LiteralText">    EEG=pop_chanedit(EEG, <span style="color:#A020F0; ">'lookup'</span>,<span style="color:#A020F0; ">'standard-10-5-cap385.elp'</span>);</p>
+<p class="LiteralText">    EEG = eeg_checkset( EEG );</p>
+<p class="LiteralText">    EEG = pop_editset(EEG, <span style="color:#A020F0; ">'setname'</span>, [subject <span style="color:#A020F0; ">'_Chan'</span>]);</p>
+<p class="LiteralText">    EEG = pop_saveset( EEG, <span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_Chan.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
+<p class="LiteralText">    EEG = pop_creabasiceventlist(EEG, <span style="color:#A020F0; ">''</span>, {<span style="color:#A020F0; ">'boundary'</span>}, {-99}, 1);</p>
+<p class="LiteralText">    EEG = pop_binlister( EEG, [parentfolder <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>], <span style="color:#A020F0; ">'no'</span>, <span style="color:#A020F0; ">''</span>, 0, [], [], 0, 0, 0);</p>
+<p class="LiteralText">    EEG = pop_epochbin( EEG , [-200.0  800.0],  <span style="color:#A020F0; ">'pre'</span>);</p>
+<p class="LiteralText">    EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:16,  1);</p>
+<p class="LiteralText">    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>);</p>
+<p class="LiteralText">    ERP = pop_averager( EEG,1, 1, 1 );</p>
+<p class="LiteralText">    ERP = pop_savemyerp(ERP, <span style="color:#A020F0; ">'erpname'</span>, [subject <span style="color:#A020F0; ">'_ERP'</span>], <span style="color:#A020F0; ">'filename'</span>, [subjectfolder subject <span style="color:#A020F0; ">'_ERP.erp'</span>]);</p>
+<p class="LiteralText"> </p>
+<p class="LiteralText"><span style="color:blue; ">end</span>;</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">    eeglab <span style="color:#A020F0; ">redraw</span>;</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Notice that all of the lines between <strong>for</strong> and <strong>end</strong> have been indented.  This is standard practice, and it makes it easier to see which commands are inside a given loop.</p>
+<p class="paragraph">Try running the script.  If you watch the command window, you should see it do the processing for each subject.</p>
+<p class="paragraph">In the version of the script shown above, only the final dataset (created by the artifact detection function) is saved into the ALLEEG structure with the <strong>pop_newset</strong> command.  If your script does this, then you should be able to look in the <strong>Datasets</strong> menu after running the script and see this dataset for each subject.</p>
+<p class="paragraph">Unfortunately, there is not yet a way to tell the GUI about ERPsets, so none of the ERPsets will be visible in the <strong>ERPsets</strong> menu.  You will need to load them manually via the GUI to access them from the GUI.</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Example3b.html">&lt;&lt;Example 3b</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Example4.html">Example 4&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

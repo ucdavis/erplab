@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Behavioral Analyses</title>
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.Note {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+font-style:italic;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+.tablesl {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.tablesl {
+	font-size: 12px;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">ERPLAB does not yet have sophisticated tools for behavioral analyses, although we plan to add a set of tools for behavioral analyses eventually.  For now, you have two main choices.  First, you can write a script that reads the event information from the <strong>EVENTLIST</strong> structure (or from a text file version of the <strong>EVENTLIST</strong> structure) and performs the desired analyses.  Second, you can take the information provided by BINLISTER about the timing and accuracy of behavioral responses and read this into Excel or a Matlab script.</p>
+<h1><a>Analyzing Accuracy</a></h1>
+<p class="paragraph">Behavioral accuracy information can be obtained very easily by running BINLSTER and then either using the resulting <strong>EVENTLIST</strong> list structure directly or by saving it as a text file.  The <strong>EVENTLIST</strong> structure contains information about the number of trials that were present in each bin.  If you have some bins that are correct responses and others that are incorrect responses, you can calculate the proportion correct by knowing the number of cases of each of these two bins.  When you save the <strong>EVENTLIST</strong> structure in a text file, the format of the file header was designed to make it relatively easy to read this information into Excel or into a MATLAB script.</p>
+<p class="paragraph">For example, for a simple oddball experiment with standards and targets, you might define the following bins:</p>
+<p class="LiteralText"># Comment: 100 = target; 101 = standard; 200 = response for target; 201 = response for standard</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 1</p>
+<p class="LiteralText">Target followed by correct response</p>
+<p class="LiteralText">.{100}{t&lt;200-1000&gt;200}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 2</p>
+<p class="LiteralText">Target followed by incorrect response</p>
+<p class="LiteralText">.{100}{t&lt;200-1000&gt;201}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 3</p>
+<p class="LiteralText">Standard followed by correct response</p>
+<p class="LiteralText">.{101}{t&lt;200-1000&gt;201}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 4</p>
+<p class="LiteralText">Standard followed by incorrect response</p>
+<p class="LiteralText">.{101}{t&lt;200-1000&gt;200}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">After running BINLISTER, the number of occurrences of each of these bins is stored in <strong>EEG.EVENTLIST.trialsperbin</strong>, which you could use to compute the proportion correct for targets and for standards (or d', or A', or any other parameter you would like).  If you save the <strong>EVENTLIST</strong> as a text file, this information is printed just after the header, and it looks something like this:</p>
+<p class="LiteralText">bin 1,      # 18,       Target followed by correct response                                                                                 </p>
+<p class="LiteralText">bin 2,      # 2,          Target followed by incorrect response        </p>
+<p class="LiteralText">bin 3,      # 74,       Standard followed by correct response                                                                                 </p>
+<p class="LiteralText">bin 4,      # 6,          Standard followed by incorrect response </p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">In this example, there were 18 instances of a target followed by a correct response, 2 instances of a target followed by an incorrect response, 74 instances of a standard followed by a correct response, and 6 instances of a standard followed by an incorrect response.  This information could be imported into Excel (or a Matlab script, or anything that can read a text file) for further analysis.</p>
+<p class="paragraph">Sophisticated Excel users should also be able to import the <strong>EVENTLIST</strong> text file into Excel and directly compute accuracy information from the list of events (e.g., using pivot tables).  This could be done without BINLISTER or after using BINLISTER to add bin information (which could then be used for sorting the trials).</p>
+<p class="paragraph"><em>Note: In many cases, the BINLISTER bin descriptor file that you use for doing behavioral analyses will not be the same as the one you use for creating averaged ERPs.  For example, you may need to break down the data into more bins for your behavioral analysis than for your averaged ERPs.</em></p>
+<h1><a>Analyzing Reaction Times</a></h1>
+<p class="paragraph">For reaction times (RTs), you can use a special aspect of the BINLISTER syntax to extract the single-trial RTs.  For example, imagine that you have a simple oddball experiment with targets and standards.  You could extract the RTs using the <strong>:rt&lt;&quot;variable_name&quot;&gt;</strong> syntax as follows:</p>
+<p class="LiteralText"># Comment: 100 = target; 101 = standard; 200 = response for target; 201 = response for standard</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 1</p>
+<p class="LiteralText">Target followed by correct response</p>
+<p class="LiteralText">.{100}{t&lt;200-1000&gt;200:rt&lt;&quot;target rt&quot;&gt;}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 2</p>
+<p class="LiteralText">Standard followed by correct response</p>
+<p class="LiteralText">.{101}{t&lt;200-1000&gt;201:rt&lt;&quot;standard rt&quot;&gt;}</p>
+<p class="LiteralText">                                                          </p>
+<p class="paragraph">When BINLISTER encounters an event that matches a given descriptor, the <strong>:rt&lt;&gt;</strong> syntax causes the time of the event to which it is linked (e.g., the response event code) to be saved in the <strong>bdf</strong> field of the EVENTLIST variable.  The time is given relative to the time of the time-locking event (e.g., relative to the target stimulus).  These time values can then be saved to a text file, allowing you to use Excel or other programs to compute means, RT distributions, etc.</p>
+<p class="paragraph">It is possible to save the timing of multiple responses for each bin by simply giving them different labels, as in:</p>
+<p class="LiteralText">Bin 1</p>
+<p class="LiteralText">Target followed by two correct responses</p>
+<p class="LiteralText">.{100}{t&lt;200-1000&gt;200:rt&lt;&quot;rt1&quot;&gt;;t&lt;200-1000&gt;201:rt&lt;&quot;rt2&quot;&gt;}</p>
+<p class="LiteralText">                                                          </p>
+<p class="paragraph"><em>Note: ERPLAB does not make a distinction between stimuli and responses, so this feature can be used to determine the time between any type of event and the time-locking event.</em></p>
+<p class="paragraph">You can access the single-trial RT values directly from the EVENTLIST variable or by exporting them to a text file.  The former method is good for people with lots of Matlab scripting experience, and the latter method is good for everyone else.  Note that even people with lots of scripting experience may want to export the values to a text file if they want to exclude trials that were rejected because of artifacts, which can be complicated (as described in a later section).</p>
+<p class="paragraph">To export the RT values to a text file, select <strong>ERPLAB &gt; EventList &gt; Export Reaction Times to Text &gt; From EEG</strong> or <strong>ERPLAB &gt; EventList &gt; Export Reaction Times to Text &gt; From ERP</strong>.  A window like the following screenshot will appear:</p>
+<p><img src="images/export_rts.jpg" alt="export_rts" width="434" height="182" /></p>
+<p class="paragraph">There are two formats you can choose for the text file.  In the <strong>Basic format</strong>, each column lists all of the RTs from a given bin.  The first line is the first RT from each bin; the second line is the second RT from each bin; etc.  With this format, the relationship between the different RTs on a given line is completely arbitrary; the RTs within a column are in order only with respect to the bin represented by that column.  The number of RTs will often differ across bins, leading to empty cells in the bins x trials matrix, and NaN (not a number) is used to pad the empty cells.  This format is particularly useful if you simply want to read in the RT values from each bin (e.g., with Excel or Matlab) and compute the mean or median RT values.  Note that the first row of the file is a set of labels for each column, with each label formed by concatenating the name of the bin with the label for the RT that you provided in the BDF (e.g., &quot;standard rt&quot;); any white space characters (e.g., spaces) are replaced by underscores.  For example, the label for the first of the two RTs in Bin 1 in the example above would be &quot;Target_followed_by_two_correct_responses_rt_1&quot;.</p>
+<p class="paragraph">The <strong>Detailed format</strong> is designed to work with Excel's pivot table feature, which provides a great deal of power and flexibility (at the cost of a small increase in complexity). In this format, each line of the output file contains the RT from a single trial, along with information about the bin number, bin label, RT label, etc., which can be used to sort the RTs with a pivot table.  Here's an example of this output format:</p>
+<p class="LiteralText">&nbsp;</p>
+<table width="483" border="0">
+  <tr>
+    <td width="41"><span class="tablesl">Item</span></td>
+    <td width="68"><span class="tablesl">RTime</span></td>
+    <td width="81"><span class="tablesl">HomeCode</span></td>
+    <td width="77"><span class="tablesl">RespCode</span></td>
+    <td width="49"><span class="tablesl">Bin#</span></td>
+    <td width="141"><span class="tablesl">BinLab</span></td>
+  </tr>
+  <tr>
+    <td><span class="tablesl">2</span></td>
+    <td><span class="tablesl">608.000</span></td>
+    <td><span class="tablesl">101</span></td>
+    <td><span class="tablesl">9</span></td>
+    <td><span class="tablesl">1</span></td>
+    <td><span class="tablesl">Frequent_RT</span></td>
+  </tr>
+  <tr>
+    <td><span class="tablesl">4</span></td>
+    <td><span class="tablesl">507.999</span></td>
+    <td><span class="tablesl">121</span></td>
+    <td><span class="tablesl">10</span></td>
+    <td><span class="tablesl">2</span></td>
+    <td><span class="tablesl">Rare_RT</span></td>
+  </tr>
+</table>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph"><a>The <strong>Item</strong> column indicates the item number from the original list of events in the EEG.  The <strong>RTime</strong> column indicates the reaction time.  The <strong>HomeCode</strong> column shows the event code of the time-locking event from that trial. The <strong>RespCode</strong> column shows the event code of the response event from that trial. The <strong>Bin#</strong> column shows the bin number, and the <strong>BinLab</strong> column shows the bin label.</a></p>
+<p class="paragraph"><em>Note: The various values are separated by tabs, so they may not appear to line up properly when you open the file in a text editor.  However, the will be fine when you open the file with Excel.</em></p>
+<h1>Excluding Trials with Artifacts or Invalid EEG Data from Behavioral Analyses</h1>
+<p class="paragraph">In many cases, you will want your behavioral analyses to be based on the same trials that were included in your averaged ERP waveforms, which means that trials that were rejected from the averages need to be excluded from your behavioral analyses.  This can be accomplished fairly easily with ERPLAB.  When you use ERPLAB's artifact detection functions, artifact flag 1 in the <strong>EVENTLIST</strong> will automatically be set for trials that are rejected.  You can then use this information to perform behavioral analyses in a manner that excludes trials for which this flag is set.  In most cases, you will want to use the <strong>EVENTLIST</strong> from an ERPset (ERP.EVENTLIST) rather than from a dataset (EEG.EVENTLIST), because then you can be guaranteed that the same trials that were averaged together in the ERPset are being used for the behavioral analysis.</p>
+<p class="paragraph"><em>Important note: Although ERPLAB keeps track of artifacts using the artifact flags in the <strong>EEG.EVENTLIST</strong> structure, EEGLAB instead uses the <strong>EEG.reject</strong> structure.  If you are using EEGLAB's artifact detection routines, you should synchronize the information in <strong>EEG.EVENTLIST</strong> and <strong>EEG.reject</strong> with the <strong>ERPLAB &gt; Artifact Detection &gt; Synchronize Artifact Info in EEG and EVENTLIST</strong> command prior to performing your behavioral analyses.</em></p>
+<p class="paragraph">Let's start by seeing how this would be done with RT data.  Assuming that some of your bin descriptors included the <strong>:rt&lt;&quot;variable_name&quot;&gt;</strong> syntax described in the preceding section, you can simply export the RT values to a text file using <strong>ERPLAB &gt; EventList &gt; Export Reaction Times to Text &gt; From ERP</strong>.  Simply select the <strong>Discard RTs with marked AR flags</strong> option, and trials for which the artifact flags were set will be excluded from the text file.  Note that ERPLAB will check for artifacts in the time-locking event for a given trial, not the actual response event, because it is the artifact flag for the time-locking event that determines whether or not the event will be included in the averaged ERP waveform.</p>
+<p class="paragraph">There are two main ways to eliminate trials with artifacts from analyses of accuracy.  First, one could simply read the information about individual events in the <strong>EVENTLIST</strong> structure, but excluding trials for which the artifact flags are set.  However, this requires fairly advanced Matlab or Excel skills.  Second, one can run BINLISTER a second time, using a bin descriptor file that is designed to use the information about artifact rejection that has been stored in the flags.  ERPLAB always sets least significant bit (rightmost digit) in the artifact flag to 1 for events with artifacts, and it is 0 for events without artifacts, so you could use the following syntax to exclude trials with artifacts.</p>
+<p class="LiteralText">Bin 1</p>
+<p class="LiteralText">Target without an artifact followed by correct response</p>
+<p class="LiteralText">.{100:fa&lt;0&gt;}{t&lt;200-1000&gt;200}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Bin 2</p>
+<p class="LiteralText">Target without an artifact followed by incorrect response</p>
+<p class="LiteralText">.{100:fa&lt;0&gt;}{t&lt;200-1000&gt;201}</p>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">In this example, <strong>fa&lt;0&gt;</strong> means that the rightmost artifact flag has a value of zero (i.e., it has not been set to a value of 1).  Note that, when an artifact is detected for a given epoch, the flag is set for the time-locking event, not for the other events that are used to define a given bin (e.g., the response events in this example).  If you wanted to include an event only if there was no artifact for the stimulus AND no artifact for the response, you could check the artifact flag for both the stimulus and the response, as in:</p>
+<p class="LiteralText">Bin 1</p>
+<p class="LiteralText">Target without an artifact followed by correct response without an artifact</p>
+<p class="LiteralText">.{100:fa&lt;0&gt;}{t&lt;200-1000&gt;200:fa&lt;0&gt;}</p>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">If you have set additional artifact flags to indicate different types of artifacts (e.g., flag 3 for eye movements and flag 4 for blinks), you could perform analyses that include or exclude specific types of artifacts.  For example, to examine accuracy for trials with an eye movement, you could set flag 3 for epochs with eye movements during artifact detection and then use <strong>a&lt;1xx&gt;</strong> in your bin descriptors to indicate that events should be included only if flag 3 is set (the x's mean that these flags can be any value).</p>
+<p class="paragraph">It is important to keep in mind that BINLISTER is ordinarily used to assign events to bins prior to epoching the data.  However, artifact detection can be performed only after the data have been epoched, and the best time to do behavioral analyses is after averaging (so that you can be 100% certain of which events were included versus excluded from the averages).  To use BINLISTER to perform behavioral analyses that exclude rejected trials, you should first perform artifact detection and then averaging.  You can then save the EventList from the newly created ERPset to a text file by selecting <strong>ERPLAB &gt; EventList &gt; Export ERP EventList to Text File</strong>. BINLISTER can then read from this text file and save its output to a new text file (or save the <strong>EVENTLIST</strong> structure in the workspace, so you can access it directly from a script).</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Artifact_Detection.html">&lt;&lt;Artifact Detection</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Averaging_ERPs.html">Averaging ERPs&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Getting Started</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">We assume that you have already installed EEGLAB and ERPLAB, as described in the <a href="http://erpinfo.org/erplab/erplab-documentation/erplab-manual">ERPLAB Toolbox User's Manual</a>.  </p>
+<p class="paragraph">To begin this tutorial, we recommend that you start afresh with EEGLAB and ERPLAB.  To do this, close the main EEGLAB window and type &quot;clear all&quot; and then &quot;eeglab&quot; in the Matlab command window (each Matlab command should be followed with the <strong>return</strong> or <strong>enter</strong> key).  It is a good idea to follow this procedure when you encounter bugs or unexplained problems with EEGLAB and/or ERPLAB.</p>
+<p class="paragraph">In <strong>EEGLAB &gt; File &gt; Memory and other options</strong>, you should make sure that it is set to allow multiple datasets to be loaded in memory.  That is, make sure that &quot;If set, keep at most one dataset in memory&quot; is <strong>NOT</strong> checked.</p>
+<p class="paragraph">Next you need to put the tutorial files on your hard drive.  You can download them from the <a href="http://erpinfo.org/erplab/erplab-documentation">ERPLAB documentation area of the erpinfo.org web site</a>.  The data and related files are in a folder named Test_Data, which you can put anywhere on your computer's file system.  </p>
+<p class="paragraph">The data from the first subject we will be processing is in a subfolder named <strong>S1</strong>, and you should make this folder the current directory in the Matlab command window.<span style="color:black; "> At the top of the Matlab command </span>window<span style="color:black; ">, there is a drop-down menu displaying the current directory (see screenshot below).  Click on the <strong>browse</strong> button (labeled with '…') to the right of the current directly and choose the <strong>S1</strong> folder.  The top of the window will then look something like this (although the details depend on what operating system you are using):</span></p>
+<p><img src="images/current_folder.jpg" alt="current_folder" width="780" height="60" /></p>
+<p class="paragraph">Next you will need to load the raw EEG data from the first subject into EEGLAB.  To do this, select <strong>File &gt; Load existing dataset</strong> from the EEGLAB GUI, and open the file <strong>S1_EEG.set</strong>.  This file is what EEGLAB calls a &quot;dataset.&quot;  There is an associated file, <strong>S1_EEG.fdt</strong>, which contains the actual EEG data points and must be present (but which is accessed indirectly).  The dataset contains a large amount of information, and EEGLAB may take several seconds to load the dataset.  EEGLAB prints some information in the command window while it is processing the file, finishing with &quot;Done&quot; when the file has finished loading.  (Both EEGLAB and ERPLAB print useful information such as this in the command window, and you should get in the habit of keeping an eye on this window.)  <span style="color:black; "> </span></p>
+<p class="paragraph"><em>Hint: Using EEGLAB and ERPLAB requires a little bit of patience.  If you try to start the next procedure before the current procedure is done, you will cause problems that will ultimately slow you down.  This is especially true of procedures that create or load datasets.  So just take a sip of coffee and wait until you see &quot;Done&quot; in the command window before you take the next step.  Making sure that your computer has lots of RAM (and the 64-bit version of Matlab along with a 64-bit operating system) can make things go much faster.</em></p>
+<p class="paragraph">When the dataset has finished loading, it will be visible in the <strong>Datasets</strong> menu, as shown in the following screenshot.</p>
+<p><img src="images/GUI.jpg" alt="GUI" width="587" height="344" /></p>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 3.0pt;padding:2.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong>Equivalent Script Command:</strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Load S1_EEG.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Filename is S1_EEG.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Make sure that your file names and folder names do not contain spaces or other special characters</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that the dataset will not appear in the Datasets menu in the EEGLAB GUI</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset(</span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:black; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; "> </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Alternatively, the following version will look for the file in Matlab's <em>Current Folder</em></span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset(</span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG.set'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%You can then see the data with the following command:</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">pop_eegplot(</span><span style="font-size:11.0pt; color:#A020F0; ">EEG</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph"><span style="color:black; ">You can now look at the data with <strong>Plot &gt; Channel data (scroll)</strong>, as shown in the following screenshot (see the </span><a href="http://sccn.ucsd.edu/eeglab/eeglabdocs.html">EEGLAB documentation</a><span style="color:black; "> for information about how to use this function).  </span></p>
+<p><img src="images/eeg1.jpg" alt="eeg1" width="667" height="453" /></p>
+<p class="paragraph"><span style="color:black; ">If you scroll 10 seconds (by clicking the &quot;&gt;&gt;&quot; button twice), you will see vertical lines and numbers, which show the event codes (aka stimulus markers, trigger codes), as shown here:</span></p>
+<p><img src="images/eeg2.jpg" alt="eeg2" width="667" height="453" /></p>
+<p class="paragraph"><strong>&nbsp;</strong></p>
+<div style="border:double windowtext 3.0pt;padding:2.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong>Equivalent Script Command:</strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%To plot the data in the current EEG structure, use this EEGLAB command:</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">pop_eegplot(</span><span style="font-size:11.0pt; color:#A020F0; ">EEG</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p>&nbsp;</p>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Overview.html">&lt;&lt;Overview and Scripting</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Example_Experiment.html">Example Experiment&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Brief Description of the Example Experiment</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+table.MsoNormalTable {
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">The initial examples come from a published experiment.  In this section, we will provide a basic overview of the experiment, along with a few of the details you will need to know to analyze it.  For a complete description of the experimental paradigm, see the publication ((Luck et al., 2009, <em>Psychophysiology</em>, <em>46</em>: 776-786).</p>
+<p class="paragraph">This study examines the P3 wave and the lateralized readiness component (LRP) in a group of schizophrenia patients and a group of matched control subjects.  This tutorial focuses on the data from 6 of the control subjects (in the folders named S1 – S6; but note that some releases contain only the data from subject S1).  All subject identity information has been stripped from the data files.</p>
+<p class="paragraph">In this experiment, a letter or digit was presented every 1300-1700 ms. Subjects were instructed to press a button with one hand for digits and with the other hand for letters.  For a given trial block, either the letters or the digits were rare (20%) and the other category was frequent (80%).  Thus, the stimulus category and the probability were counterbalanced.  The probability manipulation was designed to isolate the probability-sensitive P3b component. Different event codes were used for the digits when they were rare, the digits when they were frequent, the letters when they were rare, and the letters when they were frequent. (The experiment also included a condition in which the two categories were equiprobable, but that condition is not included in this tutorial.)</p>
+<p class="paragraph">The experiment was also designed to isolate the LRP by counterbalancing the stimulus category and probability with the left and right hand responses.  That is, subjects responded to letters with the left hand and digits with the right hand for half of the experiment, and they responded to digits with the left hand and letters with the right hand for the other half.  This is also indicated by the event codes for each stimulus (i.e., the event code for the stimulus also indicates the appropriate response for that stimulus).  </p>
+<p class="paragraph">ERPLAB Toolbox makes no distinction between stimulus event codes and response event codes.  This gives the user more power, but it also gives the user responsibility for using the event codes in a sensible way. The event codes for responses in this example experiment indicated whether the response was correct (event code = 9) or incorrect (event code = 8) rather than directly indicating whether a left-hand or right-hand response was made.  However, the combination of the stimulus event code and the response event code makes it possible to determine whether the subject pressed the left button or the right button.</p>
+<p class="paragraph">Here is a table showing the stimulus event codes.</p>
+<table class="MsoNormalTable" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;">
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Event Code</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Category</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Probability</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Correct Response</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">11</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">21</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">112</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">122</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">12</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">22</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">111</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">121</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+</table>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">The data in this experiment were recorded from a 16-bit Neuroscan Synamps system with a bandpass of 0.05-100 Hz and a sampling rate of 500 Hz.  Each scalp site was recorded relative to a right-earlobe reference.  Recordings were also obtained from a vertical electrooculogram (VEOG) electrode located beneath the left eye and from an electrode on the left earlobe (both referenced to the right earlobe).  A horizontal electrooculogram (HEOG) signal was recorded as the potential between electrodes located just lateral to each eye.</p>
+<p class="paragraph">Letters and digits were presented in an unpredictable order within each trial block, but separate blocks were used for each combination of probability response assignment.  That is, there were separate trial blocks for: (1) 80% letters (left-hand response) and 20% digits (right-hand response); (2) 20% letters (left-hand response) and 80% digits (right-hand response); (3) 80% letters (right-hand response) and 20% digits (left-hand response); (4) 20% letters (right-hand response) and 80% digits (left-hand response).  Each block was originally recorded in a separate file.  </p>
+<p class="paragraph">These files were imported into EEGLAB (using <strong>File &gt; Import data &gt; From Neuroscant .CNT File</strong>) and then merged together (with <strong>File &gt; Append datasets</strong>).  The procedure you follow will depend on your data acquisition system.  Note that EEGLAB places a <strong>boundary</strong> event code at the boundary between the original files to mark the fact that a temporal discontinuity was present at those times.  This is important, because some functions (e.g., filters) either implicitly or explicitly assume that consecutive data points in the <strong>EEG</strong> reflect temporally consecutive moments in time (see the section on boundary events in the ERPLAB User's Manual).  The end result was saved in a file named S1_EEG.set (or S2, S3, etc., to indicate each individual subject).</p>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Getting_Started.html">&lt;&lt;Getting Started</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="ChanLocations.html">Adding Channel Locations&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

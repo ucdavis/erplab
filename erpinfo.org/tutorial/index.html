@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ERPLAB Toolbox Tutorial</title>
+
+<style type="text/css">
+p.paragraph {margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+</style>
+<style type="text/css">
+<!--
+p.MsoToc1 {
+margin-top:.25in;
+margin-right:0in;
+margin-bottom:.0001pt;
+margin-left:0in;
+tab-stops:22.0pt right 438.7pt;
+font-size:12.0pt;
+font-family:Arial;
+text-transform:uppercase;
+font-weight:bold;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="MsoNormal" align="center" style="text-align:center;"><a><span style="font-size:26.0pt; ">ERPLAB TOOLBOX </span></a><span style="font-size:26.0pt;">TUTORIAL</span></p>
+<div style="border:none;border-bottom:solid windowtext 1.0pt;padding:0in 0in 1.0pt 0in;">
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">Version<span style="font-family:'Monotype Corsiva'; font-size:18.0pt; "> 2.0</span></p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">15 October 2011</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">Tutorial written by Steve Luck, Javier Lopez-Calderon, Stan Huang, and Eric Foo</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">ERPLAB Toolbox core designed by Javier Lopez-Calderon and Steve Luck</p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph"><strong>Important note: <span style="color:black; ">In some cases, errors will lead</span> to a message that instructs you to report the error to the EEGLAB developers.  If this happens, please report the error to us at erplab@erpinfo.org and not to the EEGLAB developers. </strong><strong> </strong></p>
+<p class="paragraph">ERPLAB has primarily been tested using EEG collected with a Biosemi ActiveTwo System, along with a smaller amount of testing using EEG collected with Neuroscan and EGI systems. Consequently, you should be particularly careful when using this version of ERPLAB with data collected with systems other than the Biosemi ActiveTwo.</p>
+<p class="paragraph">ERPLAB Toolbox is in a period of rapid development. Some features are present in this version that have not yet been documented, and some features may have changed since this document was released. In addition, some of the screen shots shown in this document may reflect previous versions and may not conform with the text.  The documentation, like the software, is a work in progress.</p>
+<p class="paragraph">The goal of this tutorial is to provide step-by-step instructions for the processing of a typical data set.  For an overview of ERPLAB Toolbox and detailed information about each specific function, see the ERPLAB User's Manual. A <em>Frequently Asked Questions</em> document is also available.  All documentation is available at <a href="http://erpinfo.org/erplab/erplab-documentation">http://erpinfo.org/erplab/erplab-documentation</a>. </p>
+<p class="paragraph">We have set up three web-based discussion groups.  One is designed for people to ask questions and give and receive advice about how to use ERPLAB Toolbox.  Another is designed for reporting bugs and describing work-arounds.  The third is designed to give users the opportunity to make suggestions about modifications and new features.  They can be accessed at <a href="http://erpinfo.org/erplab/erplab-discussion/erplab-discussion-forum/">http://erpinfo.org/erplab/erplab-discussion/erplab-discussion-forum/</a> (you will need to join the erpinfo.org web site to access these discussion groups).  There is also an email list, <a href="mailto:erplab@erpinfo.org">erplab@erpinfo.org</a>, that you can use to send questions and announcements to the community of ERPLAB users.  If you would like to join this list, you should go to <a href="http://mail01.cmb.ucdavis.edu/mailman/listinfo/erplab">http://mail01.cmb.ucdavis.edu/mailman/listinfo/erplab</a>.  To communicate privately with the developers, send an email to <a href="mailto:erplabtoolbox@gmail.com">erplabtoolbox@gmail.com</a>. </p>
+<p class="paragraph">Please keep in mind that this is <strong>FREE</strong> software, and we do not have the resources to provide the level of support that commercial software vendors can provide. </p>
+<hr>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; ; font-family: 'Arial Bold'; font-size: 16pt;">Table of Contents</p>
+<p class="MsoToc1"><a href="Overview.html">Overview and Scripting</a></p>
+<p class="MsoToc1"><a href="Getting_Started.html">Getting Started</a></p>
+<p class="MsoToc1"><a href="Example_Experiment.html">Brief Description of the Example Experiment</a></p>
+<p class="MsoToc1"><a href="ChanLocations.html">Adding Channel Locations to your Dataset</a></p>
+<p class="MsoToc1"><a href="Background.html">Background Concepts: Datasets, ERPsets, and bins</a></p>
+<p class="MsoToc1"><a href="Create_Eventlist.html">Creating an EventList</a></p>
+<p class="MsoToc1"><a href="Bin_Epoch.html">Creating Bin-Based EEG Epochs</a></p>
+<p class="MsoToc1"><a href="Artifact_Detection.html">Artifact Detection</a></p>
+<p class="MsoToc1"><a href="averaging.html">Creating Averaged ERPs</a></p>
+<p class="MsoToc1"><a href="Plotting.html">Plotting Averaged ERP Waveforms</a></p>
+<p class="MsoToc1"><a href="Filtering.html">Filtering EEG and ERPs</a></p>
+<p class="MsoToc1"><a href="Bin_Operations.html">Combining ERP Waveforms with Bin Operations</a></p>
+<p class="MsoToc1"><a href="Channel_Operations.html">Creating and Modifying Channels with Channel Operations</a></p>
+<p class="MsoToc1"><a href="Binlister.html">Assigning Events to Bins with BINLISTER</a></p>
+<p class="MsoToc1"><a href="Measurement_Tool.html">Measuring amplitudes and latencies with the ERP Measurement Tool</a></p>
+<p class="MsoToc1"><a href="Rejection_Plus_Correction.html">Exporting and Importing EventLists to Combine Artifact Rejection and Artifact Correction</a></p>
+</body>
+</html>

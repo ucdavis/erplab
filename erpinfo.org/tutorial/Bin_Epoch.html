@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Creating Bin-Based EEG Epochs</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+table.MsoNormalTable {
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">The next step after creating the EventList is usually to sort the events into different bins (in preparation for averaging).  However, we already did this by assigning bins for the rare and frequent stimuli when we created the EventList.  </p>
+<p class="paragraph">Once the events have been assigned to bins, the next step is to divide the continuous EEG into a set of fixed-length <em>epochs</em> (also known as <em>segments</em>), each of which is time-locked to an event that has been assigned to a bin.  In the present example, we will extract the EEG during a period that begins 200 ms prior to the onset of a stimulus and ends at 800 ms.  This will be done for each event code that has been assigned to a bin (which is, in the present example, the frequent letters and rare digits, not the responses).  Note that EEGLAB has an epoching function (<strong>Tools &gt; Extract epochs</strong>); you should not use this function if you are using the ERPLAB functions for processing the epochs (e.g., averaging, plotting, etc.).  Instead, you should use <strong>ERPLAB &gt; Extract Bin-based Epochs</strong>.  If you select this function, you will see the following window: </p>
+<p><img src="images/epoch.jpg" alt="epoch" width="345" height="245" /></p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Create Bin-Based EEG Epochs</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Extracts bin-based epoch from -200 ms to +800 ms</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">% 'pre' means use the prestimulus period for baseline correction</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">% Use 'post' to use the poststimulus period for baseline correction</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">% Use 'all' to use the poststimulus period for baseline correction</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">% Use two numbers in quotes (e.g., '-150 +50') to specify a custom interval for baseline correction</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_epochbin( EEG , [-200.0  800.0],  </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">This window allows you to select the time period for the epoch (relative to the event code).  <strong>Baseline correction</strong> will be enabled by default, and you will almost always want to do this.  The prestimulus period (<strong>Pre</strong>) is usually the period used for baseline correction.  That is, the average voltage during the prestimulus period for a given trial is subtracted from every point in the epoch (separately for each channel).  Alternatively, you can use the poststimulus interval (<strong>Post</strong>), the entire interval (<strong>Whole</strong>), or some time range of your choice (<strong>Custom</strong>).  For this example, you should leave it as <strong>Pre</strong>.  Click <strong>RUN</strong>, and it will create a new dataset with the epoched data (it will take a few seconds).  The standard window for saving a new dataset will appear; you can just click <strong>Ok</strong> and it will name the new dataset &quot;S1_EEG_elist_be&quot; (&quot;be&quot; stands for bin-epoched).  However, you should save the dataset to a file on your hard drive, because it will be needed for completing the section on <a href="#_Exporting_and_Importing">combining artifact rejection and artifact correction</a>.  You can always do this later by selecting the appropriate dataset in the <strong>Datasets</strong> menu and then selecting <strong>File &gt; Save current dataset(s)</strong> or <strong>File &gt; Save current dataset as</strong>.</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Saving after Epoching</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Setname is S1_EEG_elist_be</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Filename is S1_EEG_elist_be.set</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG.setname=</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_elist_be'</span><span style="font-size:11.0pt; color:black; ">; </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG=pop_saveset(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_elist_be.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,…</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG.setname=</span><span style="font-size:11.0pt; color:#A020F0; ">'S1_EEG_elist_be'</span><span style="font-size:11.0pt; color:black; ">; </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; ">EEG=pop_saveset(EEG,<span style="color:#A020F0; "> 'filename', 'S1_EEG_elist_be.set')</span>;</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; ">&nbsp;</span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">Make sure that this new dataset is the active dataset (by looking in the <strong>Datasets</strong> menu) and then select <strong>Plot &gt; Channel data (scroll)</strong>.  The following screen shows what it should look like.  It looks like you still have continuous EEG data, but if you look more closely you will see a vertical dashed line 800 ms after (and 200 ms before) each event.  This dashed line marks the end of one epoch and the beginning of the next.  If you find this disconcerting, you can simply change <strong>Settings &gt; Time range to display</strong> to a period of 1 second (in the plotting window).</p>
+<p class="paragraph"><em>Hint: EEGLAB routines typically ask you to enter time information in seconds, whereas ERPLAB routines typically ask for milliseconds. </em></p>
+<p><img src="images/eeg5.jpg" alt="eeg5" width="722" height="423" /></p>
+<p class="paragraph">Because the epoch length in this experiment is shorter than the interval between consecutive stimuli, the epoched data will now be missing a period of time between the end of one epoch and the beginning of the next epoch.  If, however, we used a 2000-ms epoch length, the last part of one epoch would contain the same EEG data as the beginning part of the next epoch.</p>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Create_Eventlist.html">&lt;&lt;Create Eventlist</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Artifact_Detection.html">Artifact Detection&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

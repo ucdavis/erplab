@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Saving and Loading ERPsets</title>
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.Note {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+font-style:italic;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+.tablesl {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.tablesl {
+	font-size: 12px;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.CommandWindowText {
+margin:0in;
+margin-bottom:.0001pt;
+text-align:justify;
+font-size:9.0pt;
+font-family:Courier;
+}
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">Each process that creates a new ERPset gives you the opportunity to save the ERPset in a file.  You can also save an ERPset in a file at any time by making sure it is the active ERPset in the <strong>ERPsets</strong> menu and then selecting <strong>ERPLAB &gt; Save Current ERPset</strong>.  If you would like to change the name of the current ERPset (i.e., the name shown in the ERPsets menu, which is not necessarily the same as the filename), you can select <strong>ERPLAB &gt; Save Current ERPset</strong> or <strong>ERPLAB &gt; Save Current ERPset As</strong>.  To read in an ERPset that was previously saved to disk, you can select <strong>ERPLAB &gt; Load Existing ERPset</strong>.  The newly loaded ERPset will then become the active ERPset.</p>
+<p class="paragraph">We recommend that you use a suffix of <strong>.erp</strong> for your saved ERPsets (but they are actually in .mat format).</p>
+<p class="paragraph">You can use <strong>ERPLAB &gt; Duplicate or Rename ERPset</strong> to change the name of an ERPset (e.g., the name that appears in the <strong>ERPsets</strong> menu) or make a duplicate of an ERPset.  You can also save the new ERPset as a file.  Imagine, for example, that you have 3 ERPsets loaded in the <strong>ERPsets</strong> menu, and ERPset #1 is the active ERPset (which means that it has a check mark next to it in the <strong>ERPsets</strong> menu).  If the name of this ERPset is &quot;S1_ERPs_30Hz&quot;, the window for <strong>ERPLAB &gt; Duplicate or Rename ERPset</strong> would look like the following screenshot.  If you wanted to change the name of this ERPset without creating a new ERPset, you would change the text in the <strong>erpname</strong> box, selected <strong>Overwrite in memory erpset #1</strong>, and click <strong>OK</strong>.  If you want to save this ERPset to disk, you would also select <strong>Save ERP as</strong> and fill in the name of the file in the text box prior to clicking <strong>OK</strong>.  If you want to make a duplicate of ERPset #1, you would select <strong>Create a new erpset # 4</strong>, enter a new name for the new ERPset (if desired), and click <strong>OK</strong>.  If you wanted to save the duplicate ERPset to disk, you would click <strong>Save ERP as</strong> and fill in the filename prior to clicking <strong>OK</strong>.</p>
+<p><img src="images/Save_GUI.jpg" alt="Save_GUI" width="435" height="315" /></p>
+<p class="paragraph">You can use the <strong>ERPLAB &gt; Clear ERPset(s)</strong> routine to remove one or more ERPsets from the list shown in the <strong>ERPsets</strong> menu.  This routine will pop up a window in which you can list the ERPsets to be cleared.  For example, to clear ERPsets 2, 4, and 7-9, you would type <strong>2 4 7:9</strong> or <strong>2 4 7 8 9</strong> in this window.  This does not delete the files (if any) associated with the ERPsets; it simply clears them from memory.</p>
+<p class="paragraph">To export an ERPset as a text file, you can select either <strong>ERPLAB &gt; Export ERP &gt; Export ERP to Text (Readable by ERPSS)</strong> or <strong>ERPLAB &gt; Export ERP &gt; Export ERP to Text (Universal)</strong>.  The ERPSS version creates a text file in an ERPSS-compatible format in which all bins are stored in a single file.  The Universal version creates a separate file for each bin using the GUI shown below.  You can select which bin or bins to export.  If you select multiple bins, the name of each bin is inserted into the filename for that bin.  You can choose whether the rows are the time points and the columns are the channels or vice versa.  You can also choose whether to include a label for each electrode site and/or a label for each time point.</p>
+<p><img src="images/Export_GUI.jpg" alt="Export_GUI" width="471" height="376" /></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Topographic_Mapping.html">&lt;&lt;Topographic Mapping</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><p><a href="Appending_ERPsets.html">Appending </a><a href="Appending_ERPsets.html"> ERPsets&gt;&gt;</a></p></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Example 4: A Complete Data Processing Script</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+text-align:justify;
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph"><em>Note: A complete version of this script is available in <strong>Test_Data &gt; Script_Examples &gt; Script4.m</strong>.  There is also a script named <strong>Script4_cleanup.m</strong>, which you can use to delete the files created by this script.</em></p>
+<p class="paragraph">Our next example is a more sophisticated and complete script for processing.  The script has plenty of internal documentation, so we won't explain it line by line here.  </p>
+<p class="paragraph">A key difference between this script and the previous scripts is that the previous scripts were designed to make it easy to look at the data from each step with the EEGLAB GUI. This was accomplished by updating the ALLEEG and ALLERP structures at each step. This is useful when you are first learning about scripting. However, once you have the hang of it, it's easier (and requires less memory) to just do everything in the script. At the end, you can look at the EEG with the pop_eegplot() and pop_ploterp() commands (which you can invoked in the command window).</p>
+<p class="paragraph">Here's what the new script looks like:</p>
+<p class="LiteralText">% Clear memory and the command window</p>
+<p class="LiteralText"><span style="color:black; ">clear</span></p>
+<p class="LiteralText"><span style="color:black; ">clc</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText">% This defines the set of subjects</p>
+<p class="LiteralText"><span style="color:black; ">subject_list = {</span><span style="color:#A020F0; ">'S1'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">'S2'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">'S3'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">'S4'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">'S5'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">'S6'</span><span style="color:black; ">};</span></p>
+<p class="LiteralText"><span style="color:black; ">nsubj = length(subject_list); </span>% number of subjects</p>
+<p class="LiteralText"> </p>
+<p class="LiteralText">% Path to the parent folder, which contains the data folders for all subjects</p>
+<p class="LiteralText"><span style="color:black; ">home_path  = </span><span style="color:#A020F0; ">'/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/'</span><span style="color:black; ">;</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText">% Set the save_everything variable to 1 to save all of the intermediate files to the hard drive</p>
+<p class="LiteralText">% Set to 0 to save only the initial and final dataset and ERPset for each subject</p>
+<p class="LiteralText"><span style="color:black; ">save_everything  = 0;</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText">% Loop through all subjects</p>
+<p class="LiteralText"><span style="color:blue; ">for</span><span style="color:black; "> s=1:nsubj</span></p>
+<p class="LiteralText"><span style="color:black; ">    </span></p>
+<p class="LiteralText"><span style="color:black; ">    fprintf(</span><span style="color:#A020F0; ">'\n******\nProcessing subject %s\n******\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">    </span>% Path to the folder containing the current subject's data</p>
+<p class="LiteralText"><span style="color:black; ">    data_path  = [home_path subject_list{s} </span><span style="color:#A020F0; ">'/'</span><span style="color:black; ">];</span></p>
+<p class="LiteralText"><span style="color:black; ">    </span></p>
+<p class="LiteralText"><span style="color:black; ">    </span>% Make sure that we start fresh for each subject with the EEG and ERP structures</p>
+<p class="LiteralText"><span style="color:black; ">    clear </span><span style="color:#A020F0; ">EEG</span><span style="color:black; ">;</span></p>
+<p class="LiteralText"><span style="color:black; ">    clear </span><span style="color:#A020F0; ">ERP</span><span style="color:black; ">;</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">    </span>% Check to make sure the dataset file exists</p>
+<p class="LiteralText"><span style="color:black; ">    </span>% Initial filename = path plus Subject# plus _EEG.set</p>
+<p class="LiteralText"><span style="color:black; ">    sname = [data_path subject_list{s} </span><span style="color:#A020F0; ">'_EEG.set'</span><span style="color:black; ">];</span></p>
+<p class="LiteralText"><span style="color:black; ">    </span><span style="color:blue; ">if</span><span style="color:black; "> exist(sname, </span><span style="color:#A020F0; ">'file'</span><span style="color:black; ">)&lt;=0</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span></p>
+<p class="LiteralText"><span style="color:black; ">            fprintf(</span><span style="color:#A020F0; ">'\n *** WARNING: %s does not exist *** \n'</span><span style="color:black; ">, sname);</span></p>
+<p class="LiteralText"><span style="color:black; ">            fprintf(</span><span style="color:#A020F0; ">'\n *** Skip all processing for this subject *** \n\n'</span><span style="color:black; ">);</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">    </span><span style="color:blue; ">else</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Load original dataset</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Loading dataset ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_loadset(</span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [subject_list{s} </span><span style="color:#A020F0; ">'_EEG.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
+<p class="LiteralText"><span style="color:black; ">&nbsp;</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Add the channel locations</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% We're assuming the file 'standard-10-5-cap385.elp'is somewhere</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% in the path.  This can be copied from</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% plugins/dipfit2.2/standard_BESA/ inside the eeglab</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% folder.</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Adding channel location info ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_chanedit(EEG, </span><span style="color:#A020F0; ">'lookup'</span><span style="color:black; ">,</span><span style="color:#A020F0; ">'standard-10-5-cap385.elp'</span><span style="color:black; ">);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Save dataset with _Chan suffix instead of _EEG</p>
+<p class="LiteralText"><span style="color:black; ">        EEG.setname = [subject_list{s} </span><span style="color:#A020F0; ">'_Chan'</span><span style="color:black; ">]; </span>% name for the dataset menu</p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything)</span></p>
+<p class="LiteralText"><span style="color:black; ">            EEG = pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Create EVENTLIST and save (pop_editeventlist adds _elist suffix)</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Creating eventlist ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_editeventlist(EEG, </span><span style="color:#A020F0; ">'event_mapping_1.txt'</span><span style="color:black; ">, [data_path subject_list{s} </span><span style="color:#A020F0; ">'_eventlist.txt'</span><span style="color:black; ">], {</span><span style="color:#A020F0; ">'boundary'</span><span style="color:black; ">}, {-99});</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Copy event labels into the EEG structure</p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_overwritevent( EEG, </span><span style="color:#A020F0; ">'codelabel'</span><span style="color:black; ">);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%EEG.setname = [EEG.setname '_elist']; % name for the dataset menu</p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            EEG = pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% High-pass filter the EEG</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Channels = 1 to 16; High-pass cutoff at 0.1 Hz;</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% No lowpass filter; Order of the filter = 2.</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Type of filter = &quot;Butterworth&quot;; Remove DC offset; Filter</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% &quot;between&quot; boundary codes</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: High-pass filtering EEG at 0.1 Hz ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_basicfilter( EEG,  1:16, 0.1, 0, 2, </span><span style="color:#A020F0; ">'butter'</span><span style="color:black; ">, 1, </span><span style="color:#A020F0; ">'boundary'</span><span style="color:black; "> );</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG.setname = [EEG.setname </span><span style="color:#A020F0; ">'_hpfilt'</span><span style="color:black; ">];</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            EEG= pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);               </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Use Channel operations to insert a bipolar EOG channel</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% and re-reference to the average of the earlobes</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Equations are stored in 'chanops_reref_biveog.txt', which</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% must be in the home directory for the experiment.</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Save output with _ref suffix.</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_eegchanoperator(EEG, [home_path </span><span style="color:#A020F0; ">'chanops_reref_biveog.txt'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG.setname = [EEG.setname </span><span style="color:#A020F0; ">'_ref'</span><span style="color:black; ">];</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            EEG= pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Use Binlister to sort the bins and save with _bins suffix</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% We are assuming that 'binlister_demo_1.txt' contains the</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% bin descriptors and is present in the same folder as the</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% data</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Running BinLister ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_binlister( EEG,</span><span style="color:#A020F0; ">'binlister_demo_1.txt'</span><span style="color:black; ">,</span><span style="color:#A020F0; ">'no'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">''</span><span style="color:black; ">, 0, [], [], 0, 2, 0);</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG.setname = [EEG.setname </span><span style="color:#A020F0; ">'_bins'</span><span style="color:black; ">];</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            EEG= pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Extracts bin-based epochs (200 ms pre-stim, 800 ms post-stim. Baseline correction by pre-stim window)</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Then save with _be suffix</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Bin-based epoching ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_epochbin( EEG , [-200.0  800.0],  </span><span style="color:#A020F0; ">'pre'</span><span style="color:black; ">);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%EEG.setname= [EEG.setname '_be'];</p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            EEG = pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path); </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Two rounds of artifact detection, then export eventlist just for fun</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Artifact detection (moving window peak-to-peak and step function) ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Artifact detection. Moving window. Test window = [-200</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% 798]; Threshold = 100 uV; Window width = 200 ms;</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Window step = 50 ms; Channels = 1 to 17; Flags to be activated = 1 &amp; 4</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:17,  [1,4]);</span></p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Artifact detection. Step-like artifacts in the bipolar</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% VEOG channel (channel 14, created earlier with Channel Operations)</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Threshold = 30 uV; Window width = 400 ms;</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Window step = 10 ms; Flags to be activated = 1 &amp; 3</p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_artstep( EEG, [-200  798], 30, 400, 10,  14, [ 1 3]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%EEG.setname= [EEG.setname '_ar'];</p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_exporteegeventlist(EEG, [data_path subject_list{s} </span><span style="color:#A020F0; ">'_eventlist_ar.txt'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"> </p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Averaging. Single epoched EEG. Only good trials.</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Averaging ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
+<p class="LiteralText"><span style="color:black; ">        ERP = pop_averager( EEG, 1, 1, 0);</span></p>
+<p class="LiteralText"><span style="color:black; ">        erpname = [subject_list{s} </span><span style="color:#A020F0; ">'_ERPs'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
+<p class="LiteralText"><span style="color:black; ">        fname_erp = fullfile(data_path, [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Filtering ERP. Channels = 1 to 17; No high-pass;</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Lowpass cutoff at 30 Hz; Order of the filter = 2.</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Type of filter = &quot;Butterworth&quot;; Do not remove DC offset</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Low-pass filtering ERP at 30 Hz ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
+<p class="LiteralText"><span style="color:black; ">        ERP = pop_filterp(ERP, 1:17, 0, 30, 2, </span><span style="color:#A020F0; ">'butter'</span><span style="color:black; ">, 0);</span></p>
+<p class="LiteralText"><span style="color:black; ">        erpname = [erpname </span><span style="color:#A020F0; ">'_30Hz'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
+<p class="LiteralText"><span style="color:black; ">        fname_erp = fullfile(data_path, [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:blue; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Bin Operations. Create a difference wave and save with _diff suffix</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Do this on the unfiltered data, so first reload unfiltered file</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Then do a second round of bin operations and save with _plus suffix</p>
+<p class="LiteralText"><span style="color:black; ">        </span>%</p>
+<p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Bin Operations (two passes) ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
+<p class="LiteralText"><span style="color:black; ">        erpname = [subject_list{s} </span><span style="color:#A020F0; ">'_ERPs'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
+<p class="LiteralText"><span style="color:black; ">        ERP = pop_loaderp([erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">], data_path); </span>% Load the file</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Now make the difference wave, directly specifying the</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% equation that modifies the existing ERPset</p>
+<p class="LiteralText"><span style="color:black; ">        ERP = pop_binoperator( ERP, {</span><span style="color:#A020F0; ">'b3= b2-b1 label Rare minus Frequent difference wave'</span><span style="color:black; "> });</span></p>
+<p class="LiteralText"><span style="color:black; ">        erpname = [erpname </span><span style="color:#A020F0; ">'_diff'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
+<p class="LiteralText"><span style="color:black; ">        fname_erp = fullfile(data_path, [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
+<p class="LiteralText"><span style="color:black; ">            pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
+<p class="LiteralText"><span style="color:black; ">        </span>% Now we will do bin operations using a set of equations</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% stored in the file 'bin_equations.txt', which must be in</p>
+<p class="LiteralText"><span style="color:black; ">        </span>% the home folder for the experiment</p>
+<p class="LiteralText"><span style="color:black; ">        ERP = pop_binoperator( ERP, [home_path </span><span style="color:#A020F0; ">'bin_equations.txt'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        erpname = [erpname </span><span style="color:#A020F0; ">'_plus'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
+<p class="LiteralText"><span style="color:black; ">        fname_erp = fullfile(data_path, [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">]);</span></p>
+<p class="LiteralText"><span style="color:black; ">        pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; "> </span></p>
+<p class="LiteralText"><span style="color:black; ">    </span><span style="color:blue; ">end</span><span style="color:black; "> </span>% end of the &quot;if/else&quot; statement that makes sure the file exists</p>
+<p class="LiteralText"><span style="color:black; ">        </span></p>
+<p class="LiteralText"><span style="color:blue; ">end</span><span style="color:black; "> </span>% end of looping through all subjects</p>
+<p class="LiteralText"> </p>
+<p class="LiteralText"> </p>
+<p class="LiteralText"><span style="color:black; ">fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** FINISHED ****\n\n\n'</span><span style="color:black; ">);</span></p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Example3c.html">&lt;&lt;Example 3c</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Debugging.html">Debugging&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

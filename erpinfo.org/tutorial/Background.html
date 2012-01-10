@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Background Concepts: Datasets, ERPsets, and bins</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+table.MsoNormalTable {
+font-size:11.0pt;
+font-family:Cambria;
+}
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">There are a few key concepts you need to understand before we go any further.  EEGLAB stores a set of EEG data in something called a <em>dataset</em>.  A dataset typically stores the data from a single subject, either a single block of trials or an entire session.  A dataset is maintained in memory inside EEGLAB, and it can also be saved on disk.  Whenever you run a routine that changes the data in a dataset, a new dataset is created.  You can see the currently available datasets in the <strong>Datasets</strong> menu.  One dataset is currently active, and any routines that you run will typically be applied to the current dataset.  When a new dataset is created, it becomes the current dataset, but you can make a different dataset active by selecting it in the <strong>Datasets</strong> menu.  This provides a very convenient workflow. </p>
+<p class="paragraph">ERPLAB defines an analogous structure called an <em>ERPset</em>, which stores a set of ERP waveforms.  They can be active inside ERPLAB and/or saved to disk.  The <strong>ERPsets</strong> menu can be used to see which ERPsets are currently loaded into ERPLAB and to change which ERPset is active. </p>
+<p class="paragraph">A <em>bin</em> is a set of averaged ERP waveforms, one for each electrode site, which were created by averaging together a specific set of EEG epochs.  A simple oddball experiment, for example, might have one bin for the infrequent targets and another bin for the frequent standards.  However, a sophisticated experiment might have dozens of different bins, with a given bin being something like &quot;Digits preceded by letters followed by a correct response between 200 and 1000 ms, in a condition in which digits are rare and letters are frequent.&quot; In many ERP analysis systems, a bin would be equivalent to a single averaged ERP file.  However, this can lead to a huge number of different files for each subject, making it difficult to keep track of everything. In ERPLAB, an ERPset can contain an unlimited number of bins), and each data processing operation is typically applied to all of the bins in the currently active ERPset.  This saves time and reduces errors. </p>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="ChanLocations.html">&lt;&lt;Adding Channel Locations</a><a href="Getting_Started.html"></a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Create_Eventlist.html">Create Eventlist&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

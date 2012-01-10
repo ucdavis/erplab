@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Measuring amplitudes and latencies with the ERP Measurement Tool</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+table.MsoNormalTable {
+font-size:10.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.CommandWindowText {
+margin:0in;
+margin-bottom:.0001pt;
+text-align:justify;
+font-size:9.0pt;
+font-family:Courier;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+.excel1 {
+padding-top:1px;
+padding-right:1px;
+padding-left:1px;
+color:black;
+font-size:12.0pt;
+font-weight:400;
+font-style:normal;
+text-decoration:none;
+font-family:Calibri, sans-serif;
+text-align:general;
+vertical-align:bottom;
+border:none;
+white-space:nowrap;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+.excel2 {
+padding-top:1px;
+padding-right:1px;
+padding-left:1px;
+color:black;
+font-size:12.0pt;
+font-weight:400;
+font-style:normal;
+text-decoration:none;
+font-family:Calibri, sans-serif;
+text-align:general;
+vertical-align:bottom;
+border:none;
+white-space:nowrap;
+}
+.excel3 {
+padding-top:1px;
+padding-right:1px;
+padding-left:1px;
+color:black;
+font-size:12.0pt;
+font-weight:400;
+font-style:normal;
+text-decoration:none;
+font-family:Calibri, sans-serif;
+text-align:left;
+vertical-align:bottom;
+border:none;
+white-space:nowrap;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">In this section, we will describe how to measure amplitudes and latencies.  First, use ERPLAB&gt;Load existing ERPset to load the file S1_ERPs_diff.erp (or select it from the ERPsets menu if it is already loaded), which was created in the Bin Operations example.  In the examples here, we will focus on the Fz, Cz, and Pz electrodes.  The waveforms are shown below (rare, frequent, and rare-minus-frequent difference wave).</p>
+<p><img src="images/ploterps9.jpg" alt="ploterps9" width="780" height="293" /></p>
+<p class="paragraph">Now select <strong>ERPLAB&gt; ERP Measurement Tool</strong>, which will launch the window shown in the next screenshot.</p>
+<p><img src="images/measurement_gui.jpg" alt="measurement_gui" width="780" height="476" /></p>
+<p class="paragraph">When analyzing the data from multiple subjects, you will typically use the large white panel at the left of the window to list the filenames of the ERPsets for each subject.  If all the ERPsets have been loaded into ERPLAB, you can instead select <strong>From ERPset Menu</strong> in the upper left of the window and type the ERPset numbers into the adjacent text box.  For this simple example, we will just measure the values in a single ERPset (S1_ERPs_diff, which you have already loaded).  Type the ERPset number of this ERPset into the text box.  You can see which ERPset number it is by looking at the ERPsets menu.  It is ERPset 3 in the screenshot below, but this might be different for you, so use whatever ERPset number is shown for S1_ERPs_diff in your ERPsets menu.</p>
+<p><img src="images/erpsets3.jpg" alt="erpsets3" width="217" height="111" /></p>
+<h1 align="left" style="margin-left:.55in;text-align:left;text-indent:-.55in;">Measuring mean amplitude over a latency range</h1>
+<p class="paragraph">In our first example, we will measure the amplitude of the P3 wave from channels 11-13 (Fz, Cz, Pz) for the rare and frequent stimuli by assessing the mean voltage from 400–700 ms, using the prestimulus interval as the baseline period.  To do this, set up the window as shown in the screenshot above.</p>
+<p class="paragraph"><em>Hint: The baseline voltage is subtracted from the voltage during the measurement window, so any noise or consistent voltages in the baseline interval will contribute to your measurement.  Even if you select &quot;None&quot; for the baseline period, the baseline correction that you did earlier will have the effect of subtracting the baseline voltage from every point in the waveform, so you cannot escape the fact that the baseline will contribute to your amplitude measures.  Because we baselined the data to the prestimulus interval when the data were epoched, it is redundant to select another baseline during measurement.  However, we recommend that you do so anyway, because this will help you to remember that you are always subtracting the baseline voltage, whether explicitly or implicitly.</em></p>
+<p class="paragraph">Note that we have told the Measurement Tool to save the output file as &quot;measures.txt&quot; using <strong>One measurement per line (long format)</strong>.  If you click <strong>RUN</strong>, it will create this file.  You can open this file in a text editor.</p>
+<p class="paragraph">Hint: Most ERPLAB functions that create text files put a link in the Matlab command window (as shown in the next screenshot), and you can simply click this link to open the file.  </p>
+<p><img src="images/measures.jpg" alt="measures" width="622" height="65" /> </p>
+<p class="paragraph">If you open the file, it will look something like this:</p>
+<table cellspacing="0" cellpadding="0" class="excel1">
+  <col width="65" span="5" style="width:65pt;" />
+  <tr style="height:15.0pt;">
+    <td width="65" style="height:15.0pt;width:65pt;">ERPset </td>
+    <td width="65" style="width:65pt;">bin   </td>
+    <td width="65" style="width:65pt;">chindex </td>
+    <td width="65" style="width:65pt;">chlabel      </td>
+    <td width="65" style="width:65pt;">value</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff </td>
+    <td>Frequent_Category_(Digit)  </td>
+    <td align="right">11</td>
+    <td>FZ       </td>
+    <td align="right">1.08</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff        </td>
+    <td>Frequent_Category_(Digit)  </td>
+    <td align="right">12</td>
+    <td>CZ       </td>
+    <td align="right">2.67</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff       </td>
+    <td>Frequent_Category_(Digit)    </td>
+    <td align="right">13</td>
+    <td>PZ       </td>
+    <td align="right">2.08</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff      </td>
+    <td>Rare_Category_(Letter)     </td>
+    <td align="right">11</td>
+    <td>FZ       </td>
+    <td align="right">2.18</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff   </td>
+    <td>Rare_Category_(Letter)     </td>
+    <td align="right">12</td>
+    <td>CZ       </td>
+    <td align="right">7.42</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff    </td>
+    <td>Rare_Category_(Letter)       </td>
+    <td align="right">13</td>
+    <td>PZ       </td>
+    <td align="right">6.04</td>
+  </tr>
+</table>
+<p class="LiteralText">                                   </p>
+<p class="paragraph">You can see that the voltage was larger for the rare stimuli than for the frequent stimuli, especially at the Cz and Pz electrode sites, which is the expected pattern for the P3 wave.</p>
+<p class="paragraph">Note that the labels don't always line up nicely with the columns of values.  This is because tabs are used between each column, and this doesn't look nice with standard tab width unless the labels are very short.  However, the file will look great if you open it in Excel.</p>
+<p class="paragraph">This &quot;long&quot; format looks nice and works well with Excel PivotTables.  However, most statistical programs want the file to have all the values for a single subject on one line.  The <strong>One ERPset per line (wide format)</strong> can be used for this purpose.</p>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 6.0pt;padding:1.0pt 4.0pt 0in 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command: </strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Mean amplitude between two fixed latencies </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is/Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Bin [1 2], Chan 11:13, between latencies 400:700, prebaseline, precision 2</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save output file as measures.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">[Amp Lat] = pop_geterpvalues( ALLERP, [ 400 700], [ 1 2],11:13 , </span><span style="font-size:11.0pt; color:#A020F0; ">'Baseline'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Binlabel'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Erpsets'</span><span style="font-size:11.0pt; color:black; ">,3, </span><span style="font-size:11.0pt; color:#A020F0; ">'Filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/measures.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Foutput'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measurement'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Fracreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'NaN'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'IncludeLat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Measure'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'meanbl'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Resolution'</span><span style="font-size:11.0pt; color:black; ">,2, </span><span style="font-size:11.0pt; color:#A020F0; ">'Warning'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; "> );                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's Current Folder</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">[Amp Lat] = pop_geterpvalues( ALLERP, [ 400 700], [ 1 2],11:13 , </span><span style="font-size:11.0pt; color:#A020F0; ">'Baseline'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Binlabel'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Erpsets'</span><span style="font-size:11.0pt; color:black; ">,3, </span><span style="font-size:11.0pt; color:#A020F0; ">'Filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measures.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Foutput'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measurement'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Fracreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'NaN'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'IncludeLat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Measure'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'meanbl'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Resolution'</span><span style="font-size:11.0pt; color:black; ">,2, </span><span style="font-size:11.0pt; color:#A020F0; ">'Warning'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; "> );                              </span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<h2 align="left" style="margin-left:.55in;text-align:left;text-indent:-.55in;">Measuring integral/area over a latency range</h2>
+<p class="paragraph">We will now try measuring the area under the curve rather than the mean amplitude.  Launch the ERP Measurement Tool again and select <strong>Numerical integration/Area between two fixed latencies</strong> in the popup menu at the top right of the Measurement Tool window.  You will then see another popup menu below that contains several different variants of area.  If you select <strong>Numerical integration</strong>, the Measurement Tool will compute the integral in the measurement interval.  Specifically, it will sum together the voltages for every point during the measurement interval and then multiply by the duration of the interval (in seconds).  With this approach, negative voltages in one portion of the measurement interval will cancel positive voltages at other portions.  This will be very much like the mean voltage, except that mean voltage divides by the number of samples in the measurement window to provide the average voltage at any given point in the measurement window.  Thus, for any given measurement window, the mean voltage and the integral are perfectly correlated with each other.</p>
+<p class="paragraph">Although <em>area</em> and <em>integral</em> seem like they would be the same, they are technically different from each other.  For an area measure, you need to think of the waveform being combined with the zero-voltage baseline to form a set of polygons, one for each set of consecutive points with the same polarity.  Consider, for example, the difference wave at Fz (see screenshot below).  There would be one polygon from -200 ms to approximately -110 ms, another polygon from approximately -110 to +60 ms, another from approximately +60 to +130 ms, etc.  Each one of these regions has a positive area, irrespective of the polarity of the waveform during the time period of the region.  Thus, an area measure will sum together the areas of the individual polygons, ignoring the polarity of the waveform used to create each polygon.  This is equivalent to <em>rectifying</em> the waveform (turning every negative value into a positive value) and then computing the integral over the measurement window.  If you select <strong>Rectified area (negative becomes positive)</strong>, this is how the Measurement Tool will compute the area. Rectified area might be useful if, for example, the waveform contained an oscillation that went both above and below the baseline and you wanted to measure the strength of the oscillation.</p>
+<p class="LiteralText"><img src="images/Fz.jpg" alt="Fz" width="461" height="268" /></p>
+<p class="paragraph">In other cases, you may want to measure the area only for the positive portion of the waveform.  For example, take a look at the difference wave from Pz in the screenshot below.  To measure the P2 wave from 150–300 ms, you might want to exclude the small negative deflection from~150-170 ms.  </p>
+<p class="LiteralText"><img src="images/Pz.jpg" alt="Pz" width="465" height="272" /></p>
+<p class="paragraph">To do this, select <strong>Area for positive waveforms (negative values will be zeroed)</strong> and a measurement window of 150-300 ms, as shown in the screenshot below.  Try this and see what you get.  You should get the values shown below.</p>
+<p><img src="images/measurement_gui2.jpg" alt="measurement_gui2" width="780" height="475" /></p>
+<table cellspacing="0" cellpadding="0" class="excel2">
+  <col width="101" style="width:101pt;" />
+  <col width="149" style="width:149pt;" />
+  <col width="65" span="3" style="width:65pt;" />
+  <tr style="height:15.0pt;">
+    <td width="101" style="height:15.0pt;width:101pt;">ERPset   </td>
+    <td width="149" style="width:149pt;">bin   </td>
+    <td class="excel3" width="65" style="width:65pt;">chindex </td>
+    <td class="excel3" width="65" style="width:65pt;">chlabel      </td>
+    <td class="excel3" width="65" style="width:65pt;">value</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff </td>
+    <td>Frequent_Category_(Digit)   </td>
+    <td class="excel3">11</td>
+    <td class="excel3">FZ       </td>
+    <td class="excel3">0.4</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff  </td>
+    <td>Frequent_Category_(Digit)    </td>
+    <td class="excel3">12</td>
+    <td class="excel3">CZ      </td>
+    <td class="excel3">0.25</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff   </td>
+    <td>Frequent_Category_(Digit)  </td>
+    <td class="excel3">13</td>
+    <td class="excel3">PZ       </td>
+    <td class="excel3">0.06</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff    </td>
+    <td>Rare_Category_(Letter)</td>
+    <td class="excel3">11</td>
+    <td class="excel3">FZ       </td>
+    <td class="excel3">0.69</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff  </td>
+    <td>Rare_Category_(Letter)</td>
+    <td class="excel3">12</td>
+    <td class="excel3">CZ       </td>
+    <td class="excel3">0.5</td>
+  </tr>
+  <tr style="height:15.0pt;">
+    <td style="height:15.0pt;">S1_ERPs_diff  </td>
+    <td>Rare_Category_(Letter)</td>
+    <td class="excel3">13</td>
+    <td class="excel3">PZ       </td>
+    <td class="excel3">0.36</td>
+  </tr>
+</table>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 6.0pt;padding:1.0pt 4.0pt 0in 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command: </strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Numerical integration/Area between two fixed latencies</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Area for positive waveforms (negative values will be zeroed)</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Bin [1 2], Chan 11:13, between latencies 150: 300, prebaseline, precision 2</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save output file as measures.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; "> [Amp Lat] = pop_geterpvalues( ALLERP, [ 150 300], [ 1 2],11:13 , </span><span style="font-size:11.0pt; color:#A020F0; ">'Baseline'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Binlabel'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Erpsets'</span><span style="font-size:11.0pt; color:black; ">,3, </span><span style="font-size:11.0pt; color:#A020F0; ">'Filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/measures.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Foutput'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measurement'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Fracreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'NaN'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'IncludeLat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Measure'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'areap'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Resolution'</span><span style="font-size:11.0pt; color:black; ">,2, </span><span style="font-size:11.0pt; color:#A020F0; ">'Warning'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; "> );                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </span><span style="font-size:11.0pt; color:black; ">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's Current Folder</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">[Amp Lat] = pop_geterpvalues( ALLERP, [ 150 300], [ 1 2],11:13 , </span><span style="font-size:11.0pt; color:#A020F0; ">'Baseline'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Binlabel'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Erpsets'</span><span style="font-size:11.0pt; color:black; ">,3, </span><span style="font-size:11.0pt; color:#A020F0; ">'Filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measures.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Foutput'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measurement'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Fracreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'NaN'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'IncludeLat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Measure'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'areap'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Resolution'</span><span style="font-size:11.0pt; color:black; ">,2, </span><span style="font-size:11.0pt; color:#A020F0; ">'Warning'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; "> );                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          </span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<h2 align="left" style="margin-left:0in;text-align:left;text-indent:0in;">Measuring peak amplitude and peak latency</h2>
+<p class="paragraph">Peak amplitude and latency measures were historically important, because they were so easy to determine, but they have many downsides (see Chapter 6 in Luck, 2005, An Introduction to the Event-Related Potential Technique).  Most importantly, the peak of the underlying component may be nowhere near the peaks in the observed waveform from a given electrode site.  Nonetheless, there may be times when you want to measure peak amplitude or peak latency.  </p>
+<p class="paragraph">This is quite simple, except for one common problem.  Imagine, for example, that you want to measure the amplitude and latency of the P2 peak in the difference wave at Fz (see screenshot below).  The problem is that the P2 (which peaks around 200 ms) overlaps with a larger, slower component.  If we simply found the most positive value between 150 and 250 ms, we would find the value at the edge of the window (at 250 ms – see arrow below).  Thus, it is usually better to search for the &quot;local peak&quot; rather than the most positive (or most negative) value in the time window.</p>
+<p class="paragraph"><img src="images/local_peak.jpg" alt="local_peak" width="582" height="331" /></p>
+<p class="paragraph">A local peak is defined as the most extreme point within the measurement window that is also larger than the average voltage over the N time points immediately before the peak and the average voltage over the N time points immediately after the peak.  To see how this works, launch the ERP Measurement Tool (still with file S1_ERPs_diff) with the settings shown below and then click <strong>RUN</strong>.  If you look at the measurements file, you will see that it has gotten the local peak at around 200 ms rather than the rising shoulder of the next wave.  In this example, a peak was defined as being larger than the 10 points (20 ms given a 500-Hz sampling rate) on either side of the peak.  Trying changing this to 2 points and running it again.  Now it captures the rising shoulder of the next peak.  In a real experiment, you will need to try different values until you find something that is appropriate given the nature of the peaks and the noise level in your data.</p>
+<p><img src="images/measurement_gui3.jpg" alt="measurement_gui3" width="780" height="477" /></p>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 6.0pt;padding:1.0pt 4.0pt 0in 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command: </strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Measuring peak ampltidude and peak latency</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is/Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Bin [3], Chan 11:13, between latencies 150: 250, prebaseline, precision 2</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save output file as measures.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; "> [Amp Lat] = pop_geterpvalues( ALLERP, [ 150 250],3,11:13 , </span><span style="font-size:11.0pt; color:#A020F0; ">'Baseline'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Erpsets'</span><span style="font-size:11.0pt; color:black; ">,1, </span><span style="font-size:11.0pt; color:#A020F0; ">'Filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/measures.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Foutput'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measurement'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Fracreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'NaN'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'IncludeLat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Measure'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'peaklatbl'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Neighborhood'</span><span style="font-size:11.0pt; color:black; ">,10, </span><span style="font-size:11.0pt; color:#A020F0; ">'Peakpolarity'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'positive'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Peakreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'absolute'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Resolution'</span><span style="font-size:11.0pt; color:black; ">,2, </span><span style="font-size:11.0pt; color:#A020F0; ">'Warning'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; "> );    </span><span style="font-size:11.0pt; color:black; ">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </span><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's Current Folder</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">[Amp Lat] = pop_geterpvalues( ALLERP, [ 150 250],3,11:13 , </span><span style="font-size:11.0pt; color:#A020F0; ">'Baseline'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'pre'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Erpsets'</span><span style="font-size:11.0pt; color:black; ">,1, </span><span style="font-size:11.0pt; color:#A020F0; ">'Filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measures.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Foutput'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'measurement'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Fracreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'NaN'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'IncludeLat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Measure'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'peaklatbl'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Neighborhood'</span><span style="font-size:11.0pt; color:black; ">,10, </span><span style="font-size:11.0pt; color:#A020F0; ">'Peakpolarity'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'positive'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Peakreplace'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'absolute'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'Resolution'</span><span style="font-size:11.0pt; color:black; ">,2, </span><span style="font-size:11.0pt; color:#A020F0; ">'Warning'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">);</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Binlister.html">&lt;&lt;BINLISTER</a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Rejection_Plus_Correction.html">Combining Rejection and Correction&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Assigning Events to Bins with BINLISTER</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+table.MsoNormalTable {
+font-size:10.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.CommandWindowText {
+margin:0in;
+margin-bottom:.0001pt;
+text-align:justify;
+font-size:9.0pt;
+font-family:Courier;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">Up to this point, we have assigned events to bins when creating the EventList structure.  This is fine for very simple experiments, but it is insufficient for most real studies.  We will now consider how event are assigned to bins for typical studies using the BINLISTER routine (see the ERPLAB User's Manual for more details).</p>
+<p class="paragraph">To begin this example, select the &quot;S1_Chan&quot; dataset.  The first step is to create an EventList.  When we did this before, we used the advanced method, which allows you to provide a label for each event code and to assign each code to a bin.  This time we will use the simple method, which just creates the EventList with whatever event codes or event labels are in the dataset.  To do this, select <strong>ERPLAB &gt; EventList &gt; Create EEG EventList – Basic</strong>.  It will put up a small window giving you a few basic options, but you should just click <strong>Create</strong>.  You can then accept the default name for the new dataset (S1_Chan_elist).  You can verify that the EventList was created by typing <strong>EEG.EVENTLIST</strong> in the Matlab command window.</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Load S1_Chan</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset( </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filepath'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_loadset( </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_Chan.set'</span><span style="font-size:11.0pt; color:black; ">);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; "> </span><span style="font-size:11.0pt; color:forestgreen; ">%Create Basic Eventlist</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Creates basic eventlist Add code -99 for 'boundary' events</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_creabasiceventlist(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">''</span><span style="font-size:11.0pt; color:black; ">, {</span><span style="font-size:11.0pt; color:#A020F0; ">'boundary'</span><span style="font-size:11.0pt; color:black; ">}</span><span style="font-size:11.0pt; color:black; ">, {-99});</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<h2 style="margin-left:.55in;text-indent:-.55in;">A simple BINLISTER example </h2>
+<p class="paragraph">Now we are ready to start using BINLISTER. The general approach used by BINLISTER is as follows.  Using a text editor (such as the Matlab editor), you will create a text file that provides an abstract description of the kinds of event sequences that should be assigned to each bin (e.g., event code 20 preceded by event code 51 or 52 and followed 200-1500 ms later by event code 101).  The abstract description for a given bin is called a <em>bin descriptor</em>, and the file containing the bin descriptors is called a <em>bin descriptor file</em>.  BINLISTER reads this file, and then scans the <strong>EVENTLIST</strong> structure.  Each event is compared with each of the bin descriptors.  If it matches one or more of the bin descriptors, the list of bins for that event is updated.</p>
+<p class="paragraph">The first (and hardest) step is to create the bin descriptor file.  You can do this with any &quot;plain text&quot; editor, but we strongly recommend that you use Matlab's built-in text editor; other text editors may insert hidden characters that will cause problems.</p>
+<p class="paragraph">As a reminder, here is a table showing the stimulus event codes. The event codes for responses in this experiment indicated whether the response was correct (event code = 9) or incorrect (event code = 8) rather than directly indicating whether a left-hand or right-hand response was made.</p>
+<table class="MsoNormalTable" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none;">
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Event Code</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Category</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Probability</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-left:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Correct Response</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">11</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">21</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">112</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">122</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">12</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">22</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">111</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Letter</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Frequent</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Right Hand</span></p></td>
+  </tr>
+  <tr>
+    <td width="113" valign="top" style="width:112.5pt;border:solid black 1.0pt;border-top:none;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">121</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Digit</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Rare</span></p></td>
+    <td width="113" valign="top" style="width:112.5pt;border-top:none;border-left:none;border-bottom:solid black 1.0pt;border-right:solid black 1.0pt;padding:0in 5.4pt 0in 5.4pt;"><p class="MsoNormal"><span style="font-family:Courier; font-size:10.0pt; ">Left Hand</span></p></td>
+  </tr>
+</table>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">We will start with an example in which we collapse all the rare stimuli together into one bin (Bin 1) and all of the frequent stimuli together in a different bin (Bin 2).  And we'll include only trials in which the stimulus was followed by a correct response.  Here are the bin descriptors for these two bins.</p>
+<p class="LiteralText">bin 1</p>
+<p class="LiteralText">Frequent followed by correct response</p>
+<p class="LiteralText">.{11;122;22;111}{9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">bin 2</p>
+<p class="LiteralText">Rare followed by correct response</p>
+<p class="LiteralText">.{21;112;12;121}{9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Each pair of curly brackets (&quot;{}&quot;) defines an <em>event list</em>, which specifies one or more events that must occur at a given sequential position.  The event list following the dot specifies the identity of the time-locking event, and the following event lists define the events that must follow the time-locking event. In Bin 1, for example, we are looking for any frequent stimulus (event codes 11, 122, 22, or 111) followed by a correct response event code (9).  Because the event list immediately after the dot contains the list of stimulus event codes, the stimulus event code will be the time-locking point.  In this example, response-locked averages could be specified by placing the dot after the stimulus event list and before the response event list (e.g., &quot;{11;122;22;111}.{9}&quot;).</p>
+<p class="paragraph">Bins must be specified in order, beginning with Bin 1.  The line after the bin number is the <em>bin description</em>, and it is used to help you keep track of what is in each bin. </p>
+<p class="paragraph">To try assigning events to bins, type the two bin descriptors shown above into a text file and save it as <strong>binlister_demo_1.txt</strong> (note: this file may already be present in the <strong>S1</strong> folder).  Then select <strong>ERPLAB &gt; Assign Bins (BINLISTER)</strong> (S1_Chan_elist should be the active dataset).  The window shown in the screenshot below will appear.  Load the bin descriptor file that you just created, and type &quot;test.txt&quot; into the name of the text file for writing the results.  Ordinarily you will not need to save the results to a text file, but this will help you see exactly how BINLISTER is working.  Now make sure that everything else is set as shown in the screenshot, and then click <strong>RUN</strong>. </p>
+<p class="paragraph"><img src="images/binlister_gui.jpg" alt="binlister_gui" width="593" height="447" /></p>
+<p class="paragraph">BINLISTER will take some time to go through all of the events in the EventList and create a new EventList with the new bin assignments.  A new dataset will be created with the updated EventList.  If you open test.txt with a text editor, you will see how it assigned the stimulus events to Bin 1 or Bin 2.  For example, the first event code is a frequent stimulus and was therefore assigned to Bin 1.  The second event code is a response, and it was not assigned to any bins.  The third event code is a rare stimulus that was assigned to Bin 2.  Note that event #73 was a frequent stimulus, but it was followed by an event code 8 (an incorrect response), so it was not assigned to any bins.</p>
+<p class="paragraph">If you wish, you can now epoch the data, perform artifact detection, and create averaged ERPs for these two bins.</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Loads binlister file from selected drive </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%/Users/etfoo/Desktop/tutorial_script/binlister demo 1.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save file as test.txt</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_binlister( EEG,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/binlister demo 1.txt'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/test.txt'</span><span style="font-size:11.0pt; color:black; ">, 0, [], [], 0, 2, 0);</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_binlister( EEG,</span><span style="font-size:11.0pt; color:#A020F0; ">'binlister_demo_1.txt'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'test.txt'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:black; ">0, [], [], 0, 2, 0);</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">% Type 'help pop_binlister' to see a description of all the parameters</span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<h2 style="margin-left:.55in;text-indent:-.55in;">Specifying a sequence </h2>
+<p class="paragraph">Now let's try a slightly more complicated example.  This time we will eliminate trials preceded by a rare stimulus, whether the response to this stimulus was correct or incorrect (while still requiring the current stimulus to be followed by a correct response).  That is, we want to see the following sequence for a frequent stimulus: frequent stimulus; correct or incorrect response; frequent stimulus; correct response (and we are time-locking to the second frequent stimulus in this sequence).  Similarly, we want to see the following sequence for a rare stimulus: frequent stimulus; correct or incorrect response; rare stimulus; correct response (and this time we are time-locking to the rare stimulus).</p>
+<p class="paragraph">To implement this, create a new text file called <strong>binlister_demo_2.txt</strong> (this may already be present in the folder) and put the following event descriptors in it: </p>
+<p class="LiteralText">bin 1</p>
+<p class="LiteralText">Frequent preceded by frequent and followed by correct response</p>
+<p class="LiteralText">{11;122;22;111}{8;9}.{11;122;22;111}{9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">bin 2</p>
+<p class="LiteralText">Rare preceded by frequent and followed by correct response</p>
+<p class="LiteralText">{11;122;22;111}{8;9}.{21;112;12;121}{9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Run BINLISTER using this new bin descriptor file.  If the active dataset is the one you created by running BINLISTER in the previous example, you will get a warning message asking you if you wish to overwrite the previous bin assignments (you can say yes).  If you look at the EventList in test.txt, you will see that stimuli preceded by a rare stimulus (and the response to the rare stimulus) are no longer assigned to any bins.</p>
+<div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
+  <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Loads binlister file from selected drive </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%/Users/etfoo/Desktop/tutorial_script/binlister demo 2.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save output file as test.txt</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; color:forestgreen; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_binlister( EEG,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/binlister demo 2.txt'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; ">...</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">    </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/test.txt'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:black; ">0, [], [], 0, 2, 0);</span><span style="font-size:11.0pt; color:black; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_binlister( EEG,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:#A020F0; ">'binlister_demo_2.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'no'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'test.txt'</span><span style="font-size:11.0pt; color:black; ">,</span><span style="font-size:11.0pt; color:blue; "> </span><span style="font-size:11.0pt; color:black; ">0, [], [], 0, 2, 0);</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<h2 style="margin-left:.55in;text-indent:-.55in;">Specifying a time period for a response </h2>
+<p class="paragraph">It is often desirable to specify the time period of a response relative to a stimulus.  You can do this in the bin descriptor file by using the <strong>t&lt;start-stop&gt;</strong> syntax.  We could change our first example to look for a stimulus followed by a response with 200-1000 ms, as follows: </p>
+<p class="LiteralText">bin 1</p>
+<p class="LiteralText">Frequent followed by correct response</p>
+<p class="LiteralText">.{11;122;22;111}{t&lt;200-1000&gt;9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">bin 2</p>
+<p class="LiteralText">Rare followed by correct response</p>
+<p class="LiteralText">.{21;112;12;121}{ t&lt;200-1000&gt;9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">When you specify a time period for an event list, this is called a <em>time-conditioned event list</em>.  Ordinarily, the events in the EventList structure must be in exactly the order specified by an event descriptor to be considered a match.  For example, when the event descriptor is &quot;{11;122;22;111}{8;9}.{21;112;12;121}{9}&quot;, the following sequences of event codes would be successfully assigned to this bin: 11-&gt;8-&gt;21-&gt;9, 22-&gt;9-&gt;12-&gt;9, 122-&gt;9-&gt;12-&gt;9.  However, if the subject accidentally pressed the response button twice, yielding the sequence 11-&gt;8-&gt;8-&gt;21-&gt;9, this would not match the event descriptor, and this sequence would not be assigned to the bin.</p>
+<p class="paragraph">However, with a time-conditioned event list, other event codes can be present without disrupting the assignment of an event to a bin.  With the event descriptor &quot;.{11;122;22;111}{t&lt;200-1000&gt;9}&quot;, the sequence of event codes 11-&gt;1-&gt;9 would match as long as the 9 occurred 200-1000 ms after the 11.</p>
+<p class="paragraph">Imagine that subjects in an experiment occasionally made the incorrect response and then followed this with the correct response.  For example, you might see the sequence 11-&gt;8-&gt;9 (frequent stimulus followed by incorrect response followed by correct response).  This would still match the bin descriptor &quot;.{11;122;22;111}{t&lt;200-1000&gt;9}&quot; as long as the 9 occurred 200-1000 ms after the stimulus.  To avoid this situation, you can use the following bin descriptors (which can be found in the file &quot;binlister_demo_3.txt&quot;): </p>
+<p class="LiteralText">bin 1</p>
+<p class="LiteralText">Frequent followed by correct response without incorrect response</p>
+<p class="LiteralText">.{11;122;22;111}{~t&lt;200-1000&gt;8}{t&lt;200-1000&gt;9}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">bin 2</p>
+<p class="LiteralText">Rare followed by correct response without incorrect response</p>
+<p class="LiteralText">.{21;112;12;121}{~ t&lt;200-1000&gt;8}{t&lt;200-1000&gt;9}</p>
+<p class="paragraph" style="margin-bottom:.0001pt;">&nbsp;</p>
+<p class="paragraph">The tilde (~) character means &quot;not&quot;.  Thus, in this example, we are looking for a stimulus that is not followed by an 8 between 200 and 1000 ms and is followed by a 9 between 200 and 1000 ms.   Go ahead and try running BINLISTER with the bin descriptor file &quot;binlister demo 3.txt&quot;. </p>
+<h2 style="margin-left:.55in;text-indent:-.55in;">Saving reaction times for behavioral analyses </h2>
+<p class="paragraph">If you would like to save the reaction times (RTs) associated with each trial of each type, you can do this by adding <strong>:rt&lt;&quot;variable_name&quot;&gt;</strong> following the event codes associated with responses.  For example, you can add this to our current example in the following manner (see <strong>binlister_demo_4.txt</strong>):</p>
+<p class="LiteralText">bin 1</p>
+<p class="LiteralText">Frequent followed by correct response without incorrect response</p>
+<p class="LiteralText">.{11;122;22;111}{~t&lt;200-1000&gt;8}{t&lt;200-1000&gt;9:rt&lt;&quot;Frequent RT&quot;&gt;}</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">bin 2</p>
+<p class="LiteralText">Rare followed by correct response without incorrect response</p>
+<p class="LiteralText">.{21;112;12;121}{~ t&lt;200-1000&gt;8}{t&lt;200-1000&gt;9:rt&lt;&quot;Rare RT&quot;&gt;}</p>
+<p class="paragraph" style="margin-bottom:.0001pt;">&nbsp;</p>
+<p class="paragraph" style="margin-bottom:.0001pt;">&nbsp;</p>
+<p class="paragraph">In bin 1, this will cause the amount of time between the time-locking event and event code 9 to be stored to a variable named &quot;Frequent RT&quot;. In bin 2, this will cause the amount of time between the time-locking event and event code 9 to be stored to a variable named &quot;Rare RT&quot;.  These variables are stored within the bdf field of the EVENTLIST variable. Three fields are used.  EVENTLIST.bdf.rtindex stores the number of variables (e.g., 2 in this example).  EVENTLIST.bdf.rtname stores the names of the variables.  EVENTLIST.bdf.rt stores the individual RT values for each variable. </p>
+<p class="paragraph">You can access these fields from a script, or you can use <strong>ERPLAB&gt;EventList&gt;Export Reaction Times to Text&gt;From EEG</strong> to save the values in a text file, which brings up the window shown in the screenshot below.  This window allows you to specify the filename and the organization of the information saved in the file.  There are two formats, basic and detailed.  </p>
+<p class="paragraph"><img src="images/save_rts.jpg" alt="save_rts" width="532" height="227" /></p>
+<p class="paragraph">The basic format contains <em>N</em> columns, one for each of the different RT labels you specified in the bin descriptor file.  The RTs in a column are the single-trial RTs, in order of occurrence, corresponding to a given label (see screenshot below).  Because there may be more occurrences of some types of RTs than others, NaN (not a number) is used in a column when there are no more occurrences of that RT left in the file.  The label for each column is provided if <strong>Include header</strong> is checked.  This format makes it easy to compute the mean RT (or median, SD, etc.) for a given trial type.</p>
+<p class="LiteralText">Frequent_RT                      Rare_RT        </p>
+<p class="LiteralText">608.000            507.999       </p>
+<p class="LiteralText"> 532.000            552.000        </p>
+<p class="LiteralText">601.999                         615.999        </p>
+<p class="LiteralText">441.999                         456.001        </p>
+<p class="LiteralText">379.999                          634.003        </p>
+<p class="LiteralText">488.001          568.001        </p>
+<p class="LiteralText">507.999                       700.001</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Note that the labels don't always line up nicely with the columns of numbers.  This is because tabs are used between each column, and this doesn't look nice with standard tab width unless the labels are very short.  However, the file will look great if you open it in Excel.</p>
+<p class="paragraph">The detailed format contains one reaction time value on each trial.  This format is useful for making Excel PivotTables. The <strong>HomeCode</strong> value is the event code of the home item in the bin descriptor (usually the stimulus), and the <strong>EvalCode</strong> value is the event code of the item to which the &quot;:rt&lt;label&gt;&quot; string was attached in the bin descriptor.  The RT is the difference between the times of these two events.  The <strong>Item</strong> value is the position of the <strong>EvalCode</strong> event code in the EVENTLIST.  The <strong>Bin#</strong> and <strong>BinLab</strong> values are the bin number and bin label of the bin to which the event was assigned.  The label for each column is provided if <strong>Include header</strong> is checked.</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">Item         RTime             HomeCode    EvalCode       Bin#          BinLab</p>
+<p class="LiteralText">   2                608.000                   22           9               1               Frequent_RT</p>
+<p class="LiteralText">   4            507.999          12                       9                          2                  Rare_RT</p>
+<p class="LiteralText">   6            532.000          22                       9                          1                  Frequent_RT</p>
+<p class="LiteralText">   8            601.999          22                       9                          1                  Frequent_RT</p>
+<p class="LiteralText">  10          441.999          22                       9                          1                  Frequent_RT</p>
+<p class="LiteralText">  12          379.999          22                       9                          1                  Frequent_RT</p>
+<p class="LiteralText">  14          488.001          22                       9                          1                  Frequent_RT</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">If you have already performed artifact detection before exporting the RTs, you can exclude trials for which an artifact was detected by selecting <strong>Discard RTs with marked AR flags</strong>.</p>
+<p class="paragraph">&nbsp;</p>
+<div style="border:double windowtext 6.0pt;padding:1.0pt 4.0pt 0in 4.0pt;">
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><strong>Equivalent Script Command: </strong></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">&nbsp;</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Export Reaction Times to Text from EEG </span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Detailed format, include header, discard RTs with marked AR flags</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Save output file as rt.txt</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Note that you will need to replace the path with the actual location in your file system</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">values = pop_rt2text(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'arfilter'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'/Users/etfoo/Desktop/tutorial_script/rt.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'header'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'listformat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'itemized'</span><span style="font-size:11.0pt; color:black; "> );</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's Current Folder</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">values = pop_rt2text(EEG, </span><span style="font-size:11.0pt; color:#A020F0; ">'arfilter'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'rt.txt'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'header'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'on'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'listformat'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'itemized'</span><span style="font-size:11.0pt; color:black; "> );</span><span style="font-size:11.0pt; "> </span></p>
+</div>
+<p class="MsoNormal" style="text-autospace:none;"><span style="font-family:Courier; ">&nbsp;</span></p>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph">&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td><a href="Channel_Operations.html">&lt;&lt;Channel Operations</a><a href="Filtering.html"></a></td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Measurement_Tool.html">Measuring Amplitudes and Latencies&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>

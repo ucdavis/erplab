@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ERPLAB Toolbox Manual</title>
+
+<style type="text/css">
+p.paragraph {margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+</style>
+</head>
+
+<body>
+<p class="MsoNormal" align="center" style="text-align:center;"><a><span style="font-size:26.0pt; ">ERPLAB TOOLBOX </span></a><span style="font-size:26.0pt; ">USER'S MANUAL</span></p>
+<div style="border:none;border-bottom:solid windowtext 1.0pt;padding:0in 0in 1.0pt 0in;">
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">Version<span style="font-family:'Monotype Corsiva'; font-size:18.0pt; "> 2.0</span></p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">25 September 2011</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">&nbsp;</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">User's Manual written by Candace Markley, Steve Luck, and Javier Lopez-Calderon</p>
+  <p class="MsoNormal" align="center" style="text-align:center;border:none;padding:0in;">ERPLAB Toolbox core designed by Javier Lopez-Calderon and Steve Luck</p>
+</div>
+<p class="paragraph">&nbsp;</p>
+<p class="paragraph"><strong>Important note: <span style="color:black; ">Because this is not commercial software, bugs are inevitable. </span>In some cases, errors will occur leading to a message that instructs you to report the error to the EEGLAB developers.  If this happens, please report the error to us at erplab@erpinfo.org and not to the EEGLAB developers. ERPLAB has primarily been tested using EEG collected with a Biosemi ActiveTwo System, along with a smaller amount of testing using EEG collected with Neuroscan and EGI systems. </strong></p>
+<p class="paragraph">Some features are present in this version that have not yet been documented, and some features may have changed since this document was released. In addition, some of the screen shots shown in this document may reflect previous versions and may not conform with the text.  The documentation, like the software, is a work in progress.</p>
+<p class="paragraph">The purpose of this User's Manual is to provide a detailed description of the ERPLAB functions, along with a discussion of the overall design of the toolbox.  For "how-to" information, see the ERPLAB Tutorial, which provides step-by-step instructions for analyzing a typical set of data.  A <em>Frequently Asked Questions</em> document is also available.</p>
+<p class="paragraph">We have set up three web-based discussion groups.  One is designed for people to ask questions and give and receive advice about how to use ERPLAB Toolbox.  Another is designed for reporting bugs and describing work-arounds.  The third is designed to give users the opportunity to make suggestions about modifications and new features.  They can be accessed at <a href="http://erpinfo.org/erplab/erplab-discussion/erplab-discussion-forum/">http://erpinfo.org/erplab/erplab-discussion/erplab-discussion-forum/</a> (you will need to join the erpinfo.org web site to access these discussion groups).  There is also an email list, <a href="mailto:erplab@erpinfo.org">erplab@erpinfo.org</a>, that you can use to send questions and announcements to the community of ERPLAB users.  If you would like to join this list, you should go to <a href="http://mail01.cmb.ucdavis.edu/mailman/listinfo/erplab">http://mail01.cmb.ucdavis.edu/mailman/listinfo/erplab</a>.  To communicate privately with the developers, send an email to <a href="mailto:erplabtoolbox@gmail.com">erplabtoolbox@gmail.com</a>. </p>
+<p class="paragraph">Please keep in mind that this is <strong>FREE</strong> software, and we do not have the resources to provide the level of support that commercial software vendors can provide.</p>
+<p class="paragraph"><a>ERPLAB Toolbox is a freely available, open source set of </a><a href="http://www.mathworks.com/">MATLAB</a> routines for analyzing event-related potential (ERP) data.  It uses the freely available, open source <a href="http://sccn.ucsd.edu/eeglab/">EEGLAB toolbox</a> as a front end.  That is, EEGLAB is used to read in EEG data files and perform various operations on the EEG, and ERPLAB contains a set of new functions, which are added as plug-ins into EEGLAB, extending the set of operations that a user can perform within EEGLAB. These plug-ins include additional EEG processing manipulations (e.g., new functions for marking trials with artifacts) along with functions that provide powerful methods for sorting EEG epochs and averaging them together.  Once a set of averages has been created, they are saved in binary files and can be exported into text files (allowing them to be imported into other ERP analysis systems).</p>
+<p class="paragraph"><a>ERPLAB also contains a set of routines that operate on the averaged ERP waveforms (e.g., making difference waves, plotting, filtering, measurement, etc.).  </a><span style="color:red; "> </span></p>
+<p class="paragraph"><a>As in EEGLAB, the ERPLAB routines can be accessed from the Matlab command window and from Matlab scripts in addition to being accessed from the EEGLAB GUI.</a>  Consequently, ERPLAB provides the ease of learning of a GUI-based system but also provides the power and flexibility of a scripted system.</p>
+<p class="paragraph">The ERPLAB routines were inspired by ERPSS (the Event-Related Potential Software System), which was developed in Steve Hillyard's lab at UCSD under the direction of Jon Hansen.  However, the code is entirely new, and it is not designed to be fully backward compatible with ERPSS.  Anyone who knows how to use ERPSS will be able to learn ERPLAB rapidly.  But those who do not know ERPSS will also find ERPLAB approachable because of the GUI. </p>
+<p class="paragraph">ERPLAB also relies heavily on EEGLAB as a model for its GUI, its conventions, and even its documentation.</p>
+<hr>
+<p class="MsoNormal" style="margin-right:9.0pt; line-height:185%; ; font-family: 'Arial Bold'; font-size: 16pt;">Table of Contents</p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Installation_Info.html"><span style="font-family:'Arial Bold'; ">INSTALLATION INFORMATION</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Learning_ERPLAB.html"><span style="font-family:'Arial Bold'; ">LEARNING TO USE ERPLAB TOOLBOX </span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><span class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Basic_Steps.html"><span style="font-family:'Arial Bold'; ">BASIC ERPLAB PROCESSING STEPS</span></a> </span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Background_and_Structures.html"><span style="font-family:'Arial Bold'; ">IMPORTANT BACKGROUND CONCEPTS AND DATA STRUCTURES</span></a><span style="font-family:'Arial Bold'; "> </span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Using_EEGLAB.html"><span style="font-family:'Arial Bold'; ">USING EEGLAB</span></a><span style="font-family:'Arial Bold'; "> </span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="EventList_Structure.html"><span style="font-family:'Arial Bold'; ">THE EVENTLIST STRUCTURE</span></a><span class="MsoHyperlink"><span style="font-family:'Arial Bold'; "> </span></span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="EventList_Create.html"><span style="font-family:'Arial Bold'; ">CREATING AN EVENTLIST </span></a><span class="MsoHyperlink"><span style="font-family:'Arial Bold'; "> </span></span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"> <a href="EventList_Export_Import.html"><span style="font-family:'Arial Bold'; ">EXPORTING, EDITING, AND IMPORTING EVENTLISTS</span></a><span class="MsoHyperlink"><span style="font-family:'Arial Bold'; "> </span></span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"> <a href="Boundary_Events.html"><span style="text-transform:uppercase; font-family:'Arial Bold'; ">Boundary Events and Disabled Events</span></a><span style="font-family:'Arial Bold'; "> </span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Binlister.html"><span style="font-family:'Arial Bold'; ">ASSIGNING EVENTS TO BINS WITH BINLISTER</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Epoching_Bins.html"><span style="font-family:'Arial Bold'; ">EPOCHING BINS</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Artifact_Detection.html"><span style="font-family:'Arial Bold'; ">ARTIFACT DETECTION</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Behavioral_Analyses.html"><span style="font-family:'Arial Bold'; ">BEHAVIORAL ANALYSES</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Averaging_ERPs.html"><span style="font-family:'Arial Bold'; ">COMPUTING AVERAGED ERPS</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Info_From_MATLAB.html"><span style="font-family:'Arial Bold'; ">GETTING  INFORMATION ABOUT AN ERP FROM THE MATLAB COMMAND LINE</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Bin_Operations.html"><span style="font-family:'Arial Bold'; ">ERP BIN OPERATIONS</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Channel_Operations.html"><span style="font-family:'Arial Bold'; ">EEG AND ERP CHANNEL OPERATIONS</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Filtering.html"><span style="font-family:'Arial Bold'; ">FILTERING</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Plot_ERP_Waveforms.html"><span style="font-family:'Arial Bold'; ">PLOTTING ERP WAVEFORMS</span></a><span style="font-family:'Arial Bold'; "> </span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Topographic_Mapping.html"><span style="font-family:'Arial Bold'; ">TOPOGRAPHIC MAPPING</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Saving_Loading_ERPsets.html"><span style="font-family:'Arial Bold'; ">SAVING, LOADING, DUPLICATING, RENAMING, CLEARING, AND EXPORTING ERPSETS</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><span class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Appending_ERPsets.html"><span style="font-family:'Arial Bold'; ">APPENDING ERPSETS</span></a></span></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="Averaging_ERPsets.html"><span style="font-family:'Arial Bold'; ">AVERAGING ACROSS ERPSETS (CREATING GRAND AVERAGES)</span></a></p>
+<p class="MsoNormal" style="margin-right:9.0pt;line-height:185%;"><a href="ERP_Measurement_Tool.html"><span style="font-family:'Arial Bold'; ">ERP MEASUREMENT TOOL</span></a></p>
+</body>
+</html>

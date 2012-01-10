@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Installation Information</title>
+
+<link href="styles/erplab.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1><a></a><a>Release Notes for Version 2.0.0</a></h1>
+<p class="paragraph">This section is for users who have upgraded from version 1.0 and would like to know what has changed.</p>
+<p class="paragraph"><strong>Important note: We will very soon be releasing Version 2.1, with many enhancements and simplifications to scripting. However, these changes will not be backward compatible: Scripts written in ERPLAB 1.0 or 2.0 will need to be rewritten to run in ERPLAB 2.1 (we will strive for backward compatibility in future releases).</strong></p>
+<p class="paragraph">Version 2.0 contains several added or enhanced functions, including:</p>
+<ul>
+  <li>Enhanced artifact detection functions</li>
+  <li>Improved exporting of reaction times</li>
+  <li>Enhanced amplitude and latency measurement abilities</li>
+  <li>&quot;Reference assisstant&quot; to simplify re-referencing data</li>
+</ul>
+<h1><a>Installation Instructions</a></h1>
+<p class="paragraph">ERPLAB runs within EEGLAB, so you must first install EEGLAB.  ERPLAB 1.2.0 has been tested with versions 6.03 (eeglab2008October01_beta) and 7.1.3.12b of EEGLAB under Matlab versions 7.4 (R2007a) and 7.8 (R2009a). </p>
+<p class="paragraph"><strong>Important note: The Matlab Signal Processing Toolbox is required.</strong></p>
+<p class="paragraph">To install ERPLAB, first make sure that EEGLAB is not running.  Then simply place the folder for the latest version of ERPLAB inside the EEGLAB plugins folder.  For example, you might place ERPLAB in a path like this:</p>
+<p class="LiteralText" align="center" style="text-align:center;">Applications &gt; MATLAB&gt;<span style="font-family:Cambria; font-size:12.0pt; "> </span>eeglab2008October01_beta &gt;plugins&gt;erplab_2.0.0</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="Note">Note: the folder names will change as EEGLAB and/or ERPLAB are updated, so you should use the appropriate names for the versions of EEGLAB and ERPLAB you are using.  Also, you may have placed EEGLAB at a different location, which is fine as long as it is in your PATH.</p>
+<p class="Note"><span style="font-style:normal; ">You must delete any previous version of ERPLAB before installing the new version.  A convenient way to do this and retain the old version is to convert the old version into a compressed archive (e.g., a .zip or .sit file).  If you simply move the old folder, it may still be accessed by Matlab (depending on how your computer's operating system handles paths), and this could cause problems.  So we <u>strongly</u> recommend that you either delete the old folder or convert it to a compressed archive.</span></p>
+<p class="paragraph"><em>Recommended</em>:  We have slightly modified the EEGLAB routine for plotting EEG data.  For example, this modification makes it easier to see labels for events when you are viewing the EEG.  To install this modified routine, you must move the file &quot;eegplot.m&quot; from the <strong>erplab</strong> folder into the <strong>eeglab &gt; functions &gt; sigprocfunc</strong> folder (deleting the eegplot.m file that is already present in that folder).</p>
+<p class="paragraph">The next step is to make sure that the ERPLAB folder is known to MATLAB.  To accomplish this, launch MATLAB and choose <strong>File &gt; Set Path &gt; Add with subfolders</strong>.  Browse to select the path for EEGLAB, which will look something like this:</p>
+<p class="LiteralText"><a>Applications &gt; MATLAB &gt; </a> eeglab2008October01_beta</p>
+<p class="Note">Note: This path should be one level up from where you added ERPLAB.  Please be careful not to narrow the path more than this.  Again, the above folder name will change as EEGLAB is updated.  You may first want to revert to the default path before adding this folder to your path; this will help ensure that you do not have outdated folders somewhere in your path.</p>
+<p class="paragraph">Make sure that you save your new path.  <strong>Note: You must do this every time you install a new version of ERPLAB.</strong></p>
+<p class="paragraph">If you install a new version of EEGLAB, you can simply move the erplab folder from the plugins folder of the old version of EEGLAB to the new version.  If you've installed our modified version of eegplot.m, you'll need to move this as well.  You will also need to clear your path and set the path to the new version of EEGLAB.</p>
+<p class="paragraph">To launch EEGLAB (and the included ERPLAB plug-in), simply type eeglab in the MATLAB command window.  However, to avoid memory problems and other conflicts, you may want to type 'clear all' before launching EEGLAB. </p>
+<p class="paragraph"><em>Hint: Most installation problems arise from not including all of the ERPLAB folders in the Matlab path. &nbsp;If you get error messages when using nearly every command in the <strong>ERPLAB</strong>&nbsp;menu, this is probably a path problem. &nbsp;Path problems also typically lead to error messages like this: &quot;Undefined function or method 'gui_mainfcn' for input arguments of type 'struct'.&quot; &nbsp;If you have either of these problems, you should check to see whether your path includes ERPLAB by typing <strong>path</strong>&nbsp;in the Matlab command window. &nbsp;This will list all folders in your path. &nbsp;You should see several lines in your path that contain &quot;plugins/erplab_1.0.0.38&quot;. &nbsp;If you don't, you should try updating your path again. &nbsp;Make sure that you click<strong> Add with subfolders </strong>to add the path.&nbsp;&nbsp;And make sure that you save your new path before closing the window that you used to set your path.</em></p>
+<p class="paragraph"><em>Hint: If you see a large number of warning messages when you launch EEGLAB, you may need to remove the folders with 'external/fieldtrip' in the Matlab Path.</em></p>
+<p class="paragraph"><em>Hint: If you run into bugs, you may want to quit from EEGLAB, type 'clear all', and re-launch EEGLAB.  You may even want to quit and restart Matlab.</em></p>
+<p class="paragraph"><em>Hint: In most cases, you should make sure that EEGLAB is set to allow multiple datasets to be loaded in memory.  That is, go to <strong>EEGLAB &gt; File &gt; Memory and other options</strong> and make sure that &quot;If set, keep at most one dataset in memory&quot; is <strong>NOT</strong> checked.</em></p>
+<p class="paragraph">Once you have launched EEGLAB, you can verify that ERPLAB is present by clicking on the ERPLAB menu in the EEGLAB GUI.  You should see something like this:</p>
+<p class="paragraph"><img src="images/erplab_menu.jpg" alt="ERPLAB Menu" width="356" height="375" /></p>
+<table width="100%" border="0">
+  <tr>
+    <td>&nbsp;</td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td><a href="Learning_ERPLAB.html">Learning  ERPLAB&gt;&gt;</a></td>
+  </tr>
+</table>
+</body>
+</html>
