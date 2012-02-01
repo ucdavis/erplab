@@ -209,7 +209,8 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:black; ">        </span>%</p>
 <p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Bin Operations (two passes) ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
 <p class="LiteralText"><span style="color:black; ">        erpname = [subject_list{s} </span><span style="color:#A020F0; ">'_ERPs'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
-<p class="LiteralText"><span style="color:black; ">        ERP = pop_loaderp([erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">], data_path); </span>% Load the file</p>
+<p class="LiteralText"><span style="color:black; ">        ERP = pop_loaderp('filename', [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">], 'pathname', data_path, 'overwrite', 'off'); </span></p>
+<p class="LiteralText"><span style="color:black; ">        % Load the file  </span></p>
 <p class="LiteralText"><span style="color:black; ">        </span>% Now make the difference wave, directly specifying the</p>
 <p class="LiteralText"><span style="color:black; ">        </span>% equation that modifies the existing ERPset</p>
 <p class="LiteralText"><span style="color:black; ">        ERP = pop_binoperator( ERP, {</span><span style="color:#A020F0; ">'b3= b2-b1 label Rare minus Frequent difference wave'</span><span style="color:black; "> });</span></p>
