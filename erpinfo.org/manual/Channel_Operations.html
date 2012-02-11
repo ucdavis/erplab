@@ -76,11 +76,12 @@ font-family:Cambria;
 <p class="LiteralText">Ch4 = ch4 – ch15/2 label C4</p>
 <p class="LiteralText">&nbsp;</p>
 <p class="paragraph">To subtract the average of electrodes 1-13 from the first few channels, you would do something like this:</p>
-<p class="LiteralText">Ch1 = ch1 – avgchan(1:13) label F3</p>
-<p class="LiteralText">Ch2 = ch2 – avgchan(1:13) label F4</p>
-<p class="LiteralText">Ch3 = ch3 – avgchan(1:13) label C3</p>
-<p class="LiteralText">Ch4 = ch4 – avgchan(1:13) label C4</p>
-<p class="paragraph">&nbsp;</p>
+<p class="LiteralText">Nch1 = ch1 – avgchan(1:13) label F3</p>
+<p class="LiteralText">Nch2 = ch2 – avgchan(1:13) label F4</p>
+<p class="LiteralText">Nch3 = ch3 – avgchan(1:13) label C3</p>
+<p class="LiteralText">Nch4 = ch4 – avgchan(1:13) label C4</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="paragraph">Important note: To use the average of all sites as the reference, you must use the &quot;Create new dataset (independent transformations)&quot; mode. If you use the &quot;Modify existing dataset (recursive updating)&quot; mode, then the average of all sites will change after each site has been created. That is, when you re-reference channel 1 to the average of all channels, everything will be fine; but when you then try to re-reference channel 2, the new re-referenced version of channel 1 would be used to compute the average of all channels, and that would be incorrect.</p>
 <p class="paragraph">If you have EMG data in channel 16, you could create a rectified version of the data in channel 17 as follows:</p>
 <p class="LiteralText">Ch17 = abs(ch16) label Rect_EMG</p>
 <p class="LiteralText">&nbsp;</p>
