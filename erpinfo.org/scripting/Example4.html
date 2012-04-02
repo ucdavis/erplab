@@ -95,7 +95,7 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:black; ">        </span>% Create EVENTLIST and save (pop_editeventlist adds _elist suffix)</p>
 <p class="LiteralText"><span style="color:black; ">        </span>%</p>
 <p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Creating eventlist ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
-<p class="LiteralText"><span style="color:black; ">        EEG = pop_editeventlist(EEG, </span><span style="color:#A020F0; ">'event_mapping_1.txt'</span><span style="color:black; ">, [data_path subject_list{s} </span><span style="color:#A020F0; ">'_eventlist.txt'</span><span style="color:black; ">], {</span><span style="color:#A020F0; ">'boundary'</span><span style="color:black; ">}, {-99});</span></p>
+<p class="LiteralText"><span style="color:black; ">        EEG = pop_editeventlist(EEG, [home_path <span style="color:#A020F0; ">'event_mapping_1.txt'</span>], '', {<span style="color:#A020F0; ">'boundary'</span>}, {-99});</span></p>
 <p class="LiteralText"><span style="color:black; ">        </span>% Copy event labels into the EEG structure</p>
 <p class="LiteralText"><span style="color:black; ">        EEG = pop_overwritevent( EEG, </span><span style="color:#A020F0; ">'codelabel'</span><span style="color:black; ">);</span></p>
 <p class="LiteralText"><span style="color:black; ">        </span>%EEG.setname = [EEG.setname '_elist']; % name for the dataset menu</p>
@@ -140,7 +140,7 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:black; ">        </span>% data</p>
 <p class="LiteralText"><span style="color:black; ">        </span>%</p>
 <p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Running BinLister ****\n\n\n'</span><span style="color:black; ">, subject_list{s});</span></p>
-<p class="LiteralText"><span style="color:black; ">        EEG = pop_binlister( EEG,</span><span style="color:#A020F0; ">'binlister_demo_1.txt'</span><span style="color:black; ">,</span><span style="color:#A020F0; ">'no'</span><span style="color:black; ">, </span><span style="color:#A020F0; ">''</span><span style="color:black; ">, 0, [], [], 0, 2, 0);</span></p>
+<p class="LiteralText">        EEG  = pop_binlister( EEG , <span style="color:#A020F0; ">'BDF'</span>, [home_path <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>],<span style="color:#A020F0; "> 'ImportEL'</span>,<span style="color:#A020F0; "> 'no'</span>,<span style="color:#A020F0; "> 'Saveas'</span>,<span style="color:#A020F0; "> 'on'</span>,<span style="color:#A020F0; "> 'SendEL2'</span>,<span style="color:#A020F0; "> 'EEG'</span>,<span style="color:#A020F0; "> 'Warning'</span>,<span style="color:#A020F0; "> 'on' </span>);</p>
 <p class="LiteralText"><span style="color:black; ">        EEG.setname = [EEG.setname </span><span style="color:#A020F0; ">'_bins'</span><span style="color:black; ">];</span></p>
 <p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
 <p class="LiteralText"><span style="color:black; ">            EEG= pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
@@ -166,13 +166,13 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:black; ">        </span>% 798]; Threshold = 100 uV; Window width = 200 ms;</p>
 <p class="LiteralText"><span style="color:black; ">        </span>% Window step = 50 ms; Channels = 1 to 17; Flags to be activated = 1 &amp; 4</p>
 <p class="LiteralText"><span style="color:black; ">        </span>%</p>
-<p class="LiteralText"><span style="color:black; ">        EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:17,  [1,4]);</span></p>
+<p class="LiteralText">        EEG  = pop_artmwppth( EEG , <span style="color:#A020F0; ">'Channel'</span>,  1:16, <span style="color:#A020F0; ">'Flag'</span>,  1,<span style="color:#A020F0; "> 'Threshold'</span>,  100, <span style="color:#A020F0; ">'Twindow'</span>, [ -200 798],<span style="color:#A020F0; "> 'Windowsize'</span>,  200, <span style="color:#A020F0; ">'Windowstep'</span>,  50 );</p>
 <p class="LiteralText">&nbsp;</p>
 <p class="LiteralText"><span style="color:black; ">        </span>% Artifact detection. Step-like artifacts in the bipolar</p>
 <p class="LiteralText"><span style="color:black; ">        </span>% VEOG channel (channel 14, created earlier with Channel Operations)</p>
 <p class="LiteralText"><span style="color:black; ">        </span>% Threshold = 30 uV; Window width = 400 ms;</p>
 <p class="LiteralText"><span style="color:black; ">        </span>% Window step = 10 ms; Flags to be activated = 1 &amp; 3</p>
-<p class="LiteralText"><span style="color:black; ">        EEG = pop_artstep( EEG, [-200  798], 30, 400, 10,  14, [ 1 3]);</span></p>
+<p class="LiteralText">        EEG  = pop_artstep( EEG , <span style="color:#A020F0; ">'Channel'</span>,  14, <span style="color:#A020F0; ">'Flag'</span>,  [1 3], <span style="color:#A020F0; ">'Threshold'</span>,  30, <span style="color:#A020F0; ">'Twindow'</span>, [ -200 798], <span style="color:#A020F0; ">'Windowsize'</span>,  400,<span style="color:#A020F0; "> 'Windowstep'</span>,  10 );</p>
 <p class="LiteralText"><span style="color:black; ">        </span>%EEG.setname= [EEG.setname '_ar'];</p>
 <p class="LiteralText"><span style="color:black; ">        EEG = pop_saveset(EEG, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, [EEG.setname </span><span style="color:#A020F0; ">'.set'</span><span style="color:black; ">], </span><span style="color:#A020F0; ">'filepath'</span><span style="color:black; ">, data_path);</span></p>
 <p class="LiteralText"><span style="color:black; ">        EEG = pop_exporteegeventlist(EEG, [data_path subject_list{s} </span><span style="color:#A020F0; ">'_eventlist_ar.txt'</span><span style="color:black; ">]);</span></p>
@@ -182,10 +182,10 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:black; ">        </span>% Averaging. Single epoched EEG. Only good trials.</p>
 <p class="LiteralText"><span style="color:black; ">        </span>%</p>
 <p class="LiteralText"><span style="color:black; ">        fprintf(</span><span style="color:#A020F0; ">'\n\n\n**** %s: Averaging ****\n\n\n'</span><span style="color:black; ">, subject_list{s});               </span></p>
-<p class="LiteralText"><span style="color:black; ">        ERP = pop_averager( EEG, 1, 1, 0);</span></p>
+<p class="LiteralText">        ERP = pop_averager( EEG , <span style="color:#A020F0; ">'Criterion'</span>, 1, <span style="color:#A020F0; ">'DSindex'</span>,1, <span style="color:#A020F0; ">'Stdev'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
 <p class="LiteralText"><span style="color:black; ">        erpname = [subject_list{s} </span><span style="color:#A020F0; ">'_ERPs'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
 <p class="LiteralText"><span style="color:black; ">        fname_erp = fullfile(data_path, [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">]);</span></p>
-<p class="LiteralText"><span style="color:black; ">        pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
+<p class="LiteralText">        pop_savemyerp(ERP, <span style="color:#A020F0; ">'erpname'</span>, erpname, <span style="color:#A020F0; ">'filename'</span>, fname_erp);</p>
 <p class="LiteralText"><span style="color:black; "> </span></p>
 <p class="LiteralText"><span style="color:black; "> </span></p>
 <p class="LiteralText"><span style="color:black; ">        </span>%</p>
@@ -198,7 +198,7 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:black; ">        erpname = [erpname </span><span style="color:#A020F0; ">'_30Hz'</span><span style="color:black; ">];  </span>% name for erpset menu</p>
 <p class="LiteralText"><span style="color:black; ">        fname_erp = fullfile(data_path, [erpname </span><span style="color:#A020F0; ">'.erp'</span><span style="color:black; ">]);</span></p>
 <p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">if</span><span style="color:black; "> (save_everything) </span></p>
-<p class="LiteralText"><span style="color:black; ">            pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
+<p class="LiteralText"><span style="color:black; ">        pop_savemyerp(ERP, </span><span style="color:#A020F0; ">'erpname'</span><span style="color:black; ">, erpname, </span><span style="color:#A020F0; ">'filename'</span><span style="color:black; ">, fname_erp);</span></p>
 <p class="LiteralText"><span style="color:black; ">        </span><span style="color:blue; ">end</span></p>
 <p class="LiteralText"><span style="color:blue; "> </span></p>
 <p class="LiteralText"><span style="color:blue; "> </span></p>
