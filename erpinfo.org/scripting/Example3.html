@@ -100,7 +100,10 @@ font-family:Helvetica;
 <p class="LiteralText">EEG = eeg_checkset( EEG );</p>
 <p class="LiteralText">EEG = pop_saveset( EEG, 'filename','S1_Chan.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText">EEG = pop_creabasiceventlist(EEG, '', {'boundary'}, {-99}, 1);</p>
+<p class="LiteralText">EEG  = pop_creabasiceventlist( EEG , 'Newboundary', { -99 }, 'Stringboundary', { 'boundary' }, 'Warning', 'on' );</p>
+<div>
+  <div> </div>
+</div>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off'); </p>
 <p class="LiteralText">EEG = pop_binlister( EEG, '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'no', '', 0, [], [], 0, 0, 0);</p>
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
