@@ -63,7 +63,7 @@ font-family:Helvetica;
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
 <p class="paragraph">&nbsp;</p>
 <p class="paragraph"><em>Step 3: Creating the EVENTLIST structure. </em>Next you will add an EVENTLIST structure to the EEG structure.  We will do a very simple version of this here (without adding text labels for the events).  To do this, select <strong>ERPLAB &gt; EventList &gt; Create EEG EventList – Basic</strong>, and just run it with the default parameters as shown in the screenshot below:</p>
-<p><img src="images/create_eventlist.jpg" alt="create_eventlist" width="480" height="233" /></p>
+<p class="paragraph"><img src="../Images/Example 3a_create basic eventlist.png" width="428" height="303" /></p>
 <p class="paragraph">This will create a new dataset, and ERPLAB will suggest that you name it S1_Chan_elist.  Go ahead and use this name.  You do not need to save it as a file.  You will be able to see this new dataset in the <strong>Datasets</strong> menu.</p>
 <p class="paragraph"><em>Step 4: Assigning events to bins with BINLISTER. </em>The next step is to use BINLISTER to figure out which events belong in which bins.  In the parent directory, you should find a bin descriptor file named <strong>binlist_demo_1.txt</strong>.  If you can't find it, you can create it with the following contents: </p>
 <p class="LiteralText">bin 1</p>
@@ -80,12 +80,12 @@ font-family:Helvetica;
 <p class="paragraph"><em>Step 5: Epoching the data. </em>The next step is to extract epochs based on the bins created in the previous step.  To do this, select <strong>ERPLAB &gt; Extract Bin-based Epochs</strong> and enter the parameters shown in the screen shot:<img src="../Images/Example 3a_average gui.png" width="389" height="298" /></p>
 <p class="paragraph">The epoching routine will suggest <strong>S1_Chan_elist_nelist_be</strong> as the name of the dataset, and you should use this name. </p>
 <p class="paragraph"><em>Step 6: Artifact Detection. </em>The next step is to detect artifacts with <strong>ERPLAB &gt; Artifact Detection &gt; Moving window peak-to-peak threshold</strong> with the parameters shown in the screen shot:</p>
-<p><img src="images/reject.jpg" alt="reject" width="305" height="395" /></p>
+<p class="paragraph"><img src="../Images/Example 3a_Moving window peak to peak.png" width="352" height="276" /></p>
 <p class="paragraph">It should reject 28.8% of the trials (as indicated in the command window).  Accept the results and use the recommended name of <strong>S1_Chan_elist_nelist_be_ar</strong> for the dataset.</p>
 <p class="paragraph"><em>Step 6: Averaging. </em>We are now ready to average the data with <strong>ERPLAB &gt; Compute averaged ERP</strong> with the default parameters (which should look something like the following screenshot):</p>
 <p><img src="images/average.jpg" alt="average" width="425" height="180" /></p>
 <p class="paragraph">Use S1_ERP as the name of the ERPset and save it in a file named S1_ERP.erp, as shown here:</p>
-<p><img src="images/save_erp.jpg" alt="save_erp" width="424" height="292" /></p>
+<p class="paragraph"><img src="../Images/Example 3a_save erpset gui.png" width="427" height="324" /></p>
 <p class="paragraph">You can see the whole series of commands prior to creating the average by typing <strong>eegh</strong> in the command window, which should produce something like this:</p>
 <p class="LiteralText">&gt;&gt; eegh</p>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;</p>
