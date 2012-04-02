@@ -107,13 +107,13 @@ font-family:Helvetica;
 <p class="LiteralText">    EEG = eeg_checkset( EEG );</p>
 <p class="LiteralText">    EEG = pop_editset(EEG, <span style="color:#A020F0; ">'setname'</span>, [subject <span style="color:#A020F0; ">'_Chan'</span>]);</p>
 <p class="LiteralText">    EEG = pop_saveset( EEG, <span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_Chan.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
-<p class="LiteralText">    EEG = pop_creabasiceventlist(EEG, <span style="color:#A020F0; ">''</span>, {<span style="color:#A020F0; ">'boundary'</span>}, {-99}, 1);</p>
-<p class="LiteralText">    EEG = pop_binlister( EEG, [parentfolder <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>], <span style="color:#A020F0; ">'no'</span>, <span style="color:#A020F0; ">''</span>, 0, [], [], 0, 0, 0);</p>
+<p class="LiteralText">    EEG = pop_creabasiceventlist(EEG, <span style="color:#A020F0; ">'Newboundary'</span>, {-99}, <span style="color:#A020F0; ">'Stringboundary'</span>, {<span style="color:#A020F0; ">'boundary'</span>     }, <span style="color:#A020F0; ">'Warning', 'on'</span>);</span></p>
+<p class="LiteralText">    EEG  = pop_binlister( EEG , <span style="color:#A020F0; ">'BDF'</span>, [parentfolder <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>],<span style="color:#A020F0; "> 'ImportEL'</span>,<span style="color:#A020F0; "> 'no'</span>,<span style="color:#A020F0; "> 'Saveas'</span>,<span style="color:#A020F0; "> 'on'</span>,<span style="color:#A020F0; "> 'SendEL2'</span>,<span style="color:#A020F0; "> 'EEG'</span>,<span style="color:#A020F0; "> 'Warning'</span>,<span style="color:#A020F0; "> 'on' </span>);</p>
 <p class="LiteralText">    EEG = pop_epochbin( EEG , [-200.0  800.0],  <span style="color:#A020F0; ">'pre'</span>);</p>
-<p class="LiteralText">    EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:16,  1);</p>
+<p class="LiteralText">    EEG  = pop_artmwppth( EEG , <span style="color:#A020F0; ">'Channel'</span>,  1:16, <span style="color:#A020F0; ">'Flag'</span>,  1,<span style="color:#A020F0; "> 'Threshold'</span>,  100, <span style="color:#A020F0; ">'Twindow'</span>, [ -200 798],<span style="color:#A020F0; "> 'Windowsize'</span>,  200, <span style="color:#A020F0; ">'Windowstep'</span>,  50 );</p>
 <p class="LiteralText">    [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>);</p>
-<p class="LiteralText">    ERP = pop_averager( EEG,1, 1, 1 );</p>
-<p class="LiteralText">    ERP = pop_savemyerp(ERP, <span style="color:#A020F0; ">'erpname'</span>, [subject <span style="color:#A020F0; ">'_ERP'</span>], <span style="color:#A020F0; ">'filename'</span>, [subjectfolder subject <span style="color:#A020F0; ">'_ERP.erp'</span>]);</p>
+<p class="LiteralText">    ERP = pop_averager( EEG , <span style="color:#A020F0; ">'Criterion'</span>, 1, <span style="color:#A020F0; ">'DSindex'</span>,1, <span style="color:#A020F0; ">'Stdev'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
+<p class="LiteralText">    ERP = pop_savemyerp(ERP, <span style="color:#A020F0; ">'erpname'</span>, <span style="color:#A020F0; ">'S1_ERP'</span>, <span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_ERP.erp'</span>], <span style="color:#A020F0; ">'pathname'</span>, subjectfolder, <span style="color:#A020F0; ">'warning'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
 <p class="LiteralText"> </p>
 <p class="LiteralText"><span style="color:blue; ">end</span>;</p>
 <p class="LiteralText">&nbsp;</p>
