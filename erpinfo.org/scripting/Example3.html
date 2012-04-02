@@ -105,17 +105,23 @@ font-family:Helvetica;
   <div> </div>
 </div>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off'); </p>
-<p class="LiteralText">EEG = pop_binlister( EEG, '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'no', '', 0, [], [], 0, 0, 0);</p>
+<p class="LiteralText">EEG  = pop_binlister( EEG , 'BDF', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'ImportEL', 'no', 'Saveas', 'on', 'SendEL2', 'EEG', 'Warning', 'on' );</p>
+<div>
+  <div></div>
+</div>
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
 <p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre');</p>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'gui','off'); </p>
-<p class="LiteralText">EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:16,  1);</p>
+<p class="LiteralText">EEG  = pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold',  100, 'Twindow', [ -200 798], 'Windowsize',  200, 'Windowstep',  50 ); </p>
+<div>
+  <div> </div>
+</div>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'gui','off');</p>
 <p class="LiteralText">&nbsp;</p>
 <p class="paragraph">This does not include the command for computing the averaged ERP, because the result of that command is an ERP structure, not a new EEG structure.  Any commands that operate on the ERP structure can be seen with the <strong>erph</strong> command.  If you type <strong>erph</strong> in the command window, you will see something like this:</p>
 <p class="LiteralText">&gt;&gt; erph</p>
-<p class="LiteralText">ERP = pop_averager( ALLEEG,4, 1, 1 );</p>
-<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/S1_ERP.erp', 'gui', 'erplab');</span></p>
+<p class="LiteralText">ERP = pop_averager( ALLEEG , 'Criterion',1, 'DSindex',4, 'Stdev', 'on' );</p>
+<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', 'S1_ERP.erp', 'pathname', '/ Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1', 'warning', 'on');</span></p>
 <p class="LiteralText">&nbsp;</p>
 <h2><a name="script" id="script"></a>Using the history to make a script</h2>
 <p class="paragraph">We are now (finally!) ready to turn this history into a script.  You can simply copy the output of the <strong>eegh</strong> and <strong>erph</strong> commands into a new script file.  You can leave out the first line of the EEGLAB history (the line that launches EEGLAB).  You can also leave out the line that says <strong>EEG = eeg_checkset(EEG)</strong>, which is just some EEGLAB housekeeping that you can usually ignore.  And you can add <strong>eeglab redraw</strong> at the end.  The whole script should look something like this, but with a different path to the <strong>S1</strong> folder, reflecting the fact that the files are not stored in exactly the same place on your computer that they are stored in my computer.  In addition, the file <strong>standard-10-5-cap385.elp</strong>, which is used for determining electrode locations, will probably be in a different place in your file system (but your history should give the correct location).</p>
@@ -127,16 +133,16 @@ font-family:Helvetica;
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
 <p class="LiteralText">EEG = pop_saveset( EEG, 'filename','S1_Chan.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');</p>
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText">EEG = pop_creabasiceventlist(EEG, '', {'boundary'}, {-99}, 1);</p>
+<p class="LiteralText">EEG  = pop_creabasiceventlist( EEG , 'Newboundary', { -99 }, 'Stringboundary', { 'boundary' }, 'Warning', 'on' );</p>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,'gui','off'); </p>
-<p class="LiteralText">EEG = pop_binlister( EEG, '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'no', '', 0, [], [], 0, 0, 0);</p>
+<p class="LiteralText">EEG  = pop_binlister( EEG , 'BDF', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt', 'ImportEL', 'no', 'Saveas', 'on', 'SendEL2', 'EEG', 'Warning', 'on' );</p>
 <p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
 <p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre');</p>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,'gui','off'); </p>
-<p class="LiteralText">EEG = pop_artmwppth( EEG, [-200  798], 100, 200, 50,  1:16,  1);</p>
+<p class="LiteralText">EEG  = pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold',  100, 'Twindow', [ -200 798], 'Windowsize',  200, 'Windowstep',  50 );</p>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,'gui','off');</p>
-<p class="LiteralText">ERP = pop_averager( ALLEEG,4, 1, 1 );</p>
-<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/S1_ERP.erp', 'gui', 'erplab');</span></p>
+<p class="LiteralText">ERP = pop_averager( ALLEEG , 'Criterion',1, 'DSindex',4, 'Stdev', 'on' );</p>
+<p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', 'S1_ERP.erp', 'pathname', '/ Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1', 'warning', 'on');</span></p>
 <p class="MsoNormal"><span style="font-family:Helvetica; font-size:10.0pt; ">eeglab redraw;</span></p>
 <p class="MsoNormal">&nbsp;</p>
 <p class="paragraph">Before running this script, close EEGLAB, type <strong>clear all</strong> in the Matlab command window, and restart EEGLAB.   This way we can avoid being confused by the datasets that you created in the EEGLAB GUI.  Now go ahead and run your new script.  You should see lots of information being printed in the command window as the various commands run.  At the end, when the <strong>pop_averager()</strong> command has finished averaging, it will put up a window asking you to name and save the averaged ERP.  It should have the correct name (S1_ERP) already, and you can go ahead and save it.  It might ask you if you want to overwrite an existing file (that you created previously), and you can go ahead and do that.</p>
