@@ -77,12 +77,14 @@ font-family:Helvetica;
 <p class="paragraph">Run BINLISTER by selecting <strong>ERPLAB &gt; Assign Bins (BINLSTER)</strong>.  Tell BINLISTER to load the bin descriptor file from <strong>binlist_demo_1.txt</strong> (or the file you created) and then run it with the default parameters, as shown in the following screen shot:</p>
 <p><img src="images/binlister.jpg" alt="binlister" width="554" height="417" /></p>
 <p class="paragraph">When it is done, BINLISTER will suggest <strong>S1_Chan_elist_nelist</strong> as the name of the dataset, and you should use this name.</p>
-<p class="paragraph"><em>Step 5: Epoching the data. </em>The next step is to extract epochs based on the bins created in the previous step.  To do this, select <strong>ERPLAB &gt; Extract Bin-based Epochs</strong> and enter the parameters shown in the screen shot:<img src="../Images/Example 3a_average gui.png" width="389" height="298" /></p>
+<p class="paragraph"><em>Step 5: Epoching the data. </em>The next step is to extract epochs based on the bins created in the previous step.  To do this, select <strong>ERPLAB &gt; Extract Bin-based Epochs</strong> and enter the parameters shown in the screen shot:</p>
+<p class="paragraph"><img src="../Images/Example 3a_average gui.png" width="389" height="298" /></p>
 <p class="paragraph">The epoching routine will suggest <strong>S1_Chan_elist_nelist_be</strong> as the name of the dataset, and you should use this name. </p>
 <p class="paragraph"><em>Step 6: Artifact Detection. </em>The next step is to detect artifacts with <strong>ERPLAB &gt; Artifact Detection &gt; Moving window peak-to-peak threshold</strong> with the parameters shown in the screen shot:</p>
 <p class="paragraph"><img src="../Images/Example 3a_Moving window peak to peak.png" width="352" height="276" /></p>
 <p class="paragraph">It should reject 28.8% of the trials (as indicated in the command window).  Accept the results and use the recommended name of <strong>S1_Chan_elist_nelist_be_ar</strong> for the dataset.</p>
 <p class="paragraph"><em>Step 6: Averaging. </em>We are now ready to average the data with <strong>ERPLAB &gt; Compute averaged ERP</strong> with the default parameters (which should look something like the following screenshot):</p>
+<p class="paragraph">&nbsp;</p>
 <p><img src="images/average.jpg" alt="average" width="425" height="180" /></p>
 <p class="paragraph">Use S1_ERP as the name of the ERPset and save it in a file named S1_ERP.erp, as shown here:</p>
 <p class="paragraph"><img src="../Images/Example 3a_save erpset gui.png" width="427" height="324" /></p>
