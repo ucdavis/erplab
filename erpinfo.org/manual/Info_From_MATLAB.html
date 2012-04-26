@@ -82,6 +82,7 @@ font-family:Cambria;
 <p class="CommandWindowText">         xmax: 0.7960</p>
 <p class="CommandWindowText">        times: [1x250 double]</p>
 <p class="CommandWindowText">      bindata: [14x250x3 double]</p>
+<p class="CommandWindowText">     binerror: []</p>
 <p class="CommandWindowText">      ntrials: [1x1 struct]</p>
 <p class="CommandWindowText">       isfilt: 1</p>
 <p class="CommandWindowText">     chanlocs: [1x14 struct]</p>
@@ -90,6 +91,9 @@ font-family:Cambria;
 <p class="CommandWindowText">        saved: 'no'</p>
 <p class="CommandWindowText">      history: [4x826 char]</p>
 <p class="CommandWindowText">      version: '1.2.0'</p>
+<p class="CommandWindowText">   splinefile: ''</p>
+<p class="CommandWindowText">    EVENTLIST: [1x1 struct]</p>
+
 <p class="CommandWindowText"><span style="font-size:11.0pt; ">&nbsp;</span></p>
 <p class="paragraph">Each line shows a field in the <strong>ERP</strong> structure.  When a given field contains relatively simple data, the values are shown for that field.  In the current example, the values from the fields show that the currently active ERPset has 14 channels (<em>nchans</em>), 3 bins (<em>nbins</em>), 250 sample points per epoch (<em>pnts</em>), a sampling rate of 250 Hz (<em>srate</em>), a starting point of -0.2 seconds (200 ms; <em>xmin</em>), an ending point of 0.796 seconds (796 ms; <em>xmax</em>), has been filtered (<em>isfilt</em>), has not been saved to disk (<em>saved</em>).  When a field contains complex data, a summary of the matrix for that field is shown (e.g., &quot;[4x826 char]&quot; means a 2-dimensional character array with 4 rows and 826 columns).  If you want to see the contents of one of these complex fields, you can type the name of the structure, a dot, and the name of the field.  For example, to see the number of trials in each bin (in the <em>ntrials</em> field), you would type &quot;ERP.ntrials&quot;.  The result would look like this:</p>
 <p class="CommandWindowText">&gt;&gt; ERP.ntrials</p>
@@ -99,6 +103,7 @@ font-family:Cambria;
 <p class="CommandWindowText">    accepted: [246 63 309]</p>
 <p class="CommandWindowText">    rejected: [6 0 6]</p>
 <p class="CommandWindowText">     invalid: [0 0 0]</p>
+<p class="CommandWindowText">     arflags: [3 x 8 double]</p>
 <p class="CommandWindowText">&nbsp;</p>
 <p class="paragraph">This means that there were 246 trials included in the average for bin 1, 63 for bin 2, and 309 for bin 3.  The number of trials rejected because of artifacts was 6, 0, and 6, respectively.  The &quot;invalid&quot; field is the count of trials that were rejected because of some kind of problem (e.g., the EEG epoch contained a <strong>boundary</strong> event code).  Note that bin 3 in this example is a difference wave created by subtracting bin 1 from bin 2; the number of trials in such cases is the total number of trials contributing to the average (i.e., the sum of the trials in the individual averages that were combined to create the new bins).</p>
 <p class="paragraph">You can use this same approach to see the contents of the current <strong>EEG</strong> structure.  To see the <strong>EVENTLIST</strong> that was created for the current <strong>EEG</strong> structure, you can simply type &quot;EEG.EVENTLIST&quot;.  The result would look something like this:</p>
@@ -106,14 +111,14 @@ font-family:Cambria;
 <p class="CommandWindowText">&nbsp;</p>
 <p class="CommandWindowText">ans = </p>
 <p class="CommandWindowText">&nbsp;</p>
-<p class="CommandWindowText">            nbin: 2</p>
-<p class="CommandWindowText">    trialsperbin: [252 63]</p>
 <p class="CommandWindowText">         setname: 'CNT file_elist'</p>
 <p class="CommandWindowText">          report: 'ERPLAB Demo 3-09_REPORT.txt'</p>
 <p class="CommandWindowText">         bdfname: 'CNS Demo BDF.txt'</p>
+<p class="CommandWindowText">            nbin: 2</p>
 <p class="CommandWindowText">         version: '1.2.0'</p>
 <p class="CommandWindowText">         account: 'luck'</p>
 <p class="CommandWindowText">        username: ''</p>
+<p class="CommandWindowText">    trialsperbin: [252 63]</p>
 <p class="CommandWindowText">          elname: 'ERPLAB Demo 3-09.txt'</p>
 <p class="CommandWindowText">             bdf: [1x2 struct]</p>
 <p class="CommandWindowText">          eldate: '16-Jul-2009 09:22:37'</p>
