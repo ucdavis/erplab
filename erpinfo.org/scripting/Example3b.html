@@ -58,42 +58,40 @@ font-family:Helvetica;
 <p class="paragraph">The next step is to go through the script and use our new Matlab trick to replace every occurrence of <strong>S1</strong> with a set of square brackets containing <strong>subject</strong> or <strong>subjectfolder </strong>along with the rest of the string.  For example, you should replace<strong> 'S1_EEG.set'</strong> with <strong>[subject '_EEG.set']</strong> in the <strong>pop_loadset</strong> command, and you should replace<strong> 'S1_Chan'</strong> with <strong>[subject '_Chan']</strong> in the <strong>pop_editset </strong>command.  You should also follow each occurrence of <strong>'filepath'</strong> with <strong>subjectfolder</strong>.  The result will look like this (notice that the lines beginning with a percent sign are comments that I've inserted to explain the changes on the following line):</p>
 <p class="LiteralText">subject = <span style="color:#A020F0; ">'S1'</span>;</p>
 <p class="LiteralText">subjectfolder = [<span style="color:#A020F0; ">'/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/'</span> subject <span style="color:#A020F0; ">'/'</span>];</p>
-<p class="LiteralText"> </p>
+<p class="LiteralText">&nbsp;</p>
 <p class="LiteralText"><span style="color:forestgreen; ">% 'S1_EEG.set' was replaced with [subject '_EEG.set'], and </span></p>
 <p class="LiteralText"><span style="color:forestgreen; ">% '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/' was replaced with subjectfolder</span></p>
 <p class="LiteralText">EEG = pop_loadset(<span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_EEG.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
-<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );</p>
+<p class="LiteralText">&nbsp;</p>
 <p class="LiteralText">EEG=pop_chanedit(EEG, <span style="color:#A020F0; ">'lookup'</span>,<span style="color:#A020F0; ">'/Users/luck/Documents/Software_Development/eeglab9_0_2_3b/plugins/dipfit2.2/standard_BESA/standard-10-5-cap385.elp'</span>);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
 <p class="LiteralText"> </p>
 <p class="LiteralText"><span style="color:forestgreen; ">% 'S1_Chan'was replaced with [subject '_Chan']</span></p>
-<p class="LiteralText">EEG = pop_editset(EEG, <span style="color:#A020F0; ">'setname'</span>, [subject <span style="color:#A020F0; ">'_Chan'</span>]);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
+<p class="LiteralText">EEG = pop_editset(EEG, 'setname', [subject '_Chan']);</p>
 <p class="LiteralText"> </p>
 <p class="LiteralText"><span style="color:forestgreen; ">% 'S1_Chan.set'was replaced with [subject '_Chan.set'], and</span></p>
 <p class="LiteralText"><span style="color:forestgreen; ">% '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/' was replaced with subjectfolder</span></p>
-<p class="LiteralText">EEG = pop_saveset( EEG, <span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_Chan.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText">EEG = pop_creabasiceventlist(EEG, <span style="color:#A020F0; ">'Newboundary'</span>, {-99}, <span style="color:#A020F0; ">'Stringboundary'</span>, { <span style="color:#A020F0; ">'boundary'</span> }, <span style="color:#A020F0; ">'Warning', 'on'</span>);</span></p>
-<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>); </p>
-<p class="LiteralText"> </p>
-<p class="LiteralText"><span style="color:forestgreen; ">% '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/binlister_demo_1.txt' </span></p>
-<p class="LiteralText"><span style="color:forestgreen; ">% was replaced with [subjectfolder 'binlister_demo_1.txt']</span></p>
-<p class="LiteralText">EEG  = pop_binlister( EEG , <span style="color:#A020F0; ">'BDF'</span>, [subjectfolder <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>],<span style="color:#A020F0; "> 'ImportEL'</span>,<span style="color:#A020F0; "> 'no'</span>,<span style="color:#A020F0; "> 'Saveas'</span>,<span style="color:#A020F0; "> 'on'</span>,<span style="color:#A020F0; "> 'SendEL2'</span>,<span style="color:#A020F0; "> 'EEG'</span>,<span style="color:#A020F0; "> 'Warning'</span>,<span style="color:#A020F0; "> 'on' </span>);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0  800.0],  <span style="color:#A020F0; ">'pre'</span>);</p>
-<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>); </p>
-<p class="LiteralText">EEG  = pop_artmwppth( EEG , <span style="color:#A020F0; ">'Channel'</span>,  1:16, <span style="color:#A020F0; ">'Flag'</span>,  1,<span style="color:#A020F0; "> 'Threshold'</span>,  100, <span style="color:#A020F0; ">'Twindow'</span>, [ -200 798],<span style="color:#A020F0; "> 'Windowsize'</span>,  200, <span style="color:#A020F0; ">'Windowstep'</span>,  50 );</p>
-<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>);</p>
-<p class="LiteralText">ERP = pop_averager( ALLEEG , <span style="color:#A020F0; ">'Criterion'</span>, 1, <span style="color:#A020F0; ">'DSindex'</span>,4, <span style="color:#A020F0; ">'Stdev'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
+<p class="LiteralText">EEG = pop_saveset( EEG, 'filename', [subject '_Chan.set'],'filepath', subjectfolder);<br />
+</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">EEG = pop_creabasiceventlist( EEG , 'Newboundary', { -99 }, 'Stringboundary', { 'boundary' }, 'Warning', 'on' );<br />
+</p>
+<p class="LiteralText">EEG = pop_binlister( EEG , 'BDF', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/binlister_demo_1.txt', 'ImportEL', 'no', 'Saveas', 'on', 'SendEL2', 'EEG', 'Warning', 'on' );</p>
+<p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0 800.0], 'pre');</p>
+<p class="LiteralText">EEG = pop_artmwppth( EEG , 'Channel', 1:16, 'Flag', 1, 'Review', 'off', 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep', 50 );<br />
+</p>
+<p class="LiteralText">ERP = pop_averager( EEG , 'Criterion', 'good', 'Stdev', 'on' );</p>
 <p class="LiteralText"> </p>
 <p class="LiteralText"><span style="color:forestgreen; ">% 'S1_ERP'was replaced with [subject '_ERP'], and</span></p>
 <p class="LiteralText"><span style="color:forestgreen; ">% '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/S1_ERP.erp' </span></p>
 <p class="LiteralText"><span style="color:forestgreen; ">% was replaced with [subjectfolder subject '_ERP.erp']</span></p>
-<p class="LiteralText">ERP = pop_savemyerp(ERP, <span style="color:#A020F0; ">'erpname'</span>, <span style="color:#A020F0; ">'S1_ERP'</span>, <span style="color:#A020F0; ">'filename'</span>, [subject  <span style="color:#A020F0; ">'_ERP.erp'</span>], <span style="color:#A020F0; ">'pathname'</span>, subjectfolder, <span style="color:#A020F0; ">'warning'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
+<p class="LiteralText">ERP = pop_savemyerp(ERP, 'erpname', [subject '_ERP'], 'filename', [subject '_ERP.erp'], 'pathname', subjectfolder, 'warning', 'off');</p>
+<p class="LiteralText">&nbsp;</p>
+<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );<br />
+ALLERP = ERP;</p>
 <p class="LiteralText">eeglab <span style="color:#A020F0; ">redraw</span>;</p>
+<p class="LiteralText">erplab <span style="color:#A020F0; ">redraw</span>;</p>
 <p class="paragraph">&nbsp;</p>
-<p class="paragraph">Once you've made all of these changes, try running the script.  But first, exit EEGLAB, type <strong>clear all</strong> in the command window, and launch EEGLAB again (the next sections will explain how you can avoid the need for this, although it's often a good idea).  Then run your script.</p>
+<p class="paragraph">Once you've made all of these changes, try running the script.</p>
 <p class="paragraph">Unless you were incredibly careful, you probably made at least one error when making all of these changes.  For example, if you didn't leave a space between <strong>subject</strong> and <strong>'_Chan'</strong> in the <strong>pop_editset</strong> command, you would get an error message like this:</p>
 <p class="LiteralText"><span style="color:red; ">??? Error: File: Script3b.m Line: 17 Column: 44</span></p>
 <p class="LiteralText"><span style="color:red; ">The input character is not valid in MATLAB statements or expressions.</span></p>
@@ -102,17 +100,6 @@ font-family:Helvetica;
 <p class="LiteralText"><span style="color:red; ">??? Error using ==&gt; load Unable to read file /Users/luck/Documents/Software_Development/ERPLAB_Toolbox2/Test_Data/S1/S1_EEG.set: No such file or directory. Error in ==&gt; pop_loadset at 107 TMPVAR = load(filename, '-mat'); Error in ==&gt; Script3b at 10 EEG = pop_loadset('filename', [subject '_EEG.set'],'filepath', subjectfolder);</span></p>
 <p class="LiteralText">&nbsp;</p>
 <p class="paragraph">You will doubtless find this aggravating and frustrating.  I'm not sure if you will find this comforting, but for most scripts you will probably spend more time tracking down and fixing problems than you will spend actually writing the initial script.  That has always been my experience, and it's also true for professional programmers. <a href="Debugging.html">Click here for some tips on debugging</a>.</p>
-<h2><a name="avg" id="avg"></a>Averaging from EEG instead of ALLEEG</h2>
-<p class="paragraph">Once you get your script running, you are almost ready to try it on subject <strong>S2</strong>.  But there are two more little things that we need to fix to get the script to work for another subject.  The first is that, when you do all the processing steps in the GUI and then average the data, you tell the averaging command which dataset(s) to average by specifying the dataset number within the <strong>Datasets</strong> menu.  In our example, the dataset we actually average ends up being the fourth dataset, as shown in the next screenshot.</p>
-<p><img src="images/datasets.jpg" alt="datasets" width="450" height="154" /></p>
-<p class="paragraph">In our scripts so far, this number 4 gets sent to the <strong>pop_averager()</strong> routine like this:</p>
-<p class="LiteralText">ERP = pop_averager( ALLEEG , 'Criterion',1, 'DSindex',4, 'Stdev', 'on' );</p>
-<p class="LiteralText">&nbsp;</p>
-<p class="paragraph">This line of the script says to average dataset #4 from within the ALLEEG structure.  The problem with this in a script is that you can't easily guarantee that the appropriate dataset will be the fourth dataset.  If, for example, you run the script with subject <strong>S1</strong> and then immediately run it with subject <strong>S2</strong>, the datasets from <strong>S1</strong> may still be loaded as datasets #1-4, and the datasets for <strong>S2</strong> will become datasets #5-8.</p>
-<p class="paragraph">The solution to this is to send the current <strong>EEG</strong> structure to the <strong>pop_averager()</strong> routine rather than the <strong>ALLEEG</strong> structure.  Most EEGLAB and ERPLAB commands that operate on EEG data return both an <strong>ALLEEG</strong> structure and an <strong>EEG</strong> structure.  As long as you want to average the current <strong>EEG</strong> structure, you can change this line in your script to this: </p>
-<p class="LiteralText">ERP = pop_averager( EEG , 'Criterion',1, 'DSindex',1, 'Stdev', 'on' );</p>
-<p class="LiteralText">&nbsp;</p>
-<p class="paragraph">When you do this, it doesn't matter what other datasets are present in <strong>ALLEEG</strong>.  It just matters that the <strong>EEG</strong> structure has the right data in it, which it should if you average immediately after doing a series of EEG commands.  In our script, for example, we average right after updating the <strong>EEG</strong> structure by performing artifact detection with the <strong>pop_artmwppth</strong> routine.</p>
 <h2><a name="bdf" id="bdf"></a>Putting the bin descriptor file in the parent folder</h2>
 <p class="paragraph">The next thing you need to fix is the location of the bin descriptor file, <strong>'binlister_demo_1.txt'</strong>.  In our script so far, we've assumed that this file is in the <strong>S1</strong> folder.  You will use the same bin descriptor file for every subject, so it doesn't make sense to have a separate copy in every subject's folder.  Instead, you should put it in the <em>parent</em> folder (the folder that contains the <strong>S1</strong> folder and the folders for all the other subjects).  After you've done this, you will need to make some changes to your script so that it looks in the right place for this file.  First, you will define a variable named <strong>parentfolder</strong> in your script (and use it when defining the <strong>subjectfolder</strong> variable), as follows:</p>
 <p class="LiteralText">subject = <span style="color:#A020F0; ">'S1'</span>;</p>
@@ -120,40 +107,32 @@ font-family:Helvetica;
 <p class="LiteralText">subjectfolder = [parentfolder subject <span style="color:#A020F0; ">'/'</span>];</p>
 <p class="LiteralText">&nbsp;</p>
 <p class="paragraph">As usual, the exact path should reflect your computer's organization.  The final step is to update the <strong>pop_binlister</strong> command so that it looks for the bin descriptor file in the parent folder:</p>
-<p class="LiteralText">EEG  = pop_binlister( EEG , <span style="color:#A020F0; ">'BDF'</span>, [parentfolder <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>],<span style="color:#A020F0; "> 'ImportEL'</span>,<span style="color:#A020F0; "> 'no'</span>,<span style="color:#A020F0; "> 'Saveas'</span>,<span style="color:#A020F0; "> 'on'</span>,<span style="color:#A020F0; "> 'SendEL2'</span>,<span style="color:#A020F0; "> 'EEG'</span>,<span style="color:#A020F0; "> 'Warning'</span>,<span style="color:#A020F0; "> 'on' </span>);</p>
+<p class="LiteralText">EEG = pop_binlister( EEG , 'BDF', [parentfolder 'binlister_demo_1.txt'], 'ImportEL', 'no', 'Saveas', 'on', 'SendEL2', 'EEG', 'Warning', 'on' );</p>
 <h2><a name="path" id="path"></a>Changing the path for the electrode locations file</h2>
 <p class="paragraph">The last little thing you need to fix is the location of the file used to add the electrode locations, <strong>standard-10-5-cap385.elp</strong>.  In our script so far, we've used the full path to the file, which we've gotten from the EEGLAB history.  This file is probably located in the EEGLAB folder, and if you upgrade to a new version of EEGLAB, this folder will have a different name, and the script will stop working properly.  To avoid this, we can just rid of the path information that precedes the <strong>standard-10-5-cap385.elp</strong> filename.  As long as the folder that contains this file is in your Matlab path, EEGLAB will be able to find the file.  To make this change, just edit the line with the <strong>pop_chanedit()</strong> command so that it looks like this:</p>
 <p class="LiteralText">EEG=pop_chanedit(EEG, <span style="color:#A020F0; ">'lookup'</span>,<span style="color:#A020F0; ">'standard-10-5-cap385.elp'</span>);</p>
 <p class="LiteralText">&nbsp;</p>
 <p class="paragraph">The whole script should now look something like this:</p>
-<p class="LiteralText">subject = <span style="color:#A020F0; ">'S1'</span>;</p>
-<p class="LiteralText">parentfolder = <span style="color:#A020F0; ">'/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/'</span>;</p>
-<p class="LiteralText"><span style="color:forestgreen; ">%Note the spaces before and after subject in the following line</span>
-</p><p class="LiteralText">subjectfolder = [parentfolder subject <span style="color:#A020F0; ">'/'</span>];</p>
-<p class="LiteralText"> </p>
-<p class="LiteralText">EEG = pop_loadset(<span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_EEG.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
-<p class="LiteralText">[ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );</p>
-<p class="LiteralText">EEG=pop_chanedit(EEG, <span style="color:#A020F0; ">'lookup'</span>,<span style="color:#A020F0; ">'standard-10-5-cap385.elp'</span>);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText">EEG = eeg_checkset( EEG );</p>
-<p class="LiteralText">EEG = pop_editset(EEG, <span style="color:#A020F0; ">'setname'</span>, [subject <span style="color:#A020F0; ">'_Chan'</span>]);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText"><span style="color:forestgreen; ">%EEG = eeg_checkset( EEG );</span></p>
-<p class="LiteralText">EEG = pop_saveset( EEG, <span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_Chan.set'</span>],<span style="color:#A020F0; ">'filepath'</span>, subjectfolder);</p>
-<p class="LiteralText">[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);</p>
-<p class="LiteralText">EEG = pop_creabasiceventlist(EEG, <span style="color:#A020F0; ">'Newboundary'</span>, {-99}, <span style="color:#A020F0; ">'Stringboundary'</span>, { <span style="color:#A020F0; ">'boundary'</span> }, <span style="color:#A020F0; ">'Warning', 'on'</span>);</span></p>
-<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 1,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>); </p>
-<p class="LiteralText">EEG  = pop_binlister( EEG , <span style="color:#A020F0; ">'BDF'</span>, [parentfolder <span style="color:#A020F0; ">'binlister_demo_1.txt'</span>],<span style="color:#A020F0; "> 'ImportEL'</span>,<span style="color:#A020F0; "> 'no'</span>,<span style="color:#A020F0; "> 'Saveas'</span>,<span style="color:#A020F0; "> 'on'</span>,<span style="color:#A020F0; "> 'SendEL2'</span>,<span style="color:#A020F0; "> 'EEG'</span>,<span style="color:#A020F0; "> 'Warning'</span>,<span style="color:#A020F0; "> 'on' </span>);</p>
-<p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0  800.0],  <span style="color:#A020F0; ">'pre'</span>);</p>
-<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 3,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>); </p>
-<p class="LiteralText">EEG  = pop_artmwppth( EEG , <span style="color:#A020F0; ">'Channel'</span>,  1:16, <span style="color:#A020F0; ">'Flag'</span>,  1,<span style="color:#A020F0; "> 'Threshold'</span>,  100, <span style="color:#A020F0; ">'Twindow'</span>, [ -200 798],<span style="color:#A020F0; "> 'Windowsize'</span>,  200, <span style="color:#A020F0; ">'Windowstep'</span>,  50 );</p>
-<p class="LiteralText">[ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 4,<span style="color:#A020F0; ">'gui'</span>,<span style="color:#A020F0; ">'off'</span>);</p>
-<p class="LiteralText">ERP = pop_averager( EEG , <span style="color:#A020F0; ">'Criterion'</span>, 1, <span style="color:#A020F0; ">'DSindex'</span>,1, <span style="color:#A020F0; ">'Stdev'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
-<p class="LiteralText">ERP = pop_savemyerp(ERP, <span style="color:#A020F0; ">'erpname'</span>, <span style="color:#A020F0; ">'S1_ERP'</span>, <span style="color:#A020F0; ">'filename'</span>, [subject <span style="color:#A020F0; ">'_ERP.erp'</span>], <span style="color:#A020F0; ">'pathname'</span>, subjectfolder, <span style="color:#A020F0; ">'warning'</span>, <span style="color:#A020F0; ">'on'</span>);</p>
-<p class="LiteralText">eeglab <span style="color:#A020F0; ">redraw</span>;</p>
+<p class="LiteralText">subject = 'S1';<br />
+  parentfolder = '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/';<br />
+  subjectfolder = [parentfolder subject '/'];<br />
+EEG = pop_loadset('filename',[subject '_EEG.set'],'filepath',subjectfolder);<br />
+  EEG=pop_chanedit(EEG, 'lookup','standard-10-5-cap385.elp');<br />
+EEG = pop_editset(EEG, 'setname', [subject '_Chan']);<br />
+EEG = pop_saveset( EEG, 'filename', [subject '_Chan.set'],'filepath', subjectfolder);<br />
+EEG = pop_creabasiceventlist( EEG , 'Newboundary', { -99 }, 'Stringboundary', { 'boundary' }, 'Warning', 'on' );<br />
+EEG = pop_binlister( EEG , 'BDF', [parentfolder 'binlister_demo_1.txt'], 'ImportEL', 'no', 'Saveas', 'off', 'SendEL2', 'EEG', 'Warning', 'on' );<br />
+EEG = pop_epochbin( EEG , [-200.0 800.0], 'pre');<br />
+EEG = pop_artmwppth( EEG , 'Channel', 1:16, 'Flag', 1, 'Review', 'off', 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep', 50 );<br />
+ERP = pop_averager( EEG , 'Criterion', 'good', 'Stdev', 'on' );<br />
+ERP = pop_savemyerp(ERP, 'erpname', [subject '_ERP'], 'filename', [subject '_ERP.erp'], 'pathname', subjectfolder, 'warning', 'off');<br />
+  [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG, 0 );<br />
+  ALLERP = ERP;<br />
+  eeglab redraw<br />
+erplab redraw;</p>
 <p class="LiteralText">&nbsp;</p>
-<p class="paragraph">You can now go ahead and run this script.  This time you don't need to exit and restart EEGLAB first.</p>
-<p class="paragraph">Once you get the script to run, notice that the datasets created by this script are appended onto the <strong>Datasets</strong> menu, so you will probably now have 8 datasets instead of 4.  If you want, you can eliminate the <strong>eeg_store</strong> and <strong>pop_newset</strong> commands from the script (except perhaps the last <strong>pop_newset </strong>command).  If you do this, the intermediate datasets won't be available in the GUI, but you don't usually need them anyway.</p>
+<p class="paragraph">You can now go ahead and run this script. You don't need to quit and relaunch EEGLAB before running the script (although it's often a good idea).</p>
+<p class="paragraph">Notice that the datasets created by this script are appended onto the <strong>Datasets</strong> menu, so you will probably now have 2 datasets instead of 1. However, you just have the most recent ERPset, because you copied the current <strong>ERP</strong> structure into the <strong>ALLERP</strong> variable. However, you saved each <strong>ERP</strong> structure as a file on your hard drive, so you can always reload later. In addition, I will explain how to maintain multiple <strong>ERP</strong> structures in the <strong>ERPsets</strong> menu in the next example.</p>
 <p class="paragraph">Now you are ready to run this script on subject <strong>S2</strong>.  To do this, simply change the assignment of the <strong>subject</strong> variable in the first line to this:</p>
 <p class="LiteralText">subject = <span style="color:#A020F0; ">'S2'</span>;</p>
 <p class="LiteralText">&nbsp;</p>
