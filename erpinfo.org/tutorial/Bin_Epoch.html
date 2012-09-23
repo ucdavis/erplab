@@ -34,9 +34,9 @@ font-family:Cambria;
 </head>
 
 <body>
-<p class="paragraph">The next step after creating the EventList is usually to sort the events into different bins (in preparation for averaging).  However, we already did this by assigning bins for the rare and frequent stimuli when we created the EventList.  </p>
+<p class="paragraph">The next step after creating the EventList is usually to sort the events into different bins (in preparation for averaging).  However, we already did this by assigning bins for the rare and frequent stimuli when we created the EventList using the <strong>Advanced</strong> button. If you skipped that step, you will need to back up a step or use <a href="Binlister.html">BINLISTER</a> to do the bin assignments before proceding with the rest of this tutorial.</p>
 <p class="paragraph">Once the events have been assigned to bins, the next step is to divide the continuous EEG into a set of fixed-length <em>epochs</em> (also known as <em>segments</em>), each of which is time-locked to an event that has been assigned to a bin.  In the present example, we will extract the EEG during a period that begins 200 ms prior to the onset of a stimulus and ends at 800 ms.  This will be done for each event code that has been assigned to a bin (which is, in the present example, the frequent letters and rare digits, not the responses).  Note that EEGLAB has an epoching function (<strong>Tools &gt; Extract epochs</strong>); you should not use this function if you are using the ERPLAB functions for processing the epochs (e.g., averaging, plotting, etc.).  Instead, you should use <strong>ERPLAB &gt; Extract Bin-based Epochs</strong>.  If you select this function, you will see the following window: </p>
-<p><img src="images/epoch.jpg" alt="epoch" width="345" height="245" /></p>
+<p><img src="images/epoch.jpg" alt="epoch" width="392" height="231" /></p>
 <div style="border:double windowtext 3.0pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;">
   <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Create Bin-Based EEG Epochs</span><span style="font-size:11.0pt; "> </span></p>
