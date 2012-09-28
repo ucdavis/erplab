@@ -59,7 +59,7 @@ font-family:Cambria;
 <p class="paragraph">Next, you should change the name of the dataset to <strong>S1_Chan</strong> so that you can differentiate between this version and the original version.  To do this, select <strong>Edit &gt; Dataset info</strong>.  This will bring up the window shown below, and you should enter <strong>S1_Chan</strong> in the <strong>Dataset name</strong> field.  Click <strong>Ok</strong>, and then look in the <strong>Datasets</strong> menu.  You should now see that it is named <strong>S1_Chan</strong>.</p>
 <p class="paragraph"><span style="font-family:Cambria; font-size:12.0pt; "><img src="images/editset.jpg" alt="editset" width="728" height="318" /></span></p>
 <p class="paragraph">You can now save the modified dataset by selecting <strong>File &gt; Save current dataset as</strong>, naming the file <strong>S1_Chan</strong>. </p>
-<p class="paragraph">Now if you type <strong>eegh</strong>, you will see several additional commands have been added, corresponding to adding the electrode locations, changing the name of the dataset, and saving it as a file:</p>
+<p class="paragraph">Now if you type <strong>EEG.history</strong>, you will see several additional commands have been added, corresponding to adding the electrode locations, changing the name of the dataset, and saving it as a file:</p>
 <p class="LiteralText">&gt;&gt; EEG.history</p>
 <p class="LiteralText">ans = </p>
 <p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1/');<br />
@@ -118,7 +118,7 @@ EEG = eeg_checkset( EEG );</p>
   EEG  = pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Review', 'on', 'Threshold',  100, 'Twindow', [ -200 798], 'Windowsize',  200, 'Windowstep',  50 );<br />
   EEG = eeg_checkset( EEG );<br />
   ERP = pop_averager( ALLEEG , 'Criterion', 'good', 'DSindex',5, 'Stdev', 'on' );<br />
-ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', 'S1_ERP.erp', 'pathname', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1', 'warning', 'on');</p>
+ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', 'S1_ERP.erp', 'filepath', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1', 'warning', 'on');</p>
 <p class="paragraph1"></p>
 <p class="paragraph1"> We are using <strong>ERP.history</strong> rather than <strong>EEGLAB.history</strong> here because EEGLAB doesn't &quot;know&quot; anything about ERPLAB commands, so it doesn't save them in <strong>EEG.history</strong>. Thus, the ERPLAB commands for averging the ERPs and saving the average to the hard disk aren't in <strong>EEG.history</strong>. However, the history in the <strong>ERP</strong> structure contains all of the history from the EEG that was used to create the averaged ERP, plus the history for everything done to the averaged ERP. </p>
 <h2><a name="script" id="script"></a>Using the history to make a script</h2>
@@ -133,7 +133,7 @@ EEG  = pop_binlister( EEG , 'BDF', '/Users/luck/Documents/Software_Development/E
 EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre');<br />
 EEG  = pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Review', 'on', 'Threshold',  100, 'Twindow', [ -200 798], 'Windowsize',  200, 'Windowstep',  50 );<br />
 ERP = pop_averager( EEG , 'Criterion', 'good',  'Stdev', 'on' );<br />
-ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', 'S1_ERP.erp', 'pathname', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1', 'warning', 'on');</p>
+ERP = pop_savemyerp(ERP, 'erpname', 'S1_ERP', 'filename', 'S1_ERP.erp', 'filepath', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/S1', 'warning', 'on');</p>
 <p class="MsoNormal">&nbsp;</p>
 <p class="paragraph">Before running this script, close EEGLAB, type <strong>clear all</strong> in the Matlab command window, and restart EEGLAB.   This way we can avoid being confused by the datasets that you created in the EEGLAB GUI.  Now go ahead and run your new script.  You should see lots of information being printed in the command window as the various commands run. After artifact detection is complete, you will probably see the window for plotting the EEG. In addition, you will probably see a warning message saying that S1_ERP already exists and asking if you want to overwrite it (you should say 'yes'). I will say more about these things in a minute. </p>
 <p class="paragraph">If your script generates error messages, you should make sure that it is exactly like the script shown above, except with path information that matches the location of the <strong>S1</strong> folder and the location of <span class="LiteralText"><strong>standard-10-5-cap385.elp</strong></span> on your computer.</p>
