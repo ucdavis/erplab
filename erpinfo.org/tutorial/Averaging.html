@@ -55,13 +55,13 @@ font-family:Cambria;
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Compute Averaged ERP </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%To average the data from dataset 5, whether or not it is selected, use the following:</span><span style="font-size:11.0pt; "> </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">ERP = pop_averager( ALLEEG , <span style="font-size:11.0pt; color:#A020F0; ">
-'Criterion'</span>,1,<span style="font-size:11.0pt; color:#A020F0; ">
+'Criterion'</span>,<span style="font-size:11.0pt; color:#A020F0; "> 'good'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
  'DSindex'</span>, 5, <span style="font-size:11.0pt; color:#A020F0; ">
 'Stdev'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
  'on' </span>); </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%To average the data from datasets 3-5, use the following:</span><span style="font-size:11.0pt; "> </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">ERP = pop_averager( ALLEEG , <span style="font-size:11.0pt; color:#A020F0; ">
-'Criterion' </span>,1, <span style="font-size:11.0pt; color:#A020F0; ">
+'Criterion' </span>, <span style="font-size:11.0pt; color:#A020F0; ">'good'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
 'DSindex' </span>, 3:5, <span style="font-size:11.0pt; color:#A020F0; ">
 'Stdev'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
 'on'</span> ); </span></p>
@@ -91,7 +91,7 @@ font-family:Cambria;
 'S1_ERPs.set'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
  'filename'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
 'S1_ERPs.erp'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
-'pathname'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
+'filepath'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
 '/Users/etfoo/Desktop/tutorial_script/'</span>); </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; "> ERP = pop_savemyerp(ERP, <span style="font-size:11.0pt; color:#A020F0; ">
