@@ -45,7 +45,7 @@ font-family:Cambria;
   <p class="paragraph" style="border:none;padding:0in;"><strong><span style="font-size:12.0pt; ">Equivalent Script Command:</span></strong></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Basic Filtering for ERP</span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Channels [1:16], High pass 0, Low pass 30, Order 2, IIR Butterworth</span></p>
-  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">ERP = pop_filterp( ERP,1:16, 0, 30, 2, </span><span style="font-size:11.0pt; color:#A020F0; ">'butter'</span><span style="font-size:11.0pt; color:black; ">, 0);</span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">ERP = pop_filterp( ERP, 1:16, <span style="font-size:11.0pt; color:#A020F0; ">'Cutoff'</span>,  30, <span style="font-size:11.0pt; color:#A020F0; ">'Design'</span>, </span><span style="font-size:11.0pt; color:#A020F0; ">'butter'</span><span style="font-size:11.0pt; color:black; ">, <span style="font-size:11.0pt; color:#A020F0; ">'Filter'</span>, <span style="font-size:11.0pt; color:#A020F0; ">'lowpass'</span>, <span style="font-size:11.0pt; color:#A020F0; ">'Order'</span>, 2);</span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Setname is S1_ERPs_30Hz.set</span><span style="font-size:11.0pt; "> </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Filename is S1_ERPs_30Hz.erp</span><span style="font-size:11.0pt; "> </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Path is /Users/etfoo/Desktop/tutorial_script/S1_ERPs_30Hz.erp</span><span style="font-size:11.0pt; "> </span></p>
@@ -54,10 +54,8 @@ font-family:Cambria;
 'S1_ERPs_30Hz.set'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
 'filename'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
  'S1_ERPs_30Hz.erp'</span>, <span style="font-size:11.0pt; color:#A020F0; ">
-'pathname'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
- '/Users/etfoo/Desktop/tutorial_script/'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
- 'warning'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
- 'on'</span>);</span></p>
+'filepath'</span>,<span style="font-size:11.0pt; color:#A020F0; ">
+ '/Users/etfoo/Desktop/tutorial_script/'</span>);</span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%The following command uses Matlab's <em>Current Folder</em></span><em><span style="font-size:11.0pt; color:forestgreen; "> </span></em></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">pop_savemyerp(ERP, </span><span style="font-size:11.0pt; color:#A020F0; ">'erpname'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'S1_ERPs_30Hz.set'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">'filename'</span><span style="font-size:11.0pt; color:black; ">, </span><span style="font-size:11.0pt; color:#A020F0; ">' S1_ERPs_30Hz.erp'</span><span style="font-size:11.0pt; color:black; ">)</span><span style="font-size:11.0pt; "> </span></p>
 </div>
@@ -76,7 +74,7 @@ font-family:Cambria;
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Channels 1:16, High-Pass 0.1, Low-Pass 30, Order 2, </span><span style="font-size:11.0pt; "> </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%IIR Butterworth, Apply filter to segments defined by boundary events</span><span style="font-size:11.0pt; "> </span></p>
   <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:forestgreen; ">%Boundary event code 'boundary'</span><span style="font-size:11.0pt; "> </span></p>
-  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_basicfilter( EEG,  1:16, 0.1, 30, 2, </span><span style="font-size:11.0pt; color:#A020F0; ">'butter'</span><span style="font-size:11.0pt; color:black; ">, 1, </span><span style="font-size:11.0pt; color:#A020F0; ">'boundary'</span><span style="font-size:11.0pt; color:black; "> );</span><span style="font-size:11.0pt; "> </span></p>
+  <p class="MsoNormal" style="text-autospace:none;border:none;padding:0in;"><span style="font-size:11.0pt; color:black; ">EEG = pop_basicfilter( EEG,  1:16, 'Cutoff', [0.1 30], 'Design', </span><span style="font-size:11.0pt; color:#A020F0; ">'butter'</span><span style="font-size:11.0pt; color:black; ">, 'Filter', 'bandpass', 'Order', 2</span><span style="font-size:11.0pt; color:black; ">);</span> </p>
 </div>
 <p class="paragraph">&nbsp;</p>
 <table width="100%" border="0">
