@@ -35,6 +35,7 @@ font-family:Cambria;
 </head>
 
 <body>
+<h1 class="paragraph">Example 1: The World's Simplest EEGLAB/ERPLAB Script</h1>
 <p class="paragraph"><em>Note: A complete version of this script is available in <strong>Test_Data &gt; Script_Examples &gt; Script1.m</strong>.  However, this script may not work on your computer, because it assumes that the <strong>Test_Data</strong> folder is in a specific location.  See instructions below for details.</em></p>
 <p class="paragraph">In this example, we will do a single EEGLAB step—loading a dataset—in the GUI, look at the history this creates, and then turn it into the world's simplest EEGLAB script.  This will give you the basic idea, and more useful scripts will be shown in the following sections.</p>
 <h2><a name="start" id="start"></a>Getting Started</h2>
@@ -68,7 +69,7 @@ font-family:Cambria;
 <p class="LiteralText">&nbsp;</p>
 <p class="paragraph">However, if you look in the EEGLAB GUI, you will notice that  <strong>S1_EEG</strong> is not listed in the <strong>Datasets</strong> menu.  This is because the EEGLAB GUI doesn't &quot;know&quot; that you've loaded a dataset.</p>
 <h2><a name="redraw" id="redraw"></a>Using pop_loadset() and eeglab redraw to synchronize with the GUI</h2>
-<p class="paragraph1">To get an idea of how to make the newly loaded dataset appear in the GUI, try running the <strong>eegh</strong> command (by typing<strong> eegh</strong> in the command window). You should see something like thisL</p>
+<p class="paragraph1">To get an idea of how to make the newly loaded dataset visible in the GUI, try running the <strong>eegh</strong> command (by typing<strong> eegh</strong> in the command window). You should see something like thisL</p>
 <p class="LiteralText">&gt;&gt; eegh</p>
 <p class="LiteralText">[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;</p>
 <p class="LiteralText">EEG = pop_loadset('filename','S1_EEG.set','filepath','/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/documentation/Scripting/Examples/S1/');</p>

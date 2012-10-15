@@ -35,4 +35,9 @@ font-family:"Times New Roman";
 color:blue;
 text-decoration:underline;
 text-underline:single;
+}.LiteralText {
+	font-family: Courier New, Courier, monospace;
+}
+.LiteralText {
+	font-family: Courier New, Courier, monospace;
 }
