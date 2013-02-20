@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Timing Details</title>
+<style type="text/css">
+<!--
+p.paragraph {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.Note {
+margin-top:0in;
+margin-right:0in;
+margin-bottom:8.0pt;
+margin-left:0in;
+font-size:11.0pt;
+font-family:Cambria;
+font-style:italic;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.LiteralText {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:10.0pt;
+font-family:Helvetica;
+}
+.tablesl {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.tablesl {
+	font-size: 12px;
+}
+-->
+</style>
+<style type="text/css">
+<!--
+p.CommandWindowText {
+margin:0in;
+margin-bottom:.0001pt;
+text-align:justify;
+font-size:9.0pt;
+font-family:Courier;
+}
+p.MsoNormal {
+margin:0in;
+margin-bottom:.0001pt;
+font-size:12.0pt;
+font-family:Cambria;
+}
+-->
+</style>
+</head>
+
+<body>
+<p class="paragraph">EEG/ERP data are stored as samples at discrete moments in time, and this can lead to some ambiguities when you specify timing information. For example, if you specify a baseline period of -100 to +50 ms, what happens if there is not a sample point at exactly -100 ms or at exactly +50 ms. The purpose of this page is to explain exactly how ERPLAB deals with these issues. This is relevant for any routines that involve time windows, including baseline periods, artifact detection windows, and measurement windows. In addition, ERPLAB obtains additional precision in measuring latencies by interpolating between the discrete samples, and this is also explained here.</p>
+<p class="paragraph">The image below illustrates how ERPLAB deals with timing. In this example, the EEG was sampled at 256 Hz, which means that a sample was taken every 3.90625 ms. The time-locking point is always assumed to be at exactly 0 ms, so the subsequent samples  were at 3.90625 ms, 7.8125 ms, 11.71875 ms, etc.  The image below shows the samples from approximately 78-156 ms.</p>
+<p class="paragraph">For an process that uses a mean or area amplitude, ERPLAB treats each sample as if it is the center point of a rectangle. When the user specifies a time window, such as the 100-140 ms window shown here, ERPLAB computes the area as the sum of all the rectangles that are completely within this window, plus the whatever fraction of the first and last rectangles are within the region.</p>
+<p class="paragraph"><img src="images/Timing_Algorithms.jpg" width="1066" height="680" alt="timing info" /></p>
+<p class="paragraph">&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table width="100%" border="0">
+  <tr>
+    <td>&nbsp;</td>
+    <td><a href="index.html">Table of Contents</a></td>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>
