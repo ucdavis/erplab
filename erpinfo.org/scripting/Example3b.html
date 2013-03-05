@@ -73,7 +73,7 @@ font-family:Helvetica;
 <p class="LiteralText">EEG = pop_saveset( EEG, 'filename', [subject '_Chan.set'],'filepath', subjectfolder);<br />
 </p>
 <p class="LiteralText">&nbsp;</p>
-<p class="LiteralText">EEG = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'Newboundary', { -99 }, 'Stringboundary', { 'boundary' }, 'Warning', 'on' );<br />
+<p class="LiteralText">EEG = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'BoundaryNumeric', { -99 }, 'BoundaryString', { 'boundary' }, 'Warning', 'on' );<br />
 </p>
 <p class="LiteralText">EEG = pop_binlister( EEG , 'BDF', '/Users/luck/Documents/Software_Development/ERPLAB_Toolbox/Test_Data/binlister_demo_1.txt', 'ImportEL', 'no', 'Saveas', 'on', 'SendEL2', 'EEG', 'Warning', 'on' );</p>
 <p class="LiteralText">EEG = pop_epochbin( EEG , [-200.0 800.0], 'pre');</p>
@@ -120,7 +120,7 @@ EEG = pop_loadset('filename',[subject '_EEG.set'],'filepath',subjectfolder);<br 
   EEG=pop_chanedit(EEG, 'lookup','standard-10-5-cap385.elp');<br />
 EEG = pop_editset(EEG, 'setname', [subject '_Chan']);<br />
 EEG = pop_saveset( EEG, 'filename', [subject '_Chan.set'],'filepath', subjectfolder);<br />
-EEG = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'Newboundary', { -99 }, 'Stringboundary', { 'boundary' }, 'Warning', 'on' );<br />
+EEG = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'BoundaryNumeric', { -99 }, 'BoundaryString', { 'boundary' }, 'Warning', 'on' );<br />
 EEG = pop_binlister( EEG , 'BDF', [parentfolder 'binlister_demo_1.txt'], 'ImportEL', 'no', 'Saveas', 'off', 'SendEL2', 'EEG', 'Warning', 'on' );<br />
 EEG = pop_epochbin( EEG , [-200.0 800.0], 'pre');<br />
 EEG = pop_artmwppth( EEG , 'Channel', 1:16, 'Flag', 1, 'Review', 'off', 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep', 50 );<br />
