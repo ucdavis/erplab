@@ -28,7 +28,7 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
-function ERP = savgolerp2(ERP, points)
+function ERP = smootherp2(ERP, points)
 
 % fprintf('smootherp.m : START\n');
 

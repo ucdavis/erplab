@@ -1,0 +1,8 @@
+<[0.0000 0.0000 1.0000]>
+eval('FuncRunning = dbstack;')
+try
+eval('fnctname = FuncRunning(end-1).name;')
+catch
+eval('fnctname = FuncRunning(end).name;')
+end
+sprintf('%s finished at %s', fnctname, datestr(now, 'HH:MM:SS.FFF AM'))

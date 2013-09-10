@@ -1,27 +1,12 @@
-% function EEG = code2bin(EEG, keeptype)
+% PURPOSE: subroutine for pop_editeventlist.m
+%          Converts (captured) numeric event codes into BinLabels
 %
-% Converts captured numeric event codes into BinLabel
+% FORMAT:
 %
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
-%
-%  HELP PENDING for this function
-%  Write erplab at workspace for help
-%
-% Inputs:
-%
-%   EEG       - input dataset
-% keeptype    - 1 = keeps unmatched event codes in EEG.event.type after code2bin
-%               convertion.
-%             - 0 = delete unmatched event codes.
+% EEG = creabinlabel(EEG);
 %
 %
-% Outputs:
-%
-%   EEG       - output dataset
-%
-% See bin2code
-%
-% Author: Javier Lopez-Calderon & Steven Luck
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -49,9 +34,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function EEG = creabinlabel(EEG)
-
-% fprintf('creabinlabel.m : START\n');
-
 if ~isfield(EEG,'EVENTLIST')
         error('ERPLAB says: error at creabinlabel(). You should create an EventList before perform numcode2binlabel')
 end
@@ -61,9 +43,7 @@ end
 if ischar(EEG.EVENTLIST.eventinfo(1).code) %|| ischar(EEG.event(1).type)
         error('ERPLAB says: error at creabinlabel(). EEG.EVENTLIST.eventinfo.code must be NUMERIC!')
 end
-
 levent = length(EEG.EVENTLIST.eventinfo);
-
 if ~isfield(EEG.EVENTLIST.eventinfo,'dura')
         dura  = num2cell(zeros(1,levent));
         [EEG.EVENTLIST.eventinfo(1:levent).dura] = dura{:};
@@ -74,7 +54,7 @@ if ~isfield(EEG.EVENTLIST.eventinfo,'binlabel')
 end
 
 %
-% write bins instead types
+% write bins instead of types
 %
 for i=1:levent
         if ~ismember(-1,EEG.EVENTLIST.eventinfo(i).bini) && ~isempty(EEG.EVENTLIST.eventinfo(i).bini)
@@ -90,5 +70,3 @@ for i=1:levent
                 EEG.EVENTLIST.eventinfo(i).binlabel    = binName;
         end
 end
-
-% fprintf('creabinlabel.m : END\n');

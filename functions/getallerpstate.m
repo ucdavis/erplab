@@ -1,4 +1,8 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: gets current pointer for ALLERP structure and its size
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -26,7 +30,11 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [nset CURRENTERP] = getallerpstate
-
-ALLERP     = evalin('base', 'ALLERP');
-CURRENTERP = evalin('base', 'CURRENTERP');
+try
+    ALLERP     = evalin('base', 'ALLERP');
+    CURRENTERP = evalin('base', 'CURRENTERP');
+catch
+    ALLERP     = [];
+    CURRENTERP = [];
+end
 nset = length(ALLERP);

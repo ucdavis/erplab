@@ -1,5 +1,34 @@
-%  Write erplab at command window for help
+% PURPOSE  : subroutine for pop_eegchanoperator.m
+%            Creates and modifies channels using any algebraic expression (MATLAB arithmetic operators) 
+%            running over the channels in the current EEG structure.
 %
+% FORMAT   :
+%
+% [EEGout conti] = eegchanoperator(EEGin, EEGout, expression, warningme)
+%
+%
+% INPUTS   :
+%
+% EEGin           - input dataset
+% EEGout          - output dataset (for recursiveness...)
+% expression      - expression for new channel
+% warningme       - display warnings. 1 yes; 0 no
+%
+%
+% OUTPUTS  :
+%
+% EEGout          - output dataset with new/modified channel
+% conti           - continue. 1 yes; 0 no
+%
+%
+% EXAMPLE  :
+%
+% EEG = eegchanoperator( EEG, EEG, 'ch71=ch66-ch65 label HEOG')
+%
+%
+% See also pop_eegchanoperator.m chanoperGUI.m
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -27,15 +56,43 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEGout conti] = eegchanoperator(EEGin, EEGout, expression)
+function [EEGout conti] = eegchanoperator(EEGin, EEGout, expression, warningme)
 
 if nargin<1
       help eegchanoperator
       return
 end
+if nargin<4
+      warningme=0;
+end
+conti = 1; newlabel = [];
 
-conti      = 1;
-newlabel   = [];
+%
+% Reref chans?
+%
+tokreref = regexpi(expression, '\s*chreref\((.*)?\)', 'tokens','ignorecase');
+if ~isempty(tokreref)
+        chdelop    = tokreref{1}{1};
+        %chdelop    = regexprep(chdelop,'[n]*ch[an]*','','ignorecase');
+        %chdelop    = regexprep(chdelop,'\[|\]','','ignorecase');
+        %chdelop    = regexprep(chdelop,',',' ');
+        
+        [sep1 u2] = regexp(strtrim(chdelop), ',','match','split');
+        nu2 = length(u2);
+        formref  =   u2{1};
+        exclchan = [];
+        for uu=1:length(u2)-1
+              exclchan(uu) = str2num(u2{uu+1});
+        end        
+        if isempty(exclchan)
+              rewroteop  = ['EEGout = chreref(EEGin, ''' formref ''')'];
+        else
+              exclchanstr = vect2colon(exclchan);
+              rewroteop  = ['EEGout = chreref(EEGin, ''' formref ''','  exclchanstr ' )'];
+        end         
+        eval([rewroteop ';'])
+        return
+end
 
 % add a dot for .*, ./ and .^ operations
 expression = regexprep(expression, '([*/^])', '.$1','ignorecase');
@@ -53,8 +110,7 @@ if ~isempty(toklabel) && ~isempty(EEGin.chanlocs)
       %
       % erase label from expression
       %
-      expression = strrep(expression, matlabel{:}, '');
-      
+      expression = strrep(expression, matlabel{:}, '');      
 elseif isempty(toklabel) && ~isempty(EEGin.chanlocs)
       newlabel   = 'no_label';
 end
@@ -62,15 +118,39 @@ end
 %
 % Averaged chans?
 %
-tokavgchan = regexpi(expression, '\s*avgchan\((.*)?\)', 'tokens','ignorecase');
+%tokavgchan = regexpi(expression, '\s*avgchan((.*)?)', 'tokens','ignorecase'); bug
+tokavgchan = regexpi(expression, '\s*avgchan\(s*(.*?)s*\)', 'tokens','ignorecase');
 
 if ~isempty(tokavgchan)
+      
+      %
+      % Test nchan sintax (for erasing!?)
+      %
+      [nchsyn] = regexpi(expression, 'nch[an]*', 'match');
+      
+      if ~isempty(nchsyn) && warningme==1
+            question= ['Warning: You are using the avgchan function in combination with the recursive updating mode.\n'...
+                  'This combination is almost always an error. In recursive updating mode, each channel that '...
+                  'you change will then change the average of all channels, so you will end up not using the '...
+                  'same reference for all channels that involve the avgchan function.\n\n'...
+                  '\tWe strongly recommend that you use the ''Create new dataset (independent transformations)'' mode.\n\n'...
+                  '\t\tWhat would you like to do?'];
+            title = 'ERPLAB: avgchan() warning:';
+            buttonames = {'Cancel', 'Proceed anyway'};
+            button     = askquestpoly(sprintf(question), title, buttonames);
+            
+            if strcmpi(button, buttonames{1})
+                  conti = 0;
+                  return
+            end           
+      end
+      
       chavgop    = tokavgchan{1}{1};
       chavgop    = regexprep(chavgop,'[n]*ch[an]*','','ignorecase');
       chavgop    = regexprep(chavgop,',',' ');
       chavgop    = regexprep(chavgop,'\s*:\s*',':');
       rewroteop  = ['avgchan(EEGin, [' chavgop '])'];
-      expression = regexprep(expression,'avgchan(.*)', rewroteop, 'ignorecase');
+      expression = regexprep(expression,'\s*avgchan\(s*.*?s*\)', rewroteop, 'ignorecase'); %JLC. Sept 2012
 end
 
 %
@@ -83,7 +163,6 @@ if isempty(tokinter)
 else
       ischinterpol = 1;     
 end
-
 if isempty(materase)
       
       % looking for ":"
@@ -94,7 +173,7 @@ if isempty(materase)
       end
       
       %
-      % looking for the channel indices
+      % looking for channel indices
       %
       [mat tok] = regexpi(expression, '[n]*ch[an]*(\d+)', 'match', 'tokens');
       
@@ -124,8 +203,7 @@ if isempty(materase)
             for j=1:length(mater)
                   outvar = char(tok2{j});
                   assignin('base', outvar, eval(outvar));
-            end
-            
+            end            
             conti = 1;
             return
       end
@@ -164,10 +242,10 @@ if isempty(materase)
       nonexistingchanpos = find([realchanpos(2:end)]==0);
       
       if ~isempty(nonexistingchanpos)
-            msgboxText{1} =  ['Channel(s) [' num2str(chanpos(nonexistingchanpos+1)) '] does not exist!!!'];
-            msgboxText{2} =  'Only use channels from the list on the right';
+            msgboxText =  ['Channel(s) [%s] does not exist!\n'...
+                           'Only use channels from the list on the right'];
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(msgboxText, title);
+            errorfound(sprintf(msgboxText, num2str(chanpos(nonexistingchanpos+1))), title);
             conti = 0; % No more bin processing...
             return
       end
@@ -196,20 +274,19 @@ if isempty(materase)
                               end
                         end
                   else
-                        msgboxText=  'Channel location info was not found!';
+                        msgboxText = 'Channel location info was not found!';
                         title = 'ERPLAB: eegchanoperator() interpolation error:';
                         errorfound(msgboxText, title);
                         conti = 0;
                   end
             else
-                  msgboxText=  'You cannot interpolate an unexisting channel!';
+                  msgboxText = 'You cannot interpolate an unexisting channel!';
                   title = 'ERPLAB: eegchanoperator() interpolation error:';
                   errorfound(msgboxText, title);
                   conti = 0;
             end
             return
-      end
-      
+      end      
 else
       %
       % Test nchan sintax (for erasing!?)
@@ -223,8 +300,8 @@ else
             conti = 0;
             return
       end
-      if ischinterpol
-            msgboxText=  'Sorry. Channel interoplation is not yet available for this mode.';
+      if ischinterpol % (?)
+            msgboxText =  'Sorry. Channel interoplation is not yet available for this mode.';
             title = 'ERPLAB: eegchanoperator() error:';
             errorfound(msgboxText, title);
             conti = 0;
@@ -254,8 +331,7 @@ else
                   conti = 0;
                   return
             end
-      end
-      
+      end      
       if tk>1
             newchan = chanpos(1):chanpos(2);
       else
@@ -271,82 +347,80 @@ end
 lastslot = EEGout.nbchan;
 
 if isempty(lastslot)
-      lastslot= 0;
+        lastslot= 0;
 end
-
 if tf(1) && newchan(1)>=1
-      
-      if ~eraser
-            
-            %
-            % Gui memory
-            %
-            wchmsgon = erpworkingmemory('wchmsgon');
-            
-            if isempty(wchmsgon)
-                  wchmsgon = 1;
-                  erpworkingmemory('wchmsgon',1);
-            end
-            
-            if wchmsgon==0
-                  button = 'yes';
-            else
-                  question{1} = ['Channel ' num2str(newchan) ' already exist!'];
-                  question{2} = 'Would you like to overwrite it?';
-                  title      = 'ERPLAB: Overwriting Channel Confirmation';
-                  button      = askquest(question, title);
-            end
-            
-            if strcmpi(newlabel,'no_label')
-                  newlabel = EEGin.chanlocs(newchan).labels; % keep the original label
-            end
-      else
-            question{1} = ['Channel ' num2str(newchan) ' will be erased!'];
-            question{2} = 'Are you completely sure about this?';
-            title      = 'ERPLAB: Channel Erasing Confirmation';
-            button      = askquest(question, title);
-      end
-      
-      if strcmpi(button,'no')
-            confirma = 0;
-            conti = 0;
-            disp(['Channel ' num2str(newchan) ' was not modified'])
-            
-      elseif strcmpi(button,'yes')
-            confirma = 1;
-            fprintf(['\nWARNING: Channel ' num2str(newchan) ' was overwritten.\n\n'])
-      else
-            disp('User selected Cancel')
-            conti = 0;
-            return
-      end
-      
-elseif (~tf(1) && newchan(1)>=1 && newchan(1) <= lastslot+1)
-      
+        if ~eraser
+                
+                % %             %
+                % %             % Gui memory
+                % %             %
+                % %             wchmsgon = erpworkingmemory('wchmsgon');
+                % %
+                % %             if isempty(wchmsgon)
+                % %                   wchmsgon = 1;
+                % %                   erpworkingmemory('wchmsgon',1);
+                % %             end
+                
+                % %             if wchmsgon==0
+                % %                   button = 'yes';
+                % %             else
+                % %                   question = ['Channel %s already exist!\n\n'...
+                % %                               'Would you like to overwrite it?'];
+                % %                   title    = 'ERPLAB: Overwriting Channel Confirmation';
+                % %                   button   = askquest(sprintf(question, num2str(newchan)), title);
+                % %             end
+                
+                if warningme==0
+                        button = 'yes';
+                else
+                        question = ['Channel %s already exist!\n\n'...
+                                'Would you like to overwrite it?'];
+                        title    = 'ERPLAB: Overwriting Channel Confirmation';
+                        button   = askquest(sprintf(question, num2str(newchan)), title);
+                end
+                
+                if strcmpi(newlabel,'no_label')
+                        newlabel = EEGin.chanlocs(newchan).labels; % keep the original label
+                end
+        else
+                question = ['Channel %s will be erased!\n\n'...
+                        'Are you completely sure about this?'];
+                title    = 'ERPLAB: Channel Erasing Confirmation';
+                button   = askquest(sprintf(question, num2str(newchan)), title);
+        end
+        if strcmpi(button,'no')
+                confirma = 0;
+                conti = 0;
+                disp(['Channel ' num2str(newchan) ' was not modified'])
+        elseif strcmpi(button,'yes')
+                confirma = 1;
+                %fprintf(['\nWARNING: Channel ' num2str(newchan) ' was overwritten.\n\n'])
+        else
+                disp('User selected Cancel')
+                conti = 0;
+                return
+        end
+elseif (~tf(1) && newchan(1)>=1 && newchan(1) <= lastslot+1)      
       confirma = 1;  % Everything is ok!
       realchanpos(1) = lastslot+1;
 else
-      msgboxText{1} =  ['Error: Channel ' num2str(newchan) ' is out of order!'];
-      msgboxText{2} =  '';
-      msgboxText{3} =  '"chan" equations must be define in ascending order.';
-      msgboxText{4} =  '"nchan" equations must be define in ascending order, from 1 to the highest channel.';
+      msgboxText =  ['Error: Channel ' num2str(newchan) ' is out of order!\n\n'...
+                     '"chan#" equations must be define in ascending order.\n\n'...
+                     '"nchan#" equations must be define in ascending order, from 1 to the highest channel.'];
       title = 'ERPLAB: eegchanoperator:';
-      errorfound(msgboxText, title);
+      errorfound(sprintf(msgboxText), title);
       conti = 0; % No more bin processing...
       return
 end
-
-if confirma
-      
+if confirma      
       try
             newexp = regexprep(expression, '[n]*ch[an]*(\d+)', 'chan(@$1)','ignorecase');
             
             for p = 1:nindices
                   newexp = regexprep(newexp, '@\d+', num2str(realchanpos(p)),'ignorecase','once');
-            end
-            
-            if ~eraser
-                  
+            end            
+            if ~eraser % when formula is not for deleting a chan                  
                   ntrial = EEGin.trials;
                   newexp = regexprep(newexp, '[n]*chan\((\d+)\)', 'EEGin.data($1,:, 1:ntrial)','ignorecase');
                   newexp = regexprep(newexp, 'EEGin\.data\((.*)?\)\s*=', 'EEGout.data($1) = ','ignorecase');
@@ -366,7 +440,7 @@ if confirma
                   EEGout.nbchan = size(EEGout.data, 1);
                   EEGout = eeg_checkset( EEGout );
                   disp(['Channel ' num2str(newchan) ' was  created'])
-                  EEGout = update_rejEfields(EEGout);  % update rej fields
+                  EEGout = update_rejEfields(EEGin,EEGout,realchanpos);  % update reject fields
             else
                   EEGout = pop_select( EEGin, 'nochannel', newchan );
                   EEGout.nbchan = size(EEGout.data, 1);
@@ -374,11 +448,10 @@ if confirma
             end
       catch            
             serr = lasterror;
-            msgboxText{1} =  'Please, check your formula: ';
-            msgboxText{2} =  expression;
-            msgboxText{3} =  serr.message;
+            msgboxText =  ['Please, check your formula: \n\n'...
+                          expression '\n' serr.message ];
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(msgboxText, title);
+            errorfound(sprintf(msgboxText), title);
             conti = 0;
             return
       end

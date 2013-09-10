@@ -1,4 +1,4 @@
-%  Write erplab at command window for help
+% PURPOSE: parses formulas at bin descriptor file
 %
 %        Log  files  are  generated  during  data  acquisition and recording,  and
 %        contain  a  summary  of  the various events, their  times  of  occurrence,
@@ -43,6 +43,7 @@
 %
 %   (Adapted from ERPSS Manuals (UCSD). Jonathan C. Hansen, 15 May 1990)
 %
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -114,7 +115,6 @@ if isempty(mattimelockpoint)
             iLineBeenParsed, iBinBeenParsed);
       nTotalErrors = nTotalErrors + 1;
 end
-
 if length(mattimelockpoint)>1
       fprintf('Error Line %g BIN %g :  You have %g time-lock points!!! \n',...
             iLineBeenParsed, iBinBeenParsed, length(mattimelockpoint))
@@ -122,7 +122,6 @@ if length(mattimelockpoint)>1
 else
       errorPointer{1}={}; %delete the position of the right period
 end
-
 if ~isempty(postimelockpoint) % || ~isempty(postimelockpointfin)
       fprintf('Error Line %g BIN %g : time-lock point in a wrong position \n',...
             iLineBeenParsed, iBinBeenParsed);

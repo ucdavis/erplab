@@ -1,10 +1,16 @@
-% Usage
+% PURPOSE: updates EEG.event using EEG.EVENTLIST.eventinfo information
 %
-% >> EEG = update_EEG_event_field(EEG, mainfield)
+% FORMAT:
 %
-%  mainfield   -  string 'code', 'codelabel', or 'binlabel'
+% EEG = update_EEG_event_field(EEG, ELfield)
+%
+% INPUTS
+%
+% EEG        - dataset
+% ELfield    - string 'code', 'codelabel', or 'binlabel'
 %
 %
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -32,8 +38,12 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function EEG = update_EEG_event_field(EEG, mainfield)
+function EEG = update_EEG_event_field(EEG, ELfield, EEGfield)
 
+if nargin<3
+        % ELfield means subfield at EEG.EVENTLIST.eventinfo
+        EEGfield = 'type'; % EEG.event's subfield, by default
+end
 %
 % Replaces EEG.event.type field by EEG.EVENTLIST.eventinfo.binlabel
 %
@@ -46,13 +56,16 @@ if (lenevent1 ~= lenevent2)
         fprintf('Therefore, EEG.event was deleted, and then rebuilt with the EEG.EVENTLIST.eveninfo values.\n')
 end
 
-[EEG.event(1:lenevent1).type] = EEG.EVENTLIST.eventinfo.(mainfield);
+%
+% Replace ELfield into EEG.type
+%
+[EEG.event(1:lenevent1).(EEGfield)] = EEG.EVENTLIST.eventinfo.(ELfield);
 
 %
 % In case there is not full replacement (fills up empty "event codes")
 %
 if ischar(EEG.event(1).type)
-        [tf pos] = ismember({EEG.event.type},'""');
+        [tf, pos] = ismember({EEG.event.type},'""');
         posquo   = find(pos);
         [EEG.event(posquo).type]  = EEG.EVENTLIST.eventinfo(posquo).code;
 else
@@ -62,9 +75,8 @@ end
 
 [EEG.event(1:lenevent1).codelabel] = EEG.EVENTLIST.eventinfo.codelabel;
 
-if ~isfield(EEG.event,'latency')
-        [EEG.event(1:lenevent1).latency] = EEG.EVENTLIST.eventinfo.spoint;
-end
+% updating latency is mandatory!
+[EEG.event(1:lenevent1).latency] = EEG.EVENTLIST.eventinfo.spoint;
 
 if ~isfield(EEG.event,'duration')
         [EEG.event(1:lenevent1).duration] = EEG.EVENTLIST.eventinfo.dura;
@@ -84,11 +96,10 @@ lename = length(names);
 for i=1:lename
         if ~ismember(names{i}, {'code','codelabel', 'time', 'dura', 'binlabel','spoint', ...
                         'flag','enable','bini'})
-                
                 [EEG.event.(names{i})] = EEG.EVENTLIST.eventinfo(1:lenevent1).(names{i});
         end
 end
 
-[EEG serror] = sorteegeventfields(EEG);
+EEG = sorteegeventfields(EEG);
 EEG = eeg_checkset( EEG, 'eventconsistency' );
 disp('EEG.event was updated.')

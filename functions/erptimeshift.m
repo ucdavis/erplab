@@ -1,3 +1,27 @@
+% PURPOSE: allows to adjust the ERP's time values in a safe way. For instance, taking care that
+%          the zero value latency was moved without changing its "zeroness"
+%
+% FORMAT
+%
+% ERP = erptimeshift(ERP, movetime);
+%
+% INPUT:
+%
+% ERP         - averaged erpset (ERPLAB's ERP structure)
+% movetime    - time in msec. If movetime is positive, the ERP's time values are shifted to the right (e.g. increasing delay).
+%               If movetime is negative, the ERP's time values are shifted to the left (e.g decreasing delay).
+%               If movetime is 0, the ERP's time values are not shifted.
+% 
+% 
+% OUTPUT:
+%
+% ERP         - averaged erpset (ERPLAB's ERP structure) with latency shift.
+%
+%
+% See also eegtimeshift.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Johanna Kreither
 % Center for Mind and Brain
 % University of California, Davis,
@@ -26,16 +50,16 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function ERP = erptimeshift(ERP, movetime)
-
+if nargin<1
+      help erptimeshift
+      return
+end
 fulltime = (ERP.xmax-ERP.xmin)*1000;
-
 if movetime>fulltime
       error(['ERPLAB says: errot at erptimeshift(). You cannot shift time values more than ' num2str(fulltime) ' ms!'])
 end
-
 A = ERP.times';
 deltatime   = mean(unique(diff(A)));
-
 if movetime>0      
       Bpre  = min(A)-length(A)*deltatime:deltatime:min(A)-deltatime;
       B     = cat(1,Bpre', A);
@@ -43,21 +67,19 @@ if movetime>0
       C     = circshift(B, shiftmove)';
       times = C(end-length(A)+1:end);      
 elseif movetime<0
-      Bpost  = max(A)+deltatime:deltatime:max(A)+length(A)*deltatime;
+      Bpost = max(A)+deltatime:deltatime:max(A)+length(A)*deltatime;
       B     = cat(1, A, Bpost');
       shiftmove = round(movetime/deltatime);
       C     = circshift(B, shiftmove)';
       times = C(1:length(A));
 else
+      disp('No time-shift was performed.')
       return
 end
-
 zerocatch = find(times==0, 1);
-
 if isempty(zerocatch)
       error('ERPLAB says: errot at erptimeshift(). You threw away the zero latency!!!')
 end
-
 ERP.times = times;
 ERP.xmax  = max(times)/1000;
 ERP.xmin  = min(times)/1000;

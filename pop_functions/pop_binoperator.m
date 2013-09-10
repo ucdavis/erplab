@@ -1,70 +1,28 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% PURPOSE  : Creates and modifies bins using any algebraic expression (MATLAB arithmetic operators)
+%            running over the bins in the current ERP structure.
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT   :
+%
+% ERP = pop_binoperator(ERP, formulas);
+%
+% EXAMPLE  :
+%
+% ERP = pop_binoperator( ERP, {'b38 = b7-b8 label hot 5'});
 %
 %
-% Bin Operations:
+% INPUTS   :
 %
-% The ‘Bin Operations’ function allows you to compute new bins that are linear
-% combinations of the bins in the current ERP structure.  For example, you can
-% average multiple bins together, and you can compute difference waves.  It operates in the same manner as Channel Operations.  That is, you create equations that look like this: “bin6 = 0.5*bin3 – 0.5*bin2”.  This is like a simplified version of the erpmanip program in ERPSS.  We will eventually create a more sophisticated version that has the same power as erpmanip.
+% ERP           - input ERPset
+% Formulas      - expression(s) for new bin(s) (cell string(s)).
 %
-% Your bins are stored in a Matlab structure named ERP, at bindata field
-% (ERP.binvg). This field has 3 dimensions:
+% OUTPUTS  :
 %
-%    row        =   channels
-%    column     =   points (signal)
-%    depth      =   bin's slot (bin index).
+% ERP           - (updated) output ERPset
 %
-% So, the depth dimension will increase as you define a new bin, correctly
-% numbered (sorted).   To create a new bin you have simply to use an algebraic expression for that bin.
 %
-% Example (GUI):
+% See also binoperGUI.m binoperator.m
 %
-% Currently you have 4 bins created, and now you need to create a new bin
-% (bin 5) with the difference between bin 2 and 4. So, you should go to Bin
-% Operation, at the ERPLAB menu, and this will pop up a new GUI. At the editing window enter the next simple expression:
-%
-% bin5 = bin2 - bin4  label Something Important
-%
-% and press RUN.
-%
-% Note1: You can also write in a short style expression: b5 = b2 - b4.
-%
-% For label setting you could use : ...label Something Important  or
-% ....label = Something Important
-%
-% If you do not define a label, binoperator will use a short expression of
-% the current formula as a label,  BIN5: B2-B4
-%
-% In case you need to create more than one new bin, you will need to enter
-% a carriage return at the end of each expression (formula) as you are writing
-% a list of algebraic expressions.
-%
-% Example (GUI):
-%
-% b5 = b2 - b4   label bla-bla
-% b6 = (b1+b3)/2 label= attended   or     b6 = 0.5*b1 + 0.5*b3 ...
-% b7 = abs(b5)   label rectified   or     b7 = sqrt(b5^2) ...
-%
-% and press RUN.
-%
-% Note 2: You already realized you can use bins just predefined in your list,
-% so be cautious with this predefinition to avoid mistakes in long lists.
-%
-% Note 3: Also you can use more complex expressions as this:
-% bin8 = (b1+b2)/2 - (b3+b4)/2
-% or, eventually, something much weirder as this    b9 = sqrt(b2^2 + b3^2)
-%
-% Finally, you can save and load your formulas in order to avoid to rewrite
-% it more than one time. Use EXPORT & IMPORT buttons for this,
-% respectively.
-%
-% Example for a command line
-%
-% >> pop_binoperator( ERP, {  'b38 = b7-b8 label hot 5'  }, 0);
-%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -92,74 +50,187 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP erpcom] = pop_binoperator(ERP, formulas)
-
+function [ERP, erpcom] = pop_binoperator(ERP, formulas, varargin)
 erpcom = '';
-
 if nargin < 1
         help(sprintf('%s', mfilename))
         return
 end
-if nargin >2
-        error('ERPLAB says:  Error, too many inputs')
-end
-if isempty(ERP)
-        msgboxText{1} =  'pop_binoperator cannot operate an empty ERP dataset';
-        title = sprintf('ERPLAB: %s() error:', mfilename);
-        errorfound(msgboxText, title);
-        return
-end
-if ~isfield(ERP, 'bindata')
-        msgboxText{1} =  'pop_binoperator cannot operate an empty ERP dataset';
-        title = sprintf('ERPLAB: %s() error:', mfilename);
-        errorfound(msgboxText, title);
-        return
-end
-if isempty(ERP.bindata)
-        msgboxText{1} =  'pop_binoperator cannot operate an empty ERP dataset';
-        title = sprintf('ERPLAB: %s() error:', mfilename);
-        errorfound(msgboxText, title);
-        return
-end
 if nargin==1
+        if isempty(ERP)
+                ERP = preloadERP;
+                if isempty(ERP)
+                        msgboxText =  'No ERPset was found!';
+                        title_msg  = 'ERPLAB: pop_binoperator() error:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+        end
+        if ~iserpstruct(ERP)
+                msgboxText =  'Invalid ERP structure!';
+                title_msg  = 'ERPLAB: pop_binoperator() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        if ~isfield(ERP,'bindata') %(ERP.bindata)
+                msgboxText =  'Cannot work on an empty ERPset!';
+                title_msg  = 'ERPLAB: pop_binoperator() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        if isempty(ERP.bindata) %(ERP.bindata)
+                msgboxText =  'Cannot work on an empty ERPset!';
+                title_msg  = 'ERPLAB: pop_binoperator() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
         
-        answer = binoperGUI(ERP);   % call a GUI*
+        def  = erpworkingmemory('pop_binoperator');
+        if isempty(def)
+                def = { [], 1};
+        end
         
+        %
+        % call GUI
+        %
+        answer = binoperGUI(ERP, def);
         if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
-        
         formulas = answer{1};
-else
+        wbmsgon  = answer{2};
+        
+        def = {formulas, wbmsgon};
+        erpworkingmemory('pop_binoperator', def);
+        
+        if wbmsgon==1
+                wbmsgonstr = 'on';
+        else
+                wbmsgonstr = 'off';
+        end
+        
+        %
+        % Somersault
+        %
+        [ERP, erpcom] = pop_binoperator(ERP, formulas, 'Warning', wbmsgonstr, 'ErrorMsg', 'popup', 'Saveas', 'on', 'History', 'gui');
+        return
+end
 
-        %
-        % no warnings about existing bins
-        %
-        erpworkingmemory('wbmsgon',0)
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ERP', @isstruct);
+p.addRequired('formulas');
+% option(s)
+p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(ERP, formulas, varargin{:});
+
+if ismember({p.Results.Saveas}, {'on','yes'})
+        saveas  = 1;
+else
+        saveas  = 0;
+end
+if strcmpi(p.Results.Warning,'on')
+        wbmsgon = 1;
+else
+        wbmsgon = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+if strcmpi(p.Results.ErrorMsg,'popup')
+        errormsgtype = 1; % open popup window
+else
+        errormsgtype = 0; % error in red at command window
+end
+if isempty(ERP)
+        msgboxText =  'No ERPset was found!';
+        if errormsgtype
+                tittle = 'ERPLAB: pop_binoperator() Error';
+                errorfound(msgboxText, tittle);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText])
+        end
+end
+if ~iserpstruct(ERP)
+        msgboxText =  'Invalid ERP structure!';
+        if errormsgtype
+                tittle = 'ERPLAB: pop_binoperator() Error';
+                errorfound(msgboxText, tittle);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText])
+        end
+end
+if ~isfield(ERP,'bindata') %(ERP.bindata)
+        msgboxText =  'Cannot work on an empty ERPset!';
+        if errormsgtype
+                tittle = 'ERPLAB: pop_binoperator() Error';
+                errorfound(msgboxText, tittle);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText])
+        end
+end
+if isempty(ERP.bindata) %(ERP.bindata)
+        msgboxText =  'Cannot work on an empty ERPset!';
+        if errormsgtype
+                tittle = 'ERPLAB: pop_binoperator() Error';
+                errorfound(msgboxText, tittle);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText])
+        end
 end
 if iscell(formulas)
         formulaArray = formulas';
         opcom = 1; % ---> cell array with formulas
 else
         if isnumeric(formulas)
-                error('ERPLAB says:  Error, formulas must be a cell string or a filename')
+                msgboxText = 'ERPLAB says:  Error, formulas must be a cell string or a filename';
+                if errormsgtype
+                        tittle = 'ERPLAB: pop_binoperator() Error';
+                        errorfound(msgboxText, tittle);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText])
+                end
         end
         if strcmp(formulas,'')
-                error('ERPLAB says:  Error, formulas were not found.')
+                msgboxText = 'ERPLAB says:  Error, formulas were not found.';
+                if errormsgtype
+                        tittle = 'ERPLAB: pop_binoperator() Error';
+                        errorfound(msgboxText, tittle);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText])
+                end
         end
         
         disp(['For list of formulas, user selected  <a href="matlab: open(''' formulas ''')">' formulas '</a>'])
-        
         fid_formulas = fopen( formulas );
         formulaArray = textscan(fid_formulas, '%[^\n]', 'CommentStyle','#', 'whitespace', '');
         formulaArray = strtrim(cellstr(formulaArray{:})');
         fclose(fid_formulas);
         
         if isempty(formulaArray)
-                error('ERPLAB says:  Error, file was empty. No formulas were found.')
+                error('prog:input','ERPLAB says:  Error, file was empty. No formulas were found.')
         end
-        
         opcom = 2; % ---> filename where formulas are described.
 end
 
@@ -168,47 +239,46 @@ ERP_tempo = ERP;
 %
 % Check formulas
 %
-[option recall goeson] = checkformulas(formulaArray, mfilename);
+[option, recall, goeson] = checkformulas(formulaArray, mfilename);
 nformulas  = length(formulaArray);
 
-if recall  && nargin==1
-        [ERP erpcom] = pop_binoperator(ERP); % try again...
+if recall  && saveas
+        [ERP, erpcom] = pop_binoperator(ERP); % try again...
         return
 end
-
-if option==1
+if option==1  % Create new ERPset (independent transformations)
         ERPin = ERP;
         % New empty ERP
-        ERPout= builtERPstruct([]);
-else
+        ERPout= buildERPstruct([]);
+        ERPout.erpname = ERP.erpname;
+else  % Modify existing ERPset (recursive updating)
         ERPin = ERP;
         ERPout= ERPin;
 end
 
 h=1;
-
+cimode = 0; % contra ipsi mode disabled, by default
+orichanlocs = [];
 while h<=nformulas && goeson
-        
         expr = formulaArray{h};
         tokcommentb  = regexpi(formulaArray{h}, '^#', 'match');  % comment
-        
-        if isempty(tokcommentb)
+        tokprepcoip  = regexpi(formulaArray{h}, '^prepareContraIpsi', 'match');  % prepare contra ipsi command detection
+        if isempty(tokcommentb) && isempty(tokprepcoip)
                 
-                [ERPout conti cancelop] = binoperator(ERPin, ERPout, expr);
+                %
+                % subroutine
+                %
+                [ERPout, conti, cancelop] = binoperator(ERPin, ERPout, expr, wbmsgon, errormsgtype);
                 
-                if cancelop && nargin==1
+                if cancelop && saveas
                         recall = 1;
                         break
                 end
-                
                 if conti==1
-                        
                         if isempty(ERPout)
-                                error(' ERPLAB says: something is wrong...')
+                                error('prog:input',' ERPLAB says: something is wrong...binoperator''s output is empty...')
                         end
-                        
-                        if ~option
-                                
+                        if ~option  % work over the current ERP struct
                                 test = checkchannel(ERPout, ERPin);
                                 
                                 if test==0
@@ -219,15 +289,11 @@ while h<=nformulas && goeson
                                         else
                                                 bann = 'Label';
                                         end
-                                        
                                         title = 'ERPLAB: Create a new ERP';
-                                        question  = cell(1);
-                                        question{1} = [bann ' of channels are different for this bin!'];
-                                        question{2} = 'You must save it as a new ERP. Please, use "nbin" sintax instead.';
-                                        question{3} = ' Would you like to try again?';
-                                        
-                                        button = askquest(question, title);
-                                        
+                                        question = ['%s of channels are different for this bin!\n'...
+                                                'You must save it as a new ERP.\n Please, use "nbin" sintax instead.\n\n'...
+                                                ' Would you like to try again?'];
+                                        button = askquest(sprintf(question, bann), title);
                                         if strcmpi(button,'yes')
                                                 disp('User selected Cancel')
                                                 recall = 1;
@@ -238,10 +304,11 @@ while h<=nformulas && goeson
                                 end
                         end
                 end
+        elseif isempty(tokcommentb) && ~isempty(tokprepcoip)
+                cimode = 1; % contra ipsi mode activated
         end
         h = h + 1;
 end
-
 if ~isfield(ERPout, 'binerror')
         ERPout.binerror = [];
 end
@@ -251,12 +318,12 @@ if ~goeson
         disp('user canceled')
         return
 end
-if recall  && nargin==1
+if recall  && saveas
         ERP = ERP_tempo;
-        [ERP erpcom] = pop_binoperator(ERP); % try again...
+        [ERP, erpcom] = pop_binoperator(ERP); % try again...
         return
 end
-if option==1
+if option==1 % create new ERP
         ERPout.workfiles = ERPin.workfiles;
         ERPout.xmin      = ERPin.xmin;
         ERPout.xmax      = ERPin.xmax;
@@ -268,32 +335,66 @@ if option==1
         ERPout.EVENTLIST = ERPin.EVENTLIST;
 end
 
+%
+% Contra ipsi reorganization of channels and data (called by 'prepareContraIpsi' at the beginning of the list of formulas)
+%
+if cimode       
+        ERPout = erp2contraipsi(ERPout, ERP);
+end
+
+%
+% Completion statement
+%
+msg2end
 ERP = ERPout;
 
-if nargin<2 && option==1  % only for GUI and nbins
-        [ERP issave]= pop_savemyerp(ERP,'gui','erplab');
-elseif nargin<2 && option==0  % only for GUI and bins ---> overwrite
-        [ERP issave]= pop_savemyerp(ERP, 'gui', 'erplab', 'overwriteatmenu', 'yes');
+%
+% History
+%
+if opcom==1
+        erpcom = sprintf('%s = pop_binoperator( %s, { ', inputname(1), inputname(1));
+        for j=1:nformulas;
+                erpcom = sprintf('%s ''%s'', ', erpcom, formulaArray{j} );
+        end;
+        erpcom = sprintf('%s });', erpcom);
+        erpcom = regexprep(erpcom, ',\s*}','}');
 else
-        issave =1;
+        erpcom = sprintf('%s = pop_binoperator( %s, ''%s'');', inputname(1), inputname(1),...
+                formulas);
 end
-
-if issave
-        if opcom==1
-                erpcom = sprintf('%s = pop_binoperator( %s, { ', inputname(1), inputname(1));
-                for j=1:nformulas;
-                        erpcom = sprintf('%s ''%s''  ', erpcom, formulaArray{j} );
-                end;
-                erpcom = sprintf('%s });', erpcom);
+if saveas && option==1  % only for GUI and nbins (new ERP)
+        [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
+        if issave>0
+                if issave==2
+                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                        msgwrng = '*** Your ERPset was saved on your hard drive.***';
+                        mcolor = [0 0 1];
+                else
+                        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+                        mcolor = [1 0.52 0.2];
+                end
         else
-                erpcom = sprintf('%s = pop_binoperator( %s, ''%s'');', inputname(1), inputname(1),...
-                        formulas);
+                ERP = ERP_tempo; % recover unmodified ERP
+                msgwrng = 'ERPLAB Warning: Your changes were not saved';
+                mcolor = [1 0.22 0.2];
         end
-        try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
-        return
-else
-        ERP = ERP_tempo; % recover unmodified ERP
-        disp('Warning: Your ERP structure has not yet been saved')
-        disp('user canceled')
-        return
+        try cprintf(mcolor, '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
+elseif saveas && option==0  % overwrite current ERPset at erpset menu (no GUI)
+        ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'overwriteatmenu', 'yes', 'History', 'off');
+        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+        mcolor = [1 0.52 0.2];
+        try cprintf(mcolor, '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
 end
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom);
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                erpcom = '';
+end
+return
+

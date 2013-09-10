@@ -7,7 +7,7 @@
 %
 % Bin Operations:
 %
-% The ‘Bin Operations’ function allows you to compute acceptbin bins that are linear
+% The ‘Bin Operations’ function allows you to compute RUN bins that are linear
 % combinations of the bins in the current ERP structure.  For example, you can
 % average multiple bins together, and you can compute difference waves.  It operates in the same manner as Channel Operations.  That is, you create equations that look like this: “bin6 = 0.5*bin3 – 0.5*bin2”.  This is like a simplified version of the erpmanip program in ERPSS.  We will eventually create a more sophisticated version that has the same power as erpmanip.
 %
@@ -18,14 +18,14 @@
 %    column     =   points (signal)
 %    depth      =   bin's slot (bin index).
 %
-% So, the depth dimension will increase as you define a acceptbin bin, correctly
-% numbered (sorted).   To create a acceptbin bin you have simply to use an algebraic expression for that bin.
+% So, the depth dimension will increase as you define a RUN bin, correctly
+% numbered (sorted).   To create a RUN bin you have simply to use an algebraic expression for that bin.
 %
 % Example:
 %
-% Currently you have 4 bins created, and now you need to create a acceptbin bin
+% Currently you have 4 bins created, and now you need to create a RUN bin
 % (bin 5) with the difference between bin 2 and 4. So, you should go to Bin
-% Operation, at the ERPLAB menu, and this will pop up a acceptbin GUI. At the editing window enter the next simple expression:
+% Operation, at the ERPLAB menu, and this will pop up a RUN GUI. At the editing window enter the next simple expression:
 %
 % bin5 = bin2 - bin4  label Something Important
 %
@@ -39,7 +39,7 @@
 % If you do not define a label, binoperator will use a short expression of
 % the current formula as a label,  BIN5: B2-B4
 %
-% In case you need to create more than one acceptbin bin, you will need to enter
+% In case you need to create more than one RUN bin, you will need to enter
 % a carriage return at the end of each expression (formula) as you are writing
 % a list of algebraic expressions.
 %
@@ -121,15 +121,26 @@ try
         %
         % Prepare List of current Bins
         %
-        listb=[];
+        listb   = [];
         nbinmax = ERP.nbin;
         for b=1:nbinmax
-                listb{b}= ['BIN' num2str(b) ' = ' ERP.bindescr{b} ];
+                listb{b} = ['BIN' num2str(b) ' = ' ERP.bindescr{b} ];
         end
+        chanlocs = ERP.chanlocs;
+        bindescr = ERP.bindescr;
 catch
-        ERP   = [];
-        listb = '';
+        ERP     = [];
+        listb   = '';
         nbinmax = 1;
+        chanlocs = [];
+end
+try
+        def = varargin{2};
+        formulas = def{1};
+        wbmsgon  = def{2};
+catch
+        formulas = [];
+        wbmsgon  = 1;
 end
 
 example{1} = 'b$ = (b1+b3)/2 label attended left';
@@ -145,23 +156,16 @@ handles.nbinmax = nbinmax;
 handles.example = example;
 handles.exacounter = 0;
 handles.listname = [];
-
-% Update handles structure
-guidata(hObject, handles);
+handles.chanlocs = chanlocs; 
+handles.bindescr = bindescr; 
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB ' version '   -   Bin Operation GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Bin Operation GUI'])
 
-formulas = erpworkingmemory('binformulas');
-
-if isempty(formulas)
-        set(handles.editor,'String','');
-else
-        set(handles.editor, 'String', formulas)
-end
+%formulas = erpworkingmemory('binformulas');
 
 label1 = '<HTML><left>Send file rather than individual equations';
 label2 = '<HTML><left>(creates compact history)';
@@ -181,8 +185,8 @@ if isempty(binopGUI)
         % File List
         %
         set(handles.edit_filelist,'String','');
-        set(handles.checkbox_sendfile2history,'Value',0)        
-else        
+        set(handles.checkbox_sendfile2history,'Value',0)
+else
         if binopGUI.emode==0
                 set(handles.button_recursive,'Value', 1);
                 set(handles.button_no_recu,'Value', 0);
@@ -197,23 +201,52 @@ else
         end
         set(handles.edit_filelist,'String', binopGUI.listname );
 end
-
-wbmsgon = erpworkingmemory('wbmsgon');
-
+if isempty(formulas)
+        set(handles.editor,'String','');
+else
+        if iscell(formulas)
+                set(handles.editor, 'String', formulas)
+        else
+                try
+                        fid_formula = fopen( formulas );
+                        
+                        formcell    = textscan(fid_formula, '%s','delimiter', '\r');
+                        formulas    = char(formcell{:});
+                        compacteditor(hObject, eventdata, handles);
+                        set(handles.editor,'String',formulas);
+                        fclose(fid_formula);
+                        set(handles.button_savelist, 'Enable','on')
+                catch
+                end
+        end
+end
+%wbmsgon = erpworkingmemory('wbmsgon');
 if isempty(wbmsgon) || wbmsgon==0
         set(handles.bwarning,'Value', 0)
 elseif wbmsgon==1
         set(handles.bwarning,'Value', 1)
 else
-        error('Oops...checkbox_warning memory failed')
+        set(handles.bwarning,'Value', 1)
 end
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
+
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
 drawnow
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = binoperGUI_OutputFcn(hObject, eventdata, handles)
@@ -222,7 +255,7 @@ function varargout = binoperGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.5)
 
 %--------------------------------------------------------------------------
@@ -241,13 +274,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
-function acceptbin_Callback(hObject, eventdata, handles)
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% doc pop_binoperator
+web http://erpinfo.org/erplab/erplab-documentation/manual/Bin_Operations.html  -browser
+
+%--------------------------------------------------------------------------
+function RUN_Callback(hObject, eventdata, handles)
 
 listname = handles.listname;
-
 compacteditor(hObject, eventdata, handles);
-
 formulalist = get(handles.editor,'String');
+wbmsgon = get(handles.bwarning,'Value');
 
 if strcmp(formulalist,'')
         msgboxText =  'You have not yet written a formula!';
@@ -256,13 +293,12 @@ if strcmp(formulalist,'')
         return
 end
 if size(formulalist,2)>256
-        msgboxText{1} =  'Formulas length exceed 256 characters.';
-        msgboxText{2} =  'Be sure to press [Enter] after you have entered each formula.';
+        msgboxText = ['Formulas length exceed 256 characters.\n'...
+                'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
-        errorfound(msgboxText, title);
+        errorfound(sprintf(msgboxText), title);
         return
 end
-
 
 %
 % Check formulas
@@ -272,30 +308,26 @@ if get(handles.button_recursive,'Value')
 else
         editormode = 1;
 end
-
-[option recall goeson] = checkformulas(cellstr(formulalist), 'binoperGUI', editormode);
-
+[option, recall, goeson] = checkformulas(cellstr(formulalist), 'binoperGUI', editormode);
 if goeson==0
         return
 end
-
 if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
-        
-        BackERPLABcolor = [ 0.65 0.68 .6];
-        question{1} = 'Equations at editor window have not been saved yet.';
-        question{2} = 'What would you like to do?';
+        BackERPLABcolor = [ 1 1 0];
+        question = ['Equations at editor window have not been saved yet.\n'...
+                'What would you like to do?'];
         title = 'WARNING: Save List of edited bins';
         oldcolor = get(0,'DefaultUicontrolBackgroundColor');
         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button = questdlg(question, title,'Save and run','Run without saving', 'Cancel','Run without saving');
+        button = questdlg(sprintf(question), title,'Save and run','Run without saving', 'Cancel','Run without saving');
         set(0,'DefaultUicontrolBackgroundColor',oldcolor)
         
         if strcmpi(button,'Save and run')
                 fullname = savelist(hObject, eventdata, handles);
                 listname = fullname;
-                handles.output = {listname, 1}; % sent filenam string)
+                handles.output = {listname, wbmsgon}; % sent filenam string)
         elseif strcmpi(button,'Run without saving')
-                handles.output = {cellstr(formulalist), 1}; % sent like a cell string (with formulas)
+                handles.output = {cellstr(formulalist), wbmsgon}; % sent like a cell string (with formulas)
         elseif strcmpi(button,'Cancel') || strcmpi(button,'')
                 handles.output   = [];
                 handles.listname = [];
@@ -303,38 +335,33 @@ if isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
                 guidata(hObject, handles);
                 return
         end
-        
 elseif isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
-        handles.output = {cellstr(formulalist), 1}; % sent like a cell string (with formulas)
-        
+        handles.output = {cellstr(formulalist), wbmsgon}; % sent like a cell string (with formulas)
 elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==1
-        handles.output = {listname, 1}; % sent filename string
-        
+        handles.output = {listname, wbmsgon}; % sent filename string
 elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
-        handles.output = {cellstr(formulalist), 1}; % sent like a cell string (with formulas)
+        handles.output = {cellstr(formulalist), wbmsgon}; % sent like a cell string (with formulas)
 end
 
-erpworkingmemory('binformulas', formulalist);
-
+% erpworkingmemory('binformulas', formulalist);
 %
 % memory for Gui
 %
 binopGUI.emode = editormode;
 binopGUI.hmode = get(handles.checkbox_sendfile2history,'Value');
 binopGUI.listname  = listname;
-
 erpworkingmemory('binopGUI', binopGUI);
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function eraser_Callback(hObject, eventdata, handles)
@@ -354,38 +381,22 @@ fprintf('\n\n\n\n\n')
 help pop_binoperator
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        % The GUI is still in UIWAIT, us UIRESUME
-        uiresume(handles.figure1);
-else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
-end
-
-%--------------------------------------------------------------------------
 function button_saveaslist_Callback(hObject, eventdata, handles)
-
 compacteditor(hObject, eventdata, handles);
-
 fulltext = strtrim(get(handles.editor,'String'));
 
 if size(fulltext,2)>256
-        msgboxText{1} =  'Formulas length exceed 256 characters.';
-        msgboxText{2} =  'Be sure to press [Enter] after you have entered each formula.';
+        msgboxText =  ['Formulas length exceed 256 characters.\n'...
+                'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
-        errorfound(msgboxText, title);
+        errorfound(sprintf(msgboxText), title);
         return
 end
-
 if ~strcmp(fulltext,'')
-        
         fullname = savelist(hObject, eventdata, handles);
-        
         if isempty(fullname)
                 return
         end
-        
         set(handles.edit_filelist, 'String', fullname )
         set(handles.button_savelist, 'Enable', 'on')
         handles.listname = fullname;
@@ -404,7 +415,6 @@ end
 function button_loadlist_Callback(hObject, eventdata, handles)
 
 [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
-
 if isequal(filename,0)
         disp('User selected Cancel')
         return
@@ -412,28 +422,25 @@ else
         fullname = fullfile(filepath, filename);
         disp(['pop_binoperation(): For formulas-file, user selected ', fullname])
 end
-
 set(handles.edit_filelist,'String',fullname);
-
 fid_formula = fopen( fullname );
 try
         formcell    = textscan(fid_formula, '%s','delimiter', '\r');
         formulas    = char(formcell{:});
 catch
         serr = lasterror;
-        msgboxText{1} =  'Please, check your file: ';
-        msgboxText{2} =  fullname;
-        msgboxText{3} =  serr.message;
+        msgboxText = ['Please, check your file:\n '...
+                fullname '\n'...
+                serr.message];
         title = 'ERPLAB: pop_binoperation() error:';
-        errorfound(msgboxText, title);
+        errorfound(sprintf(msgboxText), title);
         return
 end
-
 if size(formulas,2)>256
-        msgboxText{1} =  'Formulas length exceed 256 characters.';
-        msgboxText{2} =  'Be sure to press [Enter] after you have entered each formula.';
+        msgboxText = ['Formulas length exceed 256 characters.\n'...
+                'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
-        errorfound(msgboxText, title);
+        errorfound(sprintf(msgboxText), title);
         return
 end
 
@@ -450,31 +457,25 @@ guidata(hObject, handles);
 function listbox_bin_Callback(hObject, eventdata, handles)
 
 numbin   = get(hObject, 'Value');
-
 if isempty(numbin)
         return
 end
-
 linet    = get(handles.editor, 'Value');
-
 if linet == 0
         linet = 1;
 end
-
 formulas = cellstr(get(handles.editor, 'String'));
 formulas{linet} = [formulas{linet} 'b' num2str(numbin)];
 set(handles.editor, 'String', char(formulas));
 
 %--------------------------------------------------------------------------
 function listbox_bin_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
 function button_example_Callback(hObject, eventdata, handles)
-
 nbinmax    = handles.nbinmax;
 example    = handles.example;
 exacounter = handles.exacounter;
@@ -491,7 +492,6 @@ text = cellstr(get(handles.editor, 'String'));
 if isempty([text{:}]) || exacounter>length(example)
         exacounter = 1;
 end
-
 if length(text)==1 && strcmp(text{1}, '')
         exacurr = char(regexprep(example{exacounter},'\$',num2str(nbinmax+exacounter)));
         text{1} = [prechar exacurr];
@@ -507,15 +507,11 @@ guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
 function fullname = savelist(hObject, eventdata, handles)
-
 fulltext = char(get(handles.editor,'String'));
-
 if isempty(fulltext)
         return
 end
-
 fullnamepre = get(handles.edit_filelist,'String');
-
 
 %
 % Save OUTPUT file
@@ -526,8 +522,8 @@ if isequal(filename,0)
         disp('User selected Cancel')
         fullname = [];
         return
-else        
-        [px, fname, ext, versn] = fileparts(filename);
+else
+        [px, fname, ext] = fileparts(filename);
         
         if strcmp(ext,'')
                 
@@ -552,9 +548,7 @@ end
 
 %--------------------------------------------------------------------------
 function compacteditor(hObject, eventdata, handles)
-
 texteditor = strtrim(get(handles.editor,'String'));
-
 if isempty(texteditor)
         return
 end
@@ -564,7 +558,7 @@ nfl    = length(formul);
 k = 1;
 formulalist = cell(1);
 
-for i=1:nfl        
+for i=1:nfl
         if ~strcmp(formul{i},'')
                 formulalist{k} = formul{i};
                 k = k+1;
@@ -576,22 +570,17 @@ set(handles.editor,'String', char(formulalist));
 
 %--------------------------------------------------------------------------
 function button_savelist_Callback(hObject, eventdata, handles)
-
 compacteditor(hObject, eventdata, handles);
 fulltext = strtrim(get(handles.editor,'String'));
-
 if size(fulltext,2)>256
-        msgboxText{1} =  'Formulas length exceed 256 characters.';
-        msgboxText{2} =  'Be sure to press [Enter] after you have entered each formula.';
+        msgboxText = ['Formulas length exceed 256 characters.\n'...
+                'Be sure to press [Enter] after you have entered each formula.'];
         title = 'ERPLAB: binoperGUI few inputs';
-        errorfound(msgboxText, title);
+        errorfound(sprintf(msgboxText), title);
         return
 end
-
 if ~strcmp(fulltext,'')
-        
         fullname = get(handles.edit_filelist, 'String');
-        
         if ~strcmp(fullname,'')
                 
                 fid_list   = fopen( fullname , 'w');
@@ -600,16 +589,15 @@ if ~strcmp(fulltext,'')
                         fprintf(fid_list,'%s\n', fulltext(i,:));
                 end
                 
-                fclose(fid_list);   
+                fclose(fid_list);
                 handles.listname = fullname;
                 % Update handles structure
                 guidata(hObject, handles);
                 disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
         else
                 button_saveaslist_Callback(hObject, eventdata, handles)
-                return                
+                return
         end
-        
 else
         set(handles.button_saveaslist,'Enable','off')
         msgboxText =  'You have not yet written a formula!';
@@ -627,49 +615,188 @@ function edit_filelist_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function edit_filelist_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
 function button_clearfile_Callback(hObject, eventdata, handles)
-
 set(handles.edit_filelist,'String','');
 set(handles.button_savelist, 'Enable', 'off')
 
 %--------------------------------------------------------------------------
 function button_recursive_Callback(hObject, eventdata, handles)
-
-if  get(hObject,'Value')==0
-        set(hObject,'Value',1)
-else
+if get(hObject,'Value')
         set(handles.button_no_recu,'Value',0)
+        val = testsyntaxtype(hObject, eventdata, handles, 'recu');
+        
+        if val==0;
+                set(handles.button_recursive, 'Value', 0)
+                set(handles.button_no_recu, 'Value', 1)                
+        end
+        
+        %%%       handles = editorbackup(hObject, eventdata, handles);
+        %%% Update handles structure
+        %%guidata(hObject, handles);
+else
+        set(hObject,'Value',1)
 end
+
+% % % if  get(hObject,'Value')==0
+% % %         set(hObject,'Value',1)
+% % % else
+% % %         set(handles.button_no_recu,'Value',0)
+% % % end
 
 %--------------------------------------------------------------------------
 function button_no_recu_Callback(hObject, eventdata, handles)
-
-if  get(hObject,'Value')==0
-        set(hObject,'Value',1)
-else
+if get(hObject,'Value')
         set(handles.button_recursive,'Value',0)
+        val = testsyntaxtype(hObject, eventdata, handles, 'norecu');
+        if val==0
+                set(handles.button_recursive, 'Value', 1)
+                set(handles.button_no_recu, 'Value', 0)
+        end
+        %%%       handles = editorbackup(hObject, eventdata, handles);
+        %%% Update handles structure
+        %%%guidata(hObject, handles);
+else
+        set(hObject,'Value',1)
+end
+
+% % % if  get(hObject,'Value')==0
+% % %         set(hObject,'Value',1)
+% % % else
+% % %         set(handles.button_recursive,'Value',0)
+% % % end
+
+%--------------------------------------------------------------------------
+function val = testsyntaxtype(hObject, eventdata, handles, whocall)
+val = 1;
+formulaArray = get(handles.editor,'String');
+
+if isempty(formulaArray)
+        return
+else
+        formulaArray = strtrim(cellstr(formulaArray));
+end
+nformulas = length(formulaArray);
+[expspliter parts] = regexp(formulaArray, '=','match','split');
+ask4fix = 1;
+wantfix = 0;
+newnumbin = 1;
+
+for t=1:nformulas        
+        fcomm = formulaArray{t};
+        tokcommentb  = regexpi(fcomm, '^#', 'match');  % comment symbol (June 3, 2013)     
+        
+        if isempty(tokcommentb) % skip comment symbol               
+                pleft  = regexpi(parts{t}{1}, '(\s*nb[in]*\d+)', 'tokens');
+                plcom  = regexpi(parts{t}{1}, '(\s*b[in]*\d+)', 'tokens');              
+                
+                if isempty(pleft) &&  ~isempty(plcom) && strcmpi(whocall,'norecu')
+                        if ask4fix
+                                BackERPLABcolor = [1 0.9 0.3];    % yellow
+                                question = ['For non recursive mode, left side of equation\nmust be define as a new bin.\n'...
+                                            'For instance, nbin1 = ...\n\n'...
+                                            'Do you want that ERPLAB corrects the syntax for you?'];
+                                title = 'WARNING: Syntax is not proper for non recursive mode';
+                                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
+                                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                                
+                                if strcmpi(button,'Yes')
+                                        ask4fix = 0;
+                                        wantfix = 1;
+                                elseif strcmpi(button,'Cancel')
+                                        val = 0; % cancel
+                                        break
+                                else
+                                        ask4fix = 0;
+                                        wantfix = 0;
+                                end
+                                %else
+                                %      wantfix =1;
+                        end
+                elseif ~isempty(pleft) && strcmpi(whocall,'recu')
+                        if ask4fix
+                                BackERPLABcolor = [1 0.9 0.3];    % yellow
+                                question = ['For recursive mode, left side of equation cannot\nbe define as a new bin.\n'...
+                                            'For instance, you must write bin1 = ...\n\n'...
+                                            'Do you want that ERPLAB corrects the syntax for you?'];
+                                title = 'WARNING: Syntax is not proper for recursive mode';
+                                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
+                                set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                                
+                                if strcmpi(button,'Yes')
+                                        ask4fix = 0;
+                                        wantfix =1;
+                                elseif strcmpi(button,'Cancel')
+                                        val = 0; % cancel
+                                        break
+                                else
+                                        ask4fix = 0;
+                                        wantfix = 0;
+                                end
+                                %else
+                                %      wantfix =1;
+                        end
+                        %else
+                        %      wantfix = 0;
+
+                end
+                if wantfix && (~isempty(pleft) || ~isempty(plcom))% fixed  (June 3, 2013): JLC
+                        fprintf('WARNING: equation %s ', formulaArray{t})
+                        if strcmpi(whocall,'recu') % for recursive mode delete the n in nch
+                                formulaArray{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '^n*','','ignorecase')), strtrim(parts{t}{2}));
+                        else
+                                formulaArray{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '^n*b(\D*)(\d*)',['nb$1' num2str(newnumbin)],'ignorecase')), strtrim(parts{t}{2}));
+                                newnumbin = newnumbin+1;
+                        end
+                        fprintf('was changed to equation %s \n', formulaArray{t})
+                end
+        end
+end
+if val==1
+        set(handles.editor,'String', char(formulaArray));
 end
 
 %--------------------------------------------------------------------------
 function bwarning_Callback(hObject, eventdata, handles)
+% if get(hObject,'Value')
+%         %
+%         % Gui memory
+%         %
+%         erpworkingmemory('wbmsgon', 1);
+% else
+%         %
+%         % Gui memory
+%         %
+%         erpworkingmemory('wbmsgon', 0);
+% end
 
-if get(hObject,'Value')
-        %
-        % Gui memory
-        %
-        erpworkingmemory('wbmsgon', 1);
-else
-        %
-        % Gui memory
-        %
-        erpworkingmemory('wbmsgon', 0);
+%--------------------------------------------------------------------------
+function pushbutton_contraipsi_assistant_Callback(hObject, eventdata, handles)
+
+chanlocs = handles.chanlocs; 
+bindescr = handles.bindescr;
+
+%
+% Call GUI for assistant
+%
+formcell = contraipsiGUI(chanlocs, bindescr);
+if isempty(formcell)
+        disp('User selected Cancel')
+        return
 end
+formulas = char(formcell{:});
+set(handles.editor,'String',formulas);
+set(handles.button_recursive,'Value',0);
+set(handles.button_no_recu,'Value',1);
+
 
 %--------------------------------------------------------------------------
 function bwarning_CreateFcn(hObject, eventdata, handles)
@@ -678,7 +805,7 @@ function bwarning_CreateFcn(hObject, eventdata, handles)
 function cancel_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function acceptbin_CreateFcn(hObject, eventdata, handles)
+function RUN_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function panel1_CreateFcn(hObject, eventdata, handles)
@@ -712,3 +839,22 @@ function button_no_recu_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function checkbox_sendfile2history_CreateFcn(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function pushbutton_export_bin_list_Callback(hObject, eventdata, handles)
+list_of_bins = get(handles.listbox_bin,'String');
+nlob = length(list_of_bins);
+for i=1:nlob
+        fprintf('%s\n',list_of_bins{i});
+end
+fprintf('\n\nEnd of list.\n\n')
+
+%--------------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        % The GUI is still in UIWAIT, us UIRESUME
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
+end

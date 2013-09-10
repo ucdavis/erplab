@@ -29,7 +29,7 @@ try
       formati  = def{2};
       headeri  = def{3};  % 1 means include header (name of variables)
       arfilter = def{4};  % 1 means discard RT with marked flag(s)
-
+      indexel  = def{5};  % index for eventlist
 
         if strcmpi(formati,'basic')
                 format = 1;
@@ -47,38 +47,56 @@ try
               arfilt = 0;
         end
 catch
-        filename  = '';
-        format    = 1;
-        header    = 1;  % 1 means include header (name of variables)
-        arfilt    = 0;
-
+        filename = '';
+        format   = 1;
+        header   = 1;  % 1 means include header (name of variables)
+        arfilt   = 0;
+        indexel  = 1;  % index for eventlist
+end
+try
+      numEL = varargin{2};
+      if indexel>numEL
+            indexel = 1;
+      end
+catch
+      numEL = 1;
 end
 
 handles.output = hObject;
 handles.owfp   = 0;  % over write file permission
 
-% Update handles structure
-guidata(hObject, handles);
-
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB ' version '   -   Save Reaction Time GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save Reaction Time GUI'])
 
 set(handles.edit_saveas,'String', filename)
 set(handles.checkbox_header,'Value', header)
 set(handles.radiobutton_basic,'Value', format)
 set(handles.radiobutton_itemized,'Value', ~format)
 set(handles.checkbox_arfilter,'Value', arfilt)
+set(handles.popupmenu_elindex,'String', cellstr(num2str([1:numEL]')))
+set(handles.popupmenu_elindex,'Value', indexel)
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+% helpbutton
+
 % UIWAIT makes saveRTGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -86,7 +104,7 @@ function varargout = saveRTGUI_OutputFcn(hObject, eventdata, handles)
 
 varargout{1} = handles.output;
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.1)
 
 % -------------------------------------------------------------------------
@@ -147,8 +165,7 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
-
+uiresume(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function pushbutton_ok_Callback(hObject, eventdata, handles)
@@ -181,31 +198,43 @@ else
         format = 'itemized';
 end
 
+indexel = get(handles.popupmenu_elindex,'Value'); % JLC, 30 Aug 2012
 header  = get(handles.checkbox_header,'Value');
 afilter = get(handles.checkbox_arfilter,'Value');
-handles.output = {filename, format, header, afilter};
+handles.output = {filename, format, header, afilter, indexel};
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
-
-% -----------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = '';
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.figure1);
-else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
-end
+uiresume(handles.gui_chassis);
 
 % -----------------------------------------------------------------------
 function checkbox_header_Callback(hObject, eventdata, handles)
 
-
 % -----------------------------------------------------------------------
 function checkbox_arfilter_Callback(hObject, eventdata, handles)
+
+% -----------------------------------------------------------------------
+function popupmenu_elindex_Callback(hObject, eventdata, handles)
+
+% -----------------------------------------------------------------------
+function popupmenu_elindex_CreateFcn(hObject, eventdata, handles)
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% -----------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = '';
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
+end

@@ -1,34 +1,4 @@
-% BINLISTER IX 2010
-%
-%  binlister2.m is the Matlab  re-written version of the original Ecdbl from
-%  ERPSS.  It takes a log file for a given set of data and a bin  descriptor
-%  file  containing  specification  defining  the conditions  & contigencies
-%  an event should satisfy to be included in a particular average (bin), and
-%  produces  a  binlist  file that contains a list of  bins for each item in
-%  the log  file into  which the corresponding  raw  data  trial  should  be
-%  averaged. Also generates a BINLIST structure  which is currently  add  to
-%  the EEGLAB structure (optional).
-%
-%  Note: beta version.  Only for testing purpose. March  2009
-%  Write erplab at command window for help
-%
-% Usage:
-% >> [EEG EVENTLIST binOfBins] = binlister(EEG, bdfilename, eventlist,
-% neweventlist, forbiddenCodeArray, username)
-%
-% Inputs:
-%
-% EEG                - input dataset
-% eventlist          - name of EventList text file to load (optional). Default='no'
-% neweventlist       - name of the new EventList text file to save.
-% forbiddenCodeArray - prohibited eventcodes. For instance -99 for pauses.
-% username           - name of operator
-%
-%  Outputs:
-%
-% EEG         - output dataset
-% EVENTLIST   - EventList output structure (it was previously added to EEGLAB structure by pop_creaeventlist())
-% binOfBins   - successful bins counting. For histogram (for instance)
+% same as binlister...(little faster though)
 %
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
@@ -99,7 +69,6 @@ if nwrongbins == 0
 else
       isparsednumerically = 0;
 end
-
 if isparsednumerically
       
       if strcmpi(eventlist, 'no')
@@ -116,8 +85,7 @@ if isparsednumerically
       %
       % Add bin descriptor structure to EVENTLIST struct
       %
-      EVENTLIST.bdf = BIN;
-      
+      EVENTLIST.bdf = BIN;      
       fprintf('Detecting succesful BINs in the EVENTLIST.eventinfo structure....\n');
       
       %
@@ -602,20 +570,15 @@ if isparsednumerically
                                     
                               end % isdetectedLES
                         end  % conditions for BIN checking
-                  end  % BIN's loop
-                  
+                  end  % BIN's loop                  
             elseif cd1 && ~cd2 %02-09-2009  checks ignored Codes
                   EVENTLIST.eventinfo(iLogitem).enable = 0;
                   
             elseif ~cd1 && cd2 %02-09-2009  checks forbidden Codes
-                  EVENTLIST.eventinfo(iLogitem).enable = -1;
-                  
-            else % forbidden
-                  
-                  EVENTLIST.eventinfo(iLogitem).enable = -1;
-                  
-            end % checks enable condition  10-16-2008
-            
+                  EVENTLIST.eventinfo(iLogitem).enable = -1;                  
+            else % forbidden                  
+                  EVENTLIST.eventinfo(iLogitem).enable = -1;                  
+            end % checks enable condition  10-16-2008            
             if isempty(binrow)
                   EVENTLIST.eventinfo(iLogitem).bini = -1;
                   % Creates BIN LABELS
@@ -633,19 +596,14 @@ if isparsednumerically
                   end
             end
             
-            EVENTLIST.eventinfo(iLogitem).binlabel = binName;
-            
-            binrow = [];
-            
+            EVENTLIST.eventinfo(iLogitem).binlabel = binName;            
+            binrow = [];            
             fprintf('.');
             if ismember(iLogitem,100:100:10000) || (100*iLogitem/nitem)>=100
                   fprintf('%g(%.1f%%)\n', iLogitem, 100*iLogitem/nitem);
-            end
-            
-            
+            end           
       end  % Reads each log item (iLogitem loop)
       
-      %         close(h)
       pause(0.1)
       fprintf('\n');
       
@@ -669,17 +627,11 @@ if isparsednumerically
       [EEGx EVENTLIST] = creaeventlist(EEG, EVENTLIST, neweventlist);
       clear EEGx
       
-      fprintf('Successful Trials per bin :\t%s\n', num2str(binOfBins));
-      %fprintf('A new EventList file was created at %s\n', neweventlist);
-      
+      fprintf('Successful Trials per bin :\t%s\n', num2str(binOfBins));      
 else      
       fprintf('Fatal Error:\n');
       fprintf('\nNumeric parsing was not aproved...Game Over\n');
 end %IF isparsednumerically?   10 May
-
-% fprintf('binlister.m : END\n');
-% fprintf('Done.\n');
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -704,7 +656,6 @@ else
 end
 varargout(1)= {flgx};
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -724,7 +675,6 @@ if auxwritemask~=0
       writeindx = [writeindx currentlogitem];
 end
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -741,7 +691,6 @@ function[targetLogPointer, isdetectedLES, writeflag, writeindx, offsetLogitem] =
 % there is a description of the time range for a negated code.
 % III) Code match, but we need to check the specified time range.
 % *Remember that isdetectedLES = 0 for non-negated and isdetectedLES = 1 for negated
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -815,8 +764,7 @@ if israngedetected && isfrbddndetected   % Codes were detected but there was a p
             % the pause was between the home and the current code...bad
             % news
             isdetectedLES = 0;
-      else
-            
+      else            
             if isnegated   % 02-21-2008
                   [ishomeFlagdetected, flgx] = flagTest(BIN, EVENTLIST, (les{kles}), mSeq,...
                         jBin, targetLogItemArray(rcr) );  % call the function flagTest 12 March 2008

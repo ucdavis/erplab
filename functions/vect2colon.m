@@ -1,15 +1,17 @@
 % Usage: strvec = vect2colon(vec, options)
 %
-% Converts a vector into a string with its MATLAB colon notation (single resolution).
+% Converts a vector into a string using MATLAB colon notation (single resolution).
 %
 % Options are:
 %
-% 'Delimiter'   -   'yes'\'on'/'no'/'auto'   Including or not square brackets []
+% 'Delimiter'   -   'on','yes','off','no' {default on}  :  Including square brackets []
+%                                     (or curly brackets {} when output's dimensions are not consistent)
 %                                            'auto' by default.
-% 'Sort'        -   'yes'\'on'/'no'          yes: Sort elements in ascending order
-%                                            no : display as it is ( but repeated elements )
-%                                           'no' by default
-% 'Class'       -   MATLAB classes
+% 'Sort'        -   'on','yes','off','no' {default off} :  Sort elements in ascending order
+%
+% 'Precision'   -   'double','single' {default single}
+%
+% 'Repeat'      -   'on','yes','off','no' {default on}  :  Keep repeated elements
 %
 % MATLAB colon notation is a compact way to refer to ranges of matrix elements.
 % It is often used in copy operations and in the creation of vectors and matrices.
@@ -54,12 +56,15 @@
 %
 %  2:6 10 1000:100:1200 10.1:0.1:10.4
 %
-% See also:  eval, str2num
+% See also:  mat2colon, eval, str2num
 %
 % Author: Javier Lopez-Calderon
-% 2008
+% 2008-2011
 %
-% Feedbacks are appreciated.
+% Feedback is appreciated.
+% fixed bug where the increment is negative
+% Checks numeric input
+% Allows to keep repeated values
 
 function strvec = vect2colon(vec, varargin)
 
@@ -68,100 +73,121 @@ p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('vec', @isnumeric);
 p.addParamValue('Delimiter', 'auto', @ischar);
-p.addParamValue('Sort', 'no', @ischar);
-p.addParamValue('Class', 'single', @ischar);
-p.addParamValue('Repeat', 'off', @ischar);
+p.addParamValue('Sort', 'off', @ischar);
+p.addParamValue('Precision', 'single');
+p.addParamValue('Repeat', 'on', @ischar);
 p.parse(vec, varargin{:});
-
 strvec   = '';
-
 if nargin<1
         help vect2colon
         return
 end
 if isempty(vec)
-        if strcmp(p.Results.Delimiter,'yes') || strcmp(p.Results.Delimiter,'on')
+        if ismember({lower(p.Results.Delimiter)},{'yes','on','auto'})
                 strvec = '[]';
         end
         return
 end
-
-[dime] = size(vec);
-
+[dime] = size(vec); % input size
 if length(dime)>2
-        error('Error: vect2colon only works for row or column vector')
+        error('Error: vect2colon only works for row or column vector. Use mat2colon instead.')
 else
-        if dime(1)>=1 && dime(2)==1
+        if dime(1)>1 && dime(2)==1 % feb 2011
                 apo = '''';
         elseif dime(1)==1 && dime(2)>=1
                 apo = '';
         else
-                error('Error: vect2colon only works for row or column vector')
+                error('Error: vect2colon only works for row or column vector. Use mat2colon instead.')
         end
 end
-if strcmpi(p.Results.Sort,'yes') || strcmpi(p.Results.Sort,'on')
-
+if ismember({lower(p.Results.Sort)},{'yes','on'})
         if strcmpi(p.Results.Repeat,'off')
-                vecuni      = unique(vec);    % repeated numbers are not allowed...sorted
+                vecuni = unique(vec);    % repeated numbers are not allowed. sorted
         else
-                vecuni      = vec;            % repeated numbers are allowed
+                vecuni = sort(vec);           % repeated numbers are allowed. sorted  --> previous bug
         end
 else
-        if strcmpi(p.Results.Repeat,'off')
+        if ismember({lower(p.Results.Repeat)}, {'off','no'})
                 [v a b] = unique(vec', 'first');
                 ia = sort(a);
-                vecuni = vec(ia); % repeated numbers are not allowed...original sorting
+                vecuni = vec(ia); % repeated numbers are not allowed. no sorted
         else
-                vecuni = sort(vec);
+                vecuni = vec; % repeated numbers are allowed. no sorted  --> previous bug
         end
 end
-
-dvec     = single(diff(vecuni));
+precision = p.Results.Precision;
+if ischar(precision)
+        precnum = str2num(precision);
+        if isempty(precnum)
+                if strcmpi(precision,'single')
+                        dvec = single(diff(vecuni));
+                else
+                        dvec = double(diff(vecuni));
+                end
+        else
+                dvec = (round(diff(vecuni)*10^precnum))/10^precnum;
+        end
+        
+else
+        dvec = (round(diff(vecuni)*10^precision))/10^precision;
+end
+% basepnts = find(diff(dvec));
 holdc    = 0;
 iexpress = 0;
 k = 1;
-
 while k <= numel(vecuni)
         if k>1 && k <= numel(vecuni) - 1
                 if dvec(k) ~=0 && dvec(k) == dvec(k-1) && ~holdc
                         holdc = 1;
                         iexpress = iexpress + 1; % group counter
-                        if abs(dvec(k)) ~= 1
-                                if dvec(k)==pi
-                                        dvstr = 'pi'; % luxe
+                        if dvec(k) ~= 1  % march 2011
+                                if abs(abs(dvec(k))-pi)<1e-6
+                                        if dvec(k)<0
+                                                dvstr = '-pi';
+                                        else
+                                                dvstr = 'pi';
+                                        end
                                 else
-                                        dvstr = num2str(dvec(k));
+                                        dvstr = sprintf('%g', dvec(k));
                                 end
-                                strvec = [ strvec ':' dvstr ':' ];     % starts a group with step>1
+                                %strvec = [ strvec ':' dvstr ':' ];     % starts a group with step>1
+                                strvec = sprintf('%s:%s:',strvec, dvstr); %   [ strvec ':' dvstr ':' ];
                         else
-                                strvec = [ strvec ':' ];               % starts a group with step=1
-                        end                        
+                                %strvec = [ strvec ':' ];               % starts a group with step=1
+                                strvec = sprintf('%s:',strvec);
+                        end
                 elseif (dvec(k) ~= dvec(k-1) || (dvec(k)==0 && dvec(k) == dvec(k-1))) && ~holdc
-                        strvec   = [ strvec ' ' num2str(vecuni(k)) ];   % discret element
+                        strvec = sprintf('%s %g', strvec, vecuni(k));
+                        %strvec   = [ strvec ' ' num2str(vecuni(k)) ];   % discret element
                         iexpress = iexpress + 1;
                 elseif dvec(k) ~= dvec(k-1) && holdc
-                        strvec = [ strvec num2str(vecuni(k)) ];       % ends a group with step=1
+                        strvec = sprintf('%s%g', strvec, vecuni(k));
+                        %strvec = [ strvec num2str(vecuni(k)) ];       % ends a group with step=1
                         iexpress = iexpress + 1;
                         holdc    = 0;
                         dvec(k)  = 0; % since repeated numbers are not allowed...
                 end
         else
                 if holdc
-                        strvec = [ strvec num2str(vecuni(k)) ];      % last element
+                        %strvec = [ strvec num2str(vecuni(k)) ];      % last element
+                        strvec = sprintf('%s%g', strvec, vecuni(k));
                 else
-                        strvec = [ strvec ' ' num2str(vecuni(k)) ];  % first(last) element (discrete)
+                        strvec = sprintf('%s %g', strvec, vecuni(k));
+                        %strvec = [ strvec ' ' num2str(vecuni(k)) ];  % first(last) element (discrete)
                         iexpress = iexpress + 1;
                 end
         end
         k = k + 1;
 end
-
-if strcmp(p.Results.Delimiter,'yes') || strcmp(p.Results.Delimiter,'on')
-        strvec = [ '[' strvec ']' apo];
+% strvec = strtrim(strvec);
+if ismember({lower(p.Results.Delimiter)},{'yes','on'})
+        %strvec = [ '[' strvec ']' apo];
+        strvec = sprintf('[%s]%s',strvec,apo);
         return
 end
 if ((iexpress-1)>1 || ((iexpress-1)==1 && numel(vecuni)==2))...
                 && (strcmp(p.Results.Delimiter,'auto'))
-        strvec = [ '[' strvec ']' apo];
+        %strvec = [ '[' strvec ']' apo];
+        strvec = sprintf('[%s]%s',strvec,apo);
 end
 return

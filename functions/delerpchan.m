@@ -1,4 +1,16 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: to be used in channel operation only (ALPHA VERSION)
+%
+% FORMAT (in channel operation)
+%
+% deletechan(ch)
+%
+% INPUT
+%
+% ch    - channel index(ices) to be deleted
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -42,28 +54,22 @@ end
 if size(chin,1)>1
         error('ERPLAB says: error, delerpchan works with row-array inputs')
 end
-
 chanarray = unique(chin);
 
 if length(chanarray)~=length(chin)
         fprintf('\n*** WARNING: Repeated channels were ignored.\n\n')
 end
-
 nchan = ERP.nchan;
-
 if max(chanarray)>nchan
         error('ERPLAB says: error at delerpchan. Some specified channels do not exist!')
 end
-
 ERP.bindata(chanarray,:,:)=[];
-
 ERP.nchan = size(ERP.bindata, 1);
-
 if isfield(ERP.chanlocs, 'labels')
         if ~isempty([ERP.chanlocs.labels])
                 labaux = {ERP.chanlocs.labels};
                 [labaux{chanarray}] = deal([]);
-                indxl  = ~cellfun(@isempty, labaux);
+                indxl    = ~cellfun(@isempty, labaux);
                 labelout = labaux(indxl);
                 ERP.chanlocs = [];
                 [ERP.chanlocs(1:ERP.nchan).labels] = labelout{:};

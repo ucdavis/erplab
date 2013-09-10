@@ -72,19 +72,21 @@ set(handles.edit_bins,'String', listbin)
 
 handles.capindx = capindx;
 
-% Update handles structure
-guidata(hObject, handles);
-
-% Choose default command line output for code2strGUI
-handles.output = hObject;
-
-% Update handles structure
-guidata(hObject, handles);
-
 %
 % Color GUI
 %
 handles = painterplab(handles);
+
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+% helpbutton
 
 %--------------------------------------------------------------------------
 function varargout = code2strGUI_OutputFcn(hObject, eventdata, handles)
@@ -160,17 +162,17 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.command= '';
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function pushbutton_accept_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         % The GUI is still in UIWAIT, us UIRESUME
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+        delete(handles.gui_chassis);
 end

@@ -1,31 +1,40 @@
-% pop_export2text() - export ERP erpset to text
+% PURPOSE  :	Exports ERP set to text
 %
-% pop_export2text()
+% FORMAT   :
 %
-% Usage:
-%   >> ERP = pop_export2text(ERP);   % a window pops up
-%   >> ERP = pop_export2text(ERP, filename, 'key', 'val', ... );
+% ERP = pop_export2text(ERP, filename, binArray, parameters)  
 %
-% Inputs:
-%   ERP            - eeglab dataset
-%   filename       - file name
 %
-% Optional inputs:
+% INPUTS     :
 %
-%   'time'         - ['on'|'off'] include time values. Default 'on'.
-%   'timeunit'     - [float] time unit rel. to seconds. Default: 1E-3 = msec.
-%   'elec'         - ['on'|'off'] include electrodes names or component numbers.
-%                    Default 'on'.
-%   'transpose'    - ['on'|'off'] 'off'-> electrode data = rows; 'on' -> electrode
-%                    data = columns. Default 'off'.
-%   'precision'    - [float] number of significant digits in output. Default 4.
+% ERP           - ERPset (ERPLAB structure) 
+% filename      - filename of outputted file
+% binArray      - bins to export
 %
-% Outputs:
-%        text file
+% The available parameters are as follows:
+% 
+%         'time'        - 'on'=include time values; 'off'=don't include time values
+%         'timeunit'    - 1=seconds; 1E-3=milliseconds
+%         'electrodes'  - 'on'=include electrode labels' 'off'=don't include electrode labels
+%         'transpose'   - 'on'= (points=rows) & (electrode=columns)
+%                         'off' = (electrode=rows) & (points=column)
+%         'precision'   - [float] number of significant digits in output. Default 4.
 %
-% Note: tabulation are used as a delimiter.
+% OUTPUTS
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+% - text file
+%
+%
+% EXAMPLE :
+%
+% ERP = pop_export2text( ERP, '/Users/etfoo/Documents/MATLAB/test.txt', [ 1 2],'time','on','timeunit',1,'electrodes','on',...
+%                       'transpose','off','precision',4);
+%
+%
+% See also export2textGUI.m
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon & Eric Foo
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -51,203 +60,197 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+% BUGs FIXED
+% Jan 3, 2012. Replace forbidden characters for bindesc and chan labels. Thanks Naomi Bleich
 
-function erpcom = pop_export2text(ERP, filename, binArray, varargin)
-
+function [ERP, erpcom] = pop_export2text(ERP, filename, binArray, varargin)
 erpcom = '';
-
 if nargin < 1
-      help pop_export2text;
-      return;
+        help pop_export2text;
+        return;
 end;
-
 if isempty(ERP)
-      msgboxText{1} =  'pop_export2text cannot export an empty ERP dataset';
-      title = 'ERPLAB: pop_export2text() error:';
-      errorfound(msgboxText, title);
-      return
+        msgboxText =  'No ERPset was found!';
+        title_msg  = 'ERPLAB: pop_export2text() error:';
+        errorfound(msgboxText, title_msg);
+        return
 end
-
 if ~isfield(ERP, 'bindata')
-      msgboxText{1} =  'pop_export2text cannot export an empty ERP dataset';
-      title = 'ERPLAB: pop_export2text() error:';
-      errorfound(msgboxText, title);
-      return
+        msgboxText =  'pop_export2text cannot export an empty ERP dataset';
+        title = 'ERPLAB: pop_export2text() error:';
+        errorfound(msgboxText, title);
+        return
 end
-
 if isempty(ERP.bindata)
-      msgboxText{1} =  'pop_export2text cannot export an empty ERP dataset';
-      title = 'ERPLAB: pop_export2text() error:';
-      errorfound(msgboxText, title);
-      return
+        msgboxText =  'pop_export2text cannot export an empty ERP dataset';
+        title = 'ERPLAB: pop_export2text() error:';
+        errorfound(msgboxText, title);
+        return
+end
+if nargin==1    
+        def  = erpworkingmemory('pop_export2text');
+        if isempty(def)
+                def = {1,1000, 1, 1, 4, 1, ''};
+        end
+        
+        %
+        % Call GUI
+        %
+        answer = export2textGUI(ERP, def);
+        
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        
+        istime    = answer{1};
+        tunit     = answer{2};
+        islabeled = answer{3};
+        transpa   = answer{4};
+        prec      = answer{5};
+        binArray  = answer{6};
+        filename  = answer{7};
+        
+        erpworkingmemory('pop_export2text', answer);
+        
+        if istime
+                time = 'on';
+        else
+                time = 'off';
+        end
+        if islabeled
+                elabel = 'on';
+        else
+                elabel = 'off';
+        end
+        if transpa
+                tra = 'on';
+        else
+                tra = 'off';
+        end
+        
+        %
+        % Somersault
+        %
+        [ERP, erpcom] = pop_export2text(ERP, filename, binArray, 'time', time, 'timeunit', tunit, 'electrodes', elabel,...
+                'transpose', tra, 'precision', prec, 'History', 'gui');
+        return
 end
 
-if nargin < 3
-      
-      answer = export2textGUI(ERP); %open GUI
-      
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      
-      istime    = answer{1};
-      tunit     = answer{2};
-      islabeled = answer{3};
-      transpa   = answer{4};
-      prec      = answer{5};
-      binArray  = answer{6};
-      filename  = answer{7};
-      
-      if istime
-            time = 'on';
-      else
-            time = 'off';
-      end
-      
-      if islabeled
-            elabel = 'on';
-      else
-            elabel = 'off';
-      end
-      if transpa
-            tra = 'on';
-      else
-            tra = 'off';
-      end
-      
-      erpcom = pop_export2text(ERP, filename, binArray, 'time', time, 'timeunit', tunit, 'elec', elabel,...
-            'transpose', tra, 'precision', prec);
-      return
-end;
-
+%
+% Parsing inputs
+%
 p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
-p.addRequired('ERP', @isstruct);
+p.addRequired('ERP');
 p.addRequired('filename', @ischar);
 p.addRequired('binArray', @isnumeric);
+% option(s)
 p.addParamValue('time', 'on', @ischar);
 p.addParamValue('timeunit', 1E-3, @isnumeric); % milliseconds by default
-p.addParamValue('elec', 'on', @ischar);
+p.addParamValue('electrodes', 'on', @ischar);
 p.addParamValue('transpose', 'on', @ischar);
 p.addParamValue('precision', 4, @isnumeric);
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
 p.parse(ERP, filename, binArray, varargin{:});
 
-nbin = length(binArray);
+if strcmpi(p.Results.time, 'on')
+        time = 1;
+else
+        time = 0;
+end
+timeunit   = p.Results.timeunit;
+if strcmpi(p.Results.electrodes, 'on')
+        electrodes = 1;
+else
+        electrodes = 0;
+end
+if strcmpi(p.Results.transpose, 'on')
+        transpose = 1;
+else
+        transpose = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+precision  = p.Results.precision;
 
-[pathstr, prefname1, ext, versn] = fileparts(filename);
+%
+% subroutine
+%
+serror = export2text(ERP, filename, binArray, time, timeunit, electrodes, transpose, precision);
 
-if strcmp(ext,'')
-      ext = '.txt';
+if serror==1
+        msgboxText = 'Something went wrong...\n';
+        etitle = 'ERPLAB: appenderpGUI inputs';
+        errorfound(sprintf(msgboxText), etitle);
+        return
 end
 
-prefname2 = fullfile(pathstr, prefname1);
-
-for ibin=1:nbin
-      
-      %
-      % ERP data
-      %
-      data = ERP.bindata(:,:,binArray(ibin));
-      
-      %
-      % add time axis
-      %
-      if strcmpi(p.Results.time, 'on');
-            
-            fprintf('bin #%g\n', ibin);
-            time_val = linspace(ERP.xmin, ERP.xmax, ERP.pnts)/p.Results.timeunit;
-            auxdata  = zeros(size(data,1) + 1, size(data,2));
-            auxdata(1,:)     = time_val;
-            auxdata(2:end,:) = data;
-            data = auxdata; clear auxdata;
-      end
-      
-      %
-      % transpose and write to disk
-      %
-      binfilename = [ prefname2 '_' ERP.bindescr{binArray(ibin)} ext ]; % ...and add ext
-      fid = fopen(binfilename, 'w');
-      
-      if strcmpi(p.Results.transpose, 'off')
-            
-            %
-            % writing electrodes
-            %
-            strprintf = '';
-            for index = 1:size(data,1)
-                  
-                  if strcmpi(p.Results.time, 'on')
-                        tmpind = index-1;
-                  else
-                        tmpind = index;
-                  end
-                  
-                  if strcmpi(p.Results.elec, 'on')
-                        
-                        if tmpind > 0
-                              if ~isempty(ERP.chanlocs)
-                                    fprintf(fid, '%s\t', ERP.chanlocs(tmpind).labels);
-                              else
-                                    fprintf(fid, '%d\t', tmpind);
-                              end
+%
+% History
+%
+skipfields = {'ERP', 'filename', 'binArray','History'};
+fn     = fieldnames(p.Results);
+erpcom = sprintf( 'pop_export2text( %s, ''%s'', %s', inputname(1), filename, vect2colon(binArray)  );
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+                                end
                         else
-                              fprintf(fid, ' \t');
+                                if iscell(fn2res)
+                                        if ischar([fn2res{:}])
+                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
+                                        else
+                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        end
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                if strcmpi(fn2com,'Criterion')
+                                        if p.Results.Criterion<100
+                                                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                        end
+                                else
+                                        erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                end
                         end
-                  end
-                  strprintf = [ strprintf '%.' num2str(p.Results.precision) 'f\t' ];
-            end
-            
-            strprintf(end) = 'n';
-            
-            if strcmpi(p.Results.elec, 'on')
-                  fprintf(fid, '\n');
-            end
-            fprintf(fid, strprintf, data);
-      else
-            
-            %
-            % writing electrodes
-            %
-            for index = 1:size(data,1)
-                  
-                  if strcmpi(p.Results.time, 'on')
-                        tmpind = index-1;
-                  else
-                        tmpind = index;
-                  end
-                  if strcmpi(p.Results.elec, 'on')
-                        if tmpind > 0
-                              if ~isempty(ERP.chanlocs)
-                                    fprintf(fid,'%s\t', ERP.chanlocs(tmpind).labels);
-                              else
-                                    fprintf(fid,'%d\t', tmpind);
-                              end
-                        else
-                              fprintf(fid, ' \t');
-                        end
-                  end
-                  fprintf(fid,[ '%.' num2str(p.Results.precision) 'f\t' ], data(index, :));
-                  fprintf(fid, '\n');
-            end
-      end
-      
-      fclose(fid);
-      
-      disp(['A new file containing your ERP data was created at <a href="matlab: open(''' binfilename ''')">' binfilename '</a>'])
+                end
+        end
+end
+erpcom = sprintf( '%s );', erpcom);
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom);
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+                %ERP = erphistory(ERP, [], erpcom, 1);
+                %fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        otherwise %off or none
+                erpcom = '';
 end
 
-erpcom = sprintf( 'pop_export2text( %s, ''%s'', %s', inputname(1), filename, vect2colon(binArray));
-
-for i=1:length(varargin)
-      if ischar(varargin{i})
-            erpcom = [erpcom ',''' varargin{i} ''''];
-      else
-            erpcom = [erpcom ',' num2str(varargin{i})];
-      end
-end
-
-erpcom = [erpcom ');'];
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+%
+% Completion statement
+%
+msg2end
 return

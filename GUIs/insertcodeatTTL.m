@@ -24,23 +24,31 @@ function insertcodeatTTL_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
-
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+% helpbutton
+
 % UIWAIT makes insertcodeonthefly2GUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = insertcodeatTTL_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.1)
 
 %--------------------------------------------------------------------------
@@ -94,7 +102,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
-function edit4_CreateFcn(hObject, eventdata, handles)
+function text44_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function edit_TTL_eventcode_Callback(hObject, eventdata, handles)
@@ -111,21 +119,21 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function pushbutton_RUN_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
       %The GUI is still in UIWAIT, us UIRESUME
       handles.output = '';
       %Update handles structure
       guidata(hObject, handles);
-      uiresume(handles.figure1);
+      uiresume(handles.gui_chassis);
 else
       % The GUI is no longer waiting, just close it
-      delete(handles.figure1);
+      delete(handles.gui_chassis);
 end

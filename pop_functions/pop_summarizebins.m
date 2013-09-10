@@ -1,5 +1,8 @@
+% UNDER CONSTRUCTION
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -27,9 +30,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function pop_summarizebins(eventlistinputs, summaryoutput)
-
-com = '';
-
 if nargin<2
         [eventlistinputs, elpathname] = uigetfile('*.txt','Load EventList file(s) (*.txt)',...
                 'Select an edited file', ...
@@ -44,13 +44,9 @@ if nargin<2
                 end
         end
 end
-
 nel = length(eventlistinputs);
-
 for i=1:nel
-        
-        [Summary detect] = summarizebins(fullfile(elpathname, eventlistinputs{i}));
-        
+        [Summary, detect] = summarizebins(fullfile(elpathname, eventlistinputs{i}));
         if i==1
                 nbin = length(Summary);
                 fields{1} = 'Subject';
@@ -58,8 +54,7 @@ for i=1:nel
                         fields{k+1}      = ['Bin' num2str(k)];
                         description{k}   = char(Summary(k).description);
                 end
-        end
-        
+        end        
         data(i,1:nbin) = [Summary.ntrial];
 end
 
@@ -67,22 +62,21 @@ values = num2cell(data);
 q =[eventlistinputs' values];
 r = [fields; q];
 b = [{'Bin number','description'}; fields(2:end)' description'];
-
 [file,path] = uiputfile('*.xls','Save Bin Summary As');
-[pathstr, fxname, ext, versn] = fileparts(file);
-
+[pathstr, fxname, ext] = fileparts(file);
 if ~strcmp(ext,'.xls')
         ext = '.xls';
 end
-
 fullname = fullfile(path, [fxname ext]);
-
 warning off MATLAB:xlswrite:AddSheet
 xlswrite(fullname, b, 'Bin_Descriptions', 'A1');
 xlswrite(fullname, r, 'Bin_Captured', 'A1');
-
 disp(['User saved bin summary at ' fullname]);
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end 
+
+%
+% Completion statement
+%
+msg2end
 return
 
 

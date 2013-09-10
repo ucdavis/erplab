@@ -1,3 +1,19 @@
+% PURPOSE  : sets background and foreground color of the current ERPLAB's GUI
+%
+% FORMAT   :
+%
+% handles = painterplab(handles, type);
+%
+% handles  - GUI's handles structure
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% 2009
+
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
@@ -20,55 +36,54 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function handles = painterplab(handles, type)
-
 if nargin<2
-      type = 0;
+        type = 0;
 end
 if type==0
-      %
-      % Color GUI
-      %
-      ColorB = erpworkingmemory('ColorB');
-      ColorF = erpworkingmemory('ColorF');
+        %
+        % Color GUI
+        %
+        ColorB = erpworkingmemory('ColorB');
+        ColorF = erpworkingmemory('ColorF');
 elseif type==1
-      ColorB = [1 0.9 0.3];
-      ColorF = [0 0 0];
+        ColorB = [1 0.9 0.3];
+        ColorF = [0 0 0];
 end
 if isempty(ColorB)
-      ColorB = [0.83 0.82 0.79];
+        ColorB = [0.7020 0.7647 0.8392];
+        %ColorB = [0.83 0.82 0.79];
 end
 if isempty(ColorF)
-      ColorF = [0 0 0];
+        ColorF = [0 0 0];
 end
 
 filedsn = fieldnames(handles);
 
-for j=1:length(filedsn)
-      
-      mstr = regexp(filedsn{j},'^nbin|^edit|^listbox|^EEG|^ERP|togglebutton_summary|^pushbutton|totline|indxline|Plotting_ERP|Scalp|counterchanwin|counterbinwin','match');
-      
-      if isempty(mstr)
-            
-            %filedsn{j}
-            num = handles.(filedsn{j});
-            
-            if ~iscell(num) && ~isstruct(num)
-                  if num~=1
-                        try
-                              set(num, 'BackgroundColor', ColorB)
-                        catch
-                              try
-                                    set(num, 'Color', ColorB)
-                              catch
-                              end
+% GUI's objects' color background
+for kk=1:length(filedsn)
+        mstr = regexpi(filedsn{kk},'^figure|^axes1|^nbin|^edit|^listbox|^EEG|^ERP|togglebutton_summary|^pushbutton|totline|indxline|ERP_figure|Scalp_figure|counterchanwin|counterbinwin','match');
+        if isempty(mstr)
+                num = handles.(filedsn{kk});
+                if ~iscell(num) && ~isstruct(num)
+                        if num~=1
+                                try
+                                        set(num, 'BackgroundColor', ColorB)
+                                catch                                        
+                                end
+                                try
+                                        set(num, 'ForegroundColor', ColorF)
+                                catch
+                                        
+                                end
                         end
-                        
-                        try
-                              set(num, 'ForegroundColor', ColorF)
-                        catch
-                              
-                        end
-                  end
-            end
-      end
+                end
+        end
+end
+% GUI's color background
+try
+        set(handles.gui_chassis, 'Color', ColorB)
+        %disp('Mira:')
+        %num
+        %filedsn{kk}
+catch
 end

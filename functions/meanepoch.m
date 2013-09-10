@@ -1,18 +1,35 @@
-% Get mean value between latencies (in msec) for single epochs.
+% (alpha version)
+% PURPOSE: Gets mean value between latencies (in msec) from single epoch.
 %
-% USAGE
+% FORMAT:
+%
+% mvalues = meanepoch(EEG, latency, chanArray, epochArray, blcorr);
+%
+% Input:
+%
+% EEG         - epoched EEG dataset (EEGLAB's EEG structure)
+% latency     - latency range (in msec) to obtain the mean of the amplitude. e.g. [300 600]
+% chanArray   - channel index(ices) to obtain the mean of the amplitude. e.g. [21 25 30]
+% epochArray  - epoch index(ices) to obtain the mean of the amplitude. e.g. 128:405
+% blcorr      - baseline reference range for the mean value (in msec). e.g. [-200 0]
+%
+% Output:
+%
+% mvalues     - NxM matrix of mean values, where N=channel and M=epoch
 % 
-% Example 1
+% Example
 % Get mean values between 200 and 400 ms for channels 3, 5, 7, and 16, at epochs 1, 3, 6, 23, 45, 67, 89, 112, and 214.
 % Use as a reference the mean value between -200 to 200 (baseline reference)
 % 
 % mvalues = meanepoch(EEG,[200 400], [3 5 7 16], [1 3 6 23 45 67 89 112 214],[-200 200])
-%
-% Example 2
-% Get mean values between 100 and 200 ms for all channels 3, 5, 7, and 16, at epochs 1, 3, 6, 23, 45, 67, 89, 112, and 214.
-% Use as a reference the mean value between -200 to 200 (baseline reference)
+% COMPLETE
 % 
-% mvalues = meanepoch(EEG,[200 400], [3 5 7 16], [1 3 6 23 45 67 89 112 214],[-200 200])
+% mvalues =
+% 
+%     2.1885   14.7610    6.3069   -1.2162   -5.4942    6.4521    5.1979   -2.3079  -10.7297
+%     7.0165    5.0463    4.4754    4.2293    6.2246    7.9491    0.2435   -1.4665   -0.3859
+%     4.4576    5.3107    0.0876    2.8533    2.2989    2.7314   -5.4024   -2.0018   -5.9622
+%     3.9784    8.7438    2.4415    1.5498   -2.8478    4.0647    2.9487    1.6476   -5.2017
 %
 %
 % Author: Javier Lopez-Calderon

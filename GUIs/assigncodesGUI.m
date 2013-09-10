@@ -51,7 +51,6 @@ end
 %--------------------------------------------------------------------------
 function assigncodesGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
-% Choose default command line output for assigncodesGUI
 handles.output   = [];
 handles.indxline = 1;
 handles.fulltext = {};
@@ -59,45 +58,137 @@ handles.lastlineclicked = {};
 handles.listname = [];
 handles.owfp     = 0;  % over write file permission
 
-% Update handles structure
-guidata(hObject, handles);
+try
+        def = erpworkingmemory('assigncodesGUI'); %varargin{1};
+catch
+        def = [];
+end
+if isempty(def)
+        def = {'' '' 1 'boundary' -99 2 1 1};
+end
+
+editlistname       = def{1};
+newelname          = def{2};
+updateEEG          = def{3};
+boundarystrcode    = def{4};
+newboundarynumcode = def{5};
+option2do          = def{6};
+iswarning          = def{7};
+alphanum           = def{8};
+
+if isempty(editlistname)
+        set(handles.pushbutton_savelist,'Enable', 'off')
+end
+set(handles.edit_elname, 'String', newelname)
+if isempty(newelname)
+        set(handles.edit_elname, 'Enable', 'off');
+        set(handles.radiobutton_totext, 'Value', 0);
+end
+
+set(handles.checkbox_update_EEG, 'Value', updateEEG)
+
+if iscell(boundarystrcode)
+        boundarystrcode = boundarystrcode{1};
+end
+if iscell(newboundarynumcode)
+        newboundarynumcode = newboundarynumcode{1};
+end
+if strcmpi(boundarystrcode, 'boundary') && newboundarynumcode==-99
+        set(handles.checkbox_addm99code,'Value', 1)
+        set(handles.edit_boundarycode,'Enable', 'off');
+        set(handles.edit_numericode,'Enable', 'off');
+elseif ~isempty(boundarystrcode)
+        set(handles.edit_boundarycode, 'String', boundarystrcode)
+        set(handles.edit_numericode, 'String', num2str(newboundarynumcode))
+        set(handles.checkbox_convert_b,'Value', 1)
+else
+        set(handles.edit_boundarycode,'Enable', 'off');
+        set(handles.edit_numericode,'Enable', 'off');
+end
+
+%
+% What to do with the EVENTLIST?
+if     option2do == 7;  % do all
+        set(handles.radiobutton_tocurrentdata,'Value',1);
+        set(handles.checkbox_toworkspace,'Value',1);
+        set(handles.radiobutton_totext,'Value',1);
+elseif option2do == 6;  % workspace & current data
+        set(handles.radiobutton_tocurrentdata,'Value',1);
+        set(handles.checkbox_toworkspace,'Value',1);
+        set(handles.radiobutton_totext,'Value',0);
+        set(handles.pushbutton_browse, 'Enable', 'off');
+elseif option2do == 5;  %  workspace & text
+        set(handles.radiobutton_tocurrentdata,'Value',0);
+        set(handles.checkbox_toworkspace,'Value',1);
+        set(handles.radiobutton_totext,'Value',1);
+elseif option2do == 4;  %  workspace only
+        set(handles.radiobutton_tocurrentdata,'Value',0);
+        set(handles.checkbox_toworkspace,'Value',1);
+        set(handles.radiobutton_totext,'Value',0);
+        set(handles.pushbutton_browse, 'Enable', 'off');
+elseif option2do == 3;  %  current data & text
+        set(handles.radiobutton_tocurrentdata,'Value',1);
+        set(handles.checkbox_toworkspace,'Value',0);
+        set(handles.radiobutton_totext,'Value',1);
+elseif option2do == 2;  % current data only
+        set(handles.radiobutton_tocurrentdata,'Value',1);
+        set(handles.checkbox_toworkspace,'Value',0);
+        set(handles.radiobutton_totext,'Value',0);
+        set(handles.pushbutton_browse, 'Enable', 'off');
+elseif option2do == 1;  % text only
+        set(handles.radiobutton_tocurrentdata,'Value',0);
+        set(handles.checkbox_toworkspace,'Value',0);
+        set(handles.radiobutton_totext,'Value',1);
+else
+        set(handles.radiobutton_tocurrentdata,'Value',1);
+        set(handles.pushbutton_browse, 'Enable', 'off');
+end
+
+set(handles.ELwarning,'Value', iswarning);
+set(handles.checkbox_alphanum, 'Value', alphanum); % for letterkilla. Oct 10, 2012
+
+% set(handles.edit_elname, 'BackgroundColor', [0.83 0.82 0.78]);
+
+set(handles.listbox_lines, 'String', {'new line'});
+set(handles.edit_numeric_type, 'string','')
+set(handles.edit_event_label, 'string','')
+set(handles.edit_binindex, 'string','')
+set(handles.edit_bindescription, 'string','')
+set(handles.pushbutton_update,'Enable', 'off');
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB BETA ' version '   -   EVENTLIST GUI'])
-set(handles.checkbox_create_eventlist,'Value', 0)
-set(handles.checkbox_update_EEG,'Value', 1)
-set(handles.edit_elname, 'Enable', 'off');
-set(handles.pushbutton_browse, 'Enable', 'off');
-set(handles.edit_elname, 'BackgroundColor', [0.83 0.82 0.78]);
-set(handles.listbox_lines, 'String', {'new line'});
-set(handles.edit_numeric, 'string','')
-set(handles.edit_string, 'string','')
-set(handles.edit_binindex, 'string','')
-set(handles.edit_bindescription, 'string','')
-set(handles.checkbox_addm99code,'Value', 1)
-set(handles.edit_boundarycode,'Enable', 'off');
-set(handles.edit_numericode,'Enable', 'off');
-
-%
-% Default boundary code
-%
-boundarystrcode    = '''boundary''';
-newboundarynumcode = -99;
-set(handles.edit_boundarycode, 'String', boundarystrcode);
-set(handles.edit_numericode, 'String',num2str(newboundarynumcode));
-set(handles.pushbutton_savelist,'Enable', 'off')
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   CREATE ADVANCED EVENTLIST GUI'])
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
-% UIWAIT makes assigncodesGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+%
+% Set font size
+%
+handles = setfonterplab(handles);
 
+% Update handles structure
+guidata(hObject, handles);
+
+if ~isempty(editlistname)
+        try
+                set(handles.edit_filelist,'String', editlistname)
+                pushbutton_openlist_Callback(hObject, eventdata, handles, char(editlistname))
+        catch
+                set(handles.edit_filelist,'String', '')
+        end
+end
+
+% help
+helpbutton
+
+% UIWAIT makes assigncodesGUI wait for user response (see UIRESUME)
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = assigncodesGUI_OutputFcn(hObject, eventdata, handles)
@@ -105,19 +196,26 @@ function varargout = assigncodesGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
-pause(0.5)
+delete(handles.gui_chassis);
+pause(0.1)
 
 %--------------------------------------------------------------------------
 function listbox_lines_Callback(hObject, eventdata, handles)
 
+set(handles.pushbutton_update,'Enable', 'on');
 lastlineclicked = handles.lastlineclicked;
 
 if ~isempty(lastlineclicked)
-        numco = get(handles.edit_numeric, 'String');
-        strco = get(handles.edit_string, 'String');
-        bindx = get(handles.edit_binindex, 'String');
-        bdesc = get(handles.edit_bindescription, 'String');
+        numco = strtrim(get(handles.edit_numeric_type, 'String'));
+        strco = strtrim(get(handles.edit_event_label, 'String'));
+        bindx = strtrim(get(handles.edit_binindex, 'String'));
+        %if isempty(bindx)
+        %      bindx = '[]';
+        %end
+        bdesc = strtrim(get(handles.edit_bindescription, 'String'));
+        %if isempty(bdesc)
+        %      bdesc = '""';
+        %end
         
         cmatch1 = strcmpi(lastlineclicked{1}, numco);
         cmatch2 = strcmpi(lastlineclicked{2}, strco);
@@ -127,32 +225,27 @@ if ~isempty(lastlineclicked)
 else
         condi =1;
 end
-
 if condi
-        
         fulltext  = get(handles.listbox_lines, 'String');
         indxline  = length(fulltext);
         
-        if indxline>=1
-                
-                currlineindx = get(handles.listbox_lines, 'Value');
-                
+        if indxline>=1                
+                currlineindx = get(handles.listbox_lines, 'Value');                
                 if length(currlineindx)>1
                         set(handles.pushbutton_update, 'Enable','off');
-                        set(handles.edit_numeric, 'Enable','off');
-                        set(handles.edit_string, 'Enable','off');
+                        set(handles.edit_numeric_type, 'Enable','off');
+                        set(handles.edit_event_label, 'Enable','off');
                         set(handles.edit_binindex, 'Enable','off');
                         set(handles.edit_bindescription, 'Enable','off');
                 else
                         set(handles.pushbutton_update, 'Enable','on');
-                        set(handles.edit_numeric, 'Enable','on');
-                        set(handles.edit_string, 'Enable','on');
+                        set(handles.edit_numeric_type, 'Enable','on');
+                        set(handles.edit_event_label, 'Enable','on');
                         set(handles.edit_binindex, 'Enable','on');
                         set(handles.edit_bindescription, 'Enable','on');
                 end
                 
                 currlinestr  = fulltext{currlineindx};
-                
                 [strmat strtok] = regexp(currlinestr, '([-+]*\d+)\s*"(.*)"\s*(\d+|[[]]+)\s*"(.*)"', 'match', 'tokens');
                 
                 if ~isempty(strmat)
@@ -165,12 +258,12 @@ if condi
                         end
                         
                         bdesc = strtok{1}{4};
-                        set(handles.edit_numeric, 'ForegroundColor', [0 0 0]);
-                        set(handles.edit_string, 'ForegroundColor', [0 0 0]);
+                        set(handles.edit_numeric_type, 'ForegroundColor', [0 0 0]);
+                        set(handles.edit_event_label, 'ForegroundColor', [0 0 0]);
                         set(handles.edit_binindex, 'ForegroundColor', [0 0 0]);
                         set(handles.edit_bindescription, 'ForegroundColor', [0 0 0]);
-                        set(handles.edit_numeric, 'String', numco);
-                        set(handles.edit_string, 'String', strco);
+                        set(handles.edit_numeric_type, 'String', numco);
+                        set(handles.edit_event_label, 'String', strco);
                         set(handles.edit_binindex, 'String', bindx);
                         set(handles.edit_bindescription, 'String', bdesc);
                         handles.lastlineclicked = {numco strco bindx bdesc currlineindx};
@@ -178,8 +271,8 @@ if condi
                         % Update handles structure
                         guidata(hObject, handles);
                 else
-                        set(handles.edit_numeric, 'ForegroundColor', [0.7 0.7 0.7]);
-                        set(handles.edit_string, 'ForegroundColor', [0.7 0.7 0.7]);
+                        set(handles.edit_numeric_type, 'ForegroundColor', [0.7 0.7 0.7]);
+                        set(handles.edit_event_label, 'ForegroundColor', [0.7 0.7 0.7]);
                         set(handles.edit_binindex, 'ForegroundColor', [0.7 0.7 0.7]);
                         set(handles.edit_bindescription, 'ForegroundColor', [0.7 0.7 0.7]);
                 end
@@ -191,15 +284,15 @@ else
         buttonames = {'Go back & update', 'Continue & do not update'};
         button     = askquestpoly(question, title, {'Go back & update', 'Continue & do not update'});
         
-        if strcmpi(button, buttonames{1})
-                set(handles.listbox_lines, 'Value', lastlineclicked{5});
-                set(handles.listbox_lines, 'Enable', 'on');
-                return
-        elseif strcmpi(button, buttonames{2})
+        if strcmpi(button, buttonames{2})
                 handles.lastlineclicked = {};
                 set(handles.listbox_lines, 'Value', get(handles.listbox_lines, 'Value'));
                 set(handles.listbox_lines, 'Enable', 'on');
                 listbox_lines_Callback(hObject, eventdata, handles)
+                return
+        else
+                set(handles.listbox_lines, 'Value', lastlineclicked{5});
+                set(handles.listbox_lines, 'Enable', 'on');
                 return
         end
 end
@@ -212,34 +305,55 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
-function edit_numeric_Callback(hObject, eventdata, handles)
+function edit_numeric_type_Callback(hObject, eventdata, handles)
 
-set(handles.edit_numeric, 'ForegroundColor', [0 0 0]);
-set(handles.edit_string, 'ForegroundColor', [0 0 0]);
+set(handles.edit_numeric_type, 'ForegroundColor', [0 0 0]);
+set(handles.edit_event_label, 'ForegroundColor', [0 0 0]);
 set(handles.edit_binindex, 'ForegroundColor', [0 0 0]);
 set(handles.edit_bindescription, 'ForegroundColor', [0 0 0]);
-numco = strtrim(get(handles.edit_numeric, 'String'));
-set(handles.edit_numeric, 'String', numco);
+numco = str2num(get(handles.edit_numeric_type, 'String'));
+if isempty(numco)
+        msgboxText =  'You must enter numeric value(s)';
+        title = 'ERPLAB: assigncodesGUI() error';
+        errorfound(msgboxText, title);
+        return
+end
+set(handles.edit_numeric_type, 'String', vect2colon(numco, 'Delimiter','off', 'Repeat','off'));
+
+% if ~isempty(get(handles.edit_event_label,'String'))
+set(handles.pushbutton_update,'Enable', 'on');
+% end
 
 %--------------------------------------------------------------------------
-function edit_numeric_CreateFcn(hObject, eventdata, handles)
+function edit_numeric_type_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
-function edit_string_Callback(hObject, eventdata, handles)
+function edit_event_label_Callback(hObject, eventdata, handles)
 
-set(handles.edit_numeric, 'ForegroundColor', [0 0 0]);
-set(handles.edit_string, 'ForegroundColor', [0 0 0]);
+set(handles.edit_numeric_type, 'ForegroundColor', [0 0 0]);
+set(handles.edit_event_label, 'ForegroundColor', [0 0 0]);
 set(handles.edit_binindex, 'ForegroundColor', [0 0 0]);
 set(handles.edit_bindescription, 'ForegroundColor', [0 0 0]);
-strco = strtrim(get(handles.edit_string, 'String'));
-set(handles.edit_string, 'String', strco);
+strco = strtrim(get(handles.edit_event_label, 'String'));
+if length(strco)>16
+        msgboxText =  ['Told''ya!\n\n'...
+                'Your event label has %d characters!\n'...
+                'So, it will be shortened to 16 characters'];
+        title = 'ERPLAB: very looooong bin description...';
+        errorfound(sprintf(msgboxText, length(strco)), title, [1 1 0], [0 0 0], 0);
+        strco = strco(1:16);
+end
+set(handles.edit_event_label, 'String', strco);
 
+% if ~isempty(get(handles.edit_numeric_type,'String'))
+%       set(handles.pushbutton_update,'Enable', 'on');
+% end
 %--------------------------------------------------------------------------
-function edit_string_CreateFcn(hObject, eventdata, handles)
+function edit_event_label_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
@@ -248,12 +362,27 @@ end
 %--------------------------------------------------------------------------
 function edit_binindex_Callback(hObject, eventdata, handles)
 
-set(handles.edit_numeric, 'ForegroundColor', [0 0 0]);
-set(handles.edit_string, 'ForegroundColor', [0 0 0]);
+set(handles.edit_numeric_type, 'ForegroundColor', [0 0 0]);
+set(handles.edit_event_label, 'ForegroundColor', [0 0 0]);
 set(handles.edit_binindex, 'ForegroundColor', [0 0 0]);
 set(handles.edit_bindescription, 'ForegroundColor', [0 0 0]);
-bindx = strtrim(get(handles.edit_binindex, 'String'));
-set(handles.edit_binindex, 'String', bindx);
+bindx = str2num((get(handles.edit_binindex, 'String')));
+
+if length(bindx)>1
+        msgboxText =  'You must enter a single numeric value';
+        title = 'ERPLAB: assigncodesGUI() error';
+        errorfound(msgboxText, title);
+        return
+end
+if ~isempty(bindx)
+        if nnz(bindx<=0)>0
+                msgboxText =  'You must enter a positive interger value';
+                title = 'ERPLAB: assigncodesGUI() error';
+                errorfound(msgboxText, title);
+                return
+        end
+        set(handles.edit_binindex, 'String', strtrim(num2str(bindx)));
+end
 
 %--------------------------------------------------------------------------
 function edit_binindex_CreateFcn(hObject, eventdata, handles)
@@ -265,11 +394,18 @@ end
 %--------------------------------------------------------------------------
 function edit_bindescription_Callback(hObject, eventdata, handles)
 
-set(handles.edit_numeric, 'ForegroundColor', [0 0 0]);
-set(handles.edit_string, 'ForegroundColor', [0 0 0]);
+set(handles.edit_numeric_type, 'ForegroundColor', [0 0 0]);
+set(handles.edit_event_label, 'ForegroundColor', [0 0 0]);
 set(handles.edit_binindex, 'ForegroundColor', [0 0 0]);
 set(handles.edit_bindescription, 'ForegroundColor', [0 0 0]);
 bdesc = strtrim(get(handles.edit_bindescription, 'String'));
+
+if length(bdesc)>48
+        msgboxText =  ['Are you writing a letter?\n\n'...
+                'Your bin description got %d characters!'];
+        title = 'ERPLAB: very looooong bin description...';
+        errorfound(sprintf(msgboxText, length(bdesc)), title, [1 1 0], [0 0 0], 0);
+end
 set(handles.edit_bindescription, 'String', bdesc);
 
 %--------------------------------------------------------------------------
@@ -284,122 +420,23 @@ function pushbutton_update_Callback(hObject, eventdata, handles)
 
 currline = get(handles.listbox_lines, 'Value');
 fulltext = get(handles.listbox_lines, 'String');
-
-indxline = length(fulltext);
-numco = strtrim(get(handles.edit_numeric, 'String'));
-strc1 = get(handles.edit_string, 'String');
-
-if ~isempty(strc1) && ~strcmp(strc1, '')
-        
-        if length(strc1)>16
-                strco = strtrim(strc1(1:16));
-        else
-                strco = strtrim(strc1);
-        end
-        
-        strcox = regexprep(strco, ' ','_');
-        strcox = regexprep(strco, '"',''); % avoids multiple "s
-else
-        strcox = '';
-end
-
-strco = ['"' strcox '"'];
-bindx = strtrim(get(handles.edit_binindex, 'String'));
-
-if ~strcmp(bindx,'')
-        auxbin = str2num(bindx);
-        bindx_T = bindx;
-        if isempty(auxbin)
-                msgboxText{1} =  'Error: You have to specify a numeric bin index!';
-                title = 'ERPLAB';
-                errorfound(msgboxText, title);
-                return
-        else
-                if length(auxbin)~=1
-                        msgboxText{1} =  'Error: You have to specify a unique numeric bin index!';
-                        title = 'ERPLAB';
-                        errorfound(msgboxText, title);
-                        return
-                end
-        end
-else
-        bindx_T = '[]';
-end
-
-bdesc   = strtrim(get(handles.edit_bindescription, 'String'));
-bdesc_T = regexprep(bdesc, '"',''); % avoids multiple "s
-bdesc   = ['"' bdesc_T '"'];
+lentext  = length(fulltext);
 
 %
-% Test numeric inputs for numeric code and bin descripton
+% Event type
 %
-auxnum  = str2num(numco);
-testnum = ~isempty(auxnum);
+numco    = str2num(get(handles.edit_numeric_type, 'String')); % numeric event type
+lnumco = length(numco);
 
-if testnum && ~strcmp(strco,'""')
-        
-        if length(auxnum)==1
-                
-                newline = sprintf('%5s %16s %5s %20s', numco, strco, bindx_T, bdesc);
-                               
-                if currline==indxline
-                        % extra line forward
-                        fulltext  = cat(1, fulltext, {'new line'});
-                        set(handles.listbox_lines, 'Value', currline+1)
-                        set(handles.edit_numeric, 'ForegroundColor', [0.7 0.7 0.7]);
-                        set(handles.edit_string,  'ForegroundColor', [0.7 0.7 0.7]);
-                        set(handles.edit_binindex, 'ForegroundColor', [0.7 0.7 0.7]);
-                        set(handles.edit_bindescription, 'ForegroundColor', [0.7 0.7 0.7]);
-                else
-                        set(handles.listbox_lines, 'Value', currline)
-                end
-                
-                set(handles.pushbutton_savelistas, 'Enable','on')
-                
-                %Stanley Huang start---------------------------------------
-                binnum = str2num(bindx_T);
-                if isempty(binnum) && ~isempty(bdesc_T)
-                        if indxline == currline
-                                set(handles.listbox_lines, 'Value', length(fulltext)-1)
-                                fulltext = char(fulltext); % string matrix
-                                fulltext(currline,:) = [];
-                                fulltext = cellstr(fulltext); % cell string
-                        end
-                        set(handles.listbox_lines, 'String', fulltext);
-                        msgboxText =  'Error: You must define both a bin number and bin description! ';
-                        title = 'ERPLAB';
-                        errorfound(msgboxText, title);
-                elseif ~isempty(binnum) && isempty(bdesc_T)
-                        if indxline == currline
-                                set(handles.listbox_lines, 'Value', length(fulltext)-1)
-                                fulltext = char(fulltext); % string matrix
-                                fulltext(currline,:) = [];
-                                fulltext = cellstr(fulltext); % cell string
-                        end
-                        set(handles.listbox_lines, 'String', fulltext);
-                        msgboxText =  'Error: You must define both a bin number and bin description! ';
-                        title = 'ERPLAB';
-                        errorfound(msgboxText, title);
-                elseif ~isempty(bindx_T) && ~isempty(bdesc)
-                        fulltext{currline} = newline; %Javier's code
-                        set(handles.listbox_lines, 'String', fulltext)
-                end
-                %Stanley Huang end-----------------------------------------
-                
-                indxline = length(fulltext);
-                handles.indxline = indxline;
-                handles.fulltext = fulltext;
-                
-                handles.lastlineclicked = {numco strcox bindx bdesc_T currline};
-                handles.listname = [];
-                
-                % Update handles structure
-                guidata(hObject, handles);
-        end
-else
+%
+% Event label
+%
+elabel   = get(handles.edit_event_label, 'String');  % event label (no white spaces)
+
+if lnumco==0 || isempty(elabel) || strcmp(elabel,'""')
         set(handles.pushbutton_update, 'Enable','off')
-        msgboxText =  'Error: You must define both an Event Code (number) and Event Label (string)!'; %SH
-        title = 'ERPLAB';
+        msgboxText =  'Error: You must define both an Event Code (number) and Event Label (string).'; %SH
+        title = 'ERPLAB: input';
         errorfound(msgboxText, title);
         set(handles.pushbutton_update, 'Enable','on')
         handles.lastlineclicked = {};
@@ -408,35 +445,112 @@ else
         guidata(hObject, handles);
         return
 end
+if length(elabel)>16
+        elabel = strtrim(elabel(1:16));
+else
+        elabel = strtrim(elabel);
+end
+elabel = regexprep(elabel, ' ','_');
+elabel2 = regexprep(elabel, '"',''); % avoids multiple "
+elabel = ['"' elabel2 '"'];
+
+%
+% Bin index
+%
+bini = strtrim(get(handles.edit_binindex, 'String'));
+if isempty(bini)
+        bini = '[]';
+        bini2 = '';
+else
+        auxbin  = str2num(bini);
+        if isempty(auxbin)
+                msgboxText =  'Error: You have to specify a numeric bin index!';
+                title = 'ERPLAB';
+                errorfound(msgboxText, title);
+                return
+        else
+                if length(auxbin)~=1
+                        msgboxText =  'Error: You have to specify a single bin index!';
+                        title = 'ERPLAB';
+                        errorfound(msgboxText, title);
+                        return
+                end
+        end
+        bini2 = bini;
+end
+
+%
+% Bin description
+%
+bindesc  = strtrim(get(handles.edit_bindescription, 'String'));
+if ~strcmp(bini,'[]') && isempty(bindesc)
+        msgboxText =  'Error: You must specify a bin description!';
+        title = 'ERPLAB';
+        errorfound(msgboxText, title);
+        return
+end
+bindesc2  = regexprep(bindesc, '"',''); % avoids multiple "
+bindesc   = ['"' bindesc2 '"'];
+
+if currline==lentext && lnumco==1
+        % extra line forward
+        fulltext  = cat(1, fulltext, {'new line'});
+elseif currline==lentext && lnumco>1
+        fulltext  = cat(1, fulltext, repmat({''},lnumco-1,1),{'new line'});
+elseif currline~=lentext && lnumco>1
+        auxft = fulltext(currline+1:end);
+        fulltext  = cat(1, fulltext(1:currline), repmat({''},lnumco-1,1),auxft);
+end
+for i=1:lnumco
+        newline = sprintf('%5s %16s %5s %20s', num2str(numco(i)), elabel, bini, bindesc);
+        fulltext{currline+i-1} = newline; %Javier's code
+end
+set(handles.listbox_lines, 'String', fulltext)
+set(handles.listbox_lines, 'Value', currline+lnumco)
+set(handles.edit_numeric_type, 'String', num2str(numco(end)))
+indxline = length(fulltext);
+handles.indxline = indxline;
+handles.fulltext = fulltext;
+handles.lastlineclicked = {strtrim(num2str(numco(end))), elabel2, bini2, bindesc2, currline};
+handles.listname = [];
+
+% Update handles structure
+guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
-function pushbutton_openlist_Callback(hObject, eventdata, handles)
-
-[filename, filepath] = uigetfile({'*.txt';'*.*'},'Select an edited file');
-
-if isequal(filename,0)
-        disp('User selected Cancel')
-        return
+function pushbutton_openlist_Callback(hObject, eventdata, handles, editlistname)
+if nargin<4
+        [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select an edited file');
+        
+        if isequal(filename,0)
+                disp('User selected Cancel')
+                return
+        else
+                fullname = fullfile(filepath, filename);
+        end
 else
-        fullname = fullfile(filepath, filename);
+        fullname = editlistname;
 end
 
 set(handles.edit_filelist,'String',fullname);
-
 fid_edition = fopen( fullname );
-
-try        
-        formcell    = textscan(fid_edition, '%[^\n]', 'CommentStyle','#', 'whitespace', '');
-        fulltext    = formcell{:}; % cellstr was removed
+% try   
+try
+        formcell = importdata(fullname, '\t');
+        fulltext = char(formcell);
 catch
-        serr = lasterror;
-        msgboxText =  ['Please check your file: \n'...
-                fullname '\n'...
-                serr.message];
-        title = 'ERPLAB: pop_editeventlist() error:';
-        errorfound(sprintf(msgboxText), title);
-        return
+        formcell = textscan(fid_edition, '%[^\n]', 'CommentStyle','#', 'whitespace', '');
+        fulltext = formcell{:}; % cellstr was removed
 end
+% catch
+%         serr = lasterror;
+%         msgboxText =  ['Please check your file: \n'...
+%                 fullname '\n'...
+%                 serr.message];
+%         title = 'ERPLAB: pop_editeventlist() error:';
+%         errorfound(sprintf(msgboxText), title);
+%         return
+% end
 
 % extra line forward
 fulltext  = cat(1, fulltext, {'new line'});
@@ -450,7 +564,6 @@ if lentext>0
         set(handles.pushbutton_savelist, 'Enable','on')
         handles.fulltext = fulltext;
         handles.indxline = indxline;
-        
         listname = fullname;
         handles.listname = listname;
         set(handles.pushbutton_savelist,'Enable', 'on')
@@ -465,19 +578,26 @@ function pushbutton_close_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
+
+%--------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% doc pop_editeventlist
+web http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Create.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_apply_Callback(hObject, eventdata, handles)
 
 fulltext  = get(handles.listbox_lines, 'String');
+fulltext  = fulltext(~ismember(fulltext, {'new line'})); % avoid multiple 'new line'
+fulltext  = [fulltext; 'new line'];
 nline     = length(fulltext);
 currline  = get(handles.listbox_lines, 'Value');
 lastlineclicked = handles.lastlineclicked;
 
 if ~isempty(lastlineclicked)
-        numco = get(handles.edit_numeric, 'String');
-        strco = get(handles.edit_string, 'String');
+        numco = get(handles.edit_numeric_type, 'String');
+        strco = get(handles.edit_event_label, 'String');
         bindx = get(handles.edit_binindex, 'String');
         bdesc = get(handles.edit_bindescription, 'String');
         cmatch1 = strcmpi(lastlineclicked{1}, numco);
@@ -486,22 +606,16 @@ if ~isempty(lastlineclicked)
         cmatch4 = strcmpi(lastlineclicked{4}, bdesc);
         condi = cmatch1 && cmatch2 && cmatch3 && cmatch4;
 else
-        cmatch1 = strcmpi(get(handles.edit_numeric, 'string'), '');
-        cmatch2 = strcmpi(get(handles.edit_string, 'string'), '');
+        cmatch1 = strcmpi(get(handles.edit_numeric_type, 'string'), '');
+        cmatch2 = strcmpi(get(handles.edit_event_label, 'string'), '');
         cmatch3 = strcmpi(get(handles.edit_binindex, 'string'), '');
         cmatch4 = strcmpi(get(handles.edit_bindescription, 'string'), '');
         condi = cmatch1 && cmatch2 && cmatch3 && cmatch4;
 end
-
 if condi
-        
-        fullname  = get(handles.edit_elname, 'String');
-        
         if nline>1
-                
                 fullt1 = char(fulltext);
                 fullt2 = cellstr(fullt1(1:(nline-1),:));
-                
                 [strmat strtok] = regexp(fullt2, '([-+]*\d+)\s*"(.*)"\s*(\d+|[[]]+)\s*"(.*)"', 'match', 'tokens');
                 
                 if isempty([strtok{:}])
@@ -510,57 +624,46 @@ if condi
                         errorfound(msgboxText, title);
                         return
                 end
-                
                 numbina = cell(1);
-                
                 for m=1:nline-1
-                        
                         numbina{m} = str2num(strtok{m}{1}{3});
-                        
                         if isempty(numbina{m})
                                 numbina{m} = 0;  % since bin zero isn't allowed...
                         elseif numbina{m} < 1 %SH
                                 numbina{m} = -1; % since you cannot start a bin at zero... %SH
                         end
                 end
-                
                 indi   = find(cell2mat(numbina));
-                
                 if ~isempty(indi)
-                        
                         numbaux = cell2mat(numbina(indi));
                         nub  = length(numbaux);
                         unb  = unique(numbaux);
                         nunb = length(unb);
-                        
                         sbin    = sort(unb);
                         compbin = [1:nunb]==unb;
                         
                         if nnz(compbin)<nunb
                                 msgboxText = [ 'Error: bin numbering must be consecutive starting from 1!\n'...
-                                               'Note: Order does not matter.\n'];
+                                        'Note: Order does not matter.\n'];
                                 title = 'ERPLAB';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
                 end
         end
-        
         if nline>1
                 listname = handles.listname;
         else
                 listname = '';
         end
-        
         if isempty(listname) && nline>1
-                
                 BackERPLABcolor = [1 0.9 0.3];    % ERPLAB main window background
-                question{1} = 'You have not saved your changes.';
-                question{2} = 'What would you like to do?';
+                question = ['You have not saved your changes.\n\n'...
+                        'What would you like to do?'];
                 title = 'Save List of changes';
                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                button = questdlg(question, title,'Save and Continue','Save As', 'Cancel','Save and Continue');
+                button = questdlg(sprintf(question), title,'Save and Continue','Save As', 'Cancel','Save and Continue');
                 set(0,'DefaultUicontrolBackgroundColor',oldcolor)
                 
                 if strcmpi(button,'Save As')
@@ -570,16 +673,14 @@ if condi
                                 return
                         end
                 elseif strcmpi(button,'Save and Continue')
-                        
-                        fulltext = char(get(handles.listbox_lines,'String'));
+                        fulltext = char(fulltext); % get(handles.listbox_lines,'String'));
                         listname = char(strtrim(get(handles.edit_filelist,'String')));
-                        
                         if isempty(listname)
                                 fullname = savelist(hObject, eventdata, handles);
                                 listname = fullname;
                                 if isempty(listname)
                                         return
-                                end                                
+                                end
                         else
                                 fid_list = fopen( listname , 'w');
                                 for i=1:size(fulltext,1)-1
@@ -587,7 +688,6 @@ if condi
                                 end
                                 fclose(fid_list);
                         end
-                        
                 elseif strcmpi(button,'Cancel') || strcmpi(button,'')
                         handles.output = [];
                         % Update handles structure
@@ -598,14 +698,23 @@ if condi
         
         outputparam{1} = listname;
         
-        if get(handles.checkbox_create_eventlist, 'Value')
-                
-                [elpathname, elfilename, ext, versn] = fileparts(fullname);
+        % To :
+        button_tocurrentdata   = get(handles.radiobutton_tocurrentdata,'Value');
+        button_toworkspace     = get(handles.checkbox_toworkspace,'Value');
+        button_totext          = get(handles.radiobutton_totext,'Value');
+        file4text              = strtrim(get(handles.edit_elname, 'String'));
+        
+        if strcmp(file4text,'') && button_totext
+                msgboxText =  'You have to specify an EventList file output!';
+                title = 'ERPLAB';
+                errorfound(sprintf(msgboxText), title);
+                return
+        elseif ~strcmp(file4text,'') && button_totext
+                [elpathname, elfilename, ext] = fileparts(file4text);
                 
                 if strcmpi(elpathname,'')
                         elpathname = cd;
                 end
-                
                 if ~strcmpi(ext,'.txt')
                         ext='.txt';
                 end
@@ -614,33 +723,54 @@ if condi
                 owfp = handles.owfp;  % over write file permission
                 
                 if exist(elfilename, 'file')~=0 && owfp==0
-                        question{1} = [elfilename ' already exists!'];
-                        question{2} = 'Do you want to replace it?';
-                        title      = 'ERPLAB: Overwriting Confirmation';
-                        button      = askquest(question, title);
-                        
+                        question = [elfilename ' already exists!\n'...
+                                'Do you want to replace it?'];
+                        title    = 'ERPLAB: Overwriting Confirmation';
+                        button   = askquest(sprintf(question), title);
                         if ~strcmpi(button, 'yes')
                                 return
                         end
                 end
-                
                 disp(['For EVENTLIST text file, user selected ', fullfile(elpathname, elfilename)])
                 outputparam{2} = elfilename;
-                
         else
-                outputparam{2} = '';
+                outputparam{2} = 'none';
         end
+        
+        %
+        % What to do with the EVENTLIST?
+        if     button_toworkspace && button_tocurrentdata && button_totext
+                option2do = 7;  % do all
+        elseif button_toworkspace && button_tocurrentdata && ~button_totext
+                option2do = 6;  % workspace & current data
+        elseif button_toworkspace && ~button_tocurrentdata && button_totext
+                option2do = 5;  %  workspace & text
+        elseif button_toworkspace && ~button_tocurrentdata && ~button_totext
+                option2do = 4;  %  workspace only
+        elseif ~button_toworkspace && button_tocurrentdata && button_totext
+                option2do = 3;  %  current data & text
+        elseif ~button_toworkspace && button_tocurrentdata && ~button_totext
+                option2do = 2;  % current data only
+        elseif ~button_toworkspace && ~button_tocurrentdata && button_totext
+                option2do = 1;  % text only
+        else
+                option2do = 0;  % do nothing -> error!!!
+                title = 'ERPLAB';
+                errorfound('pick something to do! (with the updated EVENTLIST...)', title);
+                return
+        end
+        
+        % Warning me when the eventlist text file already exist
+        iswarning = get(handles.ELwarning,'Value');
         
         if get(handles.checkbox_update_EEG, 'Value')
                 outputparam{3}=1;
         else
                 outputparam{3}=0;
-                
                 fprintf('\n\nWARNING: You did not update your EEG.event struct.\n');
                 fprintf('             Your current event info is within the EEG.EVENTLIST.eventinfo struct.\n');
                 fprintf('             Use "Transfer eventinfo to EEG.event" menu.\n\n');
         end
-        
         if get(handles.checkbox_addm99code,'Value')
                 boundarystrcode1    = 'boundary';
                 newboundarynumcode1 = -99;
@@ -648,13 +778,10 @@ if condi
                 boundarystrcode1    = [];
                 newboundarynumcode1 = [];
         end
-        
         if get(handles.checkbox_convert_b,'Value')
-                
                 boundarystrcode2    = strtrim(char(get(handles.edit_boundarycode, 'String')));
                 boundarystrcode2    = char(regexprep(boundarystrcode2,'''|"','')); % eliminates 's and "s
                 newboundarynumcode2 = str2num(get(handles.edit_numericode, 'String'));
-                
                 if isempty(boundarystrcode2)
                         msgboxText{1} =  'You must specify a boundary code!';
                         title = 'ERPLAB: empty input';
@@ -668,10 +795,23 @@ if condi
                         return
                 end
                 if strcmp(boundarystrcode2, boundarystrcode1)
-                        msgboxText{1} =  '''boundary'' event is already specified to be numerically encoded.';
-                        title = 'ERPLAB: duplicated inputs';
-                        errorfound(msgboxText, title);
-                        return
+                        
+                        boundarystrcode1 = [];
+                        fprintf('\nWARNING: ''boundary'' event was specified twice for being numerically encoded.\n')
+                        fprintf('ERPLAB will ignore one.\n')
+                        %BackERPLABcolor = [1 0.9 0.3];    % ERPLAB main window background
+                        %question = ['''boundary'' event is already specified to be numerically encoded.\n'...
+                        %            'Please, disentangle this.\n'];
+                        %title = 'Encoding boundary events';
+                        %oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                        %set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                        %button = questdlg(sprintf(question), title,'OK','OK');
+                        %set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                        
+                        %msgboxText{1} =  '''boundary'' event is already specified to be numerically encoded.';
+                        %title = 'ERPLAB: duplicated inputs';
+                        %errorfound(msgboxText, title);
+                        %return
                 end
         else
                 boundarystrcode2    = [];
@@ -682,28 +822,30 @@ if condi
         newboundarynumcode = {newboundarynumcode1 newboundarynumcode2};
         boundarystrcode    = boundarystrcode(~cellfun(@isempty, boundarystrcode));
         newboundarynumcode = newboundarynumcode(~cellfun(@isempty, newboundarynumcode));
-        
         outputparam{4} = boundarystrcode;
         outputparam{5} = newboundarynumcode;
+        outputparam{6} = option2do;
+        outputparam{7} = iswarning;
         
-        handles.output = outputparam;
+        alphanum = get(handles.checkbox_alphanum, 'Value'); % for letterkilla. Oct 10, 2012
+        outputparam{8} = alphanum;       % for letterkilla. Oct 10, 2012
+        
+        handles.output = outputparam;        
+        erpworkingmemory('assigncodesGUI', outputparam);
         
         % Update handles structure
         guidata(hObject, handles);
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         set(handles.listbox_lines, 'Enable', 'off');
-        
         if nline~=currline
                 msgboxText =  sprintf('You modified line # %g, but you did not update it!\n',currline);
         else
                 msgboxText =  sprintf('You attempted to enter a new line, but you did not update it!\n');
         end
-        
         title = 'ERPLAB: averager GUI empty input';
         buttonames = {'Go back & update', 'Continue & do not update'};
         button     = askquestpoly(msgboxText, title, {'Go back & update', 'Continue & do not update'});
-        
         if strcmpi(button, buttonames{1})
                 set(handles.listbox_lines, 'Value', currline);
                 set(handles.listbox_lines, 'Enable', 'on');
@@ -714,8 +856,8 @@ else
                 set(handles.listbox_lines, 'Enable', 'on');
                 listbox_lines_Callback(hObject, eventdata, handles)
                 
-                set(handles.edit_numeric, 'string','')
-                set(handles.edit_string, 'string','')
+                set(handles.edit_numeric_type, 'string','')
+                set(handles.edit_event_label, 'string','')
                 set(handles.edit_binindex, 'string','')
                 set(handles.edit_bindescription, 'string','')
                 pushbutton_apply_Callback(hObject, eventdata, handles)
@@ -731,18 +873,17 @@ indxline = length(fulltext);
 fulltext = char(fulltext); % string matrix
 currline = get(handles.listbox_lines, 'Value');
 
-if nnz(~bitand(currline>=1,currline<indxline))==0        
+if nnz(~bitand(currline>=1,currline<indxline))==0
         fulltext(currline,:) = [];
         fulltext = cellstr(fulltext); % cell string
-        
         set(handles.listbox_lines, 'String', fulltext);
         handles.lastlineclicked = {};
         
         % Update handles structure
         guidata(hObject, handles);
         
-        set(handles.edit_numeric, 'string','')
-        set(handles.edit_string, 'string','')
+        set(handles.edit_numeric_type, 'string','')
+        set(handles.edit_event_label, 'string','')
         set(handles.edit_binindex, 'string','')
         set(handles.edit_bindescription, 'string','')
         indxline = length(fulltext);
@@ -750,10 +891,8 @@ if nnz(~bitand(currline>=1,currline<indxline))==0
         if currline>indxline
                 currline = indxline;
         end
-        
         set(handles.listbox_lines, 'Value', currline);
         listbox_lines_Callback(hObject, eventdata, handles)
-        
         handles.fulltext = fulltext;
         handles.listname = [];
         
@@ -765,21 +904,16 @@ end
 function pushbutton_savelistas_Callback(hObject, eventdata, handles)
 
 fulltext = char(strtrim(get(handles.listbox_lines,'String')));
-
 if min(size(fulltext)) > 1 %sh - changed length to min(size(fulltext))
-        
         fullname = savelist(hObject, eventdata, handles);
-        
         if isempty(fullname)
                 return
         end
-        
         set(handles.edit_filelist, 'String', fullname )
         set(handles.pushbutton_savelist, 'Enable', 'on')
-        
         handles.listname = fullname;
         % Update handles structure
-        guidata(hObject, handles);        
+        guidata(hObject, handles);
 else
         set(handles.pushbutton_savelistas,'Enable','off')
         msgboxText =  'You have not yet edited any event!';
@@ -793,7 +927,7 @@ end
 function pushbutton_update_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function checkbox_create_eventlist_Callback(hObject, eventdata, handles)
+function radiobutton_totext_Callback(hObject, eventdata, handles)
 
 if get(hObject, 'Value')
         set(handles.edit_elname, 'Enable', 'on');
@@ -816,20 +950,20 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         % The GUI is still in UIWAIT, us UIRESUME
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+        delete(handles.gui_chassis);
 end
 
 %--------------------------------------------------------------------------
 function edit_elname_Callback(hObject, eventdata, handles)
 
 fullname = get(hObject, 'String');
-[elpathname, elfilename, ext, versn] = fileparts(fullname);
+[elpathname, elfilename, ext] = fileparts(fullname);
 
 if strcmpi(elpathname,'')
         elpathname = cd;
@@ -866,7 +1000,7 @@ if isequal(elfname,0)
         guidata(hObject, handles);
         return
 else
-        [pathx, elfilename, ext, versn] = fileparts(elfname);
+        [pathx, elfilename, ext] = fileparts(elfname);
         
         if ~strcmpi(ext,'.txt')
                 ext='.txt';
@@ -891,8 +1025,11 @@ function checkbox_modifyevent_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function togglebutton_summary_Callback(hObject, eventdata, handles)
-event = evalin('base', 'EEG.event');
-eval('[eventtypes histo] = squeezevents(event);')
+try
+        event = evalin('base', 'EEG.event');
+        eval('[eventtypes histo] = squeezevents(event);')
+catch
+end
 
 %--------------------------------------------------------------------------
 function fullname = savelist(hObject, eventdata, handles)
@@ -910,9 +1047,7 @@ if isequal(filename,0)
         fullname = [];
         return
 else
-        
-        [px, fname, ext, versn] = fileparts(filename);
-        
+        [px, fname, ext] = fileparts(filename);
         if strcmp(ext,'')
                 
                 if filterindex==1 || filterindex==3
@@ -921,17 +1056,13 @@ else
                         ext   = '.dat';
                 end
         end
-        
         fname = [ fname ext];
         fullname = fullfile(filepath, fname);
         disp(['For saving edited list of changes, user selected <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
-        
         fid_list   = fopen( fullname , 'w');
-        
         for i=1:size(fulltext,1)-1
                 fprintf(fid_list,'%s\n', fulltext(i,:));
         end
-        
         fclose(fid_list);
 end
 
@@ -980,11 +1111,8 @@ end
 function pushbutton_savelist_Callback(hObject, eventdata, handles)
 
 fulltext = char(strtrim(get(handles.listbox_lines,'String')));
-
-if length(fulltext)>1
-        
-        fullname = get(handles.edit_filelist, 'String'); % name of the list
-        
+if length(fulltext)>1        
+        fullname = get(handles.edit_filelist, 'String'); % name of the list        
         if ~strcmp(fullname,'')
                 
                 fid_list  = fopen( fullname , 'w');
@@ -994,7 +1122,6 @@ if length(fulltext)>1
                 end
                 
                 fclose(fid_list);
-                
                 handles.listname = fullname;
                 % Update handles structure
                 guidata(hObject, handles);
@@ -1003,7 +1130,6 @@ if length(fulltext)>1
                 pushbutton_savelistas_Callback(hObject, eventdata, handles)
                 return
         end
-        
 else
         set(handles.pushbutton_savelist,'Enable','off')
         msgboxText =  'You have not written any eventcodes yet!'; %sh
@@ -1037,3 +1163,15 @@ function edit_filelist_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
+
+
+function checkbox_toworkspace_Callback(hObject, eventdata, handles)
+
+
+function radiobutton_tocurrentdata_Callback(hObject, eventdata, handles)
+
+
+function ELwarning_Callback(hObject, eventdata, handles)
+
+
+function checkbox_alphanum_Callback(hObject, eventdata, handles)

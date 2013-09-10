@@ -1,3 +1,5 @@
+% ALPHA VERSION
+%
 % doubleresponsekiller() version 2
 %
 % Usage
@@ -29,6 +31,8 @@
 %
 % Alpha version
 %
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,

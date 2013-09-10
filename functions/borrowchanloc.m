@@ -1,103 +1,130 @@
+% PURPOSE: holds the ERP structure in EEGLAB's pop_chanedit function in order to load channel location information.
+%
+% FORMAT:
+%
+% ERP = borrowchanloc(ERP)
+%
+% INPUT:
+%
+% ERP        - input ERPset
+%
+%
+% OUTPUT:
+%
+% ERP        - ERPset having channel location information.
+%
+%
+% EXAMPLE: Get the baseline value for a window of -200 to 0 ms, at bin 4, channel 23
+%
+% blv = blvalue(ERP, 23, 4, [-200 0])
+%
+%
+% See also geterpvalues.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2009
 
-%b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
-%
-% ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
-% Created by Javier Lopez-Calderon and Steven Luck
-% Center for Mind and Brain, University of California, Davis,
-% javlopez@ucdavis.edu, sjluck@ucdavis.edu
-%
-% This program is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-%
-% This program is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this program.  If not, see <http://www.gnu.org/licenses/>.
-function ERP = borrowchanloc(ERP)
-
-if isfield(ERP.chanlocs,'theta')
-      chanok = {ERP.chanlocs.theta};
-      exchanArray = find(cellfun('isempty',chanok));
-      chfound = 1;
-else
-      exchanArray = [];
-      chfound = 0;
+function [ERP, serror] = borrowchanloc(ERP, chanlocfile, option)
+serror = 0; % all ok
+if nargin<1
+        help borrowchanloc
+        return
 end
-
+if nargin<3
+        option = 0; % do not open gui for saving
+end
+if nargin<2
+        chanlocfile = ''; % no chan loc file
+end
 ERPaux = ERP;
-
-if isempty(exchanArray) && chfound==1
-      fprintf('Channel locations were successfuly found!\n');
-      
+if isempty(chanlocfile)
+        if isfield(ERP.chanlocs,'theta') && ~isempty([ERP.chanlocs.theta])
+                chanok = {ERP.chanlocs.theta};
+                exchanArray = find(cellfun('isempty',chanok));
+                chfound = 1;                
+                %disp('A')
+        else
+                exchanArray = [];
+                chfound = 0;
+                %disp('B')
+        end
+        if isempty(exchanArray) && chfound==1
+                fprintf('Channel location info was successfuly found!\n');
+                return
+        elseif ~isempty(exchanArray) && chfound==1
+                if length(exchanArray)>=ERP.nchan
+                        [ERP, serror] = erpchanedit(ERP);
+                        if ~isempty(serror) && serror~=1
+                                [ERP, serror] = rememptychanloc(ERP);
+                        end                        
+                else
+                        [ERP, serror] = rememptychanloc(ERP);
+                end
+        else                
+                [ERP, serror] = erpchanedit(ERP);
+                if ~isempty(serror) && serror~=1
+                        [ERP, serror] = rememptychanloc(ERP);
+                end
+                
+                %         if isfield(ERP.chanlocs, 'theta')
+                %                 chanok = {ERP.chanlocs.theta};
+                %                 exchanArray = find(cellfun('isempty',chanok));
+                %
+                %                 if ~isempty(exchanArray)
+                %
+                %                         selchannels = find(~ismember(1:ERP.nchan,exchanArray)); %selected channels
+                %                         nsch = length(selchannels);
+                %                         auxd = ERP.bindata(selchannels,:,:);
+                %                         ERP.bindata = [];
+                %                         ERP.bindata(1:nsch,:,:) = auxd;
+                %                         ERP.nchan   = nsch;
+                %                         namefields  = fieldnames(ERP.chanlocs);
+                %                         nfn = length(namefields);
+                %
+                %                         for ff=1:nfn
+                %                                 auxfield{ff} = {ERP.chanlocs(selchannels).(namefields{ff})};
+                %                         end
+                %
+                %                         ERP.chanlocs=[];
+                %
+                %                         for ff=1:nfn
+                %                                 [ERP.chanlocs(1:nsch).(namefields{ff})] = auxfield{ff}{:};
+                %                         end
+                %                         if length(exchanArray)==1
+                %                                 fprintf('Channel %g was skiped\n', exchanArray)
+                %                         elseif length(exchanArray)>1
+                %                                 fprintf('Channels %g were skiped\n', exchanArray)
+                %                         end
+                %                 end
+                %                 fprintf('\nChannel locations were successfuly loaded!\n');
+                %         else
+                %                 msgboxText = ['Error: pop_scalplot could not find channel locations info.\n\n'...
+                %                         'Hint: Identify channel(s) without location looking at '...
+                %                         'command window comments (Channel lookup). Try again excluding this(ese) channel(s).'];
+                %                 tittle = 'ERPLAB:  error:';
+                %                 errorfound(sprintf(msgboxText), tittle);
+                %                 return
+                %         end
+        end
+        
 else
-      %
-      % Preparing a contraband EEG
-      %
-      EEGx.data     = ERP.bindata;
-      EEGx.chanlocs = ERP.chanlocs;
-      EEGx.nbchan   = ERP.nchan;
-      EEGx = pop_chanedit(EEGx);    % open EEGLAB GUI
-      ERP.chanlocs  = EEGx.chanlocs; % load channel location into ERP structure
-      ERP.bindata   = EEGx.data;
-      ERP.nchan     = EEGx.nbchan;
-      
-      if isfield(ERP.chanlocs, 'theta')
-            
-            chanok = {ERP.chanlocs.theta};
-            exchanArray = find(cellfun('isempty',chanok));
-            
-            if ~isempty(exchanArray)
-                  
-                  selchannels = find(~ismember(1:ERP.nchan,exchanArray)); %selected channels
-                  nsch = length(selchannels);
-                  auxd = ERP.bindata(selchannels,:,:);
-                  ERP.bindata = [];
-                  ERP.bindata(1:nsch,:,:) = auxd;
-                  ERP.nchan  = nsch;
-                  namefields = fieldnames(ERP.chanlocs);
-                  nfn = length(namefields);
-                  
-                  for ff=1:nfn
-                        auxfield{ff} = {ERP.chanlocs(selchannels).(namefields{ff})};
-                  end
-                  
-                  ERP.chanlocs=[];
-                  
-                  for ff=1:nfn
-                        [ERP.chanlocs(1:nsch).(namefields{ff})] = auxfield{ff}{:};
-                  end
-                  if length(exchanArray)==1
-                        fprintf('Channel %g was skiped\n', exchanArray)
-                  elseif length(exchanArray)>1
-                        fprintf('Channels %g were skiped\n', exchanArray)
-                  end
-            end
-            
-            [ERP issave] = pop_savemyerp(ERP,'gui','erplab');
-            
-            if ~issave
-                  ERP  = ERPaux;
-                  return
-            end
-            
-            fprintf('\nChannel locations were successfuly loaded!\n');
-      else
-            msgboxText{1} =  'Error: pop_scalplot could not find channel locations info.';
-            msgboxText{2} =  'Hint: Identify channel(s) without location looking at';
-            msgboxText{3} = 'command window comments (Channel lookup). Try again excluding this(ese) channel(s).';
-            tittle = 'ERPLAB:  error:';
-            errorfound(msgboxText, tittle);
-            return
-      end
+        [ERP, serror ] = erpchanedit(ERP, filename);        
 end
+if serror ==1
+        ERP  = ERPaux;
+        return
+end
+if option
+        [ERP, issave] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
+        if ~issave
+                ERP  = ERPaux;
+                return
+        end
+end
+
+

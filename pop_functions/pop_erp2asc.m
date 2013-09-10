@@ -1,7 +1,26 @@
-% Usage
+% PURPOSE  :	Exports ERP to text (readable by ERPSS)
 %
-%>> pop_erp2asc(ERP, filename)
+% FORMAT   :
 %
+% pop_erp2asc( ERP, filename )
+%
+% INPUTS   :
+%
+% ERP           - input dataset
+% Filename      - file output
+%
+%
+% OUTPUTS
+%
+% -	outputted text file 'filename.txt' of ERP data, readable by ERPSS
+%
+% EXAMPLE  :
+%
+% pop_erp2asc( ERP, 'S1_EEG_ERPs.erp' )
+%
+% See alsoo uiputfile.m  erp2asc.m
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -29,70 +48,116 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [erpcom] = pop_erp2asc(ERP, filename)
-
+function [ERP, erpcom] = pop_erp2asc(ERP, filename, varargin)
 erpcom = '';
-
 if nargin < 1
-      help pop_erp2asc
-      return
+        help pop_erp2asc
+        return
+end
+if nargin==1
+        if isempty(ERP)
+                msgboxText =  'cannot export an empty ERP dataset';
+                title = 'ERPLAB: pop_erp2asc() error:';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isfield(ERP, 'bindata')
+                msgboxText  =  'cannot export an empty ERP dataset';
+                title = 'ERPLAB: pop_erp2asc() error:';
+                errorfound(msgboxText, title);
+                return
+        end
+        if isempty(ERP.bindata)
+                msgboxText  =  'cannot export an empty ERP dataset';
+                title = 'ERPLAB: pop_erp2asc() error:';
+                errorfound(msgboxText, title);
+                return
+        end
+        
+        %
+        % Save ascii file
+        %
+        [filenamei, pathname] = uiputfile({'*.txt';'*.*'},'Save Exported Averaged file as');
+        
+        if isequal(filenamei,0)
+                disp('User selected Cancel')
+                return
+        else
+                [pathx, filename, ext] = fileparts(filenamei);
+                if ~strcmpi(ext,'.txt')
+                        ext = '.txt';
+                end
+                
+                filename = [filename ext];
+                filename = fullfile(pathname, filename);
+                disp(['For text exporting ERP, user selected ' filename])
+        end
+        
+        %
+        % Somersault
+        %
+        [ERP, erpcom] = pop_erp2asc(ERP, filename, 'Warning', 'on', 'History', 'gui');
+        return
 end
 
-if isempty(ERP)
-      msgboxText{1} =  'cannot export an empty ERP dataset';
-      title = 'ERPLAB: pop_erp2asc() error:';
-      errorfound(msgboxText, title);
-      return
-end
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ERP');
+p.addRequired('filename', @ischar);
+% option(s)
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('History', 'script', @ischar); % history from scripting
+p.parse(ERP, filename, varargin{:});
 
-if ~isfield(ERP, 'bindata')
-      msgboxText{1} =  'cannot export an empty ERP dataset';
-      title = 'ERPLAB: pop_erp2asc() error:';
-      errorfound(msgboxText, title);
-      return
-end
-
-if isempty(ERP.bindata)
-      msgboxText{1} =  'cannot export an empty ERP dataset';
-      title = 'ERPLAB: pop_erp2asc() error:';
-      errorfound(msgboxText, title);
-      return
-end
-
-if nargin<2
-      
-      %
-      % Save ascii file
-      %
-      [filenamei, pathname] = uiputfile({'*.txt';'*.*'},'Save Exported Averaged file as');
-      
-      if isequal(filenamei,0)
-            disp('User selected Cancel')
-            return
-      else
-            [pathx, filename, ext, verx] = fileparts(filenamei);
-            
-            if ~strcmpi(ext,'.txt')
-                  ext = '.txt';
-            end
-            
-            filename = [filename ext];
-            disp(['For text exporting ERP, user selected ', fullfile(pathname, filename)])
-      end
-      
+if strcmpi(p.Results.Warning,'on')
+        wchmsgon = 1;
 else
-      [pathname, filename, ext, versn] = fileparts(filename);
-      
-      if ~strcmpi(ext,'.txt')
-            ext = '.txt';
-      end
-      
-      filename = [filename ext];
+        wchmsgon = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
 end
 
+[pathname, filename, ext] = fileparts(filename);
+
+if ~strcmpi(ext,'.txt')
+        ext = '.txt';
+end
+filename = [filename ext];
+
+%
+% subroutine
+%
 erp2asc(ERP, filename, pathname);
 
-erpcom = sprintf( 'pop_erp2asc( %s, ''%s'');',  inputname(1), fullfile(pathname, filename));
+filename = fullfile(pathname, filename);
+erpcom = sprintf( 'pop_erp2asc( %s, ''%s'');',  inputname(1), filename);
 
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom); 
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                erpcom = '';
+end
+
+
+%
+% Completion statement
+%
+msg2end
 return

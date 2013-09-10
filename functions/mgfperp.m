@@ -1,11 +1,14 @@
-%usage
+% ALPHA VERSION
+% PURPOSE: get mean global field power from an ERP
 %
-%>> data_MGFP = mgfperp(ERP, excludeArray)
+% FORMAT
+%
+% MGFP = mgfperp(ERP, selch)
 %
 % inputs:
 %
 % ERP           - ERP structure
-% excludeArray  - array containing excluded channels
+% selch         - array containing included channels
 %
 % output:
 %

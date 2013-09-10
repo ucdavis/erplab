@@ -1,8 +1,30 @@
-% Usage
+% PURPOSE  : 	Remove linear trends from each bin of an ERPset
 %
-% >> EEG = pop_lindetrend( EEG, interval)
+% FORMAT   :
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+% ERP = pop_erplindetrend( ERP, detwindow );
+%
+% INPUTS   :
+%
+% ERP           - input ERPset
+% Interval      - time window to estimate the trend. This trend will be subtracted from the whole epoch.
+%                 'pre'- [-200 0], 'post'-[0 798], 'whole'-[-200 798]
+%
+% OUTPUTS  :
+%
+% ERP           - (updated) output ERPset
+%
+%
+% EXAMPLE  :
+% ERP = pop_erplindetrend( ERP, 'post');
+% ERP = pop_erplindetrend( ERP, '0 798');
+% ERP = pop_erplindetrend( ERP, [0 798]);
+%
+% See also blcerpGUI.m lindetrend.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -29,80 +51,152 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP erpcom] = pop_erplindetrend( ERP, interval)
-
+function [ERP, erpcom] = pop_erplindetrend( ERP, detwindow, varargin)
 erpcom = '';
-
 if nargin < 1
-      help pop_lindetrend
-      return
+        help pop_lindetrend
+        return
 end
-
-if isempty(ERP)
-      msgboxText =  'pop_lindetrend() cannot read an empty ERPset!';
-      title = 'ERPLAB: pop_lindetrend() error';
-      errorfound(msgboxText, title);
-      return
-end
-
-%
-% Gui is working...
-%
-if nargin <2
-      
-      titlegui = 'Linear Detrend';
-      answer = blcerpGUI(ERP, titlegui );  % open GUI
-      
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      
-      interval = answer{1};
-end
-
-if ischar(interval)
-      if ~strcmpi(interval,'all') && ~strcmpi(interval,'pre') && ~strcmpi(interval,'post')
-            
-            internum = str2num(interval);
-            
-            if length(internum)~=2
-                  msgboxText = 'Wrong interval. Linear detrending will not be performed.';
-                  title = 'ERPLAB: pop_erplindetrend() error';
-                  errorfound(msgboxText, title);
-                  return
-            end
-            intervalstr = ['[ ' num2str(internum) ' ]'];
-      else
-            intervalstr = ['''' interval ''''];
-      end
-else
-      if length(interval)~=2
-            msgboxText = 'Wrong interval. Linear detrending will not be performed.';
-            title = 'ERPLAB: pop_erplindetrend() error';
-            errorfound(msgboxText, title);
-            return
-      end
-      intervalstr = ['[ ' num2str(interval) ' ]'];
-end
-
-ERP = lindetrend( ERP, interval);
-ERP.erpname = [ERP.erpname '_ld']; % suggested name (si queris no mas!)
-ERP.saved   = 'no';
-
 if nargin==1
-      
-      [ERP issave]= pop_savemyerp(ERP,'gui','erplab');
-      
-      if issave
-            % generate text command
-            erpcom = sprintf( '%s = pop_erplindetrend( %s, %s );', inputname(1), inputname(1), intervalstr);
-            try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
-            return
-      else
-            disp('Warning: Your ERP structure has not yet been saved')
-            disp('user canceled')
-            return
-      end
+        if isempty(ERP)
+                ERP = preloadERP;
+                if isempty(ERP)
+                        msgboxText =  'No ERPset was found!';
+                        title_msg  = 'ERPLAB: pop_erplindetrend() error:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+        end
+        def  = erpworkingmemory('pop_erplindetrend');
+        if isempty(def)
+                def = {'pre'};
+        end
+        
+        %
+        % Call GUI
+        %
+        titlegui = 'Linear Detrend';
+        answer = blcerpGUI(ERP, titlegui, def);
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        detwindow = answer{1};
+        erpworkingmemory('pop_erplindetrend', detwindow);
+        
+        %
+        % Somersault
+        %
+        [ERP, erpcom] = pop_erplindetrend(ERP, detwindow, 'Warning', 'on', 'Saveas', 'on','ErrorMsg', 'popup', 'History', 'gui');
+        return
 end
+
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ERP');
+p.addRequired('detwindow');
+% option(s)
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
+p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(ERP, detwindow, varargin{:});
+
+if strcmpi(p.Results.Warning,'on')
+        wchmsgon = 1;
+else
+        wchmsgon = 0;
+end
+if ismember({p.Results.Saveas}, {'on','yes'})
+        saveas  = 1;
+else
+        saveas  = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+if strcmpi(p.Results.ErrorMsg,'popup')
+        errormsgtype = 1; % open popup window
+else
+        errormsgtype = 0; % error in red at command window
+end
+if ischar(detwindow)
+        if ~strcmpi(detwindow,'all') && ~strcmpi(detwindow,'pre') && ~strcmpi(detwindow,'post')
+                internum = str2num(detwindow);
+                if length(internum)~=2
+                        msgboxText = 'Wrong interval. Linear detrending will not be performed.';
+                        title = 'ERPLAB: pop_erplindetrend() error';
+                        errorfound(msgboxText, title);
+                        return
+                end
+                detwindowstr = ['[ ' num2str(internum) ' ]'];
+        else
+                detwindowstr = ['''' detwindow ''''];
+        end
+else
+        if length(detwindow)~=2
+                msgboxText = 'Wrong interval. Linear detrending will not be performed.';
+                title = 'ERPLAB: pop_erplindetrend() error';
+                errorfound(msgboxText, title);
+                return
+        end
+        detwindowstr = ['[ ' num2str(detwindow) ' ]'];
+end
+
+ERPaux = ERP;
+
+%
+% subroutine
+%
+ERP = lindetrend( ERP, detwindow);
+
+%
+% Completion statement
+%
+msg2end
+ERP.saved = 'no';
+erpcom    = sprintf( '%s = pop_erplindetrend( %s, %s );', inputname(1), inputname(1), detwindowstr);
+if saveas
+        [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');
+        if issave>0
+                if issave==2
+                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                        msgwrng = '*** Your ERPset was saved on your hard drive.***';
+                        mcolor = [0 0 1];
+                else
+                        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+                        mcolor = [1 0.52 0.2];
+                end
+        else
+                ERP = ERPaux;
+                msgwrng = 'ERPLAB Warning: Your changes were not saved';
+                mcolor = [1 0.22 0.2];
+        end
+        try cprintf(mcolor, '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
+end
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom);
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+                %ERP = erphistory(ERP, [], erpcom, 1);
+                %fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        otherwise %off or none
+                erpcom = '';
+end
+return
 

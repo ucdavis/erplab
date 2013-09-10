@@ -51,9 +51,15 @@ function abouterplabGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output   = [];
 handles.running  = 1;
 handles.numfig   = 1;
-
-version = geterplabversion;
-set(handles.figure1,'Name', ['ABOUT   ERPLAB ' version])
+try
+        if ispc
+                opengl software
+        end
+catch
+end
+[version reldate] = geterplabversion;
+howold = num2str(datenum(date)-datenum(reldate));
+set(handles.gui_chassis,'Name', ['ABOUT  ERPLAB ' version ' (' howold ' days old)'])
 
 p = which('eegplugin_erplab');
 p = p(1:findstr(p,'eegplugin_erplab.m')-1);
@@ -63,156 +69,235 @@ formcell  = textscan(fid_about, '%s','delimiter', '#');
 firstline = {['ERPLAB version ' version]};
 handles.textabout = cat(1,firstline, formcell{:});
 fclose(fid_about);
-
-valscr = get(0,'MonitorPosition');
-% sx = min(valscr(:,3).*valscr(:,4));
-% if sx<=1310720  % (~1280*1024)
-%         handles.fontcred = 10;
-% else
-%         handles.fontcred = 11;
-% end
-
 handles.fontcred = 10;
-handles.xfig     = min(valscr(:,3))/2;  % half width screen pos
+
+try
+        posgui  = erpworkingmemory('abouterplabGUI');
+        xfig = posgui(1);
+        yfig = posgui(2);
+catch
+        valscr = get(0,'MonitorPosition');
+        %       posgui  = plotset.ptime.posgui;
+        %       set(handles.gui_chassis,'Position', posgui)
+        xfig     = min(valscr(:,3))/2;  % half width screen pos
+        yfig     = 300;  % half width screen pos
+end
+
+%
+% Set font size
+%
+% handles = setfonterplab(handles);
 
 % Update handles structure
 guidata(hObject, handles);
-set(handles.figure1,'DoubleBuffer','on')
-playcredit(handles.numfig, hObject, eventdata, handles)
+set(handles.gui_chassis,'DoubleBuffer','on')
+playcredit(handles.numfig, xfig, yfig, hObject, eventdata, handles)
 
 % -----------------------------------------------------------------------
 function varargout = abouterplabGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = [];
 
 % -----------------------------------------------------------------------
-function playcredit(numfig, hObject, eventdata, handles)
-
-textabout = handles.textabout;
-fontcred  = handles.fontcred;
-[banner fcolor1 fcolor2 info ] = loadtheme(numfig, hObject, eventdata, handles);
-set(handles.figure1, 'Position', [handles.xfig-(0.6*info.Width) 100 1.2*info.Width 1.1*info.Height])
-set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Position', [0 50 1.2*info.Width info.Height])
-set(handles.text_cover,'Position', [0 0 1.2*info.Width 0.007*info.Height]);
-wb = 110;
-hb = 40.92;
-yb = 6.38;
-wfig = get(handles.figure1, 'Position');
-x1 = wfig(3)*0.25-wb/2;
-x2 = wfig(3)*0.5-wb/2;
-x3 = wfig(3)*0.75-wb/2;
-set(handles.pushbutton_erpinfo,'Units', 'pixels');
-set(handles.pushbutton_relaunch,'Units', 'pixels');
-set(handles.pushbutton_close,'Units', 'pixels');
-
-set(handles.pushbutton_erpinfo,'Position', [x1 yb wb hb]);
-set(handles.pushbutton_relaunch,'Position', [x2 yb wb hb]);
-set(handles.pushbutton_close,'Position', [x3 yb wb hb]);
-
-axes(handles.axes1)
-holgu  = 0.12*info.Width;
-dimmer = 0.98*sin(0:pi/30:0.9*pi); %[0:9 9 9 9 9:-1:4];
-i=1;
-while i<=length(dimmer) && get(handles.pushbutton_close,'Value')==0 && get(handles.pushbutton_relaunch,'Value')==0
+function playcredit(numfig, xfig, yfig, hObject, eventdata, handles)
+try
+        textabout = handles.textabout;
+        fontcred  = handles.fontcred;
+        [banner fcolor1 fcolor2 info ] = loadtheme(numfig, hObject, eventdata, handles);
+        %set(handles.gui_chassis, 'Position', [xfig-(0.6*info.Width) 100 1.2*info.Width 1.1*info.Height])
+        set(handles.gui_chassis, 'Position', [xfig yfig 1.2*info.Width 1.1*info.Height])
+        set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Position', [0 50 1.2*info.Width info.Height])
+        set(handles.text_cover,'Position', [0 0 1.2*info.Width 0.007*info.Height]);
+        wb = 110;
+        hb = 40.92;
+        yb = 6.38;
+        wfig = get(handles.gui_chassis, 'Position');
+        x1 = wfig(3)*0.25-wb/2;
+        x2 = wfig(3)*0.5-wb/2;
+        x3 = wfig(3)*0.75-wb/2;
+        set(handles.pushbutton_erpinfo,'Units', 'pixels');
+        set(handles.pushbutton_relaunch,'Units', 'pixels');
+        set(handles.pushbutton_close,'Units', 'pixels');
+        set(handles.pushbutton_erpinfo,'Position', [x1 yb wb hb]);
+        set(handles.pushbutton_relaunch,'Position', [x2 yb wb hb]);
+        set(handles.pushbutton_close,'Position', [x3 yb wb hb]);
+        
+        axes(handles.axes1)
+        holgu  = 0.12*info.Width;
+        dimmer = 0.98*sin(0:pi/160:0.8*pi); %[0:9 9 9 9 9:-1:4];
         banner = loadtheme(numfig, hObject, eventdata, handles);
-        image(banner);
-        set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Xlim',[-holgu info.Width+holgu]);
-        alpha(dimmer(i))
-        drawnow
-        i=i+1;
-end
-
-namefont = 'Arial';
-mleft    = -holgu*0.65;
-kbottom  = 2.1;
-i = 0;
-banner = loadtheme(numfig, hObject, eventdata, handles);
-
-while i<=2.72*info.Height && get(handles.pushbutton_close,'Value')==0 && get(handles.pushbutton_relaunch,'Value')==0
-        text(mleft, kbottom*info.Height-i, textabout,'FontName', namefont, 'Fontsize', fontcred,'Color', fcolor1)
-        drawnow
-        image(banner);
-        set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Xlim',[-holgu info.Width+holgu]);
-        alpha(dimmer(end))
-        i = i + 1;
-end
-
-if get(handles.pushbutton_relaunch,'Value')==1
-        set(handles.pushbutton_relaunch,'Value', 0)
-        numfig  = round(rand*7) + 1;
-        while numfig==handles.numfig
-                numfig  = round(rand*7) + 1;
+        i=1;
+        
+        %
+        % dim the light down effect
+        %
+        while i<=length(dimmer) && get(handles.pushbutton_close,'Value')==0 && get(handles.pushbutton_relaunch,'Value')==0
+                image(banner);
+                set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Xlim',[-holgu info.Width+holgu]);
+                alpha(dimmer(i))
+                drawnow
+                i=i+1;
+                %pause(0.15)
         end
-        handles.numfig = numfig;
+        
+        %
+        % Displaying text
+        %
+        namefont = 'Arial';
+        mleft    = -holgu*0.65;
+        kbottom  = 2.1;
+        i = 0;
+        banner = loadtheme(numfig, hObject, eventdata, handles);
+        while i<=2.72*info.Height && get(handles.pushbutton_close,'Value')==0 && get(handles.pushbutton_relaunch,'Value')==0
+                text(mleft, kbottom*info.Height-i, textabout,'FontName', namefont, 'Fontsize', fontcred,'Color', fcolor1)
+                drawnow
+                image(banner);
+                set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Xlim',[-holgu info.Width+holgu]);
+                alpha(dimmer(end))
+                i = i + 1;
+        end
+        
+        %
+        % checking "Theme" button
+        %
+        if get(handles.pushbutton_relaunch,'Value')==1
+                set(handles.pushbutton_relaunch,'Value', 0)
+                numfig  = round(rand*9) + 1;
+                while numfig==handles.numfig
+                        numfig  = round(rand*9) + 1;
+                end
+                handles.numfig = numfig;
+                % Update handles structure
+                guidata(hObject, handles);
+                
+                posgui = get(handles.gui_chassis,'Position');
+                xfig = posgui(1);
+                yfig = posgui(2);
+                playcredit(numfig, xfig, yfig, hObject, eventdata, handles)
+                return
+        end
+        
+        %
+        % dim the light up effect
+        %
+        i=length(dimmer);
+        while i>length(dimmer)/2 && get(handles.pushbutton_close,'Value')==0 && get(handles.pushbutton_relaunch,'Value')==0
+                image(banner);
+                set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Xlim',[-holgu info.Width+holgu]);
+                alpha(dimmer(i))
+                drawnow
+                i=i-1;
+                %pause(0.15)
+        end
+        
+        handles.running  = 0;
         % Update handles structure
         guidata(hObject, handles);
-        playcredit(numfig, hObject, eventdata, handles)
+        
+        if get(handles.pushbutton_close,'Value')==1
+                delete(handles.gui_chassis)
+        end
         return
-end
-
-handles.running  = 0;
-% Update handles structure
-guidata(hObject, handles);
-
-if get(handles.pushbutton_close,'Value')==1
-        delete(handles.figure1)
+catch
+        try
+                posgui = get(handles.gui_chassis,'Position');
+                erpworkingmemory('abouterplabGUI', posgui);
+        catch
+        end
+        if handles.running  == 0;
+                delete(handles.gui_chassis)
+        end
 end
 
 % -----------------------------------------------------------------------
 function pushbutton_close_Callback(hObject, eventdata, handles)
+posgui = get(handles.gui_chassis,'Position');
+erpworkingmemory('abouterplabGUI', posgui);
 if handles.running  == 0;
-        delete(handles.figure1)
+        delete(handles.gui_chassis)
 end
 
 % -----------------------------------------------------------------------
 function pushbutton_relaunch_Callback(hObject, eventdata, handles)
+posgui = get(handles.gui_chassis,'Position');
+xfig = posgui(1);
+yfig = posgui(2);
+
 if handles.running==0
-        abouterplabGUI
+        %abouterplabGUI
+        playcredit(1, xfig, yfig, hObject, eventdata, handles)
 end
 
 % -----------------------------------------------------------------------
 function pushbutton_erpinfo_Callback(hObject, eventdata, handles)
+posgui = get(handles.gui_chassis,'Position');
+erpworkingmemory('abouterplabGUI', posgui);
+
 set(handles.pushbutton_close,'Value', 1)
 if handles.running  == 0;
-        delete(handles.figure1)
+        delete(handles.gui_chassis)
 end
 pause(0.2)
-web('http://www.erpinfo.org/erplab/erplab-toolbox/view','-browser')
+web('http://www.erpinfo.org/erplab/','-browser')
 
 % -----------------------------------------------------------------------
 function [banner fcolor1 fcolor2 info ] = loadtheme(numfig, hObject, eventdata, handles)
 
-if numfig>=8 || numfig==1
-        set(handles.figure1,'Color',[0 0 0]);
+if numfig==8 || numfig==1
+        set(handles.gui_chassis,'Color',[0 0 0]);
         set(handles.text_cover,'BackgroundColor',[0 0 0]);
         fcolor1 = [1 1 1];
         fcolor2 = [0 0 0];
 else
-        set(handles.figure1,'Color',[1 1 1]);
+        set(handles.gui_chassis,'Color',[1 1 1]);
         set(handles.text_cover,'BackgroundColor',[1 1 1]);
         fcolor1 = [0 0 0];
         fcolor2 = [1 1 1];
 end
 
-if numfig==9
-        namefig = 'logoerplab2010ny.jpg';
-else
-        namefig = ['logoerplab' num2str(numfig) '.jpg'];
-end
+%if numfig==9
+%        namefig = 'logoerplab2010ny.jpg';
+%else
+namefig = ['logoerplab' num2str(numfig) '.jpg'];
+%end
 
 set(hObject, 'Units', 'pixels');
 set(handles.axes1, 'Units', 'pixels');
-banner  = imread(namefig);       % Read the image file banner.jpg
+banner  = double(imread(namefig));       % Read the image file banner.jpg
 info    = imfinfo(namefig);      % Determine the size of the image file
 
+%
+% Edition banner
+%
+edition  = double(imread('p_zombie.tif'));             % Read the image file banner.jpg
+edmask   = edition;
+aindx  = ismember(edmask(:,:,1),12);
+bindx  = ismember(edmask(:,:,2),255);
+cindx  = ismember(edmask(:,:,3),0);
+edmask = repmat(aindx&bindx&cindx, [1 1 3]);
+
+edsum  = edition;
+aindx  = ~ismember(edsum(:,:,1),12);
+bindx  = ~ismember(edsum(:,:,2),255);
+cindx  = ~ismember(edsum(:,:,3),0);
+edsum  = repmat(aindx&bindx&cindx, [1 1 3]);
+edsum  = edition.*edsum;
+
+banner = banner .* edmask;
+banner = banner + edsum*0.9;
+banner = uint8(round(banner));
+
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+
+posgui = get(handles.gui_chassis,'Position');
+erpworkingmemory('abouterplabGUI', posgui);
 if get(handles.pushbutton_close,'Value')==1 % in case of problems...
-                delete(handles.figure1)       
+        delete(handles.gui_chassis)
 end
 
 % or
 
 set(handles.pushbutton_close,'Value', 1) % normal closing
 if handles.running  == 0;
-        delete(handles.figure1)
+        delete(handles.gui_chassis)
 end

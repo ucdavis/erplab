@@ -51,31 +51,67 @@ end
 function epochbinGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for epochbinGUI
-handles.output = hObject;
-xmin = -200;
-xmax = 800;
+handles.output = [];
+try
+        def = varargin{1};
+        xrangle = def{1};
+        xmin = xrangle(1);
+        xmax = xrangle(2);
+        blc  = def{2};
+catch
+        xmin = -200;
+        xmax = 800;
+        blc = 'pre';
+end
 handles.xmin = xmin;
 handles.xmax = xmax;
-handles.blc  = 'pre';
+handles.blc  = blc;
 
-% Update handles structure
-guidata(hObject, handles);
+% % % set(handles.checkbox_blc,'Value', 1)
+set(handles.edit_epoch,'String', num2str([xmin xmax]));
+if isnumeric(blc)
+        set(handles.radiobutton_custom,'Value', 1) 
+        set(handles.edit_custom,'String', num2str(blc));
+else
+        set(handles.edit_custom,'Enable','off')
+        switch blc
+                case 'pre'
+                        set(handles.radiobutton_pre,'Value', 1)
+                case 'post'
+                        set(handles.radiobutton_post,'Value', 1)
+                case 'all'
+                        set(handles.radiobutton_all,'Value', 1)
+                case 'none'
+                        set(handles.radiobutton_none,'Value', 1)
+                otherwise
+                        set(handles.radiobutton_custom,'Value', 1)                        
+        end
+end
 
-set(handles.checkbox_blc,'Value', 1)
-
-set(handles.edit_epoch,'String','-200 800');
-set(handles.edit_custom,'String','');
-set(handles.edit_custom,'Enable','off')
-set(handles.radiobutton_pre,'Value', 1)
-% set(handles.edit_custom,'String','none')
+%
+% Name & version
+%
+version = geterplabversion;
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   EXTRACT BINEPOCHS GUI'])
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
 % UIWAIT makes epochbinGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = epochbinGUI_OutputFcn(hObject, eventdata, handles)
@@ -83,7 +119,7 @@ function varargout = epochbinGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.5)
 
 %--------------------------------------------------------------------------
@@ -98,9 +134,9 @@ end
 %--------------------------------------------------------------------------
 function edit_epoch_Callback(hObject, eventdata, handles)
 
-if strcmp(get(hObject,'String'),'')
-        set(handles.checkbox_blc,'Value',0)
-end
+% if strcmp(get(hObject,'String'),'')
+% % % %         set(handles.checkbox_blc,'Value',0)        
+% end
 
 %--------------------------------------------------------------------------
 function edit_epoch_CreateFcn(hObject, eventdata, handles)
@@ -115,7 +151,12 @@ handles.output = [];
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
+
+%--------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% doc pop_epochbin
+web http://erpinfo.org/erplab/erplab-documentation/manual/Epoching_Bins.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)
@@ -138,8 +179,7 @@ else
         % Checks updated custom blc values
         %
         if cusbutt
-                blctest  = str2num(get(handles.edit_custom,'String'));
-                
+                blctest  = str2num(get(handles.edit_custom,'String'));                
                 if isempty(blctest)
                         if strcmpi(get(handles.edit_custom,'String'),'none')
                                 custupdated = 1;
@@ -165,8 +205,7 @@ else
                 end
         else
                 custupdated =1;
-        end
-        
+        end        
         if repoch==1 && cepoch==2 && custupdated
                 
                 if epoch(1)>=epoch(2)
@@ -205,7 +244,7 @@ else
                 
                 % Update handles structure
                 guidata(hObject, handles);
-                uiresume(handles.figure1);               
+                uiresume(handles.gui_chassis);               
         else
                 if custupdated
                         msgboxText =  'Wrong epoch range!';
@@ -218,20 +257,6 @@ else
                 end
                 return
         end
-end
-
-%--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = [];
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.figure1);
-else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
 end
 
 %--------------------------------------------------------------------------
@@ -294,34 +319,48 @@ handles.blc = blc;
 guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
-function checkbox_blc_Callback(hObject, eventdata, handles)
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 
-if get(hObject,'Value')% && repoch==1 && cepoch==2
-        set(handles.radiobutton_none,'Enable','on')
-        set(handles.radiobutton_pre,'Enable','on')
-        set(handles.radiobutton_post,'Enable','on')
-        set(handles.radiobutton_all,'Enable','on')
-        set(handles.radiobutton_custom,'Enable','on')
-        set(handles.edit_custom,'Enable','on')
-else
-        set(handles.checkbox_blc,'Value',0)
-        
-        set(handles.radiobutton_none,'Value',1)
-        set(handles.radiobutton_pre,'Value',0)
-        set(handles.radiobutton_post,'Value',0)
-        set(handles.radiobutton_all,'Value',0)
-        set(handles.radiobutton_custom,'Value',0)
-        set(handles.edit_custom,'String','')
-        
-        set(handles.radiobutton_none,'Enable','off')
-        set(handles.radiobutton_pre,'Enable','off')
-        set(handles.radiobutton_post,'Enable','off')
-        set(handles.radiobutton_all,'Enable','off')
-        set(handles.radiobutton_custom,'Enable','off')
-        set(handles.edit_custom,'Enable','off')
-
-        blc = 'none';
-        handles.blc = blc;
-        % Update handles structure
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = [];
+        %Update handles structure
         guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
 end
+
+% % % %--------------------------------------------------------------------------
+% % % function checkbox_blc_Callback(hObject, eventdata, handles)
+% % % 
+% % % if get(hObject,'Value')% && repoch==1 && cepoch==2
+% % %         set(handles.radiobutton_none,'Enable','on')
+% % %         set(handles.radiobutton_pre,'Enable','on')
+% % %         set(handles.radiobutton_post,'Enable','on')
+% % %         set(handles.radiobutton_all,'Enable','on')
+% % %         set(handles.radiobutton_custom,'Enable','on')
+% % %         set(handles.edit_custom,'Enable','on')
+% % % else
+% % %         set(handles.checkbox_blc,'Value',0)
+% % %         
+% % %         set(handles.radiobutton_none,'Value',1)
+% % %         set(handles.radiobutton_pre,'Value',0)
+% % %         set(handles.radiobutton_post,'Value',0)
+% % %         set(handles.radiobutton_all,'Value',0)
+% % %         set(handles.radiobutton_custom,'Value',0)
+% % %         set(handles.edit_custom,'String','')
+% % %         
+% % %         set(handles.radiobutton_none,'Enable','off')
+% % %         set(handles.radiobutton_pre,'Enable','off')
+% % %         set(handles.radiobutton_post,'Enable','off')
+% % %         set(handles.radiobutton_all,'Enable','off')
+% % %         set(handles.radiobutton_custom,'Enable','off')
+% % %         set(handles.edit_custom,'Enable','off')
+% % % 
+% % %         blc = 'none';
+% % %         handles.blc = blc;
+% % %         % Update handles structure
+% % %         guidata(hObject, handles);
+% % % end

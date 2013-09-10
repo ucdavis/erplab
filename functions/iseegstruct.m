@@ -1,4 +1,14 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: tests whether input is a valid EEG structure or not.
+%
+% FORMAT:
+%
+% value = iseegstruct(input);  
+%
+% value = 1 means input is a valid EEG structure; 0 otherwise.
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -26,7 +36,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function value = iseegstruct(input)
-
 try
         if ~isstruct(input)
                 value = 0;

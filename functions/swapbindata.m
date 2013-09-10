@@ -1,3 +1,7 @@
+% UNDER CONSTRUCTION
+%
+% Author: Javier Lopez-Calderon
+
 function [ERP conti] = swapbindata(ERP, b1, b2, ch1, ch2)
 
 conti = 1;

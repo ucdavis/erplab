@@ -1,4 +1,16 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: to be used in channel operation only (ALPHA VERSION)
+%
+% FORMAT (in channel operation)
+%
+% deletechan(ch)
+%
+% INPUT
+%
+% ch    - channel index(ices) to be deleted
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA

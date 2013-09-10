@@ -1,5 +1,17 @@
+% PURPOSE: updates ERPset menu
 %
-% Author: Javier Lopez-Calderon
+% Format
+%
+% updatemenuerp(ALLERP, overw)
+%
+% INPUT:
+%
+% ALLERP     - structure containing multiple ERPsets
+% overw      - overwrite erpset menu? 0=no; 1=yes; -1=delete
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon 
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -27,77 +39,75 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function updatemenuerp(ALLERP, overw)
-
 if nargin<2
-      overw=0; % overwrite? 0=no
+      overw=0; % overwrite erpset menu? 0=no; 1=yes; -1=delete
 end
 %
-% Checks erpsets menu status
+% Checks ERPpsets menu status
 %
 erpmenu  = findobj('tag', 'erpsets');
 staterpm = get(erpmenu, 'Enable');
-
 if strcmp(staterpm,'off')
-      set(erpmenu, 'Enable', 'on');
+      set(erpmenu, 'Enable', 'on'); % activates erpsets menu
 end
-
 maxindexerp  = length(ALLERP);
-erpm    = findobj('tag', 'linerp');
-
-if isempty(erpm)
+ERPSETMENU   = zeros(1,maxindexerp);
+erpsetlist   = findobj('tag', 'linerp'); % size of the list at erpset menu
+if isempty(erpsetlist)
       nerpset = 0;
-      overw   = 0;
+      overw   = 0; % add a new erpset
+elseif length(erpsetlist)>maxindexerp  %10-25-11
+      nerpset = length(erpsetlist);
+      overw=-1; % delete erpset
+elseif length(erpsetlist)<maxindexerp
+      nerpset = length(erpsetlist);
+      overw=0;  % add erpset
 else
-      nerpset = length(erpm);
+      nerpset = length(erpsetlist);
 end
-
 if overw==1
+      % overwrite. Just change the current erpset
       for s=1:nerpset
-            strcheck = get(erpm(s), 'checked');
+            strcheck = get(erpsetlist(s), 'checked');
             if strcmp(strcheck,'on')
                   catchindx = nerpset-s+1;
                   erpn = ALLERP(nerpset-s+1).erpname; % top-down counting
                   menutitle   = sprintf('Erpset %d: %s', nerpset-s+1, erpn);
-                  set( erpm(s), 'Label', menutitle);
+                  set( erpsetlist(s), 'Label', menutitle);
             end
       end
-
       erp2memory(ALLERP(catchindx), catchindx);
-
 elseif overw==0 || overw==-1
-
-      if overw==0
+      if overw==0 % add a new erpset to the erpset menu
             indexerp = nerpset + 1;
-      else
+      else  % delete erpset from the menu
             menux = findobj(0, 'tag', 'erpsets');
             h = get(menux);
             delete(h.Children);
             indexerp = 1;
-
             if maxindexerp==0
                   assignin('base','CURRENTERP', 0);  % save to workspace
                   set(erpmenu, 'enable', 'off');
                   return
             end
       end
-
       while indexerp <= maxindexerp
-
             ERPSETMENU(indexerp) = uimenu( erpmenu, 'tag', 'linerp');
             ferp = [ 'erp2memory(ALLERP(' num2str(indexerp) '),' num2str(indexerp) ');' ];
             erpn = ALLERP(indexerp).erpname;
-
             if iscell(erpn)
                   erpn = '';
             end
-
             menutitle   = ['<Html><FONT color="black" >Erpset ' num2str(indexerp) ': ' erpn '</font>'];
             set( ERPSETMENU(indexerp), 'Label', menutitle);
             set( ERPSETMENU(indexerp), 'CallBack', ferp );
             set( ERPSETMENU(indexerp), 'Enable', 'on' );
             indexerp = indexerp + 1;
+      end      
+      if maxindexerp~=0
+            erp2memory(ALLERP(maxindexerp), maxindexerp);
       end
-      erp2memory(ALLERP(maxindexerp), maxindexerp);
 else
       error('ERPLAB says: Wrong input parameter')
 end
+        eeglab redraw

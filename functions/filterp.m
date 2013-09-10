@@ -1,3 +1,26 @@
+% PURPOSE: subroutine for pop_filterp.m
+%
+% FORMAT
+%
+% ERP = filterp(ERP, chanArray, locutoff, hicutoff, filterorder, typef, remove_dc);
+%
+%     ERP         - input ERPset
+%     chanArray   - channel(s) to filter
+%     locutoff    - lower edge of the frequency pass band (Hz)  {0 -> lowpass}
+%     hicutoff    - higher edge of the frequency pass band (Hz) {0 -> highpass}
+%     filterorder - length of the filter in points {default 3*fix(srate/locutoff)}
+%     typef       - type of filter: 0=means IIR Butterworth;  1 = means FIR
+%     remove_dc   - remove dc offset before filtering. 1 yes; 0 no
+%
+%
+%     Outputs:
+%     ERP         - filter ERPset
+%
+%
+% See also filter_tf.m filtfilt.m removedc.m pop_filterp.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -31,9 +54,6 @@ if nargin < 1
         help filterp
         return
 end
-
-% fprintf('filterp.m : START\n');
-
 if exist('filtfilt','file') ~= 2
         disp('filterp error: cannot find the Signal Processing Toolbox');
         return
@@ -47,13 +67,13 @@ if nargin < 7
         return
 end
 if ERP.pnts <= 3*filterorder
-        msgboxText{1} =  'Error: The length of the data must be more than three times the filter order.';
+        msgboxText =  'Error: The length of the data must be more than three times the filter order.';
         title = 'ERPLAB: filterp(), filtfilt constraint';
         errorfound(msgboxText, title);
         return
 end
 if locutoff == 0 && hicutoff == 0,
-        msgboxText{1} =  'Error: What????  low cutoff == 0 && high cutoff == 0?';
+        msgboxText =  'Error: What????  low cutoff == 0 && high cutoff == 0?';
         title = 'ERPLAB: filterp(), Cutoff frequency';
         errorfound(msgboxText, title);
         return
@@ -65,13 +85,14 @@ pnts      = size(ERP.bindata,2);
 numchan   = length(chanArray);
 
 if numchan>ERP.nchan
-        msgboxText{1} =  'Error: You have selected more channels than are contained within your data!';
+        msgboxText =  'Error: You have selected more channels than are contained within your data!';
         title = 'ERPLAB: filterp() error:';
         errorfound(msgboxText, title);
         return
 end
 
 nbin = ERP.nbin;
+fprintf('Channels to be filtered : %s\n\n', vect2colon(chanArray, 'Delimiter', 'on'));
 
 if locutoff >= fnyquist
         error('ERPLAB says: errot at filterp(). Low cutoff frequency cannot be >= srate/2');
@@ -97,7 +118,7 @@ end
 [b, a, labelf, v] = filter_tf(typef, filterorder, hicutoff, locutoff, ERP.srate);
 
 if ~v  % something is wrong or turned off
-        msgboxText{1} =  'filterp() error: Wrong parameters for filtering.';
+        msgboxText =  'filterp() error: Wrong parameters for filtering.';
         title = 'ERPLAB: filterp():';
         errorfound(msgboxText, title);
         return
@@ -105,10 +126,8 @@ end
 
 disp([labelf ' filtering input data, please wait...'])
 
-for j=1:nbin
-
-        if size(b,1)>1
-
+for j=1:nbin        
+        if size(b,1)>1                
                 if strcmpi(labelf,'Band-Pass')
                         % Butterworth bandpass (cascade)
                         ERP.bindata(chanArray,:,j) = filtfilt(b(1,:),a(1,:), ERP.bindata(chanArray,:,j)')';
@@ -116,8 +135,7 @@ for j=1:nbin
                 else
                         %Butterworth Notch (parallel)
                         datalowpass   = filtfilt(b(1,:),a(1,:), ERP.bindata(chanArray,:,j)')';
-                        datahighpass  = filtfilt(b(2,:),a(2,:), ERP.bindata(chanArray,:,j)')';
-
+                        datahighpass  = filtfilt(b(2,:),a(2,:), ERP.bindata(chanArray,:,j)')';                        
                         ERP.bindata(chanArray,:,j) = datalowpass + datahighpass;
                 end
         else
@@ -127,8 +145,7 @@ for j=1:nbin
                 % FIR highpass
                 % FIR bandpass
                 % FIR notch
-                % Parks-McClellan Notch
-                
+                % Parks-McClellan Notch                
                 ERP.bindata(chanArray,:,j) = filtfilt(b,a, ERP.bindata(chanArray,:,j)')';
         end
 end
@@ -138,7 +155,7 @@ end
 %
 if isfield(ERP, 'binerror')
         if ~isempty(ERP.binerror)
-
+                
                 if numchan<ERP.nchan
                         ERP.binerror(chanArray,:,:) = zeros(numchan, pnts, nbin);
                 else
@@ -148,5 +165,3 @@ if isfield(ERP, 'binerror')
 end
 
 ERP.isfilt = 1;
-fprintf('\n')
-% fprintf('filterp.m : END\n');

@@ -1,10 +1,23 @@
+% PURPOSE: compare number of channels and channel labels between 2 ERPsets.
 %
-% Output
-% test        -  0:ok
-%                1: number of channels does not match
-%                2: labels of channels does not match
+% FORMAT:
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+% test = checkchannel(ERPold, ERPnew)
+%
+% INPUT:
+%
+% ERPold        - ERPset 1
+% ERPnew        - ERPset 2
+%
+% OUTPUT:
+%
+% test        -  0: ok
+%                1: number of channels do not match
+%                2: labels of channels do not match
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -32,7 +45,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function test = checkchannel(ERPold, ERPnew)
-
 test = 0; %ok by default
 if ERPold.nchan~=ERPnew.nchan
         test = 1;

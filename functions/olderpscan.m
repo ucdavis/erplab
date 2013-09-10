@@ -1,3 +1,5 @@
+% PURPOSE: tests compatibility of old ERPset (ERP structure format)
+%
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -31,20 +33,20 @@ serror = 0;
 conti  = 1;
 
 if nargin<1
-        help  olderpscan
-        return
+    help  olderpscan
+    return
 end
 if nargin<2
-        menup = 1;
+    menup = 1;
 end
 try
-        dataversion = ERP.version;
+    dataversion = ERP.version;
 catch
-        try
-                dataversion = ERP.EVENTLIST.version;
-        catch
-                dataversion = '0';
-        end
+    try
+        dataversion = ERP.EVENTLIST.version;
+    catch
+        dataversion = '0';
+    end
 end
 
 %
@@ -54,33 +56,34 @@ end
 ndd = length(dvdigits);
 
 if ndd==3
-        dmayor       = str2num(dvdigits{1});
-        dminor       = 0;
-        dformat      = 0;
-        dmaintenance = str2num(dvdigits{3});
+    dmayor       = str2num(dvdigits{1});
+    dminor       = 0;
+    dformat      = 0;
+    dmaintenance = str2num(dvdigits{3});
 elseif ndd==4
-        dmayor       = str2num(dvdigits{1});
-        dminor       = str2num(dvdigits{2});
-        dformat      = str2num(dvdigits{3});
-        dmaintenance = str2num(dvdigits{4});
+    dmayor       = str2num(dvdigits{1});
+    dminor       = str2num(dvdigits{2});
+    dformat      = str2num(dvdigits{3});
+    dmaintenance = str2num(dvdigits{4});
 elseif ndd>4
-        msgboxText{1} =  sprintf('The version of your erpset: %s does not match with the ERPLAB''s version numbering A.B.C.D.', dataversion);
-        title = 'ERPLAB: UNKNOWN DATA VERSION';
-        errorfound(msgboxText, title)
-        serror = 1;
-        return
+    msgboxText   =  sprintf('The version of your erpset: %s does not match with the ERPLAB''s version numbering A.B.C.D.', dataversion);
+    title = 'ERPLAB: UNKNOWN DATA VERSION';
+    errorfound(msgboxText, title)
+    serror = 1;
+    return
 else
-        % unknow or very ooooold version, when Javier used to be shy
-        dmayor       = 0;
-        dminor       = 0;
-        dformat      = -1;
-        dmaintenance = 0;
+    % unknow or very ooooold version, when Javier used to be shy
+    dmayor       = 0;
+    dminor       = 0;
+    dformat      = -1;
+    dmaintenance = 0;
 end
 
 %
 % Split ERPLAB current version numbering
 %
 cversion     = geterplabversion; % current erplab version
+if isempty(cversion); return;end
 [pspliter cvdigits] = regexp(cversion, '\.','match','split');
 cmayor       = str2num(cvdigits{1}); % A
 cminor       = str2num(cvdigits{2}); % B
@@ -93,61 +96,43 @@ cmaintenance = str2num(cvdigits{4}); % D
 dvnum = 1E15*dmayor + 1E12*dminor + 1E10*dformat + dmaintenance; % data version
 cvnum = 1E15*cmayor + 1E12*cminor + 1E10*cformat + cmaintenance; % current version
 try
-        if (cvnum~=dvnum && ndd==4) || ndd~=4
-
-                if cvnum<dvnum && ndd==4
-                        wordcomp = 'a newer';
-                else
-                        wordcomp = 'an older';
-                end
-
-                title    = ['ERPLAB: erp_loaderp() for version: ' dataversion] ;
-                cerpname = ERP.filename;
-
-                if isempty(cerpname)
-                        cerpname = ERP.erpname;
-                        if iscell(cerpname)
-                                cerpname = cerpname{1};
-                        end
-                end
-
-                if cformat~= dformat % different ERP structure was found
-                        if menup == 1;
-                                question{1} = sprintf('WARNING: Erpset %s was created from %s ERPLAB version', cerpname, wordcomp);
-                                question{2} = 'ERPLAB will try to make it compatible with the current version.';
-                                question{3} = 'Do you want to continue?';
-
-                                button = askquest(question, title);
-
-                                if ~strcmpi(button,'yes')
-                                        disp('User selected Cancel')
-                                        conti = 0;
-                                        return
-                                end
-                        else
-                                fprintf('\nWARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
-                                fprintf('ERPLAB will attempt to update the ERP structure...\n\n');
-                        end
-                else
-                        fprintf('\nWARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
-                end
-
-
+    if (cvnum~=dvnum && ndd==4) || ndd~=4
+        if cvnum<dvnum && ndd==4
+            wordcomp = 'a newer';
         else
-                % all right
-                fprintf('Erpset''s version matchs the current ERPLAB''s version. \n');
+            wordcomp = 'an older';
         end
-
-        % always check
-        ERP = old2newerp(ERP, dataversion);
-        %
-        % Version 1.0.0
-        %
-        [ERP serror] = sorterpstruct(ERP);
-        ERP.filename = '';
-        ERP.filepath = '';
-        ERP.saved    = 'no';
+        
+        %title    = ['ERPLAB: erp_loaderp() for version: ' dataversion] ;
+        cerpname = ERP.filename;
+        
+        if isempty(cerpname)
+            cerpname = ERP.erpname;
+            if iscell(cerpname)
+                cerpname = cerpname{1};
+            end
+        end
+        if cformat~= dformat % different ERP structure was found
+            fprintf('\nWARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
+            fprintf('WARNING: ERPLAB will attempt to update the ERP structure...\n\n');
+            ERP.filename = '';
+            ERP.filepath = '';
+            ERP.saved    = 'no';
+        else
+            fprintf('\nWARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
+        end
+    else
+        % all right
+        % fprintf('Erpset''s version is ok. \n');
+    end
+    
+    % always check
+    ERP = old2newerp(ERP, dataversion);
+    %
+    % Version 1.0.0
+    %
+    [ERP serror] = sorterpstruct(ERP);
 catch
-        serror = 0;
+    serror = 0;
 end
 return

@@ -1,3 +1,5 @@
+% PURPOSE: upgrades old ERPset to the current version (current ERP structure format)
+%
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -24,29 +26,74 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 function ERPnew = old2newerp(ERPold, oldver)
-
-if iserpstruct(ERPold)
+if iserpstruct(ERPold)        
         ERPnew = ERPold;
-        ERPnew.version      = geterplabversion; % current version
-
+        gcverplab = geterplabversion; % current erplab version        
+        if ~strcmpi(gcverplab, ERPold.version)
+                fprintf('ERPset''s version number was changed by the current ERPLAB''s version number.\n');
+        end
+        
+        ERPnew.version = gcverplab; % current version
+        upderp = 0;
+        
         if ~isfield(ERPnew,'EVENTLIST')
                 ERPnew.EVENTLIST = [];
+                upderp = 1;
         end
         if ~isfield(ERPnew,'binerror')
                 ERPnew.binerror = [];
+                upderp = 1;
         end
-
-        fprintf('Minor differences at ERP structure were found.\n');
-        fprintf('Erpset''s ERP structure was upgraded.\n\n');
+        if ~isfield(ERPnew,'splinefile')
+              ERPnew.splinefile = '';
+              upderp = 1;
+        end
+        if isfield(ERPnew,'integrity')
+                ERPnew.pexcluded = [];
+                vali = ERPnew.integrity;
+                ERPnew = rmfield(ERPnew, 'integrity');
+                ERPnew.pexcluded = vali;
+                upderp = 1;
+        elseif isfield(ERPnew,'marate')
+                ERPnew.pexcluded = [];
+                vali = ERPnew.marate;
+                ERPnew = rmfield(ERPnew, 'marate');
+                ERPnew.pexcluded = vali;
+                upderp = 1;
+        elseif isfield(ERPnew,'propexcluded')
+                ERPnew.pexcluded = [];
+                 if isfield(ERPnew.ntrials,'accepted') && isfield(ERPnew.ntrials,'rejected')
+                        vali = round(1000*(sum(ERPnew.ntrials.rejected)/(sum(ERPnew.ntrials.accepted)+sum(ERPnew.ntrials.rejected))))/10;
+                else
+                        vali = ERPnew.propexcluded;
+                end
+                ERPnew = rmfield(ERPnew, 'propexcluded');
+                ERPnew.pexcluded = vali;
+                upderp = 1;
+        else
+                if ~isfield(ERPnew,'pexcluded')
+                        ERPnew.pexcluded = [];   
+                        upderp = 1;
+                end                
+        end
+        if upderp ==1
+                fprintf('Minor differences at ERP structure were found.\n');
+                fprintf('Erpset''s ERP structure was upgraded.\n\n');
+        end
+        if isempty(ERPnew.pexcluded)                
+                if isfield(ERPnew.ntrials,'accepted') && isfield(ERPnew.ntrials,'rejected')
+                        pexcluded = round(1000*(sum(ERPnew.ntrials.rejected)/(sum(ERPnew.ntrials.accepted)+sum(ERPnew.ntrials.rejected))))/10; % 1 decimal
+                        ERPnew.pexcluded = pexcluded;
+                end
+        end
         return
 end
-
 fprintf('Mayor differences at ERP structure were found.\n');
-
 if nargin==1
         try
-                versionold = ERPold.version;old version
+                versionold = ERPold.version; %old version
         catch
                 versionold = '???';
         end
@@ -55,15 +102,13 @@ else
 end
 
 fprintf('Converting ERP from version %s to version %s...\n', versionold, geterplabversion);
-
-ERPnew = builtERPstruct([]);
+ERPnew = buildERPstruct([]);
 
 if isfield(ERPold,'erpname')
         erpn = ERPold.erpname;
 else
         erpn = ERPold.setname;
 end
-
 if iscell(erpn)
         ERPnew.erpname   = erpn{1};
         ERPnew.workfiles = erpn;
@@ -132,10 +177,8 @@ ERPnew.ref      = ERPold.ref;
 ERPnew.bindescr = ERPold.bindescr;
 ERPnew.history  = ERPold.history;
 
-if isfield(ERPold,'EVENTLIST')
-
-        EVENTLISTold = ERPold.EVENTLIST;
-
+if isfield(ERPold,'EVENTLIST')        
+        EVENTLISTold = ERPold.EVENTLIST;        
         EVENTLISTnew.setname      = EVENTLISTold.setname;
         EVENTLISTnew.report       = EVENTLISTold.report;
         EVENTLISTnew.bdfname      = EVENTLISTold.bdfname;
@@ -144,12 +187,12 @@ if isfield(ERPold,'EVENTLIST')
         EVENTLISTnew.username     = EVENTLISTold.username;
         EVENTLISTnew.trialsperbin = EVENTLISTold.trialperbin;
         EVENTLISTnew.bdf          = EVENTLISTold.bdf;
-
+        
         for i=1:EVENTLISTnew.nbin
                 EVENTLISTnew.bdf(i).expression   = [EVENTLISTnew.bdf(i).expression{1}...
                         '.' EVENTLISTnew.bdf(i).expression{2} EVENTLISTnew.bdf(i).expression{3}];
         end
-
+        
         EVENTLISTnew.eldate       = EVENTLISTold.eldate;
         EVENTLISTnew.eventinfo    = EVENTLISTold.eventinfo;
         ERPnew.EVENTLIST          = EVENTLISTnew;

@@ -1,10 +1,34 @@
-%   >> ERP = pop_importerpeventlist(ERP, elfullname, reventlist)
+% PURPOSE  :	Apply imported eventlist from textfile to current ERP datset
 %
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% FORMAT   :
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% ERP = pop_importerpeventlist(ERP, ELfullname, repEL, indexel)
 %
+%
+% INPUTS   :
+%
+% ERP           - input ERPset
+% ELfullname    - name of eventlist text file to be imported
+% repEL    - replace the current EVENTLIST structure with:
+%                 Options:
+%                 0 - Delete All Existing EVENTLIST(s) and make imported
+%                     EVENTLIST #1
+%                 2 - Append Imported EVENTLIST as the next # eventlist (ie if
+%                     ERPset containds 4 EVENTLISTS, then imported eventlist
+%                     will be #5
+% indexel       - EVENTLIST index (for multiple EVENTLIST)
+%
+% OUTPUTS
+%
+% ERP	- EVENTLIST structure added to current ERP structure or workspace
+%
+% EXAMPLE  :
+%
+% ERP = pop_importerpeventlist( ERP, '/Users/etfoo/Documents/MATLAB/test.txt', 2, 1);
+%
+% See also eventlist2erpGUI.m pasteeventlist.m
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -32,79 +56,232 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP erpcom] = pop_importerpeventlist(ERP, elfullname, reventlist, indexel)
-
+function [ERP, erpcom] = pop_importerpeventlist(ERP, ELfullname, varargin)
 erpcom = '';
-
 if nargin < 1
-      help pop_importerpeventlist
-      return
+        help pop_importerpeventlist
+        return
 end
 if isempty(ERP)
-      msgboxText =  'pop_importerpeventlist() cannot work with an empty erpset!';
-      title = 'ERPLAB: pop_importerpeventlist() error';
-      errorfound(msgboxText, title);
-      return
+        msgboxText =  'pop_importerpeventlist() cannot work with an empty erpset!';
+        title = 'ERPLAB: pop_importerpeventlist() error';
+        errorfound(msgboxText, title);
+        return
 end
 if isempty(ERP.bindata)
-      msgboxText =  'pop_importerpeventlist() cannot work with an empty erpset!';
-      title = 'ERPLAB: pop_importerpeventlist() error';
-      errorfound(msgboxText, title);
-      return
+        msgboxText =  'pop_importerpeventlist() cannot work with an empty erpset!';
+        title = 'ERPLAB: pop_importerpeventlist() error';
+        errorfound(msgboxText, title);
+        return
+end
+if nargin==1
+        %
+        % Call GUI
+        %
+        answer = eventlist2erpGUI(ERP);
+        
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        
+        ELfullname = answer{1};
+        repEL      = answer{2};
+        indexel    = answer{3};
+        
+        if repEL==0
+                repEL = 'replaceall';
+        elseif repEL==1
+                repEL = 'replace';
+        elseif repEL==2
+                repEL = 'append';
+        else
+                disp('User selected Cancel')
+                return
+        end
+        
+        ERP.erpname = [ERP.erpname '_impel']; %suggest a new name (Imported Event List)
+        
+        %
+        % Somersault
+        %
+        [ERP, erpcom] = pop_importerpeventlist(ERP, ELfullname, 'ReplaceEventList', repEL, 'EventListIndex', indexel, 'Saveas', 'on', 'History', 'gui');
+        return
 end
 
-nvar=4;
-if nargin<nvar
-      
-      answer = eventlist2erpGUI(ERP);
-      
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      
-      elfullname = answer{1};
-      reventlist = answer{2};
-      indexel    = answer{3};
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ERP');
+p.addRequired('ELfullname', @ischar);
+% option(s)
+p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
+p.addParamValue('ReplaceEventList', 'off', @ischar);
+p.addParamValue('EventListIndex', 1, @isnumeric);
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(ERP, ELfullname, varargin{:});
+
+indexel = p.Results.EventListIndex;
+
+if strcmpi(p.Results.ReplaceEventList,'replaceall')
+        repEL = 0;
+elseif strcmpi(p.Results.ReplaceEventList,'replace')
+        repEL = 1;
+elseif strcmpi(p.Results.ReplaceEventList,'append')
+        repEL = 2;
 else
-      % under construction
+        error('ERPLAB says: Invalid value for "ReplaceEventList"')
 end
-
-[ERP EVENTLIST serror] = importerpeventlist(ERP, elfullname);
+if strcmpi(p.Results.Warning, 'on')
+        rwwarn = 1;
+else
+        rwwarn = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+if ismember({p.Results.Saveas}, {'on','yes'})
+        saveas  = 1;
+else
+        saveas  = 0;
+end
+ERPaux = ERP;
+%
+% subroutine
+%
+[ERP, EVENTLIST, serror] = importerpeventlist(ERP, ELfullname);
 
 if serror==1
-      return
+        return
 end
 
-[pathstr, filename, ext, versn] = fileparts(elfullname); %#ok<NASGU>
+% [pathstr, filename, ext] = fileparts(ELfullname); %#ok<NASGU>
 
-if reventlist==0 % make #1
-      ERP = pasteeventlist(ERP, EVENTLIST, 1); % joints both structs
-elseif reventlist==1 % replace
-      ERP = pasteeventlist(ERP, EVENTLIST, 1, indexel); % joints both structs
-elseif reventlist==2  % append
-      nelnext = length(ERP.EVENTLIST)+1;
-      ERP = pasteeventlist(ERP, EVENTLIST, 1, nelnext); % joints both structs
+if repEL==0 % make #1
+        ERP.EVENTLIST = [];
+        ERP = pasteeventlist(ERP, EVENTLIST, 1);
+elseif repEL==1 % replace
+        ERP = pasteeventlist(ERP, EVENTLIST, 1, indexel);
+elseif repEL==2  % append
+        nelnext = length(ERP.EVENTLIST)+1;
+        ERP = pasteeventlist(ERP, EVENTLIST, 1, nelnext);
 else
-      filenamex = regexprep(filename, ' ', '_');
-      assignin('base',filenamex,EVENTLIST);
-      disp(['EVENTLIST was added to WORKSPACE as ' filenamex] )
-      return
+        ERP = pasteeventlist(ERP, EVENTLIST, 0);
+        %filenamex = regexprep(filename, ' ', '_');
+        %assignin('base',filenamex,EVENTLIST);
+        %disp(['EVENTLIST was added to WORKSPACE as ' filenamex] )
+        return
 end
-
-ERP.erpname = [ERP.erpname '_impel']; %suggest a new name (Imported Event List)
 ERP.saved   = 'no';
-disp('EVENTLIST was added to the current ERP structure')
 
-[ERP issave]= pop_savemyerp(ERP, 'gui', 'erplab');
-
-if issave
-      erpcom = sprintf( '%s = pop_importerpeventlist( %s, ''%s'', %s );', inputname(1), inputname(1),...
-            elfullname, num2str(reventlist));
-      try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
-      return
-else
-      disp('Warning: Your ERP structure has not yet been saved')
-      disp('user cancelled')
-      return
+%
+% History
+%
+skipfields = {'ERP', 'ELfullname', 'Saveas','History'};
+fn     = fieldnames(p.Results);
+erpcom = sprintf( '%s = pop_importerpeventlist( %s, "%s" ', inputname(1), inputname(1), ELfullname);
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        if ischar([fn2res{:}])
+                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
+                                        else
+                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        end
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                if strcmpi(fn2com,'Criterion')
+                                        if p.Results.Criterion<100
+                                                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                        end
+                                else
+                                        erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                end
+                        end
+                end
+        end
 end
+erpcom = sprintf( '%s );', erpcom);
+
+if saveas      
+      [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');      
+      if issave>0
+            % generate text command
+            if issave==2
+                  erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                  msgwrng = '*** Your ERPset was saved on your hard drive.***';
+            else
+                  msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+            end
+            fprintf('\n%s\n\n', msgwrng)
+            try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+      else
+            ERP = ERPaux;
+            msgwrng = 'ERPLAB Warning: Your changes were not saved';
+            try cprintf([1 0.52 0.2], '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
+      end
+end
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom);
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+                % ERP = erphistory(ERP, [], erpcom, 1);
+                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        otherwise %off or none
+                erpcom = '';
+                return
+end
+%
+% Completion statement
+%
+msg2end
+return
+
+% %
+% % Completion statement
+% %
+% msg2end
+% 
+% [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab');
+% 
+% if issave>0
+%         erpcom = sprintf( '%s = pop_importerpeventlist( %s, ''%s'', %s );', inputname(1), inputname(1),...
+%                 ELfullname, num2str(repEL));
+%         if issave==2
+%                 erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+%                 msgwrng = '*** Your ERPset was saved on your hard drive.***';
+%         else
+%                 msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+%         end
+%         fprintf('\n%s\n\n', msgwrng)
+% else
+%         disp('Warning: Your ERP structure has not yet been saved')
+%         disp('user cancelled')
+% end
+% return

@@ -1,4 +1,31 @@
+% PURPOSE  : 	Clear Artifact Detection marks on EEG
 %
+% FORMAT   :
+%
+% EEG = pop_resetrej(EEG, arjm, bflag)
+%
+%
+% INPUTS   :
+%
+% Arjm          - 1- Reset EEGLAB Artifact Detection Mark
+%                 0- Do not reset EEGLAB Artifact Detection
+% Bflag         - numbers correspond to which User flags and Artifact flags are
+%                 marked
+%
+% OUTPUTS  :
+%
+% Outputted dataset with artifact detection marks cleared
+%
+%
+% EXAMPLE  :
+%
+% EEG = pop_resetrej(EEG, 1, 10312);
+%
+%
+% See also resetrejGUI.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -26,69 +53,167 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG com]= pop_resetrej(EEG, arjm, bflag)
-
+function [EEG, com]= pop_resetrej(EEG, varargin)
 com ='';
-
 if nargin<1
-      help pop_resetrej
-      return
+        help pop_resetrej
+        return
+end
+if isobject(EEG) % eegobj
+        whenEEGisanObject % calls a script for showing an error window
+        return
+end
+if nargin==1        
+        if isempty(EEG(1).data)
+                msgboxText = 'pop_resetrej() cannot read an empty dataset!';
+                title = 'ERPLAB: pop_resetrej';
+                errorfound(msgboxText, title);
+                return
+        end
+        
+        %
+        % Call GUI
+        %
+        inputoption = resetrejGUI; % open GUI
+        
+        if isempty(inputoption)
+                disp('User selected Cancel')
+                return
+        end
+        arjm  = inputoption{1};
+        bflag = inputoption{2};
+        
+        if arjm==1
+                arjmstr = 'on';
+        else
+                arjmstr = 'off';
+        end
+        
+        [arflag usflag] = dec2flag(bflag);
+        
+        %
+        % Somersault
+        %
+        [EEG, com] = pop_resetrej(EEG, 'ResetArtifactFields', arjmstr, 'ArtifactFlag', arflag, 'UserFlag', usflag, 'History', 'gui');
+        return
 end
 
-if nargin>3
-      error('ERPLAB ERROR: pop_resetrej only works with 3 inputs: EEG, arjm, flag')
-end
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('EEG');
+% option(s)
+p.addParamValue('ResetArtifactFields', 'on', @ischar);
+p.addParamValue('ArtifactFlag', [], @isnumeric);
+p.addParamValue('UserFlag', [], @isnumeric);
+p.addParamValue('History', 'script', @ischar);             % history from scripting
+p.parse(EEG, varargin{:});
 
-if isempty(EEG.data)
-      msgboxText{1} =  'Permission denied:';
-      msgboxText{2} =  'ERROR: pop_resetrej() cannot read an empty dataset!';
-      title = 'ERPLAB: pop_resetrej';
-      errorfound(msgboxText, title);
-      return
-end
-
-if nargin==1
-      inputoption = resetrejGUI; % open GUI
-      
-      if isempty(inputoption)
-            disp('User selected Cancel')
-            return
-      end
-      arjm  = inputoption{1};
-      bflag = inputoption{2};
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
 else
-      if nargin<3
-            bflag = 0;
-      end
-      if nargin<2
-            arjm = 1;
-      end
+        shist = 0; % off
+end
+if strcmpi(p.Results.ResetArtifactFields,'on')
+        arjm = 1;
+else
+        arjm = 0;
 end
 
+arflag = p.Results.ArtifactFlag;
+usflag = p.Results.UserFlag;
+bflag = flag2dec('ArtifactFlag', arflag, 'UserFlag', usflag);
+
+%
+% process multiple datasets April 13, 2011 JLC
+%
+if length(EEG) > 1
+        [ EEG, com ] = eeg_eval( 'pop_resetrej', EEG, 'warning', 'on', 'params', {arjm, bflag});
+        return;
+end
 if arjm
-    
-    %
-    % resets EEGLAB's artifact rejection fields used by ERPLAB
-    %
-    F = fieldnames(EEG.reject);
-    sfields1 = regexpi(F, '\w*E$', 'match');
-    sfields2 = [sfields1{:}];
-    sfields3  = regexprep(sfields2,'E','');
-    arfields = [sfields2 sfields3];
-    
-    for j=1:length(arfields)
-        EEG.reject.(arfields{j}) = [];
-    end
+        
+        %
+        % resets EEGLAB's artifact rejection fields used by ERPLAB
+        %
+        F = fieldnames(EEG.reject);
+        sfields1 = regexpi(F, '\w*E$', 'match');
+        sfields2 = [sfields1{:}];
+        sfields3  = regexprep(sfields2,'E','');
+        arfields = [sfields2 sfields3];
+        
+        for j=1:length(arfields)
+                EEG.reject.(arfields{j}) = [];
+        end
 end
-
 if bflag>0
-      
-      % reset flag
-      EEG = resetflag(EEG, bflag);      
+        % reset flag
+        EEG = resetflag(EEG, bflag);
 end
 
-com = sprintf('%s = pop_resetrej(%s, %s, %s);', inputname(1), inputname(1), num2str(arjm), num2str(bflag));
-drawnow
+skipfields = {'EEG', 'History','History'};
+fn  = fieldnames(p.Results);
+com = sprintf( '%s  = pop_resetrej( %s ', inputname(1), inputname(1));
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                        end
+                end
+        end
+end
+com = sprintf( '%s );', com);
 
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+% get history from script. EEG
+switch shist
+        case 1 % from GUI
+                com = sprintf('%s %% GUI: %s', com, datestr(now));
+                %fprintf('%%Equivalent command:\n%s\n\n', com);
+                displayEquiComERP(com);
+        case 2 % from script
+                EEG = erphistory(EEG, [], com, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                com = '';
+                return
+end
+
+%
+% Completion statement
+%
+msg2end
 return
+
+
+% com = sprintf('%s = pop_resetrej(%s, %s, %s);', inputname(1), inputname(1), num2str(arjm), num2str(bflag));
+% % get history from script
+% if shist
+%         EEG = erphistory(EEG, [], com, 1);
+% else
+%         com = sprintf('%s %% %s', com, datestr(now));
+% end
+%
+% %
+% % Completion statement
+% %
+% msg2end
+% return

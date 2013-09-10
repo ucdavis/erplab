@@ -1,11 +1,29 @@
+% PURPOSE  : open a popup window for scrolling marked epochs after artifact detection.
+%            For using with ERPLAB artifact detection GUIs only.
 %
-% For using with ERPLAB artifact detection GUIs only
-% Usage (auxiliar function)
-%>> pop_plotepoch4erp(EEG, namefig)
-% Javier Lopez Calderon
+% FORMAT   :
 %
-function pop_plotepoch4erp(EEG, namefig)
+% pop_plotepoch4erp(EEG, namefig)
+%
+% INPUT
+%
+% EEG         - continuous dataset having a EVENTLIST structure
+% namefig     - figure's name
+%
+% OUTPUTS  :
+%
+% popup window for scrolling marked epochs after artifact detection.
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% 2009
+%
 
+function pop_plotepoch4erp(EEG, namefig)
 try
       pop_eegplot( EEG, 1, 1, 0);
       ctag         = max(findobj('tag','EEGPLOT')); % last image

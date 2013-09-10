@@ -1,47 +1,49 @@
-% Usage
+% PURPOSE  : 	Insert new event code(s) at TTL onsets
 %
-% >> pop_insertcodeatTTL(EEG, newcode, channel, relop, thresh, refract, absolud, windowms, durapercen)
+% FORMAT   :
+%
+% pop_insertcodeatTTL(EEG, chanArray, relop, thresh, newcode, TTLdur)
+%
+%
+% INPUTS   :
 %
 % EEG          - EEG structure (from EEGLAB)
-% newcode      - new code to be inserted (1 value)
-% channel      - working channel. Channel with the phenomenon of interest (1 value)
+% chanArray      - working channel. Channel with the phenomenon of interest (1 value)
 % relop        - relational operator. Operator that tests the kind of relation
 %                between signal's amplitude and  thresh. (1 string)
-%
 %               '=='  is equal to (you can also use just '=')
 %               '~='  is not equal to
 %               '<'   is less than
 %               '<='  is less than or equal to
 %               '>='  is greater than or equal to
 %               '>'   is greater than
-%
 % thresh       - threshold value(current EEG recording amplitude units. Mostly uV)
-% refract      - period of time in msec, following the current detection,
-%                which does not allow a new detection.
+% newcode      - new code to be inserted (1 value)
+% TTLdur      - minimum duration of the TTL
 %
-% absolud      - 'absolute': rectified data before detection,  or  'normal': untouched data
+% OUTPUTS  :
 %
-% windowms     - testing window width in msec. After the treshold is found, checks the duration
-%                  of the phenomenon inside this specifies time (ms).
-%
-% durapercen   - minimum duration of the phenomenon, specified as a percentage of windowms (%).
+% -	Outputted dataset with new eventcodes
 %
 %
-% Examples:
+% EXAMPLE  :
 %
 % 1)Insert a new code 999 when channel 37 is greater or equal to 60 uV.
-%   Use a refractory period of 600 ms.
+% Use a refractory period of 600 ms.
 %
-% >> EEG = pop_insertcodeatTTL(EEG, 999, 37, '>=', 60, 600);
-%
+% EEG = pop_insertcodeatTTL(EEG, 999, 37, '>=', 60, 600);
 %
 % 2)Insert a new code 777 when channel 1 (Fp1) is greater or equal to +/-120 uV.
-%   Use a refractory period of 1000 ms. Use a testing window of 300 ms.
-%   The duration of the "ativity" should be 150 ms at least (50% of testing window)
+% Use a refractory period of 1000 ms. Use a testing window of 300 ms.
+% The duration of the "activity" should be 150 ms at least (50% of testing window)
 %
-% >> EEG = pop_insertcodeatTTL(EEG, 777,  1, '>=', 120, 1000, 'absolute', 300, 50);
+% EEG = pop_insertcodeatTTL(EEG, 777,  1, '>=', 120, 1000, 'absolute',
+% 300, 50);
 %
-
+%
+% See also insertcodeatTTLGUI.m TTL2event.m
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -69,98 +71,257 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG com] = pop_insertcodeatTTL(EEG, channel, relop, thresh, newcode, durcond)
-
+function [EEG, com] = pop_insertcodeatTTL(EEG, chanArray, varargin)
 com = '';
-
 if nargin<1
-      help pop_insertcodeatTTL
-      return
+        help pop_insertcodeatTTL
+        return
 end
-if nargin>6
-      
-      msgboxText =  'pop_insertcodeatTTL needs 6 parameters ';
-      title = 'ERPLAB: pop_insertcodeatTTL GUI error';
-      errorfound(msgboxText, title);
-      return
-end
-if isempty(EEG(1).data)
-      msgboxText{1} =  'cannot work with an empty dataset';
-      title = 'ERPLAB: pop_insertcodeatTTL() error:';
-      errorfound(msgboxText, title);
-      return
-end
-if ~isempty(EEG.epoch)
-      
-      msgboxText =  'pop_insertcodeatTTL() only works with continuous data.';
-      title = 'ERPLAB: pop_insertcodeatTTL GUI error';
-      errorfound(msgboxText, title);
-      return
+if isobject(EEG) % eegobj
+        whenEEGisanObject % calls a script for showing an error window
+        return
 end
 if nargin==1
-      
-      answer  = insertcodeatTTLGUI(EEG);
-      
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      
-      channel = answer{1}; % TTL chanel(s)
-      thresh  = answer{2}; % threshold to identify TTL-like pulse
-      newcode = answer{3}; % new code to insert at the onset of a TTL.
-                           % by default is the duration of the TTL in samples.
-      durcond = answer{4}; % new code to insert at the onset of a TTL.
-      relop   = answer{5}; % relational operator ''<'', ''<='', ''>='', or ''>''';
-      
-      if ~isempty(find(abs(newcode)>65535, 1))
-            msgboxText =  'Event codes greater than +/- 65535 are not allowed.';
-            title = 'ERPLAB: pop_insertcodeatTTL GUI error';
-            errorfound(msgboxText, title);
-            return
-      end
-      if nnz(~ismember(channel,1:EEG.nbchan))>0
-            msgboxText =  'This channel does not exist!';
-            title = 'ERPLAB: pop_insertcodeatTTL GUI error';
-            errorfound(msgboxText, title);
-            return
-      end
-else      
-      if nargin<3
-            msgboxText =  'pop_insertcodeatTTL needs 3 inputs, at least. See help.';
-            title = 'ERPLAB: pop_insertcodeatTTL GUI error';
-            errorfound(msgboxText, title);
-            return
-      end
-      if nargin<6
-            durcond = []; % 100%
-      end
-      if nargin<5
-            newcode = [];
-      end
+        if isempty(EEG(1).data)
+                msgboxText =  'cannot work with an empty dataset';
+                title = 'ERPLAB: pop_insertcodeatTTL() error:';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isempty(EEG(1).epoch)
+                msgboxText =  'pop_insertcodeatTTL() only works with continuous data.';
+                title = 'ERPLAB: pop_insertcodeatTTL GUI error';
+                errorfound(msgboxText, title);
+                return
+        end
+        
+        %
+        % Call GUI
+        %
+        answer  = insertcodeatTTLGUI(EEG(1));
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        
+        chanArray = answer{1}; % TTL chanel(s)
+        thresh  = answer{2}; % threshold to identify TTL-like pulse
+        newcode = answer{3}; % new code to insert at the onset of a TTL.
+        
+        TTLdur = answer{4}; % duration of the TTL in samples.
+        relop   = answer{5}; % relational operator ''<'', ''<='', ''>='', or ''>''';
+        % relop = 1 % <  (less than)
+        % relop = 2 % <=  ( less than or equal to)
+        % relop = 3 % >= (greater than or equal to)
+        % relop = 4 % >  (greater than)
+        
+        
+        if ~isempty(find(abs(newcode)>65535, 1))
+                msgboxText =  'Event codes greater than +/- 65535 are not allowed.';
+                title = 'ERPLAB: pop_insertcodeatTTL GUI error';
+                errorfound(msgboxText, title);
+                return
+        end
+        if nnz(~ismember(chanArray,1:EEG(1).nbchan))>0
+                msgboxText =  'This channel does not exist!';
+                title = 'ERPLAB: pop_insertcodeatTTL GUI error';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~ismember(relop,{'<' '<=' '>=' '>'});
+                msgboxText =  ['Wrong relational operator\n\n'...
+                        'Please, only use ''<'', ''<='', ''>='', or ''>'''];
+                title = 'ERPLAB: pop_insertcodeatTTL GUI error';
+                errorfound(sprintf(msgboxText), title);
+                return
+        end
+        
+        %         switch relop % Relational Operators < > <= >=
+        %                 case 1 % <  (less than)
+        %                         relopstr = '<';
+        %                 case 2 % <=  ( less than or equal to)
+        %                         relopstr =  '<=';
+        %                 case 3 % >= (greater than or equal to)
+        %                         relopstr = '>=';
+        %                 case 4 % >  (greater than)
+        %                         relopstr = '>';
+        %         end
+
+        EEG.setname = [EEG.setname '_inscottl'];        
+        
+        %
+        % Somersault
+        %
+        %         [EEG, com] = pop_insertcodeatTTL(EEG, chanArray, relop, thresh, newcode, TTLdur)
+        
+        [EEG, com] = pop_insertcodeatTTL(EEG, chanArray, 'RelationalOperation', relop, 'Threshold', thresh, 'NewCode', newcode,...
+                'TTLDuration', TTLdur, 'History', 'gui');
+        return
 end
 
-fs = EEG.srate;
-durcondsamp = round(durcond*fs/1000);
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('EEG');
+% option(s)
+p.addRequired('chanArray', @isnumeric);
+p.addParamValue('RelationalOperation', '', @ischar);
+p.addParamValue('NewCode', []);
+p.addParamValue('Threshold', [], @isnumeric);
+p.addParamValue('TTLDuration', [], @isnumeric);
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(EEG, chanArray, varargin{:});
+
+% EEG, chanArray, relop, thresh, newcode, TTLdur)
+
+relop     = p.Results.RelationalOperation;
+newcode   = p.Results.NewCode;
+thresh    = p.Results.Threshold;
+TTLdur    = p.Results.TTLDuration;
+
+if strcmpi(p.Results.Warning, 'on')
+        rwwarn = 1;
+else
+        rwwarn = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+if ~iscell(newcode)
+        if size(newcode,1)>1
+                msgboxText =  'pop_insertcodeatTTL() only works with row arrays.';
+                title = 'ERPLAB: pop_insertcodearound GUI error';
+                errorfound(msgboxText, title);
+                return
+        end
+end
 
 % identify relational operator
 [tf, locrelop] = ismember(relop,{'<' '<=' '>=' '>'});
 
 if ~tf
-      msgboxText{1} =  'Wrong relational operator';
-      msgboxText{2} =  'Please, only use ''<'', ''<='', ''>='', or ''>''';
-      title = 'ERPLAB: pop_insertcodeatTTL GUI error';
-      errorfound(msgboxText, title);
-      return
+        msgboxText =  ['ERPLAB says: Wrong relational operator\n'...
+                'Please, only use ''<'', ''<='', ''>='', or ''>'''];
+        error('prog:input', msgboxText)
 end
 
-% EEG = insertcodeonthefly(EEG, newcode, channel, locrelop, thresh, refract, absoludn, windowsam, durapercen);
-EEG = TTL2event(EEG, channel, thresh, newcode, durcondsamp, locrelop);
+%         if nargin<3
+%                 msgboxText =  'pop_insertcodeatTTL needs 3 inputs, at least. See help.';
+%                 title = 'ERPLAB: pop_insertcodeatTTL GUI error';
+%                 errorfound(msgboxText, title);
+%                 return
+%         end
+%         if nargin<6
+%                 TTLdur = []; % 100%
+%         end
+%         if nargin<5
+%                 newcode = [];
+%         end
 
-% [EEG com] = pop_insertcodeatTTL(EEG, channel, relop, threshold, newcode, durcond)
+fs = EEG(1).srate;
+TTLdursamp = round(TTLdur*fs/1000);
 
-com = sprintf('%s = pop_insertcodeatTTL(%s, %s, ''%s'', %s, %s, %s);', inputname(1), inputname(1), ...
-      vect2colon(channel), relop, num2str(thresh), num2str(newcode), num2str(durcond));
+%
+% process multiple datasets April 13, 2011 JLC
+%
+if length(EEG) > 1
+        [ EEG, com ] = eeg_eval( 'pop_insertcodeatTTL', EEG, 'warning', 'on', 'params', {chanArray, relop, thresh, newcode, TTLdur});
+        return;
+end
 
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+%
+% subroutine
+%
+EEG = TTL2event(EEG, chanArray, thresh, newcode, TTLdursamp, locrelop);
+
+%
+% History
+%
+skipfields = {'EEG', 'chanArray','History'};
+fn     = fieldnames(p.Results);
+com = sprintf('%s = pop_insertcodeatTTL( %s, %s ', inputname(1), inputname(1), vect2colon(chanArray));
+
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        if ischar([fn2res{:}])
+                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
+                                        else
+                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        end
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                if strcmpi(fn2com,'Criterion')
+                                        if p.Results.Criterion<100
+                                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                                        end
+                                else
+                                        com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                                end
+                        end
+                end
+        end
+end
+com = sprintf( '%s );', com);
+
+% get history from script. EEG
+switch shist
+        case 1 % from GUI
+                com = sprintf('%s %% GUI: %s', com, datestr(now));
+                %fprintf('%%Equivalent command:\n%s\n\n', com);
+                displayEquiComERP(com);
+        case 2 % from script
+                EEG = erphistory(EEG, [], com, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                com = '';
+                return
+end
+
+%
+% Completion statement
+%
+msg2end
 return
+
+
+
+
+
+% com = sprintf('%s = pop_insertcodeatTTL(%s, %s, ''%s'', %s, %s, %s);', inputname(1), inputname(1), ...
+%         vect2colon(chanArray), relop, num2str(thresh), num2str(newcode), num2str(TTLdur));
+% % get history from script
+% if shist
+%         EEG = erphistory(EEG, [], com, 1);
+% else
+%         com = sprintf('%s %% %s', com, datestr(now));
+% end
+%
+% %
+% % Completion statement
+% %
+% msg2end
+% return

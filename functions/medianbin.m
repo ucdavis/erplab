@@ -1,3 +1,6 @@
+% Under construction...
+%
+%
 % Usage
 % >> waverage = medianbin(ERP, bop)
 %

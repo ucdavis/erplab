@@ -1,23 +1,24 @@
-%  function [BIN, isparsednumerically] = bdf2struct(BIN)
+% PURPOSE: Converts decoded "bin descriptor(s)" into a numeric structure, in order to be used by binlister.
 %
-% Converts decoded bin descriptor into numeric structure, in order to be used by binlister.
+% FORMAT:
 %
-%  Write erplab at command window for help
-%
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% [BIN, isparsednumerically] = bdf2struct(BIN)
 %
 % Inputs:
 %
-%   BIN                    - input
+%   BIN                    - BIN structure containing "bin descriptor(s)"
 %
-% Outputs:
-%
-%   BIN                    - output
+% Output
+% 
+% BIN                      - BIN structure 
 % isparsednumerically      - boolean, 1=everything ok; 0= there is error.
 %
-% See binlister, decodebdf
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+% See binlister.m, decodebdf.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -51,12 +52,10 @@ if nargin < 1
         return
 end
 
-% fprintf('bdf2struct.m : START\n');
-
 %
 % For debugging...
 %
-condition  = 0;             % 1 = displays processing comments;  0 = don't do that!
+condition  = 0;  % 1 = displays processing comments;  0 = don't do that!
 
 %
 % Since the data extraction routine is the same for prehome, athome, and
@@ -200,7 +199,7 @@ for iBin = 1:nBin       % Bin's loop
                                                 if strcmp(char(cod{m}(1)),'~')  % There is negation
                                                         auxSign(m) = 0;
                                                 else
-                                                        auxSign(m) = 1;             % There is no negation
+                                                        auxSign(m) = 1;         % There is no negation
                                                 end
                                         end
                                         
@@ -240,7 +239,7 @@ for iBin = 1:nBin       % Bin's loop
                                 
                                 expp{8}  = 't<(\d+)+-(\d+)+>(\~)*(\d+)+:fa<(\w+)+>:wa<(\w+)+>';  % 8  low-flag  low-write
                                 expp{9}  = 't<(\d+)+-(\d+)+>(\~)*(\d+)+:fa<(\w+)+>:wb<(\w+)+>';  % 9  low-flag  high-write
-                                expp{10} = 't<(\d+)+-(\d+)+>(\~)*(\d+)+:fb<(\w+)+>:wa<(\w+)+>'; % 10  high-flag low-write
+                                expp{10} = 't<(\d+)+-(\d+)+>(\~)*(\d+)+:fb<(\w+)+>:wa<(\w+)+>';  % 10  high-flag low-write
                                 expp{11} = 't<(\d+)+-(\d+)+>(\~)*(\d+)+:fb<(\w+)+>:wb<(\w+)+>';  % 11 high-flag high-write
                                 
                                 expp{12} = 't<(\d+)+-(\d+)+>(\~)*(\d+)+:fa<(\w+)+>(\TONGO)*';    % 12 low-flag  ----------
@@ -260,9 +259,9 @@ for iBin = 1:nBin       % Bin's loop
                                 
                                 auxstr   = sequencerString;
                                 countexp = zeros(1,length(expp));  % January 28,2008
-                                istimedetected = 0; % boolean
-                                isflagdetected = 0; % boolean
-                                isWritedetected  = 0; % boolean
+                                istimedetected = 0;   % boolean
+                                isflagdetected = 0;   % boolean
+                                isWritedetected= 0;   % boolean
                                 
                                 for e = 1:length(expp)
                                         
@@ -302,8 +301,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                         else
                                                                                 strflag = [repmat('x',1, 16-lestrf) strflag];
                                                                         end
-                                                                end
-                                                                
+                                                                end                                                                
                                                         elseif ismember(e,[8 9 12 16 17 20]) % fa = low flag  = LSB byte = artifact flag
                                                                 
                                                                 if lestrf > 8
@@ -321,8 +319,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                         else
                                                                                 strflag = [repmat('x',1, 16-lestrf) strflag];
                                                                         end
-                                                                end
-                                                                
+                                                                end                                                                
                                                         elseif ismember(e,[10 11 13 18 19 21]) % fb = high flag  = MSB byte = user? flag
                                                                 
                                                                 if lestrf > 8
@@ -355,8 +352,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                 maskFlagstring = repmat('0', 1, 16);
                                                                 maskFlagstring(indxf) = '1';
                                                                 captFlagMask   = uint16(bin2dec(maskFlagstring)); % Flag's Logic Mask
-                                                        end
-                                                        
+                                                        end                                                        
                                                         
                                                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                                         % Capture Write and masking  10-27-2008
@@ -380,8 +376,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                         else
                                                                                 strWrite = [repmat('x',1, 16-lestrs) strWrite];
                                                                         end
-                                                                end
-                                                                
+                                                                end                                                                
                                                         elseif ismember(e,[8 10 14 16 18 22]) % wa = low write  = LSB byte = artifact write
                                                                 
                                                                 if lestrs > 8
@@ -399,8 +394,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                         else
                                                                                 strWrite = [repmat('x',1, 16-lestrs) strWrite];
                                                                         end
-                                                                end
-                                                                
+                                                                end                                                                
                                                         elseif ismember(e,[9 11 15 17 19 23]) % wb = high write  = MSB byte = user? write
                                                                 
                                                                 if lestrs > 8
@@ -433,8 +427,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                 maskWriteString = repmat('0', 1, 16);
                                                                 maskWriteString(indxs) = '1';
                                                                 captWriteMask   = uint16(bin2dec(maskWriteString)); % Write's Logic Mask
-                                                        end
-                                                        
+                                                        end                                                        
                                                         if ~isempty(t1) && ~isempty(t2)                                                                
                                                                 if t1 >= t2
                                                                         fprintf('\nFatal Error: BIN %g, Sequencer %g, from "%s", has a erroneous time condition range\n',...
@@ -454,8 +447,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                 if captureCode ~= 1000000 && captureCode ~= 2000000 && captureCode ~= 3000000
                                                                         storeTime = cat(1,storeTime, [-1 -1]);
                                                                 end
-                                                        end
-                                                        
+                                                        end                                                        
                                                         if ~isempty(captureCode)                                                                
                                                                 if captureCode ~= 1000000 && captureCode ~= 2000000 && captureCode ~= 3000000
                                                                         storeCode = cat(2,storeCode, captureCode);
@@ -469,8 +461,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                 fprintf('Fatal Error: expression without code!!! \n');
                                                                 isparsednumerically = 0;  % Numeric parsing was not approved
                                                                 return
-                                                        end
-                                                        
+                                                        end                                                        
                                                         if ~isempty(captureFlag)                                                                
                                                                 if captureFlag > 65535
                                                                         fprintf('Fatal Error: BIN %g. 16-bit Flag format was violated',iBin)
@@ -490,8 +481,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                         storeFlag   = cat(2,storeFlag, 0);
                                                                         storeFmask  = cat(2,storeFmask, 0 );
                                                                 end
-                                                        end
-                                                        
+                                                        end                                                        
                                                         if ~isempty(captureWrite)                                                                
                                                                 if captureWrite > 65535
                                                                         fprintf('Fatal Error: BIN %g. 16-bit Write format was violated',iBin)
@@ -518,8 +508,7 @@ for iBin = 1:nBin       % Bin's loop
                                         else
                                                 countexp(e) = 0;  %for future application
                                         end
-                                end
-                                
+                                end                                
                                 if istimedetected
                                         lco = size(storeCode,2);
                                         storeTime = repmat([t1catch t2catch],lco,1);
@@ -571,8 +560,7 @@ for iBin = 1:nBin       % Bin's loop
                                 
                                 if nDifferentSign ~= length(storeSign) && nDifferentSign ~= 0
                                         storeSign = storeSign*0;
-                                end
-                                
+                                end                                
                                 if istimedetected
                                         t1now  = storeTime(1,1);
                                         t2now  = storeTime(1,2);
@@ -631,5 +619,3 @@ for iBin = 1:nBin       % Bin's loop
         % name the bin been processed
         BIN(iBin).namebin  =   ['BIN ' num2str(iBin)];
 end % Bin's loop
-
-% fprintf('bdf2struct.m : END\n');

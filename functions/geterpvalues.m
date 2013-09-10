@@ -1,42 +1,65 @@
-% Usage:
-% >> VALUES  = geterpvalues(ERP, fname, latency, chanArray, op, dig)
+% PURPOSE: subroutine for pop_geterpvalues.m
+%
+% FORMAT:
+%
+% VALUES  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, localopt, frac, fracmearep)
 %
 % or
 %
-% >> [VALUES L] = geterpvalues(ERP, fname, latency, chanArray, op, dig)
+% [VALUES L] = geterpvalues(...);
 %
-% INPUTS
 %
-% ERP        - ERP structure
-% fname      - name of text file for output. e.g. 'S03_N100_peak.txt'
-% latency    - one or two latencies in msec. e.g. [80 120]
-% chanArray  - index(es) of channel(s) you want to extract the information. e.g. [10 22  38 39 40]
-% op         - option. Any of these:
-%                'instabl'    finds the relative-to-baseline instantaneous value at the specified latency.
-%                'peakampbl'  finds the relative-to-baseline peak value
-%                             between two latencies. See polpeak and sampeak.
-%                'peaklatbl'  finds peak latency between two latencies. See polpeak and sampeak.
-%                'meanbl'     calculates the relative-to-baseline mean amplitude value between two latencies.
-%                'area'       calculates the area under the curve value between two latencies.
-%                '50arealat' calculates the latency corresponding to the 50% area sample between two latencies.
-%                'areaz'      calculates the area under the curve value. Lower and upper limit of integration
-%                             are automatically found starting with a seed
-%                             latency.
+% INPUTS   :
+%
+% ERP           - ERP structures (ERPLAB ERPset)
+% latency       - one or two latencies in msec. e.g. [80 120]
+% binArray      - index(es) of bin(s) from which values will be extracted. e.g. 1:5
+% chanArray     - index(es) of channel(s) from which values will be extracted. e.g. [10 2238 39 40]
+% moption       - option. Any of these:
+%         'instabl'     - finds the relative-to-baseline instantaneous value at a specified latency.
+%         'meanbl'      - calculates the relative-to-baseline mean amplitude value between two latencies.
+%         'peakampbl'   - finds the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
+%         'peaklatbl'   - finds latency of the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
+%         'fpeaklat'    - finds the fractional latency of the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
+%         'areat'       - calculates the (total) area under the curve, between two latencies.
+%         'areap'       - calculates the area under the positive values of the curve, between two latencies.
+%         'arean'       - calculates the area under the negative values of the curve, between two latencies.
+%         'areazt'      - calculates the (total) area value under the curve, between two zero-crossing latencies automatically
+%                         detected (enter one seed latency for searching)
+%         'areazp'      - calculates the area value under the positive values of the curve, between two zero-crossing latencies automatically
+%                         detected (enter one seed latency for searching)
+%         'areazn'      - calculates the area value under the negative values of the curve, between two zero-crossing latencies automatically
+%                         detected (enter one seed latency for searching)
+%         'fareatlat'   - finds the latency corresponding to a specified fraction of the total area.
+%         'fareaplat'   - finds the latency corresponding to a specified fraction of the area under the positive values of the curve.
+%         'fareanlat'   - finds the latency corresponding to a specified fraction of the area under the negative values of the curve.
+%         'ninteg'      - calculates the numerical integration of the curve, between two latencies.
+%         'nintegz'     - calculates the numerical integration of the curve, between two zero-crossing latencies automatically
+%                         detected (enter one seed latency for searching)
+%         'fninteglat'  - finds the latency corresponding to a specified fraction of the numerical integration (signed area).
+%         '50arealat'   - (old) calculates the latency corresponding to the 50% area sample between two latencies.
+%
+% blc        - time window for getting baseline value (reference). E.g. [-200 0]
 % coi        - component of interest (1 or 2) (only for 'areaz')
 % dig        - number of digit to use, for precision, used to write the text file for output. Default is 4
-% polpeak    - polarity of peak:  1=maximum (default), 0=minimum
+% polpeak    - peak polarity,   1=positive (default), 0=negative
 % sampeak    - number of points in the peak's neighborhood (one-side) (0 default)
-%
+% localopt   - 0=write a NaN when local peak is not found; 1=get absolute peak when local peak is not found.
+% frac       - ratio for calculating fractional area latency.
+% fracmearep - 0=write a NaN when fractional area latency is not found; 1 = ? ; 2=shows error message
 %
 % OUTPUTS
 %
-% VALUES     - matrix of values. bin(s) x channel(s). geterpvalues() use always all bins.
+% VALUES     - matrix of values. bin(s) x channel(s).
 % L          - Latencies structure: fields are:
 %              "value"  : latency in msec
 %              "ilimit" : limits of integration in msec in case of using "area" or "areaz" as an option
 %
-% text file  - text file containing formated values.
 %
+% See also pop_geterpvalues.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -64,7 +87,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function varargout  = geterpvalues(ERP, latency, binArray, chanArray, op, blc, coi, polpeak, sampeak, localopt)
+function varargout  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, localopt, frac, fracmearep, intfactor)
 
 if nargin<1
         help geterpvalues
@@ -73,26 +96,32 @@ end
 if nargin<2
         error('ERROR geterpvalues(): You must specify ERP struct and latency(ies), at least.')
 end
-
-% fprintf('geterpvalues.m : START\n');
-
+if nargin<13
+        intfactor = 1;
+end
+if nargin<12
+        fracmearep = 0; %0=write a NaN when frac measure is not found.  1 = export frac absolute peak when frac local peak is not found.; 2=shows error message
+end
+if nargin<11
+        frac = 0.5; % 50% area latency (if needed, by default)
+end
 if nargin<10
         localopt = 0; % 0=write a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
 end
 if nargin<9
-        sampeak = 0; % absolute peak
+        sampeak = 0; % absolute peak. No neighbor samples
 end
 if nargin<8
         polpeak = 1; % positive
 end
 if nargin<7
-        coi = 1;
+        coi = 0; % 0= as it is; 1=first component; 2=2nd component
 end
 if nargin<6
         blc = 'pre';
 end
 if nargin<5
-        op = 'instabl';
+        moption = 'instabl';
 end
 if nargin<4
         chanArray = 1:ERP.nchan;
@@ -100,37 +129,53 @@ end
 if nargin<3
         binArray = 1:ERP.nbin;
 end
-
 if ischar(blc)
-
         blcnum = str2num(blc);
-
         if isempty(blcnum)
-
                 if ~ismember(blc,{'no','none','pre','post','all','whole'})
                         msgboxText =  'Invalid baseline range dude!';
-                        title        =  'ERPLAB: geterpvalues() baseline input';
-                        errorfound(msgboxText, title);
+                        %title      =  'ERPLAB: geterpvalues() baseline input';
+                        %errorfound(msgboxText, title);
+                        %return
+                        varargout{1} = msgboxText;
+                        varargout{2} = [];
                         return
                 end
         else
                 if size(blcnum,1)>1 || size(blcnum,2)>2
-                        msgboxText =  'Invalid baseline range dude!';
-                        title        =  'ERPLAB: geterpvalues() baseline input';
-                        errorfound(msgboxText, title);
+                        msgboxText =  'Invalid baseline range, dude!';
+                        %title      =  'ERPLAB: geterpvalues() baseline input';
+                        %errorfound(msgboxText, title);
+                        %return
+                        varargout{1} = msgboxText;
+                        varargout{2} = [];
                         return
                 end
         end
+end
+if ~ismember({moption}, {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
+                'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
+                'fareaplat', 'fninteglat', 'fareanlat', 'ninteg','nintegz' });
+        msgboxText =  [moption ' is not a valid option for geterpvalues!'];
+        %title = 'ERPLAB: geterpvalues wrong inputs';
+        %errorfound(msgboxText, title);
+        %return
+        varargout{1} = msgboxText;
+        varargout{2} = [];
+        return
 end
 if isempty(coi)
         coi = 1;
 end
 if nargout==1
-        condf = 0;
+        condf = 0; % only includes area values
 elseif nargout==2
-        condf = 1;
+        condf = 1; % include latency values and limits...
 else
         error('ERPLAB says: error at geterpvalues(). Too many output arguments!')
+end
+if isempty(sampeak)
+        sampeak =0;
 end
 
 fs      = ERP.srate;
@@ -139,82 +184,168 @@ nbin    = length(binArray);
 nchan   = length(chanArray);
 nlat    = length(latency);
 VALUES  = zeros(nbin,nchan);
-LATENCY = struct([]);                            % its fields are "value" and "ilimits"
-toffsa  = round(ERP.xmin*fs);                    % in samples
-latsamp = round(latency*fs/1000) - toffsa + 1;   % msec to samples
-
-if length(latsamp)==2
-        if latsamp(1)<-1
-                msgboxText =  'ERROR: The onset of your latency window cannot be more than 2 samples away from the real onset ';
-                tittle = 'ERPLAB: erp_artmwppth()';
-                errorfound(msgboxText, tittle);
-                varargout = {[]};
-                return
-        end
-        if latsamp(2)>pnts+2
-                msgboxText =  'ERROR: The offset of your latency window cannot be more than 2 samples away from the real offset';
-                tittle = 'ERPLAB: erp_artmwppth()';
-                errorfound(msgboxText, tittle);
-                varargout = {[]};
-                return
-        end
-        if latsamp(1)<1
-                latsamp(1) = 1;
-                fprintf('\n%s\n', repmat('*',1,60));
-                fprintf('WARNING: Lower latency limit %.1f ms was adjusted to %.1f ms \n', latency(1), 1000*ERP.xmin);
-                fprintf('%s\n\n', repmat('*',1,60));
-        end
-        if latsamp(2)>pnts
-                latsamp(2) = pnts;
-                fprintf('\n%s\n', repmat('*',1,60));
-                fprintf('WARNING: Upper latency limit %.1f ms was adjusted to %.1f ms \n', latency(2), 1000*ERP.xmax);
-                fprintf('%s\n\n', repmat('*',1,60));
-        end
+LATENCY = struct([]);
+timeor  = ERP.times; % original time vector
+mintime = ERP.xmin*1000;
+maxtime = ERP.xmax*1000;
+p1      = timeor(1);
+p2      = timeor(end);
+if intfactor~=1
+        timex = linspace(p1,p2,round(pnts*intfactor));
+        pnts  = length(timex);
+        fs    = round(fs*intfactor);
 else
-        if latsamp(1)<-1 || latsamp(1)>pnts+2
-                msgboxText{1} =  'ERROR: The specified latency is more than 2 samples away from the ERP window.';
-                tittle = 'ERPLAB: erp_artmwppth()';
-                errorfound(msgboxText, tittle);
-                varargout = {[]};
+        timex = timeor;
+end
+
+% latsamp = [find(ERP.times>=latency(1), 1, 'first') find(ERP.times<=550, 1, 'last')];
+% % its fields are "value" and "ilimits"
+% toffsa  = round(ERP.xmin*fs);                    % in samples
+% latsamp = round(latency*fs/1000) - toffsa + 1;   % msec to samples
+
+[worklate{1:nbin,1:nchan}] = deal(latency); % specified latency(ies) for getting measurements.
+
+if length(latency)==2
+        %latsamp = [find(ERP.times>=latency(1), 1, 'first') find(ERP.times<=latency(2), 1, 'last')];
+        [xxx, latsamp, latdiffms] = closest(timex, latency);
+%         try
+                if latsamp(1)<=(1+sampeak) && round(latdiffms(1)*fs/1000)<(-2+sampeak) %JLC.20/08/13
+                        msgboxText =  sprintf(['The onset of your latency window cannot be more than 2 samples away from the real onset.\n\n'...
+                                'When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
+                                'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
+                                'You can solve this problem by choosing a shorter measurement window, like [%.1f %.1f] for instance.'],...                                
+                                 timex(latsamp(1)+sampeak), latency(2));
+                        %tittle = 'ERPLAB: geterpvalues()';
+                        %errorfound(msgboxText, tittle);
+                        %varargout = {[]};
+                        varargout{1} = msgboxText;
+                        varargout{2} = 'limit';
+                        return
+                end
+                if latsamp(2)>=(pnts-sampeak) && round(latdiffms(2)*fs/1000)>(2-sampeak) %JLC.20/08/13
+                        msgboxText =  sprintf(['The offset of your latency window cannot be more than 2 samples away from the real offset.\n\n'...
+                                'When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
+                                'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
+                                'You can solve this problem by choosing a shorter measurement window, like [%.1f %.1f] for instance.'],...
+                                latency(1), timex(latsamp(2)-sampeak));
+                        %tittle = 'ERPLAB: geterpvalues()';
+                        %errorfound(msgboxText, tittle);
+                        varargout{1} = msgboxText;
+                        varargout{2} = 'limit';
+                        %varargout = {[]};
+                        return
+                end
+                if latsamp(1)<=(1+sampeak) && round(latdiffms(1)*fs/1000)<0 %JLC.20/08/13
+                        latsamp(1) = 1;
+                        fprintf('\n%s\n', repmat('*',1,60));
+                        fprintf('WARNING: Lower latency limit %.1f ms was adjusted to %.1f ms \n', latency(1), mintime);
+                        fprintf('%s\n\n', repmat('*',1,60));
+                end
+                if latsamp(2)>=(pnts-sampeak) && round(latdiffms(2)*fs/1000)>0 %JLC.20/08/13
+                        latsamp(2) = pnts;
+                        fprintf('\n%s\n', repmat('*',1,60));
+                        fprintf('WARNING: Upper latency limit %.1f ms was adjusted to %.1f ms \n', latency(2), maxtime);
+                        fprintf('%s\n\n', repmat('*',1,60));
+                end
+%         catch
+%                 msgboxText =  'The offset of your latency window cannot be more than 2 samples away from the real offset...';
+%                 varargout{1} = msgboxText;
+%                 varargout{2} = 'limit';
+%                 return
+%         end
+elseif length(latency)==1
+        %latsamp = find(ERP.times>=latency(1), 1, 'first');
+        [xxx, latsamp, latdiffms] = closest(timex, latency(1));
+        
+        if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (round(latdiffms(1)*fs/1000)<(-2+sampeak) || round(latdiffms(2)*fs/1000)>(2-sampeak)) %JLC.20/08/13
+                msgboxText =  sprintf(['The specified latency is more than 2 samples away from the ERP window.\n\n'...
+                        'When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
+                        'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
+                        'You can solve this problem by choosing a different measurement time, like %.1f for instance.'],...
+                        ((pnts/2)*1000/fs));
+                %tittle = 'ERPLAB: geterpvalues()';
+                %errorfound(msgboxText, tittle);
+                %varargout = {[]};
+                varargout{1} = msgboxText;
+                varargout{2} = 'limit';
                 return
         end
         if latsamp(1)<1
                 latsamp(1) = 1;
                 fprintf('\n%s\n', repmat('*',1,60));
-                fprintf('WARNING: Latency %.1f ms was adjusted to %.1f ms \n', latency(2), 1000*ERP.xmin);
+                fprintf('WARNING: Latency %.1f ms was adjusted to %.1f ms \n', latency(2), mintime);
                 fprintf('%s\n\n', repmat('*',1,60));
         elseif latsamp(1)>pnts
                 latsamp(1) = pnts;
                 fprintf('\n%s\n', repmat('*',1,60));
-                fprintf('WARNING: Latency %.1f ms was adjusted to %.1f ms \n', latency(2), 1000*ERP.xmax);
+                fprintf('WARNING: Latency %.1f ms was adjusted to %.1f ms \n', latency(2), maxtime);
                 fprintf('%s\n\n', repmat('*',1,60));
         end
+else
+        error('Wrong number of latencies...')
 end
-
 try
         for b=1:nbin
                 for ch = 1:nchan
-                        if nlat==1
-                                if strcmpi(op,'areaz')
-
-                                        if condf
-                                                [A L il] =  areaerp(ERP.bindata(chanArray(ch), :, binArray(b)), ERP.srate, latsamp, 'auto', coi);
-                                                LATENCY(b,ch).value  = ((L-1)/fs + ERP.xmin)*1000 ;
-                                                LATENCY(b,ch).ilimit = num2str(((il-1)/fs + ERP.xmin)*1000)  ;
-                                        else
-                                                A = areaerp(ERP.bindata(chanArray(ch), :, binArray(b)), ERP.srate,latsamp, 'auto', coi) ;
+                        %
+                        % Get data
+                        %
+                        dataux = ERP.bindata(chanArray(ch), :, binArray(b));
+                        
+                        %
+                        % re-sampling
+                        %
+                        if intfactor~=1
+                                dataux  = spline(timeor, dataux, timex); % re-sampled data
+                        end
+                        
+                        %
+                        % Baseline correction
+                        %
+                        blv    = blvalue2(dataux, timex, blc);
+                        dataux = dataux - blv;
+                        
+                        if nlat==1   % 1 latency was specified
+                                if strcmpi(moption,'areazt') || strcmpi(moption,'areazp') || strcmpi(moption,'areazn')
+                                        
+                                        %
+                                        % get area (automatic limits, 1 seed latency)
+                                        %
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        switch moption
+                                                case 'areazt'
+                                                        aoption = 'autot';
+                                                case 'areazp'
+                                                        aoption = 'autop';
+                                                case 'areazn'
+                                                        aoption = 'auton';
                                         end
-
+                                        
+                                        % gets values
+                                        [A, Lx, il] =  areaerp(dataux, fs, latsamp, aoption, coi);
+                                        worklate{b,ch} = 1000*(il-1)/fs + mintime;   % integratin limits
+                                        VALUES(b,ch)   = A;
+                                elseif strcmpi(moption,'nintegz')
+                                        
+                                        %
+                                        % get numerical integration (automatic limits)
+                                        %
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        [A, Lx, il]  =  areaerp(dataux, fs,latsamp, 'auto', coi);
+                                        worklate{b,ch} = 1000*(il-1)/fs + mintime; % integratin limits
                                         VALUES(b,ch)  = A;
-
-                                elseif strcmpi(op,'instabl')
-
-                                        blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
-                                        VALUES(b,ch) = ERP.bindata(chanArray(ch),latsamp, binArray(b)) - blv;
-
-                                        if condf
-                                                LATENCY(b,ch).value  = latency;
-                                        end
+                                elseif strcmpi(moption,'instabl')
+                                        
+                                        %
+                                        % get instantaneous amplitud (at 1 latency)
+                                        %
+                                        %blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        VALUES(b,ch) = dataux(latsamp);
                                 else
                                         stre1  = 'ERROR in geterpvalues.m: You must enter 2 latencies for ';
                                         stre2  = '''meanbl'', ''peakampbl'', ''peaklatbl'', or ''area''';
@@ -222,132 +353,243 @@ try
                                         error( strerr )
                                 end
                         else % between 2 latencies measurements.
-
-                                if strcmpi(op,'meanbl')
-
-                                        blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
-                                        VALUES(b,ch)  = mean(ERP.bindata(chanArray(ch),latsamp(1):latsamp(2), binArray(b))) - blv;
-
-                                        if condf
-                                                LATENCY(b,ch).value  = mean(latency); %msec
-                                        end
-
-                                elseif strcmpi(op,'peakampbl')
-
-                                        blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                if strcmpi(moption,'meanbl')
+                                        
+                                        %
+                                        % get mean value
+                                        %
+                                        %blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        VALUES(b,ch)  = mean(dataux(latsamp(1):latsamp(2)));
+                                elseif strcmpi(moption,'peakampbl')
+                                        
+                                        %
+                                        % get peak amplitude
+                                        %
+                                        %blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        
                                         try
-                                                dataux  = ERP.bindata(chanArray(ch),latsamp(1)-sampeak:latsamp(2)+sampeak, binArray(b));  % no filtered
-                                                %valmaxf = localpeak(dataux, sampeak, polpeak)
+                                                dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % no filtered
+                                                timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
                                         catch
-                                                error(sprintf('ERPLAB says: The requested measurement range (%g - %g +/- %g ms) exceeds the time range of the data (%.1f - %.1f ms).',...
-                                                        round(latency(1)), round(latency(2)), round(1000*sampeak/fs), ERP.xmin*1000, ERP.xmax*1000))
+                                                extrastr = ['When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
+                                                        'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
+                                                        'You can solve this problem by choosing a shorter measurement window.'];
+                                                error(sprintf('ERPLAB says: The requested measurement range (%g - %g +/- %g ms) exceeds the time range of the data (%.1f - %.1f ms).\n\n%s',...
+                                                        round(latency(1)), round(latency(2)), round(1000*sampeak/fs), mintime, maxtime), extrastr)
                                         end
-
-                                        [vlocalpf, vabspf] = localpeak(dataux, sampeak, polpeak);
-
-                                        if isempty(vlocalpf)
-                                                if localopt==0
-                                                        valx = NaN;
-                                                else
-                                                        valx = vabspf; % export the absolue peak/valley instead
-                                                end
+                                        
+                                        if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
+                                                localoptstr = 'abs';
                                         else
-                                                valx = vlocalpf; % local peak value
+                                                localoptstr = 'NaN';
                                         end
-
-                                        VALUES(b,ch)  = valx - blv; % value of amplitude
-
-                                elseif strcmpi(op,'peaklatbl')
-
+                                        
+                                        % gets values
+                                        [valx, latpeak] = localpeak(dataux, timex2, 'Neighborhood',sampeak, 'Peakpolarity', polpeak, 'Measure','amplitude',...
+                                                'Peakreplace', localoptstr);
+                                        
+                                        if isempty(valx)
+                                                error('Peak-related measurement failed...')
+                                        end
+                                        
+                                        worklate{b,ch} = latpeak; %((il-1)/fs + ERP.xmin)*1000;
+                                        VALUES(b,ch)   = valx; % value of amplitude
+                                elseif strcmpi(moption,'peaklatbl')
+                                        
+                                        %
+                                        % get peak latency
+                                        %
+                                        %blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        
                                         try
-                                                dataux  = ERP.bindata(chanArray(ch),latsamp(1)-sampeak:latsamp(2)+sampeak, binArray(b));  % no filtered
-                                                %[valmaxf posmaxf ]= localpeak(dataux, sampeak, polpeak);
+                                                dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % no filtered
+                                                timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
                                         catch
-                                                error(sprintf('ERPLAB says: The requested measurement range (%g - %g +/- %g ms) exceeds the time range of the data (%.1f - %.1f ms).',...
-                                                        round(latency(1)), round(latency(2)), round(1000*sampeak/fs), ERP.xmin*1000, ERP.xmax*1000))
+                                                extrastr = ['When you are measuring a local peak, extra points are needed at both the beginning and end of the window.'...
+                                                        'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
+                                                        'You can solve this problem by choosing a shorter measurement window.'];
+                                                
+                                                error(sprintf('ERPLAB says: The requested measurement range (%g - %g +/- %g ms) exceeds the time range of the data (%.1f - %.1f ms).\n\n%s',...
+                                                        round(latency(1)), round(latency(2)), round(1000*sampeak/fs), mintime, maxtime, extrastr));
                                         end
-
-                                        [vlocalpf, vabspf, poslocalpf, posabspf] = localpeak(dataux, sampeak, polpeak);
-
-                                        if isempty(vlocalpf)
-                                                if localopt==0
-                                                        latx = NaN;
-                                                else
-                                                        latx = posabspf; % export the absolue peak/valley position instead
-                                                end
+                                        if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
+                                                localoptstr = 'abs';
                                         else
-                                                latx = poslocalpf; % local peak position
+                                                localoptstr = 'NaN';
                                         end
-
-                                        if isnan(latx)
-                                                VALUES(b,ch) = latx; % value of latency
-                                        else
-                                                VALUES(b,ch) = ERP.times(latx+latsamp(1)-sampeak-1); % value of latency
+                                        
+                                        % gets values
+                                        valx = localpeak(dataux, timex2, 'Neighborhood', sampeak, 'Peakpolarity', polpeak, 'Measure','peaklat',...
+                                                'Peakreplace', localoptstr);
+                                        if isempty(valx)
+                                                error('Peak-related measurement failed...')
                                         end
-
-                                elseif strcmpi(op,'area')
-
-                                        blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
-                                        dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
-
-                                        if condf
-                                                [A L il] = areaerp(dataux, ERP.srate,latsamp) ;
-                                                LATENCY(b,ch).value  = ((L-1)/fs + ERP.xmin)*1000 ;
-                                                LATENCY(b,ch).ilimit = num2str(((il-1)/fs + ERP.xmin)*1000);
-                                        else
-                                                A  =  areaerp(dataux, ERP.srate,latsamp) ;
+                                        
+                                        VALUES(b,ch) = valx;
+                                elseif strcmpi(moption,'areat') || strcmpi(moption,'areap') || strcmpi(moption,'arean')
+                                        
+                                        %
+                                        % get area
+                                        %
+                                        switch moption
+                                                case 'areat'
+                                                        aoption = 'total';
+                                                case 'areap'
+                                                        aoption = 'positive';
+                                                case 'arean'
+                                                        aoption = 'negative';
                                         end
-
+                                        
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        A  =  areaerp(dataux, fs, latsamp, aoption, coi);
                                         VALUES(b,ch)  = A;
-
-                                elseif strcmpi(op,'50arealat') % percentage area latency
-
-                                        blv = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
-                                        dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
-
-                                        [A L il]   =  areaerp(dataux, ERP.srate,latsamp) ;
-                                        %LATENCY(b,ch).value  = ((L-1)/fs + ERP.xmin)*1000 ;
-                                        %LATENCY(b,ch).ilimit = num2str(((il-1)/fs+ ERP.xmin)*1000);
-                                        VALUES(b,ch)  = ((L-1)/fs + ERP.xmin)*1000; % 50 % area latency (temporary)
-
-                                elseif strcmpi(op,'areaz')
-
-                                        blv = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
-                                        dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
-
-                                        if condf
-                                                [A L il]  =  areaerp(dataux, ERP.srate,latsamp, 'auto', coi) ;
-
-                                                LATENCY(b,ch).value  = ((L-1)/fs + ERP.xmin)*1000 ;
-                                                LATENCY(b,ch).ilimit = num2str(((il-1)/fs + ERP.xmin)*1000);
-                                        else
-                                                A  =  areaerp(dataux, ERP.srate,latsamp, 'auto', coi) ;
+                                elseif strcmpi(moption,'50arealat')  % deprecated
+                                        
+                                        %
+                                        % get 50% area latency (old)
+                                        %
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, 'total', coi);
+                                        VALUES(b,ch) = 1000*(L-1)/fs + mintime; % 50 % area latency (temporary)
+                                elseif strcmpi(moption,'fareatlat') || strcmpi(moption,'fninteglat') ||  strcmpi(moption,'fareaplat') || strcmpi(moption,'fareanlat')
+                                        
+                                        %
+                                        % get fractional area latency
+                                        %
+                                        if frac<0 || frac>1
+                                                error('ERPLAB says: error at geterpvalues(). Fractional area value must be between 0 and 1')
                                         end
-
-                                        VALUES(b,ch)  = A;
-
-                                elseif strcmpi(op,'errorbl') % for Rick Addante
-
+                                        switch moption
+                                                case 'fareatlat'
+                                                        aoption = 'total';
+                                                case 'fninteglat'
+                                                        aoption = 'integral'; % default
+                                                case 'fareaplat'
+                                                        aoption = 'positive';
+                                                case 'fareanlat'
+                                                        aoption = 'negative';
+                                        end
+                                        
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, aoption, coi, frac, fracmearep);
+                                        VALUES(b,ch) = 1000*(L-1)/fs + mintime; % frac area latency
+                                elseif strcmpi(moption,'fpeaklat')
+                                        
+                                        %
+                                        % get fractional "peak" latency
+                                        %
+                                        if frac<0 || frac>1
+                                                error('ERPLAB says: error at geterpvalues(). Fractional peak value must be between 0 and 1')
+                                        end
+                                        
+                                        %                               try
+                                        %blv = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        
+                                        dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % base line was substracted!
+                                        timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
+                                        
+                                        if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
+                                                localoptstr = 'abs';
+                                        else
+                                                localoptstr = 'NaN';
+                                        end
+                                        if fracmearep==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
+                                                fracmearepstr = 'abs';
+                                        else
+                                                fracmearepstr = 'NaN';
+                                        end
+                                        
+                                        % gets values
+                                        [aaaxxx, latpeak, latfracpeak] = localpeak(dataux, timex2, 'Neighborhood',sampeak, 'Peakpolarity', polpeak, 'Measure','fraclat',...
+                                                'Peakreplace', localoptstr, 'Fraction', frac, 'Fracpeakreplace', fracmearepstr);
+                                        
+                                        if isempty(aaaxxx)
+                                                error('Peak-related measurement failed...')
+                                        end
+                                        
+                                        worklate{b,ch} = latpeak; % peak
+                                        VALUES(b,ch)   = latfracpeak; % fractional peak
+                                elseif strcmpi(moption,'areazt') || strcmpi(moption,'areazp') || strcmpi(moption,'areazn')
+                                        
+                                        %
+                                        % get area (automatic limits)
+                                        %
+                                        switch moption
+                                                case 'areazt'
+                                                        aoption = 'autot';
+                                                case 'areazp'
+                                                        aoption = 'autop';
+                                                case 'areazn'
+                                                        aoption = 'auton';
+                                        end
+                                        
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        [A, L, il]     =  areaerp(dataux, fs,latsamp, aoption, coi);
+                                        worklate{b,ch} = 1000*(il-1)/fs + mintime; % integration limits
+                                        VALUES(b,ch)   = A;
+                                elseif strcmpi(moption,'errorbl') % for Rick Addante
+                                        
+                                        %
+                                        % get standard deviation
+                                        %
                                         if isempty(ERP.binerror)
-                                                error('ERPLAB says: Rick, the data field for standard deviation is empty!')
+                                                error('ERPLAB says: The data field for standard deviation is empty!')
                                         end
-
-                                        dataux = ERP.bindata; % temporary store for data field
-                                        ERP.bindata = ERP.binerror;  % error data to data
-                                        blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        
+                                        dataux       = ERP.bindata; % temporary store for data field
+                                        ERP.bindata  = ERP.binerror;  % error data to data
+                                        blv          = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
                                         VALUES(b,ch) = mean(ERP.bindata(chanArray(ch),latsamp(1):latsamp(2), binArray(b))) - blv;
                                         ERP.bindata  = dataux; % recover original data
+                                elseif strcmpi(moption,'rmsbl')
+                                        
+                                        %
+                                        % get root mean square value (RMS)
+                                        %                                      
+                                        VALUES(b,ch) = sqrt(mean(dataux(latsamp(1):latsamp(2)).^2));
+                                elseif strcmpi(moption,'ninteg')
+                                        
+                                        %
+                                        % get numerical integration
+                                        %
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        A  =  areaerp(dataux, fs,latsamp, 'integral', coi);
+                                        VALUES(b,ch)  = A;
+                                elseif strcmpi(moption,'nintegz')
+                                        
+                                        %
+                                        % get numerical integration (automatic limits)
+                                        %
+                                        %blv    = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
+                                        %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
+                                        
+                                        % gets values
+                                        [A, Lx, il]    =  areaerp(dataux, fs,latsamp, 'auto', coi);
+                                        worklate{b,ch} = 1000*(il-1)/fs + mintime; % integratin limits
+                                        VALUES(b,ch)   = A;
                                 end
                         end
                 end
         end
 catch
         serr = lasterror;
-        msgboxText = ['Please, check your inputs:\n\n'...
-                      serr.message];
-        tittle = 'ERPLAB: geterpvalues() error:';
-        errorfound(sprintf(msgboxText), tittle);
-        varargout = {[]};
+        varargout{1} = serr.message;
+        varargout{2} = [];
         return
 end
 
@@ -358,72 +600,7 @@ if ~condf
         varargout{1} = VALUES;
 elseif condf
         varargout{1} = VALUES;
-        varargout{2} = LATENCY;
+        varargout{2} = worklate;
 else
         error('ERPLAB says: error at geterpvalues.  Too many output arguments!')
 end
-
-% fprintf('geterpvalues.m : END\n');
-% fprintf('Done.\n');
-
-%---------------------------------------------------------------------------------------------------
-%-----------------base line mean value--------------------------------------------------------------
-function blv = blvalue(ERP, chan, bin, blcorr)
-
-%
-% Baseline assessment
-%
-if ischar(blcorr)
-
-        if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')
-
-                if strcmpi(blcorr,'pre')
-                        bb = find(ERP.times==0);    % zero-time locked
-                        aa = 1;
-                elseif strcmpi(blcorr,'post')
-                        bb = length(ERP.times);
-                        aa = find(ERP.times==0);
-                elseif strcmpi(blcorr,'all') || strcmpi(blcorr,'whole')
-                        bb = length(ERP.times);
-                        aa = 1;
-                else
-                        toffsa = abs(round(ERP.xmin*ERP.srate))+1;
-                        blcnum = str2num(blcorr)/1000;               % from msec to secs  03-28-2009
-
-                        %
-                        % Check & fix baseline range
-                        %
-                        if blcnum(1)<ERP.xmin
-                                blcnum(1) = ERP.xmin;
-                        end
-                        if blcnum(2)>ERP.xmax
-                                blcnum(2) = ERP.xmax;
-                        end
-
-                        aa     = round(blcnum(1)*ERP.srate) + toffsa; % in samples 12-16-2008
-                        bb     = round(blcnum(2)*ERP.srate) + toffsa  ;    % in samples
-                end
-
-                blv = mean(ERP.bindata(chan,aa:bb, bin));
-        else
-                blv = 0;
-        end
-else
-        toffsa = abs(round(ERP.xmin*ERP.srate))+1;
-        blcnum = blcorr/1000;               % from msec to secs  03-28-2009
-
-        %
-        % Check & fix baseline range
-        %
-        if blcnum(1)<ERP.xmin
-                blcnum(1) = ERP.xmin;
-        end
-        if blcnum(2)>ERP.xmax
-                blcnum(2) = ERP.xmax;
-        end
-
-        aa     = round(blcnum(1)*ERP.srate) + toffsa;      % in samples 12-16-2008
-        bb     = round(blcnum(2)*ERP.srate) + toffsa  ;    % in samples
-        blv = mean(ERP.bindata(chan,aa:bb, bin));
-end
-

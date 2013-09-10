@@ -1,9 +1,32 @@
-% tf = 0 means IIR Butterworth
-% tf = 1  means FIR
-% tf = 2  means notch
-% order = any positive integer
-% valuel = low-pass filter cutoff  (same as highest bandpass cuttoff)
-% valueh = high-pass filter cutoff (same as lowest bandpass cuttoff)
+% PURPOSE: subroutine for filterp.m, basicrap.m, basicfilter.m, and basicfilterGUI.m
+%          sets ERPLAB filter coefficients and other filter parameters
+%
+% FORMAT
+%
+% [b, a, labelf, v, frec3dB_final, xdB_at_fx, orderx] = filter_tf(typef, order, valuel, valueh, fs)
+%
+% INPUTS
+%
+% typef           - 0  means IIR Butterworth
+%                   1  means FIR
+%                   2  means notch
+%
+% order           - filter order (N). (recommended 1 to 8 for Butterworth, 1 to 4096 for FIR). Notch is set internally to order 180.
+% valuel          - low-pass filter cutoff  (same as highest bandpass cuttoff)
+% valueh          - high-pass filter cutoff (same as lowest bandpass cuttoff)
+%
+% OUTPUTS
+%
+% b, a            - filter coefficients in length N+1 vectors 'b' (numerator) and 'a' (denominator). 
+%                   The coefficients are listed in descending powers of z.
+% labelf          - label for filter type ('Low-pass', 'High-pass', 'Band-pass', 'Stop-band')
+% v               - error flag. 1 means no error; 0 means error found
+% frec3dB_final   - cutoff frec at -3db
+% xdB_at_fx       - true attentuation at frequency cutoff
+% orderx          - filter order (twice the order used internally due to filtfilt)
+%
+%
+% See also basicfilter.m basicfilterGUI.m filterp.m basicrap.m
 %
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
@@ -36,50 +59,39 @@ function [b, a, labelf, v, frec3dB_final, xdB_at_fx, orderx] = filter_tf(typef, 
 
 v = 1; % 1 means everything is ok
 [b a labelf frec3dB_final xdB_at_fx orderx] = deal([]);
-
 if mod(order,2)~=0
       error('ERPLAB says: filter order must be an even number because of the forward-reverse filtering.')
 end
-
 fnyq  = fs/2;
-
 if valuel/fnyq >=1 || valueh/fnyq >=1 || valueh<0 || valuel<0
       error('ERPLAB says: The cutoff frequencies must be within the interval: 0 < fc < fs/2')
 end
-
 order = order/2; % Because of filtfilt performs a forward-reverse filtering, it doubles the filter order
 
 % try
-if valuel>0 && valueh==0  % Low Pass
-      
+if valuel>0 && valueh==0  % Low Pass      
       if typef==1
             % Hamming-window based, linear-phase FIR filter
             [b a]  = fir1n(order, valuel/fnyq);
-            frec3dB_aux = halfpower(b, a, fs, valuel); % get the -3db cutoff of filtfilt.
-            
+            frec3dB_aux = halfpower(b, a, fs, valuel); % get the -3db cutoff of filtfilt.            
             deltaf = valuel - frec3dB_aux;
             % Evaluate a -48db to get -6db
-            frec_at_6dB = ( 0.003981071705535 - ((0.707*valuel - 0.25*frec3dB_aux) / deltaf)) / ((0.25-0.707)/deltaf);
-            
+            frec_at_6dB = ( 0.003981071705535 - ((0.707*valuel - 0.25*frec3dB_aux) / deltaf)) / ((0.25-0.707)/deltaf);            
             if frec_at_6dB>fnyq
                   frec_at_6dB = fnyq;
             elseif frec_at_6dB<0
                   frec_at_6dB = 0;
-            end
-            
-            [b a orderx]  = fir1n(order, frec_at_6dB/fnyq);
-            
+            end            
+            [b a orderx]  = fir1n(order, frec_at_6dB/fnyq);            
       elseif typef==0
             % Butterworth filter
             [b,a]   = butter(order,valuel/fnyq); % low pass filter
       else
             v = 0; % means something wrong
             return
-      end
-      
+      end      
       labelf = 'Low-pass';
-      fx = valuel;
-      
+      fx = valuel;      
 elseif valuel==0 && valueh>0   % High Pass
      
       if typef==1
@@ -87,8 +99,7 @@ elseif valuel==0 && valueh>0   % High Pass
             [b a]  = fir1n(order, valueh/fnyq, 'high');
             frec3dB_aux = halfpower(b, a, fs, valueh); % get the -3db cutoff of filtfilt.
             
-            if ~isempty(frec3dB_aux)
-                  
+            if ~isempty(frec3dB_aux)                  
                   deltaf = valueh - frec3dB_aux;
                   % Evaluate a -48db to get -6db
                   frec_at_6dB = ( 0.003981071705535 - ((0.707*valueh - 0.25*frec3dB_aux) / deltaf)) / ((0.25-0.707)/deltaf);
@@ -97,8 +108,7 @@ elseif valuel==0 && valueh>0   % High Pass
                         frec_at_6dB = fnyq;
                   elseif frec_at_6dB<0
                         frec_at_6dB = 0;
-                  end
-                  
+                  end                  
                   [b a orderx]  = fir1n(order, frec_at_6dB/fnyq, 'high');                  
             end
             
@@ -108,32 +118,25 @@ elseif valuel==0 && valueh>0   % High Pass
       else
             v = 0; % means something wrong
             return
-      end
-      
+      end      
       labelf = 'High-pass';
-      fx = valueh;
-      
-elseif valuel>0 && valueh>0 && (valuel>valueh)   % Band Pass
-      
-      if typef==1
-            
+      fx = valueh;      
+elseif valuel>0 && valueh>0 && (valuel>valueh)   % Band Pass      
+      if typef==1            
             % Hamming-window based, linear-phase FIR filter
             [b a]  = fir1n(order, [valueh valuel]/fnyq);
             frec3dB_aux = halfpower(b, a, fs, [valuel valueh]); % get the -3db cutoff of filtfilt.
             
             if ~isempty(frec3dB_aux)
                   deltafl = abs(valuel - frec3dB_aux(1));
-                  deltafh = abs(valueh - frec3dB_aux(2));
-                  
+                  deltafh = abs(valueh - frec3dB_aux(2));                  
                   % Evaluate a -48db to get -6db
                   frec_at_6dBl = ( 0.003981071705535 - ((0.707*valuel - 0.25*frec3dB_aux(1)) / deltafl)) / ((0.25-0.707)/deltafl);
-                  frec_at_6dBh = ( 0.003981071705535 - ((0.707*valueh - 0.25*frec3dB_aux(2)) / deltafh)) / ((0.25-0.707)/deltafh);
-                  
+                  frec_at_6dBh = ( 0.003981071705535 - ((0.707*valueh - 0.25*frec3dB_aux(2)) / deltafh)) / ((0.25-0.707)/deltafh);                  
                   if frec_at_6dBl<0 || frec_at_6dBh<0 || frec_at_6dBl>fnyq || frec_at_6dBh>fnyq
                         v=0;
                         return
-                  end
-                  
+                  end                  
                   [b a orderx]  = fir1n(order, [ frec_at_6dBh frec_at_6dBl]/fnyq);
             end
       elseif typef==0
@@ -145,35 +148,26 @@ elseif valuel>0 && valueh>0 && (valuel>valueh)   % Band Pass
       else
             v = 0; % means something wrong
             return
-      end
-      
+      end      
       labelf = 'Band-pass';
-      fx = [valuel valueh];
-      
-elseif (valuel>0 && valueh>0) && (valuel<valueh)  % Notch
-      
-      if typef==1
-            
+      fx = [valuel valueh];      
+elseif (valuel>0 && valueh>0) && (valuel<valueh)  % Notch      
+      if typef==1            
             % Hamming-window based, linear-phase FIR filter
             [b a]  = fir1n(order, [valuel valueh]/fnyq, 'stop');
-            frec3dB_aux = halfpower(b, a, fs, [valuel valueh]); % get the -3db cutoff of filtfilt.
-            
+            frec3dB_aux = halfpower(b, a, fs, [valuel valueh]); % get the -3db cutoff of filtfilt.            
             if ~isempty(frec3dB_aux)
                   deltafl = abs(valuel - frec3dB_aux(1));
-                  deltafh = abs(valueh - frec3dB_aux(2));
-                  
+                  deltafh = abs(valueh - frec3dB_aux(2));                  
                   % Evaluate a -48db to get -6db
                   frec_at_6dBl = ( 0.003981071705535 - ((0.707*valuel - 0.25*frec3dB_aux(1)) / deltafl)) / ((0.25-0.707)/deltafl);
-                  frec_at_6dBh = ( 0.003981071705535 - ((0.707*valueh - 0.25*frec3dB_aux(2)) / deltafh)) / ((0.25-0.707)/deltafh);
-                  
+                  frec_at_6dBh = ( 0.003981071705535 - ((0.707*valueh - 0.25*frec3dB_aux(2)) / deltafh)) / ((0.25-0.707)/deltafh);                  
                   if frec_at_6dBl<0 || frec_at_6dBh<0 || frec_at_6dBl>fnyq || frec_at_6dBh>fnyq || (frec_at_6dBl>frec_at_6dBh)
                         v=0;
                         return
-                  end
-                  
+                  end                  
                   [b a orderx]  = fir1n(order, [frec_at_6dBl frec_at_6dBh]/fnyq, 'stop');
-            end
-            
+            end            
       elseif typef==0
             [bl,al]  = butter(order,valuel/fnyq);
             [bh,ah]  = butter(order,valueh/fnyq, 'high');
@@ -182,16 +176,12 @@ elseif (valuel>0 && valueh>0) && (valuel<valueh)  % Notch
       else
             v = 0; % means something wrong
             return
-      end
-      
+      end      
       labelf = 'Stop-band (Simple Notch)';
-      fx = [valuel valueh];
-      
-elseif valuel==valueh && typef==2  % Javier's Notch
-      
+      fx = [valuel valueh];      
+elseif valuel==valueh && typef==2  % Javier's Notch      
       b  = pmnotch(180, valueh/fnyq);
-      a  = 1;
-      
+      a  = 1;      
       labelf = 'Stop-band (Parks-McClellan Notch)';
       fx = valueh; % central frequency
 else
@@ -208,7 +198,6 @@ end
 % Half power cuttof (-3 dB) ONLY FOR FILTFILT!!!
 %
 [frec3dB_final xdB_at_fx] = halfpower(b, a, fs, fx); % get the -3db cutoff of filtfilt.
-
 orderx = orderx*2;
 
 %--------------------------------------------------------------------------

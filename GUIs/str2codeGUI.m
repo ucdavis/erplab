@@ -51,35 +51,42 @@ end
 function str2codeGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.nameinput = '@#@'; % trick
-EEG             = varargin{1};
+try
+    EEG     = varargin{1};
+    nevent  = length(EEG.event);
+catch
+    EEG = [];
+    nevent   = 0;
+end
+
 handles.output  = EEG;
 handles.command = '';
-nevent   = length(EEG.event);
 indxcode = [];
 ntype    = {[]};
 
 for i=1:nevent
-        capnum = str2num(EEG.event(i).type);
-        if isempty(capnum)
-                indxcode = [indxcode i]; % indexes where strings were found.
-        end
-        ntype{i} = capnum;
+    capnum = str2num(EEG.event(i).type);
+    if isempty(capnum)
+        indxcode = [indxcode i]; % indexes where strings were found.
+    end
+    ntype{i} = capnum;
 end
 
 handles.indxcode = indxcode;
 handles.EEG   = EEG;
 handles.ntype = ntype;
 
-[lists, m1, capindx] = unique({EEG.event(indxcode).type});  % non-repeteaded found strings.
-handles.lists = lists;
-nlist   = length(lists);                     % amount of  non-repeteaded found strings.
-liststr = char((lists)');
-liststr = [num2str((1:nlist)') repmat(':   ',nlist,1) liststr];
-set(handles.edit_strings,'String', liststr)
-listnum = [num2str((1:nlist)') repmat(':   ',nlist,1) repmat('-99',nlist,1)];
-set(handles.edit_numerics,'String', listnum)
-
-handles.capindx = capindx;
+if ~isempty(EEG)
+    [lists, m1, capindx] = unique({EEG.event(indxcode).type});  % non-repeteaded found strings.
+    handles.lists = lists;
+    nlist   = length(lists);                     % amount of  non-repeteaded found strings.
+    liststr = char((lists)');
+    liststr = [num2str((1:nlist)') repmat(':   ',nlist,1) liststr];
+    set(handles.edit_strings,'String', liststr)
+    listnum = [num2str((1:nlist)') repmat(':   ',nlist,1) repmat('-99',nlist,1)];
+    set(handles.edit_numerics,'String', listnum)
+    handles.capindx = capindx;
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -92,7 +99,7 @@ handles = painterplab(handles);
 drawnow
 
 % UIWAIT makes str2codeGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = str2codeGUI_OutputFcn(hObject, eventdata, handles)
@@ -101,7 +108,7 @@ varargout{1} = handles.output;
 varargout{2} = handles.command;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function edit_strings_Callback(hObject, eventdata, handles)
@@ -129,7 +136,7 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.command= '';
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function pushbutton_accept_Callback(hObject, eventdata, handles)
@@ -172,14 +179,14 @@ handles.output  = EEG;
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         % The GUI is still in UIWAIT, us UIRESUME
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+        delete(handles.gui_chassis);
 end

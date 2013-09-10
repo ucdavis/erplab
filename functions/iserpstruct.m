@@ -1,4 +1,13 @@
+% PURPOSE: tests whether input is a valid ERP structure or not.
 %
+% FORMAT:
+%
+% value = iserpstruct(input);
+%
+% value = 1 means input is a valid ERP structure; 0 otherwise.
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,

@@ -1,4 +1,30 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: syntactic parsing of formulas for binoperator and pop_eegchanoperator/pop_erpchanoperator
+%
+% FORMAT:
+%
+% [option recall conti] = checkformulas(formulaArray, funcname, editormode)
+%
+%
+% INPUT:
+%
+% formulaArray     - cell array containing formulas
+% funcname         - 'pop_binoperator' or'pop_eegchanoperator'/'pop_erpchanoperator'
+% editormode       - 0:appends new chans/bins to the current EEG/ERP
+%                    1:creates chans/bins at a new EEG/ERP
+%
+% OUTPUT
+%
+% option           -  0:appends new chans/bins to the current EEG/ERP
+%                     1:creates chans/bins at a new EEG/ERP
+%                    -1: I dunno...
+% conti            - continue; 1 yes; 0 no
+%
+%
+% See also pop_binoperator.m pop_eegchanoperator.m pop_erpchanoperator.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -40,22 +66,19 @@ end
 if nargin<2
         funcname = '';
 end
-
 option = [];
 recall = 1;
 conti  = 0;
-
 if strcmpi(funcname, 'pop_binoperator3') || strcmpi(funcname, 'pop_binoperator') ||...
-                strcmpi(funcname,'binoperGUI')        
+                strcmpi(funcname,'binoperGUI')
         exp01 = '\<(\s*[n]*b[in]*\d+\s*=)';
         exp02 = '(\s*nb[in]*\d+)';
         exp03 = 'bin';
         exp04 = '(\s*[n]*b[in]*\d+)';
         exp05 = '\<(\s*nb[in]*\d+\s*=)';
         datatype = 'ERPset';
-        
 elseif strcmpi(funcname, 'pop_eegchanoperator') || strcmpi(funcname, 'pop_erpchanoperator')||...
-                strcmpi(funcname,'eegchanoperGUI') || strcmpi(funcname,'erpchanoperGUI')        
+                strcmpi(funcname,'eegchanoperGUI') || strcmpi(funcname,'erpchanoperGUI')
         exp01 = '\<(\s*[n]*ch[an]*\d+\s*=)';
         exp02 = '(\s*nch[an]*\d+)';
         exp03 = 'chan';
@@ -68,7 +91,7 @@ elseif strcmpi(funcname, 'pop_eegchanoperator') || strcmpi(funcname, 'pop_erpcha
                 datatype = 'ERPset';
         end
 else
-        msgboxText{1} =  sprintf('Error: formulas are not related to the function %s.', funcname);
+        msgboxText =  sprintf('Error: formulas are not related to the function %s.', funcname);
         tittle = 'ERPLAB: checkformulas() error:';
         errorfound(msgboxText, tittle);
         return
@@ -79,7 +102,7 @@ formulaArray = formulaArray(noemptyf);
 nformulas    = length(formulaArray);
 
 if nformulas==0
-        msgboxText{1} =  sprintf('Error: There is not formula!');
+        msgboxText =  sprintf('Error: There is not formula!');
         tittle = 'ERPLAB: checkformulas() error:';
         errorfound(msgboxText, tittle);
         return
@@ -89,34 +112,45 @@ end
 % Remove label
 %
 %
-delchan=0;
+delchan = 0;
+reref   = 0;
+% cimode  = 0; % contra ipsi mode disabled by default
 chlabel = 0;
-specfuncerror=0;
+specfuncerror = 0;
 
 for i=1:nformulas
-        
         tokdelchan = regexpi(formulaArray{i}, '\s*delerpchan\((.*)?\)', 'tokens','ignorecase');
+        tokreref   = regexpi(formulaArray{i}, '\s*chreref\((.*)?\)', 'tokens','ignorecase');
+        tokprepci  = regexpi(formulaArray{i}, '^\s*prepareContraIpsi', 'match','ignorecase');
         
         if ~isempty(tokdelchan)
-                delchan=1;
+                delchan = 1;
                 break
+        end
+        if ~isempty(tokreref)
+                reref = 1;
+                break
+        end
+        if ~isempty(tokprepci)
+                fprintf('\nNOTE: ERPLAB has detected a contra/ipsi mode call. Channels and data will be reorganized and renamed.\n')
+                %cimode = 1; % contra ipsi mode detected
+                %break
         end
         
         tokdelchlab  = regexpi(formulaArray{i}, '\s*changebinlabel\((.*)?\)', 'tokens','ignorecase');
         tokswbdatach = regexpi(formulaArray{i}, '\s*swapbindata\((.*)?\)', 'tokens','ignorecase');
         tokswbinlab  = regexpi(formulaArray{i}, '\s*swapbinlabel\((.*)?\)', 'tokens','ignorecase');
-        tokcommentb  = regexpi(formulaArray{i}, '^#', 'match');
+        tokcommentb  = regexpi(formulaArray{i}, '^#', 'match'); % comment symbol
         
-        if ~isempty(tokdelchlab) || ~isempty(tokswbdatach) || ~isempty(tokswbinlab) || ~isempty(tokcommentb)
-                
-                if editormode==0 || editormode==2
+        if ~isempty(tokdelchlab) || ~isempty(tokswbdatach) || ~isempty(tokswbinlab) || ~isempty(tokcommentb)                
+                if (editormode==0 || editormode==2) || ~isempty(tokcommentb)
                         formulaArray{i} = '';
                         chlabel = 1;
                 else
                         specfuncerror = 1;
                         break
                 end
-        else
+        else    
                 toklabel = {};
                 toklabel = regexpi(formulaArray{i}, '\s*(label\s*\=*\s*.*)', 'tokens');
                 
@@ -128,15 +162,13 @@ for i=1:nformulas
                 end
         end
 end
-
 if specfuncerror==1
         % Create chans/bins at a new EEG/ERP does not match with mode option
-        msgboxText{1} =  sprintf('Error: This function only works on recursive mode.');
+        msgboxText =  sprintf('Error: This function only works on recursive mode.');
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
         return
 end
-
 if delchan
         fprintf('\nWARNING ERPLAB: delerpchan() function was called.\n')
         fprintf('WARNING ERPLAB: From this point on, channel indices will refear to the modified channel list.\n')
@@ -145,6 +177,19 @@ if delchan
         conti  = 1;
         return
 end
+if reref
+        option = 0;
+        recall = 0;
+        conti  = 1;
+        return
+end
+% if cimode % contra ipsi mode detected. JLC
+%         fprintf('\nNOTE: ERPLAB has detected a contra/ipsi mode call. Channels and data will be reorganized and renamed.\n')
+%         option = 0;
+%         recall = 0;
+%         conti  = 1;
+%         return
+% end
 
 noemptyf     = ~cellfun(@isempty,formulaArray);
 formulaArray = formulaArray(noemptyf);
@@ -157,26 +202,23 @@ if nformulas==0 && chlabel == 1
         return
 end
 
-
 %
 % Matlab 7.3 and higher %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-[expspliter parts] = regexp(strtrim(formulaArray), '=','match','split');
+[expspliter parts] = regexpi(strtrim(formulaArray), '=|prepareContraIpsi','match','split'); % I included prepareContraIpsi actually to skip its evaluation(since it does not have an "=" sign)
 assymerr = 0;
 
 for t=1:nformulas
         pleft  = regexpi(parts{t}{1}, exp04, 'tokens');
         pright = regexpi(parts{t}{2}, exp04, 'tokens');
-        
         if ~isempty(pright) && isempty(pleft)
                 assymerr = 1;
                 indexf = t;
                 break
         end
 end
-
 if assymerr == 1;
-        msgboxText{1} =  sprintf('Error: Left side of formula %s must be a %s variable', formulaArray{indexf}, exp03);
+        msgboxText =  sprintf('Error: Left side of formula %s must be a %s variable', formulaArray{indexf}, exp03);
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
         return
@@ -206,9 +248,8 @@ tokrightnew = regexpi(tokrightr, exp02, 'tokens')   ;
 while any(cellfun('isclass',tokrightnew,'cell'))
         tokrightnew = cat(2,tokrightnew{:});
 end
-
 if ~isempty(tokrightnew)
-        msgboxText{1} =  sprintf('Error: You cannot use "n%s" syntax on the right side of the formulas.', exp03);
+        msgboxText =  sprintf('Error: You cannot use "n%s" syntax on the right side of the formulas.', exp03);
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
         return
@@ -239,31 +280,31 @@ if ntokleft==ntokleftnew && ntokleftnew>0 && (editormode==1 || editormode==2)
         % Create chans/bins at a new EEG/ERP
         option = 1;
         recall = 0;
-        conti  = 1;        
+        conti  = 1;
 elseif ntokleftnew==0 && ntokleft>0 && (editormode==0 || editormode==2)
         % Append new chans/bins to the current EEG/ERP
         option = 0;
         recall = 0;
-        conti  = 1;        
+        conti  = 1;
 elseif ntokleft==ntokleftnew && ntokleftnew>0 && editormode==0
         % Create chans/bins at a new EEG/ERP does not match with mode option
-        msgboxText{1} =  sprintf('Error: %s cannot modify an existing %s using "n%s" syntax.', funcname, datatype, exp03);
+        msgboxText =  sprintf('Error: %s cannot modify an existing %s using "n%s" syntax.', funcname, datatype, exp03);
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
-        return        
+        return
 elseif ntokleftnew==0 && ntokleft>0 && editormode==1
         % Create chans/bins at a new EEG/ERP  does not match with mode option
-        msgboxText{1} =  sprintf('Error: %s cannot create a new %s without "n%s" syntax.', funcname, datatype, exp03);
+        msgboxText =  sprintf('Error: %s cannot create a new %s without "n%s" syntax.', funcname, datatype, exp03);
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
-        return        
+        return
 elseif ntokleftnew~=ntokleft && ntokleftnew>0
-        msgboxText{1} =  sprintf('Error: %s cannot operate with mixed "%s" and "n%s" at the left side of formulas.', funcname, exp03, exp03);
+        msgboxText =  sprintf('Error: %s cannot operate with mixed "%s" and "n%s" at the left side of formulas.', funcname, exp03, exp03);
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
         return
 else
-        msgboxText{1} =  sprintf('Error: %s could not find any relationship between equations and the window on the right (%ss).', funcname, exp03);
+        msgboxText =  sprintf('Error: %s could not find any relationship between equations and the window on the right (%ss).', funcname, exp03);
         tittle = sprintf('ERPLAB: %s() error:', funcname);
         errorfound(msgboxText, tittle);
         return

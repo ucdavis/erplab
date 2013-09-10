@@ -1,3 +1,4 @@
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -24,7 +25,7 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
-function button =askquestpoly(question, tittle, buttonscell)
+function button = askquestpoly(question, tittle, buttonscell)
 
 button = '';
 if iscell(question)
@@ -49,7 +50,6 @@ comcall = 'button = questdlg(question, tittle';
 for i=1:nbuttons
         comcall = [comcall ', ''' buttonscell{i} '''' ];
 end
-
 comcall = [comcall ',''' buttonscell{1} ''');'];
 eval(comcall)
 set(0,'DefaultUicontrolBackgroundColor',oldcolor)

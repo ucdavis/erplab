@@ -1,4 +1,22 @@
+% PURPOSE  : 	Makes a figure with artifact detection summary
 %
+% FORMAT   :
+%
+% Pop_summary_rejectfields(EEG)
+%
+% EXAMPLE  :
+%
+% Pop_summary_rejectfields(EEG)
+%
+% INPUTS   :
+%
+% EEG	- EVENTLIST structure added to current EEG structure or workspace
+%
+% OUTPUTS  :
+%
+% Figure of Artifact Detection Summary
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -26,45 +44,71 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function  [goodbad histeEF histoflagsAR  com] = pop_summary_rejectfields(EEG)
-
+function  [EEG, goodbad, histeEF, histoflagsAR,  com] = pop_summary_rejectfields(EEG, varargin)
 com = '';
 goodbad      = [];
 histoflagsAR = [];
 histeEF      = [];
 
 if nargin<1
-      help pop_summary_rejectfields
-      return
+        help pop_summary_rejectfields
+        return
 end
 
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('EEG');
+% option(s)
+p.addParamValue('History', 'script', @ischar); % history from scripting
+p.parse(EEG, varargin{:});
+
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+if isobject(EEG) % eegobj
+        whenEEGisanObject % calls a script for showing an error window
+        return
+end
+if length(EEG)>1
+        msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+        mtitle = 'ERPLAB: multiple inputs';
+        errorfound(msgboxText, mtitle);
+        return
+end
 if isempty(EEG.epoch)
-      msgboxText{1} =  'Permission denied:';
-      msgboxText{2} =  'ERROR: summary_rejectfields() only works with epoched dataset.';
-      tittle = 'ERPLAB: summary_rejectfields';
-      errorfound(msgboxText, tittle);
-      return
+        msgboxText =  'summary_rejectfields() only works with bin-epoched dataset.';
+        mtitle     = 'ERPLAB: summary_rejectfields';
+        errorfound(msgboxText, mtitle);
+        return
 end
 
 F = fieldnames(EEG.reject);
 sfields1 = regexpi(F, '\w*E$', 'match');
 sfields2 = [sfields1{:}];
 rfields  = regexprep(sfields2,'E','');
-
 nfield   = length(sfields2);
 histE    = zeros(EEG.nbchan, EEG.trials);
 histT    = zeros(1, EEG.trials);
 fonts    = 10;
 
 for i=1:nfield
-      
-      fieldnameE = char(sfields2{i});
-      fieldnameT = char(rfields{i});
-      
-      if ~isempty(EEG.reject.(fieldnameE))
-            histE = histE | [EEG.reject.(fieldnameE)]; %electrodes
-            histT = histT | [EEG.reject.(fieldnameT)]; %trials (epochs)
-      end
+        fieldnameE = char(sfields2{i});
+        fieldnameT = char(rfields{i});
+        
+        if ~isempty(EEG.reject.(fieldnameE))
+                histE = histE | [EEG.reject.(fieldnameE)]; %electrodes
+                histT = histT | [EEG.reject.(fieldnameT)]; %trials (epochs)
+        end
 end
 
 hfAR = sum(summary_rejectflags(EEG),1);
@@ -114,7 +158,7 @@ set(gca,'FontSize',fonts)
 title('Amount of  marked epochs per channel','FontSize',16)
 legend('Channel with artifacts')
 for c=1:EEG.nbchan
-      text(c-K/2,histeEF(c)+Ttop*0.05,[sprintf('%.1f',(histeEF(c)/Ttop)*100) '%'],'FontSize',fonts)
+        text(c-K/2,histeEF(c)+Ttop*0.05,[sprintf('%.1f',(histeEF(c)/Ttop)*100) '%'],'FontSize',fonts)
 end
 
 %--------------------------------------------------------------------------------------------------
@@ -131,13 +175,34 @@ title('Amount of flaged epochs per flag','FontSize',16)
 legend('Flags')
 
 for c=1:nflag
-      nfx = histoflagsAR(c);
-      pp  = (nfx/Ttop)*100;
-      text(c-K/2,histoflagsAR(c)+Ttop*0.05,[sprintf('%g (%.1f)', nfx, pp) '%'],'FontSize',fonts)
+        nfx = histoflagsAR(c);
+        pp  = (nfx/Ttop)*100;
+        text(c-K/2,histoflagsAR(c)+Ttop*0.05,[sprintf('%g (%.1f)', nfx, pp) '%'],'FontSize',fonts)
 end
 
 set(gcf,'PaperPositionMode','auto')
 com = sprintf('pop_summary_rejectfields(%s)', inputname(1));
+% com = sprintf('%s %% %s', com, datestr(now));
 
-try cprintf([0 0 1], 'COMPLETE\n');catch,fprintf('COMPLETE\n\n');end
+% get history from script. EEG
+switch shist
+        case 1 % from GUI
+                com = sprintf('%s %% GUI: %s', com, datestr(now));
+                %fprintf('%%%Equivalent command:\n%s\n\n', com);
+                displayEquiComERP(com);
+        case 2 % from script
+                EEG = erphistory(EEG, [], com, 1);
+        case 3
+                % implicit
+                %EEG = erphistory(EEG, [], com, 1);
+                %fprintf('%%%Equivalent command:\n%s\n\n', com);
+        otherwise %off or none
+                com = '';
+                return
+end
+
+%
+% Completion statement
+%
+msg2end
 return

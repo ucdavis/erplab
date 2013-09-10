@@ -1,8 +1,25 @@
+% PURPOSE: search for epoch indices containing a specific event item
+%
+% FORMAT:
+%
+%  iepoch = binitem2epoch(EEG, item)
+%
+% Inputs:
+%
+%   EEG      - input dataset
+%   item     - event item (according to EVENTLIST order of appearence)
+%
+% Output
+% 
+%   iepoch   - epoch index(ices) 
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2010
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -24,7 +41,8 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
-function iepoch = binitem2epoch(EEG,item)
+
+function iepoch = binitem2epoch(EEG, item)
 
 iepoch = [];
 
@@ -52,7 +70,6 @@ nepoch = EEG.trials;
 if nepoch~=length(EEG.epoch)
         error('ERPLAB says: EEG.trials & number of epochs (EEG.epoch) are not equal.')
 end
-
 for i=1:nepoch
         itemy = EEG.epoch(i).eventitem;
         if iscell(itemy)

@@ -1,4 +1,15 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: This function is a subroutine for pop_chanoperator.m
+%
+% Usage:
+%
+%  d = avgchan(ERPLAB, chin)
+%
+%
+% See also pop_chanoperator.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -58,5 +69,4 @@ if iserpstruct(ERPLAB)
 else
         datach = ERPLAB.data(chanarray,:,:);
 end
-
 d = mean(datach, 1);

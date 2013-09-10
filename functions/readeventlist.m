@@ -1,8 +1,11 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% PURPOSE: reads an EVENTLIST from a text file
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT:
 %
+% [EEG EVENTLIST] = readeventlist(EEG, elfilename );
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -32,7 +35,7 @@
 
 function [EEG EVENTLIST] = readeventlist(EEG, elfilename )
 
-% fprintf('readeventlist.m : START\n');
+fprintf('reading EVENTLIST...\n');
 
 if nargin<1
         help readeventlist
@@ -48,33 +51,28 @@ fid_bl    = fopen( elfilename );
 % Reads Header
 %
 EVENTLIST.bdf = [];
-%EVENTLIST.elfname = elfilename;
-
 isbin  = 1;
 detect = 0;
 nada   = 0;
 j      = 1;
 
-while isbin
-        
+while isbin        
         p0     = ftell(fid_bl);
         tdatas = textscan(fid_bl, '%[^\n]',1);
         [lmatch ltoken] = regexpi(char(tdatas{1}), 'bin\s*(\d+),\s*#\s*(\d+),\s*(.+)','match', 'tokens');
         firstitem = regexpi(char(tdatas{1}), '^1', 'match');
         
         if ~isempty(ltoken)                
-                EVENTLIST.trialsperbin(j)      = str2num(char(ltoken{1}{2}));    % first check. Counter of captured eventcodes per bin
-                EVENTLIST.bdf(1,j).expresion   = {};
+                EVENTLIST.trialsperbin(j)    = str2num(char(ltoken{1}{2}));    % first check. Counter of captured eventcodes per bin
+                EVENTLIST.bdf(1,j).expresion = {};
                 EVENTLIST.bdf(j).description =  strtrim(char(ltoken{1}{3}));
                 EVENTLIST.bdf(j).prehome     = {};
                 EVENTLIST.bdf(j).athome      = {};
                 EVENTLIST.bdf(j).posthome    = {};
-                EVENTLIST.bdf(j).namebin     = ['BIN ' num2str(j)];
-                
+                EVENTLIST.bdf(j).namebin     = ['BIN ' num2str(j)];                
                 j = j+1;
                 detect = 1;
-                position = ftell(fid_bl);
-                
+                position = ftell(fid_bl);                
         elseif isempty(ltoken) && detect
                 isbin=0;
         else
@@ -105,15 +103,14 @@ while ~feof(fid_bl)
         firstcar     = strtrim(char(currentline{1})); % first character
         
         if ~strcmp(firstcar, '')
-                if ~strcmpi(firstcar(1),'#') && ~strcmpi(firstcar(1),'')
-                        
+                if ~strcmpi(firstcar(1),'#') && ~strcmpi(firstcar(1),'')                        
                         EVENTLIST.eventinfo(k).item     = str2num(char(currentline{1}));
                         EVENTLIST.eventinfo(k).bepoch   = str2num(char(currentline{2}));
                         EVENTLIST.eventinfo(k).code     = str2num(char(currentline{3}));
                         EVENTLIST.eventinfo(k).codelabel= char(currentline{4});
                         EVENTLIST.eventinfo(k).time     = single(str2num(char(currentline{5})));
                         EVENTLIST.eventinfo(k).spoint   = 0;
-                        EVENTLIST.eventinfo(k).dura     = single(str2num(char(currentline{6})));
+                        EVENTLIST.eventinfo(k).dura     = single(str2num(char(currentline{7}))); % thanks to Ahren Fitzroy
                         EVENTLIST.eventinfo(k).flag     = bin2dec([char(currentline{8}) char(currentline{9})]);
                         EVENTLIST.eventinfo(k).enable   = str2num(char(currentline{10}));
                         EVENTLIST.eventinfo(k).bini     = str2num(char(currentline{11}));
@@ -128,8 +125,7 @@ while ~feof(fid_bl)
                                 EVENTLIST.eventinfo(k).binlabel  = binName;
                                 
                                 xbin = [xbin EVENTLIST.eventinfo(k).bini];
-                        end
-                        
+                        end                        
                         k = k+1;
                 end
         end

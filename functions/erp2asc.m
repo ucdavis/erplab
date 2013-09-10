@@ -1,8 +1,23 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% PURPOSE: exports an ERPset (ERPLAB's ERP structure) to a text file
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT:
 %
+% erp2asc(ERP, filename, pathname)
+%
+%
+% Inputs:
+%
+%   ERP          - ERPset
+%   filename     - text file name
+%   pathname     - text file path
+%
+%
+% Output
+% 
+% text file
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -31,22 +46,18 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function erp2asc(ERP, filename, pathname)
-
-% fprintf('erp2asc.m : START\n');
-% Inspired by erptoasc.c, ERPSS.
-
 if nargin < 1
         help erp2asc
         return
 end
 
-fid_text  = fopen([pathname filename], 'w');
+fid_text  = fopen(fullfile(pathname, filename), 'w');
 
 if isempty(ERP.filename)
         expdesc = ERP.erpname;
         ext ='';
 else
-        [pathstr, erpfile, ext, versn] = fileparts(ERP.filename);
+        [pathstr, erpfile, ext] = fileparts(ERP.filename);
         expdesc   = erpfile;
 end
 
@@ -96,9 +107,9 @@ sampleperiod = round(1e6/ERP.srate);
 % For verbose
 %
 fprintf(fid_text, '#\n#  Data file:  %s\n#\n', [expdesc ext]);
-
 fprintf(fid_text, '\n');
 fprintf(fid_text, '#\n#\tbinno %10d\n#\n', 0);
+
 %
 % Required by asctoerp:
 %
@@ -138,8 +149,7 @@ end
 fprintf(fid_text, '\n');% change bin 3 blank line total
 
 % Writing BINs, starting from BIN 1
-for k=1:nbin
-        
+for k=1:nbin          
         fprintf(fid_text, '\n');
         fprintf(fid_text, '#\n#\tbinno %10d\n#\n', k);
         
@@ -174,6 +184,7 @@ for k=1:nbin
         
         fprintf(fid_text, '\n');  % change bin 3 blank line total
 end
-
+pause(0.1)
 fclose(fid_text);
-disp(['A new file containing your ERP data was created at <a href="matlab: open(''' [pathname filename] ''')">' [pathname filename] '</a>'])
+pause(0.1)
+disp(['A new file containing your ERP data was created at <a href="matlab: open(''' fullfile(pathname, filename) ''')">' fullfile(pathname, filename) '</a>'])

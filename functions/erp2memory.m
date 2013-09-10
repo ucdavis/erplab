@@ -1,4 +1,17 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: saves new ERPset (and its pointer at ERPset menu) in Matlab workspace. Also, redraws and updates the ERPset menu
+%          including the new ERPset.
+%
+% FORMAT
+%
+% erp2memory(ERP, indx)
+%
+% INPUTS:
+%
+% ERP    - new ERPset
+% indx   - ERPset's index or pointer (according to the ERPset menu and ALLERP)
+%
+%
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -29,9 +42,7 @@ function erp2memory(ERP, indx)
 
 erpm    = findobj('tag', 'linerp');
 nerpset = length(erpm);
-
-for s=1:nerpset
-      
+for s=1:nerpset      
       if s == nerpset-indx+1 % bottom-up to top-down counting
             set(erpm(s), 'checked', 'on' );
             menutitle   = ['<Html><b>Erpset '...
@@ -46,12 +57,21 @@ for s=1:nerpset
             set( erpm(s), 'Label', menutitle);
       end
 end
-
 CURRENTERP = indx;
 assignin('base','CURRENTERP', CURRENTERP);  % save to workspace
 assignin('base','ERP', ERP);  % save to workspace
 
-fprintf('\n------------------------------------------------------\n');
-fprintf('ERPSET #%g is ACTIVE\n', indx);
-fprintf('------------------------------------------------------\n');
-ERP
+% check ploterps GUI
+perpgui    = findobj('Tag', 'ploterp_fig');
+if ~isempty(perpgui)
+      close(perpgui)
+      pause(0.1)
+      pop_ploterps(ERP);
+else
+      fprintf('\n------------------------------------------------------\n');
+      fprintf('ERPSET #%g is ACTIVE\n', indx);
+      fprintf('------------------------------------------------------\n');
+      ERP
+end
+
+

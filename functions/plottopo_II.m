@@ -273,7 +273,7 @@
 %   hori        = [vector] of amplitudes (in uV or dB) to plot horizontal lines {def none}
 %
 
-function plottopo_II(data, varargin);
+function plottopo_II(data, varargin)
     
 %
 %%%%%%%%%%%%%%%%%%%%% Graphics Settings - can be customized %%%%%%%%%%%%%%%%%%

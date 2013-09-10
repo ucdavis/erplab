@@ -1,5 +1,4 @@
-%
-% Author: Javier Lopez-Calderon & Steven Luck
+% Author: Javier Lopez-Calderon % Sam London
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -56,13 +55,19 @@ try
         
         if isfield(plotset.pscalp, 'posgui')
                 if ~isempty(plotset.pscalp.posgui)
-                        set(handles.figure_main,'Position', plotset.pscalp.posgui);
+                        set(handles.gui_chassis,'Position', plotset.pscalp.posgui);
                 end
+        end
+        if isfield(plotset.pscalp, 'binArray')
+                binArray = plotset.pscalp.binArray;
+        else
+                binArray = [];
         end
 catch
         plotset.ptime  = [];
         plotset.pscalp = [];
         assignin('base','plotset',plotset)
+        binArray = [];
 end
 
 handles.output   = plotset;
@@ -74,58 +79,85 @@ try
         ERP   = varargin{1};
         nchan = ERP.nchan;
         nbin  = ERP.nbin; % Total number of bins
+        splinefile = ERP.splinefile;
+        xmax = ERP.xmax;
+        xmin = ERP.xmin;
 catch
         ERP   = [];
         nchan = 0;
         nbin  = 0;
+        splinefile = '';
+        xmax = 0.8;
+        xmin = -0.2;
 end
-
-handles.nchan = nchan;
-handles.nbin  = nbin;
-
-% Update handles structure
-guidata(hObject, handles);
+try
+        chanlocs = varargin{2};
+catch
+        chanlocs = [];
+end
+if isfield(plotset.pscalp, 'splineinfo')
+        splineinfo = plotset.pscalp.splineinfo;
+else
+        splineinfo = [];
+end
+if isempty(splinefile)
+        if isfield(splineinfo, 'path')
+                splineinfo = plotset.pscalp.splineinfo;
+                splinefile = splineinfo.path;
+        end
+end
+handles.xmax      = xmax;
+handles.xmin      = xmin;
+handles.nchan      = nchan;
+handles.nbin       = nbin;
+handles.chanlocs   = chanlocs;
+handles.splinefile = splinefile;
+handles.splineinfo = splineinfo;
+handles.binnum     = [];
+handles.bindesc    = [];
+handles.type       = [];
+handles.latency    = [];
+handles.electrodes = [];
+handles.colorbar   = [];
+handles.clrmap     = [];
+handles.ismaxim    = [];
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure_main,'Name', ['ERPLAB ' version '   -   SCALP MAPPING GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   SCALP MAPPING GUI'])
 
 %
-% Set GUI
+% Bin description
 %
-if isempty(plotset.pscalp)
-        set(handles.edit_latencies,'String','0');
-        set(handles.radiobutton_insta,'Value',1);
-        set(handles.radiobutton_BLC_pre,'Value',1);
-        set(handles.edit_customblc,'Enable', 'off')
-        set(handles.edit_custom,'Enable', 'off')
-        set(handles.checkbox_agif,'Value', 0)
-        set(handles.checkbox_colorbar,'Value', 1)
-        set(handles.edit_delayt,'Enable', 'off')
-        set(handles.edit_fnameagif,'Enable', 'off')
-        set(handles.pushbutton_browseagif,'Enable', 'off')
-else
-        setall(hObject, eventdata, handles)
-end
-
-%
-% Prepare List of current Bins
-%
+listb = {''};
 if ~isempty(ERP)
-        listb = [];
-
+        nbin  = ERP.nbin; % Total number of bins
         for b=1:nbin
                 listb{b}= ['BIN' num2str(b) ' = ' ERP.bindescr{b} ];
         end
-
-        set(handles.popupmenu_bins,'String', listb)
-        drawnow
-else
-        set(handles.popupmenu_bins,'String', 'No Bins')
-        drawnow
 end
+%%%set(handles.popupmenu_bins,'String', listb)
+handles.listb      = listb;
+handles.indxlistb  = binArray;
+
+% %
+% % Prepare List of current Bins
+% %
+% if ~isempty(ERP)
+%         listb = [];
+%
+%         for b=1:nbin
+%                 listb{b}= ['BIN' num2str(b) ' = ' ERP.bindescr{b} ];
+%         end
+%
+%         %%%set(handles.popupmenu_bins,'String', listb)
+%         %drawnow
+% else
+%         %%%set(handles.popupmenu_bins,'String', 'No Bins')
+%         %drawnow
+% end
 
 for ch =1:nchan
         listch{ch} = [num2str(ch) ' = ' ERP.chanlocs(ch).labels ];
@@ -136,17 +168,33 @@ end
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
+% PDF button
+pdfbutton
+
+% set all objects
+setall(hObject, eventdata, handles)
+
 % UIWAIT makes geterpvaluesGUI wait for user response (see UIRESUME)
-uiwait(handles.figure_main);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = scalplotGUI_OutputFcn(hObject, eventdata, handles)
-
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure_main);
-pause(0.5)
+delete(handles.gui_chassis);
+pause(0.1)
 
 %--------------------------------------------------------------------------
 function edit_custom_Callback(hObject, eventdata, handles)
@@ -178,240 +226,328 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
         set(hObject,'BackgroundColor','white');
 end
 
-%--------------------------------------------------------------------------
-function popupmenu_bins_Callback(hObject, eventdata, handles)
+% % % %--------------------------------------------------------------------------
+% % % function popupmenu_bins_Callback(hObject, eventdata, handles)
+% % %
+% % % numbin = get(hObject, 'Value');
+% % % nums   = get(handles.edit_bins, 'String');
+% % % nums   = [nums ' ' num2str(numbin)];
+% % % set(handles.edit_bins, 'String', nums);
 
-numbin   = get(hObject, 'Value');
-nums = get(handles.edit_bins, 'String');
-nums = [nums ' ' num2str(numbin)];
-set(handles.edit_bins, 'String', nums);
-
-%--------------------------------------------------------------------------
-function popupmenu_bins_CreateFcn(hObject, eventdata, handles)
-
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
-end
-
-%--------------------------------------------------------------------------
-function pushbutton_cancel_Callback(hObject, eventdata, handles)
-
-plotset = evalin('base', 'plotset');
-plotset.pscalp = [];
-handles.output = plotset;
-
-% Update handles structure
-guidata(hObject, handles);
-uiresume(handles.figure_main);
+% % % %--------------------------------------------------------------------------
+% % % function popupmenu_bins_CreateFcn(hObject, eventdata, handles)
+% % %
+% % % if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+% % %         set(hObject,'BackgroundColor','white');
+% % % end
 
 %--------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
-
 binArraystr    = strtrim(get(handles.edit_bins, 'String'));
 latestr        = strtrim(get(handles.edit_latencies, 'String'));
+
+
+binArray     = str2num(binArraystr);
+latencyArray = str2num(latestr);
+%nlate = length(latencyArray);
+
 customscale    = strtrim(get(handles.edit_custom, 'String'));
 customscale    = regexprep(customscale,'''|"','');
 nbin           = handles.nbin;
 errorcusca     = 0;
 
-if  ~strcmp(latestr, '') && ~isempty(latestr) && ...
-                ~strcmp(binArraystr, '') && ~isempty(binArraystr)
-
-        binArray    = str2num(binArraystr);
-
+if  ~isempty(latencyArray) && ~isempty(binArray)        
         if max(binArray)>nbin
-                msgboxText{1} =  'Error: You have specified unexisting bins.';
+                msgboxText =  'Error: You have specified unexisting bins.';
                 title = 'ERPLAB: scalplotGUI() error:';
                 errorfound(msgboxText, title);
                 return
         end
-
         if length(binArray)>length(unique(binArray))
-                msgboxText{1} =  'Error: You have specified repeated bins.';
+                msgboxText =  'Error: You have specified repeated bins.';
                 title = 'ERPLAB: scalplotGUI() error:';
                 errorfound(msgboxText, title);
                 return
         end
-
-        latencyArray = str2num(latestr);
-        nlate = length(latencyArray);
-
-        if (get(handles.radiobutton_mean, 'Value') && nlate<2) || ...
-                        (get(handles.radiobutton_area, 'Value') && nlate<1)
-
-                colorold = get(handles.edit_latencies, 'BackgroundColor');
-                set(handles.edit_latencies, 'BackgroundColor', [1 0 0]);
-                pause(0.1)
-                set(handles.edit_latencies, 'BackgroundColor', colorold);
-                %beep
-        else
-
-                if get(handles.radiobutton_insta, 'Value')
+        
+        indxh   = find(latencyArray>handles.xmax*1000,1);
+        if ~isempty(indxh)
+                msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(handles.xmax*1000) ' msec!'];
+                title_msg  = 'ERPLAB: scalplotGUI() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        
+        indxl  = find(latencyArray<handles.xmin*1000,1);
+        if ~isempty(indxl)
+                msgboxText =  ['Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(handles.xmin*1000) ' msec!'];
+                title_msg  = 'ERPLAB: scalplotGUI() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        
+        meamenu = get(handles.popupmenu_measurement, 'Value');
+        
+        switch meamenu
+                case 1
                         measurement = 'insta';
-                end
-                if get(handles.radiobutton_mean, 'Value')
-                        measurement = 'mean';
-                end
-                if get(handles.radiobutton_area, 'Value')
+                case 2
+                        measurement = 'mean';                      
+                case 3
                         measurement = 'area';
-                end
-                if get(handles.radiobutton_laplacian, 'Value')
-                        measurement = 'lapla';
-                end
-                if get(handles.radiobutton_BLC_no, 'Value')
-                        baseline = 'none';
-                end
-                if get(handles.radiobutton_BLC_pre, 'Value')
-                        baseline = 'pre';
-                end
-                if get(handles.radiobutton_BLC_post, 'Value')
-                        baseline = 'post';
-                end
-                if get(handles.radiobutton_BLC_whole, 'Value')
-                        baseline = 'all';
-                end
-                if get(handles.radiobutton_BLC_custom, 'Value')
-
-                        numbl = str2num(get(handles.edit_customblc, 'String'));
-
-                        if isempty(numbl)
+                case 4
+                        measurement = 'instalapla';
+                case 5
+                        measurement = 'meanlapla';
+                case 6
+                        measurement = 'rms';
+                otherwise
+                        measurement = 'insta';
+        end        
+        switch meamenu
+                case {2,3,5,6}
+                        if size(latencyArray,2)<2
+                                msgboxText =  ['You must specify 2 latencies, at least, for getting %s-values.\n\n'...
+                                        'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
+                                        'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
+                                title = 'ERPLAB: scalplotGUI() error:';
+                                errorfound(sprintf(msgboxText, measurement), title);
                                 return
+                        end
+                case {1,4}
+                        if size(latencyArray,1)>1
+                                msgboxText =  'For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
+                                title = 'ERPLAB: scalplotGUI() error:';
+                                errorfound(sprintf(msgboxText, measurement), title);
+                                return
+                        end
+        end       
+        
+        %
+        % Baseline
+        %
+        if get(handles.radiobutton_BLC_no, 'Value')
+                baseline = 'none';
+        end
+        if get(handles.radiobutton_BLC_pre, 'Value')
+                baseline = 'pre';
+        end
+        if get(handles.radiobutton_BLC_post, 'Value')
+                baseline = 'post';
+        end
+        if get(handles.radiobutton_BLC_whole, 'Value')
+                baseline = 'all';
+        end
+        if get(handles.radiobutton_BLC_custom, 'Value')
+                numbl = str2num(get(handles.edit_customblc, 'String'));
+                if isempty(numbl)
+                        return
+                else
+                        if length(numbl)==2
+                                baseline = [numbl(1) numbl(2)];
                         else
-                                if length(numbl)==2
-                                        baseline = [numbl(1) numbl(2)];
-                                else
-                                        return
-                                end
+                                return
                         end
                 end
-
-                if get(handles.radiobutton_maxmin, 'Value')
-                        cscale = 'maxmin';
-                end
-                if get(handles.radiobutton_absmax, 'Value')
-                        cscale = 'absmax';
-                end
-
-                if get(handles.radiobutton_custom, 'Value')
-
-                        if ~strcmp(customscale, '') && ~isempty(customscale) && ~strcmpi(customscale, 'auto')
-
-                                cusca  = str2num(customscale);
-                                ncusca = length(cusca);
-
-                                if ncusca == 2
-                                        if cusca(1)<cusca(2)
-                                                cscale = cusca;
-                                        else
-                                                errorcusca = 1;
-                                        end
+        end
+        if get(handles.radiobutton_maxmin, 'Value')
+                cscale = 'maxmin';
+        end
+        if get(handles.radiobutton_absmax, 'Value')
+                cscale = 'absmax';
+        end
+        if get(handles.radiobutton_custom, 'Value')
+                if ~strcmp(customscale, '') && ~isempty(customscale) && ~strcmpi(customscale, 'auto')
+                        cusca  = str2num(customscale);
+                        ncusca = length(cusca);
+                        if ncusca == 2
+                                if cusca(1)<cusca(2)
+                                        cscale = cusca;
                                 else
                                         errorcusca = 1;
                                 end
-                        elseif strcmpi(customscale, 'auto')
-                                cscale = 'auto';
                         else
                                 errorcusca = 1;
                         end
-
-                        if errorcusca
-                                colorold = get(handles.edit_custom, 'BackgroundColor');
-                                set(handles.edit_custom, 'BackgroundColor', [1 0 0]);
-                                pause(0.5)
-                                set(handles.edit_custom, 'BackgroundColor', colorold);
-                                beep
-                                return
-                        end
+                elseif strcmpi(customscale, 'auto')
+                        cscale = 'auto';
+                else
+                        errorcusca = 1;
                 end
-
-                %
-                % Color Bar
-                %
-                clrbar = get(handles.checkbox_colorbar, 'Value');
-
-                %
-                % Show electrodes
-                %
-                showelec = get(handles.checkbox_electrodes, 'Value');
-
-                %
-                % Show bin number at legend
-                %
-                binleg = get(handles.checkbox_includenumberbin, 'Value');
-
-                if get(handles.checkbox_agif, 'Value')
+                if errorcusca
+                        colorold = get(handles.edit_custom, 'BackgroundColor');
+                        set(handles.edit_custom, 'BackgroundColor', [1 0 0]);
+                        pause(0.5)
+                        set(handles.edit_custom, 'BackgroundColor', colorold);
+                        beep
+                        return
+                end
+        end
+        
+        %
+        % Color Bar
+        %
+        %      clrbar = get(handles.checkbox_colorbar, 'Value');
+        
+        %
+        % Show electrodes
+        %
+        showelec = get(handles.set_legends, 'Value');
+        
+        %
+        % Show bin number at legend
+        %
+        %binleg = get(handles.checkbox_includenumberbin, 'Value');
+        
+        if get(handles.checkbox_animation, 'Value')
+                if get(handles.checkbox_adjust1frame, 'Value')
+                        isagif    = 2; % adjust first frame
+                else
+                        isagif    = 1;
+                end
+                
+                FPS    = str2num(get(handles.edit_fps, 'String'));
+                fnameagif = get(handles.edit_fname_animation, 'String');
+                
+                if isempty(FPS) || FPS<1 || FPS>1000
+                        msgboxText =  'Error: You must specify a scalar value between 1 and 1000 inclusive';
+                        title = 'ERPLAB: scalplotGUI() error:';
+                        errorfound(msgboxText, title);
+                        return
+                end
+                if isempty(strtrim(fnameagif))
+                        msgboxText =  'Error: You must specify a valid file name for your animated GIF';
+                        title = 'ERPLAB: scalplotGUI() error:';
+                        errorfound(msgboxText, title);
+                        return
+                else
+                        [pthxz, fnamez, ext] = fileparts(fnameagif);
                         
-                        if get(handles.checkbox_adjust1frame, 'Value')
-                                isagif    = 2; % adjust first frame
-                        else
-                                isagif    = 1;
+                        if strcmp(ext,'')
+                                ext   = '.gif';
                         end
-                        
-                        delayt    = str2num(get(handles.edit_delayt, 'String'));
-                        fnameagif = get(handles.edit_fnameagif, 'String');
-                        
-                        if isempty(delayt) || delayt<0 || delayt>655
-                                msgboxText{1} =  'Error: You must specify a scalar value between 0 and 655 inclusive';
-                                title = 'ERPLAB: scalplotGUI() error:';
+                        fnameagif = fullfile(pthxz,[ fnamez ext]);
+                end
+        else
+                isagif    = 0;
+                FPS       = [];
+                fnameagif = '';
+        end
+        
+        %
+        % Orientation view
+        %
+        viewselec = get(handles.popupmenu_orientation, 'Value');
+        
+        if get(handles.radio_2D, 'Value')==1  % 2D
+                mtype = '2D';
+                switch viewselec
+                        case 1
+                                mapview = '+X';
+                        case 2
+                                mapview = '-X';
+                        case 3
+                                mapview = '+Y';
+                        case 4
+                                mapview = '-Y';
+                        otherwise
+                                return
+                end
+                splineinfo.path =  '';
+                splineinfo.new  = 0;
+                splineinfo.save = 0;
+        else % 3D
+                if isempty(handles.splinefile)
+                        splineinfo = splinefileGUI(handles.splinefile);
+                        if isempty(splineinfo) || isempty(splineinfo.path)
+                                msgboxText =  'You must specify a name for the spline file.';
+                                title = 'ERPLAB: scalpplotGUI inputs';
                                 errorfound(msgboxText, title);
                                 return
-                        end
-
-                        if isempty(strtrim(fnameagif))
-                                msgboxText{1} =  'Error: You must specify a valid file name for your animated GIF';
-                                title = 'ERPLAB: scalplotGUI() error:';
-                                errorfound(msgboxText, title);
-                                return
-                        else
-                                [pthxz, fnamez, ext, versn] = fileparts(fnameagif);
-
-                                if strcmp(ext,'')
-                                        ext   = '.gif';
-                                end
-
-                                fnameagif = fullfile(pthxz,[ fnamez ext]);
                         end
                 else
-                        isagif    = 0;
-                        delayt    = [];
-                        fnameagif = '';
+                        splineinfo =   handles.splineinfo;
+                        %                   splineinfo.path =   handles.splinefile;
+                        %                   splineinfo.new  = 0;
+                        %                   splineinfo.save = 0;
+                        %                   splineinfo.newname = [];
                 end
-
-                %
-                % Prepares output
-                %
-                ispdf = 0;
-                plotset = evalin('base', 'plotset');
-                plotset.pscalp.binArray     = binArray;
-                plotset.pscalp.latencyArray = latencyArray;
-                plotset.pscalp.measurement = measurement;
-                plotset.pscalp.baseline    = baseline;
-                plotset.pscalp.cscale      = cscale;
-                plotset.pscalp.colorbar    = clrbar;
-                plotset.pscalp.ispdf       = ispdf;
-                plotset.pscalp.agif.value  = isagif;
-                plotset.pscalp.agif.delay  = delayt;
-                plotset.pscalp.agif.fname  = fnameagif;
-                plotset.pscalp.binleg      = binleg;
-                plotset.pscalp.showelec    = showelec;
-                plotset.pscalp.posgui      = get(handles.figure_main,'Position');
-                handles.output             = plotset;
-
-                % Update handles structure
-                guidata(hObject, handles);
-                uiresume(handles.figure_main);
+                mtype = '3D';
+                switch viewselec
+                        case 1
+                                mapview = 'front';
+                        case 2
+                                mapview = 'back';
+                        case 3
+                                mapview = 'right';
+                        case 4
+                                mapview = 'left';
+                        case 5
+                                mapview = 'top';
+                        case 6
+                                mapview = 'frontleft';
+                        case 7
+                                mapview = 'frontright';
+                        case 8
+                                mapview = 'backleft';
+                        case 9
+                                mapview = 'backright';
+                        case 10
+                                mapview = str2num(strtrim(get(handles.edit_customview, 'String')));
+                        otherwise
+                                return
+                end
         end
+else        
+        msgboxText =  'You must specify Bin AND Latency(ies) for making a scalp map.';
+        title = 'ERPLAB: scalpplotGUI empty input';
+        errorfound(msgboxText, title);
+        return        
 end
+
+%
+% Prepares output
+%
+ispdf = 0;
+plotset = evalin('base', 'plotset');
+plotset.pscalp.binArray     = binArray;
+plotset.pscalp.latencyArray = latencyArray;
+plotset.pscalp.measurement  = measurement;
+plotset.pscalp.baseline     = baseline;
+plotset.pscalp.cscale       = cscale;
+plotset.pscalp.ispdf        = ispdf;
+plotset.pscalp.agif.value   = isagif;
+plotset.pscalp.agif.fps     = FPS;
+plotset.pscalp.agif.fname   = fnameagif;
+plotset.pscalp.posgui       = get(handles.gui_chassis,'Position');
+plotset.pscalp.mtype        = mtype; % map type  0=2D; 1=3D
+plotset.pscalp.mapview      = mapview; % numeric?
+plotset.pscalp.splineinfo   = splineinfo;
+% legends
+plotset.pscalp.plegend.binnum     = handles.Legbinnum;
+plotset.pscalp.plegend.bindesc    = handles.Legbindesc;
+plotset.pscalp.plegend.type       = handles.Legtype;
+plotset.pscalp.plegend.latency    = handles.Leglatency;
+plotset.pscalp.plegend.electrodes = handles.Legelectrodes;
+plotset.pscalp.plegend.colorbar   = handles.Legcolorbar;
+plotset.pscalp.plegend.colormap   = handles.Legcolormap;
+plotset.pscalp.plegend.maximize   = handles.Legismaxim;
+
+handles.output  = plotset;
+
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.gui_chassis);
+%         end
+% end
 
 %--------------------------------------------------------------------------
 function radiobutton_maxmin_Callback(hObject, eventdata, handles)
-
 set(handles.edit_custom, 'Enable','off');
 set(hObject,'Value',1)
 
 %--------------------------------------------------------------------------
 function radiobutton_absmax_Callback(hObject, eventdata, handles)
-
 set(handles.edit_custom, 'Enable','off');
 set(hObject,'Value',1)
 
@@ -433,101 +569,158 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_pdf_Callback(hObject, eventdata, handles)
-
 plotset = evalin('base', 'plotset');
 plotset.pscalp  = 'pdf';
 handles.output = plotset;
 guidata(hObject, handles);
-uiresume(handles.figure_main);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_custom_Callback(hObject, eventdata, handles)
-
 set(handles.edit_customblc,'Enable', 'on')
 set(hObject,'Value',1)
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_no_Callback(hObject, eventdata, handles)
-
 set(handles.edit_customblc,'Enable', 'off')
 set(hObject,'Value',1)
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_pre_Callback(hObject, eventdata, handles)
-
 set(handles.edit_customblc,'Enable', 'off')
 set(hObject,'Value',1)
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_post_Callback(hObject, eventdata, handles)
-
 set(handles.edit_customblc,'Enable', 'off')
 set(hObject,'Value',1)
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_whole_Callback(hObject, eventdata, handles)
-
 set(handles.edit_customblc,'Enable', 'off')
 set(hObject,'Value',1)
 
-%--------------------------------------------------------------------------
-function radiobutton_area_Callback(hObject, eventdata, handles)
-
-set(hObject,'Value',1)
-set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
-
-%--------------------------------------------------------------------------
-function radiobutton_insta_Callback(hObject, eventdata, handles)
-
-set(hObject,'Value',1)
-set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
-
-%--------------------------------------------------------------------------
-function radiobutton_mean_Callback(hObject, eventdata, handles)
-
-set(hObject,'Value',1)
-set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
+% %--------------------------------------------------------------------------
+% function radiobutton_area_Callback(hObject, eventdata, handles)
+%
+% set(hObject,'Value',1)
+% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
+%
+% %--------------------------------------------------------------------------
+% function radiobutton_insta_Callback(hObject, eventdata, handles)
+%
+% set(hObject,'Value',1)
+% set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
+%
+% %--------------------------------------------------------------------------
+% function radiobutton_mean_Callback(hObject, eventdata, handles)
+%
+% set(hObject,'Value',1)
+% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
 
 %--------------------------------------------------------------------------
 function  setall(hObject, eventdata, handles)
 
 plotset = handles.output;
-binArraystr     = vect2colon(plotset.pscalp.binArray,'Delimiter','no');
-latvals = plotset.pscalp.latencyArray;
-latrows = size(latvals,1);
-
-if latrows>1
-        latencyArraystr = num2str(latvals);
-        bb = cellstr(latencyArraystr);
-        xs = ''; for t=1:length(bb);xs = [xs bb{t} ' ; '];end
-        latencyArraystr = regexprep(xs,';\s*$','');
-else
-        latencyArraystr = vect2colon(latvals);
+if ~isfield(plotset, 'pscalp')
+        plotset.pscalp = [];
 end
 
-measurement = plotset.pscalp.measurement;
-baseline    = plotset.pscalp.baseline;
-cscale      = plotset.pscalp.cscale;
-clrbar      = plotset.pscalp.colorbar;
-showelec    = plotset.pscalp.showelec;
-binleg      = plotset.pscalp.binleg;
+measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
+        'Area between two fixed latencies', 'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
+set(handles.popupmenu_measurement, 'String', measurearray);
+%set(handles.popupmenu_videospeed, 'String', {'0.1X','0.25X','0.5X', '0.75X','1X', '2X'});
+%set(handles.popupmenu_videospeed, 'Value', 5); % 1X
+set(handles.popupmenu_colormap,'String', 'jet|hsv|hot|cool|gray')
 
+%
+% Set GUI
+%
+if isempty(plotset.pscalp)
+        binArraystr = '1';
+        latvals = 0;
+        latrows = 1;
+        latencyArraystr = vect2colon(latvals, 'Delimiter','off');
+        measurement = 'insta';
+        baseline    = 'pre';
+        cscale      = 'maxmin';
+        mtype       = '2D';
+        mapview     = '+X';
+        
+        Legbinnum     = 1;
+        Legbindesc    = 0;
+        Legtype       = 0;
+        Leglatency    = 1;
+        Legelectrodes = 1;
+        Legcolorbar   = 0; % no color bar by default
+        Legismaxim    = 0; % no maximize figure by default
+        Legcolormap   = 1; % jet color map
+else
+        binArraystr = vect2colon(plotset.pscalp.binArray,'Delimiter','off', 'Repeat', 'off');
+        latvals = plotset.pscalp.latencyArray;
+        latrows = size(latvals,1);
+        
+        if latrows>1
+                latencyArraystr = num2str(latvals);
+                bb = cellstr(latencyArraystr);
+                xs = ''; for t=1:length(bb);xs = [xs bb{t} ' ; '];end
+                latencyArraystr = regexprep(xs,';\s*$','');
+        else
+                latencyArraystr = vect2colon(latvals, 'Delimiter','off');
+        end
+        
+        measurement   = plotset.pscalp.measurement;
+        baseline      = plotset.pscalp.baseline;
+        cscale        = plotset.pscalp.cscale;
+        %clrbar       = plotset.pscalp.colorbar;
+        %showelec     = plotset.pscalp.showelec;
+        %binleg       = plotset.pscalp.binleg;
+        mtype         = plotset.pscalp.mtype; % map type  0=2D; 1=3D
+        mapview       = plotset.pscalp.mapview; % numeric?        
+        plegend       = plotset.pscalp.plegend; % numeric
+        Legbinnum     = plegend.binnum;
+        Legbindesc    = plegend.bindesc;
+        Legtype       = plegend.type ;
+        Leglatency    = plegend.latency;
+        Legelectrodes = plegend.electrodes;
+        Legcolorbar   = plegend.colorbar;
+        Legismaxim    = plegend.maximize;
+        Legcolormap   = plegend.colormap; % jet color map
+end
+
+%
+% Value to plot menu
+%
 if strcmpi(measurement,'insta')
-        set(handles.radiobutton_insta,'Value',1);
-        set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
+        meamenu =1;
 elseif strcmpi(measurement,'mean')
-        set(handles.radiobutton_mean,'Value',1);
-        set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
+        meamenu =2;
 elseif strcmpi(measurement,'area')
-        set(handles.radiobutton_area,'Value',1);
-        set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
-elseif strcmpi(measurement,'lapla')
-        set(handles.radiobutton_laplacian,'Value',1);
+        meamenu =3;
+elseif strcmpi(measurement,'instalapla') || strcmpi(measurement,'lapla')
+        meamenu =4;
+elseif strcmpi(measurement,'meanlapla')
+        meamenu =5;
+elseif strcmpi(measurement,'rms')
+        meamenu =6;
 else
-        set(handles.radiobutton_insta,'Value',1); %default
-        set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
+        meamenu =1;
+end
+set(handles.popupmenu_measurement, 'Value', meamenu);
+switch meamenu
+        case {1,4}
+                set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
+        case {2,3,5,6}
+                set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
 end
 
+% colormap
+set(handles.popupmenu_colormap, 'Value', Legcolormap)
+set(handles.checkbox_colorbar, 'Value', Legcolorbar)
+
+%
+% Baseline setting
+%
 if ischar(baseline)
         if strcmpi(baseline,'none')
                 set(handles.radiobutton_BLC_no,'Value',1);
@@ -552,7 +745,6 @@ if ischar(baseline)
                         end
                 end
         end
-
 else
         if size(baseline,1)~=1 || size(baseline,2)~=2
                 set(handles.radiobutton_BLC_pre,'Value',1); %default
@@ -563,11 +755,16 @@ else
         end
 end
 
+%
+% Scale
+%
 if ischar(cscale)
         if strcmpi(cscale,'maxmin')
                 set(handles.radiobutton_maxmin,'Value',1);
+                set(handles.edit_custom,'Enable', 'off')
         elseif strcmpi(cscale,'absmax')
                 set(handles.radiobutton_absmax,'Value',1);
+                set(handles.edit_custom,'Enable', 'off')
         else
                 numscale = str2num(cscale);
                 if isempty(numscale)
@@ -579,6 +776,7 @@ if ischar(cscale)
                                 set(handles.edit_custom,'Enable', 'off')
                         else
                                 set(handles.radiobutton_custom,'Value',1); %custom
+                                set(handles.edit_custom,'Enable', 'on')
                                 set(handles.edit_custom,'String', cscale); %custom
                         end
                 end
@@ -589,77 +787,109 @@ else
                 set(handles.edit_custom,'Enable', 'off')
         else
                 set(handles.radiobutton_custom,'Value',1); %custom
+                set(handles.edit_custom,'Enable', 'on')
                 set(handles.edit_custom,'String', num2str(cscale)); %custom
         end
-end
-
-if clrbar==1
-        set(handles.checkbox_colorbar, 'Value', 1);
-else
-        set(handles.checkbox_colorbar, 'Value', 0);
-end
-
-if showelec==1
-        set(handles.checkbox_electrodes, 'Value', 1);
-else
-        set(handles.checkbox_electrodes, 'Value', 0);
-end
-
-if binleg==1
-        set(handles.checkbox_includenumberbin, 'Value', 1);
-else
-        set(handles.checkbox_includenumberbin, 'Value', 0);
 end
 
 set(handles.edit_bins,'String',binArraystr);
 set(handles.edit_latencies,'String',latencyArraystr);
 
+%
+% 2D or 3D
+%
+if strcmpi(mtype,'2D')
+        morimenu = {'+X','-X','+Y','-Y'};
+        if ischar(mapview)
+                mview = find(ismember(morimenu, mapview));
+        else
+                mview = 1;
+        end
+        set(handles.radio_2D, 'Value', 1);
+        set(handles.radio_3D, 'Value', 0);
+        set(handles.edit_customview, 'Enable', 'off')
+else
+        morimenu = {'front', 'back', 'right', 'left', 'top',...
+                'frontleft', 'frontright', 'backleft', 'backright',...
+                'custom'};
+        if ischar(mapview)
+                mview = find(ismember(morimenu, mapview));
+                set(handles.edit_customview,'String','')
+                set(handles.edit_customview, 'Enable','off' )
+        else
+                mview = length(morimenu);
+                set(handles.edit_customview, 'Enable','on' )
+                set(handles.edit_customview,'String', num2str(mapview))
+                %set(handles.popupmenu_orientation,'Value', length(morimenu))
+        end
+        set(handles.radio_2D, 'Value', 0);
+        set(handles.radio_3D, 'Value', 1);
+end
+if isempty(mview)
+        mview =1;
+else
+        if mview==0
+                mview=1;
+        end
+end
+
+set(handles.popupmenu_orientation, 'String', morimenu);
+set(handles.popupmenu_orientation, 'Value', mview);
+popupmenu_orientation_Callback(hObject, eventdata, handles)
+
 if isfield(plotset.pscalp, 'agif')
-        
-        agif      = plotset.pscalp.agif.value;
-        delayt    = plotset.pscalp.agif.delay;
+        agif   = plotset.pscalp.agif.value;
+        FPS    = plotset.pscalp.agif.fps;
         fnameagif = plotset.pscalp.agif.fname;
         
         if agif>0
-                set(handles.checkbox_agif,'Value', 1)
-                
+                set(handles.checkbox_animation,'Value', 1)
                 set(handles.checkbox_adjust1frame,'Enable', 'on')
-                set(handles.edit_delayt,'Enable', 'on')
-                set(handles.edit_delayt,'String', num2str(delayt))
-                set(handles.edit_fnameagif,'Enable', 'on')
-                set(handles.edit_fnameagif,'String', fnameagif)
-                set(handles.pushbutton_browseagif,'Enable', 'on')
+                set(handles.edit_fps,'Enable', 'on')
+                set(handles.edit_fps,'String', num2str(FPS))
+                set(handles.edit_fname_animation,'Enable', 'on')
+                set(handles.edit_fname_animation,'String', fnameagif)
+                set(handles.pushbutton_browse_animation,'Enable', 'on')
                 
                 if agif==2
                         set(handles.checkbox_adjust1frame,'Value', 1)
                 else
                         set(handles.checkbox_adjust1frame,'Value', 0)
                 end
-                
                 set(handles.checkbox_adjust1frame,'Enable', 'on')
-                
         else
-                set(handles.checkbox_agif,'Value', 0)
-                
-                set(handles.checkbox_agif,'Value', 0)
+                set(handles.checkbox_animation,'Value', 0)
+                set(handles.checkbox_animation,'Value', 0)
                 set(handles.checkbox_adjust1frame,'Value', 0)
                 set(handles.checkbox_adjust1frame,'Enable', 'off')
-                set(handles.edit_delayt,'Enable', 'off')
-                set(handles.edit_fnameagif,'Enable', 'off')
-                set(handles.pushbutton_browseagif,'Enable', 'off')
+                set(handles.edit_fps,'Enable', 'off')
+                set(handles.edit_fname_animation,'Enable', 'off')
+                set(handles.pushbutton_browse_animation,'Enable', 'off')
                 set(handles.checkbox_adjust1frame,'Value', 0)
                 set(handles.checkbox_adjust1frame,'Enable', 'off')
         end
 else
-        set(handles.checkbox_agif,'Value', 0)
+        set(handles.checkbox_animation,'Value', 0)
         set(handles.checkbox_adjust1frame,'Value', 0)
         set(handles.checkbox_adjust1frame,'Enable', 'off')
-        set(handles.edit_delayt,'Enable', 'off')
-        set(handles.edit_fnameagif,'Enable', 'off')
-        set(handles.pushbutton_browseagif,'Enable', 'off')
+        set(handles.edit_fps,'Enable', 'off')
+        set(handles.edit_fname_animation,'Enable', 'off')
+        set(handles.pushbutton_browse_animation,'Enable', 'off')
         set(handles.checkbox_adjust1frame,'Value', 0)
         set(handles.checkbox_adjust1frame,'Enable', 'off')
 end
+
+handles.Legbinnum     = Legbinnum;
+handles.Legbindesc    = Legbindesc;
+handles.Legtype       = Legtype;
+handles.Leglatency    = Leglatency;
+handles.Legelectrodes = Legelectrodes;
+handles.Legcolorbar   = Legcolorbar;
+handles.Legcolormap   = Legcolormap;
+handles.Legismaxim    = Legismaxim;
+
+%Update handles structure
+guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
 function edit_exchan_Callback(hObject, eventdata, handles)
@@ -673,112 +903,427 @@ end
 
 %--------------------------------------------------------------------------
 function popupmenu_exchan_Callback(hObject, eventdata, handles)
-
-numch   = get(hObject, 'Value');
-
-nums = get(handles.edit_exchan, 'String');
-nums = [nums ' ' num2str(numch)];
+numch = get(hObject, 'Value');
+nums  = get(handles.edit_exchan, 'String');
+nums  = [nums ' ' num2str(numch)];
 set(handles.edit_exchan, 'String', nums);
 
 %--------------------------------------------------------------------------
 function popupmenu_exchan_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
-function checkbox_agif_Callback(hObject, eventdata, handles)
-
+function checkbox_animation_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
-        set(handles.edit_delayt,'Enable', 'on')
-        set(handles.edit_fnameagif,'Enable', 'on')
-        set(handles.pushbutton_browseagif,'Enable', 'on')
+        set(handles.edit_fps,'Enable', 'on')
+        set(handles.edit_fname_animation,'Enable', 'on')
+        set(handles.pushbutton_browse_animation,'Enable', 'on')
         set(handles.checkbox_adjust1frame,'Enable', 'on')
-        
 else
-        set(handles.edit_delayt,'Enable', 'off')
-        set(handles.edit_fnameagif,'Enable', 'off')
-        set(handles.pushbutton_browseagif,'Enable', 'off')
+        set(handles.edit_fps,'Enable', 'off')
+        set(handles.edit_fname_animation,'Enable', 'off')
+        set(handles.pushbutton_browse_animation,'Enable', 'off')
         set(handles.checkbox_adjust1frame,'Enable', 'off')
 end
 
 %--------------------------------------------------------------------------
-function edit_fnameagif_Callback(hObject, eventdata, handles)
+function edit_fname_animation_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function edit_fnameagif_CreateFcn(hObject, eventdata, handles)
-
+function edit_fname_animation_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
-function pushbutton_browseagif_Callback(hObject, eventdata, handles)
+function pushbutton_browse_animation_Callback(hObject, eventdata, handles)
 
 %
-% Save GIF
+% Save GIF, mov, or mpg
 %
-prename = get(handles.edit_fnameagif,'String');
-[blfilename, blpathname, filterindex] = uiputfile({'*.gif';'*.*'},'Save Animated GIF as',prename);
+prename = get(handles.edit_fname_animation,'String');
+%[blfilename, blpathname, filterindex] = uiputfile({'*.gif';'*.*'},'Save animation as',prename);
+
+[blfilename, blpathname, filterindex] = uiputfile( ...
+        {'*.gif','Animated GIF (*.gif)';
+        '*.mat', 'Matlab movie (*.mat)';...
+        '*.avi','AVI file (*.avi)'},...
+        'Save animation as', prename);
 
 if isequal(blfilename,0)
         disp('User selected Cancel')
         return
 else
-
-        [px, fname, ext, versn] = fileparts(blfilename);
-
-        if strcmp(ext,'')
-                if filterindex==1
-                        ext   = '.gif';
-                end
+        [px, fname, ext] = fileparts(blfilename);      
+        if  filterindex==1
+                ext = '.gif';
+        elseif  filterindex==2
+                ext = '.mat';
+        elseif  filterindex==3
+                ext = '.avi';
+        else
+                ext = '.gif';
         end
-
+        
         fname = [ fname ext];
+        
         fullgifname = fullfile(blpathname, fname);
-        set(handles.edit_fnameagif,'String', fullgifname);
-        disp(['Animated GIF will be saved at ' fullgifname])
+        set(handles.edit_fname_animation,'String', fullgifname);
+        disp(['Animatation will be saved at ' fullgifname])
 end
 
 %--------------------------------------------------------------------------
-function edit_delayt_Callback(hObject, eventdata, handles)
+function edit_fps_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function edit_delayt_CreateFcn(hObject, eventdata, handles)
+function edit_fps_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
-function checkbox_colorbar_Callback(hObject, eventdata, handles)
+% function checkbox_colorbar_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
-function figure_main_CloseRequestFcn(hObject, eventdata, handles)
+function pushbutton_ploterp_Callback(hObject, eventdata, handles)
+plotset = getplotset(hObject, eventdata, handles);
+if isempty(plotset.ptime)
+        return
+else
+        plotset.ptime.binArray = plotset.pscalp.binArray ;
+        plotset.ptime.blcorr   =  plotset.pscalp.baseline;
+        assignin('base','plotset', plotset);
+        handles.eplot = 1;
+        
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.figure1);
+end
 
-if isequal(get(handles.figure_main, 'waitstatus'), 'waiting')
+%--------------------------------------------------------------------------
+function set_legends_Callback(hObject, eventdata, handles)
+binnum     = handles.Legbinnum;
+bindesc    = handles.Legbindesc;
+type       = handles.Legtype;
+latency    = handles.Leglatency;
+electrodes = handles.Legelectrodes;
+% colorbar   = handles.Legcolorbar;
+ismaxim    = handles.Legismaxim;
+
+%values = [binnum bindesc type latency electrodes colorbar ismaxim];
+values = [binnum bindesc type latency electrodes ismaxim];
+
+%
+% call gui
+%
+answer = includelabelscalpGUI(values);
+if isempty(answer)
+        disp('User selected Cancel')
+        return
+end
+handles.Legbinnum     = answer(1);
+handles.Legbindesc    = answer(2);
+handles.Legtype       = answer(3);
+handles.Leglatency    = answer(4);
+handles.Legelectrodes = answer(5);
+% handles.Legcolorbar   = answer(6);
+handles.Legismaxim    = answer(6);
+
+%Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+% function checkbox_includenumberbin_Callback(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function pushbutton_CLERPF_Callback(hObject, eventdata, handles)
+clerpf
+
+%--------------------------------------------------------------------------
+function checkbox_adjust1frame_Callback(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function radio_2D_Callback(hObject, eventdata, handles)
+if get(hObject,'Value')
+        set(handles.radio_3D, 'Value',0)
+        morimenu = {'+X','-X','+Y','-Y'};
+        %morimenu = {'front', 'back', 'right', 'left', 'top',...
+        %      'frontleft', 'frontright', 'backleft', 'backright',...
+        %      'custom'};
+        set(handles.popupmenu_orientation, 'Value', 1)
+        set(handles.popupmenu_orientation, 'String', morimenu)
+        set(handles.popupmenu_orientation, 'Enable', 'off')% sept 12, 2012. JLC
+        set(handles.edit_customview, 'Enable', 'off')
+        set(handles.pushbutton_splinefile, 'Enable', 'off')
+else
+        set(handles.radio_2D, 'Value',1)
+end
+
+%--------------------------------------------------------------------------
+function radio_2D_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function radio_3D_Callback(hObject, eventdata, handles)
+if get(hObject,'Value')
+        set(handles.radio_2D, 'Value',0)
+        %set(handles.radio_3D, 'Value',0)
+        %morimenu = {'+X','-X','+Y','-Y'};
+        morimenu = {'front', 'back', 'right', 'left', 'top',...
+                'frontleft', 'frontright', 'backleft', 'backright',...
+                'custom'};
+        set(handles.popupmenu_orientation, 'Enable', 'on') % sept 12, 2012. JLC
+        set(handles.popupmenu_orientation, 'Value', 1)
+        set(handles.popupmenu_orientation, 'String', morimenu)
+        set(handles.pushbutton_splinefile, 'Enable', 'on')
+        popupmenu_orientation_Callback(hObject, eventdata, handles)
+else
+        set(handles.radio_3D, 'Value',1)
+end
+
+%--------------------------------------------------------------------------
+function radio_3D_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function popupmenu_orientation_Callback(hObject, eventdata, handles)
+if get(handles.radio_3D, 'Value')
+        pos   = get(handles.popupmenu_orientation, 'Value');
+        lview = get(handles.popupmenu_orientation, 'String');
+        strv  = lview{pos};
+        
+        if strcmpi(strv, 'custom')
+                set(handles.edit_customview, 'Enable', 'on')
+        else
+                switch strv
+                        case {'front','f'}
+                                mview = [-180,30];
+                        case {'back','b'}
+                                mview = [0,30];
+                        case {'left','l'}
+                                mview =  [-90,30];
+                        case {'right','r'}
+                                mview =  [90,30];
+                        case {'frontright','fr'}
+                                mview =  [135,30];
+                        case {'backright','br'}
+                                mview =  [45,30];
+                        case {'frontleft','fl'}
+                                mview =  [-135,30];
+                        case {'backleft','bl'}
+                                mview =  [-45,30];
+                        case 'top'
+                                mview =  [0,90];
+                        otherwise
+                                mview =  [];
+                end
+                set(handles.edit_customview, 'String', vect2colon(mview, 'Delimiter', 'off'))
+                set(handles.edit_customview, 'Enable', 'off')
+        end
+else
+        set(handles.edit_customview, 'String', '')
+        set(handles.popupmenu_orientation, 'Enable', 'off')% sept 12, 2012. JLC
+end
+
+%--------------------------------------------------------------------------
+function popupmenu_orientation_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function edit_customview_Callback(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function edit_customview_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function popupmenu_measurement_Callback(hObject, eventdata, handles)
+v = get(hObject, 'Value');
+switch v
+        case {1,4}
+                set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
+                set(handles.checkbox_realtime, 'Enable', 'on');
+        case {2,3,5,6}
+                set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
+                set(handles.checkbox_realtime, 'Enable', 'off');
+end
+
+% %--------------------------------------------------------------------------
+% function radiobutton_area_Callback(hObject, eventdata, handles)
+%
+% set(hObject,'Value',1)
+% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
+%
+% %--------------------------------------------------------------------------
+% function radiobutton_insta_Callback(hObject, eventdata, handles)
+%
+% set(hObject,'Value',1)
+% set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
+%
+% %--------------------------------------------------------------------------
+% function radiobutton_mean_Callback(hObject, eventdata, handles)
+%
+% set(hObject,'Value',1)
+% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
+
+
+%--------------------------------------------------------------------------
+function popupmenu_measurement_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function pushbutton_splinefile_Callback(hObject, eventdata, handles)
+chanlocs   = handles.chanlocs;
+splinefile = handles.splinefile;
+
+%
+% open gui
+%
+splineinfo = splinefileGUI({splinefile});
+
+if isempty(splineinfo)
+        disp('User selected Cancel')
+        return
+end
+
+splinefile = splineinfo.path;
+
+if isempty(splinefile)
+        msgboxText =  'You must specify a name for the spline file.';
+        title = 'ERPLAB: scalpplotGUI inputs';
+        errorfound(msgboxText, title);
+        return
+end
+
+handles.splineinfo  = splineinfo;
+handles.splinefile  = splinefile;
+
+% Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_browsebin_Callback(hObject, eventdata, handles)
+listb = handles.listb;
+indxlistb = handles.indxlistb;
+indxlistb = indxlistb(indxlistb<=length(listb));
+titlename = 'Select Bin(s)';
+
+if get(hObject, 'Value')
+        %set(handles.pushbutton_browsechan, 'Enable', 'off')
+        if ~isempty(listb)
+                bin = browsechanbinGUI(listb, indxlistb, titlename);
+                if ~isempty(bin)
+                        set(handles.edit_bins, 'String', vect2colon(bin, 'Delimiter', 'off'));
+                        handles.indxlistb = bin;
+                        % Update handles structure
+                        guidata(hObject, handles);
+                else
+                        disp('User selected Cancel')
+                        return
+                end
+        else
+                msgboxText =  'No bin information was found';
+                title = 'ERPLAB: scalpplotGUI input';
+                errorfound(msgboxText, title);
+                return
+        end
+end
+
+%--------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+web http://erpinfo.org/erplab/erplab-documentation/manual/Topographic_Mapping.html -browser
+
+%--------------------------------------------------------------------------
+function checkbox_realtime_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+        lat = get(handles.edit_latencies, 'String');
+        if isempty(lat)
+                msgboxText =  'You must specify a latency vector first.';
+                title = 'ERPLAB: scalpplotGUI input';
+                errorfound(msgboxText, title);
+                return
+        end
+        lat = str2num(lat);
+        T = unique(diff(lat));
+        if isempty(T)
+                msgboxText =  'You must specify a latency vector first.';
+                title = 'ERPLAB: scalpplotGUI input';
+                errorfound(msgboxText, title);
+                return
+        end
+        if length(T)>1
+                msgboxText =  ['The latency vector does not have a fixed step to determine its periodicity.\n\n'...
+                        'You may use colon notation, e.g. start:step:end, to specify your latency vector.\n'...
+                        'This may work better to generate the time of each frame.'];
+                title = 'ERPLAB: scalpplotGUI input';
+                errorfound(sprintf(msgboxText), title);
+                return
+        end
+        f = round(1/(T/1000));
+        set(handles.edit_fps, 'String', num2str(f));
+        set(handles.edit_fps,'Enable', 'off')
+else
+        set(handles.edit_fps,'Enable', 'on')
+end
+
+%--------------------------------------------------------------------------
+function checkbox_colorbar_Callback(hObject, eventdata, handles)
+% checkbox_cbar
+colorbar  = get(hObject, 'Value');
+handles.Legcolorbar = colorbar;
+% Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function popupmenu_colormap_Callback(hObject, eventdata, handles)
+Legcolormap = get(handles.popupmenu_colormap, 'Value');
+handles.Legcolormap = Legcolormap;
+
+% Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function popupmenu_colormap_CreateFcn(hObject, eventdata, handles)
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function pushbutton_cancel_Callback(hObject, eventdata, handles)
+plotset = evalin('base', 'plotset');
+plotset.pscalp = [];
+handles.output = plotset;
+
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.gui_chassis);
+
+%--------------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         %The GUI is still in UIWAIT, us UIRESUME
         plotset = evalin('base', 'plotset');
         plotset.pscalp = [];
         handles.output = plotset;
         %Update handles structure
         guidata(hObject, handles);
-        uiresume(handles.figure_main);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure_main);
+        delete(handles.gui_chassis);
 end
-
-%--------------------------------------------------------------------------
-function checkbox_electrodes_Callback(hObject, eventdata, handles)
-
-%--------------------------------------------------------------------------
-function checkbox_includenumberbin_Callback(hObject, eventdata, handles)
-
-
-function pushbutton_CLERPF_Callback(hObject, eventdata, handles)
-clerpf
-
-
-function checkbox_adjust1frame_Callback(hObject, eventdata, handles)

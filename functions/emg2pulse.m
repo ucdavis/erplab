@@ -1,4 +1,6 @@
-
+% UNDER CONSTRUCTION...
+%
+%
 % Author: Javier Lopez-Calderon
 
 function  d = emg2pulse(ch1, fs)

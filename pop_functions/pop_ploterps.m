@@ -1,37 +1,66 @@
-%   >> pop_ploterps(ERP, binArray, chanArray, options)
+% PURPOSE  :	Plot ERP datasets
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT   :
 %
-% Inputs:
+% pop_ploterps(ERP, binArray, chanArray, parameters)
 %
-%   ERP       - input dataset
-%   BinArray  - index(es) of bin(s) to plot  ( 1 2 3 ...)
-%   chanArray   - index(es) of channel(s) to plot ( 1 2 3 ...)
 %
-% Options...........{default_value}...................................description
+% INPUTS   :
 %
-% 'Mgfp'............{[]}..............................................Channel array for mean global field power
-% 'Blc'.............{'none'}..........................................base line correction (only for plotting)  'pre', 'post', 'all' or 2 values in ms
-% 'xscale'..........{[round(ERP.xmin*1000) round(ERP.xmax*1000)]}.....[min max] ms for time scale
-% 'yscale'..........{[-10 10]}........................................[min max] uVolts for amplitude scale
-% 'LineWidth'.......{2}...............................................width line for curves
-% 'YDir'............{'normal'}........................................direction of Y axis. 'normal' means positive up.
-% 'FontSizeChan'....{10}..............................................font size for channel labels
-% 'FontSizeLeg'.....{10}..............................................font size for bin legends
-% 'Style'...........{'Matlab'}........................................plotting style: 'Matlab','ERP' or 'Topo'
-% 'Std'.............{'off'}...........................................show standard deviation of the data.
-% 'Box'.............{sqrt(ERP.nchan)+1 sqrt(ERP.nchan)}...............row and columns for subplot
-% 'HoldCh'..........{'off'}...........................................plot specified channels overlapped in 1 figure
-% 'AutoYlim'........{'off'}...........................................automatic Y limits ('on' means yscale is ignored)
-% 'BinNum'..........{'off'}...........................................show bin number on bin legends
-% 'LegPos'..........{'bottom'}........................................bin legend position: 'bottom','right', or 'external'
-% 'Maximize'........{'off'}...........................................maximize the plotted figuere (full screen)
+% ERP               - input ERPset
+% binArray          - index(es) of bin(s) to plot. e.g [ 4:2:24]
+% chanArray         - index(es) of channel(s) to plot. e.g. [12 21 30:40]
 %
-% Outputs:
+% The available parameters are as follows:
+
+%        'Mgfp'             - channel indices for calculatin Mean Global Field Power. e.g. [2:32]
+%        'Blc'              - string or numeric interval for baseline correction
+%                             reference window: 'no','pre','post','all', or a
+%                             specific time window, for instance [-100 0]
+%        'xscale'           - time window to plot: [t1 t2]. e.g. [-200 800]
+%        'yscale'           - amplitude scale to plot: [a1 a2]. e.g. [-5 10]
+%        'LineWidth'        - waveform line width
+%        'YDir'             - {normal} | reverse. Direction of increasing values for Y axis. Normal is upward.
+%        'FontSizeChan'     - font size for channel label
+%        'FontSizeLeg'      - font size for Legends
+%        'Style'            - Type of plotting. 'Matlab', 'Classic', or 'Topo'
+%        'SEM'              - plot standard error of the mean (if available). 'on'/'off'
+%        'Box'              - number of rows and columns for ploting ERP in a rectangular array. e.g. [3 6] asuming you have 18 channels or less.
+%        'HoldCh'           - deprecated...
+%        'AutoYlim'         - set Y limits automatic
+%        'BinNum'           - display bin number at bin legend. 'on'/'off'
+%        'ChLabel'          - display channel label. 'on'/'off'
+%        'LegPos'           - Position for bin legend. 'bottom','right','external', or 'none'
+%        'Maximize'         - maximize  whole figure
+%        'Position'         - deprecated...
+%        'Axsize'           - size ([w h] ) for each channel when topoplot is being used.
+%        'MinorTicksX'      - display minor ticks for X axis. 'on'/'off'
+%        'MinorTicksY'      -  display minor ticks for Y axis. 'on'/'off'
+%        'Linespec'         - Line specification string syntax. e.g. {'-k' '--r' '-.b' '-g' ':c' '--m' '-.y'}
 %
-%   figure on the screen
 %
+%
+% OUTPUTS  :
+%
+% Figure on the screen
+%
+%
+% EXAMPLE  :
+%
+% >> pop_ploterps(ERP)   - GUI will appear
+%
+% or
+%
+% >> pop_ploterps( ERP,1:3,1:16 , 'AutoYlim', 'on', 'Axsize', [ 0.05 0.08],'BinNum', 'on', 'Blc', 'pre', 'Box', [ 4 4], 'ChLabel', 'on',...
+%                 'FontSizeChan',10, 'FontSizeLeg', 10, 'LegPos', 'bottom', 'Linespec', {'k-', 'r-'},'LineWidth', 1, 'Maximum', 'on',...
+%                 'Position', [102.8 19.4615 109 35.3846],'Style', 'Matlab', 'xscale', [ -200.0 798.0 -100:170:750 ], 'YDir', 'normal',...
+%                 'yscale', [ -10.0 10.0 -10:5:10 ] );
+%
+%
+%
+% See also ploterpGUI.m ploterps.m
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -59,387 +88,602 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [erpcom] = pop_ploterps(ERP, binArray, chanArray, varargin)
-
+function [ERP, erpcom] = pop_ploterps(ERP, binArray, chanArray, varargin)
 erpcom = '';
-
 if nargin < 1
-      help pop_ploterps
-      return
+        help pop_ploterps
+        return
 end
-
-if ~isfield(ERP,'bindata') %(ERP.bindata)
-      msgboxText{1} =  'Error: cannot plot an empty ERP dataset';
-      title_msg = 'ERPLAB: pop_ploterps() error:';
-      errorfound(msgboxText, title_msg);
-      return
-end
-
 if nargin==1  %with GUI
-      countp = 0;
-      while 1
-            
-            plotset   = ploterpGUI;   % call GUI for plotting
-            
-            if isempty(plotset.ptime)
-                  disp('User selected Cancel')
-                  return                  
-            elseif strcmpi(plotset.ptime,'pdf')
-                  
-                  erpcom2 = pop_fig2pdf;
-                  
-                  if countp>0
-                        disp('pop_fig2pdf was called')
-                  else
-                        disp('WARNING: Matlab figure(s) might have been generated during a previous round....')
-                  end
-                  erpcom = [erpcom ' ' erpcom2];
-                  return
-                  
-            elseif strcmpi(plotset.ptime,'scalp')
-                  disp('User called pop_scalplot()')
-                  return
-            end
-            
-            if plotset.ptime.istopo==1
-                  %
-                  % Searching channel location
-                  %
-                  if isfield(ERP.chanlocs, 'theta')
+        if isempty(ERP)
+                ERP = preloadERP;
+                if isempty(ERP)
+                        msgboxText =  'No ERPset was found!';
+                        title_msg  = 'ERPLAB: pop_ploterps() error:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+        end
+        if ~iserpstruct(ERP)
+                msgboxText =  'Invalid ERP structure!';
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        if ~isfield(ERP,'bindata') %(ERP.bindata)
+                msgboxText =  'Cannot plot an empty ERP dataset';
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        if isempty(ERP.bindata) %(ERP.bindata)
+                msgboxText =  'Cannot plot an empty ERP dataset';
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        %defcolor = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };% sorted according 1st erplab's version
+        %countp = 0;
+        %while 1
+        % if countp<1
+        %
+        % Call GUI for plotting
+        %
+        [plotset,  ERP] = ploterpGUI(ERP);
+        % else
+        %         ansmini = mini_ploterpGUI;
+        %
+        %         if isempty(ansmini)
+        %                 disp('User selected Cancel')
+        %                 return
+        %         end
+        %
+        %         [ERP, erpcom] = pop_ploterps(ERP);
+        %         return
+        % end
+        if isempty(ERP)
+                disp('User selected Cancel')
+                return
+        end
+        if isempty(plotset.ptime)
+                disp('User selected Cancel')
+                return                
+        elseif strcmpi(plotset.ptime,'mini')                
+                ansmini = mini_ploterpGUI;                
+                if isempty(ansmini)
+                        disp('User selected Cancel')
+                        return
+                end                
+                [ERP, erpcom] = pop_ploterps(ERP);
+                return                
+        elseif strcmpi(plotset.ptime,'pdf')
+                %erpcom2 = pop_fig2pdf;
+                [ERP, erpcom2] = pop_exporterplabfigure(ERP);
+                %if countp>0
+                disp('pop_exporterplabfigure was called')
+                %else
+                %        disp('WARNING: Matlab figure(s) might have been generated during a previous round....')
+                %end
+                erpcom = [erpcom ' ' erpcom2];
+                return
+        elseif strcmpi(plotset.ptime,'scalp')
+                disp('User called pop_scalplot()')
+                return
+        end
+        if plotset.ptime.pstyle==4 % topo
+                %
+                % Searching channel location
+                %
+                if isfield(ERP.chanlocs, 'theta')
                         ERP = borrowchanloc(ERP);
-                  else
-                        question = cell(1);
+                else
                         question = ['This averaged ERP has not channel location info.\n'...
-                                    'Would you like to load it now?'];
-                        title_msg   = 'ERPLAB: Channel location';
-                        button   = askquest(sprintf(question), title_msg);
+                                'Would you like to load it now?'];
+                        title_msg = 'ERPLAB: Channel location';
+                        button    = askquest(sprintf(question), title_msg);
                         
                         if ~strcmpi(button,'yes')
-                              disp('User selected Cancel')
-                              return
+                                disp('User selected Cancel')
+                                return
                         else
-                              ERP = borrowchanloc(ERP);
+                                ERP = borrowchanloc(ERP);
                         end
-                  end
-            end
+                end
+        end
+        
+        plotset.ptime.binArray  = plotset.ptime.binArray(plotset.ptime.binArray<=ERP.nbin);
+        plotset.ptime.chanArray = plotset.ptime.chanArray(plotset.ptime.chanArray<=ERP.nchan);
+        plotset.ptime.chanArray_MGFP = plotset.ptime.chanArray_MGFP(plotset.ptime.chanArray_MGFP<=ERP.nchan);
+        
+        if isempty(plotset.ptime.binArray)
+                msgboxText =  'Invalid bin index(ices)';
+                title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        if isempty(plotset.ptime.chanArray)
+                msgboxText =  'Specified channel(s) did not have a valid channel location.';
+                title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
+                errorfound(msgboxText, title_msg);
+                return
+        end
+        
+        assignin('base','plotset', plotset);
+        getplotset_time % call script (get values)
+        
+        if yauto==1
+                rAutoYlim = 'on';
+        else
+                rAutoYlim = 'off';
+        end
+        if binleg==1
+                rBinNum = 'on';
+        else
+                rBinNum = 'off';
+        end
+        if chanleg==1 % @@@@@@@@@@
+                rchanlabel = 'on'; % show ch label
+        else
+                rchanlabel = 'off'; % show ch number
+        end
+        if holdch==1
+                rHoldCh = 'on';
+        else
+                rHoldCh = 'off';
+        end
+        if legepos==1
+                rLegPos = 'bottom';
+        elseif legepos==2
+                rLegPos = 'right';
+        elseif legepos==3
+                rLegPos = 'external';
+        else
+                rLegPos = 'none';
+        end
+        if errorstd==1
+                rSEM = 'on';
+        elseif errorstd>1
+                rSEM = num2str(errorstd); % for more than 1 stdev
+        else
+                rSEM = 'off';
+        end
+        if pstyle==1
+                rStyle = 'Matlab1';
+        elseif pstyle==2
+                rStyle = 'Matlab2';
+        elseif pstyle==3
+                rStyle = 'Classic';
+        else
+                rStyle = 'Topo';
+        end
+        if isiy==1
+                rYDir = 'reverse';
+        else
+                rYDir = 'normal';
+        end
+        if ismaxim==1
+                rismaxim = 'on';
+        else
+                rismaxim = 'off';
+        end
+        if minorticks(1)
+                mtxstr = 'on';
+        else
+                mtxstr = 'off';
+        end
+        if minorticks(2)
+                mtystr = 'on';
+        else
+                mtystr = 'off';
+        end
+        
+        linespeci = linespeci(1:length(binArray));
+        
+        %
+        % Somersault
+        %
+        [ERP, erpcom] = pop_ploterps(ERP, binArray, chanArray, 'AutoYlim', rAutoYlim, 'BinNum', rBinNum, 'Blc', blcorr,...
+                'Box', pbox, 'FontSizeChan', fschan, 'FontSizeLeg', fslege, 'FontSizeTicks',fsaxtick,'HoldCh', rHoldCh,...
+                'LegPos', rLegPos,'LineWidth', linewidth, 'Mgfp', chanArray_MGFP, 'SEM', rSEM, 'Transparency', stdalpha,...
+                'Style', rStyle, 'xscale', xxscale,'YDir', rYDir, 'yscale', yyscale, 'Maximize', rismaxim, 'Position', posgui,...
+                'axsize', axsize,'ChLabel', rchanlabel, 'MinorTicksX', mtxstr, 'MinorTicksY', mtystr,...
+                'Linespec', linespeci,'ErrorMsg', 'popup', 'History', 'gui');
+        pause(0.1)
+        % countp = countp + 1;
+        %end
+        return
+end
 
-            plotset.ptime.binArray  = plotset.ptime.binArray(plotset.ptime.binArray<=ERP.nbin);
-            plotset.ptime.chanArray = plotset.ptime.chanArray(plotset.ptime.chanArray<=ERP.nchan);
-            plotset.ptime.chanArray_MGFP = plotset.ptime.chanArray_MGFP(plotset.ptime.chanArray_MGFP<=ERP.nchan);
+%
+% Parsing inputs
+%
+colordef = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };% default colors
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ERP');
+p.addRequired('binArray', @isnumeric);
+p.addRequired('chanArray', @isnumeric);
+% option(s)
+p.addParamValue('Mgfp', [], @isnumeric);
+p.addParamValue('Blc', 'none', @ischar);
+p.addParamValue('xscale', [], @isnumeric);
+p.addParamValue('yscale', [-10 10], @isnumeric);
+p.addParamValue('LineWidth', 1, @isnumeric);
+p.addParamValue('YDir', 'normal', @ischar); % normal | reverse
+p.addParamValue('FontSizeChan', 10, @isnumeric);
+p.addParamValue('FontSizeLeg', 10, @isnumeric);
+p.addParamValue('FontSizeTicks', 8, @isnumeric);
+p.addParamValue('Style', 'Matlab', @ischar);
+p.addParamValue('SEM', 'off', @ischar); % standard error of the mean
+p.addParamValue('Transparency', 1, @isnumeric); % transparency value for plotting SEM
+p.addParamValue('Box', [], @isnumeric);
+p.addParamValue('HoldCh', 'off', @ischar);
+p.addParamValue('AutoYlim', 'on', @ischar);
+p.addParamValue('BinNum', 'off', @ischar);
+p.addParamValue('ChLabel', 'on', @ischar);
+p.addParamValue('LegPos', 'bottom', @ischar);
+p.addParamValue('Maximize', 'off', @ischar);
+p.addParamValue('Position', [], @isnumeric);
+p.addParamValue('Axsize', [], @isnumeric); % size ([w h] ) for each channel when topoplot is being used.
+p.addParamValue('MinorTicksX', 'off', @ischar); % off | on
+p.addParamValue('MinorTicksY', 'off', @ischar); % off | on
+p.addParamValue('Linespec', colordef, @iscell);
+p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
+p.addParamValue('Tag', 'ERP_figure', @ischar); % figure tag
+p.addParamValue('History', 'script', @ischar); % history from scripting
 
-            if isempty(plotset.ptime.binArray)
-                    msgboxText =  'Invalid bin index(ices)';
-                    title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
-                    errorfound(msgboxText, title_msg);
-                    return
-            end
-            if isempty(plotset.ptime.chanArray)
-                    msgboxText =  'Specified channel(s) did not have a valid channel location.';
-                    title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
-                    errorfound(msgboxText, title_msg);
-                    return
-            end
-            if plotset.ptime.xscale(1) < ERP.xmin*1000
-                    plotset.ptime.xscale(1) = ERP.xmin*1000;
-            end
-            if plotset.ptime.xscale(2) > ERP.xmax*1000
-                    plotset.ptime.xscale(2) = ERP.xmax*1000;
-            end
-            if ~isfield(plotset.ptime, 'posfig')
-                  plotset.ptime.posfig = [];
-            end
-            
-            findplot = findobj('Tag','Plotting_ERP');
-            
-            if ~isempty(findplot)
-                  gofig = 1;
-                  while gofig>0 && gofig<= length(findplot)
-                        lastfig = figure(findplot(gofig));
-                        posfx   = get(lastfig,'Position');
-                        
-                        if posfx(3)>=1 && posfx(4)>=1
-                              plotset.ptime.posfig = [posfx(1)+10 posfx(2)-15 posfx(3) posfx(4) ];
-                              gofig = 0;
-                        else
-                              gofig = gofig + 1;
-                              
-                        end
-                  end
-            end
-            
-            assignin('base','plotset', plotset);
-            
-            binArray      = plotset.ptime.binArray;
-            chanArray     = plotset.ptime.chanArray;
-            ichMGFP       = plotset.ptime.chanArray_MGFP;
-            iblcorr       = plotset.ptime.blcorr;
-            ixscale       = plotset.ptime.xscale;
-            iyscale       = plotset.ptime.yscale;
-            ilinewidth    = plotset.ptime.linewidth;
-            iisiy         = plotset.ptime.isiy;
-            ifschan       = plotset.ptime.fschan;
-            ifslege       = plotset.ptime.fslege;
-            imeap         = plotset.ptime.meap;
-            ierrorstd     = plotset.ptime.errorstd;
-            ibox          = plotset.ptime.box;
-            %icounterwin   = plotset.ptime.counterwin;
-            iholdch       = plotset.ptime.holdch;
-            iyauto        = plotset.ptime.yauto;
-            ibinleg       = plotset.ptime.binleg;            
-            ichanleg      = plotset.ptime.chanleg; % @@@@@@@@@@@@@@@@@@@
-            %iisMGFP       = plotset.ptime.isMGFP;
-            ilegepos      = plotset.ptime.legepos;
-            iistopo       = plotset.ptime.istopo;
-            ismaxim       = plotset.ptime.ismaxim;
-            posfig        = plotset.ptime.posfig;
-            axsize        = plotset.ptime.axsize;
-            
-            if iyauto==1
-                  rAutoYlim = 'on';
-            else
-                  rAutoYlim = 'off';
-            end            
-            if ibinleg==1
-                  rBinNum = 'on';
-            else
-                  rBinNum = 'off';
-            end             
-            if ichanleg==1 % @@@@@@@@@@
-                  rchanlabel = 'on'; % show ch label
-            else
-                  rchanlabel = 'off'; % show ch number
-            end         
-            
-            if iholdch==1
-                  rHoldCh = 'on';
-            else
-                  rHoldCh = 'off';
-            end
-            if ilegepos==1
-                  rLegPos = 'bottom';
-            elseif ilegepos==2
-                  rLegPos = 'right';
-            else
-                  rLegPos = 'external';
-            end            
-            if ierrorstd==1
-                rStd = 'on';
-            elseif ierrorstd>1
-                rStd = num2str(ierrorstd); % for more than 1 stdev
-            else
-                rStd = 'off';
-            end                              
-            if iistopo == 0;
-                  if imeap==1
-                        rStyle = 'Matlab';
-                  else
-                        rStyle = 'ERP';
-                  end
-            else
-                  rStyle = 'Topo';
-            end            
-            if iisiy==1
-                  rYDir = 'reverse';
-            else
-                  rYDir = 'normal';
-            end
-            if ismaxim==1
-                  rismaxim = 'on';
-            else
-                  rismaxim = 'off';
-            end
-            
-            erpcom = pop_ploterps(ERP, binArray, chanArray, 'AutoYlim',rAutoYlim,'BinNum',rBinNum,'Blc',iblcorr,'Box',ibox,...
-                  'FontSizeChan',ifschan,'FontSizeLeg',ifslege, 'HoldCh',rHoldCh,'LegPos',rLegPos,...
-                  'LineWidth',ilinewidth,'Mgfp',ichMGFP,'Std',rStd,'Style',rStyle,'xscale',ixscale,'YDir',rYDir,...
-                  'yscale',iyscale, 'Maximize', rismaxim, 'Position', posfig, 'axsize', axsize, 'ChLabel', rchanlabel); % @@@@@@@
-            pause(0.1)
-            countp = countp + 1;
-      end      
-      return      
+p.parse(ERP, binArray, chanArray, varargin{:});
+
+if strcmpi(p.Results.ErrorMsg,'popup')
+        errormsgtype = 1; % open popup window
 else
-      aa = round(sqrt(ERP.nchan));
-      boxd = [aa+1 aa];
-      
-      p = inputParser;
-      p.FunctionName  = mfilename;
-      p.CaseSensitive = false;
-      p.addRequired('ERP', @isstruct);
-      p.addRequired('binArray', @isnumeric);
-      p.addRequired('chanArray', @isnumeric);
-      p.addParamValue('Mgfp', [], @isnumeric);
-      p.addParamValue('Blc', 'none', @ischar);
-      p.addParamValue('xscale', [round(ERP.xmin*1000) round(ERP.xmax*1000)], @isnumeric);
-      p.addParamValue('yscale', [-10 10], @isnumeric);
-      p.addParamValue('LineWidth', 2, @isnumeric);
-      p.addParamValue('YDir', 'normal', @ischar); % normal | reverse
-      p.addParamValue('FontSizeChan', 10, @isnumeric);
-      p.addParamValue('FontSizeLeg', 10, @isnumeric);
-      p.addParamValue('Style', 'Matlab', @ischar); %Matlab | ERP | Topo
-      p.addParamValue('Std', 'off', @ischar);
-      p.addParamValue('Box', boxd, @isnumeric);
-      p.addParamValue('HoldCh', 'off', @ischar);
-      p.addParamValue('AutoYlim', 'off', @ischar);
-      p.addParamValue('BinNum', 'off', @ischar);      
-      p.addParamValue('ChLabel', 'on', @ischar);       
-      p.addParamValue('LegPos', 'bottom', @ischar); % right | external
-      p.addParamValue('Maximize', 'off', @ischar); % off | on
-      p.addParamValue('Position', [], @isnumeric); % off | on
-      p.addParamValue('Axsize', [], @isnumeric); % size ([w h] ) for each channel when topoplot is being used.      
-      p.parse(ERP, binArray, chanArray, varargin{:});
-      
-      if max(chanArray)>ERP.nchan
-              msgboxText =  ['Channel(s) %g do(es) not exist within this erpset.\n'...
-                      'Please, check your channel list'];
-              title_msg = 'ERPLAB: pop_ploterps() invalid channel index';
-              errorfound(sprintf(msgboxText, chanArray(chanArray>ERP.nchan)), title_msg);
-              return
-      end
-      if min(chanArray)<1
-              msgboxText =  ['Invalid channel indexing.\n'...
-                      'Channel index(ices) must be positive integer(s) but zero.'];
-              title_msg = 'ERPLAB: pop_ploterps() invalid channel index';
-              errorfound(sprintf(msgboxText, ERP.erpname), title_msg);
-              return
-      end     
-      if max(binArray)>ERP.nbin
-              msgboxText =  ['Bin(s) %g do(es) not exist within this erpset.\n'...
-                      'Please, check your bin list'];
-              title_msg = 'ERPLAB: pop_ploterps() invalid bin index';
-              errorfound(sprintf(msgboxText, chanArray(chanArray>ERP.nchan)), title_msg);
-              return
-      end
-      if min(binArray)<1
-              msgboxText =  ['Invalid bin indexing.\n'...
-                      'Bin index(ices) must be positive integer(s) but zero.'];
-              title_msg = 'ERPLAB: pop_ploterps() invalid bin index';
-              errorfound(sprintf(msgboxText, ERP.erpname), title_msg);
-              return
-      end      
-      
-      qMgfp   = p.Results.Mgfp;
-      qBlc    = p.Results.Blc;
-      qxscale = p.Results.xscale;
-      qyscale = p.Results.yscale;
-      qBox    = p.Results.Box;
-      qLineWidth    = p.Results.LineWidth;
-      qFontSizeChan = p.Results.FontSizeChan;
-      qFontSizeLeg  = p.Results.FontSizeLeg;
-      qaxsize  = p.Results.Axsize;
-      
-      if strcmpi(p.Results.Style,'Topo')
-            qistopo = 1;
-            qmeap   = 1;
-      else
-            qistopo = 0;
-            if strcmpi(p.Results.Style,'Matlab')
-                  qmeap = 1;
-            else
-                  qmeap = 0;
-            end
-      end
-      if strcmpi(p.Results.YDir,'reverse')
-            qisiy = 1;
-      else
-          qisiy = 0;
-      end      
-      if strcmpi(p.Results.Std,'on')
-          qerrorstd = 1;
-      else
-          if ~isempty(str2num(p.Results.Std))
-              qerrorstd = str2num(p.Results.Std);
-          else
-              qerrorstd = 0;
-          end
-      end
-      if strcmpi(p.Results.HoldCh,'on')
-          qholdch = 1;
-      else
-            qholdch = 0;
-      end
-      if strcmpi(p.Results.AutoYlim,'on')
-            qyauto = 1;
-      else
-            qyauto = 0;
-      end      
-      if strcmpi(p.Results.BinNum,'on')
-            qbinleg = 1;
-      else
-            qbinleg = 0;
-      end           
-      if strcmpi(p.Results.ChLabel,'on') %@@@@@@@@@@@@@@@@@@@@@@
-            qchanleg = 1;
-      else
-            qchanleg = 0;
-      end      
-      if strcmpi(p.Results.LegPos,'bottom')
-            qlegepos = 1;
-      elseif strcmpi(p.Results.LegPos,'right')
-            qlegepos = 2;
-      else
-            qlegepos = 3;
-      end
-      if strcmpi(p.Results.Maximize,'on')
-            ismaxim = 1;
-      else
-            ismaxim = 0;
-      end
-      
-      posfig = p.Results.Position;
+        errormsgtype = 0; % error in red at command window
+end
+ftag = p.Results.Tag;
+filename4erp = '';
+
+% check ERP
+if isempty(ERP)
+        msgboxText =  'No ERPset was found or it was empty.';
+        if errormsgtype
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
+end
+if ischar(ERP)
+        if exist(ERP, 'file')~=2
+                msgboxText =  'File (%s) was not found!';
+                if errormsgtype
+                        title_msg  = 'ERPLAB: pop_ploterps() error:';
+                        errorfound(sprintf(msgboxText, ERP), title_msg);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText], ERP);
+                end
+        end
+        
+        filename4erp = ERP;
+        [patherp, nameerp, ext] = fileparts(ERP);
+        
+        if isempty(ext) || ~strcmpi(ext, '.erp')
+                ext = '.erp';
+        end
+        ERP = pop_loaderp( 'filename', [nameerp ext], 'filepath', patherp );
+end
+if ~iserpstruct(ERP)
+        msgboxText =  'Invalid ERP structure!';
+        if errormsgtype
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
+end
+if ~isfield(ERP,'bindata') %(ERP.bindata)
+        msgboxText =  'Cannot plot an empty ERP dataset';
+        if errormsgtype
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
+end
+if isempty(ERP.bindata) %(ERP.bindata)
+        msgboxText =  'Cannot plot an empty ERP dataset';
+        if errormsgtype
+                title_msg  = 'ERPLAB: pop_ploterps() error:';
+                errorfound(msgboxText, title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
+end
+if max(chanArray)>ERP.nchan
+        msgboxText =  ['Channel(s) %s do(es) not exist within this erpset.\n'...
+                'Please, check your channel list'];
+        if errormsgtype
+                title_msg = 'ERPLAB: pop_ploterps() invalid channel index';
+                errorfound(sprintf(msgboxText, vect2colon(chanArray(chanArray>ERP.nchan))), title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText], vect2colon(chanArray(chanArray>ERP.nchan)));
+        end
+        
+end
+if min(chanArray)<1
+        msgboxText =  ['Invalid channel indexing.\n'...
+                'Channel index(ices) must be positive integer(s) but zero.'];
+        if errormsgtype
+                title_msg = 'ERPLAB: pop_ploterps() invalid channel index';
+                errorfound(sprintf(msgboxText), title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
+end
+if max(binArray)>ERP.nbin
+        msgboxText =  ['Bin(s) %s do(es) not exist within this erpset.\n'...
+                'Please, check your bin list'];
+        if errormsgtype
+                title_msg = 'ERPLAB: pop_ploterps() invalid bin index';
+                errorfound(sprintf(msgboxText, vect2colon(binArray(binArray>ERP.nbin))), title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText], vect2colon(binArray(binArray>ERP.nbin)));
+        end
+end
+if min(binArray)<1
+        msgboxText =  ['Invalid bin indexing.\n'...
+                'Bin index(ices) must be positive integer(s) but zero.'];
+        if errormsgtype
+                title_msg = 'ERPLAB: pop_ploterps() invalid bin index';
+                errorfound(sprintf(msgboxText), title_msg);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
 end
 
-if qistopo
-      if ~isfield(ERP.chanlocs,'theta')
-            msgboxText =  ['%s  has not channel location info.\n'...
-                           'Topographic plot will be terminated.'];
-            title_msg = 'ERPLAB: pop_ploterps() missing info:';
-            errorfound(sprintf(msgboxText, ERP.erpname), title_msg);
-            return
-      end
+qMgfp   = p.Results.Mgfp;
+qBlc    = p.Results.Blc;
+qxscale = p.Results.xscale;
+qyscale = p.Results.yscale;
+qBox    = p.Results.Box;
+qLineWidth     = p.Results.LineWidth;
+qFontSizeChan  = p.Results.FontSizeChan;
+qFontSizeLeg   = p.Results.FontSizeLeg;
+qFontSizeTicks = p.Results.FontSizeTicks;
+qaxsize  = p.Results.Axsize;
+
+if isempty(qxscale)
+        qxscale = [round(ERP.xmin*1000) round(ERP.xmax*1000)];
+end
+if isempty(qBox)
+        aa = round(sqrt(ERP.nchan));
+        boxd = [aa+1 aa];
+        qBox = boxd;
+end
+if strcmpi(p.Results.Style,'Matlab') || strcmpi(p.Results.Style,'Matlab1')
+        qpstyle = 1;
+elseif strcmpi(p.Results.Style,'Matlab2')
+        qpstyle = 2;
+elseif strcmpi(p.Results.Style,'Classic')
+        qpstyle = 3;
+elseif strcmpi(p.Results.Style,'Topo')
+        qpstyle = 4;
+else
+        error('Unknown style for plotting.')
+end
+if strcmpi(p.Results.YDir,'reverse')
+        qisiy = 1;
+else
+        qisiy = 0;
+end
+if strcmpi(p.Results.SEM,'on')
+        qerrorstd = 1;
+else
+        if ~isempty(str2num(p.Results.SEM))
+                qerrorstd = str2num(p.Results.SEM);
+        else
+                qerrorstd = 0;
+        end
+end
+qstdalpha = 1-p.Results.Transparency; % Transparency for SEM
+if strcmpi(p.Results.HoldCh,'on')
+        qholdch = 1;
+else
+        qholdch = 0;
+end
+if strcmpi(p.Results.AutoYlim,'on')
+        qyauto = 1;
+else
+        qyauto = 0;
+end
+if strcmpi(p.Results.BinNum,'on')
+        qbinleg = 1;
+else
+        qbinleg = 0;
+end
+if strcmpi(p.Results.ChLabel,'on') %@@@@@@@@@@@@@@@@@@@@@@
+        qchanleg = 1;
+else
+        qchanleg = 0;
+end
+if strcmpi(p.Results.LegPos,'bottom')
+        qlegepos = 1;
+elseif strcmpi(p.Results.LegPos,'right')
+        qlegepos = 2;
+elseif strcmpi(p.Results.LegPos,'external')
+        qlegepos = 3;
+else
+        qlegepos = 4; % none
+end
+if strcmpi(p.Results.Maximize,'on')
+        ismaxim = 1;
+else
+        ismaxim = 0;
+end
+minorticks = [0 0];
+if strcmpi(p.Results.MinorTicksX,'on')
+        minorticks(1) = 1;
+else
+        minorticks(1) = 0;
+end
+if strcmpi(p.Results.MinorTicksY,'on')
+        minorticks(2) = 1;
+else
+        minorticks(2) = 0;
+end
+%posgui    = p.Results.Position;
+linespeci = p.Results.Linespec;
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+while length(linespeci)<length(binArray)
+        linespeci = [linespeci colordef];
+end
+if qpstyle==4 % topo
+        if ~isfield(ERP.chanlocs,'theta')
+                msgboxText =  ['%s  has not channel location info.\n'...
+                        'Topographic plot will be terminated.'];
+                if errormsgtype
+                        title_msg = 'ERPLAB: pop_ploterps() missing info:';
+                        errorfound(sprintf(msgboxText, ERP.erpname), title_msg);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText], ERP.erpname);
+                end
+        end
+end
+try
+        plotset = evalin('base', 'plotset');
+        plotset.ptime.xscale = qxscale; % plotting memory for time window
+        assignin('base','plotset', plotset);
+catch
+        ptime  = [];
+        plotset.ptime  = ptime;
+        assignin('base','plotset', plotset);
 end
 
 %
-% Check & fix time range
+% Set new figure position
 %
-if qxscale(1)/1000<ERP.xmin
-      qxscale(1)=ERP.xmin*1000;
-end
-if qxscale(2)/1000>ERP.xmax
-      qxscale(2)=ERP.xmax*1000;
+% if ~isfield(plotset.ptime, 'posfig')
+%         plotset.ptime.posfig = [];
+% end
+
+if ismaxim==0
+        findplot = sort(findobj('Tag','Plotting_ERP'));
+        if ~isempty(findplot)
+                lastfig = figure(findplot(end));
+                posfx   = get(lastfig,'Position');
+                scrsz = get(0,'ScreenSize');
+                if posfx(3)>=scrsz(1,3) || posfx(4)>=scrsz(1,4)
+                        posfx([3 4]) = [scrsz(3)/2 scrsz(4)/2];
+                end
+                posfig  = [posfx(1)+10 posfx(2)-15 posfx(3) posfx(4) ];
+                
+                %       gofig = 1;
+                %       while gofig>0 && gofig<= length(findplot)
+                %             lastfig = figure(findplot(gofig));
+                %             posfx   = get(lastfig,'Position');
+                %
+                %             if posfx(3)>=1 && posfx(4)>=1
+                %                   posfig = [posfx(1)+10 posfx(2)-15 posfx(3) posfx(4) ]
+                %                   gofig = 0;
+                %             else
+                %                   gofig = gofig + 1;
+                %             end
+                %       end
+        else
+                posfig = [];
+        end
+        plotset.ptime.posfig = posfig;
+        assignin('base','plotset', plotset);
+else
+        if isfield(plotset.ptime, 'posfig') % bug fixed apr 2013
+                posfig = plotset.ptime.posfig;
+        else
+                posfig = [];
+        end
 end
 
-plotset = evalin('base', 'plotset');
-plotset.ptime.xscale = qxscale; % plotting memory for time window
-assignin('base','plotset', plotset);
+%
+% Call ploterps subroutine
+%
 BinArraystr  = vect2colon(binArray, 'Sort','yes');
 chanArraystr = vect2colon(chanArray);
-
-ploterps(ERP, binArray, chanArray,  qistopo, qMgfp, qBlc, qxscale, qyscale,...
-         qLineWidth, qisiy, qFontSizeChan, qFontSizeLeg, qmeap, qerrorstd,...
-         qBox, qholdch, qyauto, qbinleg, qlegepos, ismaxim, posfig, qaxsize,...
-         qchanleg)
+ploterps(ERP, binArray, chanArray,  qpstyle, qMgfp, qBlc, qxscale, qyscale, qLineWidth, qisiy, qFontSizeChan, qFontSizeLeg, qFontSizeTicks, qerrorstd,...
+        qstdalpha, qBox, qholdch, qyauto, qbinleg, qlegepos, ismaxim, posfig, qaxsize, qchanleg, minorticks, linespeci, ftag)
 
 %
 % History command
 %
 fn = fieldnames(p.Results);
-erpcom = sprintf( 'pop_ploterps( %s, %s, %s ',  inputname(1), BinArraystr, chanArraystr);
+if isempty(filename4erp) % first input was an ERP or a filename?
+        firstinput = inputname(1);
+else
+        firstinput = filename4erp;
+end
+
+skipfields = {'ERP','binArray','chanArray', 'ErrorMsg','History'};
+erpcom     = sprintf( 'ERP = pop_ploterps( %s, %s, %s ',  firstinput, BinArraystr, chanArraystr);
 
 for q=1:length(fn)
-      fn2com = fn{q};
-      if ~ismember(fn2com,{'ERP','binArray','chanArray'})
-            fn2res = p.Results.(fn2com);
-            if ~isempty(fn2res)
-                  if ischar(fn2res)
-                        if ~strcmpi(fn2res,'off')
-                              erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+        fn2com = fn{q}; % inputname
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com); %  input value
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+                                end
+                        elseif iscell(fn2res)
+                                nn = length(fn2res);
+                                erpcom = sprintf( '%s, ''%s'', {''%s'' ', erpcom, fn2com, fn2res{1});
+                                for ff=2:nn
+                                        erpcom = sprintf( '%s, ''%s'' ', erpcom, fn2res{ff});
+                                end
+                                erpcom = sprintf( '%s}', erpcom);
+                        else
+                                if ~ismember(fn2com,{'xscale','yscale'})
+                                        erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, vect2colon(fn2res,'Repeat','on'));
+                                else
+                                        xyscalestr = sprintf('[ %.1f %.1f  %s ]', fn2res(1), fn2res(2), vect2colon(fn2res(3:end),'Delimiter','off'));
+                                        erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, xyscalestr);
+                                end
                         end
-                  else
-                        erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, vect2colon(fn2res,'Repeat','on'));
-                  end
-            end
-      end
+                end
+        end
 end
 erpcom = sprintf( '%s );', erpcom);
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom);
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                erpcom = '';
+                return
+end
+
+%
+% Completion statement
+%
+msg2end
 return

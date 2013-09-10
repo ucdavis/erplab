@@ -68,19 +68,19 @@ end
 handles.erpnameor = erpname;
 handles.output = [];
 erpmenu  = findobj('tag', 'erpsets');
-handles.menuerp = get(erpmenu);
-set(handles.menuerp.Children, 'Enable','off');
-handles.owfp = 0;  % over write file permission
 
-% Update handles structure
-guidata(hObject, handles);
+if ~isempty(erpmenu)
+    handles.menuerp = get(erpmenu);
+    set(handles.menuerp.Children, 'Enable','off');
+end
+
+handles.owfp = 0;  % over write file permission
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB ' version '   -   Save Erpset GUI'])
-
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save Erpset GUI'])
 set(handles.edit_erpname, 'String', erpname);
 
 if ~isempty(filename)
@@ -88,15 +88,16 @@ if ~isempty(filename)
         set(handles.edit_saveas, 'String', filename);
         set(handles.radiobutton_saveas, 'Value', 1);
         set(handles.pushbutton_same_as_erpname, 'Enable', 'on');
+        set(handles.pushbutton_same_as_filename, 'Enable', 'on');
         set(handles.pushbutton_browse, 'Enable', 'on');
 else
         set(handles.edit_saveas, 'String', '');
         set(handles.radiobutton_saveas, 'Value', 0);
         set(handles.edit_saveas, 'Enable', 'off');
         set(handles.pushbutton_same_as_erpname, 'Enable', 'off');
+        set(handles.pushbutton_same_as_filename, 'Enable', 'off');       
         set(handles.pushbutton_browse, 'Enable', 'off');
 end
-
 if overw==0
         set(handles.radiobutton_newerpset, 'Value', 1);
         set(handles.radiobutton_overwrite, 'Value', 0);
@@ -104,9 +105,7 @@ else
         set(handles.radiobutton_newerpset, 'Value', 0);
         set(handles.radiobutton_overwrite, 'Value', 1);
 end
-
 [nset CURRENTERP] = getallerpstate;
-
 if nset>0
         set(handles.text_question,'String', ['Your active erpset is # ' num2str(CURRENTERP)],...
                 'FontWeight','Bold', 'FontSize', 12)
@@ -127,16 +126,31 @@ end
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+% helpbutton
+
 % UIWAIT makes savemyerpGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function varargout = savemyerpGUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
-set(handles.menuerp.Children, 'Enable','on');
+try
+        set(handles.menuerp.Children, 'Enable','on');
+catch
+        disp('ERPset menu was not found...')
+end
 varargout{1} = handles.output;
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.1)
 
 % -------------------------------------------------------------------------
@@ -163,8 +177,10 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 % Save OUTPUT file
 %
 fndefault = get(handles.edit_saveas,'String');
-[fname, pathname] = uiputfile({'*.erp;*.mat';'*.*'},'Save Output file as',...
-        fndefault);
+[fname, pathname] = uiputfile({'*.erp', 'ERPset (*.erp)';...
+                               '*.mat', 'MAT-files (*.mat)';...
+                               '*.*'  , 'All Files (*.*)'},'Save Output file as',...
+                               fndefault);
 
 if isequal(fname,0)
         disp('User selected Cancel')
@@ -183,7 +199,7 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
@@ -191,7 +207,7 @@ function pushbutton_OK_Callback(hObject, eventdata, handles)
 erpname = strtrim(get(handles.edit_erpname, 'String'));
 
 if isempty(erpname)
-        msgboxText =  'You must enter an erpname!';
+        msgboxText =  'You must enter an erpname at least!';
         title = 'ERPLAB: averager GUI empty erpname';
         errorfound(msgboxText, title);
         return
@@ -202,14 +218,12 @@ overw   = get(handles.radiobutton_overwrite, 'Value');
 
 if ~isempty(fname) && get(handles.radiobutton_saveas, 'Value')
         
-        owfp = handles.owfp;  % over write file permission
-        
-        [pathstr, name, ext, versn] = fileparts(fname);
+        owfp = handles.owfp;  % over write file permission        
+        [pathstr, name, ext] = fileparts(fname);
         
         if ~strcmp(ext,'.erp') && ~strcmp(ext,'.mat')
                 ext = '.erp';
-        end
-        
+        end        
         if strcmp(pathstr,'')
                 pathstr = cd;
         end
@@ -225,14 +239,12 @@ if ~isempty(fname) && get(handles.radiobutton_saveas, 'Value')
                 if ~strcmpi(button, 'yes')
                         return
                 end
-        end
-        
+        end        
 elseif isempty(fname) && get(handles.radiobutton_saveas, 'Value')
         msgboxText =  'You must enter a filename!';
         title = 'ERPLAB: averager GUI empty filename';
         errorfound(msgboxText, title);
-        return
-        
+        return        
 else
         fullname = [];
 end
@@ -241,7 +253,7 @@ handles.output = {erpname, fullname, overw};
 % Update handles structure
 guidata(hObject, handles);
 
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function radiobutton_saveas_Callback(hObject, eventdata, handles)
@@ -249,28 +261,41 @@ if get(hObject, 'Value')
         set(handles.edit_saveas, 'Enable', 'on');
         set(handles.pushbutton_browse, 'Enable', 'on');
         set(handles.pushbutton_same_as_erpname, 'Enable', 'on');
+        set(handles.pushbutton_same_as_filename, 'Enable', 'on');       
 else
         set(handles.edit_saveas, 'Enable', 'off');
         set(handles.pushbutton_browse, 'Enable', 'off');
         set(handles.pushbutton_same_as_erpname, 'Enable', 'off');
+        set(handles.pushbutton_same_as_filename, 'Enable', 'off'); 
         set(handles.edit_saveas, 'String', '');
 end
+
+% -----------------------------------------------------------------------
+function pushbutton_same_as_filename_Callback(hObject, eventdata, handles)
+fname   = get(handles.edit_saveas, 'String');
+%erpname = get(handles.edit_erpname, 'String');
+if strcmp(fname,'')
+      msgboxText =  'You must enter a filename first!';
+      title = 'ERPLAB: averager GUI empty filename';
+      errorfound(msgboxText, title);
+      return
+end
+[pathstr, fname, ext] = fileparts(fname);
+erpname = fname;
+set(handles.edit_erpname, 'String', erpname);
 
 % -------------------------------------------------------------------------
 function pushbutton_same_as_erpname_Callback(hObject, eventdata, handles)
 fname   = get(handles.edit_saveas, 'String');
 erpname = get(handles.edit_erpname, 'String');
-
 if strcmp(erpname,'')
         msgboxText =  'You must enter an erpname!';
         title = 'ERPLAB: averager GUI empty erpname';
         errorfound(msgboxText, title);
         return
 end
-
-if ~strcmp(fname,'')
-        
-        [pathstr, name, ext, versn] = fileparts(fname);
+if ~strcmp(fname,'')        
+        [pathstr, name, ext] = fileparts(fname);
         name = erpname;
         if ~strcmp(ext,'.erp') && ~strcmp(ext,'.mat');
                 ext = '.erp';
@@ -280,32 +305,27 @@ if ~strcmp(fname,'')
 else
         fname=[erpname '.erp'];
 end
-
 set(handles.edit_saveas, 'String', fname);
 
 % -------------------------------------------------------------------------
 function radiobutton_overwrite_Callback(hObject, eventdata, handles)
 
 if get(hObject,'Value')
-        set(handles.radiobutton_newerpset,'Value',0)
-        
-        erpname = strtrim(get(handles.edit_erpname, 'String'));
-        
+        set(handles.radiobutton_newerpset,'Value',0)        
+        erpname = strtrim(get(handles.edit_erpname, 'String'));        
         if isempty(erpname)
                 erpname = handles.erpnameor;
                 set(handles.edit_erpname, 'String', erpname);
         end
 else
-        set(handles.radiobutton_overwrite, 'Value',1);
-        
+        set(handles.radiobutton_overwrite, 'Value',1);        
 end
 
 % -------------------------------------------------------------------------
 function radiobutton_newerpset_Callback(hObject, eventdata, handles)
 
 if get(hObject,'Value')
-        set(handles.radiobutton_overwrite, 'Value',0);
-        
+        set(handles.radiobutton_overwrite, 'Value',0);        
         erpname = strtrim(get(handles.edit_erpname, 'String'));
         
         if isempty(erpname)
@@ -318,15 +338,15 @@ else
 end
 
 % -----------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         %The GUI is still in UIWAIT, us UIRESUME
         handles.output = '';
         %Update handles structure
         guidata(hObject, handles);
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+        delete(handles.gui_chassis);
 end

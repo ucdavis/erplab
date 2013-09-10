@@ -36,6 +36,7 @@ gui_State = struct('gui_Name',       mfilename, ...
         'gui_OutputFcn',  @grandaveragerGUI_OutputFcn, ...
         'gui_LayoutFcn',  [] , ...
         'gui_Callback',   []);
+
 if nargin && ischar(varargin{1})
         gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -49,67 +50,169 @@ end
 
 %--------------------------------------------------------------------------
 function grandaveragerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
-
-% Choose default command line output for grandaveragerGUI
-handles.output = [];
+        
+handles.output   = [];
 handles.indxline = 1;
 
-try
-        ALLERP = varargin{1}; %evalin('base', 'ALLERP');
+try        
+        %       optioni  = answer{1}; %1 means from a filelist, 0 means from erpsets menu
+        %       erpset   = answer{2};
+        %       artcrite = answer{3}; % max percentage of rej to be included in the gaverage
+        %       wavg     = answer{4}; % 0;1
+        %       stderror    = answer{5}; % 0;1
+        
+        def = varargin{1};
+        actualnset = def{1}; % number of loaded erpsets at erpset menu
+        optioni    = def{2};   % datasets to average
+        erpset     = def{3};
+        artcrite   = def{4};
+        
+        %
+        % Weighted average option. 1= yes, 0=no
+        %
+        wavg     = def{5};        
+        excnullbin  = def{6};
+        
+        %
+        % Standard deviation option. 1= yes, 0=no
+        %
+        stderror    = def{7};
 catch
-        ALLERP = [];
+        actualnset  = 0;
+        optioni     = 1;
+        erpset      = '';
+        artcrite    = 100;
+        wavg        = 0;
+        excnullbin  = 1;
+        stderror    = 1;
+end
+if ~isempty(erpset)
+        if ischar(erpset)
+                listname = erpset;
+        else
+                listname = [];
+        end
+else
+        listname = [];
 end
 
+helpbutton;
 handles.fulltext = [];
-set(handles.listbox_erpnames, 'String', {'new erpset'});
+handles.actualnset = actualnset;
+handles.listname = listname;
+% handles = painterplab(handles);
+handles.erpset = erpset;
 
-nsets  = length(ALLERP);
-handles.nsets = nsets;
-handles.listname = [];
+if optioni==0 && actualnset>0  && isnumeric(erpset)
+        erps = erpset(erpset<=actualnset);
+        if isempty(erps)
+                erps = 1:actualnset;
+        end
+        set(handles.radiobutton_erpset, 'Value', 1);
+        set(handles.radiobutton_erpset, 'Enable', 'on');
+        set(handles.edit_erpset, 'String', vect2colon(erps, 'Delimiter', 'off', 'Repeat', 'off'));
+        set(handles.radiobutton_folders, 'Value', 0);
+        set(handles.listbox_erpnames, 'Enable', 'off');
+        set(handles.pushbutton_adderpset, 'Enable', 'off');
+        set(handles.pushbutton_delerpset, 'Enable', 'off');
+        set(handles.button_loadlist, 'Enable', 'off');
+        set(handles.button_savelist, 'Enable', 'off');
+        set(handles.button_savelistas, 'Enable', 'off');
+        set(handles.button_clearfile, 'Enable', 'off');
+elseif optioni==0 && actualnset>0  && ~isnumeric(erpset)
+        set(handles.radiobutton_erpset, 'Value', 1);
+        set(handles.radiobutton_erpset, 'Enable', 'on');
+        set(handles.edit_erpset, 'String', vect2colon(1:actualnset, 'Delimiter', 'off'));
+        set(handles.radiobutton_folders, 'Value', 0);
+        set(handles.listbox_erpnames, 'Enable', 'off');
+        set(handles.pushbutton_adderpset, 'Enable', 'off');
+        set(handles.pushbutton_delerpset, 'Enable', 'off');
+        set(handles.button_loadlist, 'Enable', 'off');
+        set(handles.button_savelist, 'Enable', 'off');
+        set(handles.button_savelistas, 'Enable', 'off');
+        set(handles.button_clearfile, 'Enable', 'off');
+elseif optioni>=0 && actualnset==0  && isnumeric(erpset)
+        set(handles.edit_erpset, 'String', 'no erpset found');
+        set(handles.edit_erpset, 'Enable', 'off');
+        set(handles.radiobutton_erpset, 'Value', 0);
+        set(handles.radiobutton_erpset, 'Enable', 'off');
+        set(handles.radiobutton_folders, 'Value', 1);
+        set(handles.listbox_erpnames, 'String', {'new erpset'});
+elseif optioni==0 && actualnset==0  && ~isnumeric(erpset)
+        set(handles.edit_erpset, 'String', 'no erpset found');
+        set(handles.edit_erpset, 'Enable', 'off');
+        set(handles.radiobutton_erpset, 'Value', 0);
+        set(handles.radiobutton_erpset, 'Enable', 'off');
+        set(handles.radiobutton_folders, 'Value', 1);
+        set(handles.listbox_erpnames, 'String', {'new erpset'});
+elseif optioni==1 && actualnset>=0 && ~isnumeric(erpset)
+        set(handles.edit_erpset, 'String', 'no erpset found');
+        set(handles.edit_erpset, 'Enable', 'off');
+        set(handles.radiobutton_erpset, 'Value', 0);
+        set(handles.radiobutton_erpset, 'Enable', 'on');
+        set(handles.edit_erpset, 'String', vect2colon(1:actualnset, 'Delimiter', 'off'));
+        
+        set(handles.radiobutton_folders, 'Value', 1);
+        if ~isempty(erpset)
+                button_loadlist_Callback(hObject, eventdata, handles, 1)
+                %listname = erpset;
+        else
+                set(handles.listbox_erpnames, 'String', {'new erpset'});
+        end
+else
+        error('no entiendo esta combinacion :(')
+end
 
-% Update handles structure
-guidata(hObject, handles);
-
-label1 = '<HTML><center>Use weighted average';
-label2 = '<HTML><center>based on number of trials';
-set(handles.checkbox_wavg, 'string',[label1 '<br>' label2]);
-set(handles.checkbox_wavg, 'Value', 1);
+%label1 = '<HTML><center>Use weighted average';
+%label2 = '<HTML><center>based on number of trials';
+%set(handles.checkbox_wavg, 'string',[label1 '<br>' label2]);
+set(handles.checkbox_SEM, 'Value', stderror); %
+if wavg
+        set(handles.checkbox_wavg, 'Value', wavg); % weighted average disable by default
+        set(handles.checkbox_EXCNULLBIN, 'Value', 0)
+        set(handles.checkbox_EXCNULLBIN, 'Enable', 'off')
+else
+        set(handles.checkbox_EXCNULLBIN, 'Value', excnullbin)
+end
+if isempty(artcrite)
+        set(handles.edit_maxMART, 'String', '');
+        set(handles.edit_maxMART, 'Enable', 'off');
+        set(handles.checkbox_MERT, 'Value', 0);
+else
+        if artcrite==100
+                set(handles.edit_maxMART, 'String', '');
+                set(handles.edit_maxMART, 'Enable', 'off');
+                set(handles.checkbox_MERT, 'Value', 0);
+        else
+                set(handles.edit_maxMART, 'String', num2str(artcrite)); %
+                set(handles.checkbox_MERT, 'Value', 1);
+        end
+end
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB ' version '   -   GRAND AVERAGER GUI'])
-
-if nsets>0 % from erpsets menu
-        set(handles.radiobutton_erpset, 'Value', 1);
-        set(handles.radiobutton_erpset, 'Enable', 'on');
-        set(handles.edit_erpset, 'String', num2str(1:nsets));
-        set(handles.radiobutton_folders, 'Value', 0);
-        set(handles.listbox_erpnames, 'Enable', 'off');
-        set(handles.pushbutton_adderpset, 'Enable', 'off');
-        set(handles.pushbutton_delerpset, 'Enable', 'off'); 
-        set(handles.button_loadlist, 'Enable', 'off');
-        set(handles.button_savelist, 'Enable', 'off');
-        set(handles.button_savelistas, 'Enable', 'off');
-        set(handles.button_clearfile, 'Enable', 'off');
-else  % from files
-        set(handles.edit_erpset, 'String', 'no erpset');
-        set(handles.edit_erpset, 'Enable', 'off');
-        set(handles.radiobutton_erpset, 'Value', 0);
-        set(handles.radiobutton_erpset, 'Enable', 'off');
-        set(handles.radiobutton_folders, 'Value', 1);
-end
-
-set(handles.button_savelist, 'Enable', 'off');
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   GRAND AVERAGER GUI'])
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
 % UIWAIT makes grandaveragerGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = grandaveragerGUI_OutputFcn(hObject, eventdata, handles)
@@ -118,8 +221,8 @@ function varargout = grandaveragerGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
-pause(0.5)
+delete(handles.gui_chassis);
+pause(0.1)
 
 %--------------------------------------------------------------------------
 function edit_erpset_Callback(hObject, eventdata, handles)
@@ -132,11 +235,101 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% doc pop_gaverager
+web http://erpinfo.org/erplab/erplab-documentation/manual/Averaging_ERPsets.html -browser
+
+%--------------------------------------------------------------------------
 function pushbutton_GO_Callback(hObject, eventdata, handles)
 
-wavg  = get(handles.checkbox_wavg,'Value');% for weighted average    1=>yes
-stdev = get(handles.checkbox_STD,'Value'); % for standard deviation  1=>yes
 
+%         optioni    = answer{1}; %1 means from a filelist, 0 means from erpsets menu
+%         erpset     = answer{2};
+%         artcrite   = answer{3}; % max percentage of rej to be included in the gaverage
+%         wavg       = answer{4}; % 0;1
+%         excnullbin = answer{5}; % 0;1
+%         stderror   = answer{6}; % 0;1
+%         jk         = answer{7}; % 0;1
+%         jkerpname  = answer{8}; % erpname for JK grand averages
+%         jkfilename = answer{9}; % filename for JK grand averages
+%         def = {actualnset, optioni, erpset, artcrite, wavg, excnullbin, stderror};
+
+wavg       = get(handles.checkbox_wavg,'Value');% for weighted average    1=>yes
+stderror   = get(handles.checkbox_SEM,'Value'); % for standard error  1=>yes
+excnullbin = get(handles.checkbox_EXCNULLBIN,'Value'); % for standard error  1=>yes
+
+%
+% Artifact detection threshold
+%
+if get(handles.checkbox_MERT, 'Value')
+        artcrite = str2num(get(handles.edit_maxMART,'String'));
+else
+        artcrite = 100;
+end
+if isempty(artcrite)
+        artcrite = 100; % means allow all erpset to be grand averaged
+end
+if artcrite<0 || artcrite>100
+        msgboxText =  ['Invalid artifact detection proportion.\n'...
+                'Please, enter a number between 0 and 100.'];
+        title = 'ERPLAB: geterpvaluesGUI() -> missing input';
+        errorfound(sprintf(msgboxText), title);
+        return
+end
+
+%
+% Jackknife
+%
+jk = get(handles.checkbox_JK,'Value'); % for Jackknifing  1=>yes
+
+if jk      
+      answer = savemyerpGUI; % open GUI to save erpset
+      if isempty(answer)
+            disp('User selected Cancel')
+            return
+      end
+      jkerpname  = answer{1};
+      if isempty(jkerpname)
+            disp('User selected Cancel') % change
+            return
+      end
+      
+      jkfilename = answer{2};
+      overw      = answer{3}; % over write in memory? 1=yes    
+      
+      if ~isempty(jkfilename) && overw==0
+            [jkpath, jkname, ext] = fileparts(jkfilename);
+            Files   = dir(jkpath);
+            fnames  = {Files.name};
+            detname = regexpi(fnames, jkname, 'match');
+            detname = char([detname{:}]);    
+            
+            if ~isempty(detname)
+                  BackERPLABcolor = [1 0.9 0.3];    % yellow
+                  question = ['The filename file already exists.\n'...
+                              'Do you want to overwrite it?'];
+                  title = 'File already exists';
+                  oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                  set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                  button = questdlg(sprintf(question), title,'No','Yes', 'No');
+                  set(0,'DefaultUicontrolBackgroundColor',oldcolor)
+                  
+                  if ~strcmpi(button,'Yes')
+                        return
+                  end
+            end            
+      end
+      if isempty(jkfilename)
+            jkfilename = '';      
+      end     
+else
+      jkerpname  = '';
+      jkfilename = '';
+end
+
+%
+% ERPsets
+%
 if get(handles.radiobutton_erpset, 'Value')
         erpset = str2num(char(get(handles.edit_erpset, 'String')));
         
@@ -146,13 +339,13 @@ if get(handles.radiobutton_erpset, 'Value')
                 errorfound(msgboxText, title);
                 return
         end
-        if min(erpset)<1 || max(erpset)>handles.nsets
+        if min(erpset)<1 || max(erpset)>handles.actualnset
                 msgboxText =  'Unexisting erpset index(es)';
                 title = 'ERPLAB: grandaveragerGUI() -> wrong input';
                 errorfound(msgboxText, title);
                 return
         else
-                handles.output = {0, erpset, wavg, stdev};
+                handles.output = {0, erpset, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename};
         end
 else
         erpset = cellstr(get(handles.listbox_erpnames, 'String'));
@@ -167,29 +360,25 @@ else
         
         listname = handles.listname;
         
-        if isempty(listname) && nline>1
-                
+        if isempty(listname) && nline>1                
                 BackERPLABcolor = [1 0.9 0.3];    % yellow
-                question{1} = 'You have not saved your list.';
-                question{2} = 'What would you like to do?';
+                question = ['You have not saved your list.\n'...
+                        'What would you like to do?'];
                 title = 'Save List of ERPsets';
                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                button = questdlg(question, title,'Save and Continue','Save As', 'Cancel','Save and Continue');
+                button = questdlg(sprintf(question), title,'Save and Continue','Save As', 'Cancel','Save and Continue');
                 set(0,'DefaultUicontrolBackgroundColor',oldcolor)
                 
                 if strcmpi(button,'Save As')
-                        fullname = savelist(hObject, eventdata, handles);
-                        listname = fullname;
-                        
-                        if isempty(listname)
-                                return
-                        end
-                elseif strcmpi(button,'Save and Continue')
-                        
+                        fullname = savelist(hObject, eventdata, handles);                        
+                        handles.listname = fullname;
+                        % Update handles structure
+                        guidata(hObject, handles);
+                        return
+                elseif strcmpi(button,'Save and Continue')                        
                         fulltext = char(get(handles.listbox_erpnames,'String'));
-                        listname = char(strtrim(get(handles.edit_filelist,'String')));
-                        
+                        listname = char(strtrim(get(handles.edit_filelist,'String')));                        
                         if isempty(listname)
                                 fullname = savelist(hObject, eventdata, handles);
                                 listname = fullname;
@@ -202,8 +391,7 @@ else
                                         fprintf(fid_list,'%s\n', fulltext(i,:));
                                 end
                                 fclose(fid_list);
-                        end
-                        
+                        end                        
                 elseif strcmpi(button,'Cancel') || strcmpi(button,'')
                         handles.output = [];
                         handles.listname = [];
@@ -211,28 +399,13 @@ else
                         guidata(hObject, handles);
                         return
                 end
-        end
-        
-        handles.output = {1, listname, wavg, stdev};
+        end        
+        handles.output = {1, listname, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename};
 end
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
-
-%--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = [];
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.figure1);
-else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
-end
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function radiobutton_folders_Callback(hObject, eventdata, handles)
@@ -249,8 +422,13 @@ if get(hObject, 'Value')
         set(handles.button_clearfile, 'Enable', 'on');
         set(handles.radiobutton_erpset, 'Value', 0);
         
-        if handles.nsets==0
+        if handles.actualnset==0
                 set(handles.radiobutton_erpset, 'Enable', 'off');
+        else
+                set(handles.radiobutton_erpset, 'Enable', 'on');
+        end
+        if isempty(get(handles.listbox_erpnames,'String'))
+                set(handles.listbox_erpnames,'String',{'new erpset'});
         end
         
         set(handles.edit_erpset, 'Enable', 'off');
@@ -263,11 +441,11 @@ end
 function radiobutton_erpset_Callback(hObject, eventdata, handles)
 
 if get(hObject, 'Value')
-        nsets = handles.nsets;
+        actualnset = handles.actualnset;
         set(handles.radiobutton_erpset, 'Value', 1);
         set(handles.radiobutton_erpset, 'Enable', 'on');
         set(handles.edit_erpset, 'Enable', 'on');
-        set(handles.edit_erpset, 'String', num2str(1:nsets));
+        set(handles.edit_erpset, 'String', vect2colon(1:actualnset, 'Delimiter', 'off'));
         set(handles.radiobutton_folders, 'Value', 0);
         set(handles.listbox_erpnames, 'Enable', 'off');
         set(handles.pushbutton_adderpset, 'Enable', 'off');
@@ -285,7 +463,6 @@ function listbox_erpnames_Callback(hObject, eventdata, handles)
 
 fulltext  = get(handles.listbox_erpnames, 'String');
 indxline  = length(fulltext);
-
 currlineindx = get(handles.listbox_erpnames, 'Value');
 
 %--------------------------------------------------------------------------
@@ -343,7 +520,6 @@ else
         set(handles.edit_filelist,'String','');
         % Update handles structure
         guidata(hObject, handles);
-        
 end
 
 %--------------------------------------------------------------------------
@@ -351,18 +527,14 @@ function pushbutton_delerpset_Callback(hObject, eventdata, handles)
 
 fulltext = get(handles.listbox_erpnames, 'String');
 indxline = length(fulltext);
-
 fulltext = char(fulltext); % string matrix
 currline = get(handles.listbox_erpnames, 'Value');
 
 if currline>=1 && currline<indxline
-        
         fulltext(currline,:) = [];
         fulltext = cellstr(fulltext); % cell string
-        
         set(handles.listbox_erpnames, 'String', fulltext);
         listbox_erpnames_Callback(hObject, eventdata, handles)
-        
         handles.fulltext = fulltext;
         indxline = length(fulltext);
         handles.listname = [];
@@ -374,6 +546,15 @@ end
 
 %--------------------------------------------------------------------------
 function checkbox_wavg_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+        set(handles.checkbox_EXCNULLBIN, 'Value', 0)
+        set(handles.checkbox_EXCNULLBIN, 'Enable', 'off')
+else
+   set(handles.checkbox_EXCNULLBIN, 'Enable', 'on')     
+end
+        
+%--------------------------------------------------------------------------
+function checkbox_EXCNULLBIN_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
@@ -381,31 +562,43 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
-function button_loadlist_Callback(hObject, eventdata, handles)
-
-[listname, lispath] = uigetfile({  '*.txt','Text File (*.txt)'; ...
-        '*.*',  'All Files (*.*)'}, ...
-        'Select an edited list', ...
-        'MultiSelect', 'off');
-
-if isequal(listname,0)
-        disp('User selected Cancel')
-        return
-else
-        fullname = fullfile(lispath, listname);
-        disp(['For erpset list user selected  <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
+function button_loadlist_Callback(hObject, eventdata, handles, optionx)
+if nargin<4
+        optionx=0;
 end
-
-fid_list   = fopen( fullname );
+if optionx==0
+        [listname, lispath] = uigetfile({  '*.txt','Text File (*.txt)'; ...
+                '*.*',  'All Files (*.*)'}, ...
+                'Select an edited list', ...
+                'MultiSelect', 'off');
+        
+        if isequal(listname,0)
+                disp('User selected Cancel')
+                return
+        else
+                fullname = fullfile(lispath, listname);
+                disp(['For erpset list user selected  <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
+        end
+else
+        fullname = handles.erpset;
+        if isnumeric(fullname)
+                fullname = '';
+        end
+end
+try
+        fid_list = fopen( fullname );
+catch
+        fprintf('WARNING: %s was not found or is corrupted\n', fullname)
+        return
+end
 formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
 lista = formcell{:};
-
 % extra line forward
-lista  = cat(1, lista, {'new erpset'});
-lentext   = length(lista);
+lista   = cat(1, lista, {'new erpset'});
+lentext = length(lista);
 fclose(fid_list);
 
 if lentext>1
@@ -426,7 +619,6 @@ else
         % Update handles structure
         guidata(hObject, handles);
 end
-
 set(handles.listbox_erpnames,'String',lista);
 
 %--------------------------------------------------------------------------
@@ -444,7 +636,6 @@ if length(fulltext)>1
         
         set(handles.edit_filelist, 'String', fullname )
         set(handles.button_savelist, 'Enable', 'on')
-        
         handles.listname = fullname;
         % Update handles structure
         guidata(hObject, handles);
@@ -472,9 +663,8 @@ if isequal(filename,0)
         disp('User selected Cancel')
         fullname =[];
         return
-else
-        
-        [px, fname, ext, versn] = fileparts(filename);
+else        
+        [px, fname, ext] = fileparts(filename);
         
         if strcmp(ext,'')
                 
@@ -488,13 +678,11 @@ else
         fname = [ fname ext];
         fullname = fullfile(filepath, fname);
         disp(['For saving erpset list, user selected <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
-        
         fid_list   = fopen( fullname , 'w');
         
         for i=1:size(fulltext,1)-1
                 fprintf(fid_list,'%s\n', fulltext(i,:));
-        end
-        
+        end        
         fclose(fid_list);
 end
 
@@ -547,17 +735,48 @@ guidata(hObject, handles);
 function edit_filelist_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
+function checkbox_JK_Callback(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function checkbox_MERT_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+        set(handles.edit_maxMART, 'Enable', 'on')
+else
+        set(handles.edit_maxMART, 'Enable', 'off')
+end
+
+%--------------------------------------------------------------------------
 function edit_filelist_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
+%--------------------------------------------------------------------------
+function checkbox_SEM_Callback(hObject, eventdata, handles)
 
-% --- Executes on button press in checkbox_STD.
-function checkbox_STD_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_STD (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+%--------------------------------------------------------------------------
+function edit_maxMART_Callback(hObject, eventdata, handles)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox_STD
+%--------------------------------------------------------------------------
+function edit_maxMART_CreateFcn(hObject, eventdata, handles)
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = [];
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
+end

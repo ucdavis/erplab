@@ -1,58 +1,61 @@
-% Usage
+% PURPOSE  : 	Insert new code around existing code or replace old code
 %
-% EEG = pop_insertcodearound(EEG, mastercode, newcode, newlate)
+% FORMAT   :
+%
+% EEG = pop_insertcodearound(EEG, targetcode, newcode, newlate)
+%
+% INPUTS   :
 %
 % EEG          - EEG structure (from EEGLAB)
-% mastercode   - array of codes that need neighbor(s) code(s)
+% targetcode   - array of codes that need neighbor(s) code(s)
 % newcode      - new code(s) to insert  (new neighbor(s) code(s))
-% newlat       - latency(ies) in msec for the new code(s) to insert  (new neighbor(s) code(s) latency(ies))
+% newlat       - latency(ies) in msec for the new code(s) to insert (new
+%                neighbor(s) code(s) latency(ies))
 %
-% Note:   mastercode, newcode, and newlate must have the same length.
+% OUTPUTS  :
+%
+% EEG          -Updated EEG with new event codes
+%
+% EXAMPLE  :
 %
 % Example 1:
+% Insert a new code 78, 400ms after each code 14
 %
-% 1)Insert a new code 78  400ms after each code 14
-%
-% >> EEG = pop_insertcodearound(EEG, 14, 78, 400);
-%
+% EEG = pop_insertcodearound(EEG, 14, 78, 400);
 %
 % Example 2:
+% Insert a new code 30, 200ms before each code 120
 %
-% 2)Insert a new code 30  200ms before each code 120
-%
-% >> EEG = pop_insertcodearound(EEG, 120, 30, -200);
-%
+% EEG = pop_insertcodearound(EEG, 120, 30, -200);
 %
 % Example 3:
+% Insert two new codes around each code 102:
+%     - a code 254 200msec earlier
+%     - and a code 255 300ms later.
 %
-% 3)Insert two new codes around each code 102:
-%    - a code 254 200msec earlier
-%    - and a code 255 300ms later.
-%
-% >>EEG = pop_insertcodearound(EEG, [102 102], [254 255], [-200 300]);
-%
+% EEG = pop_insertcodearound(EEG, [102 102], [254 255], [-200 300]);
 %
 % Example 4:
+%  Insert a new code 'LeftResp'  1000 ms before each code 'L1'
 %
-% 3)Insert a new code 'LeftResp'  1000 ms before each code 'L1'
-%
-% >>EEG = pop_insertcodearound(EEG, 'L1', 'LeftResp', -1000);
-%
+% EEG = pop_insertcodearound(EEG, 'L1', 'LeftResp', -1000);
 %
 % Example 5:
+% Insert a new code 'LeftResp'  1000 ms before each code 'L1' and code
+% 'RightResp' 1000 after 'R1'
 %
-% 3)Insert a new code 'LeftResp'  1000 ms before each code 'L1' and code 'RightResp' 1000 after 'R1'
-%
-% >>EEG = pop_insertcodearound(EEG, {'L1', 'R1'}, {'LeftResp' 'RightResp'}, [-1000 1000]);
-%
+% EEG = pop_insertcodearound(EEG, {'L1', 'R1'}, {'LeftResp' 'RightResp'}, [-1000 1000]);
 %
 % Example 6:
+% Replace event code 'Boundary' with event code 'Pause'
 %
-% 3) Replace event code 'Boundary' with event code 'Pause'
-%
-% >>EEG = pop_insertcodearound(EEG, 'Boundary', 'Pause', 0);
+% EEG = pop_insertcodearound(EEG, 'Boundary', 'Pause', 0);
 %
 %
+% See also insertcodearoundGUI.m insertcodearound.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -80,127 +83,212 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG com] = pop_insertcodearound(EEG, mastercode, newcode, newlate)
-
+function [EEG, com] = pop_insertcodearound(EEG, varargin)
 com = '';
-
 if nargin<1
-      help pop_insertcodearound
-      return
+        help pop_insertcodearound
+        return
 end
-if nargin>4
-      msgboxText =  'pop_insertcodearound needs 4 parameters ';
-      title = 'ERPLAB: pop_insertcodearound GUI error';
-      errorfound(msgboxText, title);
-      return
-end
-if isempty(EEG(1).data)
-      msgboxText{1} =  'pop_insertcodearound() cannot work with an empty dataset';
-      title = 'ERPLAB: pop_insertcodearound() error:';
-      errorfound(msgboxText, title);
-      return
-end
-if ~isempty(EEG.epoch)
-      msgboxText =  'pop_insertcodearound() only works with continuous data.';
-      title = 'ERPLAB: pop_insertcodearound GUI error';
-      errorfound(msgboxText, title);
-      return
+if isobject(EEG) % eegobj
+        whenEEGisanObject % calls a script for showing an error window
+        return
 end
 if nargin==1
-      answer  = insertcodearoundGUI;
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      mastercode = answer{1};
-      newcode    = answer{2};
-      newlate    = answer{3};
-end
-if ~iscell(mastercode) && ~iscell(newcode)
-      if size(mastercode,1)>1 || size(newcode,1)>1 || size(newlate,1)>1
-            msgboxText =  'pop_insertcodearound() only works with row arrays.';
-            title = 'ERPLAB: pop_insertcodearound GUI error';
-            errorfound(msgboxText, title);
-            return
-      end
-      
-      if size(mastercode,1)~=size(newcode,1) || size(newcode,1)~=size(newlate,1)
-            msgboxText =  'Seed codes, new codes, and new latencies array must have the same size.';
-            title = 'ERPLAB: pop_insertcodearound GUI error';
-            errorfound(msgboxText, title);
-            return
-      end
+        if isempty(EEG(1).data)
+                msgboxText =  'pop_insertcodearound() cannot work with an empty dataset';
+                title = 'ERPLAB: pop_insertcodearound() error:';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isempty(EEG(1).epoch)
+                msgboxText =  'pop_insertcodearound() only works with continuous data.';
+                title = 'ERPLAB: pop_insertcodearound GUI error';
+                errorfound(msgboxText, title);
+                return
+        end
+        
+        %
+        % Call GUI
+        %
+        answer  = insertcodearoundGUI;
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        targetcode  = answer{1};
+        newcode     = answer{2};
+        newlate     = answer{3};
+        EEG.setname = [EEG.setname '_inscoa'];
+        
+        %
+        % Somersault
+        %
+        [EEG, com] = pop_insertcodearound(EEG, 'TargetCode', targetcode, 'NewCode', newcode, ...
+                'Latency', newlate, 'History', 'gui');
+        return
 end
 
-EEG = insertcodearound(EEG, mastercode, newcode, newlate);
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('EEG');
+% option(s)
+p.addParamValue('TargetCode', []);
+p.addParamValue('TargetBin', []);
+p.addParamValue('NewCode', []);
+p.addParamValue('Latency', [], @isnumeric);
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('History', 'script', @ischar); % history from scripting
 
-%
-% Master code
-%
-if iscell(mastercode)
-      masterstr = sprintf('{');
-      for i=1:length(mastercode)
-            
-            if ischar(mastercode{i})
-                  masterstr = sprintf('%s ''%s''', masterstr, mastercode{i});
-            else
-                  masterstr = sprintf('%s %s', masterstr, num2str(mastercode{i})) ;
-            end
-      end
-      masterstr = sprintf('%s}', masterstr);
+p.parse(EEG, varargin{:});
+
+targetcode = p.Results.TargetCode;
+targetbin  = p.Results.TargetBin;
+newcode    = p.Results.NewCode;
+newlate    = p.Results.Latency;
+
+if strcmpi(p.Results.Warning, 'on')
+        rwwarn = 1;
 else
-      if ischar(mastercode)
-            masterstr = ['''' mastercode ''''];
-      else
-            masterstr = ['[' num2str(mastercode) ']'];
-      end
+        rwwarn = 0;
 end
-
-%
-% Newcode
-%
-if iscell(newcode)
-      newcodstr = sprintf('{');
-      for i=1:length(newcode)
-            
-            if ischar(newcode{i})
-                  newcodstr = sprintf('%s ''%s''', newcodstr, newcode{i});
-            else
-                  newcodstr = sprintf('%s %s', newcodstr, num2str(newcode{i})) ;
-            end
-      end
-      newcodstr = sprintf('%s}', newcodstr);
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
 else
-      if ischar(newcode)
-            newcodstr = ['''' newcode ''''];
-      else
-            newcodstr = ['[' num2str(newcode) ']'];
-      end
+        shist = 0; % off
 end
-
-%
-% New late
-%
-if iscell(newlate)
-      latestr = sprintf('{');
-      for i=1:length(newlate)
-            if ischar(mastercode{i})
-                  latestr = sprintf('%s ''%s''', latestr, newlate{i});
-            else
-                  latestr = sprintf('%s %s', latestr, num2str(newlate{i})) ;
-            end
-      end
-      latestr = sprintf('%s}', latestr);
+if ~isempty(targetcode) && isempty(targetbin) && ~isempty(newcode)
+        if ~iscell(targetcode) && ~iscell(newcode)
+                if size(targetcode,1)>1 || size(newcode,1)>1 || size(newlate,1)>1
+                        msgboxText =  'pop_insertcodearound() only works with row arrays.';
+                        title = 'ERPLAB: pop_insertcodearound GUI error';
+                        errorfound(msgboxText, title);
+                        return
+                end
+                if size(targetcode,1)~=size(newcode,1) || size(newcode,1)~=size(newlate,1)
+                        msgboxText =  'Seed codes (or bins), new codes, and new latencies array must have the same size.';
+                        title = 'ERPLAB: pop_insertcodearound GUI error';
+                        errorfound(msgboxText, title);
+                        return
+                end
+        end
+elseif isempty(targetcode) && ~isempty(targetbin) && ~isempty(newcode)       
+        if ~isfield(EEG.event, 'bini')
+                msgboxText = 'You specified "targetbin" but EEG.event.bini field does not exist.\nRun Binlister first.';
+                title = 'ERPLAB: pop_insertcodearound GUI error';
+                errorfound(sprintf(msgboxText), title);
+                return
+        end
+        if ~iscell(targetbin) && ~iscell(newcode)
+                if size(targetbin,1)>1 || size(newcode,1)>1 || size(newlate,1)>1
+                        msgboxText =  'pop_insertcodearound() only works with row arrays.';
+                        title = 'ERPLAB: pop_insertcodearound GUI error';
+                        errorfound(msgboxText, title);
+                        return
+                end
+                if size(targetbin,1)~=size(newcode,1) || size(newcode,1)~=size(newlate,1)
+                        msgboxText =  'Seed codes (or bins), new codes, and new latencies array must have the same size.';
+                        title = 'ERPLAB: pop_insertcodearound GUI error';
+                        errorfound(msgboxText, title);
+                        return
+                end
+        end
+elseif ~isempty(targetcode) && ~isempty(targetbin) && ~isempty(newcode)
+        msgboxText =  'You can specify either targetcode or targetbin but not both...';
+        title = 'ERPLAB: pop_insertcodearound GUI error';
+        errorfound(msgboxText, title);
+        return
+elseif isempty(newcode)
+        msgboxText =  'You must specify new code(s) for inserting/replacing.';
+        title = 'ERPLAB: pop_insertcodearound GUI error';
+        errorfound(msgboxText, title);
+        return
 else
-      if ischar(mastercode)
-            latestr = ['''' newlate ''''];
-      else
-            latestr = ['[' num2str(newlate) ']'];
-      end
+        msgboxText =  'Missing event code (or bin), or new latency.';
+        title = 'ERPLAB: pop_insertcodearound GUI error';
+        errorfound(msgboxText, title);
+        return
 end
 
-com = sprintf('%s = pop_insertcodearound(%s, %s, %s, %s);', inputname(1), inputname(1), ...
-      masterstr, newcodstr, latestr);
+%
+% process multiple datasets April 13, 2011 JLC
+%
+if length(EEG) > 1
+        [ EEG, com ] = eeg_eval( 'pop_insertcodearound', EEG, 'warning', 'on', 'params', {targetcode, newcode, newlate});
+        return;
+end
 
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+%
+% subroutine
+%
+EEG = insertcodearound(EEG, targetcode, targetbin, newcode, newlate);
+
+%
+% History
+%
+skipfields = {'EEG','History'};
+fn     = fieldnames(p.Results);
+com = sprintf('%s = pop_insertcodearound( %s ', inputname(1), inputname(1));
+
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        if ischar([fn2res{:}])
+                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
+                                        else
+                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        end
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                if strcmpi(fn2com,'Criterion')
+                                        if p.Results.Criterion<100
+                                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                                        end
+                                else
+                                        com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                                end
+                        end
+                end
+        end
+end
+com = sprintf( '%s );', com);
+
+% get history from script. EEG
+switch shist
+        case 1 % from GUI
+                com = sprintf('%s %% GUI: %s', com, datestr(now));
+                %fprintf('%%Equivalent command:\n%s\n\n', com);
+                displayEquiComERP(com);
+        case 2 % from script
+                EEG = erphistory(EEG, [], com, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                com = '';
+                return
+end
+
+%
+% Completion statement
+%
+msg2end
 return
+

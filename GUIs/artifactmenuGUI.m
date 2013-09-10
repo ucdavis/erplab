@@ -1,4 +1,3 @@
-function varargout = artifactmenuGUI(varargin)
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
@@ -20,6 +19,7 @@ function varargout = artifactmenuGUI(varargin)
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+function varargout = artifactmenuGUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -49,12 +49,20 @@ try
         dlg_title  = varargin{2};
         def        = varargin{3};% memory
         defx       = varargin{4};% in case of reset
+        chanlabels =  varargin{5};
 catch
         prompt     = {'Test Period (ms)', 'Voltage Threshold (uV)', 'Moving Windows Full Width (ms)',...
                 'Window Step (ms)','Channel(s)'};
         dlg_title  =  'Input threshold';
         def        = {[0 0] 0 0 0 0 0};
         defx       = def  ;
+        chanlabels =  [];
+end
+viewer  = erpworkingmemory('artifact_viewer');
+if ~isempty(viewer)
+        set(handles.checkbox_viewer, 'Value', viewer{:});
+else
+        set(handles.checkbox_viewer, 'Value', 1); % default: ON
 end
 
 lprompt = length(prompt);
@@ -75,16 +83,13 @@ for i=1:lprompt
 end
 for i=lprompt+1:5
         set(handles.(['text' num2str(i)]),'String','');
-        set(handles.(['text' num2str(i)]),'Visible','off');
-        
+        set(handles.(['text' num2str(i)]),'Visible','off');        
         set(handles.(['edit' num2str(i)]),'String','');
         set(handles.(['edit' num2str(i)]),'Visible','off');
 end
-
 for j=1:8
         handles.flg(j) = 0;
 end
-
 for i=2:8
         set(handles.(['flag_' num2str(i)]),'Value', 0);
 end
@@ -95,17 +100,47 @@ if flagx>1
         set(handles.(['flag_' num2str(flagx)]),'value', 1);
         handles.flg(flagx) = 1;
 end
-% Update handles structure
-guidata(hObject, handles);
 
 set(handles.flag_1,'Value',1)
 set(handles.flag_1,'Enable','inactive')
-set(handles.figure1, 'Name', dlg_title)
+set(handles.gui_chassis, 'Name', dlg_title)
 
+
+%
+% Prepare List of current Channels
+%
+listch = {''};
+nchan  = length(chanlabels); % Total number of channels
+if isempty(chanlabels)
+        for e = 1:nchan
+                chanlabels{e} = ['Ch' num2str(e)];
+        end
+end
+for ch =1:nchan
+        listch{ch} = [num2str(ch) ' = ' chanlabels{ch} ];
+end
+
+handles.listch     = listch;
+handles.indxlistch = def{lprompt}; % channel array
+
+%
+% Paint GUI
+%
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
 % UIWAIT makes artifactmenuGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = artifactmenuGUI_OutputFcn(hObject, eventdata, handles)
@@ -114,7 +149,7 @@ function varargout = artifactmenuGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.1)
 
 %--------------------------------------------------------------------------
@@ -304,18 +339,51 @@ for i=2:8
 end
 
 %--------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+%fctn = dbstack;
+%fctn = fctn(end).name;
+%doc(fctn) 
+web http://erpinfo.org/erplab/erplab-documentation/manual/Artifact_Detection.html -browser
+
+%--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
 
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
+
+% % % %--------------------------------------------------------------------------
+% % % function popupmenu_channels_Callback(hObject, eventdata, handles)
+% % % lprompt = handles.lprompt;
+% % % % nchan   = handles.nchan;
+% % % numch = get(hObject, 'Value');
+% % % nums  = str2num(get(handles.(['edit' num2str(lprompt)]),'String'));
+% % % nums  = [nums numch];
+% % % if isempty(nums)
+% % %         msgboxText{1} =  'Invalid channel indexing.';
+% % %         title = 'ERPLAB: basicfilterGUI() error:';
+% % %         errorfound(msgboxText, title);
+% % %         return
+% % % end
+% % % chxstr = vect2colon(nums,'Delimiter','off', 'Repeat', 'off');
+% % % set(handles.(['edit' num2str(lprompt)]),'String', chxstr)
+% % % 
+% % % %--------------------------------------------------------------------------
+% % % function popupmenu_channels_CreateFcn(hObject, eventdata, handles)
+% % % 
+% % % % Hint: popupmenu controls usually have a white background on Windows.
+% % % %       See ISPC and COMPUTER.
+% % % if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+% % %     set(hObject,'BackgroundColor','white');
+% % % end
 
 %--------------------------------------------------------------------------
 function pushbutton_accept_Callback(hObject, eventdata, handles)
 
 lprompt = handles.lprompt;
 outputv = cell(1);
+viewer  = get(handles.checkbox_viewer, 'Value');
 
 for k=1:lprompt
         outputv{k} = str2num(get(handles.(['edit' num2str(k)]), 'String'));
@@ -330,23 +398,57 @@ for i=2:8
 end
 
 outputv{end+1} = [1 flagout]; % flag 1 is set by default (always) 
-
+outputv{end+1} = viewer;      % open viewer
 handles.output = outputv;
+
+erpworkingmemory('artifact_viewer', {viewer});
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
+function checkbox_viewer_Callback(hObject, eventdata, handles)
 
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+%--------------------------------------------------------------------------
+function pushbutton_browsechan_Callback(hObject, eventdata, handles)
+lprompt    = handles.lprompt;
+listch     = handles.listch;
+indxlistch = handles.indxlistch;
+indxlistch = indxlistch(indxlistch<=length(listch));
+titlename  = 'Select Channel(s)';
+
+if get(hObject, 'Value')
+        if ~isempty(listch)
+                ch = browsechanbinGUI(listch, indxlistch, titlename);
+                if ~isempty(ch)
+                        %set(handles.edit_channels, 'String', vect2colon(ch, 'Delimiter', 'off'));
+                        set(handles.(['edit' num2str(lprompt)]),'String', vect2colon(ch, 'Delimiter', 'off'));
+                        handles.indxlistch = ch;
+                        % Update handles structure
+                        guidata(hObject, handles);
+                else
+                        disp('User selected Cancel')
+                        return
+                end
+        else
+                msgboxText =  'No channel information was found';
+                title = 'ERPLAB: basicfilter GUI input';
+                errorfound(msgboxText, title);
+                return
+        end
+end
+
+%--------------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         %The GUI is still in UIWAIT, us UIRESUME
         handles.output = '';
         %Update handles structure
         guidata(hObject, handles);
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+        delete(handles.gui_chassis);
 end

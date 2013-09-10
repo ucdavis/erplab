@@ -51,7 +51,6 @@ if isempty(EEG.data)
 end
 
 np       = round(winsec*EEG.srate + 1);
-
 fprintf('Time window = %g sec    =>    %g points\n', winsec, np);
 
 if ~mod(np,2) % is even?

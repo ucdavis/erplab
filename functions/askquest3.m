@@ -1,3 +1,4 @@
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -24,10 +25,9 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 function button =askquest3(question, tittle)
-
 button = '';
-
 if iscell(question)
         disp(question{1})
 else
@@ -35,7 +35,6 @@ else
 end
 
 BackERPLABcolor = [1 0.9 0.3]; %[ 0.65 0.68 .6];
-
 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
 button = questdlg(question, tittle,'Yes','Hold', 'Cancel','Yes');

@@ -1,7 +1,11 @@
-% Usage
+% PURPOSE: subroutine for pop_savemyerp.m
 %
-% >> [ERP serror]= saveERP(ERP, erpnamex, filenamex)
+% FORMAT:
 %
+% [ERP serror]= saveERP(ERP, erpnamex, filenamex)
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -29,7 +33,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP serror] = saveERP(ERP, filenamex, modegui)
+function [ERP serror filenamex] = saveERP(ERP, filenamex, modegui, warnop)
 
 serror = 0;
 
@@ -55,6 +59,9 @@ if isempty(ERP.bindata)
         errorfound(msgboxText, tittle);
         return
 end
+if nargin<4
+        warnop = 0; % no warning for overwriting a file
+end
 if nargin<3
         modegui = 0; % no uiputfile
 end
@@ -76,11 +83,8 @@ end
 if isempty(namef)
         namef = '*.erp';
 end
-
 if modegui==1 % open uiputfile
-
-        [pathstr, namedef, ext, versn] = fileparts(char(namef)) ;
-
+        [pathstr, namedef, ext] = fileparts(char(namef));
         [erpfilename, erppathname, indxs] = uiputfile({'*.erp','ERP (*.erp)';...
                 '*.mat','ERP (*.mat)'}, ...
                 'Save ERP structure as',...
@@ -92,7 +96,7 @@ if modegui==1 % open uiputfile
                 return
         end
 
-        [pathstr, erpfilename, ext, versn] = fileparts(erpfilename) ;
+        [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
 
         if indxs==1
                 ext = '.erp';
@@ -100,15 +104,12 @@ if modegui==1 % open uiputfile
                 ext = '.mat';
         end
 else % direct saving
-
         if isempty(filenamex)
                 serror = 1;
                 return
         end
-
-        [erppathname, erpfilename, ext, versna] = fileparts(filenamex);
+        [erppathname, erpfilename, ext] = fileparts(filenamex);
 end
-
 if isequal(erpfilename,0)
         disp('User selected Cancel')
         serror=1;
@@ -125,16 +126,28 @@ else
         checking = checkERP(ERP);
         
         if checking==0
-                msgboxText{1} =  'Error: ERP structure has error.';
-                tittle = 'ERPLAB: pop_saveERP() error:';
-                errorfound(msgboxText, tittle);
-                serror = 1;
-                ERP = ERPaux;
-                return
+              msgboxText =  'Error: ERP structure has error.';
+              tittle = 'ERPLAB: pop_saveERP() error:';
+              errorfound(msgboxText, tittle);
+              serror = 1;
+              ERP = ERPaux;
+              return
         end
         
         filenamex = fullfile(erppathname, [erpfilename ext]);
         % poner mensaje en caso de errores en ERP struct
+        
+        if exist(filenamex, 'file')~=0 && warnop==1
+              msgboxText =  ['This ERPset already exist.\n'...;
+                    'Would you like to overwrite it?'];
+              title  = 'ERPLAB: WARNING!';
+              button = askquest(sprintf(msgboxText), title);
+              if strcmpi(button,'no')
+                    disp('User canceled')
+                    ERP = ERPaux;
+                    return
+              end
+        end      
         save(filenamex, 'ERP');
 end
 return

@@ -1,39 +1,46 @@
+% PURPOSE  : 	To view the ERPLAB Toolbox User's manual
+% 
+% FORMAT   : 
+% 
+% pop_erphelp
+% 
+% INPUTS   :
+% 
+% -	No inputs necessary
+% 
+% OUTPUTS  :
+% 
+% -	Will open the ERPLAB Toolbox User's Manual in an html file
 %
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2009
 
+%b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
+%
+% ERPLAB Toolbox
+% Copyright © 2007 The Regents of the University of California
+% Created by Javier Lopez-Calderon and Steven Luck
+% Center for Mind and Brain, University of California, Davis,
+% javlopez@ucdavis.edu, sjluck@ucdavis.edu
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 function com = pop_erphelp
-
-com = '';
-fprintf('\nSearching for help file...\n');
-
-mpath = path;
-
-if ispc
-    erpmpath1 = regexpi(mpath,'\;','split')';
-else
-    erpmpath1 = regexpi(mpath,'\:','split')';
-end
-
-erpmpath2 = regexpi(erpmpath1,'.*erplab.*','match')';
-erpmpath2 = [erpmpath2{:}]';
-erpmpath3 = regexpi(erpmpath2,'.*erplab_help$','match')';
-erpmpath3 = char(unique([erpmpath3{:}]'));
-dir1 = fullfile(erpmpath3, 'erplab_manual.html');
-
-fprintf('\nFound help file in %s\n', dir1);
-
-% help eegplugin_erplab
-if ispc
-    winopen(dir1)
-else
-    dir1 = ['"file://' dir1 '"'];
-    web(dir1, '-browser')
-end
-
-
+web http://erpinfo.org/erplab/erplab-documentation/manual -browser 
 com = 'pop_erphelp';
 return

@@ -14,6 +14,5 @@ for i=1:length(direrp)
         delete(tempname1)
         delete(tempname2)
 end
-
 recycle off;
 disp('Clear!')

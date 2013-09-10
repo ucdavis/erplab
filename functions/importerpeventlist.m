@@ -1,13 +1,31 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% PURPOSE: subroutine for pop_importeventlist.m
+%          imports EVENTLIST, from a text file, into the ERP structure
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT:
 %
+% [ERP EVENTLIST serror] = importerpeventlist(ERP, elfilename )
+%
+% INPUTS:
+%
+% ERP           - ERPset
+% elfilename    - text file
+%
+% OUTPUT
+%
+% ERP           - EVENTLIST structure
+% EVENTLIST     - EVENTLIST structure
+% serror        - error flag. 0 means no error; 1 means error found
+%
+%
+% See also pop_importeventlist.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2008
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -32,7 +50,6 @@
 
 function [ERP EVENTLIST serror] = importerpeventlist(ERP, elfilename )
 
-% fprintf('importerpeventlist.m : START\n');
 serror = 0; % no error by default
 
 if nargin<1
@@ -56,7 +73,7 @@ isbin  = 1;
 detect = 0;
 nada   = 0;
 j      = 1;
-
+fprintf('Working...\n');
 while isbin
         
         p0     = ftell(fid_bl);

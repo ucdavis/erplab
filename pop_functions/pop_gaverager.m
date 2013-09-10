@@ -1,20 +1,44 @@
-% Usage
+% PURPOSE  : 	Averages bin-based ERPsets (grand average)
 %
-% i)  ERP = pop_gaverager(ALLERP, [erp_index], iswavg)
+% FORMAT   :
+%
+% ERP = pop_gaverager( ALLERP , Parameters);
+%
+%
+% INPUTS   :
+%
+% ALLERP            - structure array of ERP structures (ERPsets)
+%                     To read the ERPset from a list in a text file,
+%                     replace ALLERP by the whole filename.
+%
+% The available parameters are as follows:
+%
+% 'Erpsets'         - index(es) pointing to ERP structures within ALLERP (only valid when ALLERP is specified)
+% 'Weighted'        - 'on' means apply weighted-average, 'off' means classic average.
+% 'SEM'             - Get standard error of the mean. 'on' or 'off'
+% 'ExcludeNullBin'  - Exclude any null bin from non-weighted averaging (Bin that has zero "epochs" when averaged)
+% 'Warning'         - Warning 'on' or 'off'
+% 'Criterion'       - Max allowed mean artifact detection proportion
+%
+% OUTPUTS  :
+%
+% ERP               - data structure containing the average of all specified datasets.
+%
+%
+% EXAMPLE  :
+%
+% ERP = pop_gaverager( ALLERP , 'Erpsets',1:4, 'Criterion',100, 'SEM',...
+% 'on', 'Warning', 'on', 'Weighted', 'on' );
 %
 % or
 %
-% ii) ERP = pop_gaverager('loadlist', filename, iswavg)
+% ERP = pop_gaverager('C:\Users\Work\Documents\MATLAB\ERP_List.txt', 'Criterion',100,...
+% 'SEM', 'on', 'Warning', 'on', 'Weighted', 'on');
 %
 %
-% Inputs:
+% See also grandaveragerGUI.m gaverager.m pop_averager.m averager.m
 %
-% ALLERP       - structure array of ERP structures (ERPsets)
-% erp_index    - index(ces) pointing to ERP structures within ALLERP
-% filename     - name of a text file containing the list of ERPset filenames (with path)
-% iswavg       - 1 means apply weight-average, 0 means classic average.
-%
-%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -41,331 +65,317 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+% Thanks to Pierre Jolicoeur and Pia Amping for warning us about
+% pop_gaverager when working with ERPsets that contains bin(s) with 0 segments.
+%
 
-function [ERPout erpcom] = pop_gaverager(varargin)
-
+function [ERP, erpcom] = pop_gaverager(ALLERP, varargin)
 erpcom = '';
-ERPout = preloadERP;
-
-if nargin>4
-      error('ERPLAB says: error at pop_gaverager(). Wrong number of inputs.')
-elseif nargin<1
-      help pop_gaverager
-      return
+ERP    = preloadERP;
+if nargin<1
+        help pop_gaverager
+        return
 end
-
 if nargin==1  % GUI
-      
-      aux = varargin{1};
-      
-      if isstruct(aux)
-            iserp = iserpstruct(aux(1));
-            
-            if iserp
-                  ALLERP = aux;
-            else
-                  ALLERP = [];
-            end
-      else
-            ALLERP = [];
-      end
-      
-      inputgui = grandaveragerGUI(ALLERP);
-      
-      if isempty(inputgui)
-            disp('User selected Cancel')
-            return
-      end
-      
-      optioni  = inputgui{1}; %1 means from hard drive, 0 means from erpsets menu
-      erpset   = inputgui{2};
-      wavg     = inputgui{3};
-      stdev    = inputgui{4};
-      
-      if optioni==1 % from files
-            filelist = erpset;
-      else % from erpsets
-            nfile        = length(erpset);
-            erpsetArray = erpset;
-      end
-      
-      menup =1;
-      
-else  % Scripting
-      
-      if nargin>4
-            error('ERPLAB says: error at pop_gaverager(). Wrong number of inputs')
-      end
-      if nargin<2
-            error('ERPLAB says: error at pop_gaverager(). Missing input')
-      end
-      if nargin<4
-            stdev = 0;
-      else
-            stdev = varargin{4};
-      end
-      if nargin<3
-            wavg = 0; % 1=weighted average;  0=classic average
-      else
-            wavg = varargin{3};
-      end
-      
-      aux   = varargin{1};
-      iserp = iserpstruct(aux(1));
-      
-      if iserp
-            ALLERP = aux;
-            erpsetArray = varargin{2};
-            nfile        = length(erpsetArray);
-            optioni = 0;
-      else
-            if ischar(aux)
-                  if strcmpi(aux,'loadlist')
-                        filelist = varargin{2};
-                        optioni  = 1;
-                  else
-                        error(['ERPLAB says: cannot recognize ' aux ' as an input'])
-                  end
-            else
-                  error(['ERPLAB says: cannot recognize ' aux ' as an input'])
-            end
-      end
-      menup = 0;
-end
-
-if optioni==1
-      
-      disp(['pop_gaverager(): For file-List, user selected ', filelist])
-      
-      try
-            fid_list   = fopen( filelist );
-            inputfname   = textscan(fid_list, '%[^\n]','CommentStyle','#');
-            fclose(fid_list);
-            
-            inputfname    = strtrim(cellstr(inputfname{:}));
-            nfile = length(inputfname);
-      catch
-            error([filelist ' couldn''t be loaded'])
-      end
-end
-
-naccepted = [];
-nrejected = [];
-ninvalid  = [];
-narflags  = [];
-
-for j=1:nfile
-      
-      fprintf('Including ERP #%g...\n', j);
-      
-      if optioni==1
-            ERPTX = load(inputfname{j}, '-mat');
-            ERPT  = ERPTX.ERP;
-      else
-            ERPT = ALLERP(erpsetArray(j));
-      end
-      
-      [ERPT conti serror] = olderpscan(ERPT, menup);
-      
-      if conti==0
-            break
-      end
-      
-      if serror
-            msgboxText =  ['Your erpset %s is not compatible at all with the current ERPLAB version.\n'...
-                           'Please, try upgrading your ERP structure.'];
-            title = 'ERPLAB: erp_loaderp() Error';
-            errorfound(sprintf(msgboxText, ERP.filename), title);
-            break
-      end
-      
-      if j>1
-            % basic test for number of channels (for now...)
-            if  pre_nchan ~= ERPT.nchan
-                  msgboxText =  sprintf('Erpsets #%g and #%g have different number of channels!', j-1, j);
-                  title = 'ERPLAB: pop_gaverager() Error';
-                  errorfound(msgboxText, title);
-                  return
-            end
-            
-            % basic test for number of points (for now...)
-            if pre_pnts  ~= ERPT.pnts
-                  msgboxText =  sprintf('Erpsets #%g and #%g have different number of points!', j-1, j);
-                  title = 'ERPLAB: pop_gaverager() Error';
-                  errorfound(msgboxText, title);
-                  return
-            end
-            
-            % basic test for number of bins (for now...)
-            if pre_nbin  ~= ERPT.nbin
-                  msgboxText =  sprintf('Erpsets #%g and #%g have different number of bins!', j-1, j);
-                  title = 'ERPLAB: pop_gaverager() Error';
-                  errorfound(msgboxText, title);
-                  return
-            end
-      end
-      
-      pre_nchan = ERPT.nchan;
-      pre_pnts  = ERPT.pnts;
-      pre_nbin  = ERPT.nbin;
-      
-      if j==1
-            workfileArray = ERPT.workfiles;
-            [nch npnts nbin] = size(ERPT.bindata);
-            sumERP       = zeros(nch,npnts,nbin);
-            if stdev
-                  sumERP2      = zeros(nch,npnts,nbin);
-            end
-            naccepted    = zeros(1,nbin);
-            nrejected    = zeros(1,nbin);
-            ninvalid     = zeros(1,nbin);
-            narflags     = zeros(nbin,8);
-            ERP.erpname  = [];
-            ERP.filename = [];
-            ERP.filepath = [];
-            ERP.subject  = ERPT.subject;
-            ERP.nchan    = ERPT.nchan;
-            ERP.nbin     = ERPT.nbin;
-            ERP.pnts     = ERPT.pnts;
-            ERP.srate    = ERPT.srate;
-            ERP.xmin     = ERPT.xmin;
-            ERP.xmax     = ERPT.xmax;
-            ERP.times    = ERPT.times;
-            ERP.bindata  = [];
-            ERP.binerror = [];
-            ERP.chanlocs = ERPT.chanlocs;
-            ERP.ref      = ERPT.ref;
-            ERP.bindescr = ERPT.bindescr;
-            ERP.history  = ERPT.history;
-            ERP.saved    = ERPT.saved;
-            ERP.isfilt   = ERPT.isfilt;
-            ERP.version  = ERPT.version;
-            EVEL         = ERPT.EVENTLIST;
-            ALLEVENTLIST(1:length(EVEL)) = EVEL;
-      else
-            workfileArray = [workfileArray ERPT.workfiles];
-            EVEL =  ERPT.EVENTLIST;
-            ALLEVENTLIST(end+1:end+length(EVEL)) = EVEL;
-      end
-      
-      countbinOK = [ERPT.ntrials.accepted]; % These work as weights
-      
-      if wavg
-            for bb=1:pre_nbin
-                  sumERP(:,:,bb)  = sumERP(:,:,bb)  + ERPT.bindata(:,:,bb).*countbinOK(bb);      % weighted sum: Sum(wi*xi)
-                  if stdev
-                        sumERP2(:,:,bb) = sumERP2(:,:,bb)  + (ERPT.bindata(:,:,bb).^2).*countbinOK(bb); % weighted sum of squares: Sum(wi*xi^2)
-                  end
-            end
-      else
-            sumERP    = sumERP + ERPT.bindata;              % general sum: Sum(xi)
-            if stdev
-                  sumERP2   = sumERP2 + ERPT.bindata.^2;  % general sum of squares: Sum(xi^2)
-            end
-      end
-      
-      naccepted = naccepted + countbinOK;             % sum of (current) weights: Sum(wi)
-      nrejected = nrejected + ERPT.ntrials.rejected;
-      ninvalid  = ninvalid  + ERPT.ntrials.invalid;
-      
-      %
-      % Sum flags counter per bin
-      %
-      if isfield(ERPT.ntrials, 'arflags')
-            narflags  = narflags  + ERPT.ntrials.arflags;
-      end
-end
-
-if conti==0
-      return
-end
-if serror==1
-      fprintf('pop_gaverager() cancelled.\n');
-      return
-end
-
-ERP.erpname   = [];
-ERP.workfiles = workfileArray;
-ERP.EVENTLIST = ALLEVENTLIST;
-
-if wavg
-      for bb=1:pre_nbin            
-            if naccepted(bb)>0
-                  
-                  ERP.bindata(:,:,bb) = sumERP(:,:,bb)./naccepted(bb); % get ERP!  --> weighted sum is divided by the sum of the weights
-                  
-                  if stdev
-                        if bb==1
-                              fprintf('\nEstimating weighted standard deviation of data...\n');
+        if ~iscell(ALLERP) && ~ischar(ALLERP)
+                if isstruct(ALLERP)
+                        iserp = iserpstruct(ALLERP(1));
+                        if ~iserp
+                                ALLERP = [];
                         end
+                        actualnset = length(ALLERP);
+                else
+                        ALLERP = [];
+                        actualnset = 0;
+                end
+                
+                def  = erpworkingmemory('pop_gaverager');
+                if isempty(def)
+                        def = { actualnset 0 '' 100 0 1 1};
+                else
+                        def{1}=actualnset;
+                end
+                if isnumeric(def{3}) && ~isempty(ALLERP)
+                        if max(def{3})>length(ALLERP)
+                                def{3} = def{3}(def{3}<=length(ALLERP));
+                        end
+                        if isempty(def{3})
+                                def{3} = 1;
+                        end
+                end
+                
+                %
+                % Open Grand Average GUI
+                %
+                answer = grandaveragerGUI(def);
+                
+                if isempty(answer)
+                        disp('User selected Cancel')
+                        return
+                end
+                
+                optioni    = answer{1}; %1 means from a filelist, 0 means from erpsets menu
+                erpset     = answer{2};
+                artcrite   = answer{3}; % max percentage of rej to be included in the gaverage
+                wavg       = answer{4}; % 0;1
+                excnullbin = answer{5}; % 0;1
+                stderror   = answer{6}; % 0;1
+                jk         = answer{7}; % 0;1
+                jkerpname  = answer{8}; % erpname for JK grand averages
+                jkfilename = answer{9}; % filename for JK grand averages
+                
+                if optioni==1 % from files
+                        filelist    = erpset;
+                        disp(['pop_gaverager(): For file-List, user selected ', filelist])
+                        ALLERP = {ALLERP, filelist}; % truco
+                else % from erpsets menu
+                        %erpset  = erpset;
+                end
+                
+                def = {actualnset, optioni, erpset, artcrite, wavg, excnullbin, stderror};
+                erpworkingmemory('pop_gaverager', def);
+                if stderror==1
+                        stdsstr = 'on';
+                else
+                        stdsstr = 'off';
+                end
+                if excnullbin==1
+                        excnullbinstr = 'on'; % exclude null bins.
+                else
+                        excnullbinstr = 'off';
+                end
+                if wavg==1
+                        wavgstr = 'on';
+                else
+                        wavgstr = 'off';
+                end
+                if jk==1
+                        %
+                        % Jackknife
+                        %
+                        [ALLERP, erpcom]  = pop_jkgaverager(ALLERP, 'Erpsets', erpset, 'Criterion', artcrite,...
+                                'SEM', stdsstr, 'Weighted', wavgstr, 'Erpname', jkerpname, 'Filename', jkfilename,...
+                                'Warning', wavgstr);
                         
-                        insqrt = sumERP2(:,:,bb).*naccepted(bb) - sumERP(:,:,bb).^2;
-                        
-                        if nnz(insqrt<0)>0
-                              ERP.binerror(:,:,bb)= zeros(nch,npnts,1);
+                        assignin('base','ALLERP', ALLERP);  % save to workspace
+                        updatemenuerp(ALLERP); % add a new erpset to the erpset menu
+                else
+                        %
+                        % Somersault
+                        %
+                        %[ERP erpcom]  = pop_gaverager(ALLERP, 'Erpsets', erpset, 'Loadlist', filelist,'Criterion', artcrite,...
+                        %        'SEM', stdsstr, 'Weighted', wavgstr, 'Saveas', 'on');
+                        [ERP, erpcom]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
+                                'ExcludeNullBin', excnullbinstr,'Weighted', wavgstr, 'Saveas', 'on', 'Warning', wavgstr, 'History', 'gui');
+                end
+                pause(0.1)
+                return
+        else
+                fprintf('pop_gaverager() was called using a single (non-struct) input argument.\n\n');
+        end
+end
+
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ALLERP');
+% option(s)
+p.addParamValue('ERPindex', []);               % same as Erpsets
+p.addParamValue('Erpsets', []);
+p.addParamValue('Criterion', 100, @isnumeric); %  0-100; threshold of artifacts, in %, for delivering a warning
+p.addParamValue('Weighted', 'off', @ischar);   % 'on', 'off'
+p.addParamValue('SEM', 'off', @ischar);        % 'on', 'off'
+p.addParamValue('ExcludeNullBin', 'on', @ischar); % exclude any null bin from the averaging
+p.addParamValue('Saveas', 'off', @ischar);     % 'on', 'off'
+p.addParamValue('Warning', 'off', @ischar);    % 'on', 'off'
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(ALLERP, varargin{:});
+
+erpset = p.Results.Erpsets;
+
+if isempty(erpset)
+        erpset = p.Results.ERPindex;
+end
+cond1 = iserpstruct(ALLERP);
+if isempty(erpset) && cond1
+        error('ERPLAB says: "Erpsets" parameter was not specified.')
+end
+cond2 = isnumeric(erpset);
+lista = '';
+if cond1 && cond2     % either from GUI or script, when ALLERP exist and erpset indices were specified
+        nfile   = length(erpset);
+        optioni = 0;  % from erpset menu or ALLERP struct
+else
+        optioni  = 1; % from file
+        filelist = '';
+        if iscell(ALLERP)             % from the GUI, when ALLERP exist and user picks a list up as well
+                filelist = ALLERP{2};
+                ALLERP   = ALLERP{1};
+        elseif ischar(ALLERP)         % from script, when user picks a list.
+                filelist = ALLERP;
+        else
+                error('ERPLAB says: "Erpsets" parameter is not valid.')
+        end
+        if ~iscell(filelist) && ~isempty(filelist)               
+                if exist(filelist, 'file')~=2
+                        error('ERPLAB:error', 'ERPLAB says: File %s does not exist.', filelist)
+                end               
+                disp(['For file-List, user selected ', filelist])
+                
+                %
+                % open file containing the erp list
+                %
+                fid_list = fopen( filelist );
+                formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
+                lista    = formcell{:};
+                nfile    = length(lista);
+                fclose(fid_list);
+        else
+                error('ERPLAB says: error at pop_appenderp(). Unrecognizable input ')
+        end
+end
+
+%filelist    = p.Results.Loadlist;
+artcrite    = p.Results.Criterion;
+
+if ismember({p.Results.SEM}, {'on','yes'})
+        stderror = 1;
+else
+        stderror = 0;
+end
+if ismember({p.Results.ExcludeNullBin}, {'on','yes'})
+        exclunullbin = 1;
+else
+        exclunullbin = 0;
+end
+if ismember({p.Results.Weighted}, {'on','yes'})
+        wavg = 1;
+else
+        wavg = 0;
+end
+if ismember({p.Results.Saveas}, {'on','yes'})
+        saveas = 1;
+else
+        saveas = 0;
+end
+if ismember({p.Results.Warning}, {'on','yes'})
+        warn = 1;
+else
+        warn = 0;
+end
+if iserpstruct(ALLERP);
+        if isempty(erpset) && isempty(filelist)
+                error('ERPLAB:pop_gaverager', '\nERPLAB says: Erpsets is empty')
+        end
+else
+        if isempty(filelist)
+                error('ERPLAB:pop_gaverager', '\nERPLAB says: Loadlist is empty (ALLERP is empty as well...)\n')
+        end
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
+
+%
+% subroutine
+%
+[ERP serror msgboxText ] = gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn);
+
+if serror>0
+        title = 'ERPLAB: gaverager() Error';
+        errorfound(msgboxText, title);
+        return
+end
+
+% ! Verificar que cada archivo en lista{j} exista
+
+%
+% Completion statement
+%
+msg2end
+
+skipfields = {'ALLERP', 'Saveas', 'Warning','History'};
+if isstruct(ALLERP) && optioni~=1 % from files
+        DATIN =  inputname(1);
+else
+        %DATIN = ['''' ALLERP ''''];
+        DATIN = sprintf('''%s''', filelist);
+        skipfields = [skipfields, 'Erpsets'];
+end
+fn     = fieldnames(p.Results);
+erpcom = sprintf( 'ERP = pop_gaverager( %s ', DATIN);
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+                                end
                         else
-                              ERP.binerror(:,:,bb)= (1/naccepted(bb))*sqrt(insqrt);
+                                if iscell(fn2res)
+                                        if ischar([fn2res{:}])
+                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
+                                        else
+                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        end
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                if strcmpi(fn2com,'Criterion')
+                                        if p.Results.Criterion<100
+                                                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                        end
+                                else
+                                        erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                end
                         end
-                  end
-            else
-                  ERP.bindata(:,:,bb) = zeros(nch,npnts,1);            % makes a zero erp
-                  if stdev
-                        ERP.binerror(:,:,bb)= zeros(nch,npnts,1);
-                  end
-            end
-      end
-else
-      ERP.bindata   = sumERP./nfile; % get ERP!  --> general sum is divided by the number of files (erpsets)
-      if stdev
-            fprintf('\nEstimating standard deviation of data...\n');
-            ERP.binerror  = sqrt(sumERP2.*(1/nfile) - ERP.bindata.^2) ; % ERP stdev
-      end
+                end
+        end
 end
+erpcom = sprintf( '%s );', erpcom);
 
-if ~isempty(ERP.binerror)
-      if nnz(ERP.binerror>0)==0
-            fprintf('\n*******************************************************\n');
-            fprintf('WARNING: There is not variance in the data! So, ERP.binerror = [] \n');
-            fprintf('*******************************************************\n\n');
-            ERP.binerror = [];
-      end
+%
+% Save ERPset
+%
+if saveas
+        [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
+        if issave>0
+                if issave==2
+                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                        msgwrng = '*** Your ERPset was saved on your hard drive.***';
+                else
+                        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+                end
+        else
+                msgwrng = 'ERPLAB Warning: Your changes were not saved';
+        end
+        try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end
-
-ERP.ntrials.accepted = naccepted;
-ERP.ntrials.rejected = nrejected;
-ERP.ntrials.invalid  = ninvalid;
-ERP.ntrials.arflags  = narflags;
-
-if wavg
-      fprintf('\n %g ERPs were (weight) averaged.\n', nfile);
-else
-      fprintf('\n %g ERPs were (classic) averaged.\n', nfile);
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(erpcom);
+        case 2 % from script
+                ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                erpcom = '';
+                return
 end
-
-[ERP serror] = sorterpstruct(ERP);
-
-ERP.saved  = 'no';
-ERP.isfilt = 1;
-
-if menup
-      [ERP issave] = pop_savemyerp(ERP,'gui','erplab');
-else
-      issave = 1;
-end
-
-ERPout = ERP;
-
-if issave
-      if optioni
-            erpcom = sprintf('ERP = pop_gaverager(''loadlist'', ''%s'', %s, %s);', filelist, num2str(wavg), num2str(stdev));
-      else
-            erpcom = sprintf('ERP = pop_gaverager(ALLERP, %s, %s, %s);', vect2colon(erpsetArray), num2str(wavg), num2str(stdev));
-      end
-      
-      try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
-      return
-else
-      disp('Warning: Your ERP structure has not yet been saved')
-      disp('user canceled')
-      return
-end
+return

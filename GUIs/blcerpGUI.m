@@ -62,34 +62,82 @@ catch
         xmin = -200;
         xmax = 800;
 end
-
 try
         Titlegui = varargin{2};
 catch
         Titlegui = 'Testing this GUI...';
 end
-
+try
+        interval = varargin{3};
+catch
+        interval = 'pre';
+end
 set(handles.uipanel_blc,'Title', Titlegui)
+
+if strcmpi(interval,'pre')
+        intvl = [xmin 0];
+        set(handles.edit_custom,'Enable','off')
+        set(handles.radiobutton_pre,'Value', 1)
+elseif strcmpi(interval,'post')
+        intvl = [0 xmax];
+        set(handles.edit_custom,'Enable','off')
+        set(handles.radiobutton_post,'Value', 1)
+elseif strcmpi(interval,'all')
+        intvl = [xmin xmax];
+        set(handles.edit_custom,'Enable','off')
+        set(handles.radiobutton_all,'Value', 1)
+else
+        if ischar(interval)
+                intvl  = str2num(interval); % interv in ms
+        else
+                intvl  = interval;
+        end
+        if length(intvl)~=2
+                intvl = [];
+        else
+                set(handles.edit_custom,'Enable','on')
+                set(handles.radiobutton_custom,'Value', 1)
+        end
+end
+if ~isempty(intvl)
+        blcstr = sprintf('%.1f  %.1f',intvl);
+        set(handles.edit_custom,'String',blcstr);
+else
+        set(handles.edit_custom,'Enable','off')
+        set(handles.radiobutton_none,'Value', 1)
+end
 
 handles.xmin = xmin;
 handles.xmax = xmax;
-handles.blc  = 'pre';
-blcstr = sprintf('%.1f  %g',[xmin 0]);
-set(handles.edit_custom,'String',blcstr);
-
-% Update handles structure
-guidata(hObject, handles);
-
-set(handles.edit_custom,'Enable','off')
-set(handles.radiobutton_pre,'Value', 1)
+handles.blc  = interval;
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
+% Update handles structure
+guidata(hObject, handles);
+
+%
+% Name & version
+%
+version = geterplabversion;
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   ' upper(Titlegui) ' GUI'])
+
 % UIWAIT makes blcerpGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function varargout = blcerpGUI_OutputFcn(hObject, eventdata, handles)
@@ -97,7 +145,7 @@ function varargout = blcerpGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.1)
 
 % -------------------------------------------------------------------------
@@ -115,7 +163,15 @@ handles.output = [];
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
+
+% -------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% doc pop_blcerp
+% fctn = dbstack;
+% fctn = fctn(end).name;
+% doc(fctn) 
+web http://erpinfo.org/erplab/erplab-documentation/manual/Bin_Operations.html -browser
 
 % -------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)
@@ -130,17 +186,23 @@ if isempty(epoch)
         errorfound(msgboxText, title);
         return
 else        
-        repoch = size(epoch,1);
-        cepoch = size(epoch,2);
-        blc = handles.blc;        
+        repoch  = size(epoch,1); % rows for epoch 
+        cepoch  = size(epoch,2); % columns for epoch 
+        blc     = handles.blc;        
         cusbutt = get(handles.radiobutton_custom,'Value');
         
         %
         % Checks updated custom blc values
         %
         if cusbutt
-                blctest  = str2num(get(handles.edit_custom,'String'));
-                
+                blctest  = get(handles.edit_custom,'String');
+                if isempty(blctest)
+                        msgboxText = 'You must enter 2 values first.';
+                        title = 'ERPLAB: Time range inputs';
+                        errorfound(sprintf(msgboxText), title);
+                        return
+                end
+                blctest  = str2num(blctest);                
                 if isempty(blctest)
                         if strcmpi(get(handles.edit_custom,'String'),'none')
                                 custupdated = 1;
@@ -159,21 +221,21 @@ else
                         end
                 else
                         rblc = size(blctest,1);
-                        cblc = size(blctest,2);                        
+                        cblc = size(blctest,2);
                         extvalcond = max(epoch)>=max(blctest) && min(epoch)<=min(blctest);
                         custupdated = rblc==1 && cblc==2 && extvalcond;
                         blc = blctest;
                 end
         else
-                custupdated =1;
+                custupdated = 1;
         end
         
         if repoch==1 && cepoch==2 && custupdated
-                if blc(1)>=blc(2)
-                        msgboxText{1} =  'For time range, lower limit must be on the left.';
-                        msgboxText{2} =  'Additionally, lower time limit must be at least 1/samplerate seconds lesser than the higher one.';
+                if isnumeric(blc) && blc(1)>=blc(2)
+                        msgboxText = ['For time range, lower limit must be on the left.\n'...
+                                      'Additionally, lower time limit must be at least 1/samplerate seconds lesser than the higher one.'];
                         title = 'ERPLAB: Time range inputs';
-                        errorfound(msgboxText, title);
+                        errorfound(sprintf(msgboxText), title);
                         return
                 end
                 if epoch(1)>0 || epoch(2)<0
@@ -182,27 +244,24 @@ else
                         errorfound(msgboxText, title);
                         return
                 end
-                if epoch(1)>=0 && strcmpi(blc,'pre')
+                if epoch(1)>=0 && ~isnumeric(blc) && strcmpi(blc,'pre')
                         msgboxText =  'There is no pre-stimulus interval.';
                         title = 'ERPLAB: Time range inputs';
                         errorfound(msgboxText, title);
                         return
                 end
-                if epoch(2)<=0 && strcmpi(blc,'post')
+                if epoch(2)<=0 && ~isnumeric(blc) && strcmpi(blc,'post')
                         msgboxText =  'There is no post-stimulus interval.';
                         title = 'ERPLAB: Time range inputs';
                         errorfound(msgboxText, title);
                         return
-                end
+                end                
                 
-                %
-                %  Go ahead!
-                %
                 handles.output = {blc};
                 
                 % Update handles structure
                 guidata(hObject, handles);
-                uiresume(handles.figure1);                
+                uiresume(handles.gui_chassis);                
         else
                 if custupdated
                         msgboxText =  'Wrong time range! Please, enter 2 values.';
@@ -215,20 +274,6 @@ else
                 end
                 return
         end
-end
-
-%--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = [];
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.figure1);
-else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
 end
 
 % -------------------------------------------------------------------------
@@ -327,4 +372,18 @@ else
         set(handles.radiobutton_all,'Enable','off')
         set(handles.radiobutton_custom,'Enable','off')
         set(handles.edit_custom,'Enable','off')
+end
+
+%--------------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = [];
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
 end

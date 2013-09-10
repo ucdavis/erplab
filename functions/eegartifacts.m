@@ -1,4 +1,27 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: subroutine for averager.m
+%          Explore artifact detection fields in EEGLAB.reject (epoch by epoch)
+%          
+%
+% FORMAT
+%
+% observa = eegartifacts(reject, fields4reject, j)
+%
+% INPUTS
+%
+% reject            - EEG.reject structure
+% fields4reject     - EEG.reject's fields to be explore. e.g. {'rejmanual','rejjp','rejkurt', 'rejthresh'}
+% j                 - current epoch index (coming out from an external for loop)
+%
+% OUTPUT
+%
+% observa           - 1 means current epoch (j) got an artifact; 0 means good epoch.
+%
+%
+% See also averager.m 
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA

@@ -1,6 +1,27 @@
-%  Write erplab at workspace for help
+% PURPOSE: Tests congruency among ERP structure's fields.
+%          For instance, third dimension's size of ERP.bindata must be equal to ERP.nbin.
+%          ERP.nbin must be equal to the length of ERP.bindescr... and so on
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+%
+% FORMAT:
+%
+% checking = checkERP(ERP)
+%
+% INPUT:
+%
+% ERP        - ERPset (ERPLAB's ERP structure)
+%
+%
+% OUTPUT:
+%
+% checking   - 0 means error found; 1 means everything is ok
+%
+%
+% See also sorterpstruct.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -34,16 +55,13 @@ try
         b = ERP.nbin;
         c = length(ERP.bindescr);
         d = size(ERP.bindata,2);
-        e = length(ERP.times);
-        
-        if a==b && b==c && d==e
-                
-                [ERP serror] = sorterpstruct(ERP);
-                
+        e = length(ERP.times);        
+        if a==b && b==c && d==e                
+                [ERP serror] = sorterpstruct(ERP);                
                 if serror
                         checking = 0; % error at ordering
                 else
-                        ERP.nchan = size(ERP.bindata,1);
+                        ERP.nchan = size(ERP.bindata,1);                           
                         
                         %
                         % save to workspace

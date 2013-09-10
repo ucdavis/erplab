@@ -1,7 +1,25 @@
-% Usage
+% PURPOSE  :	Erases numeric event codes according to a logical expression.
 %
-% EEG = pop_eraseventcodes( EEG, expr)
+% FORMAT   :
 %
+% EEG = pop_eraseventcodes( EEG, expression )
+%
+% INPUTS   :
+%
+% EEG           - input dataset
+% expression          - logical expression '=value','>value','<value','~=value', '>=value','<=value'
+%
+% OUTPUTS  :
+%
+% EEG           - updated output dataset
+%
+% EXAMPLE  :
+%
+% EEG = pop_eraseventcodes( EEG, '>255' ); % deletes all event codes greater than 255
+%
+% See also inputvalue.m  eraseventcodes.m
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -29,79 +47,145 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG com] = pop_eraseventcodes( EEG, expr)
-
+function [EEG, com] = pop_eraseventcodes( EEG, expression, varargin)
 com = '';
-
 if nargin < 1
-      help pop_eraseventcodes
-      return
+        help pop_eraseventcodes
+        return
 end
-if isempty(EEG.data)
-      msgboxText =  'pop_eraseventcodes() cannot read an empty dataset!';
-      title = 'ERPLAB: pop_eraseventcodes error';
-      errorfound(msgboxText, title);
-      return
+if isobject(EEG) % eegobj
+        whenEEGisanObject % calls a script for showing an error window
+        return
 end
-if ~isempty(EEG.epoch)
-      msgboxText =  'pop_eraseventcodes has been tested for continuous data only';
-      title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
-      errorfound(msgboxText, title);
-      return
-end
-if ~isfield(EEG, 'event')
-      msgboxText =  'pop_eraseventcodes did not find EEG.event field.';
-      title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
-      errorfound(msgboxText, title);
-      return
-end
-if ~isfield(EEG.event, 'type')
-      msgboxText =  'pop_eraseventcodes did not find EEG.event.type field.';
-      title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
-      errorfound(msgboxText, title);
-      return
-end
-if ~isfield(EEG.event, 'latency')
-      msgboxText =  'pop_eraseventcodes did not find EEG.event.latency field.';
-      title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
-      errorfound(msgboxText, title);
-      return
-end
-if ischar(EEG.event(1).type)
-      msgboxText =  ['pop_eraseventcodes only works with numeric event codes.\n'...
-                     'We recommend to use Create EEG Eventlist - Basic first.'];
-      title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
-      errorfound(sprintf(msgboxText), title);
-      return
+if nargin==1
+        if isempty(EEG(1).data)
+                msgboxText =  'pop_eraseventcodes() cannot read an empty dataset!';
+                title = 'ERPLAB: pop_eraseventcodes error';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isempty(EEG(1).epoch)
+                msgboxText =  'pop_eraseventcodes has been tested for continuous data only';
+                title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isfield(EEG(1), 'event')
+                msgboxText =  'pop_eraseventcodes did not find EEG.event field.';
+                title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isfield(EEG(1).event, 'type')
+                msgboxText =  'pop_eraseventcodes did not find EEG.event.type field.';
+                title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ~isfield(EEG(1).event, 'latency')
+                msgboxText =  'pop_eraseventcodes did not find EEG.event.latency field.';
+                title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
+                errorfound(msgboxText, title);
+                return
+        end
+        if ischar(EEG(1).event(1).type)
+                msgboxText =  ['pop_eraseventcodes only works with numeric event codes.\n'...
+                        'We recommend to use Create EEG Eventlist - Basic first.'];
+                title = 'ERPLAB: pop_eraseventcodes(). Permission denied';
+                errorfound(sprintf(msgboxText), title);
+                return
+        end
+        prompt    = {'expression (>, < ==, ~=):'};
+        dlg_title = 'Input event-code condition to delete';
+        num_lines = 1;       
+        def  = erpworkingmemory('pop_eraseventcodes');
+        if isempty(def)
+                def = {'>255'};
+        end
+        
+        %
+        % Open GUI
+        %
+        answer = inputvalue(prompt,dlg_title,num_lines,def);
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        expression = answer{1};
+        erpworkingmemory('pop_eraseventcodes', {expression});
+        
+        EEG.setname = [EEG.setname '_delevents']; % suggested name (si queris no mas!)
+        %
+        % Somersault
+        %
+        [EEG, com] = pop_eraseventcodes( EEG, expression, 'Warning', 'on', 'History', 'gui');
+        return
 end
 
 %
-% Gui is working...
+% Parsing inputs
 %
-if nargin <2
-      
-      prompt    = {'expression (>, < ==, ~=):'};
-      dlg_title = 'Input event-code condition to delete';
-      num_lines = 1;
-      
-      def = {'>255'};
-      answer = inputvalue(prompt,dlg_title,num_lines,def);
-      
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      expression = answer{1};
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('EEG');
+p.addRequired('expression', @ischar);
+% option(s)
+p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(EEG, expression, varargin{:});
+
+if strcmpi(p.Results.Warning,'on')
+        wchmsgon = 1;
 else
-      expression = expr;
-      
+        wchmsgon = 0;
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
 end
 
-EEG = eraseventcodes( EEG, expression);
-EEG.setname = [EEG.setname '_2']; % suggested name (si queris no mas!)
+%
+% process multiple datasets April 13, 2011 JLC
+%
+if length(EEG) > 1
+        [ EEG, com ] = eeg_eval( 'pop_eraseventcodes', EEG, 'warning', 'on', 'params', {expression});
+        return;
+end
 
-com = sprintf( '%s = pop_eraseventcodes( %s, %s );', inputname(1), inputname(1), expression);
-try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+%
+% subroutine
+%
+EEG = eraseventcodes( EEG, expression);
+EEG.setname = [EEG.setname '_cleaned']; % suggested name (si queris no mas!)
+com = sprintf( '%s = pop_eraseventcodes( %s, ''%s'' );', inputname(1), inputname(1), expression);
+
+% get history from script. EEG
+switch shist
+        case 1 % from GUI
+                com = sprintf('%s %% GUI: %s', com, datestr(now));
+                %fprintf('%%Equivalent command:\n%s\n\n', com);
+                displayEquiComERP(com);
+        case 2 % from script
+                EEG = erphistory(EEG, [], com, 1);
+        case 3
+                % implicit
+                % EEG = erphistory(EEG, [], com, 1);
+                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        otherwise %off or none
+                com = '';
+end
+
+%
+% Completion statement
+%
+msg2end
 return
 
 

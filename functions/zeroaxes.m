@@ -19,6 +19,11 @@ pos       = get(axesin,'position');
 ax        = axis;
 xscale    = get(axesin,'XScale');
 yscale    = get(axesin,'YScale');
+xxticks   = get(axesin,'XTick');       %JLC, March 10, 2011
+yyticks   = get(axesin,'YTick');       %JLC, March 10, 2011
+xmt       = get(axesin,'XMinorTick');  %JLC, March 10, 2011
+ymt       = get(axesin,'YMinorTick');  %JLC, March 10, 2011
+
 sentido   = get(axesin,'YDir');       % JLC, May 12th 2008
 set(axesin,'visible','off');
 xmin = ax(1);
@@ -37,61 +42,70 @@ XAxisYLimits = polyval(f,[0 XAxisHeight*abs(ymax - ymin)]);
 
 %
 % right position of the x-axis in case of inverted y-axis
-% 04-01-2009
+% 04-01-2009  JLC
 if strcmp(sentido, 'reverse')
-        Xaxis_y = 2*pos(2)+pos(4)-XAxisYLimits(1);
+      Xaxis_y = 2*pos(2)+pos(4)-XAxisYLimits(1);
 else
-        Xaxis_y = XAxisYLimits(1);
+      Xaxis_y = XAxisYLimits(1);
 end
 
 XAxisPosition = [XAxisXLimits(1)
-        Xaxis_y
-        XAxisXLimits(2) - XAxisXLimits(1)
-        XAxisYLimits(2) - XAxisYLimits(1)];
+      Xaxis_y
+      XAxisXLimits(2) - XAxisXLimits(1)
+      XAxisYLimits(2) - XAxisYLimits(1)];
 
 bgcolour = get(gcf,'color');
 
 hX = axes('position',XAxisPosition,...
-        'XLim',[xmin xmax],...
-        'box','off',...
-        'YTick',[],...
-        'TickDir','out',...
-        'XScale',xscale,...
-        'YColor',bgcolour,...
-        'color','none');
+      'XLim',[xmin xmax],...
+      'box','off',...
+      'YTick',[],...
+      'TickDir','out',...
+      'XScale',xscale,...
+      'YColor',bgcolour,...
+      'color','none');
 
 YAxisPosition = [YAxisXLimits(1)
-        YAxisYLimits(1)
-        YAxisXLimits(2) - YAxisXLimits(1)
-        YAxisYLimits(2) - YAxisYLimits(1)];
+      YAxisYLimits(1)
+      YAxisXLimits(2) - YAxisXLimits(1)
+      YAxisYLimits(2) - YAxisYLimits(1)];
 
 hY = axes('position',YAxisPosition,...
-        'YLim',[ymin ymax],...
-        'box','off',...
-        'xtick',[],...
-        'TickDir','out',...
-        'YScale',yscale,...
-        'XColor',bgcolour,...
-        'color','none',...
-        'YDir', sentido); % JLC, May 12th 2008
+      'YLim',[ymin ymax],...
+      'box','off',...
+      'Xtick',[],...
+      'TickDir','out',...
+      'YScale',yscale,...
+      'XColor',bgcolour,...
+      'color','none',...
+      'YDir', sentido); % JLC, May 12th 2008
+
+%
+% Ticks  JLC, March 10, 2011
+%
+set(hX,'XTick',xxticks)
+set(hY,'YTick',yyticks)
+set(hX,'XMinorTick',xmt)
+set(hY,'YMinorTick',ymt)
+
 
 % Get rid of the zero ticks if necessary:
 if ymin<0 && ~strcmp(xscale,'log')
-        xticks = get(hX,'XTick');
-        xticks(xticks==0) = [];
-        set(hX,'XTick',xticks)
+      xticks = get(hX,'XTick');
+      xticks(xticks==0) = [];
+      set(hX,'XTick',xticks)
 end
 
 if xmin<0 && ~strcmp(yscale,'log')
-        yticks = get(hY,'YTick');
-        yticks(yticks==0) = [];
-        set(hY,'YTick',yticks)
+      yticks = get(hY,'YTick');
+      yticks(yticks==0) = [];
+      set(hY,'YTick',yticks)
 end
 
 set(gcf,'CurrentAxes',axesin)
 set(gcf,'ButtonDownFcn',bdownf)
 
 if ~holdwason
-        set(hX,'NextPlot','Replace')
-        set(hY,'NextPlot','Replace')
+      set(hX,'NextPlot','Replace')
+      set(hY,'NextPlot','Replace')
 end

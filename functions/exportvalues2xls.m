@@ -1,29 +1,31 @@
-% Usage
+% PURPOSE: Exports measured values to an Excel file
+%
+% FORMAT:
 %
 % exportvalues2xls(ERP, values, binArray, chanArray, condf, op, fname, ncall)
 %
+% INPUTS:
+%
 % ERP        - input ERP structure
-% values     - single matrix of values from amplitud-related measurements,
-% which dimension is bins x channels.
+% values     - single matrix of values from amplitude-related measurements. bins x channels.
+%              This matrix can be obtained using ERPLAB function geterpvalues().
+%              See example 1 below.
 %
-% This matrix can be obtained using ERPLAB function geterpvalues().
-% See example 1 below.
+%              You can also specify amplitude-related and latency-related measurements
+%              for this input variable. Latencies are stored in a structure with 2
+%              fields: values and ilimit. value contains the latency info after
+%              measurments like "peak amplitude", or "area". Peak amplitude is just
+%              the time of the peak. For area, latency means the point in time in which
+%              the signal among 2 predefined latencies reaches 50% of the area.
+%              ilimit will only be stored if any of both type of area measurement were set.
+%              It just stores the limits of integration used for the area assessment.
 %
-% You can also specify amplitud-related and latency-related measurements
-% for this input variable. Latencies are stored in an structure with 2
-% fields: values and ilimit. value contains the latency info after
-% measurments like "peak amplitud", or "area". For peak amplitud is just
-% the time of the peak. For area, latency means the point in time in which
-% the signal among 2 predefined latencies reachs the 50% of the area.
-% ilimit will only stored if any of both type of area measurement was set.
-% It just stores the limits of integration used for the area assessment.
+%              This strcuture can also be obtained using ERPLAB function geterpvalues().
+%              See example 2 below.
 %
-% This strcuture can also be obtained using ERPLAB function geterpvalues().
-% See example 2 below.
-%
-% binArray     - array with the bin indexes you are going to get measurements.
-% chanArray    - array with the channel indexes you are going to get measurements.
-% condf        - 1 means get latencies, too.  0 means only amplitud-related
+% binArray     - index(es) of bin(s) from which values were extracted. e.g. 1:5
+% chanArray    - index(es) of channel(s) from which values were extracted. e.g. [10 2238 39 40]
+% condf        - 1 means get latencies too.  0 means only amplitude-related
 % op           - any string like 'instabl', 'peakbl', 'meanbl',  'area', or 'areaz'
 %                 instabl = instantaneous value, baseline referenced.
 %                 peakbl = peak (or valley) value, baseline referenced.
@@ -51,15 +53,15 @@
 %       -0.3751    4.4539    2.3570    1.4819    2.3894
 %       0.6265  -10.4775   -0.9944   -7.7830   -7.4780
 %
-% Then, for exportvalues2xls(), you shoul write;
+% Then, for exportvalues2xls(), you should write;
 %
 % >> exportvalues2xls(ERP, {A}, [3 7 12], [12 20 25 28 30], 0, 'meanbl', 'Test.xls', 1)
 %
 % Example 2:
 %
-% Get the peak amplitud between 100 and 200 ms post stimulus, for
+% Get the peak amplitude between 100 and 200 ms post stimulus, for
 % bins 3,7, and 12, evaluated at channels 12, 20, 25, 28, and 30.
-% Use a the interval between -100 to 0 ms as a baseline correction.
+% Use a, the interval between -100 to 0 ms as a baseline correction.
 %
 %>> [A L] = geterpvalues(ERP, [100 200], [3 7 12], [12 20 25 28 30], 'peakbl', [-100 0], 0)
 %
@@ -83,6 +85,10 @@
 % >> exportvalues2xls(ERP, {A,L}, [3 7 12], [12 20 25 28 30], 1, 'meanbl', 'TestplusLat.xls', 1)
 %
 %
+% See also geterpvaluesGUI2.m geterpvalues.m exportvaluesV2.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Johanna Kreither
 % Center for Mind and Brain
 % University of California, Davis,
@@ -133,7 +139,7 @@ elseif length(values)==2
         LATENCY = values{2};
 end
 
-[pathstr, filename, ext, versn] = fileparts(fname);
+[pathstr, filename, ext] = fileparts(fname);
 
 if ~strcmpi(ext,'.xls')
         ext = '.xls';

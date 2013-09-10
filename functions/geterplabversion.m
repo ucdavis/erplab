@@ -1,4 +1,17 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: gets current ERPLAB's version
+%
+% FORMAT:
+%
+%   version = geterplabversion;
+%
+% or
+%
+%
+%  [version reldate] = geterplabversion; % reldate=release date
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -25,17 +38,32 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function version = geterplabversion
+function [version reldate] = geterplabversion
+version = '';
+reldate = '';
 
-try
-        p = which('eegplugin_erplab');
-        p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-        v=load(fullfile(p,'memoryerp.erpm'), '-mat');
-        version = v.erplabver;
-catch
-        msgboxText{1} =  'geterplabversion() cannot find the erplab version number...';
-        msgboxText{2} =  'Please, try running EEGLAB once.';
-        tittle = 'ERPLAB: geterplabversion() Error';
-        errorfound(msgboxText, tittle);
-        return
+p = which('eegplugin_erplab');
+p = p(1:findstr(p,'eegplugin_erplab.m')-1);
+
+if exist(fullfile(p,'memoryerp.erpm'), 'file')
+        try
+                v=load(fullfile(p,'memoryerp.erpm'), '-mat');
+                version = v.erplabver;
+                reldate = v.erplabrel;
+        catch
+                cv = regexp(p, 'erplab_(\d*.\d*.\d*.\d*)', 'tokens');
+                version = char(cv{:});
+        end
+else
+        cv = regexp(p, 'erplab_(\d*.\d*.\d*.\d*)', 'tokens');
+        version = char(cv{:});
 end
+
+%
+% catch
+%       msgboxText = ['geterplabversion() cannot find the erplab version number...\n'...
+%             '\tPlease, try running EEGLAB once.'];
+%       tittle = 'ERPLAB: geterplabversion() Error';
+%       errorfound(sprintf(msgboxText), tittle);
+%       return
+% end

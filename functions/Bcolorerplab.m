@@ -1,3 +1,6 @@
+% PURPOSE: sets ERPLAB's GUI Background Color
+%
+% - This function is part of ERPLAB Toolbox -
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -24,7 +27,8 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
-function Bcolorerplab
-
-c = uisetcolor([0.83 0.82 0.79],'ERPLAB Background Color') ;
+function Bcolorerplab(c)
+if nargin<1
+        c = uisetcolor([0.83 0.82 0.79],'ERPLAB Background Color') ;
+end
 erpworkingmemory('ColorB', c);

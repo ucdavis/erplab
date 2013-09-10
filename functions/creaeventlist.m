@@ -1,13 +1,20 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% PURPOSE: Creates a text version of the ERPLAB's EVENTLIST structure
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT:
+%
+% [EEG EVENTLIST] = creaeventlist(EEG, EVENTLIST, lfname, wf)
 %
 % Inputs:
 %
-%   EEG       - input dataset
-% evefilename - name of EventList file to save (*.txt)
-% evefilepath - path of EventList file to save
+% EEG         - input dataset
+% EVENTLIST   - ERPLAB's EVENTLIST structure
+% lfname      - full filename of EventList file to save (*.txt)
+% wf          - write the file. 1 yes; 0 no
+%
+% Output
+%
+% EEG         - updated dataset
+% EVENTLIST   - ERPLAB's EVENTLIST structure
 %
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
@@ -37,17 +44,11 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [EEG EVENTLIST] = creaeventlist(EEG, EVENTLIST, lfname, wf)
-
-% fprintf('creaeventlist.m : START\n');
-% wf=1 => write an output EventList file in txt format
-
 if nargin < 1
         help creaeventlist
         return
 end
-
-if nargin==1
-        
+if nargin==1        
         wf =0;
         evefilepath = '';
         evefilename = '';
@@ -68,13 +69,15 @@ if nargin==1
         else
                 EVENTLIST = creaeventinfo(EEG);
                 EVENTLIST.bdf = [];
-        end
-        
+        end        
 elseif nargin==2
         wf = 1;
         p = which('eegplugin_erplab');
         path_temp = p(1:findstr(p,'eegplugin_erplab.m')-1);
-        evefilepath = fullfile(path_temp, 'erplab_Temp');
+        evefilepath = fullfile(path_temp, 'erplab_Box');              
+        if exist(evefilepath, 'dir')~=7
+                mkdir(evefilepath);  % Thanks to Johanna Kreither. Jan 31, 2013
+        end               
         evefilename = ['eventlist_backup_' num2str((datenum(datestr(now))*1e10))];        
 else
         if nargin>4
@@ -82,20 +85,18 @@ else
         end
         if nargin<4
               wf=1;
-        end
+        end       
         
-        [evefilepath, evefilename, ext, versn] = fileparts(lfname);
+        [evefilepath, evefilename, ext] = fileparts(lfname);
         
         if ~strcmp(ext,'.txt') && ~strcmp(evefilename,'') && ~strcmp(evefilename,'no') && ~strcmp(evefilename,'none')
               ext = '.txt';
-        end
-        
+        end        
         if ~strcmp(evefilename,'')
               evefilename = [evefilename ext];
         else
               wf=0;
-        end
-        
+        end        
         if strcmpi(evefilepath,'')
               evefilepath = cd;
         end
@@ -172,10 +173,9 @@ else
         EVENTLIST.trialsperbin    = [];
 end
 
-EVENTLIST.eldate  = datestr(now);
-
+EVENTLIST.eldate   = datestr(now);
 [EVENTLIST serror] = sorteventliststruct(EVENTLIST);  % organizes EVENTLIST
-
+eegnbchan = 0;
 if wf ==1
         fprintf('Creating an EventList text file...\n');
         fid_eventlist   = fopen( fullfile(evefilepath, evefilename) , 'w');
@@ -222,8 +222,8 @@ if wf ==1
         end
         if isfield(EEG, 'nbchan')
                 eegnbchan = EEG.nbchan;
-        else
-                eegnbchan = 0;
+        %else
+        %        eegnbchan = 0;
         end
         if isfield(EEG, 'pnts')
                 eegpnts = EEG.pnts;
@@ -254,8 +254,7 @@ if wf ==1
         fprintf( fid_eventlist, '#  user Account..............: %s\n', EVENTLIST.account);
         fprintf( fid_eventlist, '# \n');
         
-        fprintf(fid_eventlist,['#  Non-editable header end ' repmat('-',1,80) '\n\n']);
-        
+        fprintf(fid_eventlist,['#  Non-editable header end ' repmat('-',1,80) '\n\n']);        
         nbin      = EVENTLIST.nbin;
         
         for h=1:nbin
@@ -272,7 +271,7 @@ if wf ==1
         fprintf(fid_eventlist,'\n\n');
         fprintf(fid_eventlist,'\n');
         fprintf(fid_eventlist,'# item\t bepoch\t  ecode\t            label\t      onset\t          diff\t     dura\tb_flags\t   a_flags\t  enable\t    bin\n');
-        fprintf(fid_eventlist,'#                                                 (sec)           (sec)     (msec)    (binary)   (binary)\n');
+        fprintf(fid_eventlist,'#                                                 (sec)           (msec)     (msec)    (binary)   (binary)\n');
         fprintf(fid_eventlist,'\n\n');
         
         %
@@ -281,10 +280,8 @@ if wf ==1
         xtime = single([EVENTLIST.eventinfo.time]);
         diffe   = [0 diff(xtime)]*1000; % sec to msec
         
-        for k=1:fin
-                
-                sitem  = num2str(k);
-                
+        for k=1:fin                
+                sitem  = num2str(k);                
                 if isfield(EVENTLIST.eventinfo, 'bepoch')
                         sbepoch = num2str(EVENTLIST.eventinfo(k).bepoch);
                 else
@@ -318,20 +315,17 @@ if wf ==1
                 
                 fprintf(fid_eventlist,formatstr, sitem, sbepoch, scode, sclab, stime, sdiff, sdura, sflagb,...
                         sflaga, senbl, sbini);
-        end
-        
-        fclose(fid_eventlist);
-        
+        end        
+        fclose(fid_eventlist);        
         flinkname = fullfile(evefilepath, evefilename);
         disp(['A new EventList file was created at <a href="matlab: open(''' flinkname ''')">' flinkname '</a>'])
 end
-
 if isfield(EEG, 'chanlocs')
         if ~isfield(EEG.chanlocs,'labels')
                 for e=1:eegnbchan
                         EEG.chanlocs(e).labels = ['Ch' num2str(e)];
                 end
-                disp('Your dataset has not channel labels.')
+                disp('Your dataset did not have channel labels.')
                 disp('creaeventlist() added basic labels to your channels.')
         end        
 end

@@ -1,23 +1,45 @@
-% EEG = lindetrend( EEG, interv)   or   ERP = lindetrend( ERP, interv) ;
+% PURPOSE: Removes the best straight-line  fit  from  epoched-EEG  or  averaged  ERP data.
+%          Matlab: detrend() computes the least-squares fit of a straight line to the data
+%          (whole epoch or interval) and subtracts the resulting function  from  the  data
+%          (whole epoch).  To obtain the  equation  of the straight-line fit, use polyfit.
 %
-% lindetrend():Removes the best straight-line fit from epoched-EEG or averaged ERP data.
-% Matlab: detrend() computes the least-squares fit of a straight
-% line to the data (whole epoch or interval) and subtracts the resulting function
-% from the data (whole epoch).
-% To obtain the equation of the straight-line fit, use polyfit.
+%
+% FORMAT:
+%
+% ERP = lindetrend( ERP, interv);
+%
+% or
+%
+% EEG = lindetrend( EEG, interv);
+%
+%
+% INPUTS:
+%
+% EEG/ERP       - epoched dataset or erpset
+% interv        - time interval in ms to compute the least-square fit of a straight line to the data in this interval.
+%                 The fitted straight line will be extrapolated until having as many points as that  whole  data, then
+%                 this straight line will be substracted from the whole data.
+%                 "interval" can also be a string like 'pre', 'post' or 'all'
+%
+% OUTPUT
+%
+% EEG/ERP       - epoched dataset or erpset linearly detrended
+%
 %
 % Examples:
 %
-% >> EEG = lindetrend( EEG, 'pre');
-% >> ERP = lindetrend( ERP, 'post');
-% >> EEG = lindetrend( EEG, 'all');
-% >> ERP = lindetrend( ERP, '-500 300');
+% EEG = lindetrend( EEG, 'pre');      % detrend each whole epoch accordind the trend at the pre-stimulus interval
+% ERP = lindetrend( ERP, 'post');     % detrend each whole epoch accordind the trend at the post-timulus interval
+% EEG = lindetrend( EEG, 'all');      % detrend each whole epoch accordind the trend at the whole epoch
+% ERP = lindetrend( ERP, '-500 300'); % detrend each whole epoch accordind the trend between -500 and 300 ms
 %
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% January 25th, 2011
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -45,7 +67,6 @@ function ERPLAB = lindetrend( ERPLAB, interv)
 if nargin<1
         help lindetrend
 end
-
 if iseegstruct(ERPLAB)
         if isempty(ERPLAB.epoch)
                 error('ERPLAB says: lindetrend() only works with epoched data!')
@@ -60,7 +81,6 @@ elseif iserpstruct(ERPLAB)
 else
         error('ERPLAB says: error at lindetrend(). Invalid inputs')
 end
-
 if strcmpi(interv,'pre')
         bb = find(ERPLAB.times==0);    % zero-time locked
         aa =1;
@@ -83,11 +103,11 @@ else
         bb = round(inte2num(2)*ERPLAB.srate/1000) + toffsa   ;   % ms to samples
         
         if (bb-aa<5 && bb-aa>pnts) || aa<1 || bb>pnts
-              msgboxText = ['Unappropriated time interval: [%g  %g]\n'...
-                            'lindetrend() was ended.\n'];
-              title = 'ERPLAB: lindetrend() error';
-              errorfound(sprintf(msgboxText,a,b), title);
-              return
+                msgboxText = ['Unappropriated time interval: [%g  %g]\n'...
+                        'lindetrend() was ended.\n'];
+                title = 'ERPLAB: lindetrend() error';
+                errorfound(sprintf(msgboxText,a,b), title);
+                return
         end
 end
 
@@ -103,6 +123,9 @@ else
                 datadet   = detrend(ERPLAB.(datafield)(:,aa:bb,i)', 'linear')';    % data detrended by segments
                 difdata   = ERPLAB.(datafield)(:,aa:bb,i) - datadet;               % recovers straight lines
                 recutrend = interp1(aa:bb,difdata',1:pnts,'pchip');                % extrapolates from interval-based trending for all channel
-                ERPLAB.(datafield)(:,:,i) = ERPLAB.(datafield)(:,:,i)-recutrend';  % detrends full epochs
+                if size(recutrend,1)>1
+                        recutrend = recutrend';
+                end
+                ERPLAB.(datafield)(:,:,i) = ERPLAB.(datafield)(:,:,i)-recutrend;  % detrends full epochs
         end
 end

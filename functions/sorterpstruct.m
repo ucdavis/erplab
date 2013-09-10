@@ -1,9 +1,16 @@
+% PURPOSE:  sorts ERP structure's field
 %
-% Author: Javier Lopez-Calderon
+% FORMAT
+% 
+% [ERP serror] = sorterpstruct(ERP);
+% 
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon 
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2012
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -50,6 +57,7 @@ ref_field   = { 'erpname',...
         'bindata',...
         'binerror',...
         'ntrials',...
+        'pexcluded',...
         'isfilt',...
         'chanlocs',...
         'ref',...
@@ -58,6 +66,7 @@ ref_field   = { 'erpname',...
         'saved',...
         'history',...
         'version',...
+        'splinefile'...
         'EVENTLIST'};
 try
         dims    = size(ERP);
@@ -75,8 +84,7 @@ try
         %
         if ~isfield(ERP.ntrials, 'invalid')
                 ERP.ntrials.invalid = zeros(1,ERP.nbin);
-        end
-        
+        end        
         if ~isfield(ERP.ntrials, 'arflags')
                 ERP.ntrials.arflags = zeros(ERP.nbin,8);
         end        

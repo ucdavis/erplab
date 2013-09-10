@@ -1,18 +1,20 @@
-% Usage
+% PURPOSE: subroutine of pop_geterpvalues.m
 %
-% >> A = areaerp(data, fs,latsam, op, coi)
+% Format
+%
+% A = areaerp(data, fs, latsam, op, coi)
 %
 % or
 %
-% >> [A L] = areaerp(data, fs,latsam, op, coi)
+% [A L] = areaerp(data, fs,latsam, op, coi)
 %
 % where
 %
 % data     - input array of data
 % fs       - sampling frequency
 % latsam   - integration limits in samples. Two values for fixed integration limits.
-%            One or two values for automatic interation limit seeding.
-% op       - 'auto' means look for automatic interation limits. Otherwise is fixed.
+%            One or two values for automatic integration limit seeding.
+% op       - 'auto' means look for automatic integration limits. Otherwise is fixed.
 % coi      - Only for op='auto'. When an ERP waveform is not delimited by 2 zero-crossing latencies,
 %            but the first one (lower integration limit), the second latency (upper integration limit)
 %            will be the offset (if any) of a second or higher ERP waveform.
@@ -22,6 +24,11 @@
 %            Then coi=2 will set the latency of the minimum values between the first and the second
 %            ERP as the lower integration limit, and the second zero crossing as the upper integration limit.
 %
+%
+% See also pop_geterpvalues.m trapz.m
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -49,24 +56,44 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function varargout = areaerp(data, fs,latsam, op, coi)
-
-if nargin<4
-        op = 'late';
+function varargout = areaerp(data, fs,latsam, op, coi, frac, fracarearep, intfactor)
+if nargin<8
+        %if fs>=1000;
+                intfactor = 1;
+        %else
+        %        intfactor = 1000/fs; % to bring it to fs=1000 Hz
+        %end
+end
+if nargin<7
+        fracarearep = 0; %NaN;  in case frac area lat is not found.
+end
+if nargin<6
+        frac = 0.5; % for 50% fractional area latency, by default
 end
 if nargin<5
         coi = 1; % component of interest
 end
-
-if length(latsam)==1 && ~strcmpi(op,'auto')
+if nargin<4
+        op = 'integral';
+end
+if length(latsam)==1 && ~ismember({op},{'auto','autot','autop','auton'})
         error('ERPLAB says: error at areaerp(). You must enter 2 latencies for non-automatic limits')
 end
-
-fsn = 10000;     % new sample rate 10Khz
-Tsn = 1/fsn;     % new sample period
-Fk   = fsn/fs;   % oversampling factor
-
-if strcmpi(op,'auto')
+if ~isempty(frac) && (frac<0 || frac>1)
+        error('ERPLAB says: error at areaerp(). Fractional area value must be between 0 and 1')
+end
+if intfactor>1 % interpolate data
+        fsn  = fs*intfactor;      % new sample rate
+        Ts   = 1/fsn;             % sample period
+        nsam = length(data);
+        aa   = 1; bb = nsam;
+        newsam   = linspace(aa,bb,intfactor*(bb-aa+1));
+        data     = spline(aa:bb, data(aa:bb),newsam); % interpoled data
+        latsam   = round(latsam*intfactor)-1;
+else
+        Ts = 1/fs;     % sample period
+end
+if ismember({op},{'auto','autot','autop','auton'})
         if length(latsam)==2
                 
                 %
@@ -80,146 +107,168 @@ if strcmpi(op,'auto')
                 latsam = round(k1*latsam(1) +  k2*latsam(2));
         end
         
-        if length(data)>31
-                dataaux    = sgolayfilt(data, 3, 31);  % Apply 3rd-order polinomial filter
-        else
-                dataaux = data; % no filtered
-        end
-        
         %
-        % Limit of integrations (automatics)
+        % Limit of integrations (automatic)
         %
-        vinit      = dataaux(latsam);   % voltage at latency
-        vsign      = sign(vinit);
-        b          = find(sign(dataaux(latsam:end))~= vsign,1,'first') + latsam -1;
-        a          = find(sign(dataaux(1:latsam))  ~= vsign,1,'last');
+        vinit = data(latsam);   % voltage at latency
+        vsign = sign(vinit);
+        b     = find(sign(data(latsam:end))~= vsign,1,'first') + latsam -1; % in sample
+        a     = find(sign(data(1:latsam))  ~= vsign,1,'last'); % in sample
         
         if isempty(b)
-                b = length(dataaux);
+                b = length(data);
         end
         if isempty(a)
                 a = 1;
         end
-        
-        %
-        % Test for detection of overlaped components
-        %
-        dataaux(1:a)   = 0;
-        dataaux(b:end) = 0;
-        dataaux = abs(dataaux);
-        ndata = length(dataaux);
-        [datamax imax] = max(dataaux) ;        
-        ion    = find(dataaux(1:imax)>0.2*datamax, 1,'first'); % onset, at 10% max
-        ioff   = find(dataaux((imax+1):end)>0.2*datamax, 1,'last') + imax; % onset, at 10% max
-        onset  = dataaux(ion);
-        offset = dataaux(ioff);        
-        x  = [a ion imax ioff b];
-        y  = [0 onset datamax offset 0];
-        xx = linspace(a,b,b-a+1);
-        simerp = interp1(x, y,xx,'cubic');
-        
-        AT1 = single(trapz(dataaux(a:b)));
-        AT2 = single(trapz(simerp));
-        ATrate = AT1/AT2;
-        
-        if ATrate<0.9
-                fprintf('***************************************\n')
-                fprintf('overlapping component detected!\n')
-                fprintf('***************************************\n\n')
+        if ~isempty(coi) && coi>0
+                %
+                % Test for detection of overlaped components
+                %
+                data(1:a)   = 0;
+                data(b:end) = 0;
+                data   = abs(data); % rectification
+                ndata  = length(data);
+                [datamax imax] = max(data) ;
+                ion     = find(data(1:imax)>0.2*datamax, 1,'first'); % onset, at 10% max
+                ioff    = find(data((imax+1):end)>0.2*datamax, 1,'last') + imax; % onset, at 10% max
+                onset   = data(ion);
+                offset  = data(ioff);
+                x  = [a ion imax ioff b];
+                y  = [0 onset datamax offset 0];
+                xx = linspace(a,b,b-a+1);
+                simerp = interp1(x, y,xx,'cubic');
+                AT1    = single(trapz(data(a:b)));
+                AT2    = single(trapz(simerp));
+                ATrate = AT1/AT2;
                 
-                if coi==1
-                        fprintf('Correcting upper integration limit...\n');
-                elseif coi==2
-                        fprintf('Correcting lower integration limit...\n');
-                end
-                
-                step = 5;
-                
-                for i = (1+step):ndata-step
+                if ATrate<0.9
+                        fprintf('***************************************\n')
+                        fprintf('overlapping component detected!\n')
+                        fprintf('***************************************\n\n')
                         
-                        leftp  = dataaux(i-step:i-1);
-                        rigthp = dataaux(i+1:i+step);
-                        targp  = dataaux(i);
-                        conL = length(find(leftp>targp));
-                        conR = length(find(rigthp>=targp));
+                        if coi==1
+                                fprintf('Correcting upper integration limit...\n');
+                        elseif coi==2
+                                fprintf('Correcting lower integration limit...\n');
+                        end
                         
-                        if conL==5 && conR==5
+                        step = 5;
+                        
+                        for i = (1+step):ndata-step
+                                leftp  = data(i-step:i-1);
+                                rigthp = data(i+1:i+step);
+                                targp  = data(i);
+                                conL   = length(find(leftp>targp));
+                                conR   = length(find(rigthp>=targp));
                                 
-                                if coi==1
-                                        fprintf('old upper limit: %g\n', b)
-                                        fprintf('corrected upper limit: %g\n', i)
-                                        b = i;
-                                elseif coi==2
-                                        fprintf('old lower limit: %g\n', a)
-                                        fprintf('corrected lower limit: %g\n', i)
-                                        a = i;
+                                if conL==5 && conR==5
+                                        if coi==1
+                                                fprintf('old upper limit: %g\n', b)
+                                                fprintf('corrected upper limit: %g\n', i)
+                                                b = i;
+                                        elseif coi==2
+                                                fprintf('old lower limit: %g\n', a)
+                                                fprintf('corrected lower limit: %g\n', i)
+                                                a = i;
+                                        end
+                                        break
                                 end
-                                break
                         end
                 end
         end
 else
-        a = latsam(1);
-        b = latsam(2);
+        try
+                a = latsam(1); % in sample
+                b = latsam(2); % in sample
+        catch
+                error('ERPLAB says: 2 latency values are required.')
+        end
 end
-
 if isempty(a) || isempty(b)
-        
         A = 0;   % either of the integration limits failed
 else
-        signmode   = mode(sign(data(a:b))); % positive or negative component?
-        
-        if signmode==0
-                signmode =1;
+        if ismember({op},{'autot','total'})
+                data = abs(data);
+        elseif ismember({op},{'autop','positive'})
+                data(data<0) = 0;
+        elseif ismember({op},{'auton','negative'})
+                data = -data;
+                data(data<0) = 0; % negative values get positive, and the previously positive ones get zeroed.
         end
         
-        newsam     = linspace(a,b,Fk*(b-a+1));
-        resamp     = signmode * spline(a:b, data(a:b),newsam);
-        resamp(resamp<0) = 0;
-        A = single(Tsn*trapz(resamp));
+        %
+        %  Calculates area
+        %
+        A = single(Ts*trapz(data(a:b))); % April 21, 2011
 end
-
 if nargout==1
         varargout{1} = A;
-elseif nargout>=2
+elseif nargout==2 || nargout==3
         varargout{1} = A;
-        
         if A~=0
                 
                 %
-                % Finds 50% area latency  (in samples)
+                % Finds fractional (50% by default) area latency  (in samples)
                 %
+                Ao = single(A*frac); % Fractional area
                 
-                %
-                % (convergent) binary search algorithm
-                %
-                Ao    = single(A/2);
-                plow  = 1;
-                phigh = numel(resamp);
-                
-                while plow <= phigh
+                if Ao~=0
+                        %
+                        % (convergent) binary search algorithm
+                        %
+                        plow  = a;
+                        phigh = b;
                         
-                        pmid = round((plow + phigh) / 2);
-                        Ax = single(Tsn*trapz(resamp(1:pmid)));
-                        
-                        if Ax > Ao
-                                phigh = pmid - 1;
-                        elseif Ax < Ao
-                                plow = pmid + 1;
-                        else
-                                break     % It was found!
+                        while plow < phigh
+                                pmid = round((plow + phigh) / 2);
+                                Ax   = single(Ts*trapz(data(a:pmid)));
+                                
+                                if Ax > Ao
+                                        phigh = pmid - 1;
+                                elseif Ax < Ao
+                                        plow = pmid + 1;
+                                else
+                                        break     % It was found!
+                                end
                         end
+                        L = pmid;  % Frac latency in (non-integer) samples
+                else
+                        L = a;     % if Ao=0 then L=lower area limit
                 end
                 
-                L = pmid/Fk + a - 1;  % latency in (non-integer) samples
+                
+              
+                
+                
+                
+                
+                
         else
-                L=0;                  % there was not Area, so won't have a latency...
+                if fracarearep==0 % Fractional area latency replacement
+                        L = NaN; % if Ao=0 then fractional latency = NaN
+                else
+                        error('ERPLAB:zeroarea',['Sorry, fractional area latency was not found because area value is zero.\n'...
+                                'You may use fractional area latency replacement option.'])
+                end
         end
-        varargout{2} = L;
+        
+        %
+        % Frac latency
+        %
+        
+        
+        
+        
+        varargout{2} = L/intfactor; % rescale. samples
+        
+        if nargout==3
+                
+                %
+                % Integration limits
+                %
+                varargout{3} = [a b]/intfactor; %in samples
+        end
 elseif nargout>3
         error('ERPLAB says: error at areaerp(). Too many output arguments!')
-end
-
-if nargout==3
-        varargout{3} = [a b]; %in samples
 end

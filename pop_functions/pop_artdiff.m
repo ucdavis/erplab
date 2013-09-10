@@ -1,23 +1,34 @@
-% Usage
+% PURPOSE  : Marking epochs containing a sample to sample difference, higher than a threshold (uV/ms).
 %
-% >> EEG = pop_artdiff(EEG, twin, ampth, chan, flag);
+% FORMAT   :
 %
-% Inputs
+% >> EEG = pop_artdiff(EEG, parameters);
 %
-% EEG       - input dataset
-% twin      - time period in ms to apply this tool (start end). Example [-200 800]
-% ampth     - sample-to-sample threshold (in uV)
-% chan      - channel(s) to search artifacts.
-% flag      - flag value between 1 to 8 to be marked when an artifact is found. (1 value)
+% INPUTS   :
 %
-% Output
+% EEG           - input dataset
 %
-% EEG       - output dataset
+% The available parameters are as follows:
 %
-%  TEMPORARY VERSION. ONLY FOR TESTING
-%  Calculates differences between adjacent samples per each epoch, at the specified channel(s), and compares with ampth.
+%        'Twindow' 	- time period (in ms) to apply this tool (start end). Example [-200 800]
+%        'Threshold'    - sample-to-sample threshold (in uV)
+%        'Channel' 	- channel(s) to search artifacts.
+%        'Flag'         - flag value between 1 to 8 to be marked when an artifact is found.(1 value)
+%        'Review'       - open a popup window for scrolling marked epochs.
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+% OUTPUTS  :
+%
+% EEG           - updated output dataset
+%
+% EXAMPLE  :
+%
+% EEG  = pop_artdiff( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold',  30, 'Twindow', [ -200 798] );
+%
+%
+% See also pop_artblink pop_artderiv pop_artdiff pop_artflatline pop_artmwppth pop_artstep artifactmenuGUI.m markartifacts.m
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -44,138 +55,187 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG com] = pop_artdiff(EEG, twin, ampth, chan, flag)
-
+function [EEG, com] = pop_artdiff(EEG, varargin)
 com = '';
-
 if nargin<1
-      help pop_artdiff
-      return
-end
-if isempty(EEG.data)
-      msgboxText{1} =  'Permission denied:';
-      msgboxText{2} =  'ERROR: pop_artdiff() cannot read an empty dataset!';
-      title = 'ERPLAB: pop_artdiff';
-      errorfound(msgboxText, title);
-      return
-end
-if isempty(EEG.epoch)
-      msgboxText{1} =  'Permission denied:';
-      msgboxText{2} =  'pop_artdiff has been tested for epoched data only';
-      title = 'ERPLAB: pop_artdiff Permission';
-      errorfound(msgboxText, title);
-      return
-end
-if isfield(EEG, 'EVENTLIST')
-    if isfield(EEG.EVENTLIST, 'eventinfo')
-        if isempty(EEG.EVENTLIST.eventinfo)
-            msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
-                'You will not be able to perform ERPLAB''s\n'...
-                'artifact detection tools.'];
-            title = 'ERPLAB: Error';
-            errorfound(sprintf(msgboxText), title);
-            return
-        end
-    else
-        msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
-            'You will not be able to perform ERPLAB''s\n'...
-            'artifact detection tools.'];
-        title = 'ERPLAB: Error';
-        errorfound(sprintf(msgboxText), title);
+        help pop_artdiff
         return
-    end
-else
-    msgboxText =  ['EVENTLIST structure was not found!\n'...
-        'You will not be able to perform ERPLAB''s\n'...
-        'artifact detection tools.'];
-    title = 'ERPLAB: Error';
-    errorfound(sprintf(msgboxText), title);
-    return
+end
+if isobject(EEG) % eegobj
+        whenEEGisanObject % calls a script for showing an error window
+        return
+end
+if nargin==1
+        if length(EEG)>1
+                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+                title = 'ERPLAB: multiple inputs';
+                errorfound(msgboxText, title);
+                return
+        end
+        if isempty(EEG.data)
+                msgboxText =  'ERROR: pop_artdiff() cannot read an empty dataset!';
+                title = 'ERPLAB: pop_artdiff';
+                errorfound(msgboxText, title);
+                return
+        end
+        if isempty(EEG.epoch)
+                msgboxText =  'pop_artdiff has been tested for epoched data only';
+                title = 'ERPLAB: pop_artdiff Permission';
+                errorfound(msgboxText, title);
+                return
+        end
+        if isfield(EEG, 'EVENTLIST')
+                if isfield(EEG.EVENTLIST, 'eventinfo')
+                        if isempty(EEG.EVENTLIST.eventinfo)
+                                msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
+                                        'You will not be able to perform ERPLAB''s\n'...
+                                        'artifact detection tools.'];
+                                title = 'ERPLAB: Error';
+                                errorfound(sprintf(msgboxText), title);
+                                return
+                        end
+                else
+                        msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
+                                'You will not be able to perform ERPLAB''s\n'...
+                                'artifact detection tools.'];
+                        title = 'ERPLAB: Error';
+                        errorfound(sprintf(msgboxText), title);
+                        return
+                end
+        else
+                msgboxText =  ['EVENTLIST structure was not found!\n'...
+                        'You will not be able to perform ERPLAB''s\n'...
+                        'artifact detection tools.'];
+                title = 'ERPLAB: Error';
+                errorfound(sprintf(msgboxText), title);
+                return
+        end
+        prompt = {'Test period (start end) [ms]','Sample-to-Sample Voltage Threshold [uV]:', 'Channel(s)'};
+        dlg_title = 'Sample-to-Sample Threshold';
+        defx = {[EEG.xmin*1000 EEG.xmax*1000] 30 [1:EEG.nbchan] 0};
+        def = erpworkingmemory('pop_artdiff');
+        
+        if isempty(def)
+                def = defx;
+        else
+                if def{1}(1)<EEG.xmin*1000
+                        def{1}(1) = single(EEG.xmin*1000);
+                end
+                if def{1}(2)>EEG.xmax*1000
+                        def{1}(2) = single(EEG.xmax*1000);
+                end
+                
+                def{3} = def{3}(ismember(def{3},1:EEG.nbchan));
+        end
+        try
+                chanlabels = {EEG.chanlocs.labels};
+        catch
+                chanlabels = [];
+        end
+        
+        %
+        % Call GUI
+        %
+        answer = artifactmenuGUI(prompt, dlg_title, def, defx, chanlabels);
+        
+        if isempty(answer)
+                disp('User selected Cancel')
+                return
+        end
+        
+        testwindow = answer{1};
+        ampth      = answer{2};
+        chanArray  = unique(answer{3}); % avoids repeated channels
+        flag       = answer{4};
+        viewer     = answer{end};
+        
+        if viewer
+                viewstr = 'on';
+        else
+                viewstr = 'off';
+        end
+        if ~isempty(find(flag<1 | flag>16, 1))
+                msgboxText{1} =  'ERROR, flag cannot be greater than 16 nor lesser than 1';
+                title = 'ERPLAB: Flag input';
+                errorfound(msgboxText, title);
+                return
+        end
+        erpworkingmemory('pop_artdiff', {answer{1} answer{2} answer{3} answer{4}});
+        EEG.setname = [EEG.setname '_ar']; %suggest a new name
+        
+        %
+        % Somersault
+        %
+        [EEG, com] = pop_artdiff(EEG, 'Twindow', testwindow, 'Threshold', ampth,...
+                'Channel', chanArray, 'Flag', flag, 'Review', viewstr, 'History', 'gui');
+        return
 end
 
 %
-% Gui is working...
+% Parsing inputs
 %
-nvar=5;
-if nargin <nvar
-      
-      prompt = {'Test period (start end) [ms]','Sample-to-Sample Voltage Threshold [uV]:', 'Channel(s)'};
-      dlg_title = 'Sample-to-Sample Threshold';
-      defx = {[EEG.xmin*1000 EEG.xmax*1000] 30 [1:EEG.nbchan] 0};
-      def = erpworkingmemory('pop_artdiff');
-      
-      if isempty(def)
-            def = defx;
-      else
-            
-            if def{1}(1)<EEG.xmin*1000
-                  def{1}(1) = single(EEG.xmin*1000);
-            end
-            if def{1}(2)>EEG.xmax*1000
-                  def{1}(2) = single(EEG.xmax*1000);
-            end
-            
-            def{3} = def{3}(ismember(def{3},1:EEG.nbchan));
-      end
-      
-      answer = artifactmenuGUI(prompt,dlg_title,def,defx);
-      
-      if isempty(answer)
-            disp('User selected Cancel')
-            return
-      end
-      
-      testwindow = answer{1};
-      ampth      = answer{2};
-      chanArray  = unique(answer{3}); % avoids repeated channels
-      flag       = answer{4};
-      
-      if ~isempty(find(flag<1 | flag>16, 1))
-            msgboxText{1} =  'ERROR, flag cannot be greater than 16 nor lesser than 1';
-            title = 'ERPLAB: Flag input';
-            errorfound(msgboxText, title);
-            return
-      end
-      
-      erpworkingmemory('pop_artdiff', {answer{1} answer{2} answer{3} answer{4}});
-      
-elseif nargin==nvar
-      testwindow = twin;
-      chanArray = chan;
-      
-      if ~isempty(find(flag<1 | flag>16, 1))
-            error('ERPLAB says: error at pop_artabsth(). Flag cannot be greater than 16 or lesser than 1')
-      end
-else
-      error('Error: pop_artdiff() works with 5 arguments')
-end
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('EEG');
 
-chArraystr = vect2colon(chanArray);
+t1 = single(EEG.xmin*1000);
+t2 = single(EEG.xmax*1000);
+p.addParamValue('Twindow', [t1 t2], @isnumeric);
+p.addParamValue('Threshold', 100, @isnumeric);
+p.addParamValue('Channel', 1:EEG.nbchan, @isnumeric);
+p.addParamValue('Flag', 1, @isnumeric);
+p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
+p.addParamValue('History', 'script', @ischar); % history from scripting
+
+p.parse(EEG, varargin{:});
+
+testwindow =  p.Results.Twindow;
+ampth      =  p.Results.Threshold;
+chanArray  =  p.Results.Channel; % avoids repeated channels
+flag       =  p.Results.Flag;
+
+if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
+        eprev = 1;
+else
+        eprev = 0;
+end
+if ~isempty(find(chanArray<1 | chanArray>EEG.nbchan, 1))
+        error('ERPLAB says: error at pop_artdiff(). Channel indices cannot be greater than EEG.nbchan')
+end
+if ~isempty(find(flag<1 | flag>16, 1))
+        error('ERPLAB says: error at pop_artdiff(). Flag cannot be greater than 16 or lesser than 1')
+end
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
 
 fs       = EEG.srate;
 nch      = length(chanArray);
 ntrial   = EEG.trials;
 
-[p1 p2 checkw] = window2sample(EEG, testwindow, fs);
+[p1, p2, checkw] = window2sample(EEG, testwindow, fs);
 
 if checkw==1
-      error('pop_artdiff() error: time window cannot be larger than epoch.')
+        error('pop_artdiff() error: time window cannot be larger than epoch.')
 elseif checkw==2
-      error('pop_artdiff() error: too narrow time window')
+        error('pop_artdiff() error: too narrow time window')
 end
-
 if nch>EEG.nbchan
-      error('Error: pop_artdiff() number of tested channels cannot be greater than total.')
+        error('Error: pop_artdiff() number of tested channels cannot be greater than total.')
 end
-
 if isempty(EEG.reject.rejmanual)
-      EEG.reject.rejmanual  = zeros(1,ntrial);
-      EEG.reject.rejmanualE = zeros(EEG.nbchan, ntrial);
+        EEG.reject.rejmanual  = zeros(1,ntrial);
+        EEG.reject.rejmanualE = zeros(EEG.nbchan, ntrial);
 end
-
 
 interARcounter = zeros(1,ntrial); % internal counter, for statistics
-
 fprintf('channel #\n ');
 
 %
@@ -190,54 +250,87 @@ else
                 isRT = 0;
         end
 end
-
 for ch=1:nch
-      
-      fprintf('%g ',chanArray(ch));
-      
-      for i=1:ntrial;
-            
-            diffEEG = diff(EEG.data(chanArray(ch), p1:p2 ,i));
-            diffpeak = max(abs(diffEEG));
-            
-            if diffpeak>ampth
-                  
-                  interARcounter(i) = 1;      % internal counter, for statistics
-                  % flaf 1 is obligatory
-                  [EEG errorm]= markartifacts(EEG, flag, chanArray, ch, i, isRT);
-                  if errorm==1
-                        error(['ERPLAB: There was not latency at the epoch ' num2str(i)])
-                  elseif errorm==2
-                        error('ERPLAB: invalid flag (0<=flag<=16)')
-                  end
-            end
-      end
+        fprintf('%g ',chanArray(ch));
+        for i=1:ntrial;
+                diffEEG = diff(EEG.data(chanArray(ch), p1:p2 ,i));
+                diffpeak = max(abs(diffEEG));
+                if diffpeak>ampth
+                        interARcounter(i) = 1;      % internal counter, for statistics
+                        
+                        %
+                        % subroutine
+                        %
+                        % flaf 1 is obligatory
+                        [EEG, errorm]= markartifacts(EEG, flag, chanArray, ch, i, isRT);
+                        if errorm==1
+                                error(['ERPLAB: There was not latency at the epoch ' num2str(i)])
+                        elseif errorm==2
+                                error('ERPLAB: invalid flag (0<=flag<=16)')
+                        end
+                end
+        end
 end
-
-% Update EEG.EVENTLIST.bdf structure (for RTs)
-% EEG = updatebdfstruct(EEG);
-
 fprintf('\n');
 
 % performance
 perreject = nnz(interARcounter)/ntrial*100;
 fprintf('pop_artdiff() rejected a %.1f %% of total trials.\n', perreject);
-
-EEG.setname = [EEG.setname '_ar'];
+fprintf('\n');
+pop_summary_AR_eeg_detection(EEG, ''); % show table at the command window
 EEG = eeg_checkset( EEG );
 
-if ~ischar(testwindow)
-      testwindow = ['[' num2str(testwindow) ']'];
-end
-namefig = 'Sample to sample voltage threshold (alpha version) view';
-if nargin <nvar
-      pop_plotepoch4erp(EEG, namefig)
+if eprev==1
+        namefig = 'Sample to sample voltage threshold (alpha version) view';
+        pop_plotepoch4erp(EEG, namefig)
 end
 
-flagstr = vect2colon(flag);
+%
+% History
+%
+skipfields = {'EEG', 'Review', 'History'};
+fn  = fieldnames(p.Results);
+com = sprintf( '%s  = pop_artdiff( %s ', inputname(1), inputname(1));
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                        end
+                end
+        end
+end
+com = sprintf( '%s );', com);
 
-com = sprintf( '%s = pop_artdiff( %s, %s, %s, %s, %s);', ...
-      inputname(1), inputname(1), testwindow, num2str(ampth), chArraystr, flagstr );
+% get history from script
+switch shist
+        case 1 % from GUI
+                com = sprintf('%s %% GUI: %s', com, datestr(now));
+                %fprintf('%%Equivalent command:\n%s\n\n', com);
+                displayEquiComERP(com);
+        case 2 % from script
+                EEG = erphistory(EEG, [], com, 1);
+        case 3
+                % implicit
+        otherwise %off or none
+                com = '';
+end
 
-try cprintf([0 0 1], 'COMPLETE\n\n');catch fprintf('COMPLETE\n\n');end ;
+%
+% Completion statement
+%
+msg2end
 return

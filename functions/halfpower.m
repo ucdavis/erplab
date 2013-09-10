@@ -1,4 +1,4 @@
-% Get the -3dB cutoff frequency value using filtfilt.m
+% PURPOSE Get the -3dB cutoff frequency value using filtfilt.m
 %
 % b,a = filter coefficients.
 % fs  = data sample rate
@@ -12,11 +12,13 @@
 %           WARNING by JLC: THIS IMPLIES THAT THE CUTOFF FREQUENCY IS NOT AT -3dB ANYMORE, IT IS AT -6dB INSTEAD!!!
 %       c) A filter order that is double the order of the filter specified by b and a
 %
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2009
+
 function [frec_at_3dB xdB_at_fc_user ] = halfpower(b, a, fs, fc_user)
 
 if nargin<4
@@ -58,7 +60,7 @@ try
                         [xx indxx] = min(abs(f1-fc_user(k)));
                         
                         if hf2(indxx)>0
-                              xdb = single(20*log10(hf2(indxx)));% tru attentuation at frequency cutoff
+                              xdb = single(20*log10(hf2(indxx)));% true attentuation at frequency cutoff
                               xdB_at_fc_user(k) = round(xdb);
                         else
                               xdB_at_fc_user = [];

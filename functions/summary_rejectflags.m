@@ -1,3 +1,17 @@
+% PURPOSE:  summarizes marked flag for artifact detection
+%
+% FORMAT
+% 
+% histoflags = summary_rejectflags(EEG);
+% 
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon 
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% 2012
+
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
@@ -31,14 +45,11 @@ oldflag = zeros(1,ntrial);
 
 for b=1:nbin
         for i=1:ntrial
-                if length(EEG.epoch(i).eventlatency) == 1                       
-                        
+                if length(EEG.epoch(i).eventlatency) == 1
                         binix = [EEG.epoch(i).eventbini];
-                        
                         if iscell(binix)
                                 binix = cell2mat(binix);
                         end
-                        
                         if ismember(b, binix)
                                 
                                 flagx = [EEG.epoch(i).eventflag];
@@ -51,7 +62,6 @@ for b=1:nbin
                         else
                                 oldflag(b,i) =0;
                         end
-                        
                 elseif length(EEG.epoch(i).eventlatency) > 1
                         
                         indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0,1,'first'); % catch zero-time locked type,

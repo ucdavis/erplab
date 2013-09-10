@@ -53,44 +53,84 @@ function errorGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.output = [];
 
-% Update handles structure
-guidata(hObject, handles);
-
-message = varargin{1};
-title   = varargin{2};
-imagein = varargin{3};
-map     = varargin{4};
-
-if nargin<6
-        showfig = 1;
-else
-        showfig = varargin{6};
+try
+      message = varargin{1};
+      title   = varargin{2};
+      imagein = varargin{3};
+      map     = varargin{4};
+      
+      if nargin<7
+              showfig = 1;
+      else
+              showfig = varargin{7};
+      end
+      if nargin<6
+              fcolor = [0 0 0];
+      else
+              fcolor = varargin{6};
+      end
+      if nargin<5
+              bcolor = [1 0 0];
+      else
+              bcolor = varargin{5};
+      end      
+catch
+      message = 'Hello Erpers!';
+      title   = 'Test';  
+      [imagein, map] = imread('steve_erpss.jpg');
+      showfig = 1;     
+      bcolor  = [1 0 0]; 
+      fcolor  = [0 0 0];
 end
-if nargin<5
-        bcolor = [1 0 0];
-else
-        bcolor = varargin{5};
-end
 
+defquack  = erpworkingmemory('errorGUI');
+
+% message on command window
 fprintf('%s\n', repmat('*',1,50));
-
 if iscell(message)
         message = [message{:}];
 end
-
 fprintf('Full error message: \n %s\n', message);
 message = regexprep(message,'<.*>|Error using ==>','');
 bottomline = 'If you think this is a bug, please report the error to erplab@erpinfo.org and not to the EEGLAB developers.';
 disp(bottomline)
 fprintf('%s\n', repmat('*',1,50));
+
 set(handles.text_message, 'String', message)
-set(handles.text_message, 'Backgroundcolor', bcolor, 'FontSize', 12,'ForegroundColor', 'k')
+set(handles.text_message, 'Backgroundcolor', bcolor, 'FontSize', 12,'ForegroundColor', fcolor)
 set(handles.text_bottom, 'String', bottomline)
-set(handles.text_bottom, 'Backgroundcolor', bcolor, 'FontSize', 10,'ForegroundColor', 'k')
+set(handles.text_bottom, 'Backgroundcolor', bcolor, 'FontSize', 10,'ForegroundColor', fcolor)
 set(handles.main_figure_error,'Name', title,'WindowStyle','modal', 'Units', 'pixels')
 set(handles.main_figure_error,'Color', bcolor)
 
+try
+        he = findobj('tag','EEGLAB');
+        posgui = get(he,'Position');
+        %poseeg = get(handles.main_figure_error,'Position')
+        movegui(handles.main_figure_error,[posgui(1) posgui(2)])
+catch
+        %disp('no funciona')      
+end
 if showfig
+        
+        imR    = imagein(:,:,1);
+        imG    = imagein(:,:,2);
+        imB    = imagein(:,:,3);        
+        aindx  = ismember(imR,12);
+        bindx  = ismember(imG,255);
+        cindx  = ismember(imB,0);
+        edmask = aindx&bindx&cindx;
+        imR(edmask) = bcolor(1)*255;
+        imG(edmask) = bcolor(2)*255;
+        imB(edmask) = bcolor(3)*255;
+       
+        imagein = cat(3, imR, imG, imB);
+          
+        
+%         H = fspecial('gaussian', [6 6]);
+%         imagein = imfilter(imagein, H);
+        
+        
         axes(handles.axes_pict)
         sizep     = size(imagein);   % Determine the size of the image file
         set(handles.axes_pict,'Units', 'pixels');
@@ -103,8 +143,32 @@ if showfig
 else
         set(handles.axes_pict, 'Visible', 'off')        
 end
+if isempty(defquack) || defquack==1 % for making it faster
+      set(handles.checkbox_quack, 'Value', 1)
+end
+set(handles.checkbox_quack, 'ForegroundColor', fcolor)
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
 drawnow
+
+%
+% Quack
+%
+if isempty(defquack) || defquack==1
+        try
+                [s,fs] = wavread('quack8000.wav');
+                sound(s,fs);
+        catch
+                set(handles.checkbox_quack, 'Value', 0)
+                set(handles.checkbox_quack, 'Enable', 'off')                
+        end
+end
 
 % UIWAIT makes errorGUI wait for user response (see UIRESUME)
 uiwait(handles.main_figure_error);
@@ -118,8 +182,47 @@ pause(0.1)
 
 %--------------------------------------------------------------------------
 function text_message_CreateFcn(hObject, eventdata, handles)
+
 %--------------------------------------------------------------------------
 function axes_pict_CreateFcn(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+% --- Executes on button press in button_OK.
+function button_ok_Callback(hObject, eventdata, handles)
+
+
+if get(handles.checkbox_quack, 'Value')
+      erpworkingmemory('errorGUI', 1);
+else
+      erpworkingmemory('errorGUI', 0);
+end
+
+handles.output = 'ok';
+
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.main_figure_error);
+
+%--------------------------------------------------------------------------
+function text_bottom_CreateFcn(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function main_figure_error_CreateFcn(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function checkbox_quack_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+    %
+    % Quack
+    %
+    try
+        [s,fs] = wavread('quack8000.wav');
+        sound(s,fs);
+    catch
+        set(handles.checkbox_quack, 'Value', 0)
+        set(handles.checkbox_quack, 'Enable', 'off')
+    end
+end
 
 %--------------------------------------------------------------------------
 function main_figure_error_CloseRequestFcn(hObject, eventdata, handles)
@@ -134,19 +237,3 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.main_figure_error);
 end
-
-%--------------------------------------------------------------------------
-% --- Executes on button press in button_OK.
-function button_ok_Callback(hObject, eventdata, handles)
-
-handles.output = 'ok';
-
-% Update handles structure
-guidata(hObject, handles);
-uiresume(handles.main_figure_error);
-
-%--------------------------------------------------------------------------
-function text_bottom_CreateFcn(hObject, eventdata, handles)
-
-%--------------------------------------------------------------------------
-function main_figure_error_CreateFcn(hObject, eventdata, handles)

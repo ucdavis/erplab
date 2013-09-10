@@ -1,31 +1,34 @@
-% Usage
+% PURPOSE:  re-sorts channels according to specified indices
 %
-%>> ERP = sorteegchannels(ERP, newindexes)
+% FORMAT
+% 
+% ERP = sorteegchannels(ERP, newindexes)
+% 
+% Inputs
+% 
+% ERP         - Averaged data structure
+% newindexes  - new desired sequential order of your channels. Constraint: length(newindexes) = ERP.nchan
+% 
+% Outputs
+% 
+% ERP         - Averaged data structure, with re-sorted channels and channel info
+% 
+% Example 1 : Your erpset has 16 channels. You want to swap channel 7 and channel 10
+% 
+% ERP = sorteegchannels(ERP, [1  2  3  4  5  6  10  8  9  7  11  12  13  14  15  16])
+% 
+% 
+% Example 2 : Totally flip your ERP channels. Your erpset has 40 channels.
+% 
+% ERP = sorteegchannels(ERP, 40:-1:1)
 %
-%   Inputs
 %
-%   ERP         - Averaged data structure
-%   newindexes  - desired sequential order of your channels. Constraint: length(newindexes) = ERP.nchan
-%
-%   Outputs
-%
-%   ERP         - Averaged data structure, with re-sorted channels and channel info
-%
-%  Example 1 : Your erpset has 16 channels. You want to swap channel 7 and channel 10
-%
-%>>ERP = sorteegchannels(ERP, [1  2  3  4  5  6  10  8  9  7  11  12  13  14  15  16])
-%
-%
-%  Example 2 : Totally flip your ERP channels. Your erpset has 40 channels.
-%
-%>>ERP = sorteegchannels(ERP, 40:-1:1)
-%
-%
-% Author: Javier Lopez-Calderon
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon & Johanna Kreither
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2012
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %

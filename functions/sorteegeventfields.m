@@ -1,9 +1,16 @@
+% PURPOSE:  sorts EEG structure's field
 %
-% Author: Javier Lopez-Calderon
+% FORMAT
+% 
+%  [EEG serror] = sorteegeventfields(EEG)
+% 
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon 
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2012
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %

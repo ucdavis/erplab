@@ -1,7 +1,9 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% PURPOSE: subroutine for binlister.m
+%          Convert formulas at bin descriptor file into a structure (BIN)
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% FORMAT
+%
+% [BIN, nwrongbins] = decodebdf(bdfilename)
 %
 % Inputs:
 %
@@ -9,14 +11,16 @@
 %
 % Outputs:
 %
-%   BIN       - output structure with bin conditioning (numeric format)
-%  nwrongbins - numeric parsing, wrong-bin counter.
+%   BIN          - output structure with bin conditioning (numeric format)
+%  nwrongbins    - numeric parsing, wrong-bin counter.
 %
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% May 2008
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -40,8 +44,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [BIN, nwrongbins] = decodebdf(bdfilename)
-
-% fprintf('decodebdf.m : START\n');
 
 if nargin < 1
         help decodebdf
@@ -78,16 +80,20 @@ while ischar(currentBdfLine)
                 [lookbinaround2] = regexpi(healthyLine, 'bin\s*\d+\D+.*','match');
                 
                 if ~isempty(lookbinaround1)
+                        fprintf('**************************************************\n');
                         fprintf('ERROR LINE %g: Expected BIN %g, found "%s" \n',...
-                                pointerLine, bincounter, char(lookbinaround1))                        
+                                pointerLine, bincounter, char(lookbinaround1));
+                        fprintf('**************************************************\n');
+
                         %increase error counter
                         nwrongbins = nwrongbins+1;
                         break
-                end
-                
+                end                
                 if ~isempty(lookbinaround2)
+                        fprintf('**************************************************\n');
                         fprintf('ERROR LINE %g: Expected BIN %g, found additional character "%s" \n',...
-                                pointerLine, bincounter, char(lookbinaround2))                        
+                                pointerLine, bincounter, char(lookbinaround2));
+                        fprintf('**************************************************\n');
                         %increase error counter
                         nwrongbins = nwrongbins+1;
                         break
@@ -104,18 +110,21 @@ while ischar(currentBdfLine)
                         numberbin = str2num(cell2mat(captureBinNum{1}(1))); % numeric format for bin's order.
                         
                         if numberbin ~= bincounter % is the bin's number the expected number?
-                                fprintf('FATAL ERROR:  BINS BAD NUMERED!!! \n')
+                                fprintf('**************************************************\n');
+                                fprintf('FATAL ERROR:  Bad numbered bin was found! \n');
                                 fprintf('ERROR LINE %g: Expected BIN %g, found BIN %g ! \n',...
-                                        pointerLine, bincounter, numberbin)                                
+                                        pointerLine, bincounter, numberbin);           
+                                fprintf('**************************************************\n');
                                 %increase error counter
                                 nwrongbins = nwrongbins+1;
                                 break
-                        end
-                        
+                        end                        
                         if binToggling ~= 0 % Should this line be a bin number?
-                                fprintf('FATAL ERROR:  BINS BAD NUMERED!!! \n')
+                                fprintf('**************************************************\n');
+                                fprintf('FATAL ERROR:  Bad numbered bin was found! \n');
                                 fprintf('ERROR LINE %g: Expected Bin Descriptor for BIN %g, found BIN %g ! \n',...
-                                        pointerLine, bincounter-1, numberbin)
+                                        pointerLine, bincounter-1, numberbin);
+                                fprintf('**************************************************\n');
                                 %increase error counter
                                 nwrongbins = nwrongbins+1;
                                 break
@@ -126,12 +135,9 @@ while ischar(currentBdfLine)
                         end
                         
                         % Read Bin Descriptor (bd) suspected
-                        %[lessuspected]  = regexp(healthyLine, '.*{', 'match');     % 20 febrero *
-                        
-                elseif ~isempty(lessuspected) %bd detected?
-                        
-                        if binToggling % Should this line be a bd?
-                                
+                        %[lessuspected]  = regexp(healthyLine, '.*{', 'match');     % 20 febrero *                        
+                elseif ~isempty(lessuspected) %bd detected?                        
+                        if binToggling % Should this line be a bd?                                
                                 % Perform a complete syntax parsing and get bd expressions for this BIN
                                 % Call to The Main Parsing Test Function
                                 [prehome athome posthome isbasicparsed] = parseles(healthyLine, pointerLine, numberbin);
@@ -183,19 +189,19 @@ while ischar(currentBdfLine)
                                 bdcounter   = bdcounter+1;
                                 
                                 % Now, let's wait a bin number at next line...
-                                binToggling = 0;
-                                
+                                binToggling = 0;                                
                         else % Should this line be a bd?
+                                fprintf('**************************************************\n');
                                 fprintf('ERROR LINE %g: Expected BIN %g, found additional Bin Descriptor \n',...
-                                        pointerLine, bincounter)
+                                        pointerLine, bincounter);
+                                fprintf('**************************************************\n');
                                 
                                 %increase error counter
                                 nwrongbins = nwrongbins+1;
                                 break
                         end
                 else
-                        if binToggling && ~isempty(bdsuspected) % Should this line be a bd?
-                                
+                        if binToggling && ~isempty(bdsuspected) % Should this line be a bd?                                
                                 if length(healthyLine)>100
                                         storedescription = [healthyLine(1:97) '...'];
                                 else
@@ -215,7 +221,7 @@ end
 fclose(fid_bdf);
 
 if isempty(BIN)
-        msgboxText{1} =  'This file is anything else but a bin descriptor file!';
+        msgboxText =  'This file is anything else but a bin descriptor file!';
         tittle = 'ERPLAB: Error, unrecognized bin descriptor file';
         errorfound(msgboxText, tittle);
         nwrongbins=1;
@@ -224,7 +230,6 @@ end
 
 fprintf('\nSintax Report:\n');
 fprintf('File %s has %g wrong bins.\n', bdfilename, nwrongbins)
-% fprintf('decodebdf.m : END\n');
 
 %--------------------------------------------------------------------------
 function [bdf_line, rtname, rtindex] = get_rtname(bdf_line)

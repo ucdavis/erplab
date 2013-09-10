@@ -1,4 +1,12 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% PURPOSE: gets current ERPLAB GUI's background color
+%
+% FORMAT:
+%
+% bcolor = geterplabcolor;
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -26,7 +34,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function bcolor = geterplabcolor
-
 try
         p = which('eegplugin_erplab');
         p = p(1:findstr(p,'eegplugin_erplab.m')-1);

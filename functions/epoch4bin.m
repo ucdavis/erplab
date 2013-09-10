@@ -1,6 +1,6 @@
-% Identifies epoch indices, within an epoched dataset, corresponding to the specified bin(s).
+% PURPOSE: Identifies epoch indices, within an epoched dataset, corresponding to the specified bin(s).
 %
-% USAGE
+% FORMAT
 % 
 % eindex = epoch4bin(EEG, binArray);
 % 
@@ -15,6 +15,7 @@
 % eindex     - epoch indices belonging to the bin(s) specified in binArray
 %
 %
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
@@ -41,6 +42,8 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+% Fixed bug. JLC Aug 18, 2012
 
 function eindex = epoch4bin(EEG, binArray)
 
@@ -76,7 +79,6 @@ else
       return
 end
 
-
 nbinori = EEG.EVENTLIST.nbin; 
 
 if min(binArray)<1
@@ -97,24 +99,45 @@ k=1;
 indx    = zeros(1,nepoch);
 
 for i=1:nepoch
-      
       bini  = EEG.epoch(i).eventbini; % bin indices at this epoch
       laten = EEG.epoch(i).eventlatency; % latencies at this epoch
       
       if iscell(laten)
             laten = cell2mat(laten);
       end
-      if iscell(bini)
-            bini = cell2mat(bini);
-      end
       
-      indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,      
+      indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,
       bin = bini(indxtimelock); % bin of the home item event code (time-locked event)
       
-      if ismember(bin, binArray)
+      if iscell(bin)
+            bin = cell2mat(bin); %bug. It said "bini"
+      end     
+      if nnz(ismember(bin, binArray)) > 0
             indx(k) = i;
             k=k+1;
-      end     
+      end
 end
+
+
+% for i=1:nepoch
+%
+%       bini  = EEG.epoch(i).eventbini; % bin indices at this epoch
+%       laten = EEG.epoch(i).eventlatency; % latencies at this epoch
+%
+%       if iscell(laten)
+%             laten = cell2mat(laten);
+%       end
+%       if iscell(bini)
+%             bini = cell2mat(bini);
+%       end
+%
+%       indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,
+%       bin = bini(indxtimelock); % bin of the home item event code (time-locked event)
+%
+%       if nnz(ismember(bin, binArray))>0 %ismember(bin, binArray)
+%             indx(k) = i;
+%             k=k+1;
+%       end
+% end
 eindex = nonzeros(indx)';
-disp('COMPLETE')
+% disp('COMPLETE')

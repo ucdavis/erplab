@@ -1,3 +1,22 @@
+% PURPOSE: converts miliseconds into samples
+%
+% FORMAT:
+%
+% [p1 p2 checkw xlimc] = window2sample(ERPLAB, testwindow, fs, criteria)
+%
+% INPUT:
+%
+% ERPLAB             - ERP or EEG structure
+% testwindow         - window in miliseconds. e.g [-200 150]
+% fs                 - sample rate
+% criteria           - 'rigid' (precise) or 'relaxed' (fix any diff in samples)
+%
+% OUTPUT
+%
+% p1 p2              - window in equivalent samples
+% checkw             - error flag. 0 means no error found; 1 otherwise
+% xlimc              - window in miliseconds (converted from the equivalent samples)
+%
 %
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
@@ -26,19 +45,20 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [p1 p2 checkw] = window2sample(ERPLAB, testwindow, fs)
+function [p1 p2 checkw xlimc] = window2sample(ERPLAB, testwindow, fs, criteria)
 
+if nargin<4
+      criteria = 'rigid'; % relaxed
+end
+xlimc = [];
 toffsa   = abs(round(ERPLAB.xmin*fs))+1;
 pnts     = ERPLAB.pnts;
 checkw   = 0; % no error by default
-
-if ischar(testwindow)
-        if ~strcmpi(testwindow,'all') && ~strcmpi(testwindow,'pre') && ~strcmpi(testwindow,'post')
-                
-                internum = str2double(testwindow)/1000;  %ms to sec
-                
+if ischar(testwindow)      
+        if ~strcmpi(testwindow,'all') && ~strcmpi(testwindow,'pre') && ~strcmpi(testwindow,'post')                
+                internum = str2double(testwindow)/1000;  %ms to sec                
                 if length(internum)~=2
-                        disp('Error:  erp_artmwppth will not be performed. Check your parameters.')
+                        disp('Error:  window2sample will not be performed. Check your parameters.')
                         checkw = 1;
                         return
                 end
@@ -55,43 +75,44 @@ if ischar(testwindow)
         elseif strcmpi(testwindow,'all')
                 p2 = pnts;  % full epoch
                 p1 = 1;
-        end
-        
+        end        
 else
         if length(testwindow)~=2
-                disp('Error:  erp_artmwppth will not be performed. Check your parameters.')
+                disp('Error:  window2sample will not be performed. Check your parameters.')
                 checkw = 1;
                 return
-        end
-        
+        end        
+        if strcmpi(criteria,'relaxed') || strcmpi(criteria,'relax')
+              if testwindow(1) < ERPLAB.xmin*1000
+                    testwindow(1) = ERPLAB.xmin*1000;
+              end
+              if testwindow(2) > ERPLAB.xmax*1000
+                    testwindow(2) = ERPLAB.xmax*1000;
+              end
+        end            
         testwindow = testwindow/1000;  %ms to sec
         p1 = round(testwindow(1)*fs) + toffsa;     %sec to samples
         p2 = round(testwindow(2)*fs) + toffsa;    %sec to samples
 end
-
 if p1<-1
-        msgboxText{1} =  'ERROR: The onset of your Test Period is more than 2 samples of difference with the real onset';
-        tittle = 'ERPLAB: erp_artmwppth()';
+        msgboxText =  'ERROR: The onset of your Test Period is more than 2 samples of difference with the real onset';
+        tittle = 'ERPLAB: window2sample()';
         errorfound(msgboxText, tittle);
         return
 end
 if p2>pnts+2
-        msgboxText{1} =  'ERROR: The offset of your Test Period is more than 2 samples of difference with the real offset';
-        tittle = 'ERPLAB: erp_artmwppth()';
+        msgboxText =  'ERROR: The offset of your Test Period is more than 2 samples of difference with the real offset';
+        tittle = 'ERPLAB: window2sample()';
         errorfound(msgboxText, tittle);
         return
 end
-
 if p1<1
         p1 = 1;
 end
-
 if p2>pnts
         p2 = pnts;
 end
-
 epochwidth = p2-p1+1; % choosen epoch width in number of samples
-
 if epochwidth>pnts
         checkw = 1; %error found
         return
@@ -99,3 +120,4 @@ elseif epochwidth<2
         checkw = 2; %error found
         return
 end
+xlimc = round((([p1 p2]-toffsa)/fs)*1000);

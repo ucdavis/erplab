@@ -1,13 +1,27 @@
+% PURPOSE: subroutine for pop_basicfilter.m
+%
+% FORMAT
+%
+% [EEG ferror] = basicfilter(EEG, chanArray, locutoff, hicutoff, filterorder, typef, remove_dc, boundary)
+%
 %     EEG         - input dataset
 %     chanArray   - channel(s) to filter
 %     locutoff    - lower edge of the frequency pass band (Hz)  {0 -> lowpass}
 %     hicutoff    - higher edge of the frequency pass band (Hz) {0 -> highpass}
 %     filterorder - length of the filter in points {default 3*fix(srate/locutoff)}
 %     typef       - type of filter: 0=means IIR Butterworth;  1 = means FIR
+%     remove_dc   - remove dc offset before filtering. 1 yes; 0 no
+%     boundary    - event code for boundary events. e.g. 'boundary'
+%
 %
 %     Outputs:
 %     EEG         - output dataset
+%     ferror      - filter error(s). o means no error found; 1 means error found.
 %
+% See also filter_tf.m filtfilt.m removedc.m 
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -43,9 +57,6 @@ if nargin < 1
       help basicfilter
       return
 end
-
-% fprintf('basicfilter.m : START\n');
-
 if exist('filtfilt','file') ~= 2
       error('ERPLAB says: error at basicfilter(). Cannot find the Signal Processing Toolbox');
 end
@@ -56,7 +67,7 @@ if nargin < 7
       error('ERPLAB says: error at basicfilter(). Please, enter all arguments!')
 end
 if EEG.pnts <= 3*filterorder
-      msgboxText{1} =  'The length of the data must be more than three times the filter order.';
+      msgboxText =  'The length of the data must be more than three times the filter order.';
       title = 'ERPLAB: basicfilter(), filtfilt constraint';
       errorfound(msgboxText, title);
       return
@@ -74,7 +85,7 @@ pnts      = size(EEG.data,2);
 numchan   = length(chanArray);
 
 if numchan>EEG.nbchan
-      msgboxText{1} =  'You do not have such amount of channels in your data!';
+      msgboxText =  'You do not have such amount of channels in your data!';
       title = 'ERPLAB: basicfilter() error:';
       errorfound(msgboxText, title);
       return
@@ -89,7 +100,7 @@ if hicutoff >= fnyquist
       error('ERPLAB says: error at basicfilter(). High cutoff frequency cannot be >= srate/2');
       
 end
-if ~typef && filterorder*3 > pnts          % filtfilt restriction
+if typef>0 && filterorder*3 > pnts          % filtfilt restriction
       fprintf('basicfilter: filter order too high');
       error('ERPLAB says: error at basicfilter(). Number of samples must be, at least, 3 times the filter order.');
 end
@@ -97,19 +108,24 @@ end
 [b, a, labelf, v] = filter_tf(typef, filterorder, hicutoff, locutoff, EEG.srate);
 
 if ~v  % something is wrong or turned off
-      msgboxText{1} =  'Wrong parameters for filtering.';
+      msgboxText =  'Wrong parameters for filtering.';
       title = 'ERPLAB: basicfilter() error';
       errorfound(msgboxText, title);
       return
 end
 
+fprintf('Channels to be filtered : %s\n\n', vect2colon(chanArray, 'Delimiter', 'on'));
+
 %
 % Boundaries
 %
 if ~isempty(boundary) && isempty(EEG.epoch)
-      fprintf('\nWARNING: You set "Apply filter to segments defined by boundary events".\n\n');
+      fprintf('WARNING: You set "Apply filter to segments defined by boundary events".\n\n');
       
       if isfield(EEG, 'EVENTLIST')
+            %
+            % for searching boundaries inside EEG.EVENTLIST.eventinfo
+            %
             if isfield(EEG.EVENTLIST, 'eventinfo')
                   if ischar(boundary)
                         numt = str2num(boundary);
@@ -124,25 +140,45 @@ if ~isempty(boundary) && isempty(EEG.epoch)
                   end
             else
                   if ischar(EEG.event(1).type)
-                        codebound = {EEG.event.type}; %stings
+                        codebound = {EEG.event.type}; %strings
                   else
                         codebound = [EEG.event.type]; %numeric code
                   end
             end
       else
+            %
+            % for searching boundaries inside EEG.event.type
+            %
             if ischar(EEG.event(1).type)
-                  codebound = {EEG.event.type}; %stings
+                  codebound = {EEG.event.type}; %strings
             else
                   codebound = [EEG.event.type]; %numeric code
             end
       end
       
-      if ischar(boundary)
-            indxbound  = strmatch(boundary, codebound);
-      else
+      %
+      % search for boundaries
+      %
+      if ischar(boundary) && iscell(codebound)
+            indxbound  = strmatch(boundary, codebound, 'exact');
+      elseif ~ischar(boundary) && ~iscell(codebound)
             indxbound  = find(codebound==boundary);
-      end
-      
+      elseif ischar(boundary) && ~iscell(codebound)
+            numt = str2num(boundary);
+            if ~isempty(numt)
+                  indxbound  = find(codebound==numt);
+            else
+                  %ferror =1;
+                  msgboxText = 'You specified a string as a boundary code, but your events are numeric.';
+                  fprintf('WARNING: %s \n\n', msgboxText);
+                  %title = 'ERPLAB: boundary format error';
+                  %errorfound(msgboxText, title);
+                  %return
+                  indxbound = [];
+            end
+      elseif ~ischar(boundary) && iscell(codebound)
+            indxbound  = strmatch(num2str(boundary), codebound, 'exact');
+      end      
       if ~isempty(indxbound)
             
             timerange = [ EEG.xmin*1000 EEG.xmax*1000 ];
@@ -163,13 +199,12 @@ if ~isempty(boundary) && isempty(EEG.epoch)
             latebound = round(latebound);
       else
             latebound = [0 EEG.pnts];
-            fprintf('\nWARNING: boundary events were not found.\n\n');
-            fprintf('\nWARNING: Filter was applied over the full range of data.\n\n');
+            fprintf('WARNING: boundary events were not found.\n');
+            fprintf('WARNING: Filter will be applied over the full range of data.\n\n');
       end
 else
       latebound = [0 EEG.pnts];
 end
-
 nibound   = length(latebound);
 
 %
@@ -188,19 +223,20 @@ for j=1:ntrials
                   if locutoff >0 % option to remove dc value is only for high-pass filtering
                         
                         %
-                        % Removes DC
+                        % Removes DC from "the first half second" of data
                         %
                         if remove_dc
-                              fprintf('Removing DC bias from segment %g to %g (in samples) ...\n', bp1, bp2)
-                              auxdata = EEG.data(chanArray,bp1:bp2,j);
-                              EEG.data(chanArray,bp1:bp2,j) = detrend(auxdata', 'constant')';     % fast full trial mean's removing
+                              fprintf('Removing DC bias from segment %g to %g (in samples) ...\n', bp1, bp2)                              
+                              EEG.data(chanArray,bp1:bp2,j) = removedc(EEG.data(chanArray,bp1:bp2,j), round(EEG.srate/2));
                         end
                   end
                   if j==1
                         if nibound>2
-                              fprintf('%s filtering input data from segment %g to %g (in samples), please wait...\n\n', labelf, bp1, bp2)
+                              fprintf('%s filtering input data (fc = %s Hz) from segment %g to %g (in samples), please wait...\n\n',...
+                                      labelf, vect2colon(nonzeros([locutoff hicutoff ])), bp1, bp2)
                         else
-                              fprintf('%s filtering input data, please wait...\n\n', labelf);
+                              fprintf('%s filtering input data (fc = %s Hz), please wait...\n\n',...
+                                      labelf, vect2colon(nonzeros([locutoff hicutoff ])));
                         end
                   end
                   if size(b,1)>1            
@@ -248,10 +284,10 @@ for j=1:ntrials
             
             if fproblems>0
                   ferror =1;
-                  msgboxText{1} =  'Oops! filter is not working properly. Data have undefined numerical results.';
-                  msgboxText{2} =  'We strongly recommend that you change some filter parameters, for instance, decrease filter order.';
+                  msgboxText = ['Oops! filter is not working properly.\n Data have undefined numerical results.\n'...
+                               'We strongly recommend that you change some filter parameters, for instance, decrease filter order.'];
                   title = 'ERPLAB: basicfilter() error: undefined numerical results';
-                  errorfound(msgboxText, title);
+                  errorfound(sprintf(msgboxText), title);
                   return
             end            
             q = q + 1;
@@ -259,4 +295,3 @@ for j=1:ntrials
 end
 
 fprintf('\n')
-% fprintf('basicfilter.m : END\n');

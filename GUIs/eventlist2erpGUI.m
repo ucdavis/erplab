@@ -22,7 +22,7 @@ function varargout = eventlist2erpGUI(varargin)
 
 % Edit the above text to modify the response to help eventlist2erpGUI
 
-% Last Modified by GUIDE v2.5 28-Oct-2009 17:32:46
+% Last Modified by GUIDE v2.5 26-Aug-2013 12:59:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -109,18 +109,26 @@ set(handles.radiobutton_append, 'Value', 1)
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB ' version '   -   Import EVENTLIST from Text to ERP GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Import EVENTLIST from Text to ERP GUI'])
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
 % Update handles structure
 guidata(hObject, handles);
 
+% help
+% helpbutton
+
 % UIWAIT makes eventlist2erpGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = eventlist2erpGUI_OutputFcn(hObject, eventdata, handles)
@@ -128,7 +136,7 @@ function varargout = eventlist2erpGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 pause(0.5)
 
 %--------------------------------------------------------------------------
@@ -168,7 +176,7 @@ handles.output = [];
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
@@ -212,7 +220,7 @@ handles.output = outputarray;
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function edit_replace_Callback(hObject, eventdata, handles)
@@ -251,15 +259,15 @@ else
 end
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         
         handles.output = [];
         %Update handles structure
         guidata(hObject, handles);
-        uiresume(handles.figure1);
+        uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
+        delete(handles.gui_chassis);
 end

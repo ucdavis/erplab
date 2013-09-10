@@ -1,6 +1,13 @@
+% PURPOSE: finds the most frequent element in cell array
+%
+% FORMAT:
+%
+% v = vogue(A);
+%
+%
 % Author:  Javier Lopez-Calderon
 % 2009
-%
+
 function v = vogue(A)
 
 B.x = struct([]);
@@ -18,8 +25,8 @@ if iscell(A)
         if g>0 && g~=n % mixed
                 %error('Elements have to be of same class')
                 B(1).x = [A{h}];  % cell num
-                B(2).x = A(~h); % cell str
-        elseif g>0 && g==n  % only cell numbers
+                B(2).x = A(~h);   % cell str
+        elseif g>0 && g==n        % only cell numbers
                 B.x = cell2mat(A);
         else
                 B.x = A;
@@ -30,10 +37,10 @@ end
 
 f1 = 0;
 
-for i=1: length(B)
-        u = unique(B(i).x);
+for i=1:length(B)
+        u = unique(B(i).x)';
         [tf ind] = ismember(B(i).x, u);
-        
+                
         if ind>0
                 [k f2]= mode(ind);
                 m = u(k);

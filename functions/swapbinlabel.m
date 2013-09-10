@@ -1,3 +1,7 @@
+% UNDER CONSTRUCTION
+%
+% Author: Javier Lopez-Calderon
+
 function [ERP conti] = swapbinlabel(ERP, b1,b2)
 
 conti = 1;

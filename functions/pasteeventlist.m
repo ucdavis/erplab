@@ -1,19 +1,17 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
-%
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% PURPOSE: attachs EVENTLIST structure to EEG or ERP structure
 %
 % Inputs:
 %
 %   ERPLAB        - input dataset, either EEG or ERP
-% BINLIST      - structure from bin detection process (bdf @ log = binlist)
-% ispasted     - to paste or not to paste...
-%                (0: Add to workspace;   1: Add to current dataset)
+% BINLIST         - structure from bin detection process (bdf @ log = binlist)
+% isattach        - to attach or not to attach...
+%                   (0: Add to workspace;   1: Add to current dataset)
 %
 % Outputs:
 %
-%   ERPLAB       - updated output dataset, , either EEG or ERP
+%   ERPLAB        - updated output dataset, , either EEG or ERP
 %
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -41,14 +39,11 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function ERPLAB =  pasteeventlist(ERPLAB, EVENTLIST, ispasted, indexel)
-
-% fprintf('pastebinlist.m : START\n');
+function ERPLAB =  pasteeventlist(ERPLAB, EVENTLIST, isattach, indexel)
 
 if nargin<4
       indexel = 1;
 end
-
 if ~isempty(EVENTLIST.bdf)
       nbin = EVENTLIST.nbin;
       
@@ -64,24 +59,20 @@ if ~isempty(EVENTLIST.bdf)
             %                 error('ERPLAB: Bin descriptions were not found!')
       end
 end
-
-if ispasted ==0
+if isattach ==0
       assignin('base','EVENTLIST',EVENTLIST);
       disp('pastebinlist(): EVENTLIST structure was sent to WORKSPACE.')
-elseif ispasted ==1
-      
+elseif isattach ==1      
       if indexel>1
             ERPLAB.EVENTLIST(indexel) = EVENTLIST;
       else
             ERPLAB.EVENTLIST = EVENTLIST;
-      end
-      
+      end      
       if iseegstruct(ERPLAB)
             disp('pastebinlist(): EVENTLIST structure was added to the EEG structure successfuly!')
       else
             disp('pastebinlist(): EVENTLIST structure was added to the ERP structure successfuly!')
       end
-      %         fprintf('pastebinlist.m : END\n');
 else
       disp('User selected Cancel')
       return

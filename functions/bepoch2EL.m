@@ -1,8 +1,24 @@
+% PURPOSE: Updates EVENTLIST (EEG.EVENTLIST.eventinfo(k).bepoch) with the information about epoch index.
+%
+% FORMAT:
+%
+% EEG = bepoch2EL(EEG)
+%
+% Inputs:
+%
+%   EEG      - input dataset
+%
+% Output
+% 
+%   EEG      - output dataset
+%
+%
+% *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2010
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -24,6 +40,7 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 function EEG = bepoch2EL(EEG)
 
 if isempty(EEG)

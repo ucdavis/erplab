@@ -1,3 +1,7 @@
+% ONLY FOR DEBUGGING PURPOSE (Javier)
+% 
+%
+
 function dispcond(cond,text,storecode, storesign, storetime, storeflag, storewrite)
 % Despliega texto en el command window si cond=1
 % Pensado para ocupar mensajes durante debbugin.

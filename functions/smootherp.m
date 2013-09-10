@@ -1,9 +1,28 @@
+% ALPHA VERSION. ONLY FOR TESTING
+%
+% Usage:
+%
+% >> ERP = smootherp(ERP, spanvalue);
+%
+%
+% Inputs:
+%
+% ERP          - input average (ERPLAB's) erpset
+% spanvalue    - number of points used to compute each new (smoothed) sample. It must be odd
+%
+% Outputs:
+%
+% ERP          - (smoothed) erpset
+%
+%
+% Also see: smooth.m
+%
 %
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2012
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -28,8 +47,10 @@
 
 function ERP = smootherp(ERP, spanvalue)
 
-% fprintf('smootherp.m : START\n');
-
+if nargin<1
+        help smootherp
+        return
+end
 if spanvalue<0
         disp('Error smootherp(): span should be greater than zero')
         return
@@ -37,16 +58,15 @@ end
 
 nch     = ERP.nchan;
 nbin    = ERP.nbin;
-dataaux = ERP.binavg.*0;
+dataaux = ERP.bindata.*0;
 
 for i=1:nch
         for j=1:nbin
-                %Smooth the data using the rloess methods
-                %with a span of 'spanvalue'%
+                %Smooth the data using the rloess methods with a span of 'spanvalue'
                 %dataaux(i,:,j) = smooth(ERP.times, ERP.binavg(i,:,j),spanvalue,'rloess');
+                
                 %Smooth the data using a moving average filter methods
-                dataaux(i,:,j) = smooth(ERP.times, ERP.binavg(i,:,j),spanvalue);
+                dataaux(i,:,j) = smooth(ERP.times, ERP.bindata(i,:,j),spanvalue);
         end
 end
-
-ERP.binavg = dataaux;  % for now
+ERP.bindata = dataaux;

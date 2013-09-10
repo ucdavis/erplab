@@ -1,9 +1,10 @@
-%  Note: very preliminary alfa version. Only for testing purpose. May  2008
+% UNDER CONSTRUCTION
 %
-%  HELP PENDING for this function
-%  Write erplab at command window for help
+% subroutine for pop_summarizebins.m
 %
-% Author: Javier Lopez-Calderon & Steven Luck
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -31,9 +32,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [Summary detect] = summarizebins(elfilename )
-
-% fprintf('readeventlist.m : START\n');
-
 if nargin~=1
         help summarizebins
         return
@@ -51,8 +49,7 @@ j      = 1;
 Summary.ntrial = 0;
 Summary.description = {};
 
-while isbin
-        
+while isbin        
         tdatas = textscan(fid_bl, '%[^\n]',1);
         char(tdatas{1})
         [lmatch ltoken] = regexpi(char(tdatas{1}), 'bin\s*(\d+),\s*#\s*(\d+),\s*(.+)','match', 'tokens');

@@ -1,9 +1,16 @@
+% PURPOSE:  sorts EVENTLIST structure's field
 %
-% Author: Javier Lopez-Calderon
+% FORMAT
+% 
+% [EVENTLIST serror] = sorteventliststruct(EVENTLIST);
+% 
+%
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Javier Lopez-Calderon 
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2012
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -41,8 +48,7 @@ ref_field   = { 'setname',...
         'bdf',...
         'eldate',...
         'eventinfo'};
-try
-        
+try        
         dims    = size(EVENTLIST);
         EVENTLIST     = EVENTLIST(:);
         fnam    = fieldnames(EVENTLIST);
@@ -51,8 +57,7 @@ try
         f       =  fnam(b);
         v       = struct2cell(EVENTLIST);
         EVENTLIST     = cell2struct(v(b,:),f,1);
-        EVENTLIST     = reshape(EVENTLIST,dims);
-        
+        EVENTLIST     = reshape(EVENTLIST,dims);        
 catch
         serror = 1;
         return

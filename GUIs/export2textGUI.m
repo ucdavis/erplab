@@ -50,50 +50,90 @@ function export2textGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for export2textGUI
 handles.output = [];
+try
+      ERP = varargin{1};
+catch
+      ERP = [];
+end
+try
+        def = varargin{2};
+catch
+        def = {1,1000, 1, 1, 4, 1, ''};
+end
 
-% Update handles structure
-guidata(hObject, handles);
+istime    = def{1};
+tunit     = def{2};
+islabeled = def{3};
+transpa   = def{4};
+prec      = def{5};
+binArray  = def{6};
+filename  = def{7};
 
-ERP = varargin{1};
+if tunit == 1
+        tunitx = 1;
+else
+        tunitx = 2;
+end
 
 %
-% Prepare List of current Bins
+% Bin description
 %
+listb = {''};
 if ~isempty(ERP)
-        listb = [];
-        nbin  = ERP.nbin; % Total number of channels
-        
+        nbin  = ERP.nbin; % Total number of bins
         for b=1:nbin
                 listb{b}= ['BIN' num2str(b) ' = ' ERP.bindescr{b} ];
         end
-        
-        set(handles.popupmenu_bins,'String', listb)
-        set(handles.edit_bins,'String', vect2colon(1:nbin, 'Delimiter','no'))
-        drawnow
-else
-        set(handles.popupmenu_bins,'String', 'No Bins')
-        drawnow
 end
+%%%set(handles.popupmenu_bins,'String', listb)
+handles.listb      = listb;
+handles.indxlistb  = binArray;
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.figure1,'Name', ['ERPLAB ' version '   -   Export ERP GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Export ERP GUI'])
+
+set(handles.edit_saveas, 'String', filename)
+set(handles.edit_bins, 'String', vect2colon(binArray, 'Delimiter', 'off'))
 set(handles.popupmenu_tunits,'String',{'seconds';'milliseconds'})
+set(handles.popupmenu_tunits,'Value', tunitx)
 set(handles.popupmenu_precision,'String', num2str([1:10]'))
-set(handles.popupmenu_precision,'Value', 4)
-set(handles.checkbox_time,'Value', 1)
-set(handles.checkbox_elabels,'Value', 1)
-set(handles.radiobutton_pr_ec,'Value', 1)
+set(handles.popupmenu_precision,'Value', prec)
+set(handles.checkbox_time,'Value', istime)
+set(handles.checkbox_elabels,'Value', islabeled)
+set(handles.radiobutton_pr_ec,'Value', prec)
+
+if transpa==0
+        set(handles.radiobutton_pr_ec,'Value', 1)
+        set(handles.radiobutton_er_pc,'Value', 0)  
+else
+        set(handles.radiobutton_pr_ec,'Value', 0)
+        set(handles.radiobutton_er_pc,'Value', 1)        
+end
+
+
+helpbutton
 
 %
 % Color GUI
 %
 handles = painterplab(handles);
 
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+% help
+helpbutton
+
 % UIWAIT makes export2textGUI wait for user response (see UIRESUME)
-uiwait(handles.figure1);
+uiwait(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function varargout = export2textGUI_OutputFcn(hObject, eventdata, handles)
@@ -102,7 +142,7 @@ function varargout = export2textGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.figure1);
+delete(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function checkbox_time_Callback(hObject, eventdata, handles)
@@ -131,25 +171,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
-function figure1_CloseRequestFcn(hObject, eventdata, handles)
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-        handles.output = [];
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.figure1);
-else
-        % The GUI is no longer waiting, just close it
-        delete(handles.figure1);
-end
-
-%--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
 
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
+%--------------------------------------------------------------------------
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% doc pop_export2text
+web http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Export_Import.html -browser
 %--------------------------------------------------------------------------
 function pushbutton_export_Callback(hObject, eventdata, handles)
 
@@ -168,13 +200,12 @@ precision = get(handles.popupmenu_precision, 'value');
 filename  = get(handles.edit_saveas, 'string');
 bins      = str2num(get(handles.edit_bins, 'string'));
 
-if strcmp(filename,'')
-        msgboxText =  'You must enter an erpname!';
+if isempty(filename)
+        msgboxText =  'You must enter a filename!';
         title = 'ERPLAB: export2text empty filename';
         errorfound(msgboxText, title);
         return
 end
-
 if isempty(bins)
         msgboxText =  'You must enter at least 1 bin!';
         title = 'ERPLAB: export2text empty bin list';
@@ -187,7 +218,7 @@ handles.output = answer;
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.figure1);
+uiresume(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function edit_saveas_Callback(hObject, eventdata, handles)
@@ -213,7 +244,7 @@ if isequal(fname,0)
         return
 else
         
-        [px, fname2, ext, versn] = fileparts(fname);
+        [px, fname2, ext] = fileparts(fname);
         
         if strcmp(ext,'')
                 
@@ -240,9 +271,48 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
         set(hObject,'BackgroundColor','white');
 end
 
+% % % %--------------------------------------------------------------------------
+% % % function popupmenu_bins_Callback(hObject, eventdata, handles)
+% % % numbin   = get(hObject, 'Value');
+% % % nums = get(handles.edit_bins, 'String');
+% % % nums = [nums ' ' num2str(numbin)];
+% % % set(handles.edit_bins, 'String', nums);
+
 %--------------------------------------------------------------------------
-function popupmenu_bins_Callback(hObject, eventdata, handles)
-numbin   = get(hObject, 'Value');
-nums = get(handles.edit_bins, 'String');
-nums = [nums ' ' num2str(numbin)];
-set(handles.edit_bins, 'String', nums);
+function pushbutton_browsebin_Callback(hObject, eventdata, handles)
+listb = handles.listb;
+indxlistb = handles.indxlistb;
+indxlistb = indxlistb(indxlistb<=length(listb));
+titlename = 'Select Bin(s)';
+
+if get(hObject, 'Value')
+        if ~isempty(listb)
+                bin = browsechanbinGUI(listb, indxlistb, titlename);
+                if ~isempty(bin)
+                        set(handles.edit_bins, 'String', vect2colon(bin, 'Delimiter', 'off'));
+                        handles.indxlistb = bin;
+                        % Update handles structure
+                        guidata(hObject, handles);
+                else
+                        disp('User selected Cancel')
+                        return
+                end
+        else
+                msgboxText =  'No bin information was found';
+                title = 'ERPLAB: ploterp GUI input';
+                errorfound(msgboxText, title);
+                return
+        end
+end
+
+%--------------------------------------------------------------------------
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        handles.output = [];
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
+end
