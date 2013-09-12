@@ -182,6 +182,57 @@ end
 dataaux = ERP.bindata;
 
 %
+% Baseline Correction
+%
+if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')        
+        if strcmpi(blcorr,'pre')
+                indxtimelock = find(ERP.times==0) ;   % zero-time locked
+                aa = 1;
+        elseif strcmpi(blcorr,'post')
+                indxtimelock = length(ERP.times);
+                aa = find(ERP.times==0);
+        elseif strcmpi(blcorr,'all')
+                indxtimelock = length(ERP.times);
+                aa = 1;
+        else
+                toffsa = abs(round(ERP.xmin*fs))+1;   % +1 October 2nd 2008
+                blcnum = str2num(blcorr)/1000;               % from msec to secs  03-28-2009
+                
+                %
+                % Check & fix baseline range
+                %
+                if blcnum(1)<ERP.xmin
+                        blcnum(1) = ERP.xmin;
+                end
+                if blcnum(2)>ERP.xmax
+                        blcnum(2) = ERP.xmax;
+                end
+                
+                plotset = evalin('base', 'plotset');
+                plotset.ptime.blcorr = sprintf('%.0f  %.0f',blcnum*1000); % plotting memory for baseline correction
+                assignin('base','plotset', plotset);
+                aa     = round(blcnum(1)*fs)+ toffsa; % in samples 12-16-2008
+                indxtimelock = round(blcnum(2)*fs) + toffsa  ;    % in samples
+        end
+        kk=1;
+        for i=1:nch
+                for j=1:nbin
+                        baseline(kk) = mean(ERP.bindata(chArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
+                        dataaux(chArray(i),:,binArray(j)) = ERP.bindata(chArray(i),:,binArray(j)) - baseline(kk);
+                        kk=kk+1;
+                end
+        end
+%         if yauto % JLC. Sept 26, 2012
+%                 [blmax, indxblmax] = max(abs(baseline));
+%                 blx = baseline(indxblmax);
+%                 yaxlim(1:2) = [yaxlim(1)-blx yaxlim(2)+blx];
+%                 plotset = evalin('base', 'plotset');
+%                 plotset.ptime.yscale = yaxlim;
+%                 assignin('base','plotset', plotset);
+%         end
+end
+
+%
 %  Fit Yaxis AUTO-SCALE
 %
 if yauto
@@ -221,58 +272,6 @@ if yauto
         plotset = evalin('base', 'plotset');
         plotset.ptime.yscale = yaxlim;
         assignin('base','plotset', plotset);
-end
-
-%
-% Baseline Correction
-%
-if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')
-        
-        if strcmpi(blcorr,'pre')
-                indxtimelock = find(ERP.times==0) ;   % zero-time locked
-                aa = 1;
-        elseif strcmpi(blcorr,'post')
-                indxtimelock = length(ERP.times);
-                aa = find(ERP.times==0);
-        elseif strcmpi(blcorr,'all')
-                indxtimelock = length(ERP.times);
-                aa = 1;
-        else
-                toffsa = abs(round(ERP.xmin*fs))+1;   % +1 October 2nd 2008
-                blcnum = str2num(blcorr)/1000;               % from msec to secs  03-28-2009
-                
-                %
-                % Check & fix baseline range
-                %
-                if blcnum(1)<ERP.xmin
-                        blcnum(1) = ERP.xmin;
-                end
-                if blcnum(2)>ERP.xmax
-                        blcnum(2) = ERP.xmax;
-                end
-                
-                plotset = evalin('base', 'plotset');
-                plotset.ptime.blcorr = sprintf('%.0f  %.0f',blcnum*1000); % plotting memory for baseline correction
-                assignin('base','plotset', plotset);
-                aa     = round(blcnum(1)*fs)+ toffsa; % in samples 12-16-2008
-                indxtimelock = round(blcnum(2)*fs) + toffsa  ;    % in samples
-        end
-        kk=1;
-        for i=1:nch
-                for j=1:nbin
-                        baseline(kk) = mean(ERP.bindata(chArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
-                        dataaux(chArray(i),:,binArray(j)) = ERP.bindata(chArray(i),:,binArray(j)) - baseline(kk);
-                        kk=kk+1;
-                end
-        end
-        if yauto % JLC. Sept 26, 2012
-                [blmax, indxblmax] = max(abs(baseline));
-                blx = baseline(indxblmax);
-                yaxlim(1:2) = [yaxlim(1)-blx yaxlim(2)-blx];
-                plotset = evalin('base', 'plotset');
-                plotset.ptime.yscale = yaxlim;
-                assignin('base','plotset', plotset);
-        end
 end
 
 %

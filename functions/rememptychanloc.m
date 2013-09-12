@@ -22,8 +22,7 @@ if isfield(ERP.chanlocs, 'theta')
                 chanok = {ERP.chanlocs.theta};
                 exchanArray = find(cellfun('isempty',chanok));
                 
-                if ~isempty(exchanArray)
-                        
+                if ~isempty(exchanArray)                        
                         selchannels = find(~ismember(1:ERP.nchan,exchanArray)); %selected channels
                         nsch = length(selchannels);
                         auxd = ERP.bindata(selchannels,:,:);

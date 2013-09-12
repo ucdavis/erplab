@@ -39,48 +39,8 @@ if isobject(EEG) % eegobj
         return
 end
 if nargin==1
-        if length(EEG)>1
-                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                title = 'ERPLAB: multiple inputs';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.data)
-                msgboxText =  'pop_artstep() cannot read an empty dataset!';
-                title = 'ERPLAB: pop_artsacc error';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.epoch)
-                msgboxText =  'pop_artstep has been tested for epoched data only';
-                title = 'ERPLAB: pop_artsacc() permission denied';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isfield(EEG, 'EVENTLIST')
-                if isfield(EEG.EVENTLIST, 'eventinfo')
-                        if isempty(EEG.EVENTLIST.eventinfo)
-                                msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
-                                        'You will not be able to perform ERPLAB''s\n'...
-                                        'artifact detection tools.'];
-                                title = 'ERPLAB: Error';
-                                errorfound(sprintf(msgboxText), title);
-                                return
-                        end
-                else
-                        msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
-                                'You will not be able to perform ERPLAB''s\n'...
-                                'artifact detection tools.'];
-                        title = 'ERPLAB: Error';
-                        errorfound(sprintf(msgboxText), title);
-                        return
-                end
-        else
-                msgboxText =  ['EVENTLIST structure was not found!\n'...
-                        'You will not be able to perform ERPLAB''s\n'...
-                        'artifact detection tools.'];
-                title = 'ERPLAB: Error';
-                errorfound(sprintf(msgboxText), title);
+        serror = erplab_eegscanner(EEG, 'pop_artsacc', 2, 0, 1, 1);
+        if serror
                 return
         end
         prompt = {'Test period (start end) [ms]', 'Voltage Threshold [uV]', 'Moving Windows Full Width [ms]',...

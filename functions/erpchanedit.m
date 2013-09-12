@@ -28,6 +28,7 @@ try
         %
         % Preparing a contraband EEG
         %
+        EEGx = eeg_emptyset;
         EEGx.data     = ERP.bindata;
         EEGx.chanlocs = ERP.chanlocs;
         EEGx.nbchan   = ERP.nchan;
@@ -35,10 +36,10 @@ try
         %*******************************************************
         % for being compatible with eeglab 11. Nov 20, 2012. JLC
         EEGx.setname    = ERP.erpname;
-        EEGx.icawinv    = [];
-        EEGx.icaweights = [];
-        EEGx.icasphere  = [];
-        EEGx.icaact     = [];
+%         EEGx.icawinv    = [];
+%         EEGx.icaweights = [];
+%         EEGx.icasphere  = [];
+%         EEGx.icaact     = [];
         EEGx.trials     = ERP.nbin;
         EEGx.pnts   = ERP.pnts;
         EEGx.srate  = ERP.srate;
@@ -50,11 +51,10 @@ try
         else                
                 EEGx = pop_chanedit(EEGx, 'lookup',filename);
         end
-        
-        [fs1, fs2, er] = comp_struct(EEGx.chanlocs, ERP.chanlocs); % confirm changes
-        
-        if isempty(fs1) && isempty(fs2) && isempty(er) % no changes
                 
+        valuecmp = structcmp(EEGx.chanlocs, ERP.chanlocs); % confirm changes
+        
+        if valuecmp==1 % no changes                
                 if isfield(EEGx.chanlocs, 'theta') && ~isempty([EEGx.chanlocs.theta])
                         % go back using the current chan loc info
                         return

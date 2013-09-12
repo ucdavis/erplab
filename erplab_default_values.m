@@ -1,5 +1,5 @@
-erplabver = '4.0.0.5';     % current erplab version
-erplabrel = '03-Sep-2013';  % DOB
+erplabver = '4.0.0.7';     % current erplab version
+erplabrel = '09-Sep-2013';  % DOB
 %ColorB = [170 180 195]/255; % old background color (until version 3)
 %ColorB = [0.9216 0.8353 0.6078]; % background color for version 4
 ColorB = [0.7020 0.7647 0.8392];% background color since version 4.0.0.3

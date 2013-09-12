@@ -62,45 +62,8 @@ if isobject(EEG) % eegobj
         return
 end
 if nargin==1
-        if isempty(EEG)
-                msgboxText =  'pop_syncroartifacts cannot work with an empty dataset!';
-                title = 'ERPLAB: pop_syncroartifacts(), permission denied';
-                errorfound(msgboxText, title);
-                return
-        end
-        if length(EEG)>1
-                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                title = 'ERPLAB: multiple inputs';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.epoch)
-                msgboxText =  'pop_syncroartifacts has been tested for epoched data only';
-                title = 'ERPLAB: pop_syncroartifacts(), permission denied';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isfield(EEG, 'EVENTLIST')
-                if isfield(EEG.EVENTLIST, 'eventinfo')
-                        if isempty(EEG.EVENTLIST.eventinfo)
-                                msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
-                                        'pop_syncroartifacts() will not be performed.'];
-                                title = 'ERPLAB: pop_syncroartifacts() error';
-                                errorfound(sprintf(msgboxText), title);
-                                return
-                        end
-                else
-                        msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
-                                'pop_syncroartifacts() will not be performed.'];
-                        title = 'ERPLAB: pop_syncroartifacts() error';
-                        errorfound(sprintf(msgboxText), title);
-                        return
-                end
-        else
-                msgboxText =  ['EVENTLIST structure was not found!\n'...
-                        'pop_syncroartifacts() will not be performed.'];
-                title = 'ERPLAB: pop_syncroartifacts() error';
-                errorfound(sprintf(msgboxText), title);
+        serror = erplab_eegscanner(EEG, 'pop_syncroartifacts', 2, 0, 1, 1);
+        if serror
                 return
         end
         
@@ -124,6 +87,9 @@ if nargin==1
                 dircom = 'bidirectional';
         else
                 dircom = 'none';
+        end
+        if length(EEG)==1
+                EEG.setname = [EEG.setname '_synctrej']; %suggest a new name
         end
         
         %
@@ -154,35 +120,18 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
-if isempty(EEG)
-        msgboxText =  'pop_syncroartifacts cannot work with an empty dataset!';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+
+%
+% process multiple datasets. Updated August 23, 2013 JLC
+%
+if length(EEG) > 1
+        options1 = {'Direction', p.Results.Direction, 'History', 'gui'};
+        [ EEG, com ] = eeg_eval( 'pop_syncroartifacts', EEG, 'warning', 'on', 'params', options1);
+        return;
 end
-if length(EEG)>1
-        msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
-end
-if isempty(EEG.epoch)
-        msgboxText =  'pop_syncroartifacts has been tested for epoched data only';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
-end
-if isfield(EEG, 'EVENTLIST')
-        if isfield(EEG.EVENTLIST, 'eventinfo')
-                if isempty(EEG.EVENTLIST.eventinfo)
-                        msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
-                                'pop_syncroartifacts() will not be performed.'];
-                        error('prog:input', ['ERPLAB says: ' msgboxText]);
-                end
-        else
-                msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
-                        'pop_syncroartifacts() will not be performed.'];
-                error('prog:input', ['ERPLAB says: ' msgboxText]);
-        end
-else
-        msgboxText =  ['EVENTLIST structure was not found!\n'...
-                'pop_syncroartifacts() will not be performed.'];
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
-end
+
+erplab_eegscanner(EEG, 'pop_syncroartifacts', 0, 0, 1, 1);
+
 if strcmpi(p.Results.Direction,'no') || strcmpi(p.Results.Direction,'none')
         direction = 0;
 elseif strcmpi(p.Results.Direction,'erplab2eeglab')

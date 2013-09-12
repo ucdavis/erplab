@@ -72,30 +72,34 @@ if isobject(EEG) % eegobj
         whenEEGisanObject % calls a script for showing an error window
         return
 end
-if ~isempty(EEG.epoch)
-        msgboxText =  ['pop_creabasiceventlist() has been tested for continuous data only.\n\n'...
-                'HINT: You could use "Export EVENTLIST to text file", instead.'];
-        title = 'ERPLAB: pop_creabasiceventlist Permission denied';
-        errorfound(sprintf(msgboxText), title);
-        return
-end
+% if ~isempty(EEG.epoch)
+%         msgboxText =  ['pop_creabasiceventlist() has been tested for continuous data only.\n\n'...
+%                 'HINT: You could use "Export EVENTLIST to text file", instead.'];
+%         title = 'ERPLAB: pop_creabasiceventlist Permission denied';
+%         errorfound(sprintf(msgboxText), title);
+%         return
+% end
 if nargin==1
-        if iseegstruct(EEG)
-                if length(EEG)>1
-                        msgboxText =  'ERPLAB says: Unfortunately, this function does not work with multiple datasets';
-                        title = 'ERPLAB: multiple datasets';
-                        errorfound(msgboxText, title);
-                        return
-                end
-        end
-        if isempty(EEG.data)
-                msgboxText =  'pop_creabasiceventlist() error: cannot work with an empty dataset!';
-                title = 'ERPLAB: No data';
-                errorfound(msgboxText, title);
+                serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 2);
+        if serror
                 return
         end
-        if isfield(EEG.event, 'type')
-                if ~all(cellfun(@isnumeric, { EEG.event.type }))
+%         if iseegstruct(EEG)
+%                 if length(EEG)>1
+%                         msgboxText =  'ERPLAB says: Unfortunately, this function does not work with multiple datasets';
+%                         title = 'ERPLAB: multiple datasets';
+%                         errorfound(msgboxText, title);
+%                         return
+%                 end
+%         end
+%         if isempty(EEG.data)
+%                 msgboxText =  'pop_creabasiceventlist() error: cannot work with an empty dataset!';
+%                 title = 'ERPLAB: No data';
+%                 errorfound(msgboxText, title);
+%                 return
+%         end
+        if isfield(EEG(1).event, 'type')
+                if ~all(cellfun(@isnumeric, { EEG(1).event.type }))
                         msgboxText = ['Some or all of your events contain a text-based event label, '...
                                 'and not a numeric event code.\n\nERPLAB must have a numeric code '...
                                 'for every event (a text label can also be present).  For labels such as "S14", '...
@@ -123,7 +127,12 @@ if nargin==1
         %
         % Call GUI
         %
-        inputstrMat = creabasiceventlistGUI(def);  % GUI
+        if length(EEG)>1
+                multieeg = 1; % when multi eeg
+        else
+                multieeg = 0; % just single eeg
+        end
+        inputstrMat = creabasiceventlistGUI(def, multieeg);  % GUI
         
         if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
                 disp('User selected Cancel')
@@ -152,8 +161,9 @@ if nargin==1
         else
                 stralphanum = 'off';
         end
-        
-        EEG.setname = [EEG.setname '_elist']; %suggest a new name
+        if length(EEG)==1
+                EEG.setname = [EEG.setname '_elist']; %suggest a new name
+        end
         
         [EEG, com] = pop_creabasiceventlist(EEG, 'Eventlist', elname, 'BoundaryString', boundarystrcode,...
                 'BoundaryNumeric', newboundarynumcode,'Warning', striswarning, 'AlphanumericCleaning', stralphanum, 'History', 'gui');
@@ -177,12 +187,12 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(EEG, varargin{:});
 
-if iseegstruct(EEG)
-        if length(EEG)>1
-                msgboxText =  'ERPLAB says: Unfortunately, this function does not work with multiple datasets';
-                error(msgboxText);
-        end
-end
+% if iseegstruct(EEG)
+%         if length(EEG)>1
+%                 msgboxText =  'ERPLAB says: Unfortunately, this function does not work with multiple datasets';
+%                 error(msgboxText);
+%         end
+% end
 
 elname             = p.Results.Eventlist;      % Event List file
 boundarystrcode    = p.Results.BoundaryString; % current string for boundaries
@@ -209,6 +219,17 @@ else
 end
 boundarystrcode = strtrim(boundarystrcode);
 boundarystrcode = regexprep(boundarystrcode, '''|"','');
+
+%
+% process multiple datasets. Updated August 23, 2013 JLC
+%
+if length(EEG) > 1
+        options1 = {'Eventlist', p.Results.Eventlist, 'BoundaryString', p.Results.BoundaryString,...
+                    'BoundaryNumeric', p.Results.BoundaryNumeric,'Warning', p.Results.Warning,...
+                    'AlphanumericCleaning', p.Results.AlphanumericCleaning, 'History', 'gui'};
+        [ EEG, com ] = eeg_eval( 'pop_creabasiceventlist', EEG, 'warning', 'on', 'params', options1);
+        return;
+end
 
 %
 % Event consistency

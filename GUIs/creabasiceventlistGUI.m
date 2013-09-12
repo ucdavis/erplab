@@ -54,6 +54,11 @@ try
 catch
         def = {'' 'boundary' -99 1 1};
 end
+try
+        multieeg = varargin{2};
+catch
+        multieeg = 0;
+end
 
 elname             = def{1};
 boundarystrcode    = def{2};
@@ -99,6 +104,11 @@ end
 
 set(handles.ELwarning,'Value', rwwarn);
 set(handles.checkbox_alphanum,'Value', alphanum);
+if multieeg==1
+        set(handles.pushbutton_advanced, 'Enable', 'off')
+else
+        set(handles.pushbutton_advanced, 'Enable', 'on')
+end
 
 %
 % Name & version

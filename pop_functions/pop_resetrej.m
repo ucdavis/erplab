@@ -64,10 +64,8 @@ if isobject(EEG) % eegobj
         return
 end
 if nargin==1        
-        if isempty(EEG(1).data)
-                msgboxText = 'pop_resetrej() cannot read an empty dataset!';
-                title = 'ERPLAB: pop_resetrej';
-                errorfound(msgboxText, title);
+        serror = erplab_eegscanner(EEG, 'pop_resetrej', 2, 0, 1, 2);
+        if serror
                 return
         end
         
@@ -90,6 +88,9 @@ if nargin==1
         end
         
         [arflag usflag] = dec2flag(bflag);
+        if length(EEG)==1
+                EEG.setname = [EEG.setname '_resetrej']; %suggest a new name
+        end
         
         %
         % Somersault
@@ -129,10 +130,12 @@ usflag = p.Results.UserFlag;
 bflag = flag2dec('ArtifactFlag', arflag, 'UserFlag', usflag);
 
 %
-% process multiple datasets April 13, 2011 JLC
+% process multiple datasets. Updated August 23, 2013 JLC
 %
 if length(EEG) > 1
-        [ EEG, com ] = eeg_eval( 'pop_resetrej', EEG, 'warning', 'on', 'params', {arjm, bflag});
+        options1 = {'ResetArtifactFields', p.Results.ResetArtifactFields, 'ArtifactFlag', p.Results.ArtifactFlag,...
+                    'UserFlag', p.Results.UserFlag, 'History', 'gui'};
+        [ EEG, com ] = eeg_eval( 'pop_resetrej', EEG, 'warning', 'on', 'params', options1);
         return;
 end
 if arjm

@@ -639,6 +639,9 @@ else
 end
 
 skipfields = {'ERP','binArray','chanArray', 'ErrorMsg','History'};
+if qyauto
+        skipfields = [skipfields 'yscale'];
+end
 erpcom     = sprintf( 'ERP = pop_ploterps( %s, %s, %s ',  firstinput, BinArraystr, chanArraystr);
 
 for q=1:length(fn)

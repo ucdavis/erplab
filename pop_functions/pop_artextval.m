@@ -65,68 +65,28 @@ if isobject(EEG) % eegobj
         return
 end
 if nargin==1
-        if length(EEG)>1
-                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                title = 'ERPLAB: multiple inputs';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.data)
-                msgboxText =  'ERROR: pop_artextval() cannot read an empty dataset!';
-                title = 'ERPLAB: pop_artextval';
-                errorfound(sprintf(msgboxText), title);
-                return
-        end
-        if isempty(EEG.epoch)
-                msgboxText =  'pop_artextval has been tested for epoched data only';
-                title = 'ERPLAB: pop_artextval Permission';
-                errorfound(sprintf(msgboxText), title);
-                return
-        end
-        if isfield(EEG, 'EVENTLIST')
-                if isfield(EEG.EVENTLIST, 'eventinfo')
-                        if isempty(EEG.EVENTLIST.eventinfo)
-                                msgboxText = ['EVENTLIST.eventinfo structure is empty!\n'...
-                                        'You will not be able to perform ERPLAB''s\n'...
-                                        'artifact detection tools.'];
-                                title = 'ERPLAB: Error';
-                                errorfound(sprintf(msgboxText), title);
-                                return
-                        end
-                else
-                        msgboxText =  ['EVENTLIST.eventinfo structure was not found!\n'...
-                                'You will not be able to perform ERPLAB''s\n'...
-                                'artifact detection tools.'];
-                        title = 'ERPLAB: Error';
-                        errorfound(sprintf(msgboxText), title);
-                        return
-                end
-        else
-                msgboxText =  ['EVENTLIST structure was not found!\n'...
-                        'You will not be able to perform ERPLAB''s\n'...
-                        'artifact detection tools.'];
-                title = 'ERPLAB: Error';
-                errorfound(sprintf(msgboxText), title);
+        serror = erplab_eegscanner(EEG, 'pop_artextval', 2, 0, 1, 1);
+        if serror
                 return
         end
         prompt = {'Test period (start end) [ms]','Voltage limits[uV] (e.g. -100 100):', 'Channel(s)'};
         dlg_title = 'Extreme Values';
-        defx = {[EEG.xmin*1000 EEG.xmax*1000] [-100 100] [1:EEG.nbchan] 0};
+        defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] [-100 100] [1:EEG(1).nbchan] 0};
         def = erpworkingmemory('pop_artextval');
         
         if isempty(def)
                 def = defx;
         else
-                if def{1}(1)<EEG.xmin*1000
-                        def{1}(1) = single(EEG.xmin*1000);
+                if def{1}(1)<EEG(1).xmin*1000
+                        def{1}(1) = single(EEG(1).xmin*1000);
                 end
-                if def{1}(2)>EEG.xmax*1000
-                        def{1}(2) = single(EEG.xmax*1000);
+                if def{1}(2)>EEG(1).xmax*1000
+                        def{1}(2) = single(EEG(1).xmax*1000);
                 end
-                def{3} = def{3}(ismember(def{3},1:EEG.nbchan));
+                def{3} = def{3}(ismember(def{3},1:EEG(1).nbchan));
         end
         try
-                chanlabels = {EEG.chanlocs.labels};
+                chanlabels = {EEG(1).chanlocs.labels};
         catch
                 chanlabels = [];
         end
@@ -165,8 +125,9 @@ if nargin==1
                 return
         end
         erpworkingmemory('pop_artextval', {answer{1} answer{2} answer{3} answer{4}});
-        EEG.setname = [EEG.setname '_ar']; %suggest a new name
-        
+        if length(EEG)==1
+                EEG.setname = [EEG.setname '_ar']; %suggest a new name
+        end
         %
         % Somersault
         %
@@ -183,11 +144,11 @@ p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('EEG');
 
-t1 = single(EEG.xmin*1000);
-t2 = single(EEG.xmax*1000);
+t1 = single(EEG(1).xmin*1000);
+t2 = single(EEG(1).xmax*1000);
 p.addParamValue('Twindow', [t1 t2], @isnumeric);
 p.addParamValue('Threshold', 100, @isnumeric);
-p.addParamValue('Channel', 1:EEG.nbchan, @isnumeric);
+p.addParamValue('Channel', 1:EEG(1).nbchan, @isnumeric);
 p.addParamValue('Flag', 1, @isnumeric);
 p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
 p.addParamValue('History', 'script', @ischar); % history from scripting
@@ -204,7 +165,7 @@ if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
 else
         eprev = 0;
 end
-if ~isempty(find(chanArray<1 | chanArray>EEG.nbchan, 1))
+if ~isempty(find(chanArray<1 | chanArray>EEG(1).nbchan, 1))
         error('ERPLAB says: error at pop_artextval(). Channel indices cannot be greater than EEG.nbchan')
 end
 if ~isempty(find(flag<1 | flag>16, 1))
@@ -218,6 +179,16 @@ elseif strcmpi(p.Results.History,'gui')
         shist = 1; % gui
 else
         shist = 0; % off
+end
+
+%
+% process multiple datasets. Updated August 23, 2013 JLC
+%
+if length(EEG) > 1
+        options1 = {'Twindow', p.Results.Twindow, 'Threshold', p.Results.Threshold,...
+                'Channel', p.Results.Channel, 'Flag', p.Results.Flag, 'Review', p.Results.Review, 'History', 'gui'};
+        [ EEG, com ] = eeg_eval( 'pop_artextval', EEG, 'warning', 'on', 'params', options1);
+        return;
 end
 
 fs       = EEG.srate;
