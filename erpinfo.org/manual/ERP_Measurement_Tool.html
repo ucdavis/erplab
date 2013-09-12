@@ -1,69 +1,1641 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>ERP Measurement Tool</title>
-<style type="text/css">
-<!--
-p.paragraph {
-margin-top:0in;
-margin-right:0in;
-margin-bottom:8.0pt;
-margin-left:0in;
-font-size:11.0pt;
-font-family:Cambria;
-}
--->
-</style>
-<style type="text/css">
-<!--
-p.Note {
-margin-top:0in;
-margin-right:0in;
-margin-bottom:8.0pt;
-margin-left:0in;
-font-size:11.0pt;
-font-family:Cambria;
-font-style:italic;
-}
--->
-</style>
-<style type="text/css">
-<!--
-p.LiteralText {
-margin:0in;
-margin-bottom:.0001pt;
-font-size:10.0pt;
-font-family:Helvetica;
-}
-.tablesl {
-	font-family: Arial, Helvetica, sans-serif;
-}
-.tablesl {
-	font-size: 12px;
-}
--->
-</style>
-<style type="text/css">
-<!--
-p.CommandWindowText {
-margin:0in;
-margin-bottom:.0001pt;
-text-align:justify;
-font-size:9.0pt;
-font-family:Courier;
-}
-p.MsoNormal {
-margin:0in;
-margin-bottom:.0001pt;
-font-size:12.0pt;
-font-family:Cambria;
-}
--->
-</style>
-</head>
 
-<body>
+
+
+<!DOCTYPE html PUBLIC
+  "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      lang="en">
+
+  
+    
+    
+    
+    
+    
+
+  
+
+  <head>
+
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8" />
+
+    
+      <base href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html" /><!--[if lt IE 7]></base><![endif]-->
+    
+
+    <meta name="generator" content="Plone - http://plone.org" />
+
+    <link rel="kss-base-url" href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html" />
+
+  
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/cssQuery-cachekey1649.js">
+      </script>
+    
+    
+  
+
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/dropdown-cachekey1539.js">
+      </script>
+    
+    
+  
+
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/ie5fixes-cachekey6460.js">
+      </script>
+    
+    
+  
+
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/sarissa-cachekey0805.js">
+      </script>
+    
+    
+  
+
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/resourceMochiKit-cachekey0793.js">
+      </script>
+    
+    
+  
+
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/resourcekukit-cachekey9082.js">
+      </script>
+    
+    
+  
+
+  
+    
+      <script type="text/javascript"
+              src="http://erpinfo.org/portal_javascripts/Plone%20Default/input-label-cachekey2045.js">
+      </script>
+    
+    
+  
+
+  
+  
+    
+    
+      <style type="text/css" media="screen"><!-- @import url(http://erpinfo.org/portal_css/Plone%20Default/member-cachekey8609.css); --></style>
+    
+    
+  
+
+  
+    
+    
+      <style type="text/css"><!-- @import url(http://erpinfo.org/portal_css/Plone%20Default/base-cachekey3041.css); --></style>
+    
+    
+  
+
+  
+  <link rel="kinetic-stylesheet" type="text/css"
+        href="http://erpinfo.org/portal_kss/Plone%20Default/at-cachekey3694.kss" />
+
+
+<title>ERP Measurement Tool &mdash; ERP Info Home Page</title>
+
+
+    <!-- Internet Explorer Fixes -->
+    <!--[if IE]>
+        <style type="text/css" media="all">@import url(http://erpinfo.org/IEFixes.css);</style>
+        
+        <script type="text/javascript"
+                src="http://erpinfo.org/iefixes.js">
+        </script>
+        
+    <![endif]-->
+
+    
+    <link rel="author"
+          href="http://erpinfo.org/author/sjluck"
+          title="Author information" />
+
+
+
+    <link rel="shortcut icon" type="image/x-icon"
+          href="http://erpinfo.org/favicon.ico" />
+
+
+
+    <link rel="home" href="http://erpinfo.org"
+          title="Front page" />
+
+    <link rel="contents" href="http://erpinfo.org/sitemap"
+          title="Site Map" />
+
+
+
+
+
+
+    <link rel="search" href="http://erpinfo.org/search_form"
+          title="Search this site" />
+
+
+
+    <!-- Disable IE6 image toolbar -->
+    <meta http-equiv="imagetoolbar" content="no" />
+    
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+  </head>
+
+  <body class="section-erplab template-document_view"
+        dir="ltr">
+    <div id="visual-portal-wrapper">
+
+      <div id="portal-top">
+        <div id="portal-header">
+<p class="hiddenStructure">
+  <a accesskey="2"
+     href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html#documentContent">Skip to content.</a> |
+
+  <a accesskey="6"
+     href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html#portlet-navigation-tree">Skip to navigation</a>
+</p>
+
+<ul id="portal-siteactions">
+
+    <li id="siteaction-sitemap"><a
+    href="http://erpinfo.org/sitemap" accesskey="3"
+    title="Site Map">Site Map</a></li>
+    <li id="siteaction-accessibility"><a
+    href="http://erpinfo.org/accessibility-info"
+    accesskey="0" title="Accessibility">Accessibility</a></li>
+    <li id="siteaction-contact"><a
+    href="http://erpinfo.org/contact-info" accesskey="9"
+    title="Contact">Contact</a></li>
+    <li id="siteaction-plone_setup"><a
+    href="http://erpinfo.org/plone_control_panel"
+    accesskey="" title="Site Setup">Site Setup</a></li>
+
+</ul>
+
+<div id="portal-searchbox">
+    <form name="searchform"
+          action="http://erpinfo.org/search">
+
+        <label for="searchGadget" class="hiddenStructure">Search Site</label>
+
+        <div class="LSBox">
+        <input name="SearchableText" type="text" size="18"
+               title="Search Site" accesskey="4"
+               class="inputLabel" id="searchGadget" />
+
+        <input class="searchButton" type="submit"
+               value="Search" />
+    
+        <div class="searchSection">
+            <input id="searchbox_currentfolder_only"
+                   class="noborder" type="checkbox"
+                   name="path"
+                   value="/erpinfo/erplab/erplab-documentation/manual" />
+            <label for="searchbox_currentfolder_only"
+                   style="cursor: pointer">
+                only in current section
+            </label>
+        </div>
+
+        <div class="LSResult" id="LSResult" style=""><div class="LSShadow" id="LSShadow"></div></div>
+        </div>
+    </form>
+
+    <div id="portal-advanced-search" class="hiddenStructure">
+        <a href="http://erpinfo.org/search_form"
+           accesskey="5">
+            Advanced Search&hellip;
+        </a>
+    </div>
+
+</div>
+
+<a id="portal-logo" accesskey="1" href="http://erpinfo.org">
+    <img src="http://erpinfo.org/logo.jpg" alt="" title="" height="57" width="252" /></a>
+
+
+    <h5 class="hiddenStructure">Sections</h5>
+
+    <ul id="portal-globalnav">
+        <li id="portaltab-index_html" class="plain"><a
+    href="http://erpinfo.org" title="">Home</a></li>
+        <li id="portaltab-Members" class="plain"><a
+    href="http://erpinfo.org/Members"
+    title="Container for portal members' home directories">Members</a></li>
+        <li id="portaltab-events" class="plain"><a
+    href="http://erpinfo.org/events" title="">Events</a></li>
+        <li id="portaltab-about-us" class="plain"><a
+    href="http://erpinfo.org/about-us"
+    title="Who, what, where, and why.  Everything to know about ERPinfo.org.">About</a></li>
+        <li id="portaltab-the-erp-bootcamp" class="plain"><a
+    href="http://erpinfo.org/the-erp-bootcamp" title="">The ERP Bootcamp</a></li>
+        <li id="portaltab-boot-camp-2007-materials"
+            class="plain"><a href="http://erpinfo.org/boot-camp-2007-materials"
+                             title="This folder will contain PDFs of the readings for the 2008 ERP Boot Camp.">Boot Camp Materials</a></li>
+        <li id="portaltab-erplab" class="selected"><a
+    href="http://erpinfo.org/erplab" title="">ERPlab</a></li>
+        <li id="portaltab-data-and-stimuli" class="plain"><a
+    href="http://erpinfo.org/data-and-stimuli"
+    title="Publicly available ERP data sets and stimulus scripts">Data and Stimuli</a></li>
+    </ul>
+
+</div>
+
+<div id="portal-personaltools-wrapper">
+
+<h5 class="hiddenStructure">Personal tools</h5>
+
+<ul id="portal-personaltools" class="visualInline">
+   
+       <li><a id="user-name"
+              href="http://erpinfo.org/dashboard"><img src="http://erpinfo.org/user.gif" alt="" title="User" height="16" width="16" />
+            <span class="visualCaseSensitive">Steve Luck</span></a></li>
+   
+
+    
+        <li>
+            <a href="http://erpinfo.org/plone_memberprefs_panel">Preferences</a>
+        </li>
+    
+    
+        <li>
+            <a href="http://erpinfo.org/logout">Log out</a>
+        </li>
+    
+
+</ul>
+</div>
+
+
+    
+
+
+<div id="portal-breadcrumbs">
+
+    <span id="breadcrumbs-you-are-here">You
+are here:</span>
+    <a href="http://erpinfo.org">Home</a>
+    <span class="breadcrumbSeparator">
+        &rarr;
+        
+    </span>
+    <span dir="ltr">
+        
+            <a href="http://erpinfo.org/erplab">ERPlab</a>
+            <span class="breadcrumbSeparator">
+                &rarr;
+                
+            </span>
+            
+         
+    </span>
+    <span dir="ltr">
+        
+            <a href="http://erpinfo.org/erplab/erplab-documentation">ERPLAB Documentation and Utilities</a>
+            <span class="breadcrumbSeparator">
+                &rarr;
+                
+            </span>
+            
+         
+    </span>
+    <span dir="ltr">
+        
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual">ERPLAB Toolbox User's Manual (v3.0)</a>
+            <span class="breadcrumbSeparator">
+                &rarr;
+                
+            </span>
+            
+         
+    </span>
+    <span dir="ltr">
+        
+            
+            
+            <span>ERP Measurement Tool</span>
+         
+    </span>
+
+</div>
+
+      </div>
+
+      <div class="visualClear" id="clear-space-before-wrapper-table"><!-- --></div>
+
+      <table id="portal-columns">
+        <tbody>
+          <tr>
+            
+            <td id="portal-column-one">
+              <div class="visualPadding">
+                
+                  
+<div id="portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f657270696e666f0a6e617669676174696f6e"
+     class="portletWrapper kssattr-portlethash-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f657270696e666f0a6e617669676174696f6e">
+<dl class="portlet portletNavigationTree">
+
+    <dt class="portletHeader">
+        <span class="portletTopLeft"></span>
+        <a href="http://erpinfo.org/erplab/sitemap"
+           class="tile">Navigation</a>
+       
+        <span class="portletTopRight"></span>
+    </dt>
+
+    <dd class="portletItem lastItem">
+        <ul class="navTree navTreeLevel0">
+            
+            
+
+
+
+<li class="navTreeItem visualNoMarker navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-discussion"
+           class="state-private navTreeFolderish"
+           title="These discussion boards are being phased out.  Please use the ERPLAB email list instead.">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>ERPLAB Discussion (being phased out)</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeItemInPath navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation"
+           class="state-published navTreeItemInPath navTreeFolderish"
+           title="Note: To search the documentation, type your search term(s) into the &quot;search&quot; box in the upper right corner of the page (click &quot;only in current section&quot; to limit your search to the ERPLAB documentation).">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>ERPLAB Documentation and Utilities</span>
+        </a>
+        
+    </div>
+
+    <ul class="navTree navTreeLevel1">  
+        
+
+
+
+<li class="navTreeItem visualNoMarker navTreeItemInPath navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual"
+           class="state-published navTreeItemInPath navTreeFolderish"
+           title="">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>ERPLAB Toolbox User's Manual (v3.0)</span>
+        </a>
+        
+    </div>
+
+    <ul class="navTree navTreeLevel2">  
+        
+
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Background_and_Structures.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Background Concepts and Data Structures</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Basic_Steps.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Basic ERPLAB Processing Steps</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Installation_Info.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Installation Information</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Learning_ERPLAB.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Learning to Use ERPLAB Toolbox</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Using_EEGLAB.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Using EEGLAB</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Structure.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>The EVENTLIST Structure</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Export_Import.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Exporting, Importing, and Editing an EVENTLIST</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Create.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Creating an EVENTLIST</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Topographic_Mapping.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Topographic Mapping</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Saving_Loading_ERPsets.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Saving and Loading ERPsets</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Plot_ERP_Waveforms.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Plotting ERP Waveforms</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Info_From_MATLAB.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Getting Info about an ERP from MATLAB Command Line</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Filtering.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Filtering</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeCurrentNode">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html"
+           class="state-published navTreeCurrentItem navTreeCurrentNode"
+           title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>ERP Measurement Tool</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Epoching_Bins.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Epoching Bins</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Channel_Operations.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>EEG and ERP Channel Operations</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Boundary_Events.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Boundary Events and Disabled Events</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Binlister.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Assigning Events to Bins with BINLISTER</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Bin_Operations.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>ERP Bin Operations</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Behavioral_Analyses.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Behavioral Analyses</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Averaging_ERPsets.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Averaging Across ERPsets (Creating Grand Averages)</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Averaging_ERPs.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Averaging ERPs</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Artifact_Detection.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Artifact Detection in Epoched Data</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Appending_ERPsets.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Appending ERPsets</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Artifact_Rejection_Continuous.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Artifact Rejection in Continuous Data</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/create_advanced.jpg/view"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/image_icon.gif" alt="Image" />
+            <span>create_advanced.jpg</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/spline_file.jpg/view"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/image_icon.gif" alt="Image" />
+            <span>spline_file.jpg</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/topo_3d.jpg/view"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/image_icon.gif" alt="Image" />
+            <span>topo_3d.jpg</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Timing_Details.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Timing Details</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/manual/index-SL.html"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>ERPLAB Toolbox Manual</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+
+
+    </ul>
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/frequently-asked-questions"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Frequently Asked Questions</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/tutorial"
+           class="state-published navTreeFolderish" title="">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>ERPLAB Tutorial (v3.0)</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/video-documentation"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Video Documentation</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/scripting"
+           class="state-published navTreeFolderish" title="">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>ERPLAB Scripting Guide (v3.0)</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/data-and-files-for-erplab-tutorial-and-erplab-scripting-guide"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>Data and Files for ERPLAB Tutorial and ERPLAB Scripting Guide</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/utilities"
+           class="state-published navTreeFolderish"
+           title="Here you will find some useful ERPLAB functions (alpha version) to facilitate your EEG and ERP analysis and interpretation. Some of them work on the ERPLAB's ERP structure but others work on the EEGLAB's EEG structure (continuous and/or epoched). We have even included a couple of functions oriented to deal with artifact detection in continuous data. Your feedback would be much appreciated (send an email to: matlabiano at gmail dot com)">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>Utilities (alpha version)</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/documentation-archive-for-previous-versions"
+           class="state-published navTreeFolderish" title="">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>Documentation archive for previous versions</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker navTreeFolderish">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-documentation/Images"
+           class="state-published navTreeFolderish" title="">
+            <img width="16" height="16" src="http://erpinfo.org/folder_icon.gif" alt="Folder" />
+            <span>Images</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+
+
+    </ul>
+    
+</li>
+
+
+<li class="navTreeItem visualNoMarker">
+
+    
+
+      <div>
+
+        <a href="http://erpinfo.org/erplab/erplab-email-list"
+           class="state-published" title="">
+            <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+            <span>ERPLAB email list</span>
+        </a>
+        
+    </div>
+
+    
+    
+</li>
+
+
+
+
+        </ul>
+        <span class="portletBottomLeft"></span>
+        <span class="portletBottomRight"></span>
+    </dd>
+</dl>
+
+</div>
+
+<div id="portletwrapper-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f657270696e666f0a726563656e742d6974656d73"
+     class="portletWrapper kssattr-portlethash-706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f657270696e666f0a726563656e742d6974656d73"><dl class="portlet portletRecent">
+
+    <dt class="portletHeader">
+        <span class="portletTopLeft"></span>
+        <a href="http://erpinfo.org/recently_modified">Recent Changes</a>
+        <span class="portletTopRight"></span>
+    </dt>
+
+    
+
+        <dd class="portletItem odd">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Structure.html/view"
+               class="state-published tile" title="">
+                <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+                The EVENTLIST Structure
+                <span class="portletItemDetails">Sep 12, 2013</span>
+            </a>
+        </dd>
+    
+    
+
+        <dd class="portletItem even">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual/Installation_Info.html/view"
+               class="state-published tile" title="">
+                <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+                Installation Information
+                <span class="portletItemDetails">Sep 12, 2013</span>
+            </a>
+        </dd>
+    
+    
+
+        <dd class="portletItem odd">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual/index-SL.html/view"
+               class="state-published tile" title="">
+                <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+                ERPLAB Toolbox Manual
+                <span class="portletItemDetails">Sep 12, 2013</span>
+            </a>
+        </dd>
+    
+    
+
+        <dd class="portletItem even">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual/index.html/view"
+               class="state-published tile" title="">
+                <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+                ERPLAB Toolbox Manual
+                <span class="portletItemDetails">Aug 30, 2013</span>
+            </a>
+        </dd>
+    
+    
+
+        <dd class="portletItem odd">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/tutorial/index.html/view"
+               class="state-published tile" title="">
+                <img width="16" height="16" src="http://erpinfo.org/document_icon.gif" alt="Page" />
+                ERPLAB Toolbox Tutorial
+                <span class="portletItemDetails">Aug 30, 2013</span>
+            </a>
+        </dd>
+    
+
+    
+
+    <dd class="portletFooter">
+        <a href="http://erpinfo.org/recently_modified"
+           class="tile">
+           All recent changes&hellip;
+        </a>
+        <span class="portletBottomLeft"></span>
+        <span class="portletBottomRight"></span>
+    </dd>
+
+</dl>
+</div>
+
+
+<div class="managePortletsLink">
+  <a title="View portlet management screen"
+     href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/@@manage-portlets">Manage portlets</a>
+</div>
+
+                
+                &nbsp;
+              </div>
+            </td>
+            
+
+            
+            <td id="portal-column-content">
+
+              
+                <div class="documentEditable">
+
+                  
+
+    
+
+        <h5 class="hiddenStructure">Views</h5>
+
+        <ul class="contentViews" id="content-views">
+
+            
+              <li id="contentview-view" class="selected">
+                <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html">View</a>
+              </li>
+            
+            
+              <li id="contentview-edit" class="plain">
+                <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/edit">Edit</a>
+              </li>
+            
+            
+              <li id="contentview-history" class="plain">
+                <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/versions_history_form">History</a>
+              </li>
+            
+            
+              <li id="contentview-local_roles" class="plain">
+                <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/@@sharing">Sharing</a>
+              </li>
+            
+
+        </ul>
+        
+    
+
+
+<div class="contentActions">
+
+    
+
+        
+
+        
+
+        <ul id="contentActionMenus">
+
+    <li>
+
+        <dl class="actionMenu"
+            id="plone-contentmenu-workflow">
+          <dt class="actionMenuHeader label-state-published">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_history"
+               title="Change the state of this item">
+               
+                  
+                  <span>State:</span>
+                  <span class="state-published">Published</span>
+                  <span class="arrowDownAlternative">&#9660;</span>
+               
+            </a>
+          </dt>
+          <dd class="actionMenuContent">
+            <ul>
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_modify?workflow_action=hide"
+                       class=""
+                       id="workflow-transition-hide"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Make private</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_modify?workflow_action=publish_to_enrolled"
+                       class=""
+                       id="workflow-transition-publish_to_enrolled"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Publish to Enrolled Only</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_modify?workflow_action=publish_to_erplab"
+                       class=""
+                       id="workflow-transition-publish_to_erplab"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Publish to ERPlab Only</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_modify?workflow_action=publish_to_lucklab"
+                       class=""
+                       id="workflow-transition-publish_to_lucklab"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Publish to Lucklab Only</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_modify?workflow_action=publish_to_members"
+                       class=""
+                       id="workflow-transition-publish_to_members"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Publish to Logged-in Users</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li class="actionSeparator">
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/content_status_history"
+                       class="kssIgnore" id="advanced"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Advanced...</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/placeful_workflow_configuration"
+                       class="kssIgnore" id="policy"
+                       title="">
+                        
+                        
+                        <span class="subMenuTitle">Policy...</span>
+                    </a>
+                    
+                  </li>
+                
+            </ul>
+          </dd>
+        </dl>
+
+    </li>
+    <li>
+
+        <dl class="actionMenu"
+            id="plone-contentmenu-actions">
+          <dt class="actionMenuHeader label-">
+            <a href="http://erpinfo.org/erplab/erplab-documentation/manual/folder_contents"
+               title="Actions for the current content item">
+               
+                  
+                  <span>Actions</span>
+                  
+                  <span class="arrowDownAlternative">&#9660;</span>
+               
+            </a>
+          </dt>
+          <dd class="actionMenuContent">
+            <ul>
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/object_cut"
+                       class="actionicon-object_buttons-cut"
+                       id="cut" title="">
+                        
+                        <img width="16" height="16" alt=""
+                             src="http://erpinfo.org/cut_icon.gif"
+                             title="" />
+                        <span class="subMenuTitle">Cut</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/object_copy"
+                       class="actionicon-object_buttons-copy"
+                       id="copy" title="">
+                        
+                        <img width="16" height="16" alt=""
+                             src="http://erpinfo.org/copy_icon.gif"
+                             title="" />
+                        <span class="subMenuTitle">Copy</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/delete_confirmation"
+                       class="actionicon-object_buttons-delete"
+                       id="delete" title="">
+                        
+                        <img width="16" height="16" alt=""
+                             src="http://erpinfo.org/delete_icon.gif"
+                             title="" />
+                        <span class="subMenuTitle">Delete</span>
+                    </a>
+                    
+                  </li>
+                
+                
+                  <li>
+                    <a href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/object_rename"
+                       class="actionicon-object_buttons-rename"
+                       id="rename" title="">
+                        
+                        
+                        <span class="subMenuTitle">Rename</span>
+                    </a>
+                    
+                  </li>
+                
+            </ul>
+          </dd>
+        </dl>
+
+    </li>
+
+</ul>
+
+
+    
+
+</div>
+
+
+                  <div id="region-content" class="documentContent">
+
+                    <span id="contentTopLeft"></span>
+                    <span id="contentTopRight"></span>
+                    
+                    <a name="documentContent"></a>
+
+                    
+
+    <dl class="portalMessage info" id="kssPortalMessage" style="display:none">
+        <dt>Info</dt>
+        <dd></dd>
+    </dl>
+
+
+                    
+                    <div id="viewlet-above-content"><div id="plone-lock-status">
+  
+</div>
+</div>
+
+                    
+                    
+                    <div id="content">
+                      
+                      
+    
+
+        
+
+        <h1 class="documentFirstHeading"> 
+            
+        <span class=" kssattr-atfieldname-title kssattr-templateId-widgets/string kssattr-macro-string-field-view"
+              id="parent-fieldname-title">
+            ERP Measurement Tool
+        </span>
+    
+        </h1>
+
+        <div class="documentByLine" id="plone-document-byline">
+  
+
+  
+    <span class="documentAuthor">
+      by
+      <a href="http://erpinfo.org/author/sjluck">Steve Luck</a>
+
+    </span>
+  
+
+  <span class="documentModified">
+    &mdash;
+    <span>
+      last modified
+    </span>
+    Oct 15, 2012 03:36 PM
+  </span>
+
+  
+
+  
+
+  
+
+</div>
+
+
+
+
+        <p class="documentDescription">
+            
+        <span class=" kssattr-atfieldname-description kssattr-templateId-widgets/textarea kssattr-macro-textarea-field-view"
+              id="parent-fieldname-description">
+            
+        </span>
+    
+        </p>
+
+        
+
+
+
+        
+
+        
+        <div class=" kssattr-atfieldname-text kssattr-templateId-widgets/rich kssattr-macro-rich-field-view"
+             id="parent-fieldname-text">
+            
 <p class="paragraph"><strong>ERPLAB &gt; ERP Measurement Tool </strong>is used to measure features of the ERP waveforms, such as amplitudes and latencies. </p>
 <p class="paragraph">The basic idea behind this tool is that you specify a set of ERPsets, a set of bins, a set of channels, and a specific measurement to be performed (e.g., peak latency between 300 and 600 ms), and then the tool performs all of the measurements and saves them in a text file.  You can either specify ERPsets that have been loaded into ERPLAB (and are therefore visible in the <strong>ERPsets</strong> menu) or ERPsets that have been stored in files on disk.  To make it easy to repeatedly measure the same set of files, you can save a list of the files and then load it again later.  The GUI is shown in the screenshot below.</p>
 <p class="paragraph"><img src="images/manual_ERP measurement tool.png" width="828" height="539" /></p>
@@ -75,8 +1647,7 @@ font-family:Cambria;
   <li><strong class="paragraph"> One ERPset per line (wide format)</strong>. In this format, all the measurements for a single file (e.g., N bins x M channels) will be placed on a single line. That is, each line will be a subject (assuming that each file represents one subject's data) and each column will be the measurement for a bin/channel combination. This is the format required by many statistical software packages. In many experiments, the number of columns is very large, making it not very human-friendly.</li>
   <li><strong>One measurement per line (long format).</strong> In this format, a single measurement is provided on each line (e.g., a single combination of file, bin, and channel). Each line also contains informaiton about which file, bin, and channel was measured on that line. This is easily human readable, and it is also well suited for importing into Excel for use with pivot tables.</li>
 </ul>
-<p class="paragraph">For some technical details about how the time windows for measurement are specified, <a href="Timing_Details.html">click here</a>.</p>
-<p class="paragraph">Several different types of values  can be measured:</p>
+<p class="paragraph">Here are the different types of values that can be measured:</p>
 <p><strong>Instantaneous amplitude</strong></p>
 <p class="paragraph">This simply measures the amplitude at one latency (a single latency is specified in the latency text box).</p>
 <p><strong>Peak amplitude or latency</strong></p>
@@ -158,5 +1729,215 @@ font-family:Cambria;
     <td>&nbsp;</td>
   </tr>
 </table>
+
+            
+        </div>
+    
+
+        <div class="relatedItems">
+    
+        
+            
+        
+    
+</div>
+    
+        <div class="visualClear"><!-- --></div>
+<div class="documentActions">
+    
+
+    <h5 class="hiddenStructure">Document Actions</h5>
+
+    <ul>
+    
+        <li id="document-action-print">
+            <a href="javascript:this.print();" title="">Print this</a>
+        </li>
+    
+
+    </ul>
+    
+
+    
+
+</div>
+
+<div class="reviewHistory" id="review-history">
+    
+</div>
+
+
+    
+
+                    </div>
+                    
+
+                    
+                    
+                      
+    
+
+
+
+
+                    
+                    
+
+                    <span id="contentBottomLeft"></span>
+                    <span id="contentBottomRight"></span>
+
+                  </div>
+
+                </div>
+
+              
+            </td>
+            
+
+            
+            <td id="portal-column-two">
+              <div class="visualPadding">
+                
+                  
+<div id="portletwrapper-706c6f6e652e7269676874636f6c756d6e0a636f6e746578740a2f657270696e666f0a63616c656e646172"
+     class="portletWrapper kssattr-portlethash-706c6f6e652e7269676874636f6c756d6e0a636f6e746578740a2f657270696e666f0a63616c656e646172"><dl class="portlet portletCalendar">
+
+    <dt class="portletHeader">
+        <span class="portletTopLeft"></span>
+        <a href="?month:int=8&amp;year:int=2013&amp;orig_query="
+           rel="nofollow" title="Previous month"
+           id="calendar-previous"
+           class="kssCalendarChange kssattr-year-2013 kssattr-month-8 calendarPrevious">&laquo;</a>
+
+        
+            September
+            2013
+        
+
+        <a href="?month:int=10&amp;year:int=2013&amp;orig_query="
+           rel="nofollow" title="Next month"
+           id="calendar-next"
+           class="kssCalendarChange kssattr-year-2013 kssattr-month-10 calendarNext">&raquo;</a>
+        <span class="portletTopRight"></span>
+    </dt>
+
+    <dd class="portletItem">
+        <table class="ploneCalendar" summary="Calendar">
+            <caption class="hiddenStructure">September</caption>
+            <thead>
+                <tr class="weekdays"><th scope="col">Mo</th><th
+    scope="col">Tu</th><th scope="col">We</th><th
+    scope="col">Th</th><th scope="col">Fr</th><th
+    scope="col">Sa</th><th scope="col">Su</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td></td><td></td><td></td><td></td><td></td><td></td><td>1</td>
+                </tr>
+                <tr><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td>
+                </tr>
+                <tr><td>9</td><td>10</td><td>11</td><td
+    class="todaynoevent"><strong>12</strong></td><td>13</td><td>14</td><td>15</td>
+                </tr>
+                <tr><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td>
+                </tr>
+                <tr><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td>
+                </tr>
+                <tr><td>30</td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+            </tbody>
+
+        </table>
+        <span class="portletBottomLeft"></span>
+        <span class="portletBottomRight"></span>
+    </dd>
+</dl>
+</div>
+
+
+<div class="managePortletsLink">
+  <a title="View portlet management screen"
+     href="http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html/@@manage-portlets">Manage portlets</a>
+</div>
+
+                
+                &nbsp;
+              </div>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+      
+
+      <div class="visualClear" id="clear-space-before-footer"><!-- --></div>
+      
+      
+
+      
+
+        <div id="portal-footer">
+
+<p class="discreet">
+    UC Davis makes no warranties, either expressed or implied, concerning the accuracy, completeness, reliability or suitability of the information contained on these Web pages or of the security or privacy of any information collected by these Web pages. All views expressed in this Web site are those of the author and not UC Davis.
+</p>
+
+</div>
+
+  <div id="portal-colophon">
+      
+
+      
+
+      <div class="colophonWrapper">
+      <ul>
+        <li>
+          <a href="http://plone.org"
+             title="This site was built using Plone CMS, the Open Source Content Management System. Click for more information.">
+            Powered by Plone</a>
+        </li>
+        <li>
+          <a href="http://validator.w3.org/check/referer"
+             title="This site is valid XHTML.">
+            Valid XHTML</a>
+        </li>
+        <li>
+          <a href="http://jigsaw.w3.org/css-validator/check/referer&amp;warning=no&amp;profile=css3&amp;usermedium=all"
+             title="This site was built with valid CSS.">
+            Valid CSS</a>
+        </li>
+        <li>
+          <a href="http://www.section508.gov"
+             title="This site conforms to the US Government Section 508 Accessibility Guidelines.">
+            Section 508</a>
+        </li>
+        <li>
+          <a href="http://www.w3.org/WAI/WCAG1AA-Conformance"
+             title="This site conforms to the W3C-WAI Web Content Accessibility Guidelines.">
+            WCAG</a>
+        </li>
+      </ul>
+      </div>
+
+    </div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-1958864-3");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+      
+
+      <div class="visualClear"><!-- --></div>
+    </div>
+<div id="kss-spinner"><img alt=""
+                           src="http://erpinfo.org/spinner.gif" /></div>
 </body>
 </html>
+
+
