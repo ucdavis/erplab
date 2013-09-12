@@ -707,10 +707,13 @@ while iadj<=nadj && continueplot
                                         'maplimits', maplimit, 'cbar', cb3d,'colormap', clrmap, 'title', titulo); %Plots the 3d scalp plot.
                                 
                                 
-                                
-                                if clrbar==0 || (clrbar==1 && clrbarcustom==1)
+                                if clrbar==1 && clrbarcustom==1
                                         %colorbar('hide');
                                         erpsinglecolorbar(HeadAxes, ColorbarHandle, nlat)
+                                        drawnow
+                                elseif clrbar==0
+                                        set(ColorbarHandle, 'Visible','off')    
+                                        set(get(ColorbarHandle, 'Children'), 'Visible','off')
                                         drawnow
                                 end
                                 
