@@ -64,7 +64,7 @@ p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
-p.parse(EEG, filename, varargin{:});
+p.parse(ERP, filename, varargin{:});
 
 if strcmpi(p.Results.Warning,'on')
         wchmsgon = 1;
