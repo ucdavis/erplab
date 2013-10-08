@@ -279,7 +279,8 @@ comIMPNEURO  = ['[ERP, ERPCOM] = pop_importavg(''''); ' '[ERP, ALLERPCOM] = erph
 
 % load ERP
 comLDERP     = ['[ERP, ALLERP, ERPCOM] = pop_loaderp('''');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);' ];
-comDELERP    = ['[ALLERP, ERPCOM]  = pop_deleterpset(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comDELERP    = ['[ALLERP, ERPCOM]      = pop_deleterpset(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comCALIERP   = ['[ERP, ERPCOM]         = pop_calibraterp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
 % Measurement and viewer
 comGAVG      = ['[ERP, ERPCOM]     = pop_gaverager(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -371,11 +372,10 @@ uimenu( mAR,'Label','Synchronize artifact info in EEG and EVENTLIST ','CallBack'
 % ARTIFACT DETECTION summaries submenus
 %
 mSAR = uimenu( submenu,'Label','Summarize artifact detection','tag','ART','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
-mSAREEG = uimenu( mSAR,'Label','Summarize EEG artifact detection','tag','ART','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
-uimenu( mSAREEG,'Label','In one value','CallBack', comARSUMM3,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
-uimenu( mSAREEG,'Label','Table','CallBack', comARSUMM2,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
-uimenu( mSAREEG,'Label','Graphic','CallBack', comARSUMM,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
-uimenu( mSAR,'Label','ERP artifact detection summary table ','CallBack', comARSUMerp1,'ForegroundColor', [0 0 0.6],'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mSAR,'Label','Summarize EEG artifacts in one value','CallBack', comARSUMM3,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+uimenu( mSAR,'Label','Summarize EEG artifacts in a table','CallBack', comARSUMM2,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+uimenu( mSAR,'Label','Summarize EEG artifacts in a graphic','CallBack', comARSUMM,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+uimenu( mSAR,'Label','Summarize ERP artifacts in a table ','CallBack', comARSUMerp1,'ForegroundColor', [0 0 0.6],'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
 %
 % AVERAGE ERP
@@ -390,6 +390,9 @@ uimenu( mERPOP,'Label','ERP Bin operations ','CallBack', comBOP,'userdata','star
 uimenu( mERPOP,'Label','ERP Channel operations ','CallBack', comCHOP2,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPOP,'Label','Append ERPsets ','CallBack', comAPP,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mERPOP,'Label','Remove ERP baseline ','CallBack', comRERPBL,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mERPOP,'Label','ERP Calibration ','CallBack', comCALIERP,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+
+
 
 %
 % PLOT ERP WAVEFORMS AND MAPS
