@@ -219,7 +219,7 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_creaeventlist
-web http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Create.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/EventList_Create.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_apply_Callback(hObject, eventdata, handles)

@@ -176,6 +176,11 @@ p.addRequired('ALLEEG', @isstruct);
 p.addParamValue('DSindex', 1,@isnumeric);
 p.addParamValue('Criterion', 'good'); % 'all','good','bad', or numeric cell array with epoch indices
 p.addParamValue('SEM', 'off', @ischar); % 'on', 'off'
+
+p.addParamValue('Stdev', '', @ischar); % 'on', 'off'
+
+
+
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar); % 'on', 'off'
 p.addParamValue('ExcludeBoundary', 'off', @ischar); % 'on', 'off'
@@ -186,6 +191,15 @@ p.parse(ALLEEG, varargin{:});
 setindex = p.Results.DSindex;
 artc     = p.Results.Criterion;
 
+if ~isempty(p.Results.Stdev)
+        question= 'The standard deviation (Stdev) is no longer supported.\nHence, ERPLAB uses the standard error of the mean (SEM) instead';
+        title = 'ERPLAB: pop_averager() standard error of the mean';
+        buttonames = {'Continue'};
+        button     = askquestpoly(sprintf(question), title, buttonames);
+        if ~strcmpi(button, 'Continue')
+                return
+        end
+end
 if ~iscell(artc)
         if strcmpi(artc, 'all')
                 artcrite = 0;
@@ -205,9 +219,9 @@ else
         stderror    = 0;
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas    = 1;
+        issaveas    = 1;
 else
-        saveas    = 0;
+        issaveas    = 0;
 end
 if ismember({p.Results.Warning}, {'on','yes'})
         iswarn    = 1;
@@ -833,7 +847,7 @@ erpcom = sprintf( '%s );', erpcom);
 %
 % Save ERPset
 %
-if saveas
+if issaveas
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
         if issave>0
                 if issave==2

@@ -50,7 +50,7 @@ nS1    = length(S1);
 nS2    = length(S2);
 if nS1~=nS2
         Lout = false;
-        fprintf('Structures have different length.\n');
+        fprintf('Structures have different length. \n');
         return
 end % check equal length
 fnameS1  = fieldnames(S1);
@@ -59,26 +59,26 @@ nfnameS1 = length(fnameS1);
 nfnameS2 = length(fnameS2);
 if nfnameS1~=nfnameS2
         Lout = false;
-        fprintf('Structures have different amount of fields.\n');
+        fprintf('Structures have different amount of fields. \n');
         return
 end % check equal number of fields
 [sortfnameS1 indxS1] = sort(fnameS1);
 [sortfnameS2 indxS2] = sort(fnameS1);
 if strcmpi(p.Results.IgnoreSorting, 'off') && ~isequal(indxS1, indxS2) 
         Lout = false;
-        fprintf('Structures have different sorting order.\n');
+        fprintf('Structures have different sorting order. \n');
         return
 end % check equal fields' sorting
 if strcmpi(p.Results.IgnoreCase, 'off')
         if ~isequal(sortfnameS1, sortfnameS2)
                 Lout = false;
-                fprintf('Structures have different field names (case sensitive).\n');
+                fprintf('Structures have different field names (case sensitive). \n');
                 return
         end % check equal field names (case sensitive)
 else
         if ~isequal(lower(sortfnameS1), lower(sortfnameS2))
                 Lout = false;
-                fprintf('Structures have different field names.\n');
+                fprintf('Structures have different field names. \n');
                 return
         end % check equal field names
 end

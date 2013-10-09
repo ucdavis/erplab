@@ -31,8 +31,7 @@ error(nargchk(0,4,nargin));
 if nargin<1
         [fileName,pathName] = uiputfile('*.pdf','Save to file:');
         if fileName == 0; return; end
-        FileName = [pathName,fileName];
-        
+        FileName = [pathName,fileName];        
         
         [fname, pathname, filterIndex] = uiputfile({'*.pdf';'*.eps';'*.jpg';'*.tiff'},'Save Current Figure as');
         

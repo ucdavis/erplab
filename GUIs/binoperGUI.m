@@ -276,7 +276,7 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_binoperator
-web http://erpinfo.org/erplab/erplab-documentation/manual/Bin_Operations.html  -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Bin_Operations.html  -browser
 
 %--------------------------------------------------------------------------
 function RUN_Callback(hObject, eventdata, handles)

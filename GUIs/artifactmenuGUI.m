@@ -343,7 +343,7 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 %fctn = dbstack;
 %fctn = fctn(end).name;
 %doc(fctn) 
-web http://erpinfo.org/erplab/erplab-documentation/manual/Artifact_Detection.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Artifact_Detection.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)

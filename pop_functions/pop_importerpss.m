@@ -36,17 +36,11 @@
 % 2009
 
 function [ERP, ALLERP, erpcom] = pop_importerpss(varargin)
-erpcom = '';
-ERP    = preloadERP;
-errorf = 0;
-try
-        ALLERP   = evalin('base', 'ALLERP');
-        preindex = length(ALLERP);
-catch
-        disp('WARNING: ALLERP structure was not found. ERPLAB will create an empty one.')
-        ALLERP = [];
-        preindex = 0;
-end
+erpcom   = '';
+ERP      = preloadERP;
+errorf   = 0;
+ALLERP   = preloadALLERP;
+preindex = length(ALLERP);
 if nargin<1
         
         %
@@ -77,7 +71,7 @@ if nargin<1
         %
         % Somersault
         %
-        [ERP, ALLERP, erpcom] = pop_importerpss('Filename', fname, 'Format', dformatstr, 'Pointat', orienpoint, 'Saveas', 'on', 'History', 'gui');
+        [ERP, ALLERP, erpcom] = pop_importerpss('Filename', fname, 'Format', dformatstr, 'Pointat', orienpoint, 'History', 'gui');
         pause(0.1);
         return
 end
@@ -92,7 +86,6 @@ p.CaseSensitive = false;
 p.addParamValue('Filename', '');
 p.addParamValue('Format', 'explicit', @ischar);
 p.addParamValue('Pointat', 'col', @ischar);
-p.addParamValue('Saveas', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(varargin{:});
 
@@ -110,11 +103,6 @@ elseif ismember({lower(p.Results.Pointat)}, {'row','rows'});
 else
         error('ERPLAB says: ?')
 end
-if strcmpi(p.Results.Saveas, 'on');
-        issaveas = 1;
-else
-        issaveas = 0;
-end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
@@ -130,6 +118,8 @@ else
         nfile = 1;
         filename = cellstr(filename);
 end
+auxALLERP = ALLERP;
+ERPaux    = ERP;
 
 %
 % load ERPsets(s)
@@ -138,7 +128,7 @@ fprintf('\n');
 for i=1:nfile
         try
                 fname = filename{i}; % pointer "i" fixed. JLC
-                fprintf('%g) Importing ''%s'' into ERPLAB...\n', i, fname);
+                fprintf('%g) Importing ''%s'' into ERPLAB...Please wait...\n', i, fname);
                 
                 %
                 % subroutine
@@ -147,7 +137,7 @@ for i=1:nfile
                 if serror
                         break
                 end
-        catch
+        catch %#ok<*CTCH>
                 serror =1;
                 break
         end
@@ -155,7 +145,7 @@ for i=1:nfile
         try
                 if checking
                         if i==1 && isempty(ALLERP);
-                                ALLERP = buildERPstruct([]);
+                                ALLERP = buildERPstruct([]); %#ok<NASGU>
                                 ALLERP = ERP;
                         else
                                 ALLERP(i+preindex) = ERP;
@@ -164,7 +154,7 @@ for i=1:nfile
                         errorf = 1;
                         break
                 end
-        catch
+        catch %#ok<CTCH>
                 errorf = 1; % fatal error
                 break
         end
@@ -174,15 +164,24 @@ if serror
                 'Please verify the ascii file or double check your settings for importing.'];
         title = 'ERPLAB: pop_importerpss() inputs';
         errorfound(sprintf(msgboxText), title);
+        ALLERP = auxALLERP;
+        ERP    = ERPaux;
         return
 elseif errorf
         msgboxText = ['Your erpset %s is not compatible at all with the current ERPLAB version.\n'...
                 'Please, try upgrading your ERP structure.'];
         title = 'ERPLAB: pop_importerpss() Error';
         errorfound(sprintf(msgboxText, ERP.filename), title);
+        ALLERP = auxALLERP;
+        ERP    = ERPaux;
         return
 end
 fprintf('\n');
+
+if shist==1 % update erpset menu at main gui. JLC. For Antigona M.
+        assignin('base','ALLERP',ALLERP);  % save to workspace
+        updatemenuerp(ALLERP);             % add a new erpset to the erpset menu
+end
 
 %
 % Completion statement
@@ -227,9 +226,27 @@ for q=1:length(fn)
                 end
         end
 end
-
 erpcom = sprintf( '%s );', erpcom);
 erpcom = strrep(erpcom, '(,','(');
+% if issaveas      
+%       [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');      
+%       if issave>0
+%             % generate text command
+%             if issave==2
+%                   erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+%                   msgwrng = '*** Your ERPset was saved on your hard drive.***';
+%             else
+%                     msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+%             end
+%             fprintf('\n%s\n\n', msgwrng)
+%             try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+%       else
+%               ALLERP  = auxALLERP;
+%               ERP     = ERPaux;
+%               msgwrng = 'ERPLAB Warning: Your changes were not saved';
+%               try cprintf([1 0.52 0.2], '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
+%       end
+% end
 % get history from script. ERP
 switch shist
         case 1 % from GUI

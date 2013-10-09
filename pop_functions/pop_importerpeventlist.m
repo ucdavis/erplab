@@ -152,9 +152,9 @@ else
         shist = 0; % off
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 ERPaux = ERP;
 %
@@ -225,7 +225,7 @@ for q=1:length(fn)
 end
 erpcom = sprintf( '%s );', erpcom);
 
-if saveas      
+if issaveas      
       [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');      
       if issave>0
             % generate text command
@@ -262,26 +262,3 @@ end
 %
 msg2end
 return
-
-% %
-% % Completion statement
-% %
-% msg2end
-% 
-% [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab');
-% 
-% if issave>0
-%         erpcom = sprintf( '%s = pop_importerpeventlist( %s, ''%s'', %s );', inputname(1), inputname(1),...
-%                 ELfullname, num2str(repEL));
-%         if issave==2
-%                 erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
-%                 msgwrng = '*** Your ERPset was saved on your hard drive.***';
-%         else
-%                 msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
-%         end
-%         fprintf('\n%s\n\n', msgwrng)
-% else
-%         disp('Warning: Your ERP structure has not yet been saved')
-%         disp('user cancelled')
-% end
-% return

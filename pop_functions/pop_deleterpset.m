@@ -45,6 +45,10 @@ if nargin==1
         dlg_title = 'Delete erpset(s)';
         num_lines = 1;
         def = {num2str(CURRENTERP)}; %01-13-2009
+        
+        %
+        % open window
+        %
         answer = inputvalue(prompt,dlg_title,num_lines,def);
         
         if isempty(answer)
@@ -105,9 +109,9 @@ else
         warnop = 0;
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
@@ -136,7 +140,7 @@ if isempty(newindex)
 else
         ALLERP = ALLERP(newindex);
 end
-if saveas
+if issaveas
         updatemenuerp(ALLERP, -1)
         assignin('base','ALLERP',ALLERP);  % save to workspace. Dec 5, 2012
 end

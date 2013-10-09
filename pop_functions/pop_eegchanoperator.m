@@ -164,9 +164,9 @@ else
         wchmsgon = 0;
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
@@ -230,9 +230,7 @@ elseif modeoption==0 % recursive
         EEGin = EEG;
         EEGout= EEGin;
 end
-
 h=1;
-
 while h<=nformulas && conti
         expr = formulaArray{h};
         tokcommentb  = regexpi(formulaArray{h}, '^#', 'match');  % comment symbol     
@@ -240,7 +238,7 @@ while h<=nformulas && conti
                 
                 %
                 % subroutine
-                %
+                %  
                 [EEGout conti] = eegchanoperator(EEGin, EEGout, expr, wchmsgon);
                 if conti==0
                         recall = 1;
@@ -255,11 +253,11 @@ while h<=nformulas && conti
         end
         h = h + 1;
 end
-if recall  && saveas
+if recall  && issaveas
         EEG       = EEG_tempo;
         [EEG com] = pop_eegchanoperator(EEG); % try again...
         return
-elseif recall && ~saveas
+elseif recall && ~issaveas
         msgboxText =  'Error: Error at formula(s).';
         title = sprintf('ERPLAB: %s() error:', mfilename);
         errorfound(msgboxText, title);
@@ -331,10 +329,10 @@ switch shist
         otherwise %off or none
                 com = '';
 end
-if modeoption==1 && saveas
+if modeoption==1 && issaveas
         [ALLEEG EEG CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
 end
-if saveas==1
+if issaveas==1
         eeglab  redraw % only when using GUI
 end
 

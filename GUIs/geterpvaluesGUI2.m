@@ -57,6 +57,8 @@ handles.indxlistb  = [];
 handles.listch     = '';
 handles.indxlistch = [];
 handles.owfp       = 0;  % over write file permission. 1:allowed; 0:do not overwrite w/o asking.
+handles.binmem     = [];
+handles.chanmem    = [];
 
 try
         ALLERP = varargin{1};
@@ -83,9 +85,7 @@ try
         handles.def = def;
 catch
         
-        
 def = {1, 1, '', 0, 1, 1, 'instabl', 1, 3, 'pre', 0, 1, 5, 0, 0.5, NaN, 0, 1, '', 0, 1};
-        
         
 %         def =  
 %         optioni    = def{1}; %1 means from hard drive, 0 means from erpsets menu; 2 means current erpset (at erpset menu)
@@ -300,7 +300,7 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_geterpvalues
-web http://erpinfo.org/erplab/erplab-documentation/manual/ERP_Measurement_Tool.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/ERP_Measurement_Tool.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)
@@ -448,8 +448,7 @@ else
                 end
         end
 end
-if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') && ~isempty(latestr) && ~strcmp(binArraystr, '') && ~isempty(binArraystr)
-        
+if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') && ~isempty(latestr) && ~strcmp(binArraystr, '') && ~isempty(binArraystr)        
         binArray   = str2num(binArraystr);
         chanArray  = str2num(chanArraystr);
         late       = str2num(latestr);
@@ -1430,6 +1429,8 @@ if ~isempty(ERPi)
                         ERPi.chanlocs(e).labels = ['Ch' num2str(e)];
                 end
         end
+        
+        listch = {[]};
         for ch =1:nchan
                 listch{ch} = [num2str(ch) ' = ' ERPi.chanlocs(ch).labels ];
         end
@@ -1437,23 +1438,34 @@ if ~isempty(ERPi)
         %
         % Prepare List of current Bins
         %
-        listb = [];
-        
+        listb = {[]};        
         for b=1:nbin
                 listb{b}= ['BIN' num2str(b) ' = ' ERPi.bindescr{b} ];
         end
         
-        def = handles.def;
+        %def = handles.def;
         
-        if ~isempty(def)
-                binArray  = def{5};
-                chanArray = def{6};
+        binx  = str2num(get(handles.edit_bins,'String'));
+        chanx = str2num(get(handles.edit_channels,'String'));
+        
+        if isempty(binx)
+                binArray  = handles.binmem;
+        else
+                binArray  = binx;
+        end
+        if isempty(chanx)
+                chanArray  = handles.chanmem;
+        else
+                chanArray  = chanx;
+        end       
+        if ~isempty(binArray) && ~isempty(chanArray)
                 selchan   = chanArray(chanArray>=1 & chanArray<=nchan);
                 selbin    = binArray(binArray>=1 & binArray<=nbin);
         else
                 selchan = 1:nchan;
                 selbin  = 1:nbin;
         end
+        
         set(handles.edit_bins,'String', vect2colon(selbin, 'Delimiter','off', 'Repeat', 'off'))
         set(handles.edit_channels,'String', vect2colon(selchan, 'Delimiter','off', 'Repeat', 'off'))
 else
@@ -1462,8 +1474,8 @@ else
         xmin  = [];
         xmax  = [];
         srate = [];
-        set(handles.edit_bins,'String', '')
-        set(handles.edit_channels,'String', '')
+        %set(handles.edit_bins,'String', '')
+        %set(handles.edit_channels,'String', '')
         listb = '';
         listch = '';
         selchan = [];
@@ -1479,6 +1491,8 @@ handles.listb = listb;
 handles.listch = listch;
 handles.indxlistb = selbin;
 handles.indxlistch = selchan;
+handles.binmem  = selbin; 
+handles.chanmem = selchan;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -1714,8 +1728,12 @@ function setall(hObject, eventdata, handles)
 ALLERP   = handles.ALLERP;
 if isstruct(ALLERP)
         nsets    = length(ALLERP);
+        nbin = ALLERP(1).nbin;
+        nchan = ALLERP(1).nchan;
 else
         nsets = 0;
+        nbin  = 1;
+        nchan = 1;
 end
 
 set(handles.popupmenu_samp_amp,'String',cellstr(num2str([0:40]')))
@@ -1810,8 +1828,8 @@ else
         erpset     = 1; % indices of erpset or filename of list of erpsets
         fname      = '';
         latency    = 0;
-        binArray   = 1;
-        chanArray  = 1;
+        binArray   = 1:nbin;
+        chanArray  = 1:nchan;
         op         = 'instabl'; % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
         coi        = 0; % ignore overlapped components
         dig        = 3;
@@ -2136,6 +2154,9 @@ currentm = get(handles.popupmenu_measurement, 'Value');
 version  = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   ERP Measurements GUI   -   ' meamenu{currentm}])
 handles.frac = frac;
+
+handles.binmem     = binArray;
+handles.chanmem    = chanArray;
 
 % Update handles structure
 guidata(hObject, handles);

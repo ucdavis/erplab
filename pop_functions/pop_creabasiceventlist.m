@@ -72,32 +72,11 @@ if isobject(EEG) % eegobj
         whenEEGisanObject % calls a script for showing an error window
         return
 end
-% if ~isempty(EEG.epoch)
-%         msgboxText =  ['pop_creabasiceventlist() has been tested for continuous data only.\n\n'...
-%                 'HINT: You could use "Export EVENTLIST to text file", instead.'];
-%         title = 'ERPLAB: pop_creabasiceventlist Permission denied';
-%         errorfound(sprintf(msgboxText), title);
-%         return
-% end
 if nargin==1
-                serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 2);
+        serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 2);
         if serror
                 return
         end
-%         if iseegstruct(EEG)
-%                 if length(EEG)>1
-%                         msgboxText =  'ERPLAB says: Unfortunately, this function does not work with multiple datasets';
-%                         title = 'ERPLAB: multiple datasets';
-%                         errorfound(msgboxText, title);
-%                         return
-%                 end
-%         end
-%         if isempty(EEG.data)
-%                 msgboxText =  'pop_creabasiceventlist() error: cannot work with an empty dataset!';
-%                 title = 'ERPLAB: No data';
-%                 errorfound(msgboxText, title);
-%                 return
-%         end
         if isfield(EEG(1).event, 'type')
                 if ~all(cellfun(@isnumeric, { EEG(1).event.type }))
                         msgboxText = ['Some or all of your events contain a text-based event label, '...
@@ -107,12 +86,12 @@ if nargin==1
                                 'checking the box labeled "Create numeric equivalents of nonnumeric event codes '...
                                 'when possible" when creating the EventList.\n\nFor labels that cannot be automatically '...
                                 'converted (e.g., "RESP"), or for ambiguous cases (e.g., when you have both "S14" and '...
-                                '"R14"), you can flexibly create numeric versions using the Advanced button at EVENTLIST GUI.\n\n'...
-                                'Would you like to continue anyway?'];
-                        title_msg = 'ERPLAB: Warning';
-                        button    = askquest(sprintf(msgboxText), title_msg);
+                                '"R14"), you can flexibly create numeric versions using the Advanced button at EVENTLIST GUI.\n'];
                         
-                        if ~strcmpi(button,'yes')
+                        title_msg = 'ERPLAB: Warning';
+                        %button    = askquest(sprintf(msgboxText), title_msg);
+                        button = askquestpoly(sprintf(msgboxText), title_msg, {'Continue'});
+                        if ~strcmpi(button,'Continue')
                                 disp('User selected Cancel')
                                 return
                         end
@@ -181,22 +160,32 @@ p.addRequired('EEG');
 p.addParamValue('Eventlist', '', @ischar);
 p.addParamValue('BoundaryString', 'boundary');
 p.addParamValue('BoundaryNumeric', -99);
+p.addParamValue('Stringboundary', []); % old parameter for BoundaryString
+p.addParamValue('Newboundary', []);    % old parameter for BoundaryNumeric
 p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('AlphanumericCleaning', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(EEG, varargin{:});
 
-% if iseegstruct(EEG)
-%         if length(EEG)>1
-%                 msgboxText =  'ERPLAB says: Unfortunately, this function does not work with multiple datasets';
-%                 error(msgboxText);
-%         end
-% end
+elname  = p.Results.Eventlist;      % Event List file
+boundarystrcode_old    = p.Results.Stringboundary; % current string for boundaries (old versions)
+newboundarynumcode_old = p.Results.Newboundary;    % new numeric code for replacing string boundaries (old versions)
 
-elname             = p.Results.Eventlist;      % Event List file
-boundarystrcode    = p.Results.BoundaryString; % current string for boundaries
-newboundarynumcode = p.Results.BoundaryNumeric;    % new numeric code for replacing string boundaries
+if isempty(boundarystrcode_old)
+        boundarystrcode    = p.Results.BoundaryString; % current string for boundaries
+else
+        boundarystrcode    = boundarystrcode_old; % current string for boundaries
+end
+if isempty(newboundarynumcode_old)
+        newboundarynumcode = p.Results.BoundaryNumeric;    % new numeric code for replacing string boundaries
+else
+        newboundarynumcode = newboundarynumcode_old;    % new numeric code for replacing string boundaries
+        
+end
+
+boundarystrcode    = strtrim(boundarystrcode);
+boundarystrcode    = regexprep(boundarystrcode, '''|"','');
 
 if strcmpi(p.Results.Warning, 'on')
         rwwarn = 1;
@@ -217,16 +206,14 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
-boundarystrcode = strtrim(boundarystrcode);
-boundarystrcode = regexprep(boundarystrcode, '''|"','');
 
 %
 % process multiple datasets. Updated August 23, 2013 JLC
 %
 if length(EEG) > 1
         options1 = {'Eventlist', p.Results.Eventlist, 'BoundaryString', p.Results.BoundaryString,...
-                    'BoundaryNumeric', p.Results.BoundaryNumeric,'Warning', p.Results.Warning,...
-                    'AlphanumericCleaning', p.Results.AlphanumericCleaning, 'History', 'gui'};
+                'BoundaryNumeric', p.Results.BoundaryNumeric,'Warning', p.Results.Warning,...
+                'AlphanumericCleaning', p.Results.AlphanumericCleaning, 'History', 'gui'};
         [ EEG, com ] = eeg_eval( 'pop_creabasiceventlist', EEG, 'warning', 'on', 'params', options1);
         return;
 end
@@ -290,14 +277,6 @@ if rwwarn && nnz(tf)>0
                 fprintf('|WARNING: Fields found in EEG.event that has ERPLAB''s reserved names were overwritten.\n\n')
         end
 end
-
-% % % if alphanum==1
-% % %       %
-% % %       % Delete alphabetic character(s) from alphanumeric event codes (if any)
-% % %       %
-% % %       EEG = letterkilla(EEG);
-% % % end
-
 if alphanum==1
         alphanstr = 'on';
 else

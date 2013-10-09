@@ -47,7 +47,7 @@ if nargin==1
         %
         % Somersault
         %
-        [ERP, erpcom]= pop_importavg(filename, filepath, 'History', 'gui');
+        [ERP, erpcom]= pop_importavg(filename, filepath, 'Saveas','on','History', 'gui');
         return
 end
 
@@ -65,6 +65,11 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(filename, filepath, varargin{:});
 
+if strcmpi(p.Results.Saveas, 'on');
+        issaveas = 1;
+else
+        issaveas = 0;
+end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
@@ -86,11 +91,72 @@ fs          = [];
 xlim        = [];
 filetype    = {'neuroscan'};
 orienpoint  = 'column'; % points at columns
+ERPaux = ERP;
 
 ERP = pop_importerp('Filename', filename, 'Filepath', filepath, 'Filetype', filetype, 'Timeunit', timeunit,...
-      'Pointat', orienpoint, 'Srate', fs, 'Xlim', xlim, 'Saveas', 'on', 'History', 'off');
+      'Pointat', orienpoint, 'Srate', fs, 'Xlim', xlim, 'History', 'off');
 pause(0.1);
-erpcom = sprintf('ERP = pop_importavg( ''%s'', ''%s''', filename, filepath);
+
+% ERP.saved  = 'no';
+
+%
+% History
+%
+skipfields = {'Saveas','History'};
+fn     = fieldnames(p.Results);
+erpcom = sprintf( ' ERP = pop_importavg(');
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        if ischar([fn2res{:}])
+                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
+                                        else
+                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        end
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                if strcmpi(fn2com,'Criterion')
+                                        if p.Results.Criterion<100
+                                                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                        end
+                                else
+                                        erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                                end
+                        end
+                end
+        end
+end
+erpcom = sprintf( '%s );', erpcom);
+erpcom = strrep(erpcom, '(,','(');
+if issaveas      
+      [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');      
+      if issave>0
+            % generate text command
+            if issave==2
+                  erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                  msgwrng = '*** Your ERPset was saved on your hard drive.***';
+            else
+                    msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+            end
+            fprintf('\n%s\n\n', msgwrng)
+            try cprintf([0 0 1], 'COMPLETE\n\n');catch,fprintf('COMPLETE\n\n');end ;
+      else
+              ERP     = ERPaux;
+              msgwrng = 'ERPLAB Warning: Your changes were not saved';
+              try cprintf([1 0.52 0.2], '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
+      end
+end
 % get history from script. ERP
 switch shist
         case 1 % from GUI

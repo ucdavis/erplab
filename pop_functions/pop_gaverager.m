@@ -259,9 +259,9 @@ else
         wavg = 0;
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas = 1;
+        issaveas = 1;
 else
-        saveas = 0;
+        issaveas = 0;
 end
 if ismember({p.Results.Warning}, {'on','yes'})
         warn = 1;
@@ -290,6 +290,7 @@ end
 %
 % subroutine
 %
+ERPaux = ERP;
 [ERP serror msgboxText ] = gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn);
 
 if serror>0
@@ -352,7 +353,7 @@ erpcom = sprintf( '%s );', erpcom);
 %
 % Save ERPset
 %
-if saveas
+if issaveas
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
         if issave>0
                 if issave==2
@@ -363,6 +364,7 @@ if saveas
                 end
         else
                 msgwrng = 'ERPLAB Warning: Your changes were not saved';
+                ERP = ERPaux;
         end
         try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end

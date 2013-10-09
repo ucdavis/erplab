@@ -81,9 +81,9 @@ else
         shist = 0; % off
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 
 %
@@ -106,7 +106,7 @@ end
 ERP.saved  = 'no';
 erpcom = sprintf('%s = pop_erpchanedit( %s, ''%s'');', inputname(1), inputname(1), filename);
 
-if saveas
+if issaveas
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
         if issave>0
                 % generate text command

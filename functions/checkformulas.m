@@ -205,7 +205,7 @@ end
 %
 % Matlab 7.3 and higher %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-[expspliter parts] = regexpi(strtrim(formulaArray), '=|prepareContraIpsi','match','split'); % I included prepareContraIpsi actually to skip its evaluation(since it does not have an "=" sign)
+[expspliter, parts] = regexpi(strtrim(formulaArray), '=|prepareContraIpsi','match','split'); % I included prepareContraIpsi actually to skip its evaluation(since it does not have an "=" sign)
 assymerr = 0;
 
 for t=1:nformulas

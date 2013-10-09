@@ -233,31 +233,33 @@ if nargin==1
                 else
                         splinefile = ERP.splinefile;
                 end
-                if splineinfo.new==1
-                        headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                        splineinfo.new = 0;
-                        plotset.pscalp.splineinfo = splineinfo;
-                end
-                if splineinfo.save
-                        if isempty(ERP.splinefile)
-                                ERP.splinefile = splinefile;
-                                ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
-                        else
-                                question = ['This ERPset already has spline file info.\n'...
-                                        'Would you like to replace it?'];
-                                title_msg   = 'ERPLAB: spline file';
-                                button   = askquest(sprintf(question), title_msg);
-                                
-                                if ~strcmpi(button,'yes')
-                                        disp('User selected Cancel')
-                                        return
-                                else
+                if ~isempty(splineinfo)
+                        if splineinfo.new==1
+                                headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+                                splineinfo.new = 0;
+                                plotset.pscalp.splineinfo = splineinfo;
+                        end
+                        if splineinfo.save
+                                if isempty(ERP.splinefile)
                                         ERP.splinefile = splinefile;
                                         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
+                                else
+                                        question = ['This ERPset already has spline file info.\n'...
+                                                'Would you like to replace it?'];
+                                        title_msg   = 'ERPLAB: spline file';
+                                        button   = askquest(sprintf(question), title_msg);
+                                        
+                                        if ~strcmpi(button,'yes')
+                                                disp('User selected Cancel')
+                                                return
+                                        else
+                                                ERP.splinefile = splinefile;
+                                                ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
+                                        end
                                 end
+                                splineinfo.save = 0;
+                                plotset.pscalp.splineinfo = splineinfo;
                         end
-                        splineinfo.save = 0;
-                        plotset.pscalp.splineinfo = splineinfo;
                 end
         else
                 %splinefile = '';

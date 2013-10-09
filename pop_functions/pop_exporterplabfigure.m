@@ -1,20 +1,35 @@
-% PURPOSE  :	Export open plotted figure to pdf
+% PURPOSE  :	Export plotted figure to pdf, edf, jpg, and tif
 %
 % FORMAT   :
 %
-% pop_fig2pdf(fullname);
+% pop_exporterplabfigure(ERP, varargin)
 %
 % INPUTS   : NOTE: The plotted figure from ERPLAB must be open.
 %
-% Fullname     - Pathname and filename, with .pdf extension
+% ERP      - input ERPset
 %
-% OUTPUTS  :
-% .pdf         - PDF
+% Parameter-values
 %
-% EXAMPLE  :
-% pop_fig2pdf('C:\Users\etfoo\Desktop\S1\Figure_2_S1_ERPs.pdf');
+% 'Tag'           - string.   Figure's tag to be included for exporting. E.g. 'ERP_figure', 'Scalp_figure', or custom
+% 'SaveMode'      - string.   Mode for saving exported figure:
+%                             'saveas' means open a popup window for saving each open
+%                             figure.
+%                             'auto' means automatically save all open figures (specified by Tag) using the figure's
+%                             name
+% 'Filepath'      - string.   When using 'SaveMode' 'auto', specifies "where" to save the figures.
+% 'Format'        - string.   'pdf', 'edf', 'jpg', ot 'tiff'
+% 'Resolution'    - numeric.  Integer value of dots per inch (dpi). E.g. 300
 %
-% See also save2pdf.m
+%
+% Example: Export automatically all ERP and scalp map opened figures to pdf, using a resolution of 300 dpi. Save them to
+% '/Test_iMac' folder.
+%
+% ERP = pop_exporterplabfigure( ERP , 'Filepath', '/Test_iMac', 'Format', 'pdf', 'Resolution',  300, 'SaveMode', 'auto',...
+%       'Tag', {'ERP_figure' 'Scalp_figure' } );
+%
+%
+% See also erplabfig2pdf.m, erplab_print2file.m, pop_fig2pdf.m
+%
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon

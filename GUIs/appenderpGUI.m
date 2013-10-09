@@ -1075,7 +1075,7 @@ end
 
 % -----------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
-web http://erpinfo.org/erplab/erplab-documentation/manual/Appending_ERPsets.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Appending_ERPsets.html -browser
 
 % -----------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)

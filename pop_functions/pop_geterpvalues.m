@@ -109,12 +109,18 @@ if nargin<1
 end
 if nargin==1  % GUI
         if isstruct(ALLERP)
-                cond1 = iserpstruct(ALLERP(1));
-                if ~cond1
+                if ~iserpstruct(ALLERP(1));
                         ALLERP = [];
+                        nbinx = 1;
+                        nchanx = 1;
+                else
+                        nbinx = ALLERP(1).nbin;
+                        nchanx = ALLERP(1).nchan;
                 end
         else
                 ALLERP = [];
+                nbinx = 1;
+                nchanx = 1;
         end
         cerpi = evalin('base', 'CURRENTERP'); % current erp index
         def   = erpworkingmemory('pop_geterpvalues');
@@ -127,13 +133,13 @@ if nargin==1  % GUI
                         erpset = 1:length(ALLERP);
                 end
                 
-                def = {inp1 erpset '' 0 1 1 'instabl' 1 3 'pre' 0 1 5 0 0.5 0 0 0 '' 0 1};
+                def = {inp1 erpset '' 0 1:nbinx 1:nchanx 'instabl' 1 3 'pre' 0 1 5 0 0.5 0 0 0 '' 0 1};
         else
                 if ~isempty(ALLERP)
                         if isnumeric(def{2}) % JavierLC 11-17-11
                                 [uu, mm] = unique(def{2}, 'first');
-                                def{2}  = [def{2}(sort(mm))];
-                                def{2}  = def{2}(def{2}<=length(ALLERP));
+                                def{2}   = [def{2}(sort(mm))];
+                                def{2}   = def{2}(def{2}<=length(ALLERP));
                         end
                 end
         end
@@ -293,6 +299,16 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 % Parsing
 p.parse(ALLERP, latency, binArray, chanArray, varargin{:});
+
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
 
 %
 % Measurement types
@@ -499,23 +515,6 @@ end
 
 intfactor = p.Results.InterpFactor;
 
-% catch
-%         serr = lasterror;
-%         msgboxText =  ['Please, check your inputs: \n\n'...
-%                 serr.message];
-%         tittle = 'ERPLAB: pop_geterpvalues() error:';
-%         errorfound(sprintf(msgboxText), tittle);
-%         return
-% end
-if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
-elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
-elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
-else
-        shist = 0; % off
-end
 if ~ismember({moption}, meacell);
         msgboxText =  [moption ' is not a valid option for pop_geterpvalues!'];
         if shist == 1; % gui
@@ -745,7 +744,7 @@ if serror~=0
                 pause(0.1)
                 return
         else
-                error(msgboxText)
+                error('Error:measurements', msgboxText)
         end
 end
 

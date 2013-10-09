@@ -145,9 +145,9 @@ else
         wchmsgon = 0;
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
@@ -234,11 +234,11 @@ end
 if ~isfield(ERPout, 'binerror')
         ERPout.binerror = [];
 end
-if recall  && saveas
+if recall  && issaveas
         ERP   = ERP_tempo;
         [ERP, erpcom] = pop_erpchanoperator(ERP); % try again...
         return
-elseif recall && ~saveas
+elseif recall && ~issaveas
         msgboxText =  'Error at formula(s).';
         title = sprintf('ERPLAB: %s() error:', mfilename);
         errorfound(msgboxText, title);
@@ -307,7 +307,7 @@ for q=1:length(fn)
         end
 end
 erpcom = sprintf( '%s );', erpcom);
-if saveas && modeoption==1  % only for GUI and nchan (new ERP)
+if issaveas && modeoption==1  % only for GUI and nchan (new ERP)
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');
         if issave>0
                 if issave==2
@@ -324,7 +324,7 @@ if saveas && modeoption==1  % only for GUI and nchan (new ERP)
                 mcolor = [1 0.22 0.2];
         end
         try cprintf(mcolor, '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
-elseif saveas && modeoption==0  % overwrite current ERPset at erpset menu (no GUI)
+elseif issaveas && modeoption==0  % overwrite current ERPset at erpset menu (no GUI)
         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'overwriteatmenu', 'yes', 'History', 'off');
         msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
         mcolor = [1 0.52 0.2];

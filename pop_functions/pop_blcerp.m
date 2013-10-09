@@ -120,9 +120,9 @@ else
         shist = 0; % off
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if ischar(blcorr)
       if ~ismember(lower(blcorr),{'all' 'pre' 'post' 'none'})            
@@ -241,7 +241,7 @@ for q=1:length(fn)
         end
 end
 erpcom = sprintf( '%s );', erpcom);
-if saveas      
+if issaveas      
       [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');      
       if issave>0
             % generate text command
@@ -270,7 +270,7 @@ switch shist
         otherwise %off or none
                 erpcom = '';
 end
-return
+
 %
 % Completion statement
 %

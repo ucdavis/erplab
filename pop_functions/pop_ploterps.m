@@ -12,7 +12,7 @@
 % chanArray         - index(es) of channel(s) to plot. e.g. [12 21 30:40]
 %
 % The available parameters are as follows:
-
+%
 %        'Mgfp'             - channel indices for calculatin Mean Global Field Power. e.g. [2:32]
 %        'Blc'              - string or numeric interval for baseline correction
 %                             reference window: 'no','pre','post','all', or a
@@ -585,7 +585,7 @@ end
 % end
 
 if ismaxim==0
-        findplot = sort(findobj('Tag','Plotting_ERP'));
+        findplot = sort(findobj('Tag','ERP_figure'));
         if ~isempty(findplot)
                 lastfig = figure(findplot(end));
                 posfx   = get(lastfig,'Position');

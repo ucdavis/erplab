@@ -1,20 +1,25 @@
-% PURPOSE  :	Export open plotted figure to pdf
+% PURPOSE  :	subroutine of pop_exporterplabfigure.m
 %
 % FORMAT   :
 %
-% pop_fig2pdf(fullname);
+% ERP = erplabfig2pdf(ERP, figtag, saveasmode, filepath, fileformat, resolution)
 %
 % INPUTS   : NOTE: The plotted figure from ERPLAB must be open.
 %
-% Fullname     - Pathname and filename, with .pdf extension
+% ERP            - input ERPset
+% figtag         - string.   Figure's tag to be included for exporting. E.g. 'ERP_figure', 'Scalp_figure', or custom
+% saveasmode     - string.   Mode for saving exported figure:
+%                            'saveas' means open a popup window for saving each open
+%                            figure.
+%                           'auto' means automatically save all open figures (specified by Tag) using the figure's
+%                            name
+% filepath       - string.   When using 'SaveMode' 'auto', specifies "where" to save the figures.
+% fileformat     - string.   'pdf', 'edf', 'jpg', ot 'tiff'
+% resolution     - numeric.  Integer value of dots per inch (dpi). E.g. 300
 %
-% OUTPUTS  :
-% .pdf         - PDF
 %
-% EXAMPLE  :
-% pop_fig2pdf('C:\Users\etfoo\Desktop\S1\Figure_2_S1_ERPs.pdf');
+% See also pop_exporterplabfigure.m, erplab_print2file.m, pop_fig2pdf.m
 %
-% See also save2pdf.m
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon

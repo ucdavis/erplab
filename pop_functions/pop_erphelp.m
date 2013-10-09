@@ -41,6 +41,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function com = pop_erphelp
-web http://erpinfo.org/erplab/erplab-documentation/manual -browser 
+web http://erpinfo.org/erplab/erplab-documentation/manual_4 -browser 
 com = 'pop_erphelp';
 return

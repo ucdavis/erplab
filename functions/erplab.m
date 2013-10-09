@@ -45,7 +45,6 @@ if nargin<1
         help erplab
         return
 end
-
 switch lower(dosomething)
         case {'help','manual'}
                 pop_erphelp;
@@ -101,63 +100,3 @@ switch lower(dosomething)
         otherwise
                 disp('No entiendo...')
 end
-
-
-
-
-
-% if strcmpi(dosomething, 'help') || strcmpi(dosomething, 'manual')
-%       pop_erphelp;
-%       return
-% end
-% if strcmpi(dosomething, 'tuto') || strcmpi(dosomething, 'tutorial')
-%       pop_erphelptut;
-%       return
-% end
-% 
-% if strcmpi(dosomething, 'script')
-%       pop_erphelpscript;
-%       return
-% end
-% if strcmpi(dosomething, 'redraw')
-%       option = 0;
-%       try
-%             ALLERP   = evalin('base', 'ALLERP');
-%       catch
-%             ALLERP = [];
-%       end
-%       try
-%             ERP   = evalin('base', 'ERP');
-%       catch
-%             ERP =[];
-%       end
-%       if isempty(ALLERP) &&  isempty(ERP)
-%             return
-%       elseif isempty(ALLERP) &&  ~isempty(ERP)
-%             ALLERP = ERP;
-%             CURRENTERP =1;
-%             assignin('base','CURRENTERP', CURRENTERP);  % save to workspace
-%             assignin('base','ALLERP', ALLERP);  % save to workspace
-%       else
-%             try
-%                   CURRENTERP   = evalin('base', 'CURRENTERP');
-%                   if CURRENTERP<=0 || isempty(CURRENTERP)
-%                         CURRENTERP=1;
-%                   end
-%             catch
-%                   CURRENTERP  = 1;
-%             end
-%             nerp = length(ALLERP);
-%             if CURRENTERP<=nerp
-%                   option = 1;
-%             end
-%             ALLERP(CURRENTERP) = ERP;
-%             assignin('base','ALLERP', ALLERP);  % save to workspace
-%             assignin('base','CURRENTERP', CURRENTERP);  % save to workspace
-%       end
-%       eeglab redraw
-%       pause(0.1)
-%       updatemenuerp(ALLERP, option);
-% elseif strcmpi(dosomething, 'amnesia')
-%         erplabamnesia
-% end

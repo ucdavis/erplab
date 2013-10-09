@@ -180,7 +180,7 @@ guidata(hObject, handles);
 helpbutton
 
 % PDF button
-pdfbutton
+% pdfbutton
 
 % set all objects
 setall(hObject, eventdata, handles)
@@ -245,12 +245,9 @@ end
 function pushbutton_OK_Callback(hObject, eventdata, handles)
 binArraystr    = strtrim(get(handles.edit_bins, 'String'));
 latestr        = strtrim(get(handles.edit_latencies, 'String'));
-
-
-binArray     = str2num(binArraystr);
-latencyArray = str2num(latestr);
+binArray       = str2num(binArraystr);
+latencyArray   = str2num(latestr);
 %nlate = length(latencyArray);
-
 customscale    = strtrim(get(handles.edit_custom, 'String'));
 customscale    = regexprep(customscale,'''|"','');
 nbin           = handles.nbin;
@@ -288,24 +285,56 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
         
         meamenu = get(handles.popupmenu_measurement, 'Value');
         
+        % % %         switch meamenu
+        % % %                 case 1
+        % % %                         measurement = 'insta';
+        % % %                 case 2
+        % % %                         measurement = 'mean';
+        % % %                 case 3
+        % % %                         measurement = 'area';
+        % % %                 case 4
+        % % %                         measurement = 'instalapla';
+        % % %                 case 5
+        % % %                         measurement = 'meanlapla';
+        % % %                 case 6
+        % % %                         measurement = 'rms';
+        % % %                 otherwise
+        % % %                         measurement = 'insta';
+        % % %         end
+        % % %         switch meamenu
+        % % %                 case {2,3,5,6}
+        % % %                         if size(latencyArray,2)<2
+        % % %                                 msgboxText =  ['You must specify 2 latencies, at least, for getting %s-values.\n\n'...
+        % % %                                         'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
+        % % %                                         'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
+        % % %                                 title = 'ERPLAB: scalplotGUI() error:';
+        % % %                                 errorfound(sprintf(msgboxText, measurement), title);
+        % % %                                 return
+        % % %                         end
+        % % %                 case {1,4}
+        % % %                         if size(latencyArray,1)>1
+        % % %                                 msgboxText =  'For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
+        % % %                                 title = 'ERPLAB: scalplotGUI() error:';
+        % % %                                 errorfound(sprintf(msgboxText, measurement), title);
+        % % %                                 return
+        % % %                         end
+        % % %         end
         switch meamenu
                 case 1
                         measurement = 'insta';
                 case 2
-                        measurement = 'mean';                      
+                        measurement = 'mean';
                 case 3
-                        measurement = 'area';
-                case 4
                         measurement = 'instalapla';
-                case 5
+                case 4
                         measurement = 'meanlapla';
-                case 6
+                case 5
                         measurement = 'rms';
                 otherwise
                         measurement = 'insta';
-        end        
+        end
         switch meamenu
-                case {2,3,5,6}
+                case {2, 4, 5} % mean, meanlapla, rms
                         if size(latencyArray,2)<2
                                 msgboxText =  ['You must specify 2 latencies, at least, for getting %s-values.\n\n'...
                                         'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
@@ -314,14 +343,14 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                                 errorfound(sprintf(msgboxText, measurement), title);
                                 return
                         end
-                case {1,4}
+                case {1,3} % insta, instalapla
                         if size(latencyArray,1)>1
                                 msgboxText =  'For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
                                 title = 'ERPLAB: scalplotGUI() error:';
                                 errorfound(sprintf(msgboxText, measurement), title);
                                 return
                         end
-        end       
+        end
         
         %
         % Baseline
@@ -567,13 +596,13 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
         set(hObject,'BackgroundColor','white');
 end
 
-%--------------------------------------------------------------------------
-function pushbutton_pdf_Callback(hObject, eventdata, handles)
-plotset = evalin('base', 'plotset');
-plotset.pscalp  = 'pdf';
-handles.output = plotset;
-guidata(hObject, handles);
-uiresume(handles.gui_chassis);
+% %--------------------------------------------------------------------------
+% function pushbutton_pdf_Callback(hObject, eventdata, handles)
+% plotset = evalin('base', 'plotset');
+% plotset.pscalp  = 'pdf';
+% handles.output = plotset;
+% guidata(hObject, handles);
+% uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_custom_Callback(hObject, eventdata, handles)
@@ -626,8 +655,10 @@ if ~isfield(plotset, 'pscalp')
         plotset.pscalp = [];
 end
 
+% measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
+%         'Area between two fixed latencies', 'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
 measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
-        'Area between two fixed latencies', 'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
+               'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
 set(handles.popupmenu_measurement, 'String', measurearray);
 %set(handles.popupmenu_videospeed, 'String', {'0.1X','0.25X','0.5X', '0.75X','1X', '2X'});
 %set(handles.popupmenu_videospeed, 'Value', 5); % 1X
@@ -688,6 +719,25 @@ else
         Legcolormap   = plegend.colormap; % jet color map
 end
 
+% % %
+% % % Value to plot menu
+% % %
+% % if strcmpi(measurement,'insta')
+% %         meamenu =1;
+% % elseif strcmpi(measurement,'mean')
+% %         meamenu =2;
+% % elseif strcmpi(measurement,'area')
+% %         meamenu =3;
+% % elseif strcmpi(measurement,'instalapla') || strcmpi(measurement,'lapla')
+% %         meamenu =4;
+% % elseif strcmpi(measurement,'meanlapla')
+% %         meamenu =5;
+% % elseif strcmpi(measurement,'rms')
+% %         meamenu =6;
+% % else
+% %         meamenu =1;
+% % end
+
 %
 % Value to plot menu
 %
@@ -695,17 +745,16 @@ if strcmpi(measurement,'insta')
         meamenu =1;
 elseif strcmpi(measurement,'mean')
         meamenu =2;
-elseif strcmpi(measurement,'area')
-        meamenu =3;
 elseif strcmpi(measurement,'instalapla') || strcmpi(measurement,'lapla')
-        meamenu =4;
+        meamenu =3;
 elseif strcmpi(measurement,'meanlapla')
-        meamenu =5;
+        meamenu =4;
 elseif strcmpi(measurement,'rms')
-        meamenu =6;
+        meamenu =5;
 else
         meamenu =1;
 end
+
 set(handles.popupmenu_measurement, 'Value', meamenu);
 switch meamenu
         case {1,4}
@@ -1150,14 +1199,23 @@ end
 %--------------------------------------------------------------------------
 function popupmenu_measurement_Callback(hObject, eventdata, handles)
 v = get(hObject, 'Value');
+% switch v
+%         case {1,4}
+%                 set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
+%                 set(handles.checkbox_realtime, 'Enable', 'on');
+%         case {2,3,5,6}
+%                 set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
+%                 set(handles.checkbox_realtime, 'Enable', 'off');
+% end
 switch v
-        case {1,4}
+        case {1,3}
                 set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
                 set(handles.checkbox_realtime, 'Enable', 'on');
-        case {2,3,5,6}
+        case {2,4,5}
                 set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
                 set(handles.checkbox_realtime, 'Enable', 'off');
 end
+
 
 % %--------------------------------------------------------------------------
 % function radiobutton_area_Callback(hObject, eventdata, handles)
@@ -1244,7 +1302,7 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
-web http://erpinfo.org/erplab/erplab-documentation/manual/Topographic_Mapping.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Topographic_Mapping.html -browser
 
 %--------------------------------------------------------------------------
 function checkbox_realtime_Callback(hObject, eventdata, handles)

@@ -43,33 +43,50 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERPLAB, MPD, com] = getardetection(ERPLAB, cw)
+function  varargout = getardetection(ERPLAB, cw)
 com = '';
 if nargin<2
-      cw = 0; % do not comment on command window
+        cw = 0; % do not comment on command window
 end
 try
-      if iseegstruct(ERPLAB)
-            [xxx, MPD]  = pop_summary_AR_eeg_detection(ERPLAB, 'none'); %#ok<ASGLU>
-      elseif iserpstruct(ERPLAB)
-            MPD = []; % pending
-      else
-            MPD = [];
-      end
+        if iseegstruct(ERPLAB)
+                [xxx, MPD]  = pop_summary_AR_eeg_detection(ERPLAB, 'none'); %#ok<ASGLU>
+        elseif iserpstruct(ERPLAB)
+                [ERPxx, acce, rej] = pop_summary_AR_erp_detection(ERPLAB, 'none');
+                clear ERPxx
+                trej   = sum(rej);
+                tacce  = sum(acce);
+                tpacce = (tacce/(tacce+trej))*100; % mean percentage of accepted trials
+                MPD    = 100-tpacce; % this is MPD
+        else
+                MPD = [];
+        end
 catch
-      MPD = [];
+        MPD = [];
 end
 if cw==1
-      if isempty(MPD)
-            fprintf('\nCannot get the information you requested. Sorry\n\n');
-      else
-            fprintf('\nMean artifact detection ratio : %.1f\n\n', MPD);
-      end
+        if isempty(MPD)
+                fprintf('\nCannot get the information you requested. Sorry\n\n');
+        else
+                fprintf('\nMean artifact detection ratio : %.1f\n\n', MPD);
+        end
 end
 if iserpstruct(ERPLAB)
         inpnm = 'ERP';
 else
         inpnm = 'EEG';
 end
-com = sprintf('%s, MPD = getardetection(%s, %g);', inpnm, inpnm, cw);
+com = sprintf('[%s, MPD] = getardetection(%s, %g);', inpnm, inpnm, cw);
+if nargout==1
+        varargout{1} = MPD;
+elseif nargout==2
+        varargout{1} = ERPLAB;
+        varargout{2} = MPD;
+elseif nargout==3
+        varargout{1} = ERPLAB;
+        varargout{2} = MPD;
+        varargout{3} = com;
+else
+        error('ERPLAB says: Too much output variables!')
+end
 return

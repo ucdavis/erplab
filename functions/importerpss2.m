@@ -19,20 +19,18 @@ fid = fopen(fullname);
 asciiERP = textscan(fid, '%s', 'delimiter','\n');
 asciiERP = asciiERP{:};
 fclose(fid);
-
-expdesc = regexpi(asciiERP, '\s*expdesc\s*=\s*"(.*)"','tokens');
-
-if isempty(expdesc)      
+subdesc = regexpi(asciiERP, '\s*subdesc\s*=\s*"(.*)"','tokens');
+if isempty(subdesc)      
         asciiERP = textscanu(fullname, encoding, del_sym, eol_sym, wb);
-        expdesc = regexpi(asciiERP, '\s*expdesc\s*=\s*"(.*)"','tokens');
+        subdesc = regexpi(asciiERP, '\s*subdesc\s*=\s*"(.*)"','tokens');
 end
 
 %
-% Getting filename
+% Getting filename (changed from expdesc to subdesc. Thanks Antigona M.!)
 %
-expdesc = expdesc(~cellfun(@isempty, expdesc));
-expdesc = [expdesc{:}];
-expdesc = [expdesc{:}];
+subdesc = subdesc(~cellfun(@isempty, subdesc));
+subdesc = [subdesc{:}];
+subdesc = [subdesc{:}];
 
 %
 % Getting number of channels
@@ -130,6 +128,15 @@ else
 end
 
 %
+% Getting sums (total trials)
+%
+sums = regexpi(asciiERP, '\s*sums\s*(.*)','tokens');
+sums = sums(~cellfun(@isempty, sums));
+sums = [sums{:}];
+sums = [sums{:}];
+sums = str2num(char(sums'))'; %JLC
+
+%
 % Getting arejects
 %
 arejects = regexpi(asciiERP, '\s*arejects\s*(.*)','tokens');
@@ -137,6 +144,7 @@ arejects = arejects(~cellfun(@isempty, arejects));
 arejects = [arejects{:}];
 arejects = [arejects{:}];
 arejects = str2num(char(arejects'))';
+arejects = sum(arejects, 1); %JLC
 
 %
 % Getting data (search for decimal numbers - it's faster than the previously used regular expression)
@@ -212,7 +220,7 @@ else % implicit
       end
 end
 
-ERP.erpname      = char(expdesc);
+ERP.erpname      = char(subdesc);
 ERP.filename     = '';
 ERP.filepath     = '';
 ERP.workfiles    = '';
@@ -225,9 +233,10 @@ ERP.binerror     = []; % error field
 [ERP.chanlocs(1:nchans).labels] = chlabels{:};
 ERP.ref          = [];
 ERP.bindescr     = BDesc;
-ERP.ntrials.accepted  = arejects;
-ERP.ntrials.rejected  = arejects*0;
+ERP.ntrials.accepted  = sums - arejects;
+ERP.ntrials.rejected  = arejects;
 ERP.ntrials.invalid   = arejects*0;
+ERP.ntrials.arflags   = zeros(numbins, 8); %JLC
 ERP.pexcluded    = 0;
 ERP.history      = [];
 ERP.saved        = 'no';

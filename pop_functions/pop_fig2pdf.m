@@ -1,4 +1,4 @@
-% PURPOSE  :	Export open plotted figure to pdf
+% PURPOSE  :	Export plotted figure to pdf
 %
 % FORMAT   :
 %
@@ -44,46 +44,12 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP, erpcom] = pop_fig2pdf(ERP, filenameAll, varargin)
+function [erpcom] = pop_fig2pdf(filenameAll)
 erpcom = '';
-if nargin<1
-        help pop_fig2pdf
-        return
-end
-if nargin==1
-        
-        
-       
-end
-
-
-        find_ERP = findobj('Tag','ERP_figure');
-        find_SCALP = findobj('Tag','Scalp_figure'); 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-find_ERP = findobj('Tag','Plotting_ERP');
-if ~isempty(find_ERP)
-        for f=1:length(find_ERP)
-                fig1    = figure(find_ERP(f));
+find1 = findobj('Tag','Plotting_ERP');
+if ~isempty(find1)
+        for f=1:length(find1)
+                fig1    = figure(find1(f));
                 namefig = regexp(get(fig1,'Name'),'<<(.*)?>>', 'tokens');
                 namefig = char(namefig{:});
                 filterIndex = 0;
@@ -91,7 +57,7 @@ if ~isempty(find_ERP)
                 if nargin<1                        
                         [filename, pathname, filterIndex] = uiputfile({'*.pdf';'*.eps'},...
                                 'Save Current Figure as',...
-                                ['Figure_' num2str(find_ERP(f)) '_' namefig]);
+                                ['Figure_' num2str(find1(f)) '_' namefig]);
                         
                         if isequal(filename,0)
                                 disp('User selected Cancel')
@@ -141,11 +107,11 @@ if ~isempty(find_ERP)
         end
 end
 
-find_SCALP = findobj('Tag','Scalp');
+find2 = findobj('Tag','Scalp');
 
-if ~isempty(find_SCALP)
-        for f=1:length(find_SCALP)
-                fig2    = figure(find_SCALP(f));
+if ~isempty(find2)
+        for f=1:length(find2)
+                fig2    = figure(find2(f));
                 namefig = regexp(get(fig2,'Name'),'<<(.*)?>>', 'tokens');
                 namefig = char(namefig{:});
                 filterIndex = 0;
@@ -153,7 +119,7 @@ if ~isempty(find_SCALP)
                 if nargin<1
                         [filename, pathname, filterIndex] = uiputfile({'*.pdf';'*.eps'},...
                                 'Save Current Figure as',...
-                                ['Figure_' num2str(find_SCALP(f)) '_' namefig]);
+                                ['Figure_' num2str(find2(f)) '_' namefig]);
                         if isequal(filename,0)
                                 disp('User selected Cancel')
                                 return
@@ -165,8 +131,10 @@ if ~isempty(find_SCALP)
                                                 ext = '.pdf';
                                         elseif  filterIndex==2
                                                 ext = 'eps';
-                                        end                                        
-                                        filename = [filename ext;];                                        
+                                        end
+                                        
+                                        filename = [filename ext;];
+                                        
                                 elseif ~strcmp(ext,'.pdf') && ~strcmp(ext,'.eps')
                                         if  filterIndex==1
                                                 ext2 = '.pdf';
@@ -174,7 +142,8 @@ if ~isempty(find_SCALP)
                                                 ext2 = 'eps';
                                         end
                                         filename = [filename ext ext2;];
-                                end                                
+                                end
+                                
                                 filenameAll = fullfile(pathname, filename);
                         end
                 else
@@ -201,7 +170,7 @@ if ~isempty(find_SCALP)
                 end
         end
 end
-if isempty(find_ERP) && isempty(find_SCALP)
+if isempty(find1) && isempty(find2)
         msgboxText =  'There is not plotted figure from ERPLAB, currently';
         title = 'ERPLAB: pop_fig2pdf() Error';
         errorfound(msgboxText, title);

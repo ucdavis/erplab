@@ -383,7 +383,7 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_continuousartdet
-web http://erpinfo.org/erplab/erplab-documentation/manual/Artifact_Rejection_Continuous.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Artifact_Rejection_Continuous.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_accept_Callback(hObject, eventdata, handles)

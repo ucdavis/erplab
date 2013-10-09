@@ -287,27 +287,6 @@ else
                 return
         end
 end
-if issaveas==1
-        %[ERPx issave] = pop_savemyerp(ERPx,'gui','erplab');
-        [ERPx, issave, erpcom_save] = pop_savemyerp(ERPx,'gui','erplab', 'History', 'off');
-        
-        if issave>0               
-                if issave==2
-                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
-                        msgwrng = '*** Your ERPset was saved on your hard drive.***';
-                else
-                        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
-                end
-                fprintf('\n%s\n\n', msgwrng)
-                
-                msg2end
-        else
-                disp('Warning: Your ERP structure has not yet been saved')
-                disp('user canceled')
-                return
-        end
-end
-ERP = ERPx; % JLC.
 fn     = fieldnames(p.Results);
 erpcom = 'ERP = pop_importerp(';
 
@@ -354,7 +333,27 @@ for q=1:length(fn)
 end
 erpcom = sprintf( '%s );', erpcom);
 erpcom = regexprep(erpcom, '(\s*,','(');
-
+if issaveas==1
+        %[ERPx issave] = pop_savemyerp(ERPx,'gui','erplab');
+        [ERPx, issave, erpcom_save] = pop_savemyerp(ERPx,'gui','erplab', 'History', 'off');
+        
+        if issave>0               
+                if issave==2
+                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                        msgwrng = '*** Your ERPset was saved on your hard drive.***';
+                else
+                        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+                end
+                fprintf('\n%s\n\n', msgwrng)
+                
+                msg2end
+        else
+                disp('Warning: Your ERP structure has not yet been saved')
+                disp('user canceled')
+                return
+        end
+end
+ERP = ERPx; % JLC.
 
 % get history from script. ERP
 switch shist

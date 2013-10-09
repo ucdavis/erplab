@@ -111,9 +111,9 @@ else
         shist = 0; % off
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if ((isfield(ERP.chanlocs, 'theta') && isempty([ERP.chanlocs.theta])) || ~isfield(ERP.chanlocs, 'theta')) && warnop
         question = ['It seems like your ERPset does not have channel location info.\n\n'...
@@ -179,7 +179,7 @@ for q=1:length(fn)
         end
 end
 erpcom = sprintf( '%s );', erpcom);
-if saveas
+if issaveas
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
         if issave>0
                 % generate text command

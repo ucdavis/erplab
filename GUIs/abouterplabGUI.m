@@ -107,19 +107,23 @@ try
         set(handles.gui_chassis, 'Position', [xfig yfig 1.2*info.Width 1.1*info.Height])
         set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Position', [0 50 1.2*info.Width info.Height])
         set(handles.text_cover,'Position', [0 0 1.2*info.Width 0.007*info.Height]);
-        wb = 110;
+        wb = 91;
         hb = 40.92;
         yb = 6.38;
         wfig = get(handles.gui_chassis, 'Position');
-        x1 = wfig(3)*0.25-wb/2;
-        x2 = wfig(3)*0.5-wb/2;
-        x3 = wfig(3)*0.75-wb/2;
+        x1 = wfig(3)*0.2-wb/2;
+        x2 = wfig(3)*0.4-wb/2;
+        x3 = wfig(3)*0.6-wb/2;
+        x4 = wfig(3)*0.8-wb/2;
         set(handles.pushbutton_erpinfo,'Units', 'pixels');
         set(handles.pushbutton_relaunch,'Units', 'pixels');
+        set(handles.pushbutton_youtube,'Units', 'pixels');       
         set(handles.pushbutton_close,'Units', 'pixels');
+        
         set(handles.pushbutton_erpinfo,'Position', [x1 yb wb hb]);
         set(handles.pushbutton_relaunch,'Position', [x2 yb wb hb]);
-        set(handles.pushbutton_close,'Position', [x3 yb wb hb]);
+        set(handles.pushbutton_youtube,'Position', [x3 yb wb hb]);
+        set(handles.pushbutton_close,'Position', [x4 yb wb hb]);
         
         axes(handles.axes1)
         holgu  = 0.12*info.Width;
@@ -285,6 +289,18 @@ edsum  = edition.*edsum;
 banner = banner .* edmask;
 banner = banner + edsum*0.9;
 banner = uint8(round(banner));
+
+%--------------------------------------------------------------------------
+function pushbutton_youtube_Callback(hObject, eventdata, handles)
+posgui = get(handles.gui_chassis,'Position');
+erpworkingmemory('abouterplabGUI', posgui);
+
+set(handles.pushbutton_close,'Value', 1)
+if handles.running  == 0;
+        delete(handles.gui_chassis)
+end
+pause(0.2)
+web('https://www.youtube.com/user/erplabtoolbox?feature=watch','-browser')
 
 %--------------------------------------------------------------------------
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)

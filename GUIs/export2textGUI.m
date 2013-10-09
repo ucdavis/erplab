@@ -181,7 +181,7 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_export2text
-web http://erpinfo.org/erplab/erplab-documentation/manual/EventList_Export_Import.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/EventList_Export_Import.html -browser
 %--------------------------------------------------------------------------
 function pushbutton_export_Callback(hObject, eventdata, handles)
 

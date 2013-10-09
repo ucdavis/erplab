@@ -729,7 +729,7 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_basicfilter
-web http://erpinfo.org/erplab/erplab-documentation/manual/Filtering.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Filtering.html -browser
 %--------------------------------------------------------------------------
 function pushbutton_apply_CreateFcn(hObject, eventdata, handles)
 

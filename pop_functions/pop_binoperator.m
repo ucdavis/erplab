@@ -134,9 +134,9 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(ERP, formulas, varargin{:});
 
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if strcmpi(p.Results.Warning,'on')
         wbmsgon = 1;
@@ -242,7 +242,7 @@ ERP_tempo = ERP;
 [option, recall, goeson] = checkformulas(formulaArray, mfilename);
 nformulas  = length(formulaArray);
 
-if recall  && saveas
+if recall  && issaveas
         [ERP, erpcom] = pop_binoperator(ERP); % try again...
         return
 end
@@ -270,7 +270,7 @@ while h<=nformulas && goeson
                 %
                 [ERPout, conti, cancelop] = binoperator(ERPin, ERPout, expr, wbmsgon, errormsgtype);
                 
-                if cancelop && saveas
+                if cancelop && issaveas
                         recall = 1;
                         break
                 end
@@ -318,7 +318,7 @@ if ~goeson
         disp('user canceled')
         return
 end
-if recall  && saveas
+if recall  && issaveas
         ERP = ERP_tempo;
         [ERP, erpcom] = pop_binoperator(ERP); % try again...
         return
@@ -362,7 +362,7 @@ else
         erpcom = sprintf('%s = pop_binoperator( %s, ''%s'');', inputname(1), inputname(1),...
                 formulas);
 end
-if saveas && option==1  % only for GUI and nbins (new ERP)
+if issaveas && option==1  % only for GUI and nbins (new ERP)
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
         if issave>0
                 if issave==2
@@ -379,7 +379,7 @@ if saveas && option==1  % only for GUI and nbins (new ERP)
                 mcolor = [1 0.22 0.2];
         end
         try cprintf(mcolor, '%s\n\n', msgwrng);catch,fprintf('%s\n\n', msgwrng);end ;
-elseif saveas && option==0  % overwrite current ERPset at erpset menu (no GUI)
+elseif issaveas && option==0  % overwrite current ERPset at erpset menu (no GUI)
         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'overwriteatmenu', 'yes', 'History', 'off');
         msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
         mcolor = [1 0.52 0.2];

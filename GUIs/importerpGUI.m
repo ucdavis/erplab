@@ -564,7 +564,7 @@ end
 
 % -------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
-web http://erpinfo.org/erplab/erplab-documentation/manual -browser % pending
+web http://erpinfo.org/erplab/erplab-documentation/manual_4 -browser % pending
 
 % -------------------------------------------------------------------------
 function button_clearfile_Callback(hObject, eventdata, handles)

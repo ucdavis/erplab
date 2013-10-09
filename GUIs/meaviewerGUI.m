@@ -108,8 +108,8 @@ catch
         
         AMP        = [];
         Lat        = {{[-200 800]}};
-        binArray   = 1:ALLERP.nbin;
-        chanArray  = 1:ALLERP.nchan;
+        binArray   = 1:ALLERP(1).nbin;
+        chanArray  = 1:ALLERP(1).nchan;
         setArray   = 1:length(ALLERP);
         %latency    = 0;
         blc        = 'pre';
@@ -149,7 +149,7 @@ handles.meacodes    = meacodes;
 
 set(handles.text_measurementv, 'String', measurearray);
 
-[tfm indxmeaX] = ismember({moption}, meacodes);
+[tfm, indxmeaX] = ismember({moption}, meacodes);
 
 if ismember(indxmeaX,[6 7 8 16])
         meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...

@@ -102,7 +102,7 @@ setall(hObject, eventdata, handles)
 
 % help
 helpbutton
-pdfbutton
+% pdfbutton
 drawnow
 
 % UIWAIT makes ploterpGUI wait for user response (see UIRESUME)
@@ -234,14 +234,12 @@ end
 
 %--------------------------------------------------------------------------
 function edit_time_range_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_no_Callback(hObject, eventdata, handles)
-
 if get(hObject, 'Value')
         set(handles.radiobutton_BLC_pre, 'Value', 0)
         set(handles.radiobutton_BLC_post, 'Value', 0)
@@ -257,7 +255,6 @@ end
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_pre_Callback(hObject, eventdata, handles)
-
 if get(hObject, 'Value')
         set(handles.radiobutton_BLC_no, 'Value', 0)
         set(handles.radiobutton_BLC_post, 'Value', 0)
@@ -274,7 +271,6 @@ end
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_post_Callback(hObject, eventdata, handles)
-
 if get(hObject, 'Value')
         set(handles.radiobutton_BLC_no, 'Value', 0)
         set(handles.radiobutton_BLC_pre, 'Value', 0)
@@ -291,7 +287,6 @@ end
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_whole_Callback(hObject, eventdata, handles)
-
 if get(hObject, 'Value')
         set(handles.radiobutton_BLC_no, 'Value', 0)
         set(handles.radiobutton_BLC_pre, 'Value', 0)
@@ -308,7 +303,6 @@ end
 
 %--------------------------------------------------------------------------
 function radiobutton_BLC_custom_Callback(hObject, eventdata, handles)
-
 if get(hObject, 'Value')
         set(handles.radiobutton_BLC_no, 'Value', 0)
         set(handles.radiobutton_BLC_pre, 'Value', 0)
@@ -325,7 +319,6 @@ function edit_custom_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function edit_custom_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -344,7 +337,6 @@ set(handles.popupmenu_columns, 'Value', col);
 
 %--------------------------------------------------------------------------
 function popupmenu_rows_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -363,7 +355,6 @@ set(handles.popupmenu_rows, 'Value', row);
 
 %--------------------------------------------------------------------------
 function popupmenu_columns_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -383,14 +374,12 @@ function popupmenu_font_legend_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function popupmenu_font_legend_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
 function checkbox_stdev_Callback(hObject, eventdata, handles)
-
 if get(hObject,'Value')
         ERP = handles.ERP;
         if isempty(ERP.binerror)
@@ -421,11 +410,10 @@ function checkbox_toolbar_Callback(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_ploterps
-web http://erpinfo.org/erplab/erplab-documentation/manual/Plot_ERP_Waveforms.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Plot_ERP_Waveforms.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_plot_Callback(hObject, eventdata, handles)
-
 binArray   = str2num(get(handles.edit_bins, 'String'));
 chanArray  = str2num(get(handles.edit_chans, 'String'));
 
@@ -510,7 +498,7 @@ if get(hObject,'Value')
                 aux_xlim(2) = xlim(2);
         end
         
-        [xp1 xp2 checkw] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
+        [xp1, xp2, checkw] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
         
         if checkw==1
                 msgboxText =  'Time window cannot be larger than epoch.';
@@ -561,13 +549,13 @@ else
 end
 pbox(2) = dsqr;
 
-%--------------------------------------------------------------------------
-function pushbutton_pdf_Callback(hObject, eventdata, handles)
-ispdf = 1;
-handles.ispdf = ispdf;
-% Update handles structure
-guidata(hObject, handles);
-uiresume(handles.gui_chassis);
+% %--------------------------------------------------------------------------
+% function pushbutton_pdf_Callback(hObject, eventdata, handles)
+% ispdf = 1;
+% handles.ispdf = ispdf;
+% % Update handles structure
+% guidata(hObject, handles);
+% uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function checkbox_MGFP_Callback(hObject, eventdata, handles)
@@ -594,7 +582,6 @@ function edit_MGFP_chans_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function edit_MGFP_chans_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -657,7 +644,6 @@ function popupmenu_legepos_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function popupmenu_legepos_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -1029,7 +1015,6 @@ posfig  = [];
 %
 setplotset_time % call script
 
-
 %--------------------------------------------------------------------------
 function setall(hObject, eventdata, handles)
 try
@@ -1079,9 +1064,9 @@ BackERPLABcolor = geterplabcolor;
 handles.BackERPLABcolor = BackERPLABcolor;
 set(handles.checkbox_includenumberbin, 'Value', 1)
 
-if ~ispc
-        set(handles.pushbutton_pdf, 'ForegroundColor', [0 0 0])
-end
+% if ~ispc
+%         set(handles.pushbutton_pdf, 'ForegroundColor', [0 0 0])
+% end
 if ~isempty(plotset.ptime)
         
         %
@@ -1144,9 +1129,9 @@ else
         yyscale        = [miny maxy ytickarray];
         linewidth      = 1;
         isiy           = 0;
-        fschan         = 8;
-        fslege         = 8;
-        fsaxtick       = 5;
+        fschan         = 10;
+        fslege         = 9;
+        fsaxtick       = 8;
         %meap          = 1;
         pstyle         = 3; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
         errorstd       = 0; % pointer for std factor

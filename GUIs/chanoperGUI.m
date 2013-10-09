@@ -96,15 +96,12 @@ end
 % Prepare List of current Channels
 %
 listch=[];
-
 if isempty(ERPLAB.chanlocs)
         for e=1:nchan
                 ERPLAB.chanlocs(e).labels = ['Ch' num2str(e)];
         end
 end
-
 listch = cell(1,nchan);
-
 for ch =1:nchan
         listch{ch} = [num2str(ch) ' = ' ERPLAB.chanlocs(ch).labels ];
 end
@@ -220,14 +217,14 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_eegchanoperator
-web http://erpinfo.org/erplab/erplab-documentation/manual/Channel_Operations.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Channel_Operations.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_RUN_Callback(hObject, eventdata, handles)
-listname = handles.listname;
+listname    = handles.listname;
 compacteditor(hObject, eventdata, handles);
 formulalist = get(handles.editor,'String');
-wchmsgon = get(handles.chwarning,'Value');
+wchmsgon    = get(handles.chwarning,'Value');
 
 if strcmp(formulalist,'')
         msgboxText =  'You have not written any formula!';
@@ -253,7 +250,7 @@ else
 end
 
 typedata = lower(handles.typedata);
-[option recall goeson] = checkformulas(cellstr(formulalist), [typedata 'chanoperGUI'], editormode);
+[option, recall, goeson] = checkformulas(cellstr(formulalist), [typedata 'chanoperGUI'], editormode);
 
 if goeson==0
         return
@@ -291,11 +288,7 @@ elseif ~isempty(listname) && get(handles.checkbox_sendfile2history,'Value')==0
         handles.output = {cellstr(formulalist), wchmsgon}; % sent like a cell string (with formulas)
 end
 
-
-handles.output
-
-
-
+% handles.output
 % formtype = handles.formtype;
 % erpworkingmemory(formtype, formulalist);
 
@@ -383,7 +376,6 @@ end
 
 %--------------------------------------------------------------------------
 function button_loadlist_Callback(hObject, eventdata, handles)
-
 [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
 
 if isequal(filename,0)
@@ -493,7 +485,6 @@ guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
 function fullname = savelist(hObject, eventdata, handles)
-
 fulltext = char(get(handles.editor,'String'));
 
 if isempty(fulltext)
@@ -537,7 +528,6 @@ end
 
 %--------------------------------------------------------------------------
 function compacteditor(hObject, eventdata, handles)
-
 texteditor = strtrim(get(handles.editor,'String'));
 
 if isempty(texteditor)
@@ -586,7 +576,6 @@ set(handles.editor,'String', char(formulalist));
 
 %--------------------------------------------------------------------------
 function button_savelist_Callback(hObject, eventdata, handles)
-
 compacteditor(hObject, eventdata, handles);
 fulltext = strtrim(get(handles.editor,'String'));
 
@@ -641,7 +630,6 @@ end
 
 %--------------------------------------------------------------------------
 function button_clearfile_Callback(hObject, eventdata, handles)
-
 set(handles.edit_filelist,'String','');
 set(handles.button_savelist, 'Enable', 'off')
 
@@ -681,7 +669,6 @@ end
 
 %--------------------------------------------------------------------------
 function val = testsyntaxtype(hObject, eventdata, handles, whocall)
-
 val = 1;
 formulaArray = get(handles.editor,'String');
 
@@ -791,7 +778,6 @@ function chwarning_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function pushbutton_export_chan_list_Callback(hObject, eventdata, handles)
-
 list_of_chans = get(handles.listboxchan1,'String');
 nloch = length(list_of_chans);
 
@@ -833,7 +819,9 @@ if ~isempty(chan2del)
         else
                 eqtn = sprintf('delerpchan(%s)', vect2colon(chan2del, 'Delimiter','off'));
         end
-        handles.output = {{eqtn}}; % sent like a cell string (with formulas)
+        
+        wchmsgon    = get(handles.chwarning,'Value');
+        handles.output = {{eqtn}, wchmsgon}; % sent like a cell string (with formulas)
         % Update handles structure
         guidata(hObject, handles);
         uiresume(handles.gui_chassis);
@@ -843,7 +831,6 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_rerefwizard_Callback(hObject, eventdata, handles)
-
 % set to non-recursive mode
 set(handles.button_recursive, 'Value', 0)
 set(handles.button_no_recu, 'Value', 1)

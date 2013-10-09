@@ -130,6 +130,9 @@ if isempty(ERPin.chanlocs)
                 ERPin.chanlocs(e).labels = ['Ch' num2str(e)];
         end
 end
+if isempty(ERPin.ntrials.arflags) % Sep 27, 2013
+        ERPin.ntrials.arflags   = zeros(ERPin.nbin, 8); %JLC
+end
 
 conti    = 1;
 cancelop = 0;

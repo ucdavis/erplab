@@ -156,10 +156,19 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
+% if isempty(strtrim(fullname))
+%         fidsumm   = 1; % to command window
+% else
+%         fidsumm   = fopen( fullname , 'w'); % to a file
+% end
 if isempty(strtrim(fullname))
         fidsumm   = 1; % to command window
 else
-        fidsumm   = fopen( fullname , 'w'); % to a file
+        if strcmpi(strtrim(fullname), 'none')
+                fidsumm = -99;
+        else
+                fidsumm   = fopen( fullname , 'w'); % to a file
+        end
 end
 
 %
@@ -170,30 +179,35 @@ histoflags = fliplr(ERP.ntrials.arflags);
 %
 % Table
 %
-hdr = {'Bin' '#(%) accepted' '#(%) rejected' '# F2' '# F3' '# F4' '# F5' '# F6' '# F7' '# F8' };
-fprintf(fidsumm, '%s %15s %15s %7s %7s %7s %7s %7s %7s %7s\n', hdr{:});
+if fidsumm~=-99
+        hdr = {'Bin' '#(%) accepted' '#(%) rejected' '# F2' '# F3' '# F4' '# F5' '# F6' '# F7' '# F8' };
+        fprintf(fidsumm, '%s %15s %15s %7s %7s %7s %7s %7s %7s %7s\n', hdr{:});
+end
 s = warning('off','MATLAB:divideByZero');
 rej   = ERP.ntrials.rejected;
 acce  = ERP.ntrials.accepted;
-pacce = (acce./(rej+acce))*100;
+pacce = (acce./(rej+acce))*100; % percentage of accepted trials by bin
 prej  = 100-pacce;
 
-for i=1:ERP.nbin
-        paccestr{i} = sprintf('%.1f', pacce(i));
-        prejstr{i}  = sprintf('%.1f', prej(i));
-        fprintf(fidsumm, '%g  %9g(%5s) %8g(%5s) %7g %7g %7g %7g %7g %7g %7g\n', i,acce(i), paccestr{i}, rej(i), prejstr{i}, histoflags(i,2:8));
+if fidsumm~=-99
+        for i=1:ERP.nbin
+                paccestr{i} = sprintf('%.1f', pacce(i));
+                prejstr{i}  = sprintf('%.1f', prej(i));
+                fprintf(fidsumm, '%g  %9g(%5s) %8g(%5s) %7g %7g %7g %7g %7g %7g %7g\n', i,acce(i), paccestr{i}, rej(i), prejstr{i}, histoflags(i,2:8));
+        end
 end
-
 trej   = sum(rej);
 tacce  = sum(acce);
-tpacce = (tacce/(tacce+trej))*100;
-tprej  = 100-tpacce;
-tpaccestr = sprintf('%.1f', tpacce);
-tprejstr  = sprintf('%.1f', tprej);
-thistoflags = sum(histoflags,1);
-fprintf(fidsumm, [repmat('_',1,100) '\n']);
-fprintf(fidsumm, 'Total %6g(%5s) %8g(%5s) %7g %7g %7g %7g %7g %7g %7g\n', tacce, tpaccestr, trej, tprejstr, thistoflags(2:8));
+tpacce = (tacce/(tacce+trej))*100; % mean percentage of accepted trials
+tprej  = 100-tpacce; % this is MPD
 
+if fidsumm~=-99
+        tpaccestr = sprintf('%.1f', tpacce);
+        tprejstr  = sprintf('%.1f', tprej);
+        thistoflags = sum(histoflags,1);
+        fprintf(fidsumm, [repmat('_',1,100) '\n']);
+        fprintf(fidsumm, 'Total %6g(%5s) %8g(%5s) %7g %7g %7g %7g %7g %7g %7g\n', tacce, tpaccestr, trej, tprejstr, thistoflags(2:8));
+end
 if fidsumm>1
         fclose(fidsumm);
         erpcom = sprintf('pop_summary_AR_erp_detection(ERP, ''%s'');', fullname);

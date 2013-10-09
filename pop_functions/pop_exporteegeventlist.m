@@ -142,20 +142,35 @@ if nargin==1
         [EEG, com] = pop_exporteegeventlist(EEG, 'Filename', elname, 'History', 'gui');
         return
 end
+if nargin==2
+        %
+        % Parsing inputs (versions<4.0)
+        %
+        p = inputParser;
+        p.FunctionName  = mfilename;
+        p.CaseSensitive = false;
+        p.addRequired('EEG');
+        p.addRequired('varargin');
+        
+        % option(s)
+        p.addParamValue('History', 'script', @ischar); % history from scripting
+        p.parse(EEG, varargin{:});
+        elname   = varargin{:};
+else
+        %
+        % Parsing inputs
+        %
+        p = inputParser;
+        p.FunctionName  = mfilename;
+        p.CaseSensitive = false;
+        p.addRequired('EEG');
+        % option(s)
+        p.addParamValue('Filename', '', @ischar); % erpset index or input file
+        p.addParamValue('History', 'script', @ischar); % history from scripting
+        p.parse(EEG, varargin{:});
+        elname   = p.Results.Filename;
+end
 
-%
-% Parsing inputs
-%
-p = inputParser;
-p.FunctionName  = mfilename;
-p.CaseSensitive = false;
-p.addRequired('EEG');
-% option(s)
-p.addParamValue('Filename', '', @ischar); % erpset index or input file
-p.addParamValue('History', 'script', @ischar); % history from scripting
-p.parse(EEG, varargin{:});
-
-elname   = p.Results.Filename;
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')

@@ -52,7 +52,7 @@ if isempty(rerefwizardGUI)
       set(handles.checkbox_addunrefequ,'Value', 0);
       set(handles.edit_includechan,'Enable','off')
       set(handles.edit_excludechan,'Enable','off')
-      chArray = [];
+      chArray = 1:handles.norichan;
 else
       incexc   = rerefwizardGUI.incexc ;
       chArray  = rerefwizardGUI.chArray;
@@ -222,10 +222,10 @@ cbut = get(handles.radiobutton_chan2exclu,'Value'); % exclude
 norichan = handles.norichan;
 
 if abut && ~bbut && ~cbut
-      incexc = 1; % include
+      incexc  = 1; % include
       chArray = 1:norichan;
 elseif ~abut && bbut && ~cbut
-      incexc = 1; % include
+      incexc  = 1; % include
       chArray = str2num(get(handles.edit_includechan,'String'));
       if isempty(chArray)
             msgboxText =  'You have not specified any channel yet!';
@@ -234,7 +234,7 @@ elseif ~abut && bbut && ~cbut
             return
       end
 elseif ~abut && ~bbut && cbut
-      incexc = 0; % exclude
+      incexc  = 0; % exclude
       chArray = str2num(get(handles.edit_excludechan,'String'));
 else
       fprintf('\nOops! something went wrong with this gui.\n')
@@ -313,9 +313,6 @@ for i=1:norichan
       end
 end
 flist = flist(~cellfun(@isempty, flist));
-
-
-
 
 % for i=1:nchan
 %       if get(handles.checkbox_copynewlabel,'Value')

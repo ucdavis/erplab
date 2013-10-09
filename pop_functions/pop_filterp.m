@@ -220,9 +220,9 @@ else
         remove_dc   = 0;
 end
 if strcmpi(p.Results.Saveas,'on')
-        saveas = 1;
+        issaveas = 1;
 else
-        saveas = 0;
+        issaveas = 0;
 end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
@@ -326,7 +326,7 @@ erpcom = sprintf( '%s );', erpcom);
 %
 % Save ERPset from GUI
 %
-if saveas
+if issaveas
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');
         if issave>0
                 %                 erpcom = sprintf( '%s = pop_filterp( %s, %s, %s, %s, %s, ''%s'', %s);', inputname(1), inputname(1),...

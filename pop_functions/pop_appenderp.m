@@ -205,9 +205,9 @@ else
         pfixes = prefixes;
 end
 if ismember({p.Results.Saveas}, {'on','yes'})
-        saveas  = 1;
+        issaveas  = 1;
 else
-        saveas  = 0;
+        issaveas  = 0;
 end
 if optioni~=0
         errorerp = 0;
@@ -333,7 +333,7 @@ if serror==0
         %
         % Save ERPset
         %
-        if saveas
+        if issaveas
                 [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
                 if issave>0
                         if issave==2

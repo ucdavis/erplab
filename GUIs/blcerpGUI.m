@@ -171,7 +171,7 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 % fctn = dbstack;
 % fctn = fctn(end).name;
 % doc(fctn) 
-web http://erpinfo.org/erplab/erplab-documentation/manual/Bin_Operations.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Bin_Operations.html -browser
 
 % -------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)

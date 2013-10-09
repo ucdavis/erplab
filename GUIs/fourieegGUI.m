@@ -269,7 +269,7 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 % else
 %       doc pop_fourierp
 % end
-web http://erpinfo.org/erplab/erplab-documentation/manual/Filtering.html -browser
+web http://erpinfo.org/erplab/erplab-documentation/manual_4/Filtering.html -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_plot_Callback(hObject, eventdata, handles)
