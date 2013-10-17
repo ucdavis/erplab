@@ -555,11 +555,7 @@ else
                                 set(gca, 'YAxisLocation', 'right')
                         end
                 else % classic
-                        neozeroaxes(1, fsaxtick)
-                        
-                        %comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
-                        %        'neozeroaxes(1);'];
-                        
+                        neozeroaxes(1, fsaxtick)                       
                         comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
                                 'neozeroaxes(1);'...
                                 'legend show;'...
@@ -602,12 +598,7 @@ else
         end
         %         hold off
 end
-% if ismaxim
-%       maximize(hbig) ;  %  If you want to maximize full figure automatically
-% end
 assignin('base','bigpicture', hbig);
-
-% fprintf('ploterps.m : END\n');
 
 
 

@@ -80,39 +80,32 @@ try
         nchan = ERP.nchan;
         nbin  = ERP.nbin; % Total number of bins
         splinefile = ERP.splinefile;
-        xmax = ERP.xmax;
-        xmin = ERP.xmin;
+        xmax  = ERP.xmax;
+        xmin  = ERP.xmin;
 catch
         ERP   = [];
         nchan = 0;
         nbin  = 0;
         splinefile = '';
-        xmax = 0.8;
-        xmin = -0.2;
+        xmax  = 0.8;
+        xmin  = -0.2;
 end
 try
         chanlocs = varargin{2};
 catch
         chanlocs = [];
 end
-if isfield(plotset.pscalp, 'splineinfo')
-        splineinfo = plotset.pscalp.splineinfo;
-else
-        splineinfo = [];
-end
-if isempty(splinefile)
-        if isfield(splineinfo, 'path')
-                splineinfo = plotset.pscalp.splineinfo;
-                splinefile = splineinfo.path;
-        end
-end
-handles.xmax      = xmax;
-handles.xmin      = xmin;
+
+splineinfo.path = [];
+
+handles.ERP        = ERP;
+handles.xmax       = xmax;
+handles.xmin       = xmin;
 handles.nchan      = nchan;
 handles.nbin       = nbin;
 handles.chanlocs   = chanlocs;
-handles.splinefile = splinefile;
-handles.splineinfo = splineinfo;
+handles.splinefile = splinefile; % from ERP
+handles.splineinfo = splineinfo; % from memory
 handles.binnum     = [];
 handles.bindesc    = [];
 handles.type       = [];
@@ -141,23 +134,6 @@ end
 %%%set(handles.popupmenu_bins,'String', listb)
 handles.listb      = listb;
 handles.indxlistb  = binArray;
-
-% %
-% % Prepare List of current Bins
-% %
-% if ~isempty(ERP)
-%         listb = [];
-%
-%         for b=1:nbin
-%                 listb{b}= ['BIN' num2str(b) ' = ' ERP.bindescr{b} ];
-%         end
-%
-%         %%%set(handles.popupmenu_bins,'String', listb)
-%         %drawnow
-% else
-%         %%%set(handles.popupmenu_bins,'String', 'No Bins')
-%         %drawnow
-% end
 
 for ch =1:nchan
         listch{ch} = [num2str(ch) ' = ' ERP.chanlocs(ch).labels ];
@@ -191,6 +167,7 @@ uiwait(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function varargout = scalplotGUI_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
+varargout{2} = handles.ERP;
 
 % The figure can be deleted now
 delete(handles.gui_chassis);
@@ -226,23 +203,49 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
         set(hObject,'BackgroundColor','white');
 end
 
-% % % %--------------------------------------------------------------------------
-% % % function popupmenu_bins_Callback(hObject, eventdata, handles)
-% % %
-% % % numbin = get(hObject, 'Value');
-% % % nums   = get(handles.edit_bins, 'String');
-% % % nums   = [nums ' ' num2str(numbin)];
-% % % set(handles.edit_bins, 'String', nums);
-
-% % % %--------------------------------------------------------------------------
-% % % function popupmenu_bins_CreateFcn(hObject, eventdata, handles)
-% % %
-% % % if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-% % %         set(hObject,'BackgroundColor','white');
-% % % end
-
 %--------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
+ERP  = handles.ERP;
+if get(handles.radio_3D, 'Value')
+        if isempty(handles.splinefile) && isempty(ERP.splinefile)
+                msgboxText =  ['You must specify a spline file for 3D scalp maps.\n\n'...
+                        'Use the spline file button for loading/creating a spline file.'];
+                title = 'ERPLAB: scalpplotGUI inputs';
+                errorfound(sprintf(msgboxText), title);
+                return
+        elseif isempty(handles.splinefile) && ~isempty(ERP.splinefile)
+                splineinfo.path    = ERP.splinefile;
+                splineinfo.new     = 0;
+                splineinfo.save    = 0;
+                splineinfo.newname = [];                
+        elseif ~isempty(handles.splinefile) && isempty(ERP.splinefile)                
+                splineinfo.path    = handles.splinefile;
+                splineinfo.new     = 0;
+                splineinfo.save    = 0;
+                splineinfo.newname = [];                
+                
+                % %
+                % % Open GUI
+                % %
+                % splineinfo = splinefileGUI(handles.splinefile);
+                %
+                % if isempty(splineinfo) || isempty(splineinfo.path)
+                %         msgboxText =  'You must specify a name for the spline file.';
+                %         title = 'ERPLAB: scalpplotGUI inputs';
+                %         errorfound(msgboxText, title);
+                %         return
+                % end
+        else
+                splineinfo =   handles.splineinfo;
+                splineinfo.new     = 0;
+                splineinfo.save    = 0;
+                splineinfo.newname = [];
+                %                   splineinfo.path =   handles.splinefile;
+                %                   splineinfo.new  = 0;
+                %                   splineinfo.save = 0;
+                %                   splineinfo.newname = [];
+        end
+end
 binArraystr    = strtrim(get(handles.edit_bins, 'String'));
 latestr        = strtrim(get(handles.edit_latencies, 'String'));
 binArray       = str2num(binArraystr);
@@ -253,7 +256,7 @@ customscale    = regexprep(customscale,'''|"','');
 nbin           = handles.nbin;
 errorcusca     = 0;
 
-if  ~isempty(latencyArray) && ~isempty(binArray)        
+if  ~isempty(latencyArray) && ~isempty(binArray)
         if max(binArray)>nbin
                 msgboxText =  'Error: You have specified unexisting bins.';
                 title = 'ERPLAB: scalplotGUI() error:';
@@ -266,7 +269,6 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                 errorfound(msgboxText, title);
                 return
         end
-        
         indxh   = find(latencyArray>handles.xmax*1000,1);
         if ~isempty(indxh)
                 msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(handles.xmax*1000) ' msec!'];
@@ -414,20 +416,13 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
         end
         
         %
-        % Color Bar
-        %
-        %      clrbar = get(handles.checkbox_colorbar, 'Value');
-        
-        %
         % Show electrodes
         %
         showelec = get(handles.set_legends, 'Value');
         
         %
-        % Show bin number at legend
-        %
-        %binleg = get(handles.checkbox_includenumberbin, 'Value');
-        
+        % Animation
+        %        
         if get(handles.checkbox_animation, 'Value')
                 if get(handles.checkbox_adjust1frame, 'Value')
                         isagif    = 2; % adjust first frame
@@ -451,7 +446,6 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                         return
                 else
                         [pthxz, fnamez, ext] = fileparts(fnameagif);
-                        
                         if strcmp(ext,'')
                                 ext   = '.gif';
                         end
@@ -482,25 +476,10 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                         otherwise
                                 return
                 end
-                splineinfo.path =  '';
+                splineinfo.path =  ERP.splinefile;
                 splineinfo.new  = 0;
                 splineinfo.save = 0;
         else % 3D
-                if isempty(handles.splinefile)
-                        splineinfo = splinefileGUI(handles.splinefile);
-                        if isempty(splineinfo) || isempty(splineinfo.path)
-                                msgboxText =  'You must specify a name for the spline file.';
-                                title = 'ERPLAB: scalpplotGUI inputs';
-                                errorfound(msgboxText, title);
-                                return
-                        end
-                else
-                        splineinfo =   handles.splineinfo;
-                        %                   splineinfo.path =   handles.splinefile;
-                        %                   splineinfo.new  = 0;
-                        %                   splineinfo.save = 0;
-                        %                   splineinfo.newname = [];
-                end
                 mtype = '3D';
                 switch viewselec
                         case 1
@@ -527,11 +506,11 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                                 return
                 end
         end
-else        
+else
         msgboxText =  'You must specify Bin AND Latency(ies) for making a scalp map.';
         title = 'ERPLAB: scalpplotGUI empty input';
         errorfound(msgboxText, title);
-        return        
+        return
 end
 
 %
@@ -629,24 +608,6 @@ function radiobutton_BLC_whole_Callback(hObject, eventdata, handles)
 set(handles.edit_customblc,'Enable', 'off')
 set(hObject,'Value',1)
 
-% %--------------------------------------------------------------------------
-% function radiobutton_area_Callback(hObject, eventdata, handles)
-%
-% set(hObject,'Value',1)
-% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
-%
-% %--------------------------------------------------------------------------
-% function radiobutton_insta_Callback(hObject, eventdata, handles)
-%
-% set(hObject,'Value',1)
-% set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
-%
-% %--------------------------------------------------------------------------
-% function radiobutton_mean_Callback(hObject, eventdata, handles)
-%
-% set(hObject,'Value',1)
-% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
-
 %--------------------------------------------------------------------------
 function  setall(hObject, eventdata, handles)
 
@@ -658,7 +619,7 @@ end
 % measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
 %         'Area between two fixed latencies', 'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
 measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
-               'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
+        'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
 set(handles.popupmenu_measurement, 'String', measurearray);
 %set(handles.popupmenu_videospeed, 'String', {'0.1X','0.25X','0.5X', '0.75X','1X', '2X'});
 %set(handles.popupmenu_videospeed, 'Value', 5); % 1X
@@ -707,7 +668,7 @@ else
         %showelec     = plotset.pscalp.showelec;
         %binleg       = plotset.pscalp.binleg;
         mtype         = plotset.pscalp.mtype; % map type  0=2D; 1=3D
-        mapview       = plotset.pscalp.mapview; % numeric?        
+        mapview       = plotset.pscalp.mapview; % numeric?
         plegend       = plotset.pscalp.plegend; % numeric
         Legbinnum     = plegend.binnum;
         Legbindesc    = plegend.bindesc;
@@ -857,7 +818,14 @@ if strcmpi(mtype,'2D')
         set(handles.radio_2D, 'Value', 1);
         set(handles.radio_3D, 'Value', 0);
         set(handles.edit_customview, 'Enable', 'off')
-else
+        set(handles.pushbutton_splinefile, 'Enable', 'off')       
+else % 3D
+        splinefile = handles.splinefile;
+        if isempty(splinefile)
+                set(handles.text_spline_warning, 'String','spline''s required!')
+                set(handles.text_spline_warning, 'ForegroundColor', [0.71 0.1 0.1])
+        end
+        
         morimenu = {'front', 'back', 'right', 'left', 'top',...
                 'frontleft', 'frontright', 'backleft', 'backright',...
                 'custom'};
@@ -1005,7 +973,7 @@ if isequal(blfilename,0)
         disp('User selected Cancel')
         return
 else
-        [px, fname, ext] = fileparts(blfilename);      
+        [px, fname, ext] = fileparts(blfilename);
         if  filterindex==1
                 ext = '.gif';
         elseif  filterindex==2
@@ -1097,6 +1065,7 @@ function checkbox_adjust1frame_Callback(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 function radio_2D_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
+        set(handles.text_spline_warning, 'String','')
         set(handles.radio_3D, 'Value',0)
         morimenu = {'+X','-X','+Y','-Y'};
         %morimenu = {'front', 'back', 'right', 'left', 'top',...
@@ -1120,9 +1089,12 @@ end
 %--------------------------------------------------------------------------
 function radio_3D_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
+        splinefile = handles.splinefile;
+        if isempty(splinefile)
+                set(handles.text_spline_warning, 'String','spline''s required!')
+                set(handles.text_spline_warning, 'ForegroundColor', [0.71 0.1 0.1])
+        end
         set(handles.radio_2D, 'Value',0)
-        %set(handles.radio_3D, 'Value',0)
-        %morimenu = {'+X','-X','+Y','-Y'};
         morimenu = {'front', 'back', 'right', 'left', 'top',...
                 'frontleft', 'frontright', 'backleft', 'backright',...
                 'custom'};
@@ -1216,26 +1188,6 @@ switch v
                 set(handles.checkbox_realtime, 'Enable', 'off');
 end
 
-
-% %--------------------------------------------------------------------------
-% function radiobutton_area_Callback(hObject, eventdata, handles)
-%
-% set(hObject,'Value',1)
-% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
-%
-% %--------------------------------------------------------------------------
-% function radiobutton_insta_Callback(hObject, eventdata, handles)
-%
-% set(hObject,'Value',1)
-% set(handles.text_example,'String','e.g. 300 or -100:10:0 or 120 400')
-%
-% %--------------------------------------------------------------------------
-% function radiobutton_mean_Callback(hObject, eventdata, handles)
-%
-% set(hObject,'Value',1)
-% set(handles.text_example,'String','e.g. -100 0 or 120 200;300 400')
-
-
 %--------------------------------------------------------------------------
 function popupmenu_measurement_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -1244,13 +1196,21 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_splinefile_Callback(hObject, eventdata, handles)
+ERP = handles.ERP;
 chanlocs   = handles.chanlocs;
 splinefile = handles.splinefile;
+
+if isempty(splinefile)
+        x = handles.splineinfo;
+        splnfile = x.path;
+else
+        splnfile = splinefile;
+end
 
 %
 % open gui
 %
-splineinfo = splinefileGUI({splinefile});
+splineinfo = splinefileGUI({splnfile});
 
 if isempty(splineinfo)
         disp('User selected Cancel')
@@ -1265,7 +1225,38 @@ if isempty(splinefile)
         errorfound(msgboxText, title);
         return
 end
+if splineinfo.save
+        if isempty(ERP.splinefile)
+                ERP.splinefile = splinefile;
+                ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
+        else
+                question = ['This ERPset already has spline file info.\n'...
+                        'Would you like to replace it?'];
+                title_msg   = 'ERPLAB: spline file';
+                button   = askquest(sprintf(question), title_msg);
+                
+                if ~strcmpi(button,'yes')
+                        disp('User selected Cancel')
+                        return
+                else
+                        ERP.splinefile = splinefile;
+                        ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
+                end
+        end
+        splineinfo.save = 0;
+        %plotset = evalin('base', 'plotset');
+        %plotset.pscalp.splineinfo = splineinfo;
+        %assignin('base','plotset',plotset)
+        erplab redraw
+end
+if isempty(splinefile) && isempty(ERP.splinefile)
+        set(handles.text_spline_warning, 'String','spline''s required!')
+        set(handles.text_spline_warning, 'ForegroundColor', [0.71 0.1 0.1])
+else
+        set(handles.text_spline_warning, 'String','')
+end
 
+handles.ERP = ERP;
 handles.splineinfo  = splineinfo;
 handles.splinefile  = splinefile;
 
@@ -1358,7 +1349,7 @@ function popupmenu_colormap_CreateFcn(hObject, eventdata, handles)
 % Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+        set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------

@@ -122,25 +122,12 @@ if nargin==1  %with GUI
                 errorfound(msgboxText, title_msg);
                 return
         end
-        %defcolor = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };% sorted according 1st erplab's version
-        %countp = 0;
-        %while 1
-        % if countp<1
+
         %
         % Call GUI for plotting
         %
         [plotset,  ERP] = ploterpGUI(ERP);
-        % else
-        %         ansmini = mini_ploterpGUI;
-        %
-        %         if isempty(ansmini)
-        %                 disp('User selected Cancel')
-        %                 return
-        %         end
-        %
-        %         [ERP, erpcom] = pop_ploterps(ERP);
-        %         return
-        % end
+
         if isempty(ERP)
                 disp('User selected Cancel')
                 return
@@ -289,8 +276,6 @@ if nargin==1  %with GUI
                 'axsize', axsize,'ChLabel', rchanlabel, 'MinorTicksX', mtxstr, 'MinorTicksY', mtystr,...
                 'Linespec', linespeci,'ErrorMsg', 'popup', 'History', 'gui');
         pause(0.1)
-        % countp = countp + 1;
-        %end
         return
 end
 
@@ -312,8 +297,8 @@ p.addParamValue('yscale', [-10 10], @isnumeric);
 p.addParamValue('LineWidth', 1, @isnumeric);
 p.addParamValue('YDir', 'normal', @ischar); % normal | reverse
 p.addParamValue('FontSizeChan', 10, @isnumeric);
-p.addParamValue('FontSizeLeg', 10, @isnumeric);
-p.addParamValue('FontSizeTicks', 8, @isnumeric);
+p.addParamValue('FontSizeLeg', 12, @isnumeric);
+p.addParamValue('FontSizeTicks', 10, @isnumeric);
 p.addParamValue('Style', 'Matlab', @ischar);
 p.addParamValue('SEM', 'off', @ischar); % standard error of the mean
 p.addParamValue('Transparency', 1, @isnumeric); % transparency value for plotting SEM

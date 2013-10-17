@@ -149,40 +149,46 @@ if ~isempty(boundary) && isempty(EEG.epoch)
             %
             % for searching boundaries inside EEG.event.type
             %
-            if ischar(EEG.event(1).type)
-                  codebound = {EEG.event.type}; %strings
+            if isempty(EEG.event) % oct-14-2013
+                    codebound = [];
             else
-                  codebound = [EEG.event.type]; %numeric code
+                    if ischar(EEG.event(1).type)
+                            codebound = {EEG.event.type}; %strings
+                    else
+                            codebound = [EEG.event.type]; %numeric code
+                    end                    
             end
       end
       
       %
       % search for boundaries
       %
-      if ischar(boundary) && iscell(codebound)
-            indxbound  = strmatch(boundary, codebound, 'exact');
-      elseif ~ischar(boundary) && ~iscell(codebound)
-            indxbound  = find(codebound==boundary);
-      elseif ischar(boundary) && ~iscell(codebound)
-            numt = str2num(boundary);
-            if ~isempty(numt)
-                  indxbound  = find(codebound==numt);
-            else
-                  %ferror =1;
-                  msgboxText = 'You specified a string as a boundary code, but your events are numeric.';
-                  fprintf('WARNING: %s \n\n', msgboxText);
-                  %title = 'ERPLAB: boundary format error';
-                  %errorfound(msgboxText, title);
-                  %return
-                  indxbound = [];
-            end
-      elseif ~ischar(boundary) && iscell(codebound)
-            indxbound  = strmatch(num2str(boundary), codebound, 'exact');
-      end      
-      if ~isempty(indxbound)
-            
-            timerange = [ EEG.xmin*1000 EEG.xmax*1000 ];
-            
+      if isempty(codebound)
+              indxbound = [];% oct-14-2013
+      else
+              if ischar(boundary) && iscell(codebound)
+                      indxbound  = strmatch(boundary, codebound, 'exact');
+              elseif ~ischar(boundary) && ~iscell(codebound)
+                      indxbound  = find(codebound==boundary);
+              elseif ischar(boundary) && ~iscell(codebound)
+                      numt = str2num(boundary);
+                      if ~isempty(numt)
+                              indxbound  = find(codebound==numt);
+                      else
+                              %ferror =1;
+                              msgboxText = 'You specified a string as a boundary code, but your events are numeric.';
+                              fprintf('WARNING: %s \n\n', msgboxText);
+                              %title = 'ERPLAB: boundary format error';
+                              %errorfound(msgboxText, title);
+                              %return
+                              indxbound = [];
+                      end
+              elseif ~ischar(boundary) && iscell(codebound)
+                      indxbound  = strmatch(num2str(boundary), codebound, 'exact');
+              end
+      end
+      if ~isempty(indxbound)            
+            timerange = [ EEG.xmin*1000 EEG.xmax*1000 ];            
             if timerange(1)/1000~=EEG.xmin || timerange(2)/1000~=EEG.xmax
                   posi = round( (timerange(1)/1000-EEG.xmin)*EEG.srate )+1;
                   posf = min(round( (timerange(2)/1000-EEG.xmin)*EEG.srate )+1, EEG.pnts );

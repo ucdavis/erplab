@@ -16,28 +16,28 @@
 % binArray      - index(es) of bin(s) from which values will be extracted. e.g. 1:5
 % chanArray     - index(es) of channel(s) from which values will be extracted. e.g. [10 2238 39 40]
 % moption       - option. Any of these:
-%         'instabl'     - finds the relative-to-baseline instantaneous value at a specified latency.
-%         'meanbl'      - calculates the relative-to-baseline mean amplitude value between two latencies.
-%         'peakampbl'   - finds the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
-%         'peaklatbl'   - finds latency of the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
-%         'fpeaklat'    - finds the fractional latency of the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
-%         'areat'       - calculates the (total) area under the curve, between two latencies.
-%         'areap'       - calculates the area under the positive values of the curve, between two latencies.
-%         'arean'       - calculates the area under the negative values of the curve, between two latencies.
-%         'areazt'      - calculates the (total) area value under the curve, between two zero-crossing latencies automatically
-%                         detected (enter one seed latency for searching)
-%         'areazp'      - calculates the area value under the positive values of the curve, between two zero-crossing latencies automatically
-%                         detected (enter one seed latency for searching)
-%         'areazn'      - calculates the area value under the negative values of the curve, between two zero-crossing latencies automatically
-%                         detected (enter one seed latency for searching)
-%         'fareatlat'   - finds the latency corresponding to a specified fraction of the total area.
-%         'fareaplat'   - finds the latency corresponding to a specified fraction of the area under the positive values of the curve.
-%         'fareanlat'   - finds the latency corresponding to a specified fraction of the area under the negative values of the curve.
-%         'ninteg'      - calculates the numerical integration of the curve, between two latencies.
-%         'nintegz'     - calculates the numerical integration of the curve, between two zero-crossing latencies automatically
-%                         detected (enter one seed latency for searching)
-%         'fninteglat'  - finds the latency corresponding to a specified fraction of the numerical integration (signed area).
-%         '50arealat'   - (old) calculates the latency corresponding to the 50% area sample between two latencies.
+%         'instabl'          - finds the relative-to-baseline instantaneous value at a specified latency.
+%         'meanbl'           - calculates the relative-to-baseline mean amplitude value between two latencies.
+%         'peakampbl'        - finds the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
+%         'peaklatbl'        - finds latency of the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
+%         'fpeaklat'         - finds the fractional latency of the relative-to-baseline peak value between two latencies. See polpeak and sampeak.
+%         'area' or 'areat'  - calculates the (total) area under the curve, between two latencies.
+%         'areap'            - calculates the area under the positive values of the curve, between two latencies.
+%         'arean'            - calculates the area under the negative values of the curve, between two latencies.
+%         'areazt'           - calculates the (total) area value under the curve, between two zero-crossing latencies automatically
+%                              detected (enter one seed latency for searching)
+%         'areazp'           - calculates the area value under the positive values of the curve, between two zero-crossing latencies automatically
+%                              detected (enter one seed latency for searching)
+%         'areazn'           - calculates the area value under the negative values of the curve, between two zero-crossing latencies automatically
+%                              detected (enter one seed latency for searching)
+%         'fareatlat'        - finds the latency corresponding to a specified fraction of the total area.
+%         'fareaplat'        - finds the latency corresponding to a specified fraction of the area under the positive values of the curve.
+%         'fareanlat'        - finds the latency corresponding to a specified fraction of the area under the negative values of the curve.
+%         'ninteg'           - calculates the numerical integration of the curve, between two latencies.
+%         'nintegz'          - calculates the numerical integration of the curve, between two zero-crossing latencies automatically
+%                              detected (enter one seed latency for searching)
+%         'fninteglat'       - finds the latency corresponding to a specified fraction of the numerical integration (signed area).
+%         '50arealat'        - (old) calculates the latency corresponding to the 50% area sample between two latencies.
 %
 % blc        - time window for getting baseline value (reference). E.g. [-200 0]
 % coi        - component of interest (1 or 2) (only for 'areaz')
@@ -154,7 +154,7 @@ if ischar(blc)
         end
 end
 if ~ismember({moption}, {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
-                'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
+                'area','areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
                 'fareaplat', 'fninteglat', 'fareanlat', 'ninteg','nintegz' });
         msgboxText =  [moption ' is not a valid option for geterpvalues!'];
         %title = 'ERPLAB: geterpvalues wrong inputs';
@@ -198,6 +198,13 @@ else
         timex = timeor;
 end
 
+msgboxText4peak = ['The requested measurement window is invalid given the number of points specified for finding a local peak '...
+        'and the epoch length of the ERP waveform.\n\n You have specified a local peak over ±%g points, which means that '...
+        'there must be %g sample points between the onset of your measurement window and the onset of the waveform, '...
+        'and/or %g sample points between the end of your measurement window and the end of the waveform.\n\n'...
+        'Because the waveform starts at %.1f ms and ends at %.1f ms, your measurement window cannot go beyond [%.1f  %.1f] ms (unless you reduce '...
+        'the number of points required to define the local peak).'];
+
 % latsamp = [find(ERP.times>=latency(1), 1, 'first') find(ERP.times<=550, 1, 'last')];
 % % its fields are "value" and "ilimits"
 % toffsa  = round(ERP.xmin*fs);                    % in samples
@@ -206,66 +213,36 @@ end
 [worklate{1:nbin,1:nchan}] = deal(latency); % specified latency(ies) for getting measurements.
 
 if length(latency)==2
-        %latsamp = [find(ERP.times>=latency(1), 1, 'first') find(ERP.times<=latency(2), 1, 'last')];
         [xxx, latsamp, latdiffms] = closest(timex, latency);
-%         try
-                if latsamp(1)<=(1+sampeak) && round(latdiffms(1)*fs/1000)<(-2+sampeak) %JLC.20/08/13
-                        msgboxText =  sprintf(['The onset of your latency window cannot be more than 2 samples away from the real onset.\n\n'...
-                                'When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
-                                'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
-                                'You can solve this problem by choosing a shorter measurement window, like [%.1f %.1f] for instance.'],...                                
-                                 timex(latsamp(1)+sampeak), latency(2));
-                        %tittle = 'ERPLAB: geterpvalues()';
-                        %errorfound(msgboxText, tittle);
-                        %varargout = {[]};
-                        varargout{1} = msgboxText;
-                        varargout{2} = 'limit';
-                        return
-                end
-                if latsamp(2)>=(pnts-sampeak) && round(latdiffms(2)*fs/1000)>(2-sampeak) %JLC.20/08/13
-                        msgboxText =  sprintf(['The offset of your latency window cannot be more than 2 samples away from the real offset.\n\n'...
-                                'When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
-                                'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
-                                'You can solve this problem by choosing a shorter measurement window, like [%.1f %.1f] for instance.'],...
-                                latency(1), timex(latsamp(2)-sampeak));
-                        %tittle = 'ERPLAB: geterpvalues()';
-                        %errorfound(msgboxText, tittle);
-                        varargout{1} = msgboxText;
-                        varargout{2} = 'limit';
-                        %varargout = {[]};
-                        return
-                end
-                if latsamp(1)<=(1+sampeak) && round(latdiffms(1)*fs/1000)<0 %JLC.20/08/13
-                        latsamp(1) = 1;
-                        fprintf('\n%s\n', repmat('*',1,60));
-                        fprintf('WARNING: Lower latency limit %.1f ms was adjusted to %.1f ms \n', latency(1), mintime);
-                        fprintf('%s\n\n', repmat('*',1,60));
-                end
-                if latsamp(2)>=(pnts-sampeak) && round(latdiffms(2)*fs/1000)>0 %JLC.20/08/13
-                        latsamp(2) = pnts;
-                        fprintf('\n%s\n', repmat('*',1,60));
-                        fprintf('WARNING: Upper latency limit %.1f ms was adjusted to %.1f ms \n', latency(2), maxtime);
-                        fprintf('%s\n\n', repmat('*',1,60));
-                end
-%         catch
-%                 msgboxText =  'The offset of your latency window cannot be more than 2 samples away from the real offset...';
-%                 varargout{1} = msgboxText;
-%                 varargout{2} = 'limit';
-%                 return
-%         end
+        if round(latdiffms(1)*fs/1000)>2 %JLC.10/16/2013
+                msgboxText =  sprintf('The onset of your measurement window cannot be more than 2 samples earlier than the ERP window (%.1f ms)\n', timex(1));
+                varargout{1} = msgboxText;
+                varargout{2} = 'limit';
+                return
+        end
+        if round(latdiffms(2)*fs/1000)<-2 %JLC.10/16/2013
+                msgboxText =  sprintf('The offset of your measurement window cannot be more than 2 samples later than the ERP window (%.1f ms)\n', timex(end));
+                varargout{1} = msgboxText;
+                varargout{2} = 'limit';
+                return
+        end
+        if latsamp(1)==1 && round(latdiffms(1)*fs/1000)~=0 %JLC.10/16/2013
+                latsamp(1) = 1;
+                fprintf('\n%s\n', repmat('*',1,60));
+                fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', latency(1), mintime);
+                fprintf('%s\n\n', repmat('*',1,60));
+        end
+        if latsamp(2)==pnts && round(latdiffms(2)*fs/1000)~=0 %JLC.10/16/2013
+                latsamp(2) = pnts;
+                fprintf('\n%s\n', repmat('*',1,60));
+                fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', latency(2), maxtime);
+                fprintf('%s\n\n', repmat('*',1,60));
+        end
 elseif length(latency)==1
-        %latsamp = find(ERP.times>=latency(1), 1, 'first');
         [xxx, latsamp, latdiffms] = closest(timex, latency(1));
         
         if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (round(latdiffms(1)*fs/1000)<(-2+sampeak) || round(latdiffms(2)*fs/1000)>(2-sampeak)) %JLC.20/08/13
-                msgboxText =  sprintf(['The specified latency is more than 2 samples away from the ERP window.\n\n'...
-                        'When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
-                        'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
-                        'You can solve this problem by choosing a different measurement time, like %.1f for instance.'],...
-                        ((pnts/2)*1000/fs));
-                %tittle = 'ERPLAB: geterpvalues()';
-                %errorfound(msgboxText, tittle);
-                %varargout = {[]};
+                msgboxText =  sprintf('The specified latency is more than 2 samples away from the ERP window [%.1f %.1f] ms\n', timex(1), timex(end));
                 varargout{1} = msgboxText;
                 varargout{2} = 'limit';
                 return
@@ -366,16 +343,12 @@ try
                                         % get peak amplitude
                                         %
                                         %blv  = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
-                                        
                                         try
                                                 dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % no filtered
                                                 timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
                                         catch
-                                                extrastr = ['When you are measuring a local peak, extra points are needed at both the beginning and end of the window. '...
-                                                        'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
-                                                        'You can solve this problem by choosing a shorter measurement window.'];
-                                                error(sprintf('ERPLAB says: The requested measurement range (%g - %g +/- %g ms) exceeds the time range of the data (%.1f - %.1f ms).\n\n%s',...
-                                                        round(latency(1)), round(latency(2)), round(1000*sampeak/fs), mintime, maxtime), extrastr)
+                                                extrastr = msgboxText4peak;
+                                                error('Error:peakampbl', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+round(1000*sampeak/fs), maxtime-round(1000*sampeak/fs));
                                         end
                                         
                                         if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
@@ -405,12 +378,8 @@ try
                                                 dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % no filtered
                                                 timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
                                         catch
-                                                extrastr = ['When you are measuring a local peak, extra points are needed at both the beginning and end of the window.'...
-                                                        'Although the window you specified is within the epoch, the window plus these extra points exceeds the epoch length.\n'...
-                                                        'You can solve this problem by choosing a shorter measurement window.'];
-                                                
-                                                error(sprintf('ERPLAB says: The requested measurement range (%g - %g +/- %g ms) exceeds the time range of the data (%.1f - %.1f ms).\n\n%s',...
-                                                        round(latency(1)), round(latency(2)), round(1000*sampeak/fs), mintime, maxtime, extrastr));
+                                                extrastr = msgboxText4peak;
+                                                error('Error:peakampbl', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+round(1000*sampeak/fs), maxtime-round(1000*sampeak/fs));
                                         end
                                         if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                                                 localoptstr = 'abs';
@@ -426,13 +395,13 @@ try
                                         end
                                         
                                         VALUES(b,ch) = valx;
-                                elseif strcmpi(moption,'areat') || strcmpi(moption,'areap') || strcmpi(moption,'arean')
+                                elseif strcmpi(moption,'area') || strcmpi(moption,'areat') || strcmpi(moption,'areap') || strcmpi(moption,'arean')
                                         
                                         %
                                         % get area
                                         %
                                         switch moption
-                                                case 'areat'
+                                                case {'areat', 'area'}
                                                         aoption = 'total';
                                                 case 'areap'
                                                         aoption = 'positive';
@@ -557,7 +526,7 @@ try
                                         
                                         %
                                         % get root mean square value (RMS)
-                                        %                                      
+                                        %
                                         VALUES(b,ch) = sqrt(mean(dataux(latsamp(1):latsamp(2)).^2));
                                 elseif strcmpi(moption,'ninteg')
                                         

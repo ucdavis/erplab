@@ -495,7 +495,7 @@ else
         %
         nchansp = length(CHANSP{2});
         LABEL = {[]};
- %%       
+ %    
         for c=1:nchansp                
                 labeltemp = {[]};
                 labelsch  = {[]};
@@ -522,7 +522,7 @@ else
                 end
                 LABEL{c} = deflabel;
         end
-%%
+%
         
         % erase chan spec from expression
         expression = regexprep(expression, '[@]\w*', ''); %":" was replaced by "@"
@@ -597,8 +597,7 @@ else
         end
         if confirma
                 try
-                        newexp = regexprep(expression, '[n]*b[in]*(\d+)', 'bin(@$1)','ignorecase');
-                        
+                        newexp = regexprep(expression, '[n]*b[in]*(\d+)', 'bin(@$1)','ignorecase');                        
                         for p = 1:ntok
                                 newexp = regexprep(newexp, '@\d+', [num2str(realbinpos(p)) ':' num2str(p)],'ignorecase','once');
                         end

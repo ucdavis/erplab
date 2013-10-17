@@ -35,7 +35,7 @@ function erplab_figtoolbar(hsig, mtype)
 if nargin<2
         mtype= '2d';
 end
-
+tagx =  get(hsig, 'Tag');
 ht = findall(hsig,'Type','uitoolbar');
 
 % plot ERP waveforms Gui
@@ -43,14 +43,14 @@ icon = imread('plot2_icongui.png');
 hpt = uipushtool(ht,'CData',icon,...
         'TooltipString','Open "Plot ERP waveforms" GUI',...
         'Separator','on',...
-        'ClickedCallback','[ERP, erpcom] = pop_ploterps(ERP);');
+        'ClickedCallback','[ERP, erpcom] = pop_ploterps(ERP); ERP = erphistory(ERP, [], erpcom, 0);');
 
 % ERP scalp maps Gui
 icon = imread('scalp_icongui.png');
 hpt = uipushtool(ht,'CData',icon,...
         'TooltipString','Open "Plot ERP Scalp Maps" GUI',...
         'Separator','on',...
-        'ClickedCallback','[ERP, erpcom] = pop_scalplot(ERP);');
+        'ClickedCallback','[ERP, erpcom] = pop_scalplot(ERP); ERP = erphistory(ERP, [], erpcom, 0);');
 
 % Close all ERPLAB figures
 icon = imread('close_icongui.png');
@@ -62,7 +62,10 @@ hpt = uipushtool(ht,'CData',icon,...
 icon = imread('pdf_icongui.png');
 hpt = uipushtool(ht,'CData',icon,...
         'TooltipString','Export ERPLAB figures to PDF and others',...
-        'ClickedCallback','[ERP, erpcom] = pop_exporterplabfigure(ERP);');
+        'ClickedCallback',['[ERP, erpcom] = pop_exporterplabfigure(ERP, ''Tag'',{''' tagx '''},''SaveMode'', ''saveascurrent''); ERP = erphistory(ERP, [], erpcom, 0);']);
+
+% pop_exporterplabfigure(ERP, 'Tag', figtag, 'SaveMode', saveasmode, 'Filepath', filepath, 'Format', fileformat, 'Resolution', resolution, 'History', 'gui');
+                
 
 % bring EEGLAB GUI to the front
 icon = imread('eeglab_icongui.png');
@@ -74,13 +77,13 @@ hpt = uipushtool(ht,'CData',icon,...
 icon = imread('ruler_icongui.png');
 hpt = uipushtool(ht,'CData',icon,...
         'TooltipString','Open "ERP Measurement Tool" GUI ',...
-        'ClickedCallback','[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP);');
+        'ClickedCallback','[ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP); ERP = erphistory(ERP, [], erpcom, 0);');
 
 % Open ERP Viewer
 icon = imread('viewer_icongui.png');
 hpt = uipushtool(ht,'CData',icon,...
         'TooltipString','Open "ERP Viewer" GUI ',...
-        'ClickedCallback','[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP,[],[],[],''Erpsets'', [],''Viewer'', ''on'');');
+        'ClickedCallback','[ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP,[],[],[],''Erpsets'', [],''Viewer'', ''on'');');
 
 % hide unnecessary buttons
 a = findall(hsig);

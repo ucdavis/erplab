@@ -72,7 +72,6 @@ if ~iscell(figtag)
         end
         figtag = cellstr(figtag);
 end
-
 nft = length(figtag);
 
 for k=1:nft
@@ -80,7 +79,9 @@ for k=1:nft
         % find_erplabfigure   = findobj('Tag','ERP_figure');
         % find_SCALP = findobj('Tag','Scalp_figure');
         % find_erplabfigure = findobj('Tag','Plotting_ERP');
-        
+        if strcmpi(saveasmode, 'saveascurrent')
+                find_erplabfigure = find_erplabfigure(1);                
+        end        
         if ~isempty(find_erplabfigure)
                 nferpfig = length(find_erplabfigure);
                 msgboxText =  'erplabfig2pdf found %g figure(s) having a "%s" tag\n';
@@ -91,7 +92,7 @@ for k=1:nft
                         namefig = char(namefig{:});
                         filterIndex = 0;
                         
-                        if strcmpi(saveasmode, 'saveas')
+                        if strcmpi(saveasmode, 'saveas') || strcmpi(saveasmode, 'saveascurrent') 
                                 [filename, pathname, filterIndex] = uiputfile({'*.pdf';'*.eps';'*.jpg';'*.tiff'},...
                                         'Save Current Figure as',...
                                         ['Figure_' num2str(find_erplabfigure(f)) '_' namefig]);

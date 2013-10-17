@@ -454,31 +454,31 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
         late       = str2num(latestr);
         nlate      = length(late);
         
-        if nlate==2
-                if late(1)<xmin*1000
-                        msgboxText =  'For latency range, lower time limit must not be lower than pre-stimulus onset.';
-                        title = 'ERPLAB: Bin-based epoch inputs';
-                        errorfound(sprintf(msgboxText), title);
+        if nlate==2                
+                if late(1)<xmin*1000 && abs(late(1)-(xmin*1000))>2
+                        msgboxText =  'The onset of your measurement window cannot be more than 2 earlier than the ERP window (%.1f ms)\n';
+                        title = 'ERPLAB: measurement window input';
+                        errorfound(sprintf(msgboxText, xmin*1000), title);
                         return
                 end
-                if late(2)>xmax*1000
-                        msgboxText =  'For latency range, upper time limit must not be greater than the ERP window.';
-                        title = 'ERPLAB: Bin-based epoch inputs';
-                        errorfound(sprintf(msgboxText), title);
+                if late(2)>xmax*1000 && abs(late(2)-(xmax*1000))>2
+                        msgboxText =  'The offset of your measurement window cannot be more than 2 samples later than the ERP window (%.1f ms)\n';
+                        title = 'ERPLAB: measurement window input';
+                        errorfound(sprintf(msgboxText,xmax*1000), title);
                         return
                 end
                 if late(1)>=late(2)
-                        msgboxText =  ['For latency range, lower time limit must be on the left.\n'...
+                        msgboxText =  ['For the measurement window, lower time limit must be on the left.\n'...
                                 'Additionally, lower latency limit must be at least 1/fs seconds\n'...
                                 'lesser than the higher one.'];
-                        title = 'ERPLAB: Bin-based epoch inputs';
+                        title = 'ERPLAB: measurement window input';
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
         elseif nlate==1
                 if late<xmin*1000 || late>xmax*1000
-                        msgboxText =  'Latency value must not be lower than pre-stimulus onset nor greater than the ERP window.';
-                        title = 'ERPLAB: Bin-based epoch inputs';
+                        msgboxText =  'For measuring, latency value cannot be lower than pre-stimulus onset nor greater than the ERP window.';
+                        title = 'ERPLAB: measurement window input';
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
@@ -1625,12 +1625,12 @@ switch currentm
         case 1 % 'Instantaneous amplitude'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','at latency (just one)');
+                set(handles.text_tip_inputlat, 'String','(use one latency)');
                 set(handles.popupmenu_areatype,'Enable','off')
         case {2,6} % mean, area, integral between fixed latencies
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 if currentm==6
                         set(handles.popupmenu_areatype,'Enable','on')
                 else
@@ -1639,19 +1639,19 @@ switch currentm
         case {3,4} % 'Peak amplitude', 'Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 set(handles.popupmenu_areatype,'Enable','off')
                 set(handles.popupmenu_fracreplacement, 'String', {'fractional absolute peak','"not a number" (NaN)'});
         case 5 % 'Fractional Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 set(handles.text_fraca,'String', 'Fractional Peak')
                 set(handles.popupmenu_areatype,'Enable','off')
         case {7} % area, integral automatic limits
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','seed latency (just one)');
+                set(handles.text_tip_inputlat, 'String','(use one "seed" latency)');
                 if currentm==7
                         set(handles.popupmenu_areatype,'Enable','on')
                 else
@@ -1660,14 +1660,14 @@ switch currentm
         case 8 % 'Fractional Area latency'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 set(handles.text_fraca,'String', 'Fractional Area')
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_fracreplacement, 'String', {'show error message','"not a number" (NaN)'});
         otherwise % 'test'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
 end
 
 %--------------------------------------------------------------------------
@@ -1698,8 +1698,8 @@ function uipanel2_CreateFcn(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 function pushbutton_cancel_CreateFcn(hObject, eventdata, handles)
 
-%--------------------------------------------------------------------------
-function uipanel_inputlat_CreateFcn(hObject, eventdata, handles)
+% %--------------------------------------------------------------------------
+% function text_tip_inputlat_CreateFcn(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function uipanel4_CreateFcn(hObject, eventdata, handles)
@@ -1956,11 +1956,11 @@ switch indxmea
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
                 set(handles.popupmenu_areatype,'Enable','off')
-                set(handles.uipanel_inputlat, 'Title','at latency (just one)');
+                set(handles.text_tip_inputlat, 'String','(use one latency)');
         case {2,6} % mean, area, integral between fixed latencies
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 if indxmea==6
                         set(handles.popupmenu_areatype,'Enable','on')
                         set(handles.popupmenu_areatype,'Value',areatype)
@@ -1970,7 +1970,7 @@ switch indxmea
         case {3,4} % 'Peak amplitude', 'Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 set(handles.popupmenu_pol_amp,'value',2-polpeak)
                 %set(handles.popupmenu_samp_amp,'value',sampeak+1);
                 set(handles.popupmenu_locpeakreplacement,'value',2-locpeakrep);
@@ -1980,7 +1980,7 @@ switch indxmea
                 menufareaon(hObject, eventdata, handles)
                 fracpos = round(frac*100)+1;
                 set(handles.popupmenu_fraca,'Value', fracpos)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 set(handles.text_fraca,'String', 'Fractional Peak')
                 set(handles.popupmenu_pol_amp,'value',2-polpeak)
                 %set(handles.popupmenu_samp_amp,'value',sampeak+1);
@@ -1990,7 +1990,7 @@ switch indxmea
         case 7     % area and integral with auto limits
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','seed latency (just one)');
+                set(handles.text_tip_inputlat, 'String','(use one "seed" latency)');
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_areatype,'Value',areatype)
                 
@@ -1999,7 +1999,7 @@ switch indxmea
                 menufareaon(hObject, eventdata, handles)
                 fracpos = round(frac*100)+1;
                 set(handles.popupmenu_fraca,'Value', fracpos)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
                 set(handles.text_fraca,'String', 'Fractional Area')
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_areatype,'Value',areatype)
@@ -2007,7 +2007,7 @@ switch indxmea
         otherwise
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.uipanel_inputlat, 'Title','between latencies (2)');
+                set(handles.text_tip_inputlat, 'String','(use two latencies)');
 end
 
 set(handles.edit_latency, 'String',  sprintf('%.2f  ', unique(latency)))
@@ -2347,6 +2347,9 @@ if get(hObject, 'Value')
 end
 
 %--------------------------------------------------------------------------
+function uipanel_inputlat_CreateFcn(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         % The GUI is still in UIWAIT, us UIRESUME
@@ -2355,3 +2358,6 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
+

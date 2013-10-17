@@ -111,7 +111,7 @@ uiwait(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function varargout = ploterpGUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
-try
+% try
         plotset = evalin('base', 'plotset');
         ispdf = handles.ispdf;
         if ispdf
@@ -131,7 +131,7 @@ try
                 % The figure can be deleted now
                 delete(handles.gui_chassis);
                 %ERP = evalin('base', 'ERP');
-                pop_scalplot(ERP);
+                ERP = pop_scalplot(ERP);               
                 return
         end
         ismini = handles.ismini;
@@ -145,17 +145,17 @@ try
         % The figure can be deleted now
         delete(handles.gui_chassis);
         pause(0.1)
-catch
-        % The figure can be deleted now
-        varargout{1} = [];
-        varargout{2} = [];
-        %delete(get(0,'CurrentFigure'));
-        perpgui    = findobj('Tag', 'ploterp_fig');
-        if ~isempty(perpgui)
-                delete(perpgui);
-        end
-        pause(0.01)
-end
+% catch
+%         % The figure can be deleted now
+%         varargout{1} = [];
+%         varargout{2} = [];
+%         %delete(get(0,'CurrentFigure'));
+%         perpgui    = findobj('Tag', 'ploterp_fig');
+%         if ~isempty(perpgui)
+%                 delete(perpgui);
+%         end
+%         pause(0.01)
+% end
 
 %--------------------------------------------------------------------------
 function edit_bins_Callback(hObject, eventdata, handles)
@@ -674,17 +674,18 @@ else
         %plotset.pscalp.binleg   = 1;
         %plotset.pscalp.showelec = 1;
         %plotset.pscalp.ismaxim  = 0;
-        plotset.pscalp.mtype = '2D'; % map type  0=2D; 1=3D
+        plotset.pscalp.mtype   = '2D'; % map type  0=2D; 1=3D
         plotset.pscalp.mapview = 0; % numeric
         
         %       plegend       = plotset.pscalp.plegend; % numeric
-        plotset.pscalp.plegend.binnum    = 1;
-        plotset.pscalp.plegend.bindesc   = 0;
-        plotset.pscalp.plegend.type      = 1;
-        plotset.pscalp.plegend.latency   = 1;
-        plotset.pscalp.plegend.electrodes= 1;
-        plotset.pscalp.plegend.colorbar  = 1;
-        plotset.pscalp.plegend.maximize  = 0;
+        plotset.pscalp.plegend.binnum     = 1;
+        plotset.pscalp.plegend.bindesc    = 0;
+        plotset.pscalp.plegend.type       = 1;
+        plotset.pscalp.plegend.latency    = 1;
+        plotset.pscalp.plegend.electrodes = 1;
+        plotset.pscalp.plegend.colorbar   = 1;
+        plotset.pscalp.plegend.maximize   = 0;
+        plotset.pscalp.plegend.colormap   = 1;
         
         assignin('base','plotset', plotset);
         handles.scalp = 1;
@@ -714,7 +715,7 @@ yautoticks = get(handles.checkbox_autoyticks, 'Value');
 %
 % X scale
 %
-timew     = str2num(get(handles.edit_time_range, 'String')); % XL
+timew = str2num(get(handles.edit_time_range, 'String')); % XL
 
 if xautoticks
         timeticks = str2num(char(default_time_ticks(ERP, timew)));
@@ -1130,8 +1131,8 @@ else
         linewidth      = 1;
         isiy           = 0;
         fschan         = 10;
-        fslege         = 9;
-        fsaxtick       = 8;
+        fslege         = 12;
+        fsaxtick       = 10;
         %meap          = 1;
         pstyle         = 3; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
         errorstd       = 0; % pointer for std factor

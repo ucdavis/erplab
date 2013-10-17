@@ -251,6 +251,7 @@ if option==1  % Create new ERPset (independent transformations)
         % New empty ERP
         ERPout= buildERPstruct([]);
         ERPout.erpname = ERP.erpname;
+        ERPout.history = ERPin.history;
 else  % Modify existing ERPset (recursive updating)
         ERPin = ERP;
         ERPout= ERPin;

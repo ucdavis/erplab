@@ -211,13 +211,21 @@ for j=1:nfile
                                 sumERP2(:,:,bb) = sumERP2(:,:,bb)  + (ERPT.bindata(:,:,bb).^2).*countbinOK(bb); % cumulative weighted sum of squares: Sum(wi*xi^2)
                         end
                 end
-        else % classic                
+        else % classic
                 if ~all(countbinOK)
                         inullb = find(~countbinOK);
-                        callwarning;
-                        fprintf(' ERPset # %d "%s" contains null bin(s) (bin # = %s).\n', j, ERPT.erpname, num2str(inullb));
-                        fprintf(' Nevertheless, ERP #%g is being included in the grand avarage.\n', j);
-                        fprintf(' Use the option "Exclude any null bin from non-weighted averaging" to avoid this behavior.\n\n');
+                        fprintf('\n');
+                        %callwarning;
+                        %fprintf(' ERPset # %d "%s" contains null bin(s) (bin # = %s).\n', j, ERPT.erpname, num2str(inullb));
+                        %fprintf(' Nevertheless, ERP #%g is being included in the grand avarage.\n', j);
+                        %fprintf(' Use the option "Exclude any null bin from non-weighted averaging" to avoid this behavior.\n\n');
+                        
+                        msgnullbin = [' ERPset #%d "%s" contains one or more null bin(s) (bin #%s).\n'...
+                                'These are bins in which the number of trials was zero or the data were flatlined for some reason, which may distort the resulting grand average.\n'...
+                                'Nevertheless, this ERPset is being included in the grand avarage.\n'...
+                                'If you want to excluded null bins, use the option "Exclude any null bin from non-weighted averaging."\n\n'];
+                        msgnullbin = sprintf(msgnullbin, j, ERPT.erpname, num2str(inullb));
+                        callwarning(msgnullbin)
                 end
                 sumERP    = sumERP + ERPT.bindata;                % cumulative sum: Sum(xi)
                 if stderror

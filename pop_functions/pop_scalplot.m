@@ -19,13 +19,18 @@
 %                                     -'post'
 %                                     -'all'
 %         'Value'             - Value to plot
-%                                     -'insta' - Instantaneous amplitude
-%                                     -'mean'- Mean amplitude between two fixed latencies
-%                                      (requires two latencies)
-%                                     -'area'- Area between two fixed latencies (requires
-%                                      two latencies)
-%                                     -'instalapla'- Instantaneous amplitude Laplacian
-%                                     -'meanlapla'- Mean amplitude Laplacian
+%                                     -'insta'           - Instantaneous amplitude (needs 1 latency value)
+%                                     -'mean'            - Mean amplitude between two fixed latencies
+%                                     -'area' or 'areat' - Total area between two fixed latencies (positive and negative areas.
+%                                                          (negative areas are took as positive)
+%                                     -'areap'           - Area under the positive values of the curve, between two latencies.
+%                                                          (negatives' ignored)
+%                                     -'arean'           - Area under the negative values of the curve, between two latencies.
+%                                                          (positives' ignored)
+%                                     -'ninteg'          - Numerical integration of the curve, between two latencies.
+%                                                          (negative areas are substracted from positives').
+%                                     -'instalapla'      - Instantaneous amplitude Laplacian (needs 1 latency value)
+%                                     -'meanlapla'       - Mean amplitude Laplacian between two fixed latencies
 %         'Maptype'           - '2D' or '3D'
 %         'Maplimit'          - 'maxmin', 'absmax', or [custom_min custom_max]- Enter own numbers for min and max
 %         'Mapview'           - direction of nose or camera viewpoint in degrees [azimuth elevation]. default [143 18]
@@ -164,7 +169,7 @@ if nargin==1
         %
         % Call GUI
         %
-        plotset = scalplotGUI(ERP, ERP.chanlocs); %GUI
+        [plotset, ERP] = scalplotGUI(ERP, ERP.chanlocs); %GUI
         
         if isempty(plotset.pscalp)
                 disp('User selected Cancel')
@@ -224,46 +229,71 @@ if nargin==1
         clrmap       = plegend.colormap;       % show color bar
         
         if strcmpi(mtype, '3d')
-                if isempty(ERP.splinefile)
-                        if isempty(splineinfo.path)
-                                splinefile = fullfile(cd(), 'temp_splinefile');%default temp spline
-                        else
-                                splinefile = splineinfo.path;
-                        end
-                else
-                        splinefile = ERP.splinefile;
-                end
-                if ~isempty(splineinfo)
-                        if splineinfo.new==1
+                %                 if isempty(ERP.splinefile)
+                %                         if isempty(splineinfo.path)
+                %                                 splinefile = fullfile(cd(), 'temp_splinefile');%default temp spline
+                %                         else
+                %                                 splinefile = splineinfo.path;
+                %                         end
+                %                 else
+                %                         splinefile = ERP.splinefile;
+                %                 end
+                if isempty(ERP.splinefile) && isempty(splineinfo.path)
+                        %disp('A')
+                        msgboxText =  ['Current ERPset is not linked to any spline file.\n'...
+                                'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
+                        title_msg  = 'ERPLAB: pop_scalplot() missing info:';
+                        errorfound(sprintf(msgboxText), title_msg);
+                        return     
+                elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
+                        %if splineinfo.new==1
                                 headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                                splineinfo.new = 0;
-                                plotset.pscalp.splineinfo = splineinfo;
-                        end
-                        if splineinfo.save
-                                if isempty(ERP.splinefile)
-                                        ERP.splinefile = splinefile;
-                                        ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
-                                else
-                                        question = ['This ERPset already has spline file info.\n'...
-                                                'Would you like to replace it?'];
-                                        title_msg   = 'ERPLAB: spline file';
-                                        button   = askquest(sprintf(question), title_msg);
-                                        
-                                        if ~strcmpi(button,'yes')
-                                                disp('User selected Cancel')
-                                                return
-                                        else
-                                                ERP.splinefile = splinefile;
-                                                ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
-                                        end
-                                end
-                                splineinfo.save = 0;
-                                plotset.pscalp.splineinfo = splineinfo;
-                        end
+                        %        splineinfo.new = 0;
+                                %plotset.pscalp.splineinfo = splineinfo;
+                        %end
+                        %if splineinfo.save
+                        %        ERP.splinefile = splineinfo.path;
+                        %        ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');        
+                        %        erplab redraw
+                        %        splineinfo.save = 0;
+                        %        %plotset.pscalp.splineinfo = splineinfo;
+                        %end
+                        splinefile = splineinfo.path;                       
+                        %disp('A2')                        
+                elseif ~isempty(ERP.splinefile) && ~isempty(splineinfo.path)
+                        headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+                        splinefile = splineinfo.path;                        
+                        %disp('B')
+                        
+%                         if splineinfo.new==1
+%                                 headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+%                                 splineinfo.new = 0;
+%                                 %plotset.pscalp.splineinfo = splineinfo;
+%                         end
+%                         if splineinfo.save
+%                                 question = ['This ERPset already has spline file info.\n'...
+%                                         'Would you like to replace it?'];
+%                                 title_msg   = 'ERPLAB: spline file';
+%                                 button   = askquest(sprintf(question), title_msg);
+%                                 
+%                                 if ~strcmpi(button,'yes')
+%                                         disp('User selected Cancel')
+%                                         return
+%                                 else
+%                                         ERP.splinefile = splineinfo.path;
+%                                         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
+%                                         erplab redraw
+%                                 end
+%                         end
+%                         splinefile = splineinfo.path;
+                else                        
+                        %disp('C')                       
+                        splinefile = ERP.splinefile;
                 end
         else
                 %splinefile = '';
-                splinefile = ERP.splinefile;
+                splinefile = ERP.splinefile;               
+                %disp('D')               
         end
         
         %
@@ -564,7 +594,7 @@ else
 end
 if ismoviex==0
         hsig = figure('Position',pos1, 'Name',['<< ' fnamet ' >>  Plot ERP map by Bins x latency'],...
-                'NumberTitle','off', 'Tag','Scalp_figure');erplab_figtoolbar(hsig, mtype);
+                'NumberTitle','on', 'Tag','Scalp_figure');erplab_figtoolbar(hsig, mtype);
         
         if ~isempty(posfig)
                 set(hsig, 'Position', posfig)
@@ -671,9 +701,9 @@ while iadj<=nadj && continueplot
                                         data2plot = mean(datap(:,latArray(ilat,1):latArray(ilat,2)), 2);
                                 case 'rms'
                                         data2plot = sqrt(mean(datap(:,latArray(ilat,1):latArray(ilat,2)).^2, 2));
-                                case 'area'
+                                case {'area','areat','areap','arean','ninteg'}
                                         data2plot = geterpvalues(ERP, [latArray(ilat,1) latArray(ilat,2)],...
-                                                binArray(ibin), 1:ERP.nchan, 'areat', baseline, 1)';
+                                                binArray(ibin), 1:ERP.nchan, measurestr, baseline, 1)';                                       
                                 case 'instalapla'
                                         data2plot = del2map( datap(:,latArray(ilat)), ERP.chanlocs);
                                 case 'meanlapla'
