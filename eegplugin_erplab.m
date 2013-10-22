@@ -76,9 +76,13 @@ end
 if exist('memoryerp.erpm','file')~=2
         mshock = 0;
         try
-                %plot(javier) % makes an error
-                save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','fontsizeGUI','fontunitsGUI','mshock'); % saves erplab version
+                % saves memory file
+                %
+                % IMPORTANT: If this file (saved variables inside memoryerp.erpm) is modified then also must be modified the same line at erplabamnesia.m
+                %
+                save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
         catch
+                % saves memory variable at workspace
                 msgboxText = ['\nERPLAB could not find a file for storing its GUI memory or \n'...
                         'does not have permission for writting on it.\n\n'...
                         'Therefore, ERPLAB''s memory will be stored at Matlab''s workspace and will last 1 session.\n\n'];
@@ -89,17 +93,13 @@ if exist('memoryerp.erpm','file')~=2
                 bottomline = 'If you think this is a bug, please report the error to erplab@erpinfo.org and not to the EEGLAB developers.';
                 disp(bottomline)
                 fprintf('%s\n', repmat('*',1,50));
-                vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,'fontunitsGUI',fontunitsGUI,'mshock',mshock);
-                assignin('base','vmemoryerp',vmemoryerp);
                 
-                %                 memoryerp.erplabrel    = erplabrel;
-                %                 memoryerp.erplabver    = erplabver;
-                %                 memoryerp.ColorB       = ColorB;
-                %                 memoryerp.ColorF       = ColorF;
-                %                 memoryerp.fontsizeGUI  = fontsizeGUI;
-                %                 memoryerp.fontunitsGUI = fontunitsGUI;
-                %                 memoryerp.mshock       = mshock;
-                %save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','fontsizeGUI','fontunitsGUI','mshock'); % saves erplab version
+                %
+                % IMPORTANT: If this strucure (vmemoryerp) is modified then also must be modified the same line at erplabamnesia.m
+                %
+                vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,...
+                        'fontunitsGUI',fontunitsGUI,'mshock',mshock, 'errorColorF', errorColorF, 'errorColorB', errorColorB);
+                assignin('base','vmemoryerp',vmemoryerp);
         end
 end
 
@@ -261,6 +261,7 @@ comCHOP2     = ['[ERP, ERPCOM] = pop_erpchanoperator(ERP);' '[ERP, ALLERPCOM] = 
 comPLOT      = ['[ERP, ERPCOM] = pop_ploterps(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSCALP     = ['[ERP, ERPCOM] = pop_scalplot(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCHLOC     = ['[ERP, ERPCOM] = pop_erpchanedit(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comCHLOCEEGLAB = ['[ERP ERPCOM] = pop_getChanInfoFromEeglab(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSAVE      = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''save'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSAVEas    = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''saveas'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comDUPLI     = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''erplab'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -294,7 +295,7 @@ comEXPPDF    = ['[ERP, ERPCOM] = pop_exporterplabfigure(ERP);' '[ERP, ALLERPCOM]
 comhelpman   = 'pop_erphelp;' ;
 comhelptut   = 'pop_erphelptut;' ;
 comhelpsrp   = 'pop_erphelpscript;' ;
-comhelpvideo = 'web http://www.youtube.com/user/erplabtoolbox -browser';
+comhelpvideo = 'web http://erpinfo.org/erplab/erplab-documentation/video-documentation -browser';
 
 %
 % Filter ERP callbacks
@@ -401,7 +402,8 @@ mERPLOT = uimenu( submenu,'Label','Plot ERP','tag','ERPlot','separator','on','us
 uimenu( mERPLOT,'Label','Plot ERP waveforms ','CallBack', comPLOT,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP scalp maps ','CallBack', comSCALP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Print plotted figure(s) to a file','CallBack', comEXPPDF,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-uimenu( mERPLOT,'Label','Load ERP channel location info','CallBack', comCHLOC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( mERPLOT,'Label','Load ERP channel location file','CallBack', comCHLOC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( mERPLOT,'Label','Load ERP channel location info using EEGLAB','CallBack', comCHLOCEEGLAB,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Clear ERP channel location info ','CallBack', comCERPch,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Close all ERPLAB figures ','CallBack','clerpf','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 
@@ -463,11 +465,8 @@ uimenu( mSETT,'Label','Edit ERPLAB''s completion statement','CallBack','msg2endG
 uimenu( mSETT,'Label','Set e-mail account'   ,'CallBack', comSetemail,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','ERPLAB Background Color ','CallBack',comBCOL,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','ERPLAB Foreground Color ','CallBack', comFCOL,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-
 uimenu( mSETT,'Label','Error window Background Color ','CallBack',comBerrCOL,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Error window Foreground Color ','CallBack', comFerrCOL,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-
-
 uimenu( mSETT,'Label','Reset ERPLAB''s working memory','CallBack','erplabamnesia(1)','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Backup this ERPLAB version','CallBack','backuperplab','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Set Backup location','CallBack','setbackuploc','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
