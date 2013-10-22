@@ -233,6 +233,7 @@ else
                 fid_list = fopen( filelist );
                 formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
                 lista    = formcell{:};
+                lista    = strtrim(lista); % this fixes the bag described by Darren Tanner and Katherine Stavropoulos
                 nfile    = length(lista);
                 fclose(fid_list);
         else

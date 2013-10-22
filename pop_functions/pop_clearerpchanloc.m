@@ -66,20 +66,12 @@ if ~iserpstruct(ERP)
         errorfound(msgboxText, title);
         return
 end
-if nargin==1
-        question = 'Are you sure you want to delete the current ERPset''s channel location info?.\n';
-        title    = 'ERPLAB: pop_clearerpchanloc() ';
-        button   = askquest(sprintf(question), title);
-        
-        if ~strcmpi(button,'yes')
-                disp('User selected Cancel')
-                return
-        end
+if nargin==1        
         
         %
         % Somersault
         %
-        [ERP, erpcom] = pop_clearerpchanloc(ERP, 'Saveas', 'on', 'History', 'gui');
+        [ERP, erpcom] = pop_clearerpchanloc(ERP, 'Saveas', 'on', 'Warning', 'on', 'History', 'gui');
         return
 end
 
@@ -125,13 +117,23 @@ if ((isfield(ERP.chanlocs, 'theta') && isempty([ERP.chanlocs.theta])) || ~isfiel
                 disp('User selected Cancel')
                 return
         end
+else
+        if warnop
+                question = 'Are you sure you want to delete the current ERPset''s channel location info?.\n';
+                title    = 'ERPLAB: pop_clearerpchanloc() ';
+                button   = askquest(sprintf(question), title);
+                
+                if ~strcmpi(button,'yes')
+                        disp('User selected Cancel')
+                        return
+                end
+        end
 end
 
 %
 % Store original chan info
 %
-chanlocsaux = ERP.chanlocs; %!!!
-
+ERPaux = ERP;
 if isfield(ERP.chanlocs,'labels')
         labels = {ERP.chanlocs.labels};
         ERP.chanlocs = [];

@@ -57,8 +57,6 @@ handles.indxlistb  = [];
 handles.listch     = '';
 handles.indxlistch = [];
 handles.owfp       = 0;  % over write file permission. 1:allowed; 0:do not overwrite w/o asking.
-handles.binmem     = [];
-handles.chanmem    = [];
 
 try
         ALLERP = varargin{1};
@@ -85,34 +83,34 @@ try
         handles.def = def;
 catch
         
-def = {1, 1, '', 0, 1, 1, 'instabl', 1, 3, 'pre', 0, 1, 5, 0, 0.5, NaN, 0, 1, '', 0, 1};
+        def = {1, 1, '', 0, 1, 1, 'instabl', 1, 3, 'pre', 0, 1, 5, 0, 0.5, NaN, 0, 1, '', 0, 1};
         
-%         def =  
-%         optioni    = def{1}; %1 means from hard drive, 0 means from erpsets menu; 2 means current erpset (at erpset menu)
-%         erpset     = def{2}; % indices of erpset or filename of list of erpsets
-%         fname      = def{3};
-%         latency    = def{4};
-%         binArray   = def{5};
-%         chanArray  = def{6};
-%         op         = def{7}; % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
-%         coi        = def{8};
-%         dig        = def{9};
-%         blc        = def{10};
-%         binlabop   = def{11}; % 0: bin# as bin label for table, 1 bin label
-%         polpeak    = def{12}; % local peak polarity
-%         sampeak    = def{13}; % number of samples (one-side) for local peak detection criteria
-%         locpeakrep = def{14}; % 1 abs peak , 0 Nan
-%         frac       = def{15};
-%         fracmearep = def{16}; % def{19}; NaN
-%         send2ws    = def{17}; % 1 send to ws, 0 dont do
-%         foutput    = def{18}; % 1 = 1 measurement per line; 0 = 1 erpset per line
-%         mlabel     = def{19};
-%         inclate    = def{20};
-%         intfactor  = def{21};
-%         
-%         if isempty(sampeak)
-%                 sampeak = 3;
-%         end
+        %         def =
+        %         optioni    = def{1}; %1 means from hard drive, 0 means from erpsets menu; 2 means current erpset (at erpset menu)
+        %         erpset     = def{2}; % indices of erpset or filename of list of erpsets
+        %         fname      = def{3};
+        %         latency    = def{4};
+        %         binArray   = def{5};
+        %         chanArray  = def{6};
+        %         op         = def{7}; % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
+        %         coi        = def{8};
+        %         dig        = def{9};
+        %         blc        = def{10};
+        %         binlabop   = def{11}; % 0: bin# as bin label for table, 1 bin label
+        %         polpeak    = def{12}; % local peak polarity
+        %         sampeak    = def{13}; % number of samples (one-side) for local peak detection criteria
+        %         locpeakrep = def{14}; % 1 abs peak , 0 Nan
+        %         frac       = def{15};
+        %         fracmearep = def{16}; % def{19}; NaN
+        %         send2ws    = def{17}; % 1 send to ws, 0 dont do
+        %         foutput    = def{18}; % 1 = 1 measurement per line; 0 = 1 erpset per line
+        %         mlabel     = def{19};
+        %         inclate    = def{20};
+        %         intfactor  = def{21};
+        %
+        %         if isempty(sampeak)
+        %                 sampeak = 3;
+        %         end
         handles.def = def;
 end
 try
@@ -121,10 +119,12 @@ catch
         cerpi = 0;
 end
 
-handles.ALLERP = ALLERP;
-handles.b2filter = 0;
-handles.cerpi = cerpi;
-handles.frac  = [];
+handles.binmem    = def{5};
+handles.chanmem   = def{6};
+handles.ALLERP    = ALLERP;
+handles.b2filter  = 0;
+handles.cerpi     = cerpi;
+handles.frac      = [];
 handles.intfactor = [];
 
 %
@@ -312,6 +312,7 @@ listch       = handles.listch;
 xmin  = handles.xmin;
 xmax  = handles.xmax;
 fname = strtrim(get(handles.edit_fname, 'String'));
+srate = handles.srate;
 
 if get(handles.radiobutton_erpset, 'Value')
         erpset   = str2num(char(get(handles.edit_erpset, 'String')));
@@ -397,7 +398,6 @@ else
         foption = 1; % from list
 end
 
-
 %
 % Viewer
 %
@@ -448,22 +448,22 @@ else
                 end
         end
 end
-if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') && ~isempty(latestr) && ~strcmp(binArraystr, '') && ~isempty(binArraystr)        
+if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') && ~isempty(latestr) && ~strcmp(binArraystr, '') && ~isempty(binArraystr)
         binArray   = str2num(binArraystr);
         chanArray  = str2num(chanArraystr);
         late       = str2num(latestr);
         nlate      = length(late);
         
-        if nlate==2                
-                if late(1)<xmin*1000 && abs(late(1)-(xmin*1000))>2
-                        msgboxText =  'The onset of your measurement window cannot be more than 2 earlier than the ERP window (%.1f ms)\n';
-                        title = 'ERPLAB: measurement window input';
+        if nlate==2
+                if late(1)<xmin*1000 && ms2sample(abs(late(1)-xmin*1000), srate)>2
+                        msgboxText =  'The onset of your measurement window cannot be more than 2 samples earlier than the ERP window (%.1f ms)\n';
+                        title = 'ERPLAB: measurement window';
                         errorfound(sprintf(msgboxText, xmin*1000), title);
                         return
                 end
-                if late(2)>xmax*1000 && abs(late(2)-(xmax*1000))>2
+                if late(2)>xmax*1000 && ms2sample(abs(late(2)-xmax*1000), srate)>2
                         msgboxText =  'The offset of your measurement window cannot be more than 2 samples later than the ERP window (%.1f ms)\n';
-                        title = 'ERPLAB: measurement window input';
+                        title = 'ERPLAB: measurement window';
                         errorfound(sprintf(msgboxText,xmax*1000), title);
                         return
                 end
@@ -471,14 +471,14 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         msgboxText =  ['For the measurement window, lower time limit must be on the left.\n'...
                                 'Additionally, lower latency limit must be at least 1/fs seconds\n'...
                                 'lesser than the higher one.'];
-                        title = 'ERPLAB: measurement window input';
+                        title = 'ERPLAB: measurement window';
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
         elseif nlate==1
                 if late<xmin*1000 || late>xmax*1000
                         msgboxText =  'For measuring, latency value cannot be lower than pre-stimulus onset nor greater than the ERP window.';
-                        title = 'ERPLAB: measurement window input';
+                        title = 'ERPLAB: measurement window';
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
@@ -493,11 +493,18 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
         measure_option = get(handles.popupmenu_measurement, 'Value');
         areatype       = get(handles.popupmenu_areatype,'Value');  % 1=total ; 2=pos; 3=neg
         
+        msgboxText4peak = ['The requested measurement window is invalid given the number of points specified for finding a local peak '...
+                'and the epoch length of the ERP waveform.\n\n You have specified a local peak over ±%g points, which means that '...
+                'there must be %g sample points between the onset of your measurement window and the onset of the waveform, '...
+                'and/or %g sample points between the end of your measurement window and the end of the waveform.\n\n'...
+                'Because the waveform starts at %.1f ms and ends at %.1f ms, your measurement window cannot go beyond [%.1f  %.1f] ms (unless you reduce '...
+                'the number of points required to define the local peak).'];
+        
         switch measure_option
                 case 1  % instabl
                         if nlate~=1
                                 msgboxText =  'You must define only one latency';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -506,7 +513,7 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                 case 2  % meanbl
                         if nlate~=2
                                 msgboxText =  'You must define two latencies';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -515,7 +522,7 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                 case 3  % peakampbl
                         if nlate~=2
                                 msgboxText =  'You must define two latencies';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -523,11 +530,25 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
                         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
                         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
+                        
+                        cc1    = late(1)-sample2ms(sampeak, srate) < xmin*1000;
+                        ccdiff = abs((late(1)-sample2ms(sampeak, srate)) - xmin*1000);
+                        cc2    = ms2sample(ccdiff, srate)>2;
+                        cc3    = late(2)+sample2ms(sampeak, srate)>xmax*1000;
+                        ccdiff = abs((late(2)+sample2ms(sampeak, srate)) - xmax*1000);
+                        cc4    = ms2sample(ccdiff, srate)>2;
+                        
+                        if (cc1 && cc2) || (cc3 && cc4)
+                                msgboxText =  msgboxText4peak;
+                                title = 'ERPLAB: measurement window';
+                                errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*1000, xmax*1000, xmin*1000+sample2ms(sampeak,srate), xmax*1000-sample2ms(sampeak,srate)), title);
+                                return
+                        end
                         fprintf('\nLocal peak measurement in progress...\n');
                 case 4  % peaklatbl
                         if nlate~=2
                                 msgboxText =  'You must define two latencies';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -535,11 +556,25 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
                         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
                         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
+                        
+                        cc1    = late(1)-sample2ms(sampeak, srate) < xmin*1000;
+                        ccdiff = abs((late(1)-sample2ms(sampeak, srate)) - xmin*1000);
+                        cc2    = ms2sample(ccdiff, srate)>2;
+                        cc3    = late(2)+sample2ms(sampeak, srate)>xmax*1000;
+                        ccdiff = abs((late(2)+sample2ms(sampeak, srate)) - xmax*1000);
+                        cc4    = ms2sample(ccdiff, srate)>2;
+                        
+                        if (cc1 && cc2) || (cc3 && cc4)
+                                msgboxText =  msgboxText4peak;
+                                title = 'ERPLAB: measurement window';
+                                 errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*1000, xmax*1000, xmin*1000+sample2ms(sampeak,srate), xmax*1000-sample2ms(sampeak,srate)), title);
+                                return
+                        end
                         fprintf('\nLocal peak latency measurement in progress...\n');
                 case 5  % fpeaklat
                         if nlate~=2
                                 msgboxText =  'You must define two latencies';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -550,11 +585,25 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
                         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
                         fracmearep = 2-get(handles.popupmenu_fracreplacement,'Value');
+                        
+                        cc1    = late(1)-sample2ms(sampeak, srate) < xmin*1000;
+                        ccdiff = abs((late(1)-sample2ms(sampeak, srate)) - xmin*1000);
+                        cc2    = ms2sample(ccdiff, srate)>2;
+                        cc3    = late(2)+sample2ms(sampeak, srate)>xmax*1000;
+                        ccdiff = abs((late(2)+sample2ms(sampeak, srate)) - xmax*1000);
+                        cc4    = ms2sample(ccdiff, srate)>2;
+                        
+                        if (cc1 && cc2) || (cc3 && cc4)
+                                msgboxText =  msgboxText4peak;
+                                title = 'ERPLAB: measurement window';
+                                 errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*1000, xmax*1000, xmin*1000+sample2ms(sampeak,srate), xmax*1000-sample2ms(sampeak,srate)), title);
+                                return
+                        end
                         fprintf('\nFractional Peak Latency measurement in progress...\n');
                 case 6  % inte/area value (fixed latencies)
                         if nlate~=2
                                 msgboxText =  'You must define two latencies';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -576,7 +625,7 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                 case 7   % inte/area value (auto latencies)
                         if nlate~=1
                                 msgboxText =  'You must define only one latency';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -598,7 +647,7 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                 case 8   % fractional inte/area latency
                         if nlate~=2
                                 msgboxText =  'You must define two latencies';
-                                title = 'ERPLAB: Bin-based epoch inputs';
+                                title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
@@ -1382,7 +1431,7 @@ fulltext = char(get(handles.listbox_erpnames,'String'));
 if isequal(filename,0)
         disp('User selected Cancel')
         return
-else        
+else
         [px, fname, ext] = fileparts(filename);
         
         if strcmp(ext,'')
@@ -1438,7 +1487,7 @@ if ~isempty(ERPi)
         %
         % Prepare List of current Bins
         %
-        listb = {[]};        
+        listb = {[]};
         for b=1:nbin
                 listb{b}= ['BIN' num2str(b) ' = ' ERPi.bindescr{b} ];
         end
@@ -1457,7 +1506,7 @@ if ~isempty(ERPi)
                 chanArray  = handles.chanmem;
         else
                 chanArray  = chanx;
-        end       
+        end
         if ~isempty(binArray) && ~isempty(chanArray)
                 selchan   = chanArray(chanArray>=1 & chanArray<=nchan);
                 selbin    = binArray(binArray>=1 & binArray<=nbin);
@@ -1491,7 +1540,7 @@ handles.listb = listb;
 handles.listch = listch;
 handles.indxlistb = selbin;
 handles.indxlistch = selchan;
-handles.binmem  = selbin; 
+handles.binmem  = selbin;
 handles.chanmem = selchan;
 
 % Update handles structure
@@ -1512,8 +1561,8 @@ function pushbutton_run_CreateFcn(hObject, eventdata, handles)
 function button_savelist_Callback(hObject, eventdata, handles)
 fulltext = char(strtrim(get(handles.listbox_erpnames,'String')));
 
-if length(fulltext)>1        
-        fullname = get(handles.edit_filelist, 'String');        
+if length(fulltext)>1
+        fullname = get(handles.edit_filelist, 'String');
         if ~strcmp(fullname,'')
                 
                 fid_list   = fopen( fullname , 'w');
@@ -1621,7 +1670,7 @@ set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   ERP Measurements GUI 
 % 7 = 'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
 % 8 = 'Fractional Area latency'
 
-switch currentm        
+switch currentm
         case 1 % 'Instantaneous amplitude'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)

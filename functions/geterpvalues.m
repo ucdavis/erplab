@@ -214,25 +214,25 @@ msgboxText4peak = ['The requested measurement window is invalid given the number
 
 if length(latency)==2
         [xxx, latsamp, latdiffms] = closest(timex, latency);
-        if round(latdiffms(1)*fs/1000)>2 %JLC.10/16/2013
+        if latency(1)<mintime && ms2sample(latdiffms(1),fs)>2 %JLC.10/16/2013
                 msgboxText =  sprintf('The onset of your measurement window cannot be more than 2 samples earlier than the ERP window (%.1f ms)\n', timex(1));
                 varargout{1} = msgboxText;
                 varargout{2} = 'limit';
                 return
         end
-        if round(latdiffms(2)*fs/1000)<-2 %JLC.10/16/2013
+        if latency(2)<maxtime && ms2sample(latdiffms(2),fs)<-2 %JLC.10/16/2013
                 msgboxText =  sprintf('The offset of your measurement window cannot be more than 2 samples later than the ERP window (%.1f ms)\n', timex(end));
                 varargout{1} = msgboxText;
                 varargout{2} = 'limit';
                 return
         end
-        if latsamp(1)==1 && round(latdiffms(1)*fs/1000)~=0 %JLC.10/16/2013
+        if latsamp(1)==1 && ms2sample(latdiffms(1),fs)~=0 %JLC.10/16/2013
                 latsamp(1) = 1;
                 fprintf('\n%s\n', repmat('*',1,60));
                 fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', latency(1), mintime);
                 fprintf('%s\n\n', repmat('*',1,60));
         end
-        if latsamp(2)==pnts && round(latdiffms(2)*fs/1000)~=0 %JLC.10/16/2013
+        if latsamp(2)==pnts && ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
                 latsamp(2) = pnts;
                 fprintf('\n%s\n', repmat('*',1,60));
                 fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', latency(2), maxtime);
@@ -241,7 +241,7 @@ if length(latency)==2
 elseif length(latency)==1
         [xxx, latsamp, latdiffms] = closest(timex, latency(1));
         
-        if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (round(latdiffms(1)*fs/1000)<(-2+sampeak) || round(latdiffms(2)*fs/1000)>(2-sampeak)) %JLC.20/08/13
+        if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (ms2sample(latdiffms(1),fs)<(-2+sampeak) || ms2sample(latdiffms(2),fs)>(2-sampeak)) %JLC.20/08/13
                 msgboxText =  sprintf('The specified latency is more than 2 samples away from the ERP window [%.1f %.1f] ms\n', timex(1), timex(end));
                 varargout{1} = msgboxText;
                 varargout{2} = 'limit';
@@ -302,7 +302,7 @@ try
                                         
                                         % gets values
                                         [A, Lx, il] =  areaerp(dataux, fs, latsamp, aoption, coi);
-                                        worklate{b,ch} = 1000*(il-1)/fs + mintime;   % integratin limits
+                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime;   % integratin limits
                                         VALUES(b,ch)   = A;
                                 elseif strcmpi(moption,'nintegz')
                                         
@@ -314,7 +314,7 @@ try
                                         
                                         % gets values
                                         [A, Lx, il]  =  areaerp(dataux, fs,latsamp, 'auto', coi);
-                                        worklate{b,ch} = 1000*(il-1)/fs + mintime; % integratin limits
+                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime;   % integratin limits
                                         VALUES(b,ch)  = A;
                                 elseif strcmpi(moption,'instabl')
                                         
@@ -348,7 +348,7 @@ try
                                                 timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
                                         catch
                                                 extrastr = msgboxText4peak;
-                                                error('Error:peakampbl', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+round(1000*sampeak/fs), maxtime-round(1000*sampeak/fs));
+                                                error('Error:peakampbl', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+sample2ms(sampeak,fs), maxtime-sample2ms(sampeak,fs));
                                         end
                                         
                                         if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
@@ -379,7 +379,7 @@ try
                                                 timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
                                         catch
                                                 extrastr = msgboxText4peak;
-                                                error('Error:peakampbl', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+round(1000*sampeak/fs), maxtime-round(1000*sampeak/fs));
+                                                error('Error:peaklatbl', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+sample2ms(sampeak,fs), maxtime-sample2ms(sampeak,fs));
                                         end
                                         if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                                                 localoptstr = 'abs';
@@ -425,7 +425,7 @@ try
                                         
                                         % gets values
                                         [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, 'total', coi);
-                                        VALUES(b,ch) = 1000*(L-1)/fs + mintime; % 50 % area latency (temporary)
+                                        VALUES(b,ch) = sample2ms((L-1),fs) + mintime; % 50 % area latency (temporary)  
                                 elseif strcmpi(moption,'fareatlat') || strcmpi(moption,'fninteglat') ||  strcmpi(moption,'fareaplat') || strcmpi(moption,'fareanlat')
                                         
                                         %
@@ -450,7 +450,7 @@ try
                                         
                                         % gets values
                                         [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, aoption, coi, frac, fracmearep);
-                                        VALUES(b,ch) = 1000*(L-1)/fs + mintime; % frac area latency
+                                        VALUES(b,ch) = sample2ms((L-1),fs) + mintime; % frac area latency
                                 elseif strcmpi(moption,'fpeaklat')
                                         
                                         %
@@ -463,9 +463,13 @@ try
                                         %                               try
                                         %blv = blvalue(ERP, chanArray(ch), binArray(b), blc); % baseline value
                                         
-                                        dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % base line was substracted!
-                                        timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
-                                        
+                                        try
+                                                dataux  = dataux(latsamp(1)-sampeak:latsamp(2)+sampeak);  % no filtered
+                                                timex2  = timex(latsamp(1)-sampeak:latsamp(2)+sampeak);
+                                        catch
+                                                extrastr = msgboxText4peak;
+                                                error('Error:fpeaklat', extrastr, sampeak, sampeak, sampeak, mintime, maxtime, mintime+sample2ms(sampeak,fs), maxtime-sample2ms(sampeak,fs));
+                                        end
                                         if localopt==1 %0=writes a NaN when local peak is not found.  1=export absolute peak when local peak is not found.
                                                 localoptstr = 'abs';
                                         else
@@ -506,7 +510,7 @@ try
                                         
                                         % gets values
                                         [A, L, il]     =  areaerp(dataux, fs,latsamp, aoption, coi);
-                                        worklate{b,ch} = 1000*(il-1)/fs + mintime; % integration limits
+                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime; % integration limits
                                         VALUES(b,ch)   = A;
                                 elseif strcmpi(moption,'errorbl') % for Rick Addante
                                         
@@ -549,7 +553,7 @@ try
                                         
                                         % gets values
                                         [A, Lx, il]    =  areaerp(dataux, fs,latsamp, 'auto', coi);
-                                        worklate{b,ch} = 1000*(il-1)/fs + mintime; % integratin limits
+                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime; % integratin limits
                                         VALUES(b,ch)   = A;
                                 end
                         end

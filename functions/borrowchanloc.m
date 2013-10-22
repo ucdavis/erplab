@@ -47,11 +47,9 @@ if isempty(chanlocfile)
                 chanok = {ERP.chanlocs.theta};
                 exchanArray = find(cellfun('isempty',chanok));
                 chfound = 1;                
-                %disp('A')
         else
                 exchanArray = [];
                 chfound = 0;
-                %disp('B')
         end
         if isempty(exchanArray) && chfound==1
                 fprintf('Channel location info was successfuly found!\n');
@@ -70,48 +68,7 @@ if isempty(chanlocfile)
                 if ~isempty(serror) && serror~=1
                         [ERP, serror] = rememptychanloc(ERP);
                 end
-                
-                %         if isfield(ERP.chanlocs, 'theta')
-                %                 chanok = {ERP.chanlocs.theta};
-                %                 exchanArray = find(cellfun('isempty',chanok));
-                %
-                %                 if ~isempty(exchanArray)
-                %
-                %                         selchannels = find(~ismember(1:ERP.nchan,exchanArray)); %selected channels
-                %                         nsch = length(selchannels);
-                %                         auxd = ERP.bindata(selchannels,:,:);
-                %                         ERP.bindata = [];
-                %                         ERP.bindata(1:nsch,:,:) = auxd;
-                %                         ERP.nchan   = nsch;
-                %                         namefields  = fieldnames(ERP.chanlocs);
-                %                         nfn = length(namefields);
-                %
-                %                         for ff=1:nfn
-                %                                 auxfield{ff} = {ERP.chanlocs(selchannels).(namefields{ff})};
-                %                         end
-                %
-                %                         ERP.chanlocs=[];
-                %
-                %                         for ff=1:nfn
-                %                                 [ERP.chanlocs(1:nsch).(namefields{ff})] = auxfield{ff}{:};
-                %                         end
-                %                         if length(exchanArray)==1
-                %                                 fprintf('Channel %g was skiped\n', exchanArray)
-                %                         elseif length(exchanArray)>1
-                %                                 fprintf('Channels %g were skiped\n', exchanArray)
-                %                         end
-                %                 end
-                %                 fprintf('\nChannel locations were successfuly loaded!\n');
-                %         else
-                %                 msgboxText = ['Error: pop_scalplot could not find channel locations info.\n\n'...
-                %                         'Hint: Identify channel(s) without location looking at '...
-                %                         'command window comments (Channel lookup). Try again excluding this(ese) channel(s).'];
-                %                 tittle = 'ERPLAB:  error:';
-                %                 errorfound(sprintf(msgboxText), tittle);
-                %                 return
-                %         end
-        end
-        
+        end        
 else
         [ERP, serror ] = erpchanedit(ERP, filename);        
 end

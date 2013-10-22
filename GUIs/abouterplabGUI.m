@@ -300,7 +300,7 @@ if handles.running  == 0;
         delete(handles.gui_chassis)
 end
 pause(0.2)
-web('https://www.youtube.com/user/erplabtoolbox?feature=watch','-browser')
+web('http://erpinfo.org/erplab/erplab-documentation/video-documentation','-browser')
 
 %--------------------------------------------------------------------------
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)

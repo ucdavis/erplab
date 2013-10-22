@@ -90,12 +90,12 @@ fprintf('%s\n', repmat('*',1,50));
 if iscell(message)
         message = [message{:}];
 end
+
 fprintf('Full error message: \n %s\n', message);
 message = regexprep(message,'<.*>|Error using ==>','');
 bottomline = 'If you think this is a bug, please report the error to erplab@erpinfo.org and not to the EEGLAB developers.';
 disp(bottomline)
 fprintf('%s\n', repmat('*',1,50));
-
 set(handles.text_message, 'String', message)
 set(handles.text_message, 'Backgroundcolor', bcolor, 'FontSize', 12,'ForegroundColor', fcolor)
 set(handles.text_bottom, 'String', bottomline)
@@ -111,8 +111,7 @@ try
 catch
         %disp('no funciona')      
 end
-if showfig
-        
+if showfig        
         imR    = imagein(:,:,1);
         imG    = imagein(:,:,2);
         imB    = imagein(:,:,3);        
@@ -122,15 +121,10 @@ if showfig
         edmask = aindx&bindx&cindx;
         imR(edmask) = bcolor(1)*255;
         imG(edmask) = bcolor(2)*255;
-        imB(edmask) = bcolor(3)*255;
-       
-        imagein = cat(3, imR, imG, imB);
-          
-        
+        imB(edmask) = bcolor(3)*255;       
+        imagein = cat(3, imR, imG, imB);       
 %         H = fspecial('gaussian', [6 6]);
 %         imagein = imfilter(imagein, H);
-        
-        
         axes(handles.axes_pict)
         sizep     = size(imagein);   % Determine the size of the image file
         set(handles.axes_pict,'Units', 'pixels');
@@ -189,8 +183,6 @@ function axes_pict_CreateFcn(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 % --- Executes on button press in button_OK.
 function button_ok_Callback(hObject, eventdata, handles)
-
-
 if get(handles.checkbox_quack, 'Value')
       erpworkingmemory('errorGUI', 1);
 else

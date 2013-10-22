@@ -254,6 +254,9 @@ if nargin==1  % GUI
         %
         % Somersault
         %
+        
+        %latency, binArray, chanArray, erpset, moption, coi, dig, blc, binlabopstr, polpeakstr, sampeak, locpeakrepstr, fname, s2ws, appfstr, foutputstr, frac, mlabel, fracmearepstr, inclatestr, intfactor, vmstr
+        
         [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP, latency, binArray, chanArray, 'Erpsets', erpset, 'Measure',...
                 moption, 'Component', coi, 'Resolution', dig, 'Baseline', blc, 'Binlabel', binlabopstr, 'Peakpolarity',...
                 polpeakstr, 'Neighborhood', sampeak, 'Peakreplace', locpeakrepstr, 'Filename', fname, 'Warning','on',...

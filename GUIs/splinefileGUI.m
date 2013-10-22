@@ -143,6 +143,12 @@ else
             %splineinfo.newname = [];
       end
 end
+if isempty(splineinfo.path)        
+        msgboxText =  'You must specify a name for the spline file.';
+        title = 'ERPLAB: spline file for 3D maps';
+        errorfound(msgboxText, title);
+        return
+end
 if get(handles.checkbox_savespline, 'Value')
       splineinfo.save = 1;
 else

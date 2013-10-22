@@ -208,15 +208,36 @@ listformat = p.Results.listformat;
 header     = p.Results.header;
 arfilter   = p.Results.arfilter;
 
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
+end
 if isempty(ERPLAB)
         msgboxText =  ['Empty data structure.\n'...
                 'Please, load a dataset or erpset first...'];
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+        if shist==1
+                title = 'ERPLAB: pop_rt2text() inputs';
+                errorfound(sprintf(msgboxText), title);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
 end
 if ~iseegstruct(ERPLAB) && ~iserpstruct(ERPLAB)
         msgboxText =  ['Invalid data structure.\n'...
                 'pop_rt2text() only works with EEG and ERP structures.'];
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+        if shist==1
+                title = 'ERPLAB: pop_rt2text() inputs';
+                errorfound(sprintf(msgboxText), title);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
 else
         if iserpstruct(ERPLAB) % ERP
                 iserp = 1;
@@ -225,7 +246,13 @@ else
         else % EEG
                 if length(ERPLAB)>1
                         msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                        error('prog:input', ['ERPLAB says: ' msgboxText]);
+                        if shist==1
+                                title = 'ERPLAB: pop_rt2text() inputs';
+                                errorfound(sprintf(msgboxText), title);
+                                return
+                        else
+                                error('prog:input', ['ERPLAB says: ' msgboxText]);
+                        end
                 end
                 iserp = 0;
                 dtype = 'dataset';
@@ -235,7 +262,13 @@ end
 if isfield(ERPLAB, 'EVENTLIST')
         if isempty(ERPLAB.EVENTLIST)
                 msgboxText =  'EVENTLIST structure is empty!';
-                error('prog:input', ['ERPLAB says: ' msgboxText]);
+                if shist==1
+                        title = 'ERPLAB: pop_rt2text() inputs';
+                        errorfound(sprintf(msgboxText), title);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText]);
+                end
         end
 else
         if iserp
@@ -243,10 +276,23 @@ else
         else
                 msgboxText =  'EVENTLIST structure has not been created yet!';
         end
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+        if shist==1
+                title = 'ERPLAB: pop_rt2text() inputs';
+                errorfound(sprintf(msgboxText), title);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
 end
 if isempty(filename)
-        error('ERPLAB says: Output filename is missing!.')
+        msgboxText = 'Output filename is missing!.';
+        if shist==1
+                title = 'ERPLAB: pop_rt2text() inputs';
+                errorfound(sprintf(msgboxText), title);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
 end
 
 [pathstr, filenamei, ext] = fileparts(filename);
@@ -262,15 +308,6 @@ if strcmpi(arfilter,'on')
         eliminAR = 1;
 else
         eliminAR = 0;
-end
-if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
-elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
-elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
-else
-        shist = 0; % off
 end
 indexel = p.Results.eventlist;% index for eventlist
 e2 = length(ERPLAB.EVENTLIST);
@@ -288,8 +325,14 @@ if e2>1 && isempty(indexel)% JLC Aug 30, 2012
         else
                 indexel = str2num(answer{1});
                 if isempty(indexel) || indexel<1 || indexel>e2
-                        msgboxText{1} =  'pop_rt2text() error: not valid EVENTLIST index';
-                        error('prog:input', ['ERPLAB says: ' msgboxText]);
+                        msgboxText =  'pop_rt2text() error: not valid EVENTLIST index';
+                        if shist==1
+                                title = 'ERPLAB: pop_rt2text() inputs';
+                                errorfound(sprintf(msgboxText), title);
+                                return
+                        else
+                                error('prog:input', ['ERPLAB says: ' msgboxText]);
+                        end
                 end
         end
 elseif e2==1 && isempty(indexel)
@@ -297,7 +340,13 @@ elseif e2==1 && isempty(indexel)
 else
         if indexel<1 || indexel>e2
                 msgboxText =  'pop_rt2text() error: not valid EVENTLIST index';
-                error('prog:input', ['ERPLAB says: ' msgboxText]);
+                if shist==1
+                        title = 'ERPLAB: pop_rt2text() inputs';
+                        errorfound(sprintf(msgboxText), title);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText]);
+                end
         end
 end
 if isfield(ERPLAB.EVENTLIST(indexel), 'bdf')
@@ -307,23 +356,45 @@ if isfield(ERPLAB.EVENTLIST(indexel), 'bdf')
                 else
                         msgboxText =  'BINLISTER has not been performed yet!';
                 end
-                
-                error('prog:input', ['ERPLAB says: ' msgboxText]);
+                if shist==1
+                        title = 'ERPLAB: pop_rt2text() inputs';
+                        errorfound(sprintf(msgboxText), title);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText]);
+                end
         end
         if ~isfield(ERPLAB.EVENTLIST(indexel).bdf, 'rt')
                 msgboxText =  'There is not reaction time info in this %s!';
-                error('prog:input', ['ERPLAB says: ' msgboxText], dtype);
+                if shist==1
+                        title = 'ERPLAB: pop_rt2text() inputs';
+                        errorfound(sprintf(msgboxText, dtype), title);
+                        return
+                else
+                        error('prog:input', ['ERPLAB says: ' msgboxText], dtype);
+                end
         else
-                valid_rt = nnz(~cellfun(@isempty,{ERPLAB.EVENTLIST(indexel).bdf.rt}));
-                
+                valid_rt = nnz(~cellfun(@isempty,{ERPLAB.EVENTLIST(indexel).bdf.rt}));                
                 if valid_rt==0
                         msgboxText =  'There is not reaction time info in this %s!';
-                        error('prog:input', ['ERPLAB says: ' msgboxText], dtype);
+                        if shist==1
+                                title = 'ERPLAB: pop_rt2text() inputs';
+                                errorfound(sprintf(msgboxText, dtype), title);
+                                return
+                        else
+                                error('prog:input', ['ERPLAB says: ' msgboxText], dtype);
+                        end
                 end
         end
 else
         msgboxText =  'BINLISTER has not been performed yet!';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+        if shist==1
+                title = 'ERPLAB: pop_rt2text() inputs';
+                errorfound(sprintf(msgboxText), title);
+                return
+        else
+                error('prog:input', ['ERPLAB says: ' msgboxText]);
+        end
 end
 
 nbin    = ERPLAB.EVENTLIST(indexel).nbin;
@@ -340,7 +411,6 @@ if strcmp(listformat,'basic')   %%%%%%%%%% BASIC FORMAT %%%%%%%%%%%
         for i=1:nbin
                 for j=1:length(ERPLAB.EVENTLIST(indexel).bdf(i).rtname)
                         rtnamex = ERPLAB.EVENTLIST(indexel).bdf(i).rtname{j};
-                        
                         if ~isempty(rtnamex)
                                 label{k} = strrep(rtnamex, ' ', '_');
                                 if isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
@@ -376,7 +446,7 @@ if strcmp(listformat,'basic')   %%%%%%%%%% BASIC FORMAT %%%%%%%%%%%
                         txtspace  = num2str(2*ndig+nsp);
                 else
                         txtspace  = num2str(txtspace+nsp);
-                end               
+                end
                 
                 CC        = cell2mat(values);
                 fid_rt    = fopen(filename, 'w');
@@ -392,8 +462,8 @@ if strcmp(listformat,'basic')   %%%%%%%%%% BASIC FORMAT %%%%%%%%%%%
                 
                 %
                 % Print values
-                %                
-                %repmat(['%' num2str(txtspace1+nsp-1) '.' ndigstr 'f\t'], 1,size(values,2))                
+                %
+                %repmat(['%' num2str(txtspace1+nsp-1) '.' ndigstr 'f\t'], 1,size(values,2))
                 fprintf(fid_rt, [repmat(['%' txtspace '.' ndigstr 'f\t'], 1,size(values,2)) '\n'] ,CC');
                 fclose(fid_rt);
         end

@@ -1223,6 +1223,14 @@ if isempty(splinefile)
         msgboxText =  'You must specify a name for the spline file.';
         title = 'ERPLAB: scalpplotGUI inputs';
         errorfound(msgboxText, title);
+        
+        handles.splinefile  = splinefile;
+        
+        % Update handles structure
+        guidata(hObject, handles);
+        
+        set(handles.text_spline_warning, 'String','spline''s required!')
+        set(handles.text_spline_warning, 'ForegroundColor', [0.71 0.1 0.1])
         return
 end
 if splineinfo.save

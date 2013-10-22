@@ -454,7 +454,7 @@ if nnz(binofbins)>=1
                 if iseegstruct(EEG) && ismember(option2do, [2 3 6 7])
                         EEG =  pasteeventlist(EEG, EVENTLIST, 1, indexEL);
                         if updevent && issaveas
-                                EEG = pop_overwritevent(EEG, 'History', 'off');
+                                EEG = pop_overwritevent(EEG, 'code', 'History', 'off');
                         elseif updevent && ~issaveas
                                 EEG = pop_overwritevent(EEG, 'code', 'History', 'off');
                         end

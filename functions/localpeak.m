@@ -174,10 +174,7 @@ if npoints>0
                   end
             end
             a = a+1;
-      end      
-      
-      
-      
+      end            
       if ~isempty(valmax)            
             if length(unique(valmax))==1 && length(valmax)>1 % this is when more than one sample meets the criterias for a local peak (e.g. saturated segments)
                   poslocalpf   = round(median(posmax));      % position of local peak
@@ -223,22 +220,6 @@ if npoints>0
                   vlocalpf     = vabspf;
                   poslocalpf   = posabspf;
                   latlocalpeak = timex(posabspf);
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
-                  
                   ltypeoutput  = 2; % abs peak
             else % replace with NaN
                   vlocalpf     = NaN;
@@ -254,20 +235,6 @@ else % if no neighbors then ABSOLUTE peak is taken.
       latlocalpeak = timex(posabspf);
       ltypeoutput  = 2; % abs peak
 end
-
-
-
-
-%             
-%             vlocalpf
-%             poslocalpf
-%             latlocalpeak
-            
-
-
-
-
-
 
 %
 % Fractional peak latency

@@ -36,10 +36,6 @@ try
         %*******************************************************
         % for being compatible with eeglab 11. Nov 20, 2012. JLC
         EEGx.setname    = ERP.erpname;
-%         EEGx.icawinv    = [];
-%         EEGx.icaweights = [];
-%         EEGx.icasphere  = [];
-%         EEGx.icaact     = [];
         EEGx.trials     = ERP.nbin;
         EEGx.pnts   = ERP.pnts;
         EEGx.srate  = ERP.srate;

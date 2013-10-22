@@ -78,8 +78,8 @@ end
 if nargin<3        
         bkgrncolor = erpworkingmemory('errorColorB');
         if isempty(bkgrncolor)
-                bkgrncolor = [0.7020 0.7647 0.8392];
-                %bkgrncolor = [1 0 0];
+                %bkgrncolor = [0.7020 0.7647 0.8392];
+                bkgrncolor = [1 0 0];
         end
 end
 if nargin<2
