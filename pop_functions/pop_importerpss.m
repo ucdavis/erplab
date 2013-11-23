@@ -96,9 +96,9 @@ if strcmpi(p.Results.Format, 'explicit');
 else
         dformat = 1;
 end
-if ismember({lower(p.Results.Pointat)}, {'col','column','columns'});
+if ismember_bc2({lower(p.Results.Pointat)}, {'col','column','columns'});
         dtranspose = 0;
-elseif ismember({lower(p.Results.Pointat)}, {'row','rows'});
+elseif ismember_bc2({lower(p.Results.Pointat)}, {'row','rows'});
         dtranspose = 1;
 else
         error('ERPLAB says: ?')
@@ -196,7 +196,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( ' ERP = pop_importerpss(');
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

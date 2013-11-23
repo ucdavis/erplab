@@ -76,7 +76,7 @@ for i=1:nepoch
                 itemy = cell2mat(itemy);
         end
         if ~isempty(itemy)
-                [tf loc]  = ismember(item, itemy);
+                [tf, loc]  = ismember_bc2(item, itemy);
                 if tf
                         binstored = EEG.epoch(i).eventbini{loc};
                         if sum(binstored)>0

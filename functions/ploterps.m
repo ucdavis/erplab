@@ -3,14 +3,14 @@
 %
 % FORMAT:
 %
-% ploterps(ERP, binArray, chArray, pstyle, chMGFP,  blcorr, xaxlim, yaxlim, linew, isinvertedY, fschan, fslege, errorstd,...
+% ploterps(ERP, binArray, chanArray, pstyle, chMGFP,  blcorr, xaxlim, yaxlim, linew, isinvertedY, fschan, fslege, errorstd,...
 %          box, holdch, yauto, binleg, legepos, ismaxim, posfig, axsize, chanleg, minorticks, linespec)
 %
 % Inputs:
 %
 %   ERP       - input dataset
 %   binArray  - index(es) of bin(s) to plot  ( 1 2 3 ...)
-%   chArray   - index(es) of channel(s) to plot ( 1 2 3 ...)
+%   chanArray - index(es) of channel(s) to plot ( 1 2 3 ...)
 %   blcorr    - string or numeric interval for baseline correction
 %               reference window: 'no','pre','post','all', or for
 %               instance [-100 0]
@@ -24,7 +24,7 @@
 %   errorstd  - integer. N = plot N * Standar Deviation of your ERP
 %               0= do nothing.
 %   box       - ditribution of plotting boxes in rows x columns.
-%               Important Note: rows*columns >= length(chArray)
+%               Important Note: rows*columns >= length(chanArray)
 %
 % Outputs:
 %
@@ -58,7 +58,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function ploterps(ERP, binArray, chArray, pstyle, chMGFP,  blcorr, xaxlim, yaxlim, linew, isinvertedY, fschan, fslege, fsaxtick, errorstd,...
+function ploterps(ERP, binArray, chanArray, pstyle, chMGFP,  blcorr, xaxlim, yaxlim, linew, isinvertedY, fschan, fslege, fsaxtick, errorstd,...
         stdalpha, box, holdch, yauto, binleg, legepos, ismaxim, posfig, axsize, chanleg, minorticks, linespec, ftag)
 
 if nargin<1
@@ -144,7 +144,7 @@ if nargin<4
         pstyle = 1; %1: Matlab style Yaxis at left; 2: Matlab style Yaxis at right; 3: Classic style; 4: Topographic
 end
 if nargin<3
-        chArray = 1:ERP.nchan;
+        chanArray = 1:ERP.nchan;
 end
 if nargin<2
         binArray = 1:ERP.nbin;
@@ -160,7 +160,7 @@ else
 end
 
 nbin = length(binArray);
-nch  = length(chArray);
+nch  = length(chanArray);
 fs   = ERP.srate;
 
 % check for time-lock latency
@@ -217,58 +217,18 @@ if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')
         kk=1;
         for i=1:nch
                 for j=1:nbin
-                        baseline(kk) = mean(ERP.bindata(chArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
-                        dataaux(chArray(i),:,binArray(j)) = ERP.bindata(chArray(i),:,binArray(j)) - baseline(kk);
+                        baseline(kk) = mean(ERP.bindata(chanArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
+                        dataaux(chanArray(i),:,binArray(j)) = ERP.bindata(chanArray(i),:,binArray(j)) - baseline(kk);
                         kk=kk+1;
                 end
         end
-%         if yauto % JLC. Sept 26, 2012
-%                 [blmax, indxblmax] = max(abs(baseline));
-%                 blx = baseline(indxblmax);
-%                 yaxlim(1:2) = [yaxlim(1)-blx yaxlim(2)+blx];
-%                 plotset = evalin('base', 'plotset');
-%                 plotset.ptime.yscale = yaxlim;
-%                 assignin('base','plotset', plotset);
-%         end
 end
 
 %
 %  Fit Yaxis AUTO-SCALE
 %
 if yauto
-        if xaxlim(1)<round(ERP.xmin*1000)
-                aux_xlim(1) = round(ERP.xmin*1000);
-        else
-                aux_xlim(1) = xaxlim(1);
-        end
-        if xaxlim(2)>round(ERP.xmax*1000)
-                aux_xlim(2) = round(ERP.xmax*1000);
-        else
-                aux_xlim(2) = xaxlim(2);
-        end
-        
-        [p1, p2, checkw] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
-        
-        if checkw==1
-                error('ploterps() error: time window cannot be larger than epoch.')
-        elseif checkw==2
-                error('ploterps() error: too narrow time window')
-        end
-        
-        %nstdev  = 25;
-        datresh = reshape(dataaux(chArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nch);
-        %yymean  = mean(datresh);
-        %yystd   = std(datresh);
-        yymax   = max(datresh);
-        yymin   = min(datresh);
-        
-        %         if yymax > yymean + nstdev*yystd
-        %                 yymax = yymean + nstdev*yystd;
-        %         end
-        %         if yymin < yymean - nstdev*yystd
-        %                 yymin = yymean - nstdev*yystd;
-        %         end
-        yaxlim(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Sept 26, 2012
+        yaxlim(1:2) = erpAutoYLim(ERP, binArray, chanArray, xaxlim);        
         plotset = evalin('base', 'plotset');
         plotset.ptime.yscale = yaxlim;
         assignin('base','plotset', plotset);
@@ -284,7 +244,7 @@ if isMGFP
                 data_MGFP(1,:,binArray(j)) = MGFP_data;
                 ERP.binerror(ERP.nchan+1,:, j)   = zeros(1, ERP.pnts ); % Sept 12, 2012. JLC
         end
-        chArray = [chArray ERP.nchan+1];
+        chanArray = [chanArray ERP.nchan+1];
 end
 if legepos==1
         row    = box(1)+1;% legend at button
@@ -385,7 +345,7 @@ if pstyle==4 % topo
         
         legendt = ERP.bindescr(binArray);
         options ={ 'chanlocs' chanlocs 'legend' legendt  'limits' [xlimc yaxlim(1:2)] ...
-                'title' '' 'chans' chArray 'ydir' tydir 'colors' linespec 'geom' [0 0] 'axsize' axsize};
+                'title' '' 'chans' chanArray 'ydir' tydir 'colors' linespec 'geom' [0 0] 'axsize' axsize};
         plottopo_II( dataaux(:, tp1:tp2, binArray), options{:})
 else
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -419,15 +379,15 @@ else
                         cobi=(i-1)*nbin;
                         
                         if i==1
-                                labelch = chanlocs(chArray(i)).labels;
+                                labelch = chanlocs(chanArray(i)).labels;
                         elseif i==nch
                                 if isMGFP
                                         labelch = 'MGFP';
                                 else
-                                        labelch = [labelch ' & ' chanlocs(chArray(i)).labels];
+                                        labelch = [labelch ' & ' chanlocs(chanArray(i)).labels];
                                 end
                         else
-                                labelch = [labelch ' & ' chanlocs(chArray(i)).labels];
+                                labelch = [labelch ' & ' chanlocs(chanArray(i)).labels];
                         end
                 else
                         ich     = i;
@@ -435,7 +395,7 @@ else
                         if i==nch && isMGFP
                                 labelch = 'MGFP';
                         else
-                                labelch = chanlocs(chArray(i)).labels;
+                                labelch = chanlocs(chanArray(i)).labels;
                         end
                 end
                 
@@ -460,7 +420,7 @@ else
                                 set(gca,'ydir','normal');
                                 yposlabel = 1.08*max(yaxlim(1:2));
                         end
-                        data4plot = dataaux(chArray(i),:,:);
+                        data4plot = dataaux(chanArray(i),:,:);
                 end
                 
                 legendArray = {[]};
@@ -485,8 +445,8 @@ else
                                 % pending...
                                 %
                                 if ~isempty(ERP.binerror) && errorstd>=1
-                                        yt1 = data4plot(1,:,binArray(ibin)) - ERP.binerror(chArray(i),:,binArray(ibin)).*errorstd;
-                                        yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chArray(i),:,binArray(ibin)).*errorstd;
+                                        yt1 = data4plot(1,:,binArray(ibin)) - ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
+                                        yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
                                         ciplot(yt1,yt2, ERP.times, colorDef{ibin+cobi}, stdalpha);
                                 end
                                 if binleg
@@ -502,6 +462,10 @@ else
                 %
                 % Set X and Y axis
                 %
+                
+                %xaxlim
+                %yaxlim
+                
                 axis([xaxlim(1:2) yaxlim(1:2)])
                 %set(gca,'Layer','top')
                 
@@ -510,7 +474,7 @@ else
                 end
                 if minorticks(1)
                         set(gca,'XMinorTick','on')
-                end
+                end               
                 if length(yaxlim)>2
                         set(gca,'YTick', yaxlim(3:end))
                 end
@@ -535,10 +499,8 @@ else
                 
                 if pstyle==1 || pstyle==2% Matlab figure and menues
                         %set(gca,'FontSize', fsaxtick);
-                        neozeroaxes(0, fsaxtick)
-                        
-                        %set(h,'String',{'cos(x)','sin(x)'})
-                        
+                        neozeroaxes(0, fsaxtick)                        
+                        %set(h,'String',{'cos(x)','sin(x)'})                        
                         %comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
                         %        'neozeroaxes(0);'];
                         

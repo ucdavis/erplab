@@ -285,12 +285,12 @@ if incexc
       chanArray = chArray;
 else
       orichanArray = 1:norichan;
-      chanArray    = orichanArray(~ismember(orichanArray, chArray));
+      chanArray    = orichanArray(~ismember_bc2(orichanArray, chArray));
 end
 % nchan = length(chanArray); % number of chs to reref
 
 unrefchanArray = 1:norichan;
-unrefchanArray = unrefchanArray(~ismember(unrefchanArray, chanArray));
+unrefchanArray = unrefchanArray(~ismember_bc2(unrefchanArray, chanArray));
 
 for i=1:norichan
       if get(handles.checkbox_copynewlabel,'Value')
@@ -299,15 +299,15 @@ for i=1:norichan
             catch
                   newlabel = 'undefined';
             end            
-            if ismember(i, unrefchanArray) && addunrefequ
+            if ismember_bc2(i, unrefchanArray) && addunrefequ
                   flist{i} = sprintf('ch%g = ch%g  Label %s', i, i, newlabel);
-            elseif ismember(i, chanArray)
+            elseif ismember_bc2(i, chanArray)
                   flist{i} = sprintf('ch%g = ch%g - ( %s ) Label %s', i, i, equation, newlabel)  ;
             end
       else
-            if ismember(i, unrefchanArray) && addunrefequ
+            if ismember_bc2(i, unrefchanArray) && addunrefequ
                   flist{i} = sprintf('ch%g = ch%g', i, i)  ;
-            elseif ismember(i, chanArray)
+            elseif ismember_bc2(i, chanArray)
                   flist{i} = sprintf('ch%g = ch%g - ( %s )', i, i, equation)  ;
             end
       end
@@ -332,7 +332,7 @@ flist = flist(~cellfun(@isempty, flist));
 % 
 % if addunrefequ
 %       unrefchanArray = 1:norichan;
-%       unrefchanArray = unrefchanArray(~ismember(unrefchanArray, chanArray));   
+%       unrefchanArray = unrefchanArray(~ismember_bc2(unrefchanArray, chanArray));   
 %       unchan = length(unrefchanArray);
 %       for i=1:unchan
 %             if get(handles.checkbox_copynewlabel,'Value')

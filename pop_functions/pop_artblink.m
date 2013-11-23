@@ -92,7 +92,7 @@ if nargin==1
                         def{1}(2) = single(EEG(1).xmax*1000);
                 end
                 
-                def{4} = def{4}(ismember(def{4},1:EEG(1).nbchan));
+                def{4} = def{4}(ismember_bc2(def{4},1:EEG(1).nbchan));
         end
         try
                 chanlabels = {EEG(1).chanlocs.labels};
@@ -113,7 +113,7 @@ if nargin==1
         testwindow =  answer{1};
         blinkwidth =  answer{2}; % in msec
         ccovth     =  answer{3};
-        chanArray  =  unique(answer{4}); % avoids repeated channels
+        chanArray  =  unique_bc2(answer{4}); % avoids repeated channels
         flag       =  answer{5};
         viewer     =  answer{end};
         
@@ -160,7 +160,7 @@ p.parse(EEG, varargin{:});
 testwindow =  p.Results.Twindow;
 blinkwidth =  p.Results.Blinkwidth;
 ccovth     =  p.Results.Crosscov;
-chanArray  =  unique(p.Results.Channel); % avoids repeated channels
+chanArray  =  unique_bc2(p.Results.Channel); % avoids repeated channels
 flag       =  p.Results.Flag;
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
@@ -207,8 +207,8 @@ elseif checkw==2
 end
 
 epochwidth = p2-p1+1; % choosen epoch width in number of samples
-bwidthpntsmax = unique(round(max(blinkwidth*fs/1000)));
-bwidthpntsmin = unique(round(min(blinkwidth*fs/1000)));
+bwidthpntsmax = unique_bc2(round(max(blinkwidth*fs/1000)));
+bwidthpntsmin = unique_bc2(round(min(blinkwidth*fs/1000)));
 
 if nch>EEG.nbchan
         error('Error: pop_artblink() number of tested channels cannot be greater than total.')
@@ -302,7 +302,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_artblink( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

@@ -59,6 +59,7 @@ handles.output = [];
 version = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Modify EEG.event GUI'])
 set(handles.radiobutton_clabels, 'Value', 1)
+set(handles.checkbox_removenctype, 'Enable', 'off');
 
 %
 % Color GUI
@@ -81,12 +82,59 @@ uiwait(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function varargout = overwriteventGUI_OutputFcn(hObject, eventdata, handles)
-
-% Get default command line output from handles structure
 varargout{1} = handles.output;
-
 % The figure can be deleted now
 delete(handles.gui_chassis);
+
+% -------------------------------------------------------------------------
+function checkbox_removenctype_Callback(hObject, eventdata, handles)
+
+% -------------------------------------------------------------------------
+function radiobutton_bini_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+        set(handles.checkbox_removenctype, 'Enable', 'on');        
+        set(handles.radiobutton_blabels, 'Value', 0);
+        set(handles.radiobutton_clabels, 'Value', 0);
+        set(handles.radiobutton_numcodes, 'Value', 0);
+else
+        set(hObject, 'Value', 1);
+end
+
+% -------------------------------------------------------------------------
+function radiobutton_blabels_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+%         set(handles.checkbox_removenctype, 'Value', 0); 
+        set(handles.checkbox_removenctype, 'Enable', 'on');        
+        set(handles.radiobutton_bini, 'Value', 0);
+        set(handles.radiobutton_clabels, 'Value', 0);
+        set(handles.radiobutton_numcodes, 'Value', 0);
+else
+        set(hObject, 'Value', 1);
+end
+
+% -------------------------------------------------------------------------
+function radiobutton_clabels_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+        set(handles.checkbox_removenctype, 'Value', 0); 
+        set(handles.checkbox_removenctype, 'Enable', 'off');        
+        set(handles.radiobutton_blabels, 'Value', 0);
+        set(handles.radiobutton_bini, 'Value', 0);
+        set(handles.radiobutton_numcodes, 'Value', 0);
+else
+        set(hObject, 'Value', 1);
+end
+
+% -------------------------------------------------------------------------
+function radiobutton_numcodes_Callback(hObject, eventdata, handles)
+if get(hObject, 'Value')
+        set(handles.checkbox_removenctype, 'Value', 0); 
+        set(handles.checkbox_removenctype, 'Enable', 'off');        
+        set(handles.radiobutton_blabels, 'Value', 0);
+        set(handles.radiobutton_clabels, 'Value', 0);
+        set(handles.radiobutton_bini, 'Value', 0);
+else
+        set(hObject, 'Value', 1);
+end
 
 % -------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
@@ -97,17 +145,17 @@ uiresume(handles.gui_chassis);
 
 % -------------------------------------------------------------------------
 function pushbutton_apply_Callback(hObject, eventdata, handles)
-if get(handles.radiobutton_numcodes, 'Value')
-        field = 'code';
-end
-if get(handles.radiobutton_clabels, 'Value')
+if get(handles.radiobutton_numcodes, 'Value') && ~get(handles.radiobutton_clabels, 'Value') && ~get(handles.radiobutton_blabels, 'Value') && ~get(handles.radiobutton_bini, 'Value')
+        field = 'code';        
+elseif ~get(handles.radiobutton_numcodes, 'Value') && get(handles.radiobutton_clabels, 'Value') && ~get(handles.radiobutton_blabels, 'Value') && ~get(handles.radiobutton_bini, 'Value')
         field = 'codelabel';
-end
-if get(handles.radiobutton_blabels, 'Value')
+elseif ~get(handles.radiobutton_numcodes, 'Value') && ~get(handles.radiobutton_clabels, 'Value') && get(handles.radiobutton_blabels, 'Value') && ~get(handles.radiobutton_bini, 'Value')
         field = 'binlabel';
+else       
+        field = 'bini';
 end
-
-handles.output = field;
+removenctype = get(handles.checkbox_removenctype, 'Value');
+handles.output = {field, removenctype};
 
 % Update handles structure
 guidata(hObject, handles);

@@ -234,11 +234,11 @@ function button_browse_Callback(hObject, eventdata, handles)
 %
 prename = get(handles.edit_fname,'String');
 
-if ispc
-        [filename, filepath, filterindex] = uiputfile({'*.xls';'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
-else
+% if ispc
+%         [filename, filepath, filterindex] = uiputfile({'*.xls';'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
+% else
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
-end
+% end
 if isequal(filename,0)
         disp('User selected Cancel')
         handles.owfp = 0;  % over write file permission
@@ -280,7 +280,7 @@ end
 function edit_latency_Callback(hObject, eventdata, handles)
 lat = str2num(get(handles.edit_latency, 'String'));
 if ~isempty(lat)
-        lat = unique(lat);
+        lat = unique_bc2(lat);
         set(handles.edit_latency, 'String', vect2colon(lat, 'Delimiter', 'off'));
 end
 
@@ -767,7 +767,7 @@ end
 function edit_channels_Callback(hObject, eventdata, handles)
 channnums =  str2num(get(handles.edit_channels,'String'));
 if ~isempty(channnums)
-        channnums  = unique(channnums);
+        channnums  = unique_bc2(channnums);
         listch     = handles.listch;
         indxlistch = channnums;
         indxlistch = indxlistch(indxlistch<=length(listch));
@@ -939,7 +939,7 @@ end
 function edit_bins_Callback(hObject, eventdata, handles)
 binnums =  str2num(get(handles.edit_bins,'String'));
 if ~isempty(binnums)
-        binnums   = unique(binnums);
+        binnums   = unique_bc2(binnums);
         listb     = handles.listb;
         indxlistb = binnums;
         indxlistb = indxlistb(indxlistb<=length(listb));
@@ -1141,7 +1141,7 @@ function edit_erpset_Callback(hObject, eventdata, handles)
 if get(handles.radiobutton_erpset, 'Value')
         indx = str2num(get(handles.edit_erpset, 'String'));
         if ~isempty(indx)
-                indx = unique(indx);
+                indx = unique_bc2(indx);
                 set(handles.edit_erpset, 'String', vect2colon(indx, 'Delimiter', 'off'));
         else
                 return
@@ -1166,7 +1166,7 @@ nerp   = handles.nsets;
 % Read first ERPset
 %
 if get(handles.radiobutton_erpset, 'Value')==1;
-        indexerp = unique(str2num(get(handles.edit_erpset, 'String')));
+        indexerp = unique_bc2(str2num(get(handles.edit_erpset, 'String')));
         if isempty(indexerp)
                 chkerp  = 1; % not numeric
                 return
@@ -1204,8 +1204,8 @@ if chkerp==4
         return
 end
 
-bintest  = length(unique(kbin));
-chantest = length(unique(kchan));
+bintest  = length(unique_bc2(kbin));
+chantest = length(unique_bc2(kchan));
 
 if bintest>1
         fprintf('Detail:\n')
@@ -1219,7 +1219,7 @@ if bintest>1
         chkerp  = 5; % Number of bins across ERPsets is different!
         return
 else
-        nbin = unique(kbin);
+        nbin = unique_bc2(kbin);
 end
 if chantest>1
         fprintf('Detail:\n')
@@ -1233,7 +1233,7 @@ if chantest>1
         chkerp  = 6; % Number of channels across ERPsets is different
         return
 else
-        nchan = unique(kchan);
+        nchan = unique_bc2(kchan);
 end
 
 indxbin  = str2num(get(handles.edit_bins, 'String'));
@@ -1902,7 +1902,7 @@ end
 %
 % New menu
 %
-[tfm indxmeaX] = ismember({op}, {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
+[tfm, indxmeaX] = ismember_bc2({op}, {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
         'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat', 'fninteglat',...
         'fareaplat','fareanlat', 'ninteg','nintegz' } );
 
@@ -1912,13 +1912,13 @@ end
 areatype=1; % 1=total; 2=integral; 3=pos; 4= neg
 fracmenuindex = 2-fracmearep;
 
-if ismember(indxmeaX,[6 7 8 16])
+if ismember_bc2(indxmeaX,[6 7 8 16])
         indxmea = 6;
         areatype = find(indxmeaX==[6 16 7 8]);  % 1,2,3,4
-elseif ismember(indxmeaX,[9 10 11 17])
+elseif ismember_bc2(indxmeaX,[9 10 11 17])
         areatype = find(indxmeaX==[9 17 10 11]);  % 1,2,3,4
         indxmea = 7;
-elseif ismember(indxmeaX,[12 13 14 15])
+elseif ismember_bc2(indxmeaX,[12 13 14 15])
         areatype = find(indxmeaX==[12 13 14 15]);  % 1,2,3,4
         indxmea = 8;
         fracmenuindex = round(2^(fracmearep/2)); % when 0 means 1, when 2 means 2;
@@ -1933,7 +1933,7 @@ measurearray = {'None','Pre','Post','Whole','Custom'};
 set(handles.popupmenu_baseliner, 'String', measurearray);
 
 if ischar(blc)
-        [tfm indxblc] = ismember({blc}, {'none', 'pre', 'post', 'whole', 'all'} );
+        [tfm indxblc] = ismember_bc2({blc}, {'none', 'pre', 'post', 'whole', 'all'} );
         if indxblc == 5
                 indxblc = 4;
         elseif indxblc==0
@@ -2059,7 +2059,7 @@ switch indxmea
                 set(handles.text_tip_inputlat, 'String','(use two latencies)');
 end
 
-set(handles.edit_latency, 'String',  sprintf('%.2f  ', unique(latency)))
+set(handles.edit_latency, 'String',  sprintf('%.2f  ', unique_bc2(latency)))
 set(handles.popupmenu_precision, 'Value', dig)
 
 if binlabop==0
@@ -2407,6 +2407,3 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
-
-
-

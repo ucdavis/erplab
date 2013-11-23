@@ -589,7 +589,7 @@ web http://erpinfo.org/erplab/erplab-documentation/manual_4/EventList_Create.htm
 function pushbutton_apply_Callback(hObject, eventdata, handles)
 
 fulltext  = get(handles.listbox_lines, 'String');
-fulltext  = fulltext(~ismember(fulltext, {'new line'})); % avoid multiple 'new line'
+fulltext  = fulltext(~ismember_bc2(fulltext, {'new line'})); % avoid multiple 'new line'
 fulltext  = [fulltext; 'new line'];
 nline     = length(fulltext);
 currline  = get(handles.listbox_lines, 'Value');
@@ -637,7 +637,7 @@ if condi
                 if ~isempty(indi)
                         numbaux = cell2mat(numbina(indi));
                         nub  = length(numbaux);
-                        unb  = unique(numbaux);
+                        unb  = unique_bc2(numbaux);
                         nunb = length(unb);
                         sbin    = sort(unb);
                         compbin = [1:nunb]==unb;

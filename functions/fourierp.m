@@ -127,7 +127,7 @@ fs    = ERP.srate;
 fnyq  = fs/2;
 nchan = length(chanArray);
 
-indxtimewin = ismember(ERP.times, ERP.times(ERP.times>=latwindow(1) & ERP.times<=latwindow(2)));
+indxtimewin = ismember_bc2(ERP.times, ERP.times(ERP.times>=latwindow(1) & ERP.times<=latwindow(2)));
 datax  = ERP.bindata(:,indxtimewin,:);
 L      = length(datax); %ERP.pnts;
 nbin   = length(binArray);

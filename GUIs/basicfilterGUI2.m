@@ -697,7 +697,7 @@ if ~isempty(find(chx<1))
         tf = 1; %
         return
 end
-if length(chx)>length(unique(chx))
+if length(chx)>length(unique_bc2(chx))
         if showmsg
                 msgboxText =  ['Repeated channels are not allowed.\n'...
                         'Therefore, ERPLAB will get rid of them.'];
@@ -862,7 +862,7 @@ function [readobjects v] = read_GUI(hObject, eventdata, handles)
 v = 1; % everything ok by default
 readobjects    = {};
 channelArray   = str2num(get(handles.edit_channels, 'string'));
-channelArray   = unique(channelArray);
+channelArray   = unique_bc2(channelArray);
 len1 = length(channelArray);
 filterallch    = get(handles.checkbox_filterallchannels, 'Value');
 if filterallch
@@ -1482,7 +1482,7 @@ if iswarnroff~=0
                 orderindx    = get(handles.popupmenu_order, 'Value');
                 order        = str2num(strrep(orderlist{orderindx},'automin:',''));
                 orderlist{1} = 'automin';
-                [tfx posord] = ismember(order,[-1 4:4:4096]);
+                [tfx, posord] = ismember_bc2(order,[-1 4:4:4096]);
                 
                 set(handles.popupmenu_order, 'String',orderlist)
                 set(handles.popupmenu_order, 'Value',posord)
@@ -1617,7 +1617,7 @@ elseif iswarngain~=0 && iswarnroff==0
                         orderindx    = get(handles.popupmenu_order, 'Value');
                         order        = str2num(strrep(orderlist{orderindx},'automin:',''));
                         orderlist{1} = 'automin';
-                        [tfx posord] = ismember(order,[-1 2 4 6 8]);
+                        [tfx, posord] = ismember_bc2(order,[-1 2 4 6 8]);
                         
                         set(handles.popupmenu_order, 'String',orderlist)
                         set(handles.popupmenu_order, 'Value',posord)
@@ -1870,7 +1870,7 @@ axes(handles.axes1)
 colorband = [0.9922    0.9176    0.7961];
 alphaval  = 0.7;
 
-if ismember(labelf, {'Low-pass','High-pass','Band-pass'})
+if ismember_bc2(labelf, {'Low-pass','High-pass','Band-pass'})
         
         if strcmpi(labelf,'High-pass')
                 valuelx = fnyq;
@@ -1882,7 +1882,7 @@ if ismember(labelf, {'Low-pass','High-pass','Band-pass'})
                 'facecolor',colorband,...
                 'edgecolor',colorband,...
                 'facealpha',alphaval)
-elseif ismember(labelf,'Stop-band (Parks-McClellan Notch)')
+elseif ismember_bc2(labelf,'Stop-band (Parks-McClellan Notch)')
         patch([0 0 valuel-1.5 valuel-1.5],[yminb ymaxb ymaxb yminb],'r',...
                 'facecolor',colorband,...
                 'edgecolor',colorband,...
@@ -2623,7 +2623,7 @@ switch typefilter
         case 'butter'
                 set(handles.radiobutton_butter, 'Value', 1); % 0 means Butterworth
                 ordervector = 2:2:8;
-                [tf ordenp] = ismember(filterorder, ordervector);
+                [tf, ordenp] = ismember_bc2(filterorder, ordervector);
                 set(handles.popupmenu_order,'String', char([{'automin'}; cellstr(num2str(ordervector'))])) % set order list
                 set(handles.popupmenu_order,'Value', ordenp+1);
                 set(handles.popupmenu_dboct,'String', num2str(6*ordervector')) % set db/oct list
@@ -2633,7 +2633,7 @@ switch typefilter
         case 'fir'
                 set(handles.radiobutton_fir, 'Value', 1); % 1 means FIR
                 ordervector = 4:4:4096;
-                [tf ordenp] = ismember(filterorder, ordervector);
+                [tf, ordenp] = ismember_bc2(filterorder, ordervector);
                 set(handles.popupmenu_order,'String', char([{'automin'}; cellstr(num2str(ordervector'))])) % set order list
                 set(handles.popupmenu_order,'Value', ordenp+1);
                 set(handles.popupmenu_dboct,'String', '---') % set db/oct list

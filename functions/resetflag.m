@@ -90,14 +90,10 @@ if iseegstruct(EEG) && isfield(EEG,'epoch')
         if ~isempty(EEG.epoch)
                 for i=1:EEG.trials
                         if length(EEG.epoch(i).eventlatency) == 1
-
                                 itemx = cell2mat(EEG.epoch(i).eventitem);
                                 EEG.epoch(i).eventflag = {EEG.EVENTLIST(indexEL).eventinfo(itemx).flag};
-
                         elseif length(EEG.epoch(i).eventlatency) > 1
-
                                 nitem = length(EEG.epoch(i).eventitem);
-
                                 for t=1:nitem
                                         itemx = EEG.epoch(i).eventitem{t};
                                         EEG.epoch(i).eventflag{t} = EEG.EVENTLIST(indexEL).eventinfo(itemx).flag;

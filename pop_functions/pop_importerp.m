@@ -145,9 +145,9 @@ if strcmpi(p.Results.Time, 'on');
 else
         includetime = 0;
 end
-if ismember({lower(p.Results.Pointat)}, {'col','column','columns'});
+if ismember_bc2({lower(p.Results.Pointat)}, {'col','column','columns'});
         transpose = 1;
-elseif ismember({lower(p.Results.Pointat)}, {'row','rows'});
+elseif ismember_bc2({lower(p.Results.Pointat)}, {'row','rows'});
         transpose = 0;
 else
         error('ERPLAB says: ?')
@@ -203,11 +203,11 @@ else
         end
 end
 
-uftype  = unique(filetype);
+uftype  = unique_bc2(filetype);
 nuftype = length(uftype);
 
 if nuftype==1
-        if ismember({lower(char(uftype))}, {'txt','.txt','text','.asc','asc','ascii'});   %filetype==1
+        if ismember_bc2({lower(char(uftype))}, {'txt','.txt','text','.asc','asc','ascii'});   %filetype==1
                 [ERPx, serror] = asc2erp(filename, filepath, transpose, includetime, elabel, timeunit, fs, xlim);
                 
                 if serror==1
@@ -232,14 +232,14 @@ if nuftype==1
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
-        elseif ismember({lower(char(uftype))}, {'avg','.avg','neuro','neuroscan'}); %filetype==2
+        elseif ismember_bc2({lower(char(uftype))}, {'avg','.avg','neuro','neuroscan'}); %filetype==2
                 ERPx = neuro2erp(filename, filepath);
         else
                 error('wrong data format for importing')
         end
 else
         for i=1:nfile
-                if ismember({lower(filetype{i})}, {'txt','.txt','text','.asc','asc','ascii'});   %filetype==1
+                if ismember_bc2({lower(filetype{i})}, {'txt','.txt','text','.asc','asc','ascii'});   %filetype==1
                         
                         %
                         % subroutine
@@ -262,7 +262,7 @@ else
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
-                elseif ismember({lower(filetype{i})}, {'avg','.avg','neuro','neuroscan'}); %filetype==2
+                elseif ismember_bc2({lower(filetype{i})}, {'avg','.avg','neuro','neuroscan'}); %filetype==2
                         ALLERPX(i) = neuro2erp(filename(i), filepath(i));
                 else
                         error('wrong data format for importing')
@@ -298,7 +298,7 @@ end
 w=1;
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

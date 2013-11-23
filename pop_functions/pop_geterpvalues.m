@@ -137,7 +137,7 @@ if nargin==1  % GUI
         else
                 if ~isempty(ALLERP)
                         if isnumeric(def{2}) % JavierLC 11-17-11
-                                [uu, mm] = unique(def{2}, 'first');
+                                [uu, mm] = unique_bc2(def{2}, 'first');
                                 def{2}   = [def{2}(sort(mm))];
                                 def{2}   = def{2}(def{2}<=length(ALLERP));
                         end
@@ -229,7 +229,7 @@ if nargin==1  % GUI
         if fracmearep==0 % Fractional area latency replacement
                 fracmearepstr = 'NaN';
         else
-                if ismember({moption}, {'fareatlat', 'fninteglat','fareaplat','fareanlat'})
+                if ismember_bc2({moption}, {'fareatlat', 'fninteglat','fareaplat','fareanlat'})
                         fracmearepstr = 'errormsg';
                 else
                         fracmearepstr = 'absolute';
@@ -468,7 +468,7 @@ moption = lower(p.Results.Measure);
 if isempty(moption)
         error('ERPLAB says: User must specify a type of measurement.')
 end
-if ismember({moption}, {'instabl', 'areazt','areazp','areazn', 'nintegz'});
+if ismember_bc2({moption}, {'instabl', 'areazt','areazp','areazn', 'nintegz'});
         if length(latency)~=1
                 error(['ERPLAB says: ' moption ' only needs 1 latency value.'])
         end
@@ -518,7 +518,7 @@ end
 
 intfactor = p.Results.InterpFactor;
 
-if ~ismember({moption}, meacell);
+if ~ismember_bc2({moption}, meacell);
         msgboxText =  [moption ' is not a valid option for pop_geterpvalues!'];
         if shist == 1; % gui
                 title = 'ERPLAB: pop_geterpvalues wrong inputs';
@@ -540,37 +540,55 @@ if ~viewmea
                 error('File name is empty.')
         end
         if strcmpi(ext,'.xls')
-                if ispc
-                        exceloption = 1;
-                        fprintf('\nOutput will be a Microsoft Excel spreadsheet file');
-                        warning off MATLAB:xlswrite:AddSheet
-                        if strcmp(pathtest,'')
-                                pathtest = cd;
-                                fname = fullfile(pathtest, [filtest ext]);
-                        end
-                else
-                        fprintf('\nWARNING:\n');
-                        title    = 'ERPLAB: WARNING, pop_geterpvalues() export to Excel' ;
-                        question = ['The full functionality of XLSWRITE depends on the ability '...
-                                'to instantiate Microsoft Excel as a COM server.\n\n'...
-                                'COM is a technology developed for Windows platforms and, '...
-                                'at the current ERPLAB version,  is not available for non-Windows machines\n\n'...
-                                'Do you want to continue anyway with a text file instead?'];
-                        button = askquest(sprintf(question), title);
-                        
-                        if ~strcmpi(button,'yes')
-                                disp('User selected Cancel')
-                                return
-                        end
-                        if strcmp(pathtest,'')
-                                pathtest = cd;
-                        end
-                        ext   = '.txt';
-                        fname = fullfile(pathtest, [filtest ext]);
-                        fprintf('\nOutput file will have extension %s\n', ext);
-                        exceloption = 0;
+                fprintf('\nWARNING:\n');
+                title    = 'ERPLAB: WARNING, pop_geterpvalues() export to Excel' ;
+                question = ['Sorry. Export to Excel  is not longer supported by ERPLAB.\n\n'...
+                        'Do you want to continue anyway using a text file instead?'];
+                button = askquest(sprintf(question), title);
+                
+                if ~strcmpi(button,'yes')
+                        disp('User selected Cancel')
+                        return
                 end
-                send_to_file = 1;
+                if strcmp(pathtest,'')
+                        pathtest = cd;
+                end
+                ext   = '.txt';
+                fname = fullfile(pathtest, [filtest ext]);
+                fprintf('\nOutput file will have extension %s\n', ext);
+                exceloption = 0;                
+                send_to_file = 1;               
+                %                 if ispc
+                %                         exceloption = 1;
+                %                         fprintf('\nOutput will be a Microsoft Excel spreadsheet file');
+                %                         warning off MATLAB:xlswrite:AddSheet
+                %                         if strcmp(pathtest,'')
+                %                                 pathtest = cd;
+                %                                 fname = fullfile(pathtest, [filtest ext]);
+                %                         end
+                %                 else
+                %                         fprintf('\nWARNING:\n');
+                %                         title    = 'ERPLAB: WARNING, pop_geterpvalues() export to Excel' ;
+                %                         question = ['The full functionality of XLSWRITE depends on the ability '...
+                %                                 'to instantiate Microsoft Excel as a COM server.\n\n'...
+                %                                 'COM is a technology developed for Windows platforms and, '...
+                %                                 'at the current ERPLAB version,  is not available for non-Windows machines\n\n'...
+                %                                 'Do you want to continue anyway with a text file instead?'];
+                %                         button = askquest(sprintf(question), title);
+                %
+                %                         if ~strcmpi(button,'yes')
+                %                                 disp('User selected Cancel')
+                %                                 return
+                %                         end
+                %                         if strcmp(pathtest,'')
+                %                                 pathtest = cd;
+                %                         end
+                %                         ext   = '.txt';
+                %                         fname = fullfile(pathtest, [filtest ext]);
+                %                         fprintf('\nOutput file will have extension %s\n', ext);
+                %                         exceloption = 0;
+                %                 end
+                %                 send_to_file = 1;
         elseif strcmpi(ext,'.no_save')
                 send_to_file = 0;
         elseif strcmpi(ext,'.viewer') % temporary
@@ -640,7 +658,7 @@ for k=1:nfile
                         serror = 2;
                         break
                 end
-                if ismember(0,ismember(lower(ERP.bindescr), lower(n1bdesc))) % May 25, 2010
+                if ismember_bc2(0,ismember(lower(ERP.bindescr), lower(n1bdesc))) % May 25, 2010
                         serror = 3;
                         break
                 end
@@ -890,7 +908,7 @@ else
         DATIN = sprintf('''%s''', filelist);
         skipfields = [skipfields, 'Erpsets'];
 end
-if ~ismember({moption}, {'peakampbl', 'peaklatbl', 'fpeaklat'}) % JLC. 08/22/13
+if ~ismember_bc2({moption}, {'peakampbl', 'peaklatbl', 'fpeaklat'}) % JLC. 08/22/13
         skipfields = [skipfields {'Neighborhood', 'Peakpolarity', 'Peakreplace'}];
 end
 if strcmpi(fname,'no_save.no_save') || strcmpi(fname,'tempofile.txt')
@@ -900,7 +918,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( 'ALLERP = pop_geterpvalues( %s, %s, %s, %s ',  DATIN, latencystr, binArraystr, chanArraystr);
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

@@ -131,7 +131,7 @@ end
 % RTs
 %
 if isRT
-      bin = unique(cell2mat(EEG.epoch(i).eventbini)); 
+      bin = unique_bc2(cell2mat(EEG.epoch(i).eventbini)); 
       bin = bin(bin>0);
       rtitem = EEG.EVENTLIST.bdf(bin).rtitem;
       

@@ -68,10 +68,10 @@ precstr = p.Results.Precision;
 repstr  = p.Results.Repeat;
 nrow    = dime(1); u=zeros(1,nrow);
 for i=1:nrow
-      u(i) = length(unique(Matrix(i,:)));
+      u(i) = length(unique_bc2(Matrix(i,:)));
 end
-if ismember({repstr},{'off','no'})
-      if length(unique(u))~=1
+if ismember_bc2({repstr},{'off','no'})
+      if length(unique_bc2(u))~=1
             deli = 'on';
             gocell = 1;
       else
@@ -90,7 +90,7 @@ for i=1:nrow
             strMat = sprintf('%s;%s', strMat, strtemp);
       end
 end
-if ismember({p.Results.Delimiter},{'yes','on'})
+if ismember_bc2({p.Results.Delimiter},{'yes','on'})
       if gocell
             strMat = [ '{' strMat '}' ];
       else

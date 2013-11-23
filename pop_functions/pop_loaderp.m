@@ -185,7 +185,9 @@ conti     = 1; % continue?  1=yes; 0=no
 %
 for i=1:nfile
         if loadfrom==1
-                L   = load(fullfile(inputpath, inputfname{i}), '-mat');
+                fullname = fullfile(inputpath, inputfname{i});
+                fprintf('Loading %s\n', fullname);
+                L   = load(fullname, '-mat');
                 ERP = L.ERP;
         else
                 ERP = evalin('base', 'ERP');
@@ -248,6 +250,16 @@ for i=1:nfile
                         error(sprintf(msgboxText, ERP.filename))
                 end
         end
+        
+        %
+        % look for null bins
+        %
+        c = look4nullbin(ERP);
+        if c>0
+                 msgnull = sprintf('bin #%g has flatlined ERPs.\n', c);
+                 msgnull = sprintf('WARNING:\n%s', msgnull);
+                 warningatcw(msgnull, [1 0 0]);
+        end
 end
 if conti==0
         return
@@ -270,7 +282,7 @@ if errorf==0 && serror==0
         skipfields = {'UpdateMainGui', 'Warning','History'};        
         for q=1:length(fn)
                 fn2com = fn{q};
-                if ~ismember(fn2com, skipfields)
+                if ~ismember_bc2(fn2com, skipfields)
                         fn2res = p.Results.(fn2com);
                         if iscell(fn2res) % 10-21-11
                                 nc = length(fn2res);
@@ -325,7 +337,7 @@ end
 % Completion statement
 %
 prefunc = dbstack;
-nf = length(unique({prefunc.name}));
+nf = length(unique_bc2({prefunc.name}));
 if nf==1
         msg2end
 end

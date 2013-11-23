@@ -112,7 +112,7 @@ if strcmpi(p.Results.Warning,'on')
 else
         wchmsgon = 0;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
         issaveas  = 0;

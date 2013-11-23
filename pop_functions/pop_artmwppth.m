@@ -88,7 +88,7 @@ if nargin==1
                         def{1}(2) = single(EEG(1).xmax*1000);
                 end
                 
-                def{5} = def{5}(ismember(def{5},1:EEG(1).nbchan));
+                def{5} = def{5}(ismember_bc2(def{5},1:EEG(1).nbchan));
         end
         try
                 chanlabels = {EEG(1).chanlocs.labels};
@@ -110,7 +110,7 @@ if nargin==1
         ampth      =  answer{2};
         winms      =  answer{3};
         stepms     =  answer{4};
-        chanArray  =  unique(answer{5}); % avoids repeated channels
+        chanArray  =  unique_bc2(answer{5}); % avoids repeated channels
         flag       =  answer{6};
         viewer     =  answer{end};
         
@@ -289,7 +289,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_artmwppth( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

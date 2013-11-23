@@ -79,14 +79,14 @@ if specfield~=2 % not samples
         if isnumeric(valueatfield) && length(valueatfield)>1
                 if specfield==0
                         if isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST)
-                                indx = find(ismember([EEG.EVENTLIST.eventinfo.code], valueatfield));
+                                indx = find(ismember_bc2([EEG.EVENTLIST.eventinfo.code], valueatfield));
                         else
-                                indx = find(ismember([EEG.event.type], valueatfield));
+                                indx = find(ismember_bc2([EEG.event.type], valueatfield));
                         end
                 else
                         k=1;
                         for a=1:length(EEG.EVENTLIST.eventinfo)
-                                if nnz(ismember( valueatfield, [EEG.EVENTLIST.eventinfo(a).bini]))>0;
+                                if nnz(ismember_bc2( valueatfield, [EEG.EVENTLIST.eventinfo(a).bini]))>0;
                                         indx(k) = a;
                                         k = k+1;
                                 end

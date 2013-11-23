@@ -339,7 +339,7 @@ disp('hola')
       g = D{1};
       g = strtrim(strrep(g,' ','_'));
       g = strrep(g,'-','_');
-      %g(ismember(double(g),[45])) = ''; %removes '-'   %%If name starts with numbers, will not work
+      %g(ismember_bc2(double(g),[45])) = ''; %removes '-'   %%If name starts with numbers, will not work
       
       
       a = regexp(g,'"(.*)"', 'tokens');
@@ -382,7 +382,7 @@ disp('hola')
 % %                         h = D{i}
 % %                         %h = strtrim(strrep(h,' ','_'));
 % %                         h = strrep(h,'-','_')
-% %                         %h(ismember(double(h),[45])) = '';   %removes '-'
+% %                         %h(ismember_bc2(double(h),[45])) = '';   %removes '-'
 % %                         %h
 % %                         b = regexp(h,'bindesc=(.*)', 'tokens')  %if there is a space between binname and last ", will not work
 % %                         b = strrep(b{:},'"','')

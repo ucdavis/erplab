@@ -92,7 +92,7 @@ if nargin==1 && ~ischar(ALLERP)  % GUI
         else
                 if ~isempty(ALLERP)
                         if isnumeric(def{2}) % JavierLC 11-17-11
-                                [uu, mm] = unique(def{2}, 'first');
+                                [uu, mm] = unique_bc2(def{2}, 'first');
                                 def{2}  = [def{2}(sort(mm))];
                         end
                 end
@@ -204,7 +204,7 @@ if ischar(prefixes)
 else
         pfixes = prefixes;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
         issaveas  = 0;
@@ -229,7 +229,7 @@ if optioni~=0
                 if errorerp
                         error('ERPLAB says: Loading ERP process has crashed....')
                 else
-                        if length(unique(numpoints))>1
+                        if length(unique_bc2(numpoints))>1
                                 fprintf('Detail:\n')
                                 fprintf('-------\n')
                                 for j=1:nfile
@@ -240,7 +240,7 @@ if optioni~=0
                                 errorfound(sprintf(msgboxText), etitle);
                                 return
                         end
-                        if length(unique(numchans))>1
+                        if length(unique_bc2(numchans))>1
                                 fprintf('Detail:\n')
                                 fprintf('-------\n')
                                 for j=1:nfile
@@ -298,7 +298,7 @@ if serror==0
         erpcom = sprintf( 'ERP = pop_appenderp( %s ', DATIN );
         for q=1:length(fn)
                 fn2com = fn{q};
-                if ~ismember(fn2com, skipfields)
+                if ~ismember_bc2(fn2com, skipfields)
                         fn2res = p.Results.(fn2com);
                         if ~isempty(fn2res)
                                 if ischar(fn2res)

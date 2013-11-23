@@ -496,7 +496,7 @@ end
 
 legstr = p.Results.Legend;
 aa = regexp(legstr, 'bn|bd|me|la', 'match');
-bb = num2cell(ismember({'bn','bd','me','la'}, aa));
+bb = num2cell(ismember_bc2({'bn','bd','me','la'}, aa));
 [binleg, bindesc, vtype, vlatency] = deal(bb{:});
 
 if isempty(ERP.splinefile) && isempty(splinefile) && strcmpi(mtype, '3d')
@@ -672,7 +672,7 @@ while iadj<=nadj && continueplot
                                 latetitle = num2str(latencyArray(ilat));
                         end
                         if ~isnumeric(baseline)
-                                if ismember(baseline, {'pre' 'post' 'all' 'none'})
+                                if ismember_bc2(baseline, {'pre' 'post' 'all' 'none'})
                                         for c=1:ERP.nchan
                                                 blv = blvalue(ERP, c, binArray(ibin), baseline);
                                                 datap(c,:) = ERP.bindata(c,:,binArray(ibin)) - blv;
@@ -962,7 +962,7 @@ erpcom = sprintf( '%s = pop_scalplot( %s, %s, %s ',  inputname(1), inputname(1),
 
 for q=1:length(fn)
         fn2com = fn{q}; % inputname
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com); %  input value
                 if ~isempty(fn2res)
                         if ischar(fn2res)
@@ -977,7 +977,7 @@ for q=1:length(fn)
                                 end
                                 erpcom = sprintf( '%s}', erpcom);
                         else
-                                if ~ismember(fn2com,{'Maplimit','Mapview'})
+                                if ~ismember_bc2(fn2com,{'Maplimit','Mapview'})
                                         erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, vect2colon(fn2res,'Repeat','on'));
                                 else
                                         xyscalestr = sprintf('[ %.1f %.1f  %s ]', fn2res(1), fn2res(2), vect2colon(fn2res(3:end),'Delimiter','off'));

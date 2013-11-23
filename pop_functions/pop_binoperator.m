@@ -133,7 +133,7 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ERP, formulas, varargin{:});
 
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
         issaveas  = 0;

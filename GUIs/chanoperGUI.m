@@ -794,7 +794,7 @@ chan2del = deletechanGUI(typedata);
 nchan    = handles.nchan;
 
 if ~isempty(chan2del)        
-        chan2del = unique(cell2mat(chan2del));        
+        chan2del = unique_bc2(cell2mat(chan2del));        
         if max(chan2del)>nchan && nnz(isinf(chan2del))==0
                 msgboxText = 'You are specifying non-existing channels!';
                 title = 'ERPLAB: chanoperGUI  remove channels';

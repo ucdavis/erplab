@@ -68,7 +68,7 @@ if nargin==1
         dlg_title = 'Inputs for EMG detection';
         num_lines = 1;
         
-        fco = unique(cell2mat({EEG.event.type}));
+        fco = unique_bc2(cell2mat({EEG.event.type}));
         
         def = {num2str(EEG.nbchan), num2str(fco(1)), '100', '-0.5 1', '0.6'};
         answer = inputvalue(prompt,dlg_title,num_lines,def);

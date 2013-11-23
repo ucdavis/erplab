@@ -50,7 +50,7 @@ for b=1:nbin
                         if iscell(binix)
                                 binix = cell2mat(binix);
                         end
-                        if ismember(b, binix)
+                        if ismember_bc2(b, binix)
                                 
                                 flagx = [EEG.epoch(i).eventflag];
                                 
@@ -66,7 +66,7 @@ for b=1:nbin
                         
                         indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0,1,'first'); % catch zero-time locked type,
                         
-                        if ismember(b, EEG.epoch(i).eventbini{indxtimelock})
+                        if ismember_bc2(b, EEG.epoch(i).eventbini{indxtimelock})
                                 oldflag(b,i)   = EEG.epoch(i).eventflag{indxtimelock};
                         else
                                 oldflag(b,i) =0;

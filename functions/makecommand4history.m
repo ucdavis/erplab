@@ -1,12 +1,8 @@
 % under construction...
 
 function com = makecommand4history(p, skipfields, type, funcname)
-
-
 %skipfields = {'ALLEEG', 'Saveas'};
 fn     = fieldnames(p.Results);
-
-
 if length(setindex)==1 && setindex(1)==1
       inputvari = 'EEG'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
 else
@@ -15,7 +11,7 @@ end
 erpcom = sprintf( 'ERP = pop_averager( %s ', inputvari);
 for q=1:length(fn)
       fn2com = fn{q};
-      if ~ismember(fn2com, skipfields)
+      if ~ismember_bc2(fn2com, skipfields)
             fn2res = p.Results.(fn2com);
             if ~isempty(fn2res)
                   if ischar(fn2res)

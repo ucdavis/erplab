@@ -9,7 +9,6 @@
 % 2009
 
 function v = vogue(A)
-
 B.x = struct([]);
 v   = [];
 if iscell(A)
@@ -34,13 +33,10 @@ if iscell(A)
 else
         B.x = A;
 end
-
 f1 = 0;
-
 for i=1:length(B)
-        u = unique(B(i).x)';
-        [tf ind] = ismember(B(i).x, u);
-                
+        u = unique_bc2(B(i).x)';
+        [tf, ind] = ismember_bc2(B(i).x, u);                
         if ind>0
                 [k f2]= mode(ind);
                 m = u(k);

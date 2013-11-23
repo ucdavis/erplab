@@ -130,7 +130,7 @@ fprintf('\nPlease wait, ...........\n\n');
 % Any other custom EEG.event field
 %
 names   = fieldnames(EEG.event);
-names   = names(~ismember(names, {'type','latency', 'duration', 'urevent'})); % only extra event fields
+names   = names(~ismember_bc2(names, {'type','latency', 'duration', 'urevent'})); % only extra event fields
 lename  = length(names);
 % nevent  = length(auxevent);
 % latpnts = round(newlate*EEG.srate/1000);  %ms to sample

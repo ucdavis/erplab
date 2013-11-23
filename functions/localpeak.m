@@ -88,7 +88,7 @@ end
 %
 % Tests flat data
 %
-du = unique(datax);
+du = unique_bc2(datax);
 if length(du)<=round(length(datax)*0.1) % unique values are less than 10% of total sample values
       errorcode = 6;
       return
@@ -176,14 +176,14 @@ if npoints>0
             a = a+1;
       end            
       if ~isempty(valmax)            
-            if length(unique(valmax))==1 && length(valmax)>1 % this is when more than one sample meets the criterias for a local peak (e.g. saturated segments)
+            if length(unique_bc2(valmax))==1 && length(valmax)>1 % this is when more than one sample meets the criterias for a local peak (e.g. saturated segments)
                   poslocalpf   = round(median(posmax));      % position of local peak
                   %latlocalpeak = timex(poslocalpf);         % latency for absolute peak
-                  vlocalpf     = unique(valmax);             % value of local peak                  
-            elseif length(unique(valmax))>1                  
+                  vlocalpf     = unique_bc2(valmax);             % value of local peak                  
+            elseif length(unique_bc2(valmax))>1                  
                   %if multi
                   %        vlocalpf = valmax; % values for multiple local peaks
-                  %        [tfxxclc, poslocalpf] = ismember(valmax, datax);
+                  %        [tfxxclc, poslocalpf] = ismember_bc2(valmax, datax);
                   %              latlocalpeak    = timex(poslocalpf);   % latencies for multiple local peaks
                   %        else
                   %        if peakpol==1 % positive peak -> finds maximum
@@ -196,7 +196,7 @@ if npoints>0
                   %end                  
                   if multi
                         vlocalpf = valmax;
-                        [tf poslocalpf] = ismember(valmax, array);                        
+                        [tf, poslocalpf] = ismember_bc2(valmax, array);                        
                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%CHANGED%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                   else                        
                         if peakpol==1

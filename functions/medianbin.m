@@ -25,7 +25,7 @@ if ischar(bop)
       bop = str2num(char(regexp(bop,'\d+','match')'))';
 end
 
-binarray = unique(bop);
+binarray = unique_bc2(bop);
 
 if length(binarray)~=length(bop)
       fprintf('\n*** WARNING: Repeated bins were ignored.\n\n')

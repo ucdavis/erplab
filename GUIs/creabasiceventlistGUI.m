@@ -286,8 +286,8 @@ if get(handles.checkbox_convert_boundary,'Value')
             return
       end           
       if get(handles.checkbox_addm99,'Value')            
-            newboundarynumcode2 = newboundarynumcode2(~ismember(boundarystrcode2, 'boundary'));
-            boundarystrcode2    = boundarystrcode2(~ismember(boundarystrcode2, 'boundary'));            
+            newboundarynumcode2 = newboundarynumcode2(~ismember_bc2(boundarystrcode2, 'boundary'));
+            boundarystrcode2    = boundarystrcode2(~ismember_bc2(boundarystrcode2, 'boundary'));            
             if isempty(boundarystrcode2)
                   msgboxText =  '''boundary'' event is already specified!\nUncheck one option or change the event name.';
                   title = 'ERPLAB: redundant input';

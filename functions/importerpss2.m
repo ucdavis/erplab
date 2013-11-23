@@ -72,7 +72,7 @@ end
 digperiod = regexpi(asciiERP, '\s*digperiod\s*(\d*)','tokens');
 digperiod = digperiod(~cellfun(@isempty, digperiod));
 digperiod = [digperiod{:}];
-digperiod = unique([digperiod{:}]);
+digperiod = unique_bc2([digperiod{:}]);
 if length(digperiod)==1
       digperiod = str2num(char(digperiod));
 else
@@ -93,7 +93,7 @@ BDesc = [BDesc{:}];
 npoints = regexpi(asciiERP, '\s*npoints\s*(.*)','tokens');
 npoints = npoints(~cellfun(@isempty, npoints));
 npoints = [npoints{:}];
-npoints = unique([npoints{:}]);
+npoints = unique_bc2([npoints{:}]);
 if length(npoints)==1
       npoints = str2num(char(npoints));
 else
@@ -106,7 +106,7 @@ end
 sampleperiod = regexpi(asciiERP, '\s*sampleperiod\s*(.*)','tokens');
 sampleperiod = sampleperiod(~cellfun(@isempty, sampleperiod));
 sampleperiod = [sampleperiod{:}];
-sampleperiod = unique([sampleperiod{:}]);
+sampleperiod = unique_bc2([sampleperiod{:}]);
 if length(sampleperiod)==1
       sampleperiod = str2num(char(sampleperiod));
 else
@@ -119,7 +119,7 @@ end
 presampling = regexpi(asciiERP, '\s*presampling\s*(.*)','tokens');
 presampling = presampling(~cellfun(@isempty, presampling));
 presampling = [presampling{:}];
-presampling = unique([presampling{:}]);
+presampling = unique_bc2([presampling{:}]);
 if length(presampling)==1
       presampling = str2num(char(presampling));
       presampling = -presampling/1000; % usec to msec
@@ -151,7 +151,7 @@ arejects = sum(arejects, 1); %JLC
 %
 m=1;
 for k=1:length(asciiERP)
-      if nnz(ismember(asciiERP{k}, '.'))>0
+      if nnz(ismember_bc2(asciiERP{k}, '.'))>0
             row4data(m) = k;
             m = m+1;
       end

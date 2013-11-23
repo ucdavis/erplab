@@ -58,7 +58,7 @@ if movetime>fulltime
 end
 
 A = EEG.times';
-deltatime   = mean(unique(diff(A)));
+deltatime   = mean(unique_bc2(diff(A)));
 
 if movetime>0      
       Bpre  = min(A)-length(A)*deltatime:deltatime:min(A)-deltatime;

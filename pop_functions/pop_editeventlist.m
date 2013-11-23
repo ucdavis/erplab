@@ -233,7 +233,7 @@ if strcmpi(p.Results.UpdateEEG, 'on')
 else
         updateEEG = 0;  % no warning about previous EVENTLIST struct
 end
-%if strcmpi(p.Results.Saveas, 'on') && ismember(option2do,[2 3 6 7]) % current data
+%if strcmpi(p.Results.Saveas, 'on') && ismember_bc2(option2do,[2 3 6 7]) % current data
 %      issave = 1;
 %else
 %      issave = 0;  %
@@ -312,7 +312,7 @@ end
 %
 EEG = eeg_checkset(EEG, 'eventconsistency'); %  not working properly. EEGLAB 11.0.4.2b. Dec 10. 2012
 field2del = {'bepoch','bini','binlabel', 'code', 'codelabel','enable','flag','item'};
-tf  = ismember(field2del,fieldnames(EEG.event)');
+tf  = ismember_bc2(field2del,fieldnames(EEG.event)');
 
 if rwwarn && nnz(tf)>0
         question = ['The EEG.event field of %s contains subfield name(s) reserved for ERPLAB.\n\n'...
@@ -446,7 +446,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                         binlabelx = '""';
                                 end
                                 if ~isempty(numbin) && ~isempty(indxm)   % bin was specified, code was found
-                                        binII = unique([numbin prebin]);
+                                        binII = unique_bc2([numbin prebin]);
                                         [EVENTLIST.eventinfo(indxm).bini] = deal(binII);
                                         fprintf('\n #: Event codes %g were bined %d . \n', codex, numbin);
                                         [EVENTLIST.eventinfo(indxm).binlabel]  = deal(binlabelx);
@@ -477,7 +477,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                 for i=1:nline
                         codelabelx = inputLine{i}{2};
                         if ~strcmpi(codelabelx,'""') && ~strcmpi(codelabelx,'')
-                                indxm  = find(ismember({EVENTLIST.eventinfo.codelabel}', codelabelx));
+                                indxm  = find(ismember_bc2({EVENTLIST.eventinfo.codelabel}', codelabelx));
                                 if ~isempty(indxm)
                                         
                                         codex = str2num(inputLine{i}{1});
@@ -494,7 +494,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                         binlabelx = '""';
                                 end
                                 if ~isempty(numbin) && ~isempty(indxm)
-                                        binII = unique([numbin prebin]);
+                                        binII = unique_bc2([numbin prebin]);
                                         [EVENTLIST.eventinfo(indxm).bini] = deal(binII);
                                         xbin = [xbin numbin];
                                         
@@ -531,7 +531,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                 binhunter = sort(binaux(binaux>0)); %8/19/2009
                 
                 if lbin>=1
-                        [c, detbin] = ismember(ubin,binhunter);
+                        [c, detbin] = ismember_bc2(ubin,binhunter);
                         detnonz    = nonzeros(detbin)';
                         if ~isempty(detnonz)
                                 countra = [detnonz(1) diff(detnonz)];
@@ -577,12 +577,12 @@ end
 % option2do = 2;  % current data only
 % option2do = 1;  % text only
 
-if ismember(option2do,[1 3 5 7]) % text
+if ismember_bc2(option2do,[1 3 5 7]) % text
         [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, newelname);
 else
         [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST);
 end
-if ismember(option2do,[2 3 6 7]) % current data
+if ismember_bc2(option2do,[2 3 6 7]) % current data
         EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
         EEG = creabinlabel(EEG);
         if updateEEG
@@ -592,7 +592,7 @@ if ismember(option2do,[2 3 6 7]) % current data
         EEG = eeg_checkset(EEG, 'eventconsistency');
         fprintf('\n #: New EVENTLIST structure was attached to the EEG strucure.\n\n');
 end
-if ismember(option2do,[4 5 6 7]) % workspace
+if ismember_bc2(option2do,[4 5 6 7]) % workspace
         assignin('base', 'EVENTLIST', EVENTLIST);
         fprintf('\n #: New EVENTLIST structure was sent to workspace.\n\n');
 end
@@ -605,7 +605,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_editeventlist( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)
@@ -658,7 +658,7 @@ end
 % Completion statement
 %
 prefunc = dbstack;
-nf = length(unique({prefunc.name}));
+nf = length(unique_bc2({prefunc.name}));
 if nf==1
         msg2end
 end

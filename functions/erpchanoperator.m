@@ -216,9 +216,9 @@ if isempty(materase)
                 chanpos(tk) = str2num(tok{1,tk}{1,1});
                 
                 if tk>1
-                        [tf(tk) realchanpos(tk)] = ismember(chanpos(tk), 1:ERPin.nchan);
+                        [tf(tk), realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:ERPin.nchan);
                 else
-                        [tf(1) realchanpos(1)] = ismember(chanpos(1), 1:ERPout.nchan);
+                        [tf(1), realchanpos(1)] = ismember_bc2(chanpos(1), 1:ERPout.nchan);
                 end
         end
         

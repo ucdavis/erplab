@@ -38,7 +38,7 @@
 function valogic = isrepeated(array)
 
 valogic = 0;
-a = unique(array);
+a = unique_bc2(array);
 
 if length(a)~=length(array)
         valogic = 1;

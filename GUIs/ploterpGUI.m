@@ -112,39 +112,39 @@ uiwait(handles.gui_chassis);
 function varargout = ploterpGUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 % try
-        plotset = evalin('base', 'plotset');
-        ispdf = handles.ispdf;
-        if ispdf
-                %plotset = evalin('base', 'plotset');
-                plotset.ptime = 'pdf';
-                handles.output = plotset;
-        end
-        scalp = handles.scalp;
-        if scalp
-                %plotset = evalin('base', 'plotset');
-                plotset.ptime = 'scalp';
-                handles.output = plotset;
-                varargout{1} = handles.output;
-                ERP = handles.ERP;
-                varargout{2} = ERP;
-                
-                % The figure can be deleted now
-                delete(handles.gui_chassis);
-                %ERP = evalin('base', 'ERP');
-                ERP = pop_scalplot(ERP);               
-                return
-        end
-        ismini = handles.ismini;
-        if ismini
-                %plotset = evalin('base', 'plotset');
-                plotset.ptime = 'mini';
-                handles.output = plotset;
-        end
+plotset = evalin('base', 'plotset');
+ispdf = handles.ispdf;
+if ispdf
+        %plotset = evalin('base', 'plotset');
+        plotset.ptime = 'pdf';
+        handles.output = plotset;
+end
+scalp = handles.scalp;
+if scalp
+        %plotset = evalin('base', 'plotset');
+        plotset.ptime = 'scalp';
+        handles.output = plotset;
         varargout{1} = handles.output;
-        varargout{2} = handles.ERP;
+        ERP = handles.ERP;
+        varargout{2} = ERP;
+        
         % The figure can be deleted now
         delete(handles.gui_chassis);
-        pause(0.1)
+        %ERP = evalin('base', 'ERP');
+        ERP = pop_scalplot(ERP);
+        return
+end
+ismini = handles.ismini;
+if ismini
+        %plotset = evalin('base', 'plotset');
+        plotset.ptime = 'mini';
+        handles.output = plotset;
+end
+varargout{1} = handles.output;
+varargout{2} = handles.ERP;
+% The figure can be deleted now
+delete(handles.gui_chassis);
+pause(0.1)
 % catch
 %         % The figure can be deleted now
 %         varargout{1} = [];
@@ -418,7 +418,7 @@ binArray   = str2num(get(handles.edit_bins, 'String'));
 chanArray  = str2num(get(handles.edit_chans, 'String'));
 
 [chk, msgboxText] = chckbinandchan(handles.ERP, binArray, chanArray);
-if chk>0       
+if chk>0
         title = 'ERPLAB: ploterp GUI input';
         errorfound(msgboxText, title);
         return
@@ -464,7 +464,7 @@ end
 
 %--------------------------------------------------------------------------
 function radiobutton_yauto_Callback(hObject, eventdata, handles)
-if get(hObject,'Value')        
+if get(hObject,'Value')
         ERP       = handles.ERP;
         chanArray = str2num(get(handles.edit_chans, 'String'));
         binArray  = str2num(get(handles.edit_bins, 'String'));
@@ -477,9 +477,9 @@ if get(hObject,'Value')
                 set(handles.radiobutton_yauto, 'Value',0)
                 drawnow
                 return
-        end        
-        xlim      = str2num(get(handles.edit_time_range, 'String'));
-        if isempty(xlim)
+        end
+        xxlim      = str2num(get(handles.edit_time_range, 'String'));
+        if isempty(xxlim)
                 msgboxText =  'You have not specified a time range';
                 title = 'ERPLAB: ploterp GUI input';
                 errorfound(msgboxText, title);
@@ -487,18 +487,18 @@ if get(hObject,'Value')
                 drawnow
                 return
         end
-        if xlim(1)<round(ERP.xmin*1000)
-                aux_xlim(1) = round(ERP.xmin*1000);
+        if xxlim(1)<round(ERP.xmin*1000)
+                aux_xxlim(1) = round(ERP.xmin*1000);
         else
-                aux_xlim(1) = xlim(1);
+                aux_xxlim(1) = xxlim(1);
         end
-        if xlim(2)>round(ERP.xmax*1000)
-                aux_xlim(2) = round(ERP.xmax*1000);
+        if xxlim(2)>round(ERP.xmax*1000)
+                aux_xxlim(2) = round(ERP.xmax*1000);
         else
-                aux_xlim(2) = xlim(2);
+                aux_xxlim(2) = xxlim(2);
         end
         
-        [xp1, xp2, checkw] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
+        [xp1, xp2, checkw] = window2sample(ERP, aux_xxlim(1:2) , fs, 'relaxed');
         
         if checkw==1
                 msgboxText =  'Time window cannot be larger than epoch.';
@@ -514,7 +514,7 @@ if get(hObject,'Value')
                 set(handles.radiobutton_yauto, 'Value',0)
                 drawnow
                 return
-        end               
+        end
         
         BackERPLABcolor = handles.BackERPLABcolor;
         set(handles.edit_yscale, 'BackgroundColor', BackERPLABcolor)
@@ -548,14 +548,12 @@ else
         pbox(1) = dsqr;
 end
 pbox(2) = dsqr;
-
-% %--------------------------------------------------------------------------
-% function pushbutton_pdf_Callback(hObject, eventdata, handles)
-% ispdf = 1;
-% handles.ispdf = ispdf;
-% % Update handles structure
-% guidata(hObject, handles);
-% uiresume(handles.gui_chassis);
+if pbox(1)<=0  % JLC. 11/05/13
+        pbox(1)=1;
+end
+if pbox(2)<=0  % JLC. 11/05/13
+        pbox(2)=1;
+end
 
 %--------------------------------------------------------------------------
 function checkbox_MGFP_Callback(hObject, eventdata, handles)
@@ -596,8 +594,6 @@ function checkbox_show_number_ch_Callback(hObject, eventdata, handles)
 function checkbox_plotallchannels_Callback(hObject, eventdata, handles)
 nchan = handles.nchan;
 if get(hObject, 'Value')
-        %ERP = handles.ERP;
-        %nchan = handles.nchan;
         set(handles.edit_chans, 'String', vect2colon([1:nchan], 'Delimiter', 'off'));
         set(handles.edit_chans, 'Enable', 'off');
         set(handles.pushbutton_browsechan, 'Enable', 'off');
@@ -704,14 +700,6 @@ chanArray  = str2num(get(handles.edit_chans, 'String'));
 xautoticks = get(handles.checkbox_autotimeticks, 'Value');
 yautoticks = get(handles.checkbox_autoyticks, 'Value');
 
-% [chk, msgboxText] = chckbinandchan(ERP, binArray, chanArray);
-% if chk>0
-%         title = 'ERPLAB: ploterp GUI input';
-%         errorfound(msgboxText, title);
-%         plotset.ptime = [];
-%         return
-% end
-
 %
 % X scale
 %
@@ -790,7 +778,7 @@ if get(handles.radiobutton_BLC_custom, 'Value')
                 if strcmpi(blcorr,'none')
                         blcorr = 'no';
                 end
-                if ~ismember(lower(blcorr),{'no' 'pre' 'post' 'all'})
+                if ~ismember_bc2(lower(blcorr),{'no' 'pre' 'post' 'all'})
                         set(handles.edit_custom, 'String','none');
                         set(handles.edit_custom, 'Enable','off');
                         msgboxText =  'Wrong baseline range!';
@@ -925,12 +913,9 @@ else
         isiy = 0;  % is not inverted, positive up
 end
 
-%linewidth  = get(handles.popupmenu_line, 'Value');
 fschan     = get(handles.popupmenu_font_channel, 'Value');
 fslege     = get(handles.popupmenu_font_legend, 'Value');
 fsaxtick   = get(handles.popupmenu_font_axistick, 'Value');
-
-%meap       = get(handles.checkbox_toolbar, 'Value');
 pstyle     = get(handles.popupmenu_plotstyle, 'Value');
 errorstd   = get(handles.checkbox_stdev, 'Value');
 
@@ -940,8 +925,7 @@ if errorstd==1
                 errorstd = get(handles.popupmenu_std_factor, 'Value')-1;
         end
 end
-stdalpha = (get(handles.popupmenu_transpa,'Value')-1)/10;
-
+stdalpha       = (get(handles.popupmenu_transpa,'Value')-1)/10;
 pbox(1)        = get(handles.popupmenu_rows, 'Value');
 pbox(2)        = get(handles.popupmenu_columns, 'Value');
 counterwin     = [handles.counterbinwin handles.counterchanwin];
@@ -1091,7 +1075,7 @@ if ~isempty(plotset.ptime)
                 d = repmat(defs',1, ERP.nbin*length(defcol));
                 styleline = reshape(d',1, numel(d));
         else
-                defcol = unique(colorline);
+                defcol = unique_bc2(colorline);
                 if isempty(styleline)
                         d = repmat(defs',1, ERP.nbin*length(defcol));
                         styleline = reshape(d',1, numel(d));
@@ -1186,7 +1170,7 @@ end
 if ~isempty(binArray)
         binArray = binArray(binArray<=ERP.nbin);
 end
-if (all(ismember(1:ERP.nchan, chanArray)) && ERP.nchan==length(chanArray)) || plotallch
+if (all(ismember_bc2(1:ERP.nchan, chanArray)) && ERP.nchan==length(chanArray)) || plotallch
         set(handles.checkbox_plotallchannels, 'Value', 1)
         set(handles.edit_chans,'String', vect2colon([1:ERP.nchan], 'Delimiter','off', 'Repeat', 'off'))
         set(handles.edit_chans, 'Enable', 'off');
@@ -1199,7 +1183,7 @@ else
                 set(handles.edit_chans,'String', 'what''s up')
         end
 end
-if (all(ismember(1:ERP.nbin, binArray)) && ERP.nbin==length(binArray)) || plotallbin
+if (all(ismember_bc2(1:ERP.nbin, binArray)) && ERP.nbin==length(binArray)) || plotallbin
         set(handles.checkbox_plotallbins, 'Value', 1)
         set(handles.edit_bins,'String', vect2colon([1:ERP.nbin], 'Delimiter','off', 'Repeat', 'off'))
         set(handles.edit_bins, 'Enable', 'off');
@@ -1338,6 +1322,9 @@ end
 %
 set(handles.checkbox_maximize, 'Value', ismaxim)
 
+%
+% Axis polarity
+%
 if ~isiy
         word = 'positive';
         set(handles.togglebutton_y_axis_polarity, 'Value', 0);
@@ -1670,23 +1657,15 @@ if size(yyscale,1)~=1  || size(yyscale,2)~=2
         msgboxText =  'Wrong scale range to plot!';
         title      = 'ERPLAB: ploterpGUI inputs';
         errorfound(msgboxText, title);
-        %plotset    = evalin('base', 'plotset');
-        %plotset.ptime = [];
         return
 end
 if yyscale(1)==yyscale(2)
         msgboxText =  'Wrong scale range to plot!';
         title = 'ERPLAB: ploterpGUI inputs';
         errorfound(msgboxText, title);
-        %plotset = evalin('base', 'plotset');
-        %plotset.ptime = [];
         return
 end
 if yyscale(1)>yyscale(2)
-        %msgboxText = ['Inverted time range to plot!\n'...
-        %      'Values will be adjusted.'];
-        %title = 'ERPLAB: ploterpGUI inputs';
-        %errorfound(sprintf(msgboxText), title);
         yyscale  = circshift(yyscale',1)';
         set(handles.edit_yscale, 'String', num2str(yyscale)); % XL
         
@@ -1872,11 +1851,11 @@ if get(hObject, 'Value')
         binArray = str2num(get(handles.edit_bins, 'String'));
         yyscale  = str2num(get(handles.edit_yscale, 'String'));
         
-        if get(handles.radiobutton_yauto, 'Value');
-                def = default_amp_ticks(ERP, binArray);
-        else
-                def = default_amp_ticks(ERP, binArray, yyscale);
-        end
+        %if get(handles.radiobutton_yauto, 'Value');
+        %        def = default_amp_ticks(ERP, binArray);
+        %else
+        def = default_amp_ticks(ERP, binArray, yyscale);
+        %end
         
         handles.yticks  = str2num(def{:});
         
@@ -1993,7 +1972,7 @@ if any(binArray>ERP.nbin)
         chk = 1;
         return
 end
-if length(binArray)~=length(unique(binArray))
+if length(binArray)~=length(unique_bc2(binArray))
         msgboxText = 'You have specified repeated bins for plotting.';
         chk = 1;
         return
@@ -2013,7 +1992,7 @@ if any(chanArray>ERP.nchan)
         chk = 1;
         return
 end
-if length(chanArray)~=length(unique(chanArray))
+if length(chanArray)~=length(unique_bc2(chanArray))
         msgboxText = 'You have specified repeated channels for plotting.';
         chk = 1;
         return
@@ -2021,54 +2000,14 @@ end
 
 %--------------------------------------------------------------------------
 function yscaleauto(hObject, eventdata, handles)
+drawnow
+pause(0.1)
 ERP       = handles.ERP;
 chanArray = str2num(get(handles.edit_chans, 'String'));
 binArray  = str2num(get(handles.edit_bins, 'String'));
-xlim      = str2num(get(handles.edit_time_range, 'String'));
-
-chk = chckbinandchan(ERP, binArray, chanArray);
-if chk>0
-        set(handles.radiobutton_yauto, 'Value', 1)
-        drawnow
-        return
-end
-if isempty(xlim)
-        set(handles.radiobutton_yauto, 'Value', 1)
-        drawnow
-        return
-end
-nbin  = length(binArray);
-nchan = length(chanArray);
-fs    = ERP.srate;
-
-if xlim(1)<round(ERP.xmin*1000)
-        aux_xlim(1) = round(ERP.xmin*1000);
-else
-        aux_xlim(1) = xlim(1);
-end
-if xlim(2)>round(ERP.xmax*1000)
-        aux_xlim(2) = round(ERP.xmax*1000);
-else
-        aux_xlim(2) = xlim(2);
-end
-
-[p1 p2 checkw] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
-
-if checkw>0
-        set(handles.radiobutton_yauto, 'Value', 1)
-        drawnow
-        return
-end
-
-datresh = reshape(ERP.bindata(chanArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nchan);
-yymax   = max(datresh);
-yymin   = min(datresh);
-ylim(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Sept 26, 2012
-set(handles.edit_yscale, 'String', sprintf('%.1f %.1f', ylim(1), ylim(2)));
-
-%plotset = evalin('base', 'plotset');
-%plotset.ptime.yscale = ylim;
-%assignin('base','plotset', plotset);
+xxlim     = str2num(get(handles.edit_time_range, 'String'));
+[yylim, serror] = erpAutoYLim(ERP, binArray, chanArray, xxlim);
+set(handles.edit_yscale, 'String', sprintf('%.1f %.1f', yylim(1), yylim(2)));
 
 %--------------------------------------------------------------------------
 function popupmenu_font_axistick_Callback(hObject, eventdata, handles)
@@ -2093,16 +2032,6 @@ function popupmenu_transpa_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
-% %--------------------------------------------------------------------------
-% function pushbutton_minigui_Callback(hObject, eventdata, handles)
-% plotset = getplotset(hObject, eventdata, handles);
-% plotset.ptime.posgui = get(handles.gui_chassis,'Position');
-% assignin('base','plotset', plotset);
-% ismini = 1;
-% handles.ismini = ismini;
-% % Update handles structure
-% guidata(hObject, handles);
-% uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)

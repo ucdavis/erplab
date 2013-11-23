@@ -740,12 +740,12 @@ else
                 %set(handles.checkbox_report, 'Enable','off')
         end
 end
-if ismember(option2do, [0 2 3 6 7]) && datatype~=0 && datatype~=2 % EEG
+if ismember_bc2(option2do, [0 2 3 6 7]) && datatype~=0 && datatype~=2 % EEG
         set(handles.radiobutton_tocurrentdata, 'Enable','on')
         set(handles.radiobutton_tocurrentdata, 'Value',1)
         set(handles.checkbox_update_eegevent, 'Value', updevent)
         set(handles.ELwarning, 'Value', iswarning)
-elseif ~ismember(option2do, [0 2 3 6 7]) && datatype~=0 && datatype~=2 % EEG
+elseif ~ismember_bc2(option2do, [0 2 3 6 7]) && datatype~=0 && datatype~=2 % EEG
         set(handles.radiobutton_tocurrentdata, 'Enable','on')
         set(handles.radiobutton_tocurrentdata, 'Value',0)
         set(handles.checkbox_update_eegevent, 'Value', 0)
@@ -760,10 +760,10 @@ else
         set(handles.checkbox_update_eegevent, 'Enable','off')
         set(handles.ELwarning, 'Enable','off')
 end
-if ismember(option2do, [1 3 5 7]) && (~isempty(file3) && ~strcmpi(file3, 'no') && ~strcmpi(file3, 'none'))% Text
+if ismember_bc2(option2do, [1 3 5 7]) && (~isempty(file3) && ~strcmpi(file3, 'no') && ~strcmpi(file3, 'none'))% Text
         set(handles.radiobutton_totext, 'Value',1)
 end
-if ismember(option2do, [4 5 6 7]) % Workspace
+if ismember_bc2(option2do, [4 5 6 7]) % Workspace
         set(handles.checkbox_toworkspace, 'Value',1)
 end
 set(handles.edit_forbidden_ec, 'String', vect2colon(forbiddenCodeArray, 'Delimiter', 'off'))

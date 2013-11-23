@@ -776,7 +776,7 @@ nerp     = handles.totalerpset;
 % Read first ERPset
 %
 if get(handles.radiobutton_erpset, 'Value')==1;
-        indexerp = unique(str2num(get(handles.edit_erpset, 'String')));
+        indexerp = unique_bc2(str2num(get(handles.edit_erpset, 'String')));
         
         if isempty(indexerp)
                 msgboxText =  ['Invalid ERPset indexing!\n\n'...
@@ -879,7 +879,7 @@ else
         % Update handles structure
         guidata(hObject, handles);
 end
-if length(unique(numpoints))>1
+if length(unique_bc2(numpoints))>1
         fprintf('Detail:\n')
         fprintf('-------\n')
         for j=1:nerp2
@@ -891,7 +891,7 @@ if length(unique(numpoints))>1
         chkerp  = 1;
         return
 end
-if length(unique(numchans))>1
+if length(unique_bc2(numchans))>1
         fprintf('Detail:\n')
         fprintf('-------\n')
         for j=1:nerp2

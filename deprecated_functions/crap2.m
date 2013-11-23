@@ -276,8 +276,8 @@ if isempty(winrej)
 else
       % Selects not overlapping start and end samples
       winrej = sort(winrej,1);
-      [aa1 bb1] = unique( winrej(:,1),'first');
-      [aa2 bb2] = unique( winrej(:,2),'last');
+      [aa1, bb1] = unique_bc2( winrej(:,1),'first');
+      [aa2, bb2] = unique_bc2( winrej(:,2),'last');
       winrej = [winrej(bb1,1) winrej(bb2,2)];
       a = winrej(1,1); winrej2(1,:) = [a winrej(end,2)]; m=1;
       for j=2:size(winrej,1)

@@ -104,7 +104,7 @@ function pushbutton_ok_Callback(hObject, eventdata, handles)
 answer = get(handles.edit_ticks,'String');
 nanswer = str2num(strtrim(char(answer)));
 if isempty(nanswer)
-      msgboxText = 'Values must be numerical!\n';
+      msgboxText = 'Invalid range of values!\n';
       title = 'ERPLAB: Inputs';
       errorfound(sprintf(msgboxText), title);
       return

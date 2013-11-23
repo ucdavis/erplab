@@ -82,7 +82,7 @@ else  % ERP
 end
 
 chanArray = 1:nchan;
-chanArray = chanArray(~ismember(chanArray,excludechan));
+chanArray = chanArray(~ismember_bc2(chanArray,excludechan));
 
 if iseegstruct(ERPLAB)  % EEG
       ERPLABaux = pop_eegchanoperator( ERPLAB, {['nch1=' formula]});

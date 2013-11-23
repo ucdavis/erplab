@@ -122,13 +122,13 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
-        if nnz(~ismember(chanArray,1:EEG(1).nbchan))>0
+        if nnz(~ismember_bc2(chanArray,1:EEG(1).nbchan))>0
                 msgboxText =  'This channel does not exist!';
                 title = 'ERPLAB: pop_insertcodeatTTL GUI error';
                 errorfound(msgboxText, title);
                 return
         end
-        if ~ismember(relop,{'<' '<=' '>=' '>'});
+        if ~ismember_bc2(relop,{'<' '<=' '>=' '>'});
                 msgboxText =  ['Wrong relational operator\n\n'...
                         'Please, only use ''<'', ''<='', ''>='', or ''>'''];
                 title = 'ERPLAB: pop_insertcodeatTTL GUI error';
@@ -208,7 +208,7 @@ if ~iscell(newcode)
 end
 
 % identify relational operator
-[tf, locrelop] = ismember(relop,{'<' '<=' '>=' '>'});
+[tf, locrelop] = ismember_bc2(relop,{'<' '<=' '>=' '>'});
 
 if ~tf
         msgboxText =  ['ERPLAB says: Wrong relational operator\n'...
@@ -254,7 +254,7 @@ com = sprintf('%s = pop_insertcodeatTTL( %s, %s ', inputname(1), inputname(1), v
 
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

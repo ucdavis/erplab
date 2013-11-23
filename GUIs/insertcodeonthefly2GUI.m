@@ -180,7 +180,7 @@ if isempty(thresh)
       errorfound(msgboxText, title);
       return
 end
-if length(unique([length(channel) length(relatop) length(thresh)]))~=1
+if length(unique_bc2([length(channel) length(relatop) length(thresh)]))~=1
       msgboxText =  'You must specify the same amount of elements for ''new code'',''channel'',''logical operator'', and ''threshold''';
       title = 'ERPLAB: pop_insertcodeonthefly GUI';
       errorfound(msgboxText, title);

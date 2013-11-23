@@ -163,7 +163,7 @@ if strcmpi(p.Results.Warning,'on')
 else
         wchmsgon = 0;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
         issaveas  = 0;
@@ -284,7 +284,7 @@ else
 end
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

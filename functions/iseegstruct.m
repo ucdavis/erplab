@@ -44,8 +44,7 @@ try
         
         %
         % Main EEG fields
-        %
-        
+        %        
         ref_field   = { 'setname',...
                 'filename',...
                 'filepath',...
@@ -57,19 +56,17 @@ try
                 'xmax',...
                 'data',...
                 'event',...
-                'epoch'};
-        
+                'epoch'};        
         
         EEGX    = input(:);
         fnam    = fieldnames(EEGX);
-        tf = ismember(ref_field, fnam);
+        tf = ismember_bc2(ref_field, fnam);
         
         if nnz(tf)== length(ref_field)
                 value = 1;
         else
                 value = 0;
-        end
-        
+        end        
 catch
         value = 0;
         return

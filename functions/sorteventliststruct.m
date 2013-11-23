@@ -52,8 +52,8 @@ try
         dims    = size(EVENTLIST);
         EVENTLIST     = EVENTLIST(:);
         fnam    = fieldnames(EVENTLIST);
-        [tf,ix] = ismember(fnam, ref_field );
-        [a b]   = sort(ix);
+        [tf,ix] = ismember_bc2(fnam, ref_field );
+        [a, b]  = sort(ix);
         f       =  fnam(b);
         v       = struct2cell(EVENTLIST);
         EVENTLIST     = cell2struct(v(b,:),f,1);

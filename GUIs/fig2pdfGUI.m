@@ -68,17 +68,17 @@ catch
         format4fig = 'pdf';
         resol      = 300;
 end
-if ismember('ERP_figure', tag)
+if ismember_bc2('ERP_figure', tag)
         set(handles.checkbox_erp, 'Value', 1)
         set(handles.edit_tag, 'Enable', 'off')
         set(handles.edit_tag, 'String', '')
 end
-if ismember('Scalp_figure', tag)
+if ismember_bc2('Scalp_figure', tag)
         set(handles.checkbox_scalp, 'Value', 1)
         set(handles.edit_tag, 'Enable', 'off')
         set(handles.edit_tag, 'String', '')
 end
-if ~ismember('Scalp_figure', tag) && ~ismember('ERP_figure', tag)
+if ~ismember_bc2('Scalp_figure', tag) && ~ismember_bc2('ERP_figure', tag)
         set(handles.checkbox_other, 'Value', 1)
         set(handles.edit_tag, 'Enable', 'on')
         set(handles.edit_tag, 'String', tag)
@@ -87,7 +87,7 @@ end
 set(handles.popupmenu_format, 'String', {'PDF (*.pdf)', 'EPS (*.eps)', 'JPG (*.jpg)', 'TIFF (*.tiff)'})
 resolval = {'72','150','300','600','1200'};
 set(handles.popupmenu_jpgres, 'String', resolval)
-indxres  =  find(ismember(resolval, num2str(resol)));
+indxres  =  find(ismember_bc2(resolval, num2str(resol)));
 set(handles.popupmenu_jpgres, 'Value', indxres)
 
 if strcmpi(savetype, 'auto')

@@ -199,7 +199,7 @@ for j=1:nfile
         
         if wavg || exclunullbin % weighted or exclude null bins. JLC                
                 if exclunullbin
-                        countbinOK = ~ismember(countbinOK, 0); % Jav's trick for converting a weighted averaging into a classic averaging.
+                        countbinOK = ~ismember_bc2(countbinOK, 0); % Jav's trick for converting a weighted averaging into a classic averaging.
                         if ~all(countbinOK)
                                 inullb = find(~countbinOK);
                                 fprintf('\nNOTE: Excluding null bin(s) %s from ERPset # %d "%s"\n\n', num2str(inullb), j, ERPT.erpname);

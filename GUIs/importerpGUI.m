@@ -547,7 +547,7 @@ if currline>=1 && currline<indxline
       
       [pathstr, name, ext] = fileparts(filename) ;
       
-      if ismember({ext},{'.txt' '.asc' '.ascii' '.csv' '.csa' '.dat' ''})
+      if ismember_bc2({ext},{'.txt' '.asc' '.ascii' '.csv' '.csa' '.dat' ''})
             uiopen(filename,1)
       else
             msgboxText =  'Current line does not refer a text file.';

@@ -45,7 +45,7 @@ while goags && w<=100
             xtickarray = xtickarray(xtickarray>=xxs1 & xtickarray<=xxs2 );
             if xxs1<0 && xtickarray(1)>=0
                   xtickarray = [ -round((abs(xxs1)/2)) xtickarray];
-                  xtickarray = unique(xtickarray);
+                  xtickarray = unique_bc2(xtickarray);
             end
             def = {vect2colon(xtickarray,'Delimiter','off')};
             goags = 0;

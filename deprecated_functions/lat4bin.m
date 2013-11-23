@@ -97,7 +97,7 @@ if (~isempty(xtype) || ~isempty(xduration)) && (isempty(xcodelabel)  &&...
                   indx4duration  =  [indx4duration find(duridx==xduration(s))];
             end
             if ~isempty(indx4duration)
-                  indx4duration = unique(indx4duration);
+                  indx4duration = unique_bc2(indx4duration);
             end
       end
 else
@@ -148,7 +148,7 @@ if ~isempty(xenable)
             indx4enable  =  [indx4enable find(enidx==xenable(s))];
       end
       if ~isempty(indx4enable)
-            indx4enable = unique(indx4enable);
+            indx4enable = unique_bc2(indx4enable);
       end
 end
 %
@@ -171,7 +171,7 @@ if ~isempty(xcodelabel)
             indx4codelabel  =  [indx4codelabel find(clidx==xcodelabel(s))];
       end
       if ~isempty(indx4codelabel)
-            indx4codelabel = unique(indx4codelabel);
+            indx4codelabel = unique_bc2(indx4codelabel);
       end
 end
 %
@@ -182,13 +182,13 @@ if ~isempty(xbini)
       nb = length(bini);
       for s=1:length(xbini)
             for b=1:nb
-                  if ismember(xbini(s), [bini{b}]);
+                  if ismember_bc2(xbini(s), [bini{b}]);
                         indx4bini = [indx4bini b];
                   end
             end
       end
       if ~isempty(indx4bini)
-            indx4bini = unique(indx4bini);
+            indx4bini = unique_bc2(indx4bini);
       end
 end
 %
@@ -211,7 +211,7 @@ if ~isempty(xflag)
             indx4flag  =  [indx4flag find(flgidx==xflag(s))];
       end
       if ~isempty(indx4flag)
-            indx4flag = unique(indx4flag);
+            indx4flag = unique_bc2(indx4flag);
       end
 end
 
@@ -248,9 +248,9 @@ indx4flag
 % 
 % if nargin<2
 %       if ischar(EEG.event(1).type)
-%             evcode = unique({EEG.event.type}); %strings
+%             evcode = unique_bc2({EEG.event.type}); %strings
 %       else
-%             evcode = unique([EEG.event.type]); %numeric code
+%             evcode = unique_bc2([EEG.event.type]); %numeric code
 %       end
 % end
 % 
@@ -263,9 +263,9 @@ indx4flag
 % 
 % if isempty(evcode)
 %       if ischar(EEG.event(1).type)
-%             evcode = unique({EEG.event.type}); %strings
+%             evcode = unique_bc2({EEG.event.type}); %strings
 %       else
-%             evcode = unique([EEG.event.type]); %numeric code
+%             evcode = unique_bc2([EEG.event.type]); %numeric code
 %       end
 % end
 % if length(EEG)>1
@@ -346,4 +346,4 @@ indx4flag
 %       end
 % end
 % 
-% indxevcode = unique(indxevcode);
+% indxevcode = unique_bc2(indxevcode);

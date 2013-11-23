@@ -11,16 +11,16 @@ if nargin<1
 end
 if nargin<2
       if ischar(EEG.event(1).type)
-            evcode = unique({EEG.event.type}); %strings
+            evcode = unique_bc2({EEG.event.type}); %strings
       else
-            evcode = unique([EEG.event.type]); %numeric code
+            evcode = unique_bc2([EEG.event.type]); %numeric code
       end
 end
 if isempty(evcode)
       if ischar(EEG.event(1).type)
-            evcode = unique({EEG.event.type}); %strings
+            evcode = unique_bc2({EEG.event.type}); %strings
       else
-            evcode = unique([EEG.event.type]); %numeric code
+            evcode = unique_bc2([EEG.event.type]); %numeric code
       end
 end
 if length(EEG)>1
@@ -101,4 +101,4 @@ else
       end
 end
 
-indxevcode = unique(indxevcode);
+indxevcode = unique_bc2(indxevcode);

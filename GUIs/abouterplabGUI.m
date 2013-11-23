@@ -274,15 +274,15 @@ info    = imfinfo(namefig);      % Determine the size of the image file
 %
 edition  = double(imread('p_zombie.tif'));             % Read the image file banner.jpg
 edmask   = edition;
-aindx  = ismember(edmask(:,:,1),12);
-bindx  = ismember(edmask(:,:,2),255);
-cindx  = ismember(edmask(:,:,3),0);
+aindx  = ismember_bc2(edmask(:,:,1),12);
+bindx  = ismember_bc2(edmask(:,:,2),255);
+cindx  = ismember_bc2(edmask(:,:,3),0);
 edmask = repmat(aindx&bindx&cindx, [1 1 3]);
 
 edsum  = edition;
-aindx  = ~ismember(edsum(:,:,1),12);
-bindx  = ~ismember(edsum(:,:,2),255);
-cindx  = ~ismember(edsum(:,:,3),0);
+aindx  = ~ismember_bc2(edsum(:,:,1),12);
+bindx  = ~ismember_bc2(edsum(:,:,2),255);
+cindx  = ~ismember_bc2(edsum(:,:,3),0);
 edsum  = repmat(aindx&bindx&cindx, [1 1 3]);
 edsum  = edition.*edsum;
 

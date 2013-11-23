@@ -64,7 +64,7 @@ if max(selch)>nchan
         error('ERPLAB says: Some specified channels do not exist!')
 end
 
-selchannels = unique(selch);
+selchannels = unique_bc2(selch);
 
 if length(selchannels)~=length(selch)
         fprintf('\n*** WARNING: Repeated channels were ignored.\n\n')

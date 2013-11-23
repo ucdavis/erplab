@@ -100,7 +100,7 @@ try
                               return
                         end
                   end                  
-                  if ismember(-1,sign(fc_user))
+                  if ismember_bc2(-1,sign(fc_user))
                         xdB_at_fc_user = [];
                   else
                         [xx ifreal1] = min(abs(f1-fc_user(1)));

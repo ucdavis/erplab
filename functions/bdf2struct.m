@@ -285,7 +285,7 @@ for iBin = 1:nBin       % Bin's loop
                                                         strflag = catchComplexExpression{4};
                                                         lestrf  = length(strflag);
                                                         
-                                                        if ismember(e,[1 2 5 6]) % full flag (16bits)
+                                                        if ismember_bc2(e,[1 2 5 6]) % full flag (16bits)
                                                                 if lestrf > 16
                                                                         fprintf('Fatal Error: BIN %g. 16-bit Flag (f<>) format was violated',iBin)
                                                                         isparsednumerically = 0;  % Numeric parsing was not approved
@@ -302,7 +302,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                                 strflag = [repmat('x',1, 16-lestrf) strflag];
                                                                         end
                                                                 end                                                                
-                                                        elseif ismember(e,[8 9 12 16 17 20]) % fa = low flag  = LSB byte = artifact flag
+                                                        elseif ismember_bc2(e,[8 9 12 16 17 20]) % fa = low flag  = LSB byte = artifact flag
                                                                 
                                                                 if lestrf > 8
                                                                         fprintf('Fatal Error: BIN %g. 8-bit Flag (fa<>) format was violated',iBin)
@@ -320,7 +320,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                                 strflag = [repmat('x',1, 16-lestrf) strflag];
                                                                         end
                                                                 end                                                                
-                                                        elseif ismember(e,[10 11 13 18 19 21]) % fb = high flag  = MSB byte = user? flag
+                                                        elseif ismember_bc2(e,[10 11 13 18 19 21]) % fb = high flag  = MSB byte = user? flag
                                                                 
                                                                 if lestrf > 8
                                                                         fprintf('Fatal Error: BIN %g. 8-bit Flag (fb<>) format was violated',iBin)
@@ -340,7 +340,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                 end
                                                         end
                                                         
-                                                        [matf tokf indxf] = regexpi(strflag, '0|1','match','tokens','start');
+                                                        [matf, tokf, indxf] = regexpi(strflag, '0|1','match','tokens','start');
                                                         
                                                         if isempty(indxf)
                                                                 captureFlag    = uint16(bin2dec(strflag));
@@ -360,7 +360,7 @@ for iBin = 1:nBin       % Bin's loop
                                                         strWrite = catchComplexExpression{5};
                                                         lestrs  = length(strWrite);
                                                         
-                                                        if ismember(e,[1 3 5 7]) % full Write (16bits)
+                                                        if ismember_bc2(e,[1 3 5 7]) % full Write (16bits)
                                                                 if lestrs > 16
                                                                         fprintf('Fatal Error: BIN %g. 16-bit Write (w<>) format was violated',iBin)
                                                                         isparsednumerically = 0;  % Numeric parsing was not approved
@@ -377,7 +377,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                                 strWrite = [repmat('x',1, 16-lestrs) strWrite];
                                                                         end
                                                                 end                                                                
-                                                        elseif ismember(e,[8 10 14 16 18 22]) % wa = low write  = LSB byte = artifact write
+                                                        elseif ismember_bc2(e,[8 10 14 16 18 22]) % wa = low write  = LSB byte = artifact write
                                                                 
                                                                 if lestrs > 8
                                                                         fprintf('Fatal Error: BIN %g. 8-bit Write (wa<>) format was violated',iBin)
@@ -395,7 +395,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                                 strWrite = [repmat('x',1, 16-lestrs) strWrite];
                                                                         end
                                                                 end                                                                
-                                                        elseif ismember(e,[9 11 15 17 19 23]) % wb = high write  = MSB byte = user? write
+                                                        elseif ismember_bc2(e,[9 11 15 17 19 23]) % wb = high write  = MSB byte = user? write
                                                                 
                                                                 if lestrs > 8
                                                                         fprintf('Fatal Error: BIN %g. 8-bit Write (wb<>) format was violated',iBin)
@@ -415,7 +415,7 @@ for iBin = 1:nBin       % Bin's loop
                                                                 end
                                                         end
                                                         
-                                                        [mats toks indxs] = regexpi(strWrite, '0|1','match','tokens','start');
+                                                        [mats, toks, indxs] = regexpi(strWrite, '0|1','match','tokens','start');
                                                         
                                                         if isempty(indxs)
                                                                 captureWrite    = uint16(bin2dec(strWrite));

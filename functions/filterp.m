@@ -79,7 +79,7 @@ if locutoff == 0 && hicutoff == 0,
         return
 end
 
-chanArray = unique(chanArray);   % does not allow repeated channels
+chanArray = unique_bc2(chanArray);   % does not allow repeated channels
 fnyquist  = 0.5*ERP.srate;       % half sample rate
 pnts      = size(ERP.bindata,2);
 numchan   = length(chanArray);

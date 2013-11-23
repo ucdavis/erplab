@@ -150,7 +150,7 @@ else
                 errorfound(msgboxText, title);
                 return
         end
-        bitindex = unique(bitindex);
+        bitindex = unique_bc2(bitindex);
 end
 if ischar(newvalue)
         msgboxText = 'Error: new value must be numeric.';

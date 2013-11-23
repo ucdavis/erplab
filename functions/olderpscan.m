@@ -27,7 +27,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP conti serror] = olderpscan(ERP, menup)
+function [ERP, conti, serror] = olderpscan(ERP, menup)
 
 serror = 0;
 conti  = 1;
@@ -52,7 +52,7 @@ end
 %
 % Split data version numbering
 %
-[pspliter dvdigits] = regexp(dataversion, '\.','match','split');
+[pspliter, dvdigits] = regexp(dataversion, '\.','match','split');
 ndd = length(dvdigits);
 
 if ndd==3
@@ -84,7 +84,7 @@ end
 %
 cversion     = geterplabversion; % current erplab version
 if isempty(cversion); return;end
-[pspliter cvdigits] = regexp(cversion, '\.','match','split');
+[pspliter, cvdigits] = regexp(cversion, '\.','match','split');
 cmayor       = str2num(cvdigits{1}); % A
 cminor       = str2num(cvdigits{2}); % B
 cformat      = str2num(cvdigits{3}); % C
@@ -113,13 +113,13 @@ try
             end
         end
         if cformat~= dformat % different ERP structure was found
-            fprintf('\nWARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
-            fprintf('WARNING: ERPLAB will attempt to update the ERP structure...\n\n');
+            fprintf('WARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
+            fprintf('WARNING: ERPLAB will attempt to update the ERP structure...\n');
             ERP.filename = '';
             ERP.filepath = '';
             ERP.saved    = 'no';
         else
-            fprintf('\nWARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
+            fprintf('WARNING: Erpset %s was created from %s ERPLAB version.\n', cerpname, wordcomp);
         end
     else
         % all right

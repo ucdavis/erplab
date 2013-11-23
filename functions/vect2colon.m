@@ -83,7 +83,7 @@ if nargin<1
         return
 end
 if isempty(vec)
-        if ismember({lower(p.Results.Delimiter)},{'yes','on','auto'})
+        if ismember_bc2({lower(p.Results.Delimiter)},{'yes','on','auto'})
                 strvec = '[]';
         end
         return
@@ -100,15 +100,15 @@ else
                 error('Error: vect2colon only works for row or column vector. Use mat2colon instead.')
         end
 end
-if ismember({lower(p.Results.Sort)},{'yes','on'})
+if ismember_bc2({lower(p.Results.Sort)},{'yes','on'})
         if strcmpi(p.Results.Repeat,'off')
-                vecuni = unique(vec);    % repeated numbers are not allowed. sorted
+                vecuni = unique_bc2(vec);    % repeated numbers are not allowed. sorted
         else
                 vecuni = sort(vec);           % repeated numbers are allowed. sorted  --> previous bug
         end
 else
-        if ismember({lower(p.Results.Repeat)}, {'off','no'})
-                [v a b] = unique(vec', 'first');
+        if ismember_bc2({lower(p.Results.Repeat)}, {'off','no'})
+                [v, a, b] = unique_bc2(vec', 'first');
                 ia = sort(a);
                 vecuni = vec(ia); % repeated numbers are not allowed. no sorted
         else
@@ -180,7 +180,7 @@ while k <= numel(vecuni)
         k = k + 1;
 end
 % strvec = strtrim(strvec);
-if ismember({lower(p.Results.Delimiter)},{'yes','on'})
+if ismember_bc2({lower(p.Results.Delimiter)},{'yes','on'})
         %strvec = [ '[' strvec ']' apo];
         strvec = sprintf('[%s]%s',strvec,apo);
         return

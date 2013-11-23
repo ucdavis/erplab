@@ -578,7 +578,7 @@ if ~isempty(epochArray)
             %
             % Tests uniqueness
             %
-            c = length(unique(epindx));
+            c = length(unique_bc2(epindx));
             if c~=length(epindx)
                   tf=3; % not unique indices
                   break
@@ -981,7 +981,7 @@ end
 for k=1:N
       a = sort([EPINDX1{k,:}]);
       b = sort([EPINDX2{k,:}]);
-      c = ismember(a,b);
+      c = ismember_bc2(a,b);
       d = find(c==0, 1);
       if ~isempty(d)
             chk = 0; % error, do not pass

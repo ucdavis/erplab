@@ -30,9 +30,7 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [ALLERP erpcom] = pop_jkgaverager(ALLERP, varargin)
-
 erpcom = '';
-
 if nargin<1
       help jkgaverager
       return
@@ -85,10 +83,10 @@ end
 %
 for k=0:nfile
       if optioni==1
-            jkindx = erpindx(~ismember(1:length(erpindx), k));       
+            jkindx = erpindx(~ismember_bc2(1:length(erpindx), k));       
             jklist = inputfname(jkindx);
       else
-            jkerpindx = erpindx(~ismember(1:length(erpindx), k));
+            jkerpindx = erpindx(~ismember_bc2(1:length(erpindx), k));
       end
       
       ERP = pop_gaverager(ALLERP, 'ERPindex', jkerpindx, 'Loadlist', jklist,'Criterion', artcrite,...

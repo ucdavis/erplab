@@ -23,7 +23,7 @@ end
 %-----------------------------------------------------------------------
 function shuffleGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = [];
-% try
+try
         def = varargin{1};
         values = def{1};        
         if isnumeric(values)
@@ -56,9 +56,9 @@ handles.output = [];
                 set(handles.radiobutton_bin, 'Value', 0)
                 set(handles.radiobutton_datasamples, 'Value', 0)
         end
-% catch
-%         set(handles.radiobutton_codes, 'Value', 1)
-% end
+catch
+        set(handles.radiobutton_codes, 'Value', 1)
+end
 
 version = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Shuffler GUI'])

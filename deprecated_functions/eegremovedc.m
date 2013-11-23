@@ -45,7 +45,7 @@ if nargin<2
       chanArray = 1:EEG.nbchan; % default
 end
 
-chanArray = unique(chanArray); % does not allow repeated channels
+chanArray = unique_bc2(chanArray); % does not allow repeated channels
 pnts      = size(EEG.data,2);
 numchan   = length(chanArray);
 

@@ -244,27 +244,27 @@ end
 %filelist    = p.Results.Loadlist;
 artcrite    = p.Results.Criterion;
 
-if ismember({p.Results.SEM}, {'on','yes'})
+if ismember_bc2({p.Results.SEM}, {'on','yes'})
         stderror = 1;
 else
         stderror = 0;
 end
-if ismember({p.Results.ExcludeNullBin}, {'on','yes'})
+if ismember_bc2({p.Results.ExcludeNullBin}, {'on','yes'})
         exclunullbin = 1;
 else
         exclunullbin = 0;
 end
-if ismember({p.Results.Weighted}, {'on','yes'})
+if ismember_bc2({p.Results.Weighted}, {'on','yes'})
         wavg = 1;
 else
         wavg = 0;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas = 1;
 else
         issaveas = 0;
 end
-if ismember({p.Results.Warning}, {'on','yes'})
+if ismember_bc2({p.Results.Warning}, {'on','yes'})
         warn = 1;
 else
         warn = 0;
@@ -319,7 +319,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( 'ERP = pop_gaverager( %s ', DATIN);
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

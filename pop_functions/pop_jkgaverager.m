@@ -174,7 +174,7 @@ for k=0:nfile
                 ERP = pop_gaverager(ALLERPX, 'Erpsets', jkerpset, 'Criterion', artcrite,...
                         'SEM', stdsstr, 'Weighted', wavgstr);
         else
-                jkerpset = erpset(~ismember(1:nfile, k));
+                jkerpset = erpset(~ismember_bc2(1:nfile, k));
                 ERP = pop_gaverager(ALLERP, 'Erpsets', jkerpset, 'Criterion', artcrite,...
                         'SEM', stdsstr, 'Weighted', wavgstr);
         end
@@ -227,7 +227,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( 'ALLERP = pop_jkgaverager( %s ', DATIN );
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

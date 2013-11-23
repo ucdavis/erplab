@@ -72,8 +72,8 @@ try
         dims    = size(ERP);
         ERP     = ERP(:);
         fnam    = fieldnames(ERP);
-        [tf,ix] = ismember(fnam, ref_field );
-        [a b]   = sort(ix);
+        [tf,ix] = ismember_bc2(fnam, ref_field );
+        [a, b]  = sort(ix);
         f       =  fnam(b);
         v       = struct2cell(ERP);
         ERP     = cell2struct(v(b,:),f,1);

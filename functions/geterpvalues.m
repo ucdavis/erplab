@@ -132,7 +132,7 @@ end
 if ischar(blc)
         blcnum = str2num(blc);
         if isempty(blcnum)
-                if ~ismember(blc,{'no','none','pre','post','all','whole'})
+                if ~ismember_bc2(blc,{'no','none','pre','post','all','whole'})
                         msgboxText =  'Invalid baseline range dude!';
                         %title      =  'ERPLAB: geterpvalues() baseline input';
                         %errorfound(msgboxText, title);
@@ -153,7 +153,7 @@ if ischar(blc)
                 end
         end
 end
-if ~ismember({moption}, {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
+if ~ismember_bc2({moption}, {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
                 'area','areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
                 'fareaplat', 'fninteglat', 'fareanlat', 'ninteg','nintegz' });
         msgboxText =  [moption ' is not a valid option for geterpvalues!'];

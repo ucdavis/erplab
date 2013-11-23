@@ -112,7 +112,7 @@ for i=1:nepoch
       if iscell(bin)
             bin = cell2mat(bin); %bug. It said "bini"
       end     
-      if nnz(ismember(bin, binArray)) > 0
+      if nnz(ismember_bc2(bin, binArray)) > 0
             indx(k) = i;
             k=k+1;
       end
@@ -134,7 +134,7 @@ end
 %       indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,
 %       bin = bini(indxtimelock); % bin of the home item event code (time-locked event)
 %
-%       if nnz(ismember(bin, binArray))>0 %ismember(bin, binArray)
+%       if nnz(ismember_bc2(bin, binArray))>0 %ismember_bc2(bin, binArray)
 %             indx(k) = i;
 %             k=k+1;
 %       end

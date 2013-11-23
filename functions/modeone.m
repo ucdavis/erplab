@@ -2,9 +2,7 @@
 % 2009
 %
 function m = modeone(A)
-
-if iscell(A)
-        
+if iscell(A)        
         while any(cellfun('isclass',A,'cell'))
                 A = cat(2,A{:});
         end
@@ -19,10 +17,8 @@ if iscell(A)
                 A = cell2mat(A);
         end
 end
-
-u = unique(A);
-[tf ind] = ismember(A, u);
-
+u = unique_bc2(A);
+[tf, ind] = ismember_bc2(A, u);
 if ind>0
         k = mode(ind);
         m = u(k);

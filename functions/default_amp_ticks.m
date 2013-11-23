@@ -22,71 +22,57 @@
 % University of California, Davis,
 % Davis, CA
 % 2012
+%
+% Rewritten by JLC. Nov 10th, 2013
+%
 function [def miny maxy] = default_amp_ticks(ERP, binArray, yrange)
-
-def   = '-1 1';
-miny  = 0;
-maxy  = 0;
+def   = {'-1 1'};
+if nargin<3
+        yrange = [];
+end
 if nargin<2
         binArray = 1:ERP.nbin;
 end
-if nargin<3 || nargout>1
-        nbin  = length(binArray);
-        ymin = zeros(1,nbin);
-        ymax = ymin;
-        
-        for k=1:nbin
-                ymin(k) = min(min(ERP.bindata(:,:,binArray(k))'));
-                ymax(k) = max(max(ERP.bindata(:,:,binArray(k))'));
-        end
-        
-        miny = min(ymin);
-        maxy = max(ymax);
-        
-        if isempty(miny) || isempty(maxy)
-                return
-        end
+nbin = length(binArray);
+ymin = zeros(1,nbin);
+ymax = ymin;
+minpnts = 40; % minimum amuount of values for selecting ticks.
+for k=1:nbin
+        ymin(k) = min(min(ERP.bindata(:,:,binArray(k))'));
+        ymax(k) = max(max(ERP.bindata(:,:,binArray(k))'));
+end
+miny = min(ymin);
+maxy = max(ymax);
+if isempty(miny) || isempty(maxy)
+        miny  = 0;
+        maxy  = 0;
+        return
+end
+if isempty(yrange)
         yrange(1) = miny*1.2;
         yrange(2) = maxy*1.1;
 end
-if abs(yrange(2)-yrange(1))<3 % Mar 27, 2013
-        scfactor = 100;
+if sum(sign(yrange))==0 % when yscale goes from - to +
+        yrmax = max(abs(yrange));
+        yarray = -round(yrmax):0.1:round(yrmax);
+        if length(yarray)<40
+                yarray = linspace(-yrmax, yrmax, minpnts);
+        end
+else % when yscale goes from - to - or + to +
+        yarray = round(yrange(1)):0.1:round(yrange(2));
+        if length(yarray)<40
+                yarray = linspace(yrange(1), yrange(2), minpnts);
+        end
+end
+a1 = yarray(yarray>0);
+b1 = closest(a1, [ min(a1)+(max(a1)-min(a1))*0.25 min(a1)+(max(a1)-min(a1))*0.5 min(a1)+(max(a1)-min(a1))*0.75 max(a1)]);
+a2 = yarray(yarray<0);
+if ~isempty(a2) && ~isempty(b1)
+        b2 = -1*fliplr(b1);
+elseif ~isempty(a2) && isempty(b1)
+        b2 = closest(a2, [ min(a2) min(a2)+(max(a2)-min(a2))*0.25 min(a2)+(max(a2)-min(a2))*0.5 min(a2)+(max(a2)-min(a2))*0.75]);
+        b1 = -1*fliplr(b2);
 else
-        scfactor = 1;
+        b2 = [];
 end
-
-yys1 = yrange(1)*scfactor;
-yys2 = yrange(2)*scfactor;
-
-% xxs1       = ceil(1000*ERP.xmin);
-% xxs2       = floor(1000*ERP.xmax);
-yystick1   = (round(yys1/10)+ 0.1)*10;
-yystick2   = (round(yys2/10)+ 0.1)*10;
-goags = 1;
-stepy = 2;
-L1=7;
-L2=15;
-w=1;
-while goags && w<=100
-      %stepy
-      ytickarray = 1.5*yystick1:stepy:yystick2*1.5;
-      if length(ytickarray)>=L1 && length(ytickarray)<=L2
-            ym = ytickarray(round(length(ytickarray)/2));
-            ytickarray = ytickarray-ym;
-            ytickarray = ytickarray(ytickarray>=yys1 & ytickarray<=yys2 );
-            if yys1<0 && ytickarray(1)>=0
-                  ytickarray = [ -round((abs(yys1)/2)) ytickarray];
-                  ytickarray = unique(ytickarray);
-            end
-            def = {vect2colon(ytickarray/scfactor,'Delimiter','off')};
-            goags = 0;
-      elseif length(ytickarray)>L2
-            stepy = stepy*2;
-      elseif length(ytickarray)<L1
-            stepy = round(stepy/2);
-      end
-      w=w+1;
-end
-
-
-
+def = {vect2colon([b2 0 b1],'Delimiter','off')};

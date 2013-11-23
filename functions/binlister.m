@@ -923,7 +923,7 @@ rfrbddn   = find([EVENTLIST.eventinfo.time] >= t0 & [EVENTLIST.eventinfo.time] <
 if ~isempty(rfrbddn)
       codesrangefrbddn  = [EVENTLIST.eventinfo(rfrbddn).code];
       timecodesfrbddn   = [EVENTLIST.eventinfo(rfrbddn).time];
-      [tf rp2]          = ismember(codesrangefrbddn, forbiddenCodeArray);
+      [tf, rp2]          = ismember_bc2(codesrangefrbddn, forbiddenCodeArray);
       timefrbddn        = timecodesfrbddn(find(rp2,1));
       codefrbddn        = codesrangefrbddn(find(rp2,1));
       isfrbddndetected  = nnz(tf)>0;  % 1 means forbidden code(s) was(were) found within [t0 t2] time range.

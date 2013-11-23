@@ -34,7 +34,7 @@ try
             error('ERPLAB says: Option is not valid.')
       end
       
-      semcol = find(ismember(eindx,';'));
+      semcol = find(ismember_bc2(eindx,';'));
       
       if ~isempty(semcol)
             if semcol(end)==length(eindx)

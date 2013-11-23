@@ -148,7 +148,7 @@ elseif ~ischar(evcode) && iscell(codebound)
       end
 end
 
-indxevcode = unique(indxevcode);
+indxevcode = unique_bc2(indxevcode);
 fs      = EEG.srate;
 dursam1 = EEG.pnts;
 mwindowsam  = round((mwindowms*fs)/1000);  % mwindowms in samples
@@ -192,7 +192,7 @@ if isempty(winrej)
       fprintf('\nCriterion was not found. No rejection was performed.\n');
 else
       winrej = sort(winrej,1);
-      winrej = unique(winrej,'rows','first');
+      winrej = unique_bc2(winrej,'rows','first');
       a = winrej(1,1); winrejaux(1,:) = [a winrej(end,2)]; m=1;
       for j=2:size(winrej,1)
             if abs(winrej(j,2)-winrej(j-1,2))>diff(mwindowsam)

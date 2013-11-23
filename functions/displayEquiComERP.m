@@ -30,7 +30,7 @@ else
         else
                 N    = round((length(xcom)/nline2end));
                 Npos = nline2end:nline2end:N*nline2end;
-                Apos = unique(closest(indxcomx,Npos));
+                Apos = unique_bc2(closest(indxcomx,Npos));
                 if length(Apos)>1 && (length(xcom)-Apos(end-1))<=nline2end
                         Apos = Apos(1:end-1);
                 elseif length(Apos)==1 && (length(xcom)-Apos)< 0.1*length(xcom)
@@ -39,9 +39,9 @@ else
                         return
                 end
                 for kk=1:length(xcom)
-                        if ~ismember(kk, Apos)
+                        if ~ismember_bc2(kk, Apos)
                                 fprintf('%s', xcom(kk));
-                        elseif ismember(kk, Apos) && kk<length(xcom)
+                        elseif ismember_bc2(kk, Apos) && kk<length(xcom)
                                 fprintf(',...\n');
                         else
                                 fprintf('\n');

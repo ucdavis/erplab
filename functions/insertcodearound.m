@@ -109,7 +109,7 @@ auxevent = EEG.event;
 % Any other custom EEG.event field
 %
 names   = fieldnames(auxevent);
-names   = names(~ismember(names, {'type','latency', 'duration', 'urevent'})); % only extra event fields
+names   = names(~ismember_bc2(names, {'type','latency', 'duration', 'urevent'})); % only extra event fields
 lename  = length(names);
 nevent  = length(auxevent);
 latpnts = round(newlate*EEG.srate/1000);  %ms to sample

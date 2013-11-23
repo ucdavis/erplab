@@ -364,7 +364,7 @@ end
 %
 % Tests uniqueness
 %
-c = length(unique(epochArray));
+c = length(unique_bc2(epochArray));
 if c~=length(epochArray)
       tf=3; % not unique indices
       return

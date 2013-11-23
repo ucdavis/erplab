@@ -60,12 +60,12 @@ for pp =1:nF
         fieldname = char(F{pp});
         %sch = size(EEGin.reject.(fieldname),1);   % get row length
         
-        if ismember({fieldname}, sfields2)      % it's an "E" field
+        if ismember_bc2({fieldname}, sfields2)      % it's an "E" field
                 sch = size(EEGin.reject.(fieldname),1);   % get row length
                 if sch~=0
                         % the artifact detection info for the channel at the left side of the equation is equal to a "bit-wise OR"
                         % of the artifact detection info from the channels at the right side of the equation.
-                        EEGout.reject.(fieldname)(lsch,:) = ~ismember(sum(EEGin.reject.(fieldname)(rsch, :),1), 0);
+                        EEGout.reject.(fieldname)(lsch,:) = ~ismember_bc2(sum(EEGin.reject.(fieldname)(rsch, :),1), 0);
                         %fprintf('EEG.reject.%s was updated.\n', fieldname)
                 end
                 

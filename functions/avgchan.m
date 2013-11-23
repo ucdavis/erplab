@@ -37,9 +37,7 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function  d = avgchan(ERPLAB, chin)
-
 d=[];
-
 if nargin<1
         help avgchan
         return
@@ -51,7 +49,7 @@ if size(chin,1)>1
         error('ERPLAB says:  error at avgchan(). avgchan works with row-array inputs')
 end
 
-chanarray = unique(chin);
+chanarray = unique_bc2(chin);
 
 if length(chanarray)~=length(chin)
         fprintf('\n*** WARNING: Repeated channels were ignored.\n\n')

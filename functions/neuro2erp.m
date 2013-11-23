@@ -17,7 +17,6 @@
 % January 25th, 2011
 
 function ERP = neuro2erp(filename, pathname)
-
 if nargin<2
             error('ERPLAB says: error, filename and pathname are needed as inputs.')
 end
@@ -39,8 +38,7 @@ bindescr = cell(1);
 accepted = [];
 rejected = [];
 
-for i=1:nfile
-      
+for i=1:nfile      
       fname    = filename{i};
       pathn    = pathname{i};
       fullname = fullfile(pathn, fname);
@@ -64,10 +62,9 @@ for i=1:nfile
 % % %       set(handles.popupmenu_chans,'String', listch)
 % % %       
 % % %       
-
       
       if i>1
-            if ismember(0, strcmpi(chanlabels, auxchlab))
+            if ismember_bc2(0, strcmpi(chanlabels, auxchlab))
                   error('chan label error!')
             end
             if rate~=auxsrate

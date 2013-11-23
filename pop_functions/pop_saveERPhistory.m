@@ -64,7 +64,7 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
-% if ismember({p.Results.Saveas}, {'on','yes'})
+% if ismember_bc2({p.Results.Saveas}, {'on','yes'})
 %         saveas  = 1;
 % else
 %         saveas  = 0;

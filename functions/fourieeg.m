@@ -146,7 +146,7 @@ if isempty(EEG.epoch)  % continuous data
         end
         msgn = 'whole';
 else   % epoched data
-        indxtimewin = ismember(EEG.times, EEG.times(EEG.times>=latwindow(1) & EEG.times<=latwindow(2)));
+        indxtimewin = ismember_bc2(EEG.times, EEG.times(EEG.times>=latwindow(1) & EEG.times<=latwindow(2)));
         datax  = EEG.data(:,indxtimewin,:);
         L      = length(datax); %EEG.pnts;
         ntrial = EEG.trials;
@@ -165,7 +165,7 @@ else   % epoched data
                                 elseif length(EEG.epoch(i).eventlatency) > 1
                                         indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0); % catch zero-time locked event (type),
                                         [numbin]  = [EEG.epoch(i).eventbini{indxtimelock}]; % index of bin(s) that own this epoch (can be more than one) at time-locked event.
-                                        numbin    = unique(numbin(numbin>0));
+                                        numbin    = unique_bc2(numbin(numbin>0));
                                 else
                                         numbin =[];
                                 end
@@ -177,7 +177,7 @@ else   % epoched data
                         else
                                 numbin =[];
                         end                      
-                        if isempty(binArray) || (~isempty(binArray) && ~isempty(numbin) && ismember(numbin, binArray))                               
+                        if isempty(binArray) || (~isempty(binArray) && ~isempty(numbin) && ismember_bc2(numbin, binArray))                               
                                 y = detrend(datax(chanArray(k),:,i));
                                 Y = fft(y,NFFT)/L;
                                 ffterp(i,:,k) = abs(Y(1:NFFT/2)).^2; % power

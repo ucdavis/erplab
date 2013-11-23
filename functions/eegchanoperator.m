@@ -230,9 +230,9 @@ if isempty(materase)
             chanpos(tk) = str2num(tok{1,tk}{1,1});
             
             if tk>1
-                  [tf(tk) realchanpos(tk)] = ismember(chanpos(tk), 1:EEGin.nbchan);
+                  [tf(tk), realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:EEGin.nbchan);
             else
-                  [tf(1) realchanpos(1)] = ismember(chanpos(1), 1:EEGout.nbchan);
+                  [tf(1), realchanpos(1)] = ismember_bc2(chanpos(1), 1:EEGout.nbchan);
             end
       end
       
@@ -322,7 +322,7 @@ else
       
       for tk=1:nindices
             chanpos(tk) = str2double(tok{1,tk}{1,1});  % conteins index of channels in the formula
-            [tf realchanpos(tk)] = ismember(chanpos(tk), 1:EEGin.nbchan); %#ok<AGROW>
+            [tf, realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:EEGin.nbchan); %#ok<AGROW>
             
             if ~tf(tk)
                   msgboxText=  ['Channel ' num2str(chanpos(tk)) ' does not  exist yet!'];

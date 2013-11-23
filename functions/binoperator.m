@@ -421,19 +421,19 @@ else
                                         CHANSP{tk} = evalin('base', chspec{tk}); % takes value from the workspace
                                 end
                                 lengthchan(tk) = length(CHANSP{tk});
-                                [tf(tk), realbinpos(tk)]= ismember(binpos(tk), 1:ERPin.nbin);
+                                [tf(tk), realbinpos(tk)]= ismember_bc2(binpos(tk), 1:ERPin.nbin);
                         else
                                 %
                                 % Test left size
                                 %
-                                [tf(1), realbinpos(1)]= ismember(binpos(1), 1:ERPout.nbin);
+                                [tf(1), realbinpos(1)]= ismember_bc2(binpos(1), 1:ERPout.nbin);
                         end
                 end
                 
                 %
                 % Test amount of defined channels (contra & ipsi bins, for instance)
                 %
-                [unilengthch, a, indexx] = unique(lengthchan(2:end), 'first');
+                [unilengthch, a, indexx] = unique_bc2(lengthchan(2:end), 'first');
                 
                 if ~isempty(indexx)
                         
@@ -461,12 +461,12 @@ else
                                 %
                                 % Test right size
                                 %
-                                [tf(tk), realbinpos(tk)]= ismember(binpos(tk), 1:ERPin.nbin);
+                                [tf(tk), realbinpos(tk)]= ismember_bc2(binpos(tk), 1:ERPin.nbin);
                         else
                                 %
                                 % Test left size
                                 %
-                                [tf(1), realbinpos(1)]= ismember(binpos(1), 1:ERPout.nbin);
+                                [tf(1), realbinpos(1)]= ismember_bc2(binpos(1), 1:ERPout.nbin);
                         end
                 end
         end
@@ -504,7 +504,7 @@ else
                         labelsch{c,d} = ERPin.chanlocs(CHANSP{d+1}(c)).labels;
                 end
                 
-                %labeltemp = unique(labelsch(c,:))
+                %labeltemp = unique_bc2(labelsch(c,:))
                 labeltemp = labelsch(c,:); % to allow pairing middle line channels: e.g. Cz/Cz
                 
                 if length(labeltemp)>1

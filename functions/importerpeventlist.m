@@ -174,7 +174,7 @@ neve = length(EVENTLIST.eventinfo);
 spo  = num2cell([EVENTLIST.eventinfo.time]*srate+1);
 [EVENTLIST.eventinfo(1:neve).spoint]   = spo{:};
 
-ubin  = sort(unique(xbin));
+ubin  = sort(unique_bc2(xbin));
 lbin  = length(ubin);
 
 binaux    = [EVENTLIST.eventinfo.bini];
@@ -183,7 +183,7 @@ binhunter = sort(binaux(binaux>0)); %8/19/2009
 EVENTLIST.nbin  = lbin;
 
 if lbin>=1
-        [c detbin] = ismember(ubin,binhunter);
+        [c, detbin] = ismember_bc2(ubin,binhunter);
         EVENTLIST.trialsperbin = [detbin(1) diff(detbin)];
 else
         EVENTLIST.trialsperbin = [];

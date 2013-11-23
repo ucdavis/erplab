@@ -631,7 +631,7 @@ erpcom     = sprintf( 'ERP = pop_ploterps( %s, %s, %s ',  firstinput, BinArrayst
 
 for q=1:length(fn)
         fn2com = fn{q}; % inputname
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com); %  input value
                 if ~isempty(fn2res)
                         if ischar(fn2res)
@@ -646,7 +646,7 @@ for q=1:length(fn)
                                 end
                                 erpcom = sprintf( '%s}', erpcom);
                         else
-                                if ~ismember(fn2com,{'xscale','yscale'})
+                                if ~ismember_bc2(fn2com,{'xscale','yscale'})
                                         erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, vect2colon(fn2res,'Repeat','on'));
                                 else
                                         xyscalestr = sprintf('[ %.1f %.1f  %s ]', fn2res(1), fn2res(2), vect2colon(fn2res(3:end),'Delimiter','off'));

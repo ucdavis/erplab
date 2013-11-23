@@ -120,7 +120,7 @@ if ischar(artcrite) % read a file having indices (only for 1 dataset so far)
         %       fid_list = fopen( artcrite );
         %       formcell = textscan(fid_list, '%s');
         %       artcrite = formcell{:};
-        %       semcol = find(ismember(artcrite,';'));
+        %       semcol = find(ismember_bc2(artcrite,';'));
         %       r = sprintf('%s  ', artcrite{1:semcol(1)-1});
         %       artcrite = str2num(r);
         %       artcrite = num2cell(artcrite);
@@ -185,7 +185,7 @@ for i = 1:nepoch
         elseif length(EEG.epoch(i).eventlatency) > 1
                 indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0); % catch zero-time locked event (type),
                 [numbin]  = [EEG.epoch(i).eventbini{indxtimelock}]; % index of bin(s) that own this epoch (can be more than one) at time-locked event.
-                numbin    = unique(numbin(numbin>0)); % flag status of the time-locked event in this epoch.
+                numbin    = unique_bc2(numbin(numbin>0)); % flag status of the time-locked event in this epoch.
                 flagb     = EEG.epoch(i).eventflag{indxtimelock};
                 
                 % Exclude epochs having boundary events, and set corresponding "enable" field to -1. Dec 20, 2012. JLC
@@ -194,7 +194,7 @@ for i = 1:nepoch
                         eitem     = [EEG.epoch(i).eventitem{:}]; % event code of the single event in this epoch.
                         condbound = 0;
                         if any(cellfun(@ischar, etype))
-                                [tfb indxb] = ismember({'-99' 'boundary'}, etype);
+                                [tfb indxb] = ismember_bc2({'-99' 'boundary'}, etype);
                                 
                                 if any(tfb)
                                         condbound=1;
@@ -202,7 +202,7 @@ for i = 1:nepoch
                                 end
                         else
                                 etype = [etype{:}];% double
-                                [tfb indxb] = ismember(-99, etype);
+                                [tfb indxb] = ismember_bc2(-99, etype);
                                 if tfb
                                         condbound=1;
                                 end
@@ -222,7 +222,7 @@ for i = 1:nepoch
                 numbin =[];
         end
         if ~isempty(numbin)  % if any bin was found in this epoch (at the time-locked event)
-                [tf, binslot]  = ismember(numbin, binArray);  % for now...binslot=bin detected at the current epoch
+                [tf, binslot]  = ismember_bc2(numbin, binArray);  % for now...binslot=bin detected at the current epoch
                 if ~isempty(find(tf==1, 1))
                         countbiORI(1,binslot) = countbiORI(1,binslot) + 1; % trial counter (ALL trials, originals)
                         countflags(binslot,i) = repmat(flagb, 1, length(binslot));
@@ -238,7 +238,7 @@ for i = 1:nepoch
                                 catch
                                         fprintf('(!) Epoch #%g had either a "boundary" or an invalid event, so it won''t be included in the averaging process.\n ', i);
                                 end
-                        elseif ismember(-1, enableALL) && excbound % any event's (within this epoch) enable fields was -1
+                        elseif ismember_bc2(-1, enableALL) && excbound % any event's (within this epoch) enable fields was -1
                                 countbinINV(1,binslot) = countbinINV(1,binslot) + 1;  % trial counter (invalid trials)
                                 binslot = [];                                
                                 try
@@ -266,7 +266,7 @@ for i = 1:nepoch
                                         % Custom epoch indices
                                         %
                                         epindx    = cell2mat(artcrite);
-                                        specepoch = ismember(i, epindx); % Is this epoch one of the specified ones?
+                                        specepoch = ismember_bc2(i, epindx); % Is this epoch one of the specified ones?
                                         
                                         if specepoch
                                                 fprintf('******* EPOCH #%g was included for averaging.\n', i)

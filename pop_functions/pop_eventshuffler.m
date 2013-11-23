@@ -238,7 +238,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_eventshuffler( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

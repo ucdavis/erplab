@@ -58,7 +58,7 @@ if nargin==1
         
         erpindex =  str2num(answer{1});
         nerpset  = length(ALLERP);
-        erpindex = unique(erpindex);
+        erpindex = unique_bc2(erpindex);
         
         if isempty(erpindex)
                 msgboxText =  'Wrong erpset index(es)';
@@ -108,7 +108,7 @@ if strcmpi(p.Results.Warning,'on')
 else
         warnop = 0;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
         issaveas  = 0;
@@ -123,7 +123,7 @@ else
         shist = 0; % off
 end
 nerpset = length(ALLERP);
-erpindex   = unique(erpindex);
+erpindex   = unique_bc2(erpindex);
 
 if isempty(erpindex)
         msgboxText =  'Wrong erpset index(es)';
@@ -133,7 +133,7 @@ if max(erpindex)>nerpset || min(erpindex)<1
         msgboxText = 'Wrong erpset index(es)';
         error(['ERPLAB says: ' msgboxText])
 end
-detect   = ~ismember(1:nerpset,erpindex);
+detect   = ~ismember_bc2(1:nerpset,erpindex);
 newindex = find(detect);
 if isempty(newindex)
         ALLERP = [];
@@ -153,7 +153,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_deleterpset( %s ', inputname(1), inputname(1) );
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

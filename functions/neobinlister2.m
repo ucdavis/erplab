@@ -102,7 +102,7 @@ version = geterplabversion;
 if isempty(bdfilename)
         error('ERPLAB says: bdfilename is empty.')
 end
-if ismember(neweventlistFile,{'none', 'no', ''})        
+if ismember_bc2(neweventlistFile,{'none', 'no', ''})        
         p = which('eegplugin_erplab');
         path_temp = p(1:findstr(p,'eegplugin_erplab.m')-1);
         newevefilepath = fullfile(path_temp, 'erplab_Box');
@@ -137,7 +137,7 @@ end
 %
 % Read EVENTLIST
 %
-if ismember(eventlistFile,{'none', 'no', ''}) % from dataset or erpset
+if ismember_bc2(eventlistFile,{'none', 'no', ''}) % from dataset or erpset
         if iserpstruct(EEG)
                 EVENTLIST = exporterpeventlist(EEG, indexEL);
                 fprintf('\n*** neobinlister is taking EVENTLIST from the current ERPset.\n\n')
@@ -277,12 +277,12 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
         %
         % Current (log) item status should not be forbidden (enable = -1) code
         %
-        cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
+        cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember_bc2(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
         
         %
         % Current event code should not be a ignored (enable = 0) code
         %
-        cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
+        cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember_bc2(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
         
         if cd1 && cd2 % check previous conditions
                 
@@ -404,8 +404,8 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                 end
                                                 
                                                 targetLogCode    = EVENTLIST.eventinfo(targetLogPointer).code;  % current event code to be tested, at current log item = targetLogPointer, from bin descriptor file.
-                                                isignoredc       = ismember(targetLogCode, ignoreCodeArray);    % is this code an ignored one?
-                                                isforbiddenc     = ismember(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
+                                                isignoredc       = ismember_bc2(targetLogCode, ignoreCodeArray);    % is this code an ignored one?
+                                                isforbiddenc     = ismember_bc2(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
                                                 
                                                 if isforbiddenc
                                                         % 'Stop! Forbidden code was found!
@@ -787,7 +787,7 @@ rfrbddn   = find([EVENTLIST.eventinfo.time] >= t0 & [EVENTLIST.eventinfo.time] <
 if ~isempty(rfrbddn)
         codesrangefrbddn  = [EVENTLIST.eventinfo(rfrbddn).code];
         timecodesfrbddn   = [EVENTLIST.eventinfo(rfrbddn).time];
-        [tf rp2]          = ismember(codesrangefrbddn, forbiddenCodeArray);
+        [tf, rp2]         = ismember_bc2(codesrangefrbddn, forbiddenCodeArray);
         timefrbddn        = timecodesfrbddn(find(rp2,1));
         codefrbddn        = codesrangefrbddn(find(rp2,1));
         isfrbddndetected  = nnz(tf)>0;  % 1 means forbidden code(s) was(were) found within [t0 t2] time range.
@@ -800,7 +800,7 @@ targetLogItemArray  = find([EVENTLIST.eventinfo.time] >= t1 & [EVENTLIST.eventin
 if ~isempty(targetLogItemArray)
         targetLogCodeArray = [EVENTLIST.eventinfo(targetLogItemArray).code];      % LOGCODES within targetLogItemArray range
         targetLogTimeArray = [EVENTLIST.eventinfo(targetLogItemArray).time];      % Log times within targetLogItemArray range (T1 - T2)
-        tf   = ismember(targetLogCodeArray, targetEventCodeArray);
+        tf   = ismember_bc2(targetLogCodeArray, targetEventCodeArray);
         rcr  = find(tf,1,'first'); % local pointer!
         israngedetected = ~isempty(rcr);
 else

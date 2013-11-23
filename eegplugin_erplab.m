@@ -170,6 +170,7 @@ menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
 %
 % ARTIFACT DETECTION FOR CONTINUOUS DATA callback
 %
+comTrim   = [trystrs.no_check '[EEG, LASTCOM]   = pop_eegtrim(EEG);' catchstrs.new_and_hist ];
 comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.store_and_hist ];
 
 %
@@ -315,7 +316,7 @@ set(submenu,'position', 6); % thanks Arno!
 %
 % Artifact detection in continuous data
 %
-uimenu( submenu,'Label','Artifact detection in continuous data','CallBack', comREJCON,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
+uimenu( submenu,'Label','Artifact rejection in continuous data','CallBack', comREJCON,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 
 %
 % EVENTLIST for EEG menu and submenu
@@ -442,7 +443,8 @@ uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', co
 % UTILITIES submenus
 %
 mUTI = uimenu( submenu,'Label','Utilities','tag','Utilities','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mUTI,'Label','Convert an epoched dataset into a continuous one','CallBack', comEP2CON,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+uimenu( mUTI,'Label','Trim continuous data','CallBack', comTrim, 'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
+uimenu( mUTI,'Label','Convert an epoched dataset into a continuous one','CallBack', comEP2CON, 'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
 mINS = uimenu( mUTI, 'Label','Insert event codes','tag','insertcodes','separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mINS,'Label','Insert event codes using threshold (continuous EEG) ','CallBack', comICOF,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mINS,'Label','Insert event codes using latency(ies) (continuous EEG) ','CallBack', comICLA,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
@@ -475,14 +477,13 @@ uimenu( mSETT,'Label','Set Backup location','CallBack','setbackuploc','userdata'
 % SUPPORT
 %
 mhelp = uimenu( submenu,'Label','Help','tag','erphelp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mhelp,'Label','ERPLAB Manual','CallBack', comhelpman,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','About ERPLAB','CallBack','abouterplabGUI','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','ERPLAB Manual','CallBack', comhelpman,'separator','on', 'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Tutorial','CallBack', comhelptut,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Scripting','CallBack', comhelpsrp,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB video tutorials','CallBack', comhelpvideo,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-
 uimenu( mhelp,'Label','Contact us','CallBack','web(''mailto:erplabtoolbox@gmail.com?subject=contact&body=Dear%20Steve%20and%20Javier,'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','Send question/feedback to the ERPLAB email list','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( submenu,'Label','About ERPLAB','CallBack','abouterplabGUI','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 
 %
 % CREATE ERPset MAIN MENU

@@ -163,12 +163,12 @@ if isparsednumerically
             %
             % Current (log) item status should not be forbidden (enable = -1) code
             %
-            cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
+            cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember_bc2(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
             
             %
             % Current event code should not be a ignored (enable = 0) code
             %
-            cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
+            cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember_bc2(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
             
             if cd1 && cd2 % check previous conditions
                   
@@ -288,8 +288,8 @@ if isparsednumerically
                                           targetLogPointer = iLogitem + traffic(kles)*offsetLogitem;      % current log item to be tested (from EVENTLIST)
                                           targetLogCode    = EVENTLIST.eventinfo(targetLogPointer).code;  % current event code to be tested, at current log item = targetLogPointer, from bin descriptor file.
                                           
-                                          isignoredc   = ismember(targetLogCode, ignoreCodeArray);   % is this code an ignored one?
-                                          isforbiddenc = ismember(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
+                                          isignoredc   = ismember_bc2(targetLogCode, ignoreCodeArray);   % is this code an ignored one?
+                                          isforbiddenc = ismember_bc2(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
                                           
                                           
                                           if isforbiddenc
@@ -599,7 +599,7 @@ if isparsednumerically
             EVENTLIST.eventinfo(iLogitem).binlabel = binName;            
             binrow = [];            
             fprintf('.');
-            if ismember(iLogitem,100:100:10000) || (100*iLogitem/nitem)>=100
+            if ismember_bc2(iLogitem,100:100:10000) || (100*iLogitem/nitem)>=100
                   fprintf('%g(%.1f%%)\n', iLogitem, 100*iLogitem/nitem);
             end           
       end  % Reads each log item (iLogitem loop)
@@ -732,7 +732,7 @@ rfrbddn   = find([EVENTLIST.eventinfo.time] >= t0 & [EVENTLIST.eventinfo.time] <
 if ~isempty(rfrbddn)
       codesrangefrbddn  = [EVENTLIST.eventinfo(rfrbddn).code];
       timecodesfrbddn   = [EVENTLIST.eventinfo(rfrbddn).time];
-      [tf rp2]          = ismember(codesrangefrbddn, forbiddenCodeArray);
+      [tf, rp2]         = ismember_bc2(codesrangefrbddn, forbiddenCodeArray);
       timefrbddn        = timecodesfrbddn(find(rp2,1));
       codefrbddn        = codesrangefrbddn(find(rp2,1));
       isfrbddndetected  = nnz(tf)>0;  % 1 means forbidden code(s) was(were) found within [t0 t2] time range.
@@ -748,7 +748,7 @@ if ~isempty(r2)
       targetLogCodeArray = [EVENTLIST.eventinfo(r2).code];      % LOGCODES are in this time range
       targetLogItemArray = r2 ;                                 % Logiterms for these times
       targetLogTimeArray = [EVENTLIST.eventinfo(r2).time];      % Log times for the time range T1 - T2
-      tf   = ismember(targetLogCodeArray, targetEventCodeArray);
+      tf   = ismember_bc2(targetLogCodeArray, targetEventCodeArray);
       rcr  = find(tf,1,'first');
       israngedetected = ~isempty(rcr);
 else

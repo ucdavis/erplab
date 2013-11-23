@@ -6,16 +6,15 @@
 %
 % FORMAT:
 %
-% EEG = update_EEG_event_field(EEG, ELfield)
+% EVENTLIST = update_events_at_EVENTLIST(EVENTLIST);
 %
 % INPUTS
 %
-% EEG        - dataset
-% ELfield    - string 'code', 'codelabel', or 'binlabel'
+% EEG        - event list structure
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
-% Author: Javier Lopez-Calderon & Steven Luck
+% Author: Javier Lopez-Calderon
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA

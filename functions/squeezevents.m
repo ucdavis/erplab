@@ -52,11 +52,11 @@ else
 end
 
 % Extracting event types
-eventtypes = unique( allevents );
+eventtypes = unique_bc2( allevents );
 
 % Summary
 sortevent = sort(allevents);
-[tf indx] = ismember(eventtypes, sortevent);
+[tf, indx] = ismember_bc2(eventtypes, sortevent);
 histo     = diff([0 indx'])';
 histstr   = cellstr(num2str(histo));
 outstr    = cellstr([char(eventtypes) repmat(' appears ', length(eventtypes),1) char(histstr) repmat(' times ', length(eventtypes),1)]);

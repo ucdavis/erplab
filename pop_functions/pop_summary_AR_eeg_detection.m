@@ -189,14 +189,12 @@ for i=1:nbin
                         if iscell(binix)
                                 binix = cell2mat(binix);
                         end
-                        if ismember(i, binix)
+                        if ismember_bc2(i, binix)
                                 Sumbin(i) = Sumbin(i) + histT(j);
                         end
-                elseif length(EEG.epoch(j).eventlatency) > 1
-                        
-                        indxtimelock = find(cell2mat(EEG.epoch(j).eventlatency) == 0,1,'first'); % catch zero-time locked type,
-                        
-                        if ismember(i, EEG.epoch(j).eventbini{indxtimelock})
+                elseif length(EEG.epoch(j).eventlatency) > 1                        
+                        indxtimelock = find(cell2mat(EEG.epoch(j).eventlatency) == 0,1,'first'); % catch zero-time locked type,                        
+                        if ismember_bc2(i, EEG.epoch(j).eventbini{indxtimelock})
                                 Sumbin(i) = Sumbin(i) + histT(j);
                         end
                 end

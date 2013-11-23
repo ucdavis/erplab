@@ -77,7 +77,7 @@ handles.EEG   = EEG;
 handles.ntype = ntype;
 
 if ~isempty(EEG)
-    [lists, m1, capindx] = unique({EEG.event(indxcode).type});  % non-repeteaded found strings.
+    [lists, m1, capindx] = unique_bc2({EEG.event(indxcode).type});  % non-repeteaded found strings.
     handles.lists = lists;
     nlist   = length(lists);                     % amount of  non-repeteaded found strings.
     liststr = char((lists)');

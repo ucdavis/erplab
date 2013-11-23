@@ -100,7 +100,7 @@ warning  = p.Results.Warning;
 %
 ntset = length(ALLEEG); % total dataset at ALLEEG
 nset  = length(dataset);
-uset  = unique(dataset);
+uset  = unique_bc2(dataset);
 
 if length(uset)~=nset
       %       msgboxText =  'Repeated dataset indices were found.\n';
@@ -123,7 +123,7 @@ end
 % additional parsing
 %
 nbin  = length(bini);
-uubin = unique(bini);
+uubin = unique_bc2(bini);
 if length(uubin)~=nbin
       %       msgboxText =  'Repeated dataset indices were found.\n';
       %       title = 'ERPLAB: getepochindex() Error';
@@ -348,7 +348,7 @@ for h=1:nset % dataset
                         g = 1;
                         for t=1:length(selectedepochs)
                               xitem = cell2mat(ALLEEG(dataset(h)).epoch(selectedepochs(t)).eventitem);
-                              if nnz(ismember(xitem, iteme))>0
+                              if nnz(ismember_bc2(xitem, iteme))>0
                                     okepoch(g) = selectedepochs(t);
                                     g = g + 1;
                               end

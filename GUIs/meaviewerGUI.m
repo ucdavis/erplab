@@ -149,23 +149,23 @@ handles.meacodes    = meacodes;
 
 set(handles.text_measurementv, 'String', measurearray);
 
-[tfm, indxmeaX] = ismember({moption}, meacodes);
+[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
 
-if ismember(indxmeaX,[6 7 8 16])
+if ismember_bc2(indxmeaX,[6 7 8 16])
         meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
-elseif ismember(indxmeaX,[9 10 11 17])
+elseif ismember_bc2(indxmeaX,[9 10 11 17])
         meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-elseif ismember(indxmeaX,[12 13 14 15])
+elseif ismember_bc2(indxmeaX,[12 13 14 15])
         meamenu = 8; %  'Fractional Area latency'
-elseif ismember(indxmeaX,1)
+elseif ismember_bc2(indxmeaX,1)
         meamenu = 1; % 'Instantaneous amplitude',...
-elseif ismember(indxmeaX,2)
+elseif ismember_bc2(indxmeaX,2)
         meamenu = 2; % 'mean amp
-elseif ismember(indxmeaX,3)
+elseif ismember_bc2(indxmeaX,3)
         meamenu = 3; % 'peak amp',...
-elseif ismember(indxmeaX,4)
+elseif ismember_bc2(indxmeaX,4)
         meamenu = 4; % 'peak lat',...
-elseif ismember(indxmeaX,5)
+elseif ismember_bc2(indxmeaX,5)
         meamenu = 5; % 'Fractional Peak latency',..',...
 else
         meamenu = 1; % 'Instantaneous amplitude',...
@@ -798,7 +798,7 @@ chinput   = str2num(get(handles.edit_channel, 'String'));
 if length(chinput)<=1
         return
 end
-chinput = chinput(ismember(chinput, chanArray));
+chinput = chinput(ismember_bc2(chinput, chanArray));
 
 
 % [c, ich] = closest(chanArray, chinput);
@@ -836,7 +836,7 @@ bininput   = str2num(get(handles.edit_bin, 'String'));
 if length(bininput)<=1
         return
 end
-bininput = bininput(ismember(bininput, binArray));
+bininput = bininput(ismember_bc2(bininput, binArray));
 
 
 % [c, ich] = closest(chanArray, chinput);
@@ -874,7 +874,7 @@ setinput   = str2num(get(handles.edit_file, 'String'));
 if length(setinput)<=1
         return
 end
-setinput = setinput(ismember(setinput, setArray));
+setinput = setinput(ismember_bc2(setinput, setArray));
 
 
 % [c, ich] = closest(chanArray, chinput);
@@ -1251,7 +1251,7 @@ for seta = jseta
                                 %
                                 % Paint area
                                 %
-                                if ismember(moption, mearea)  || ismember(moption, {'fareatlat', 'fareaplat','fninteglat','fareanlat'})
+                                if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareaplat','fninteglat','fareanlat'})
                                         if latetype ==0
                                                 latx = latency;
                                         else
@@ -1261,13 +1261,13 @@ for seta = jseta
                                         [xxx, latsamp] = closest(timex, latx);
                                         datax = data(latsamp(1):latsamp(2));
                                         
-                                        if ismember(moption, {'areap', 'areazp', 'fareaplat'}) % positive area
+                                        if ismember_bc2(moption, {'areap', 'areazp', 'fareaplat'}) % positive area
                                                 datax(datax<0) = 0;
                                                 area(timex(latsamp(1):latsamp(2)), datax, 'FaceColor', 'b')
-                                        elseif ismember(moption, {'arean', 'areazn', 'fareanlat'}) % negative area
+                                        elseif ismember_bc2(moption, {'arean', 'areazn', 'fareanlat'}) % negative area
                                                 datax(datax>0) = 0;
                                                 area(timex(latsamp(1):latsamp(2)), datax, 'FaceColor', 'r')
-                                        elseif ismember(moption, {'ninteg','nintegz', 'fninteglat'}) % integration
+                                        elseif ismember_bc2(moption, {'ninteg','nintegz', 'fninteglat'}) % integration
                                                 datatemp = datax;
                                                 datatemp(datatemp<0) = 0;
                                                 area(timex(latsamp(1):latsamp(2)), datatemp, 'FaceColor', 'b')
@@ -1283,7 +1283,7 @@ for seta = jseta
                                 % Line(s) for latency(ies) and window for measurement
                                 %
                                 if length(latency)==1
-                                        if ismember(moption,  {'areazt','areazp','areazn', 'nintegz'})
+                                        if ismember_bc2(moption,  {'areazt','areazp','areazn', 'nintegz'})
                                                 line([latency latency], ylim, 'Color', cvl)
                                                 latmin(lt) = lat4mea(1);
                                                 latmax(lt) = lat4mea(2);
@@ -1307,16 +1307,16 @@ for seta = jseta
                                                 pp = patch([latency(1) latency(2) latency(2) latency(1)],[ylim(1) ylim(1) ylim(2) ylim(2)], cwm);
                                                 set(pp,'FaceAlpha',0.4, 'EdgeAlpha', 0.4, 'EdgeColor', cwm);
                                         end
-                                        if ismember(moption, {'peakampbl'})
+                                        if ismember_bc2(moption, {'peakampbl'})
                                                 if length(lat4mea)~=1
                                                         %                       line([xlim(1) xlim(2)], [ylim(2) ylim(1)], 'Color', cvl) % JLC. Feb 13, 2013
                                                         %                       line([xlim(1) xlim(2)], [ylim(1) ylim(2)], 'Color', cvl) % JLC. Feb 13, 2013
                                                 else
                                                         line([lat4mea lat4mea], ylim, 'Color', cvl)
                                                 end
-                                        elseif ismember(moption, {'peaklatbl', 'fareatlat', 'fareaplat','fninteglat','fareanlat'})
+                                        elseif ismember_bc2(moption, {'peaklatbl', 'fareatlat', 'fareaplat','fninteglat','fareanlat'})
                                                 line([val(iptch)  val(iptch) ], ylim, 'Color', cvl)
-                                        elseif ismember(moption,  {'fpeaklat'}) % fractional peak latency
+                                        elseif ismember_bc2(moption,  {'fpeaklat'}) % fractional peak latency
                                                 line([val(iptch)  val(iptch) ], ylim, 'Color', cvl) % fractional peak lat
                                                 line([lat4mea lat4mea], ylim, 'Color', cvl,'LineStyle',':')  % peak lat
                                         end
@@ -1332,7 +1332,7 @@ set(handles.edit_report, 'FontSize', fntsz)
 
 if any(isnan(val))
         iststrnan   = indxsetstr(isnan(val));
-        nanindxfile = unique(str2num(char(iststrnan))');
+        nanindxfile = unique_bc2(str2num(char(iststrnan))');
 else
         nanindxfile = [];
         iststrnan   = {[]};
@@ -1706,9 +1706,9 @@ if get(handles.checkbox_dmouse,'Value')
         xbin = str2num(get(handles.edit_bin, 'String'));
         xch  = str2num(get(handles.edit_channel, 'String'));
         xset = str2num(get(handles.edit_file, 'String'));
-        ibin = find(ismember(binArray,xbin)); %find(binArray==xbin,1);
-        ich  = find(ismember(chanArray,xch)); %find(chanArray==xch,1);
-        iset = find(ismember(setArray,xset)); %find(setArray==xset,1);
+        ibin = find(ismember_bc2(binArray,xbin)); %find(binArray==xbin,1);
+        ich  = find(ismember_bc2(chanArray,xch)); %find(chanArray==xch,1);
+        iset = find(ismember_bc2(setArray,xset)); %find(setArray==xset,1);
         
         mplotdata(hObject, handles, ibin, ich, iset, xlim, ylim, tittle)
 end

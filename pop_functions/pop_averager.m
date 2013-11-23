@@ -213,22 +213,22 @@ if ~iscell(artc)
 else
         artcrite =  artc; % cell. fixed bug Jkreither May 1, 2012
 end
-if ismember({p.Results.SEM}, {'on','yes'})
+if ismember_bc2({p.Results.SEM}, {'on','yes'})
         stderror    = 1;
 else
         stderror    = 0;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas    = 1;
 else
         issaveas    = 0;
 end
-if ismember({p.Results.Warning}, {'on','yes'})
+if ismember_bc2({p.Results.Warning}, {'on','yes'})
         iswarn    = 1;
 else
         iswarn    = 0;
 end
-if ismember({p.Results.ExcludeBoundary}, {'on','yes'})
+if ismember_bc2({p.Results.ExcludeBoundary}, {'on','yes'})
         excbound    = 1;
 else
         excbound    = 0;
@@ -246,7 +246,7 @@ end
 nloadedset = length(ALLEEG);
 wavg       = 1; % weighted average
 nset       = length(setindex);     % all selected datasets
-nrsetindex = unique(setindex);     % set indices with no repetitions
+nrsetindex = unique_bc2(setindex);     % set indices with no repetitions
 nrnset     = length(nrsetindex);   % N of setindex with no repetitions
 
 if nset > nrnset
@@ -413,7 +413,7 @@ if nset>1
         
         for j=2:nset
                 labelsA = {ALLEEG(setindex(j)).chanlocs.labels};
-                [tla, indexla] = ismember(labelsA, labelsB);
+                [tla, indexla] = ismember_bc2(labelsA, labelsB);
                 condlab1 = length(tla)==nnz(tla);   % do both datasets have the same channel labels?
                 
                 if ~condlab1
@@ -439,7 +439,7 @@ if nset>1
                 end
                 if isrepeated(indexla)
                         %fprintf('\nWARNING: Some channels have the same label.\n\n')
-                        if ismember(0,strcmp(labelsA, labelsB)) && iswarn
+                        if ismember_bc2(0,strcmp(labelsA, labelsB)) && iswarn
                                 msgboxText =  'Datasets have different channel labels.\n';
                                 
                                 if iswarn
@@ -822,7 +822,7 @@ erpcom = sprintf( 'ERP = pop_averager( %s ', inputvari);
 
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

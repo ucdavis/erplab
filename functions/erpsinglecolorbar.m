@@ -1,7 +1,7 @@
 
 
 function erpsinglecolorbar(haxes, hcolorbar, nlat)
-if isempty(hcolorbar) || ismember(0, hcolorbar)
+if isempty(hcolorbar) || ismember_bc2(0, hcolorbar)
         fprintf('erpsinglecolorbar() got an invalid colorbar handle...\n');
         return
 end

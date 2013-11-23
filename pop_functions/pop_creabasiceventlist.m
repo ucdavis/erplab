@@ -254,7 +254,7 @@ else
         auxEVENTLIST = 'none';
 end
 field2del = {'bepoch','bini','binlabel', 'code', 'codelabel','enable','flag','item'};
-tf  = ismember(field2del,fieldnames(EEG.event)');
+tf  = ismember_bc2(field2del,fieldnames(EEG.event)');
 
 if rwwarn && nnz(tf)>0
         question = ['The EEG.event field of %s contains subfield name(s) reserved for ERPLAB.\n\n'...
@@ -337,7 +337,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_creabasiceventlist( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q}; % get fieldname
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com); % get content of current field
                 if ~isempty(fn2res)
                         if iscell(fn2res)
@@ -393,7 +393,7 @@ end
 % Completion statement
 %
 prefunc = dbstack;
-nf = length(unique({prefunc.name}));
+nf = length(unique_bc2({prefunc.name}));
 if nf==1
         msg2end
 end

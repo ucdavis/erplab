@@ -696,7 +696,7 @@ end;
     % yvals = 0.5+PLOT_HEIGHT*yvals;  % controls height of plot array on page!
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if length(xvals) > 1
-        if length(unique(xvals)) > 1
+        if length(unique_bc2(xvals)) > 1
             xvals = (xvals-mean([max(xvals) min(xvals)]))/(max(xvals)-min(xvals)); % recenter
             xvals = gcapos(1)+gcapos(3)/2+PLOT_WIDTH*xvals;   % controls width of plot 
                                                               % array on current axes

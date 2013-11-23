@@ -263,7 +263,7 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                 errorfound(msgboxText, title);
                 return
         end
-        if length(binArray)>length(unique(binArray))
+        if length(binArray)>length(unique_bc2(binArray))
                 msgboxText =  'Error: You have specified repeated bins.';
                 title = 'ERPLAB: scalplotGUI() error:';
                 errorfound(msgboxText, title);
@@ -811,7 +811,7 @@ set(handles.edit_latencies,'String',latencyArraystr);
 if strcmpi(mtype,'2D')
         morimenu = {'+X','-X','+Y','-Y'};
         if ischar(mapview)
-                mview = find(ismember(morimenu, mapview));
+                mview = find(ismember_bc2(morimenu, mapview));
         else
                 mview = 1;
         end
@@ -830,7 +830,7 @@ else % 3D
                 'frontleft', 'frontright', 'backleft', 'backright',...
                 'custom'};
         if ischar(mapview)
-                mview = find(ismember(morimenu, mapview));
+                mview = find(ismember_bc2(morimenu, mapview));
                 set(handles.edit_customview,'String','')
                 set(handles.edit_customview, 'Enable','off' )
         else
@@ -1314,7 +1314,7 @@ if get(hObject, 'Value')
                 return
         end
         lat = str2num(lat);
-        T = unique(diff(lat));
+        T = unique_bc2(diff(lat));
         if isempty(T)
                 msgboxText =  'You must specify a latency vector first.';
                 title = 'ERPLAB: scalpplotGUI input';

@@ -170,7 +170,7 @@ elseif iseegstruct(ERPLAB) &&  ~isempty(ERPLAB.epoch)  % epoched data
         end
         nchan = length(chanArray);
         nbin  = length(binArray);
-        indxtimewin = ismember(ERPLAB.times, ERPLAB.times(ERPLAB.times>=latwindow(1) & ERPLAB.times<=latwindow(2)));
+        indxtimewin = ismember_bc2(ERPLAB.times, ERPLAB.times(ERPLAB.times>=latwindow(1) & ERPLAB.times<=latwindow(2)));
         datax  = ERPLAB.data(:,indxtimewin,:);
         L      = length(datax); %ERPLAB.pnts;
         ntrial = ERPLAB.trials;
@@ -192,7 +192,7 @@ elseif iseegstruct(ERPLAB) &&  ~isempty(ERPLAB.epoch)  % epoched data
                                         elseif length(ERPLAB.epoch(i).eventlatency) > 1
                                                 indxtimelock = find(cell2mat(ERPLAB.epoch(i).eventlatency) == 0); % catch zero-time locked event (type),
                                                 [numbin]  = [ERPLAB.epoch(i).eventbini{indxtimelock}]; % index of bin(s) that own this epoch (can be more than one) at time-locked event.
-                                                numbin    = unique(numbin(numbin>0));
+                                                numbin    = unique_bc2(numbin(numbin>0));
                                         else
                                                 numbin =[];
                                         end
@@ -204,7 +204,7 @@ elseif iseegstruct(ERPLAB) &&  ~isempty(ERPLAB.epoch)  % epoched data
                                 else
                                         numbin =[];
                                 end
-                                if ~isempty(binArray) && ~isempty(numbin) && ismember(numbin, binArray(ibin))
+                                if ~isempty(binArray) && ~isempty(numbin) && ismember_bc2(numbin, binArray(ibin))
                                         y = detrend(datax(chanArray(k),:,i));
                                         Y = fft(y,NFFT)/L;
                                         ffterp(i,:) = abs(Y(1:NFFT/2)).^2; % power
@@ -244,7 +244,7 @@ elseif iserpstruct(ERPLAB)
         end
         nchan = length(chanArray);
         nbin  = length(binArray);
-        indxtimewin = ismember(ERPLAB.times, ERPLAB.times(ERPLAB.times>=latwindow(1) & ERPLAB.times<=latwindow(2)));
+        indxtimewin = ismember_bc2(ERPLAB.times, ERPLAB.times(ERPLAB.times>=latwindow(1) & ERPLAB.times<=latwindow(2)));
         datax  = ERPLAB.bindata(:,indxtimewin,:);
         L      = length(datax); %ERPLAB.pnts;
         nbin   = length(binArray);

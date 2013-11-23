@@ -182,7 +182,7 @@ if ~isfield(EEG.EVENTLIST.eventinfo,'binlabel')
         error(['ERPLAB says: ' msgboxText])
 end
 if ischar(blcorr)
-        if ~ismember(lower(blcorr),{'all' 'pre' 'post' 'none'})
+        if ~ismember_bc2(lower(blcorr),{'all' 'pre' 'post' 'none'})
                 internum = str2num(blcorr);
                 if length(internum)  ~=2
                         msgboxText = ['pop_epochbin will not be performed.\n'...
@@ -233,7 +233,7 @@ if isempty(EEG.epoch)
                 othertype    = cell(1);
                 bintypecrude = cell(1);
                 
-                binnames = unique({EEG.EVENTLIST.eventinfo.binlabel});  % existing binlabels
+                binnames = unique_bc2({EEG.EVENTLIST.eventinfo.binlabel});  % existing binlabels
                 
                 %
                 % identifies bin labels
@@ -278,7 +278,7 @@ if isempty(EEG.epoch)
                 k = 1;
                 for i= 1:bb-1
                         numbin = str2double(char(strbin{i}));
-                        tf = ismember(numbin, binArray);
+                        tf = ismember_bc2(numbin, binArray);
                         if ~isempty(find(tf==1, 1))
                                 bintype{k} = bintypecrude{i}; % EEGLAB can use the same "type" multiples times
                                 k = k+1;                               
@@ -297,8 +297,8 @@ else
         %
         % loc binlabels at EEG.EVENTLIST.eventinfo.binlabel
         %
-        locbin = find(~ismember({EEG.EVENTLIST.eventinfo.binlabel},'""'));
-        bintype = unique({EEG.EVENTLIST.eventinfo(locbin).binlabel});
+        locbin = find(~ismember_bc2({EEG.EVENTLIST.eventinfo.binlabel},'""'));
+        bintype = unique_bc2({EEG.EVENTLIST.eventinfo(locbin).binlabel});
 end
 if isempty(bintype)
         msgboxText  =  'Bins were not detected under current specifications';

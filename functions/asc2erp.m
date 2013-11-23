@@ -159,7 +159,7 @@ for i=1:nfile
       xmax  = lxlim(2);
       
       if i>1
-            if ismember(0, strcmpi(chanlabels, auxchlab))
+            if ismember_bc2(0, strcmpi(chanlabels, auxchlab))
                   error('chan label error!')
             end
             if srate~=auxsrate

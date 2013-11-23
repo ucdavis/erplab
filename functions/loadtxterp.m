@@ -61,9 +61,7 @@ if nheaderlines==1
                 else
                         time = [];
                 end
-        end
-        
-        
+        end       
 else
         values=importdata(fullname);
         signal=values;
@@ -83,12 +81,10 @@ else
                         signal=signal(:,2:end);
                 else
                         time=[];
-                end
-                
+                end                
                 if transpose==1
                         signal=signal';
-                end
-                
+                end                
         end
 end
 
@@ -140,7 +136,7 @@ if elabel==1
                 %                         end
         end
         if timex==1
-                chanlabels = chanlabels(~ismember(chanlabels,{'time'}));
+                chanlabels = chanlabels(~ismember_bc2(chanlabels,{'time'}));
         end
 else
         chanlabels = '';

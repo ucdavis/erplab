@@ -51,8 +51,8 @@ if isempty(def)
         %       defstyle = reshape(d',1,length(defcolor)*length(defs));
         
 
-        defcolor  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
-        d = repmat(defs',1, ERP.nbin*length(defcol));
+        defcolor  = repmat(defcol,1, 1*length(defs));% sorted according 1st erplab's version
+        d = repmat(defs',1, 1*length(defcol));
         defstyle = reshape(d',1, numel(d));
 else
         defcolor = regexp(def,'\w*','match');
@@ -88,7 +88,7 @@ setlistbox_style(hObject, handles, STYLEDATA, nbin )
 % Name & version
 %
 version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Color line GUI'],'WindowStyle','modal')
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Line specifications GUI'],'WindowStyle','modal')
 
 %
 % Color GUI
@@ -470,7 +470,7 @@ lwidth    = get(handles.popupmenu_lwidth,'Value');
 COLORDATA = handles.COLORDATA;
 STYLEDATA = handles.STYLEDATA;
 output    = cellstr([char({COLORDATA.colorchar}') char({STYLEDATA(1:length(COLORDATA)).style}')])';
-%[xxx indx] = ismember(colorlist, {COLORDATA.colorname});
+%[xxx indx] = ismember_bc2(colorlist, {COLORDATA.colorname});
 %handles.output = {COLORDATA(indx).colorchar};
 handles.output = {output lwidth};
 % Update handles structure

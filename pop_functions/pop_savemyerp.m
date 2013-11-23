@@ -315,7 +315,7 @@ end
 % Completion statement
 %
 prefunc = dbstack;
-nf = length(unique({prefunc.name}));
+nf = length(unique_bc2({prefunc.name}));
 if nf==1
         msg2end
 end

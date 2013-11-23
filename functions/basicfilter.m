@@ -79,7 +79,7 @@ if ~isempty(EEG.epoch)
       boundary = []; % not allowed for epoched data
 end
 
-chanArray = unique(chanArray); % does not allow repeated channels
+chanArray = unique_bc2(chanArray); % does not allow repeated channels
 fnyquist  = 0.5*EEG.srate;       % half sample rate
 pnts      = size(EEG.data,2);
 numchan   = length(chanArray);

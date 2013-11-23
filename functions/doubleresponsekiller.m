@@ -61,13 +61,13 @@ if ischar(auxevent(1).type)
         end
         
         currcodestr = {auxevent.type};
-        unicodestr = unique(currcodestr);
+        unicodestr = unique_bc2(currcodestr);
         
         for k=1:length(auxevent)
-                [tfx currcode(k)] = ismember(currcodestr{k}, unicodestr) ;
+                [tfx, currcode(k)] = ismember_bc2(currcodestr{k}, unicodestr) ;
         end
         
-        [tfx code] = ismember(code, unicodestr);
+        [tfx, code] = ismember_bc2(code, unicodestr);
         
         isstringcode = 1;
 else
@@ -84,7 +84,7 @@ currlate = cell2mat({auxevent.latency});
 % Any other custom EEG.EVENTLIST.eventinfo field
 %
 names    = fieldnames(auxevent);
-names    = names(~ismember(names, {'type','latency', 'duration', 'urevent'})); % only extra event fields
+names    = names(~ismember_bc2(names, {'type','latency', 'duration', 'urevent'})); % only extra event fields
 lename   = length(names);
 
 for j=1:lename
@@ -152,7 +152,7 @@ try
                 
                 if isstringcode
                         for k=1:levent
-                                [tfx posc] = ismember(auxevent(k).type, 1:length(unicodestr));
+                                [tfx, posc] = ismember_bc2(auxevent(k).type, 1:length(unicodestr));
                                 auxevent(k).type = unicodestr{posc};
                         end
                         

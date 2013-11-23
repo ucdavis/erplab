@@ -59,7 +59,7 @@ if nargin==1
                         def{1}(2) = single(EEG.xmax*1000);
                 end
                 
-                def{5} = def{5}(ismember(def{5},1:EEG.nbchan));
+                def{5} = def{5}(ismember_bc2(def{5},1:EEG.nbchan));
         end
         try
                 chanlabels = {EEG.chanlocs.labels};
@@ -80,7 +80,7 @@ if nargin==1
         testwindow =  answer{1};
         ampth      =  answer{2};
         durartifact=  answer{3};
-        chanArray  =  unique(answer{4}); % avoids repeted channels
+        chanArray  =  unique_bc2(answer{4}); % avoids repeted channels
         flag       =  answer{5};
         viewer     =  answer{end};
         
@@ -273,7 +273,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_artsacc( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

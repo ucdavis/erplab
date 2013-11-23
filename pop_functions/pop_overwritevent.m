@@ -60,58 +60,31 @@ if isobject(EEG) % eegobj
         whenEEGisanObject % calls a script for showing an error window
         return
 end
-if nargin==1
-        if length(EEG)>1
-                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                title = 'ERPLAB: multiple inputs';
-                errorfound(msgboxText, title);
+if nargin==1        
+        serror = erplab_eegscanner(EEG, 'pop_overwritevent', 0, 0, 0, 1);
+        if serror
                 return
         end
-        if ~isempty(EEG.epoch)
-                msgboxText =  'pop_overwritevent has been tested for continuous data only';
-                title = 'ERPLAB: pop_overwritevent Permission';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.data)
-                msgboxText =  'pop_overwritevent() error: cannot work with an empty dataset!';
-                title = 'ERPLAB: No data';
-                errorfound(msgboxText, title);
-                return
-        end
-        if ~isfield(EEG, 'EVENTLIST')
-                msgboxText = ['EEG.EVENTLIST structure was not found!\n\n'...
-                        'Use Create EVENTLIST before overwriting EEG.event'];
-                title = 'ERPLAB: pop_overwritevent Error';
-                errorfound(sprintf(msgboxText), title);
-                return
-        end
-        if ~isfield(EEG.EVENTLIST, 'eventinfo')
-                msgboxText = ['EEG.EVENTLIST.eventinfo structure was not found!\n\n'...
-                        'Use Create EVENTLIST before overwriting EEG.event'];
-                title = 'ERPLAB: pop_overwritevent Error';
-                errorfound(sprintf(msgboxText), title);
-                return
-        else
-                if isempty(EEG.EVENTLIST.eventinfo)
-                        msgboxText =  ['EEG.EVENTLIST.eventinfo structure is empty!\n\n'...
-                                'Use Create EVENTLIST before overwriting EEG.event'];
-                        title = 'ERPLAB: pop_overwritevent Error';
-                        errorfound(sprintf(msgboxText), title);
-                        return
-                else
-                        disp('EEG.EVENTLIST.eventinfo was successfully found.')
-                end
-        end
-        mainfield = overwriteventGUI;
-        if isempty(mainfield)
+        
+        %
+        % open GUI
+        %
+        answer = overwriteventGUI;
+        
+        if isempty(answer)
                 disp('User selected Cancel')
                 return
         end
+        mainfield    = answer{1};
+        removenctype = answer{2}; % remove remaining event codes
         
+        if removenctype==1
+                rrcstr = 'on';
+        else
+                rrcstr = 'off';
+        end        
         iserrorf   = 0;
-        testfield1 = unique([EEG.EVENTLIST.eventinfo.(mainfield)]);
-        
+        testfield1 = unique_bc2([EEG.EVENTLIST.eventinfo.(mainfield)]);        
         if isempty(testfield1)
                 iserrorf = 1;
         end
@@ -133,7 +106,7 @@ if nargin==1
         %
         % Somersault
         %
-        [EEG, com] = pop_overwritevent(EEG, mainfield, 'History', 'gui');
+        [EEG, com] = pop_overwritevent(EEG, mainfield, 'RemoveRemCodes', rrcstr,'History', 'gui');
         return
 end
 
@@ -146,9 +119,15 @@ p.CaseSensitive = false;
 p.addRequired('EEG');
 p.addRequired('mainfield');
 % option(s)
+p.addParamValue('RemoveRemCodes', 'off', @ischar); % preserve remaining codes (non-captured (by binlister) event types)
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(EEG, mainfield, varargin{:});
 
+if strcmpi(p.Results.RemoveRemCodes,'on') || strcmpi(p.Results.RemoveRemCodes,'yes')
+        removenctype = 1;
+else
+        removenctype = 0;
+end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
@@ -158,12 +137,12 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
-if ~ismember({mainfield}, {'code','codelabel','binlabel'})
+if ~ismember_bc2({mainfield}, {'code','codelabel','binlabel','bini'})
         error(['Field "' mainfield '" is not an EEG.EVENTLIST.eventinfo''s structure field'])
 end
 
 iserrorf   = 0;
-testfield1 = unique([EEG.EVENTLIST.eventinfo.(mainfield)]);
+testfield1 = unique_bc2([EEG.EVENTLIST.eventinfo.(mainfield)]);
 
 if isempty(testfield1)
         iserrorf = 1;
@@ -188,8 +167,35 @@ end
 %
 % Replace fields  (needs more thought...)
 %
-EEG = update_EEG_event_field(EEG, mainfield);
-com = sprintf( '%s = pop_overwritevent( %s, ''%s'');', inputname(1), inputname(1), mainfield);
+EEG = update_EEG_event_field(EEG, mainfield, 'type', removenctype);
+
+skipfields = {'EEG', 'mainfield', 'History'};
+fn  = fieldnames(p.Results);
+com = sprintf( '%s  = pop_overwritevent( %s, ''%s'' ', inputname(1), inputname(1), mainfield);
+for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember_bc2(fn2com, skipfields)
+                fn2res = p.Results.(fn2com);
+                if ~isempty(fn2res)
+                        if ischar(fn2res)
+                                if ~strcmpi(fn2res,'off')
+                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
+                                end
+                        else
+                                if iscell(fn2res)
+                                        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                                        fnformat = '{%s}';
+                                else
+                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                                        fnformat = '%s';
+                                end
+                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                        end
+                end
+        end
+end
+com = sprintf( '%s );', com);
+% com = sprintf( '%s = pop_overwritevent( %s, ''%s'');', inputname(1), inputname(1), mainfield);
 
 % get history from script. EEG
 switch shist
@@ -210,7 +216,7 @@ end
 % Completion statement
 %
 prefunc = dbstack;
-nf = length(unique({prefunc.name}));
+nf = length(unique_bc2({prefunc.name}));
 if nf==1
         msg2end
 end

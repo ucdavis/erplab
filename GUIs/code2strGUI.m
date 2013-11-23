@@ -56,7 +56,7 @@ handles.output  = EEG;
 handles.command = '';
 nevent   = length(EEG.event);
 
-[lists, m1, capindx] = unique(cell2mat({EEG.event.type}));  % non-repeteaded found strings.
+[lists, m1, capindx] = unique_bc2(cell2mat({EEG.event.type}));  % non-repeteaded found strings.
 handles.lists = lists;
 nlist   = length(lists);                                    % amount of  non-repeteaded found strings.
 liststr = num2str(lists');

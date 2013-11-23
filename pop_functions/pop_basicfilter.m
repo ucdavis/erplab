@@ -102,7 +102,7 @@ if nargin==1
         elseif isempty(def) && ~isempty(EEG(1).epoch) % epoched
                 def = defx;
         else % got memory!
-                def{4} = def{4}(ismember(def{4},1:nchan));
+                def{4} = def{4}(ismember_bc2(def{4},1:nchan));
         end
         
         %
@@ -241,9 +241,9 @@ else
         shist = 0; % off
 end
 if ischar(fdesign)
-        [ax, tt] = ismember({lower(fdesign)},{'butter' 'fir' 'notch'});
+        [ax, tt] = ismember_bc2({lower(fdesign)},{'butter' 'fir' 'notch'});
 else
-        [ax, tt] = ismember(fdesign,[0 1 2]);
+        [ax, tt] = ismember_bc2(fdesign,[0 1 2]);
 end
 if tt>0
         fdesignnum = tt-1;  % 0=butter, 1=fir, 2=notch
@@ -316,7 +316,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_basicfilter( %s, %s ', inputname(1), inputname(1), vect2colon(chanArray)); % Bug #1
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

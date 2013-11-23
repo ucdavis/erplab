@@ -110,8 +110,8 @@ if isempty(middlechanArray)
         set(handles.pushbutton_autochanmid, 'Enable', 'off')
         set(handles.pushbutton_browse_middlechans, 'Enable', 'off')
 else        
-        leftchanArray  = leftchanArray(~ismember(leftchanArray, middlechanArray));
-        rightchanArray = rightchanArray(~ismember(rightchanArray, middlechanArray));
+        leftchanArray  = leftchanArray(~ismember_bc2(leftchanArray, middlechanArray));
+        rightchanArray = rightchanArray(~ismember_bc2(rightchanArray, middlechanArray));
         set(handles.checkbox_include_midchans, 'Value', 1)
         set(handles.edit_middlechans, 'String', num2str(middlechanArray))
 end

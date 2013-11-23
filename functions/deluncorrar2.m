@@ -181,7 +181,7 @@ end
 %       fprintf('\nCriterion was not found. No rejection was performed.\n');
 % else
 %       winrej = sort(winrej,1);
-%       winrej = unique(winrej,'rows','first');
+%       winrej = unique_bc2(winrej,'rows','first');
 %       a = winrej(1,1); winrejaux(1,:) = [a winrej(end,2)]; m=1;
 %       for j=2:size(winrej,1)
 %             if abs(winrej(j,2)-winrej(j-1,2))>diff(mwindowsam)

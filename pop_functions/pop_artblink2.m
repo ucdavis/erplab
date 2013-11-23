@@ -118,7 +118,7 @@ if nargin==1
                         def{1}(2) = single(EEG.xmax*1000);
                 end
                 
-                def{4} = def{4}(ismember(def{4},1:EEG.nbchan));
+                def{4} = def{4}(ismember_bc2(def{4},1:EEG.nbchan));
         end
         try
                 chanlabels = {EEG.chanlocs.labels};
@@ -139,7 +139,7 @@ if nargin==1
         testwindow =  answer{1};
         blinkwidth =  answer{2}; % in msec
         ccovth     =  answer{3};
-        chanArray  =  unique(answer{4}); % avoids repeated channels
+        chanArray  =  unique_bc2(answer{4}); % avoids repeated channels
         flag       =  answer{5};
         viewer     =  answer{end};
         
@@ -193,7 +193,7 @@ xenable   = p.Results.enable;
 xrecode   = p.Results.recode;
 
 blinkwidth = bwidth;  % in msec
-chanArray  = unique(chanArray); % avoids repeated channels
+chanArray  = unique_bc2(chanArray); % avoids repeated channels
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
         eprev = 1;
@@ -218,9 +218,9 @@ nch      = length(chanArray);
 ntrial   = EEG.trials;
 % if isempty(evcode)
 %       if ischar(EEG.event(1).type)
-%             evcode = unique({EEG.event.type});
+%             evcode = unique_bc2({EEG.event.type});
 %       else
-%             evcode = unique([EEG.event.type]);
+%             evcode = unique_bc2([EEG.event.type]);
 %       end
 % end
 if ~isempty(EEG.epoch)
@@ -289,8 +289,8 @@ else
         epochwidth = diff(mwindowsam)+1; % choosen epoch width in number of samples
 end
 
-bwidthpntsmax = unique(round(max(blinkwidth*fs/1000)));
-bwidthpntsmin = unique(round(min(blinkwidth*fs/1000)));
+bwidthpntsmax = unique_bc2(round(max(blinkwidth*fs/1000)));
+bwidthpntsmin = unique_bc2(round(min(blinkwidth*fs/1000)));
 
 if nch>EEG.nbchan
         error('Error: pop_artblink2() number of tested channels cannot be greater than total.')
@@ -481,7 +481,7 @@ fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_artblink2( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

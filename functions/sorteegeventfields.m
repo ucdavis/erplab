@@ -34,15 +34,12 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [EEG serror] = sorteegeventfields(EEG)
-
 serror = 0; % means no error
-
 try
         dims    = size(EEG.event);
         fnam    = fieldnames(EEG.event);
-        ref_field = sort(fnam);
-        
-        [tf,ix] = ismember(fnam, ref_field );
+        ref_field = sort(fnam);        
+        [tf,ix] = ismember_bc2(fnam, ref_field );
         [a b]   = sort(ix);
         f       =  fnam(b);
         v       = struct2cell(EEG.event);

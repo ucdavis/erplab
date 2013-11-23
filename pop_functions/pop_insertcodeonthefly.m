@@ -143,7 +143,7 @@ if nargin==1
         thresh    = answer{4};
         refract   = answer{5};
         absoludx  = answer{6};
-        if any(~ismember(relatop,{'=' '==' '~=' '<' '<=' '>=' '>'}))
+        if any(~ismember_bc2(relatop,{'=' '==' '~=' '<' '<=' '>=' '>'}))
                 msgboxText = ['Wrong relational operator\n'...
                         'Please, only use ''='', ''~='', ''<'', ''<='', ''>='', or ''>'''];
                 title = 'ERPLAB: pop_insertcodeonthefly GUI error';
@@ -240,7 +240,7 @@ if ~iscell(newcode)
 end
 
 % identify relational operator
-[tf, locrelop] = ismember(relatop,{'=' '==' '~=' '<' '<=' '>=' '>'});
+[tf, locrelop] = ismember_bc2(relatop,{'=' '==' '~=' '<' '<=' '>=' '>'});
 if nnz(tf==0)>0
         msgboxText = ['ERPLAB says: Wrong relational operator\n'...
                 'Please, only use ''='', ''~='', ''<'', ''<='', ''>='', or ''>'''];
@@ -270,7 +270,7 @@ com = sprintf('%s = pop_insertcodeonthefly( %s, %s ', inputname(1), inputname(1)
 
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

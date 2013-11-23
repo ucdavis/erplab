@@ -57,7 +57,7 @@ end
 % write bins instead of types
 %
 for i=1:levent
-        if ~ismember(-1,EEG.EVENTLIST.eventinfo(i).bini) && ~isempty(EEG.EVENTLIST.eventinfo(i).bini)
+        if ~ismember_bc2(-1,EEG.EVENTLIST.eventinfo(i).bini) && ~isempty(EEG.EVENTLIST.eventinfo(i).bini)
                 
                 auxname = num2str(EEG.EVENTLIST.eventinfo(i).bini);
                 bname   = regexprep(auxname, '\s+', ',', 'ignorecase'); % insterts a comma instead blank space

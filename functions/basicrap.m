@@ -139,8 +139,8 @@ meanoption = 0; % do nothing about the mean of data
 disp('Please wait. This might take several seconds...')
 
 while q<=nibound-1  % segments among boundaries
-        bp1   = latebound(q)+1;
-        bp2   = latebound(q+1);
+        bp1 = latebound(q)+1;
+        bp2 = latebound(q+1);
         if ~isempty(fcutoff)
                 if fcutoff(1)~=fcutoff(2)
                         if length(bp1:bp2)>3*forder
@@ -149,10 +149,6 @@ while q<=nibound-1  % segments among boundaries
                                 if q==1
                                         fprintf('\nYour data are temporary being %s filtered at a cutoff = [%.1f %.1f]\nworking...\n\n', lower(labelf), fcutoff(1), fcutoff(2));
                                 end
-                                % FIR lowpass
-                                % FIR highpass
-                                % FIR bandpass
-                                % FIR notch
                                 if isdoublep(EEG.data)
                                         EEG.data(chanArray,bp1:bp2) = filtfilt(b,a, EEG.data(chanArray,bp1:bp2)')';
                                 else
@@ -190,8 +186,8 @@ while q<=nibound-1  % segments among boundaries
         %
         j = bp1;
         while j<=bp2-(winpnts-1)
-                t1   = j+1;
-                t2   = j+winpnts-1;
+                t1 = j+1;
+                t2 = j+winpnts-1;
                 chanvec = zeros(1, EEG.nbchan);
                 for ch=1:nchan
                         % get the data window

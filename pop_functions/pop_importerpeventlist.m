@@ -151,7 +151,7 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
         issaveas  = 0;
@@ -193,7 +193,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_importerpeventlist( %s, "%s" ', inputname(1), inputname(1), ELfullname);
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

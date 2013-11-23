@@ -348,7 +348,7 @@ if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
                 binaux    = [EEG.EVENTLIST(indexEL).eventinfo.bini];
                 binhunter = binaux(binaux>0); %8/19/2009
                 
-                if ~isempty(binhunter) && ismember(option2do, [2 3 6 7])
+                if ~isempty(binhunter) && ismember_bc2(option2do, [2 3 6 7])
                         msgboxText =  ['This dataset already has assigned bins.\n'...;
                                 'Would you like to overwrite these bins?'];
                         title = 'ERPLAB: WARNING';
@@ -404,7 +404,7 @@ if strcmpi(p.Results.Report, 'on')
 else
         reportable = 0;
 end
-if ismember({p.Results.Saveas}, {'on','yes'})
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas    = 1;
 else
         issaveas    = 0;
@@ -451,7 +451,7 @@ if nnz(binofbins)>=1
                         EEG = EVENTLIST;
                         return
                 end
-                if iseegstruct(EEG) && ismember(option2do, [2 3 6 7])
+                if iseegstruct(EEG) && ismember_bc2(option2do, [2 3 6 7])
                         EEG =  pasteeventlist(EEG, EVENTLIST, 1, indexEL);
                         if updevent && issaveas
                                 EEG = pop_overwritevent(EEG, 'code', 'History', 'off');
@@ -459,11 +459,11 @@ if nnz(binofbins)>=1
                                 EEG = pop_overwritevent(EEG, 'code', 'History', 'off');
                         end
                 end
-                if ismember(option2do, [4 5 6 7])
+                if ismember_bc2(option2do, [4 5 6 7])
                         assignin('base','EVENTLIST',EVENTLIST);  % send EVENTLIST structure to WORKSPACE, August 22, 2008
                         disp('EVENTLIST structure was sent to WORKSPACE.')
                 end
-                if ismember(option2do, [1 3 5 7]) && ~isempty(file2) && ~strcmpi(file2,'no') && ~strcmpi(file2,'none')
+                if ismember_bc2(option2do, [1 3 5 7]) && ~isempty(file2) && ~strcmpi(file2,'no') && ~strcmpi(file2,'none')
                         disp('A text file version of your EVENTLIST was created.')
                 end
                 
@@ -475,7 +475,7 @@ if nnz(binofbins)>=1
                 com = sprintf( '%s  = pop_binlister( %s ', inputname(1), inputname(1));
                 for q=1:length(fn)
                         fn2com = fn{q};
-                        if ~ismember(fn2com, skipfields)
+                        if ~ismember_bc2(fn2com, skipfields)
                                 fn2res = p.Results.(fn2com);
                                 if ~isempty(fn2res)
                                         if ischar(fn2res)
@@ -532,7 +532,7 @@ end
 %
 msg2end
 
-if issaveas && ismember(option2do, [2 3 6 7]) && iseegstruct(EEG)
+if issaveas && ismember_bc2(option2do, [2 3 6 7]) && iseegstruct(EEG)
         [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
 end
 if exist('ALLEEG', 'var')

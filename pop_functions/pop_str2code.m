@@ -106,7 +106,7 @@ else  % using scripting %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         nevent = length(EEG.event);
         
         for i=1:nevent
-                [tf, loc] = ismember(EEG.event(i).type, stringscode);
+                [tf, loc] = ismember_bc2(EEG.event(i).type, stringscode);
                 if tf
                         EEG.event(i).type = numcode(loc);
                 else

@@ -86,7 +86,7 @@ Lvalue = true(1,nfnameS1); % default
 for kk=1:nfnameS1
         if strcmpi(p.Results.Report, 'on')
                 Fcall = dbstack;callnames = {Fcall.name};
-                tabstr = blanks(ntab*sum(ismember(callnames, {'structcmp'}))-1);
+                tabstr = blanks(ntab*sum(ismember_bc2(callnames, {'structcmp'}))-1);
         end % check number of recursive calls
         RS1 = S1.(sortfnameS1{kk});
         RS2 = S2.(sortfnameS2{kk});

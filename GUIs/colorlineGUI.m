@@ -488,7 +488,7 @@ lwidth = get(handles.popupmenu_lwidth,'Value');
 COLORDATA = handles.COLORDATA;
 STYLEDATA = handles.STYLEDATA;
 output    = cellstr([char({COLORDATA.colorchar}') char({STYLEDATA(1:length(COLORDATA)).style}')])';
-%[xxx indx] = ismember(colorlist, {COLORDATA.colorname});
+%[xxx indx] = ismember_bc2(colorlist, {COLORDATA.colorname});
 %handles.output = {COLORDATA(indx).colorchar};
 handles.output = [output lwidth];
 % Update handles structure

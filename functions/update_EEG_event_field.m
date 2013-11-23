@@ -6,8 +6,10 @@
 %
 % INPUTS
 %
-% EEG        - dataset
-% ELfield    - string 'code', 'codelabel', or 'binlabel'
+% EEG                - dataset
+% ELfield            - string 'code', 'codelabel', or 'binlabel'
+% EEGfield           - string 'type' (recommended)
+% removenctype       - 1 means remove remaining codes; 0 means keep them
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -38,8 +40,11 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function EEG = update_EEG_event_field(EEG, ELfield, EEGfield)
-
+function EEG = update_EEG_event_field(EEG, ELfield, EEGfield, removenctype)
+if nargin<4
+        % removenctype means "remove non-captured event codes"
+        removenctype = 0; % 1 means "yes"; 0 means "no" {default}
+end
 if nargin<3
         % ELfield means subfield at EEG.EVENTLIST.eventinfo
         EEGfield = 'type'; % EEG.event's subfield, by default
@@ -47,45 +52,83 @@ end
 %
 % Replaces EEG.event.type field by EEG.EVENTLIST.eventinfo.binlabel
 %
-lenevent1 = length(EEG.EVENTLIST.eventinfo);
-lenevent2 = length(EEG.event);
+lenevent1    = length(EEG.EVENTLIST.eventinfo);
+% lenevent2    = length(EEG.event);
+indxeventin  = 1:lenevent1;
+indxeventout = indxeventin;
 
-if (lenevent1 ~= lenevent2)
+%if (lenevent1 ~= lenevent2)
+%        fprintf('WARNING: Lengths of EEG.event and EEG.EVENTLIST.eveninfo are different.\n')
+%        fprintf('Therefore, EEG.event will be deleted, and then rebuilt with the EEG.EVENTLIST.eveninfo values.\n')
         EEG = rmfield(EEG,'event');
-        fprintf('\nWARNING: Lengths of EEG.event and EEG.EVENTLIST.eveninfo are different.\n')
-        fprintf('Therefore, EEG.event was deleted, and then rebuilt with the EEG.EVENTLIST.eveninfo values.\n')
-end
-
-%
-% Replace ELfield into EEG.type
-%
-[EEG.event(1:lenevent1).(EEGfield)] = EEG.EVENTLIST.eventinfo.(ELfield);
-
-%
-% In case there is not full replacement (fills up empty "event codes")
-%
-if ischar(EEG.event(1).type)
-        [tf, pos] = ismember({EEG.event.type},'""');
-        posquo   = find(pos);
-        [EEG.event(posquo).type]  = EEG.EVENTLIST.eventinfo(posquo).code;
+%end
+if strcmpi(ELfield, 'bini')
+        auxbini = cell(1);
+        for k=indxeventin
+                auxbini{k} = EEG.EVENTLIST.eventinfo(k).bini(1); % only takes the first bin in bini
+        end
+        
+        %
+        % Replace bini into EEG.event.(EEGfield)
+        % (in this version it takes the first assigned, so no multiple bin assignment is allowed, and moves into EEG.event.type)
+        %
+        if removenctype               
+                %actualbin   = cell2mat(cellfun(@(x) x(x>0), auxbini, 'UniformOutput', false));
+                ab = cellfun(@(x) x(x>0), auxbini, 'UniformOutput', false);
+                actualbin   = find(~cellfun(@isempty, ab));
+                indxeventin = 1:length(actualbin);
+                [EEG.event(indxeventin).(EEGfield)] = auxbini{actualbin};
+                indxeventout = actualbin;
+        else
+                [EEG.event(indxeventin).(EEGfield)] = auxbini{:};
+                maskpbin =  [EEG.event(indxeventin).(EEGfield)]==-1;
+                [EEG.event(maskpbin).(EEGfield)] = EEG.EVENTLIST.eventinfo(maskpbin).code;
+        end
 else
-        posquo = find(isnan([EEG.event.type]));
-        [EEG.event(posquo).type]  = EEG.EVENTLIST.eventinfo(posquo).codelabel;
+        %
+        % Replace bini into EEG.event.(EEGfield)
+        %
+        [EEG.event(indxeventin).(EEGfield)] = EEG.EVENTLIST.eventinfo.(ELfield);
+        
+        %
+        % In case there is not full replacement (fills up empty "event codes")
+        %
+        if ischar(EEG.event(1).(EEGfield))
+                if removenctype                       
+                        posquo = find(~ismember_bc2({EEG.event.(EEGfield)},'""'));
+                        indxeventin = 1:length(posquo);
+                        EEG.event   = rmfield(EEG.event, EEGfield);
+                        [EEG.event(indxeventin).(EEGfield)] = EEG.EVENTLIST.eventinfo(posquo).(ELfield);
+                        indxeventout = posquo;
+                else
+                        posquo = find(ismember_bc2({EEG.event.(EEGfield)},'""'));
+                        [EEG.event(posquo).(EEGfield)] = EEG.EVENTLIST.eventinfo(posquo).code;
+                end
+        else
+                if removenctype                       
+                        posquo = find(~isnan([EEG.event.(EEGfield)]));
+                        indxeventin = 1:length(posquo);
+                        EEG.event   = rmfield(EEG.event, EEGfield);
+                        [EEG.event(indxeventin).(EEGfield)] = EEG.EVENTLIST.eventinfo(posquo).(ELfield);
+                        indxeventout = posquo;
+                else
+                        posquo = find(isnan([EEG.event.(EEGfield)]));
+                        [EEG.event(posquo).(EEGfield)] = EEG.EVENTLIST.eventinfo(posquo).codelabel;
+                end
+        end
 end
 
-[EEG.event(1:lenevent1).codelabel] = EEG.EVENTLIST.eventinfo.codelabel;
-
+%
+% complete remaining fields
+%
+[EEG.event(indxeventin).codelabel] = EEG.EVENTLIST.eventinfo(indxeventout).codelabel;
 % updating latency is mandatory!
-[EEG.event(1:lenevent1).latency] = EEG.EVENTLIST.eventinfo.spoint;
-
-if ~isfield(EEG.event,'duration')
-        [EEG.event(1:lenevent1).duration] = EEG.EVENTLIST.eventinfo.dura;
-end
-
-[EEG.event(1:lenevent1).flag]     = EEG.EVENTLIST.eventinfo.flag;
-[EEG.event(1:lenevent1).bini]     = EEG.EVENTLIST.eventinfo.bini;
-[EEG.event(1:lenevent1).binlabel] = EEG.EVENTLIST.eventinfo.binlabel;
-[EEG.event(1:lenevent1).enable]   = EEG.EVENTLIST.eventinfo.enable;
+[EEG.event(indxeventin).latency]  = EEG.EVENTLIST.eventinfo(indxeventout).spoint;
+[EEG.event(indxeventin).duration] = EEG.EVENTLIST.eventinfo(indxeventout).dura;
+[EEG.event(indxeventin).flag]     = EEG.EVENTLIST.eventinfo(indxeventout).flag;
+[EEG.event(indxeventin).bini]     = EEG.EVENTLIST.eventinfo(indxeventout).bini;
+[EEG.event(indxeventin).binlabel] = EEG.EVENTLIST.eventinfo(indxeventout).binlabel;
+[EEG.event(indxeventin).enable]   = EEG.EVENTLIST.eventinfo(indxeventout).enable;
 
 %
 % Any other custom EEG.EVENTLIST.eventinfo field
@@ -93,10 +136,10 @@ end
 names  = fieldnames(EEG.EVENTLIST.eventinfo);
 lename = length(names);
 
-for i=1:lename
-        if ~ismember(names{i}, {'code','codelabel', 'time', 'dura', 'binlabel','spoint', ...
+for k=1:lename
+        if ~ismember_bc2(names{k}, {'code','codelabel', 'time', 'dura', 'binlabel','spoint', ...
                         'flag','enable','bini'})
-                [EEG.event.(names{i})] = EEG.EVENTLIST.eventinfo(1:lenevent1).(names{i});
+                [EEG.event(indxeventin).(names{k})] = EEG.EVENTLIST.eventinfo(indxeventout).(names{k});
         end
 end
 

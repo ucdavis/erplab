@@ -93,7 +93,7 @@ if nargin==1
         if isempty(def)
                 def = defx;
         else
-                def{4} = def{4}(ismember(def{4},1:nchan));
+                def{4} = def{4}(ismember_bc2(def{4},1:nchan));
         end
         
         %
@@ -261,7 +261,7 @@ if iserrch
         errorfound(msgboxText, title);
         return
 end
-[ax, tt] = ismember(lower(fdesign),{'butter' 'fir' 'notch'});
+[ax, tt] = ismember_bc2(lower(fdesign),{'butter' 'fir' 'notch'});
 if tt>0
         fdesignnum = tt-1;
 else
@@ -301,7 +301,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_filterp( %s, %s ', inputname(1), inputname(1), chanArraystr);
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

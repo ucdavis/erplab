@@ -46,7 +46,7 @@
 % April 2009
 
 function EEG = cleancodebyte(EEG,byte)
-if ~ismember(byte,[1 2])
+if ~ismember_bc2(byte,[1 2])
     disp('Error: "BYTE" HAVE TO BE EITHER 1 OR 2')
     return
 end

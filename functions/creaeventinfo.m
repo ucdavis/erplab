@@ -107,7 +107,7 @@ if isfield(EEG.event,'type')
       if ischar(EEG.event(1).type) % events are alphanumeric            
             for i=1:fin   
                     codeaux = EEG.event(i).type;
-                  [vty indxty] = ismember({codeaux}, boundarystrcode); % thanks Paul!                  
+                  [vty, indxty] = ismember_bc2({codeaux}, boundarystrcode); % thanks Paul!                  
                   if nnz(vty)>0                        
                         bx = char(boundarystrcode{indxty});
                         ny = newboundarynumcode{indxty};
@@ -214,7 +214,7 @@ names  = fieldnames(EEG.event);
 lename = length(names);
 
 for i=1:lename
-        if ~ismember(names{i}, {'urevent','type', 'code','codelabel','binlabel','latency','duration', ...
+        if ~ismember_bc2(names{i}, {'urevent','type', 'code','codelabel','binlabel','latency','duration', ...
                         'flag','enable','bini'})
                 [EVENTLIST.eventinfo(1:fin).(names{i})] = EEG.event.(names{i});
         end
@@ -228,7 +228,7 @@ binaux    = [EVENTLIST.eventinfo.bini];
 binhunter = sort(binaux(binaux>0)); %8/19/2009
 
 if lbin>=1
-        [c detbin] = ismember(ubin,binhunter);
+        [c, detbin] = ismember_bc2(ubin,binhunter);
         detnonz = nonzeros(detbin)';
 
         if ~isempty(detnonz)

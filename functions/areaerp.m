@@ -76,7 +76,7 @@ end
 if nargin<4
         op = 'integral';
 end
-if length(latsam)==1 && ~ismember({op},{'auto','autot','autop','auton'})
+if length(latsam)==1 && ~ismember_bc2({op},{'auto','autot','autop','auton'})
         error('ERPLAB says: error at areaerp(). You must enter 2 latencies for non-automatic limits')
 end
 if ~isempty(frac) && (frac<0 || frac>1)
@@ -93,7 +93,7 @@ if intfactor>1 % interpolate data
 else
         Ts = 1/fs;     % sample period
 end
-if ismember({op},{'auto','autot','autop','auton'})
+if ismember_bc2({op},{'auto','autot','autop','auton'})
         if length(latsam)==2
                 
                 %
@@ -188,11 +188,11 @@ end
 if isempty(a) || isempty(b)
         A = 0;   % either of the integration limits failed
 else
-        if ismember({op},{'autot','total'})
+        if ismember_bc2({op},{'autot','total'})
                 data = abs(data);
-        elseif ismember({op},{'autop','positive'})
+        elseif ismember_bc2({op},{'autop','positive'})
                 data(data<0) = 0;
-        elseif ismember({op},{'auton','negative'})
+        elseif ismember_bc2({op},{'auton','negative'})
                 data = -data;
                 data(data<0) = 0; % negative values get positive, and the previously positive ones get zeroed.
         end
@@ -236,14 +236,6 @@ elseif nargout==2 || nargout==3
                 else
                         L = a;     % if Ao=0 then L=lower area limit
                 end
-                
-                
-              
-                
-                
-                
-                
-                
         else
                 if fracarearep==0 % Fractional area latency replacement
                         L = NaN; % if Ao=0 then fractional latency = NaN
@@ -255,11 +247,7 @@ elseif nargout==2 || nargout==3
         
         %
         % Frac latency
-        %
-        
-        
-        
-        
+        %       
         varargout{2} = L/intfactor; % rescale. samples
         
         if nargout==3

@@ -52,7 +52,7 @@ if size(chin,1)>1
         error('ERPLAB says: error, deletechan works with row-array inputs')
 end
 
-chanarray = unique(chin);
+chanarray = unique_bc2(chin);
 
 if length(chanarray)~=length(chin)
         fprintf('\n*** WARNING: Repeated channels were ignored.\n\n')

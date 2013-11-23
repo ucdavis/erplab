@@ -59,7 +59,7 @@ if movetime>fulltime
       error(['ERPLAB says: errot at erptimeshift(). You cannot shift time values more than ' num2str(fulltime) ' ms!'])
 end
 A = ERP.times';
-deltatime   = mean(unique(diff(A)));
+deltatime   = mean(unique_bc2(diff(A)));
 if movetime>0      
       Bpre  = min(A)-length(A)*deltatime:deltatime:min(A)-deltatime;
       B     = cat(1,Bpre', A);

@@ -152,7 +152,7 @@ if ~isempty(erpindex)
         if exist(pathname, 'dir')~=7
                 mkdir(pathname);  % Thanks to Johanna Kreither. Jan 31, 2013
         end
-        erpindex = unique(erpindex);
+        erpindex = unique_bc2(erpindex);
         nerpset  = length(erpindex);
         
         for i=1:nerpset
@@ -226,7 +226,7 @@ fn     = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_senderpbymail( %s ', DATIN, DATIN);
 for q=1:length(fn)
         fn2com = fn{q};
-        if ~ismember(fn2com, skipfields)
+        if ~ismember_bc2(fn2com, skipfields)
                 fn2res = p.Results.(fn2com);
                 if ~isempty(fn2res)
                         if ischar(fn2res)

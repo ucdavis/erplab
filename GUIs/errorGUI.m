@@ -115,9 +115,9 @@ if showfig
         imR    = imagein(:,:,1);
         imG    = imagein(:,:,2);
         imB    = imagein(:,:,3);        
-        aindx  = ismember(imR,12);
-        bindx  = ismember(imG,255);
-        cindx  = ismember(imB,0);
+        aindx  = ismember_bc2(imR,12);
+        bindx  = ismember_bc2(imG,255);
+        cindx  = ismember_bc2(imB,0);
         edmask = aindx&bindx&cindx;
         imR(edmask) = bcolor(1)*255;
         imG(edmask) = bcolor(2)*255;
