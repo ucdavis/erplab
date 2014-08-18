@@ -47,7 +47,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP serror] = appenderp(ALLERP,indx, prefixes)
+function [ERP, serror] = appenderp(ALLERP,indx, prefixes)
 ERP = [];
 serror = 0;
 if nargin<3
@@ -103,6 +103,7 @@ for i=1:nerp
             ref        = ALLERP(indx(i)).ref;
             bindata    = ALLERP(indx(i)).bindata;
             binerror   = ALLERP(indx(i)).binerror;
+            datatype   = ALLERP(indx(i)).datatype;
       else
             sra = size(bindata,1);
             srb = size(ALLERP(indx(i)).bindata,1);
@@ -152,6 +153,7 @@ ERP.xmax       = xmax;
 ERP.times      = times;
 ERP.bindata    = bindata;
 ERP.binerror   = binerror;
+ERP.datatype   = datatype;
 ERP.chanlocs   = chanlocs;
 ERP.ref        = ref;
 ERP.bindescr   = bindescr;
@@ -165,4 +167,4 @@ ERP.isfilt     = 0;   % 1= avg was filtered or smoothed
 ERP.version    = geterplabversion;
 
 ERP = old2newerp(ERP);
-[ERP serror] = sorterpstruct(ERP);
+[ERP, serror] = sorterpstruct(ERP);

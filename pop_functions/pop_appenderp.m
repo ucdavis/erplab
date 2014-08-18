@@ -214,6 +214,7 @@ if optioni~=0
         if nfile>1
                 numpoints = zeros(1,nfile);
                 numchans  = zeros(1,nfile);
+                chckdatatype = cell(1);
                 nameerp   = {''};
                 clear ALLERP
                 
@@ -221,15 +222,16 @@ if optioni~=0
                         [pname, fname, ext] = fileparts(strtrim(lista{j}));
                         ALLERP(j) = pop_loaderp('filename', [fname ext], 'filepath', pname, 'History', 'off');
                         
-                        numpoints(j) = ALLERP(j).pnts;
-                        numchans(j)  = ALLERP(j).nchan;
-                        nameerp{j}   = ALLERP(j).erpname;
+                        numpoints(j)    = ALLERP(j).pnts;
+                        numchans(j)     = ALLERP(j).nchan;
+                        nameerp{j}      = ALLERP(j).erpname;
+                        chckdatatype{j} = ALLERP(j).datatype;
                         clear ERP1
                 end
                 if errorerp
                         error('ERPLAB says: Loading ERP process has crashed....')
                 else
-                        if length(unique_bc2(numpoints))>1
+                        if length(unique(numpoints))>1
                                 fprintf('Detail:\n')
                                 fprintf('-------\n')
                                 for j=1:nfile
@@ -240,13 +242,24 @@ if optioni~=0
                                 errorfound(sprintf(msgboxText), etitle);
                                 return
                         end
-                        if length(unique_bc2(numchans))>1
+                        if length(unique(numchans))>1
                                 fprintf('Detail:\n')
                                 fprintf('-------\n')
                                 for j=1:nfile
                                         fprintf('Erpset %s has %g channels\n', nameerp{j}, numchans(j));
                                 end
                                 msgboxText = 'ERPsets have different number of channel\n';
+                                etitle = 'ERPLAB: appenderpGUI inputs';
+                                errorfound(sprintf(msgboxText), etitle);
+                                return
+                        end
+                        if length(unique(chckdatatype))>1
+                                fprintf('Detail:\n')
+                                fprintf('-------\n')
+                                for j=1:nfile
+                                        fprintf('Erpset %s has data type = %s\n', nameerp{j}, chckdatatype{j});
+                                end
+                                msgboxText = 'ERPsets have different data type\n';
                                 etitle = 'ERPLAB: appenderpGUI inputs';
                                 errorfound(sprintf(msgboxText), etitle);
                                 return

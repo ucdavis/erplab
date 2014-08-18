@@ -117,6 +117,7 @@ i = 1;
 toggle =1;
 p=0;
 k=0;
+lat=0; % bug fixed (Thanks Tom Campbell)
 
 if absolud==1
         datax = abs(EEG.data(channel,:));
@@ -168,7 +169,7 @@ while i <= npoints
                 k = k+1;
         end
         if k==windowsam
-                if p>=durasam
+                if p>=durasam && lat>0 % bug fixed (Thanks Tom Campbell)
                         EEG.event(n).type     = newcode;
                         EEG.event(n).latency  = lat + latoffsetsam;
                         EEG.event(n).duration = 0;

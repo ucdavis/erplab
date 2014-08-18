@@ -133,6 +133,12 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ERP, formulas, varargin{:});
 
+
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else
+    datatype = 'ERP';
+end
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
         issaveas  = 1;
 else
@@ -339,7 +345,7 @@ end
 %
 % Contra ipsi reorganization of channels and data (called by 'prepareContraIpsi' at the beginning of the list of formulas)
 %
-if cimode       
+if cimode
         ERPout = erp2contraipsi(ERPout, ERP);
 end
 
@@ -348,6 +354,7 @@ end
 %
 msg2end
 ERP = ERPout;
+ERP.datatype = datatype; 
 
 %
 % History

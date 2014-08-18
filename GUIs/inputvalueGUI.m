@@ -38,17 +38,51 @@ handles.output = [];
        option01  = 0;
  end
  
-handles.memov = memov;
-handles.def   = def;
-set(handles.edit_ticks,'String', memov)
-set(handles.prompt,'String', prompt);
-set(handles.gui_chassis,'Name', dlg_title);
-set(handles.edit_ticks,'String', memov);
-set(handles.checkbox_option01,'String', 'Include minor ticks');
-set(handles.checkbox_option01,'Value', option01);
-
-%
-% Color GUI
+ handles.memov = memov;
+ handles.def   = def;
+ set(handles.edit_ticks,'String', memov)
+ set(handles.prompt,'String', prompt);
+ set(handles.gui_chassis,'Name', dlg_title);
+ set(handles.edit_ticks,'String', memov);
+ 
+ if strcmpi(dlg_title,'Recovering numeric event codes from Bin Labels')
+         set(handles.checkbox_option01,'Visible', 'off');
+         set(handles.checkbox_option01,'Visible', 'off');
+         set(handles.pushbutton_reset,'Visible', 'off');
+         tooltip1  = ['<html><i>You may want to differentiate between your recovered event codes<br>'...
+                 'and those that were not bin-captured and that still remain in your dataset.<br>'...
+                 'In order to do so, you can enter a single integer here that will work as a<br>'...
+                 'multiplier for each recovered event code. For instance, if you use a value<br>'...
+                 'of 100 then recovered event codes like 23 or 41 will appear as 2300 and 4100.<br><br>'...
+                 'Otherwise enter a value of 1.'];
+         set(handles.edit_tip_tip_multiplier,'Visible', 'on');
+         set(handles.edit_tip_tip_multiplier, 'tooltip',tooltip1);
+         
+         %
+         % Tooltip timing
+         %
+         try
+                 tm = javax.swing.ToolTipManager.sharedInstance;
+                 initialDelay = javaMethodEDT('getInitialDelay',tm);
+                 javaMethodEDT('setInitialDelay',tm,0);
+                 dismissDelay = javaMethodEDT('getDismissDelay',tm);
+                 javaMethodEDT('setDismissDelay',tm,20000);
+                 javaMethodEDT('setEnabled',tm,false);
+                 pause(0.2)
+                 javaMethodEDT('setEnabled',tm,true);
+                 javaMethodEDT('setInitialDelay',tm,initialDelay);
+                 javaMethodEDT('setDismissDelay',tm,dismissDelay);
+         catch
+                 disp('Tooltip timing setting could not be changed...')
+         end
+ else
+         set(handles.checkbox_option01,'String', 'Include minor ticks');
+         set(handles.checkbox_option01,'Value', option01);
+         set(handles.edit_tip_tip_multiplier,'Visible', 'off');
+ end
+ 
+ %
+ % Color GUI
 %
 handles = painterplab(handles);
 

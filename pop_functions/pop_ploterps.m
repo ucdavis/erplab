@@ -122,6 +122,11 @@ if nargin==1  %with GUI
                 errorfound(msgboxText, title_msg);
                 return
         end
+        if isfield(ERP, 'datatype')
+                datatype = ERP.datatype;
+        else
+                datatype = 'ERP';
+        end
 
         %
         % Call GUI for plotting
@@ -132,19 +137,19 @@ if nargin==1  %with GUI
                 disp('User selected Cancel')
                 return
         end
-        if isempty(plotset.ptime)
+        if (isempty(plotset.ptime) && strcmpi(datatype, 'ERP')) || (isempty(plotset.pfrequ) && ~strcmpi(datatype, 'ERP'))
                 disp('User selected Cancel')
-                return                
-        elseif strcmpi(plotset.ptime,'mini')                
-                ansmini = mini_ploterpGUI;                
-                if isempty(ansmini)
-                        disp('User selected Cancel')
-                        return
-                end                
-                [ERP, erpcom] = pop_ploterps(ERP);
-                return                
-        elseif strcmpi(plotset.ptime,'pdf')
-                %erpcom2 = pop_fig2pdf;
+                return   
+        end
+%         elseif strcmpi(plotset.ptime,'mini')                
+%                 ansmini = mini_ploterpGUI;                
+%                 if isempty(ansmini)
+%                         disp('User selected Cancel')
+%                         return
+%                 end                
+%                 [ERP, erpcom] = pop_ploterps(ERP);
+%                 return                
+        if (strcmpi(plotset.ptime,'pdf') && strcmpi(datatype, 'ERP')) || (strcmpi(plotset.pfrequ,'pdf') && ~strcmpi(datatype, 'ERP')) 
                 [ERP, erpcom2] = pop_exporterplabfigure(ERP);
                 %if countp>0
                 disp('pop_exporterplabfigure was called')
@@ -153,11 +158,11 @@ if nargin==1  %with GUI
                 %end
                 erpcom = [erpcom ' ' erpcom2];
                 return
-        elseif strcmpi(plotset.ptime,'scalp')
+        elseif (strcmpi(plotset.ptime,'scalp') && strcmpi(datatype, 'ERP')) || (strcmpi(plotset.pfrequ,'scalp') && ~strcmpi(datatype, 'ERP')) 
                 disp('User called pop_scalplot()')
                 return
         end
-        if plotset.ptime.pstyle==4 % topo
+        if (isfield(plotset.ptime, 'pstyle') && plotset.ptime.pstyle==4 && strcmpi(datatype, 'ERP')) || (isfield(plotset.pfrequ, 'pstyle') && plotset.pfrequ.pstyle==4 && ~strcmpi(datatype, 'ERP'))% topo
                 %
                 % Searching channel location
                 %
@@ -165,7 +170,7 @@ if nargin==1  %with GUI
                         ERP = borrowchanloc(ERP);
                 else
                         question = ['This averaged ERP has not channel location info.\n'...
-                                'Would you like to load it now?'];
+                                    'Would you like to load it now?'];
                         title_msg = 'ERPLAB: Channel location';
                         button    = askquest(sprintf(question), title_msg);
                         
@@ -177,27 +182,45 @@ if nargin==1  %with GUI
                         end
                 end
         end
-        
-        plotset.ptime.binArray  = plotset.ptime.binArray(plotset.ptime.binArray<=ERP.nbin);
-        plotset.ptime.chanArray = plotset.ptime.chanArray(plotset.ptime.chanArray<=ERP.nchan);
-        plotset.ptime.chanArray_MGFP = plotset.ptime.chanArray_MGFP(plotset.ptime.chanArray_MGFP<=ERP.nchan);
-        
-        if isempty(plotset.ptime.binArray)
-                msgboxText =  'Invalid bin index(ices)';
-                title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
-                errorfound(msgboxText, title_msg);
-                return
-        end
-        if isempty(plotset.ptime.chanArray)
-                msgboxText =  'Specified channel(s) did not have a valid channel location.';
-                title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
-                errorfound(msgboxText, title_msg);
-                return
-        end
-        
-        assignin('base','plotset', plotset);
-        getplotset_time % call script (get values)
-        
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime.binArray  = plotset.ptime.binArray(plotset.ptime.binArray<=ERP.nbin);
+                plotset.ptime.chanArray = plotset.ptime.chanArray(plotset.ptime.chanArray<=ERP.nchan);
+                plotset.ptime.chanArray_MGFP = plotset.ptime.chanArray_MGFP(plotset.ptime.chanArray_MGFP<=ERP.nchan);
+                
+                if isempty(plotset.ptime.binArray)
+                        msgboxText =  'Invalid bin index(ices)';
+                        title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+                if isempty(plotset.ptime.chanArray)
+                        msgboxText =  'Specified channel(s) did not have a valid channel location.';
+                        title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+                assignin('base','plotset', plotset);
+                getplotset_time % call script (get values)
+        else
+                plotset.pfrequ.binArray  = plotset.pfrequ.binArray(plotset.pfrequ.binArray<=ERP.nbin);
+                plotset.pfrequ.chanArray = plotset.pfrequ.chanArray(plotset.pfrequ.chanArray<=ERP.nchan);
+                plotset.pfrequ.chanArray_MGFP = plotset.pfrequ.chanArray_MGFP(plotset.pfrequ.chanArray_MGFP<=ERP.nchan);
+                
+                if isempty(plotset.pfrequ.binArray)
+                        msgboxText =  'Invalid bin index(ices)';
+                        title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+                if isempty(plotset.pfrequ.chanArray)
+                        msgboxText =  'Specified channel(s) did not have a valid channel location.';
+                        title_msg  = 'ERPLAB: pop_ploterps() invalid info:';
+                        errorfound(msgboxText, title_msg);
+                        return
+                end
+                assignin('base','plotset', plotset);
+                getplotset_frequ % call script (get values)
+        end        
         if yauto==1
                 rAutoYlim = 'on';
         else
@@ -266,6 +289,12 @@ if nargin==1  %with GUI
         
         linespeci = linespeci(1:length(binArray));
         
+        if ibckground==1 % @@@@@@@@@@
+                invbckg = 'on'; % show ch label
+        else
+                invbckg = 'off'; % show ch number
+        end
+        
         %
         % Somersault
         %
@@ -274,7 +303,7 @@ if nargin==1  %with GUI
                 'LegPos', rLegPos,'LineWidth', linewidth, 'Mgfp', chanArray_MGFP, 'SEM', rSEM, 'Transparency', stdalpha,...
                 'Style', rStyle, 'xscale', xxscale,'YDir', rYDir, 'yscale', yyscale, 'Maximize', rismaxim, 'Position', posgui,...
                 'axsize', axsize,'ChLabel', rchanlabel, 'MinorTicksX', mtxstr, 'MinorTicksY', mtystr,...
-                'Linespec', linespeci,'ErrorMsg', 'popup', 'History', 'gui');
+                'Linespec', linespeci,'ErrorMsg', 'popup', 'InvertBackground', invbckg,'History', 'gui');
         pause(0.1)
         return
 end
@@ -282,7 +311,7 @@ end
 %
 % Parsing inputs
 %
-colordef = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };% default colors
+colordef = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w'};% default colors
 p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
@@ -316,6 +345,7 @@ p.addParamValue('MinorTicksY', 'off', @ischar); % off | on
 p.addParamValue('Linespec', colordef, @iscell);
 p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
 p.addParamValue('Tag', 'ERP_figure', @ischar); % figure tag
+p.addParamValue('InvertBackground', 'off', @ischar); % figure tag
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ERP, binArray, chanArray, varargin{:});
@@ -326,6 +356,12 @@ else
         errormsgtype = 0; % error in red at command window
 end
 ftag = p.Results.Tag;
+if strcmpi(p.Results.InvertBackground,'on')
+        ibckground = 1; % invert
+else
+        ibckground = 0; % do not
+end
+
 filename4erp = '';
 
 % check ERP
@@ -435,6 +471,17 @@ if min(binArray)<1
         end
 end
 
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
+
 qMgfp   = p.Results.Mgfp;
 qBlc    = p.Results.Blc;
 qxscale = p.Results.xscale;
@@ -447,7 +494,7 @@ qFontSizeTicks = p.Results.FontSizeTicks;
 qaxsize  = p.Results.Axsize;
 
 if isempty(qxscale)
-        qxscale = [round(ERP.xmin*1000) round(ERP.xmax*1000)];
+        qxscale = [round(ERP.xmin*kktime) round(ERP.xmax*kktime)];
 end
 if isempty(qBox)
         aa = round(sqrt(ERP.nchan));
@@ -552,14 +599,26 @@ if qpstyle==4 % topo
                 end
         end
 end
-try
-        plotset = evalin('base', 'plotset');
-        plotset.ptime.xscale = qxscale; % plotting memory for time window
-        assignin('base','plotset', plotset);
-catch
-        ptime  = [];
-        plotset.ptime  = ptime;
-        assignin('base','plotset', plotset);
+if strcmpi(datatype, 'ERP')
+        try
+                plotset = evalin('base', 'plotset');
+                plotset.ptime.xscale = qxscale; % plotting memory for time window
+                assignin('base','plotset', plotset);
+        catch
+                ptime  = [];
+                plotset.ptime  = ptime;
+                assignin('base','plotset', plotset);
+        end
+else
+        try
+                plotset = evalin('base', 'plotset');
+                plotset.pfrequ.xscale = qxscale; % plotting memory for time window
+                assignin('base','plotset', plotset);
+        catch
+                pfrequ  = [];
+                plotset.pfrequ  = pfrequ;
+                assignin('base','plotset', plotset);
+        end
 end
 
 %
@@ -595,13 +654,25 @@ if ismaxim==0
         else
                 posfig = [];
         end
-        plotset.ptime.posfig = posfig;
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime.posfig = posfig;
+        else
+                plotset.pfrequ.posfig = posfig;
+        end
         assignin('base','plotset', plotset);
 else
-        if isfield(plotset.ptime, 'posfig') % bug fixed apr 2013
-                posfig = plotset.ptime.posfig;
+        if strcmpi(datatype, 'ERP')
+                if isfield(plotset.ptime, 'posfig') % bug fixed apr 2013
+                        posfig = plotset.ptime.posfig;
+                else
+                        posfig = [];
+                end
         else
-                posfig = [];
+                if isfield(plotset.pfrequ, 'posfig') % bug fixed apr 2013
+                        posfig = plotset.pfrequ.posfig;
+                else
+                        posfig = [];
+                end
         end
 end
 
@@ -611,7 +682,7 @@ end
 BinArraystr  = vect2colon(binArray, 'Sort','yes');
 chanArraystr = vect2colon(chanArray);
 ploterps(ERP, binArray, chanArray,  qpstyle, qMgfp, qBlc, qxscale, qyscale, qLineWidth, qisiy, qFontSizeChan, qFontSizeLeg, qFontSizeTicks, qerrorstd,...
-        qstdalpha, qBox, qholdch, qyauto, qbinleg, qlegepos, ismaxim, posfig, qaxsize, qchanleg, minorticks, linespeci, ftag)
+        qstdalpha, qBox, qholdch, qyauto, qbinleg, qlegepos, ismaxim, posfig, qaxsize, qchanleg, minorticks, linespeci, ftag, ibckground)
 
 %
 % History command

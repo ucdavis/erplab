@@ -86,7 +86,7 @@ end
 tokreref = regexpi(expression, '\s*chreref\((.*)?\)', 'tokens','ignorecase');
 
 if ~isempty(tokreref)
-        chdelop    = tokreref{1}{1};        
+        chdelop   = tokreref{1}{1};        
         [sep1 u2] = regexp(strtrim(chdelop), ',','match','split');
         nu2 = length(u2);
         formref  =   u2{1};
@@ -99,7 +99,7 @@ if ~isempty(tokreref)
               rewroteop  = ['ERPout = chreref(ERPin, ''' formref ''')'];
         else
               exclchanstr = vect2colon(exclchan);
-              rewroteop  = ['ERPout = chreref(ERPin, ''' formref ''','  exclchanstr ' )'];
+              rewroteop   = ['ERPout = chreref(ERPin, ''' formref ''','  exclchanstr ' )'];
         end        
         eval([rewroteop ';'])
         return
@@ -110,9 +110,9 @@ expression = regexprep(expression, '([*/^])', '.$1','ignorecase');
 %
 % looking for label
 %
-[matlabel toklabel]    = regexpi(expression, '\s*label\s*\=*\s*(.*)', 'match', 'tokens');
+[matlabel toklabel]  = regexpi(expression, '\s*label\s*\=*\s*(.*)', 'match', 'tokens');
 if ~isempty(toklabel) && ~isempty(ERPin.chanlocs)
-        newlabel   = toklabel{:}{1};
+        newlabel  = toklabel{:}{1};
         
         %
         % erase label from expression

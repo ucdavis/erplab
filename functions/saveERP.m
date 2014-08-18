@@ -33,7 +33,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP serror filenamex] = saveERP(ERP, filenamex, modegui, warnop)
+function [ERP, serror, filenamex] = saveERP(ERP, filenamex, modegui, warnop)
 
 serror = 0;
 

@@ -54,7 +54,17 @@ if nargin<1
       help erptimeshift
       return
 end
-fulltime = (ERP.xmax-ERP.xmin)*1000;
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
+fulltime = (ERP.xmax-ERP.xmin)*kktime;
 if movetime>fulltime
       error(['ERPLAB says: errot at erptimeshift(). You cannot shift time values more than ' num2str(fulltime) ' ms!'])
 end
@@ -81,8 +91,8 @@ if isempty(zerocatch)
       error('ERPLAB says: errot at erptimeshift(). You threw away the zero latency!!!')
 end
 ERP.times = times;
-ERP.xmax  = max(times)/1000;
-ERP.xmin  = min(times)/1000;
+ERP.xmax  = max(times)/kktime;
+ERP.xmin  = min(times)/kktime;
 
 
 

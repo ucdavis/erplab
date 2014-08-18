@@ -20,7 +20,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2013
+% Dec 2013
 
 function [EEG, com] = pop_eegtrim(EEG, pre, post, varargin)
 com = '';
@@ -29,7 +29,7 @@ if nargin<1
         return
 end
 if nargin==1
-        serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 2); % check for continuous dataset
+        serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 2, 2); % check for continuous dataset
         if serror
                 return
         end
@@ -84,25 +84,26 @@ else
 end
 
 t1   = EEG.event(1).latency;
+if t1<=2
+        t1   = EEG.event(2).latency;
+end
 t2   = EEG.event(end).latency;
+if t2>=EEG.pnts-2
+        t2   = EEG.event(end-1).latency;
+end
 pnts = EEG.pnts;
 fs   = EEG.srate;
-presam  = ms2sample(pre, fs, 1);
-postsam = ms2sample(post, fs, 1);
-pre1  = t1-presam;
-pre2  = presam;
-post1 = postsam;
-post2 = t2+postsam;
+presam  = time2sample(1,pre, fs, 1);
+postsam = time2sample(1,post, fs, 1);
+pre1  = 1;
+pre2  = t1-presam;
+post1 = t2+postsam;
+post2 = pnts;
 
-if pre1==0
-        pre1 = 1;
-elseif pre1<0
+if pre2<1
         error('There is not enough samples to keep the pre-stimulation window.')
 end
-if pre2<0 || post1<0
-        error('time value must be a positive integer (in ms)')
-end
-if post2>pnts
+if post1>pnts
         error('There is not enough samples to keep the post-stimulation window.')
 end
 

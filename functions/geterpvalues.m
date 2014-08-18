@@ -240,8 +240,7 @@ if length(latency)==2
         end
 elseif length(latency)==1
         [xxx, latsamp, latdiffms] = closest(timex, latency(1));
-        
-        if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (ms2sample(latdiffms(1),fs)<(-2+sampeak) || ms2sample(latdiffms(2),fs)>(2-sampeak)) %JLC.20/08/13
+        if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (ms2sample(latdiffms(1),fs)<(-2+sampeak) || ms2sample(latdiffms(1),fs)>(2-sampeak)) %JLC.20/08/13
                 msgboxText =  sprintf('The specified latency is more than 2 samples away from the ERP window [%.1f %.1f] ms\n', timex(1), timex(end));
                 varargout{1} = msgboxText;
                 varargout{2} = 'limit';
@@ -425,7 +424,7 @@ try
                                         
                                         % gets values
                                         [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, 'total', coi);
-                                        VALUES(b,ch) = sample2ms((L-1),fs) + mintime; % 50 % area latency (temporary)  
+                                        VALUES(b,ch) = sample2ms((L-1),fs) + mintime; % 50 % area latency (temporary)
                                 elseif strcmpi(moption,'fareatlat') || strcmpi(moption,'fninteglat') ||  strcmpi(moption,'fareaplat') || strcmpi(moption,'fareanlat')
                                         
                                         %

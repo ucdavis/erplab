@@ -68,7 +68,9 @@ switch pmethod
                         for j=1:nwin
                                 ss(ch,j)  = mean(EEG.data(chanArray(ch), win(j):win(j)+winpnts-1)); % ch x window
                         end
-                        EEG.data(chanArray(ch),:) = EEG.data(chanArray(ch),:) - spline(1:nwin, ss(ch,:),xf); % substracts the fitted data (using spline polynomial)
+%                         EEG.data(chanArray(ch),:) = EEG.data(chanArray(ch),:) - spline(1:nwin, ss(ch,:),xf); % substracts the fitted data (using spline polynomial)
+                        
+                        EEG.data(chanArray(ch),:) = spline(1:nwin, ss(ch,:),xf); % delete later. only for testing purposes: low pass filter
                 end
         case 2
                 EEG.data(chanArray,:)  = EEG.data(chanArray,:) - sgolayfilt(EEG.times, EEG.data(chanArray,:)', 3, winpnts)';   % Apply 3rd-order filter

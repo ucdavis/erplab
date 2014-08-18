@@ -66,7 +66,7 @@ if isobject(EEG) % eegobj
         return
 end
 if nargin==1
-        serror = erplab_eegscanner(EEG, 'pop_artderiv', 2, 0, 1, 1);
+        serror = erplab_eegscanner(EEG, 'pop_artderiv', 2, 0, 1, 2, 1);
         if serror
                 return
         end

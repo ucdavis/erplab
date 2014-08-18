@@ -15,13 +15,15 @@ if nargin > 2
         end
 end
 if v >= 7.14
+        %disp('legacy')
         [C,IA] = ismember(A,B,varargin{:},'legacy');
-        if true
-                [C2,IA2] = ismember(A,B,varargin{:});
-                if (~isequal(C, C2) || ~isequal(IA, IA2))
-                        warning('Warn:BckwrdcompTest','ismember_bc2: Backward compatibility issue with call to ismember function');
-                end
-        end
+        %if true
+        %        [C2,IA2] = ismember(A,B,varargin{:});
+        %        if (~isequal(C, C2) || ~isequal(IA, IA2))
+        %                warning('Warn:BckwrdcompTest','ismember_bc2: Backward compatibility issue with call to ismember function');
+        %        end
+        %end
 else
+        %disp('old')
         [C,IA] = ismember(A,B,varargin{:});
 end

@@ -79,7 +79,7 @@ if nargin==1
                 return
         end
         
-        defx = {1 1 0 EEG.srate/2 256 [EEG.xmin EEG.xmax]*1000 1};
+        defx = {1 1 0 EEG.srate/2 512 [EEG.xmin EEG.xmax]*1000 1};
         def  = erpworkingmemory('pop_fourieeg');
         
         if isempty(def)

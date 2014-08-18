@@ -74,14 +74,14 @@ uiresume(handles.gui_chassis);
 %-------------------------------------------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
 pretime  = str2num(get(handles.edit_pretime, 'String'));
-if isempty(pretime) || pretime<0
+if isempty(pretime) %|| pretime<0
         msgboxText =  'Invalid value for the pre-stimulation time';
         title = 'ERPLAB: data trimmer GUI';
         errorfound(msgboxText, title);
         return
 end
 posttime = str2num(get(handles.edit_posttime, 'String'));
-if isempty(posttime) || posttime<0
+if isempty(posttime) %|| posttime<0
         msgboxText =  'Invalid value for the post-stimulation time';
         title = 'ERPLAB: data trimmer GUI';
         errorfound(msgboxText, title);

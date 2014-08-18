@@ -30,8 +30,17 @@ serror = 0;
 if nargin<1
         error('erpAutoYLim needs 1 input argument at least.')
 end
+if isfield(ERP, 'datatype')
+        datatype = ERP.datatype;
+else
+        datatype = 'ERP';
+end
 if nargin<4
-        xxlim = [ERP.xmin ERP.xmax]*1000;
+        if strcmpi(datatype, 'ERP')
+                xxlim = [ERP.xmin ERP.xmax]*1000;
+        else
+                xxlim = [ERP.xmin ERP.xmax];
+        end
 end
 if nargin<3
         chanArray = 1:ERP.nchan;
@@ -46,25 +55,47 @@ if isempty(chanArray)
         chanArray = 1:ERP.nchan;
 end
 if isempty(xxlim)
-        xxlim = [ERP.xmin ERP.xmax]*1000;
+        if strcmpi(datatype, 'ERP')
+                xxlim = [ERP.xmin ERP.xmax]*1000;
+        else
+                xxlim = [ERP.xmin ERP.xmax];
+        end
 end
 try
         nbin  = length(binArray);
         nchan = length(chanArray);
         fs    = ERP.srate;
         
-        if xxlim(1)<round(ERP.xmin*1000)
-                aux_xxlim(1) = round(ERP.xmin*1000);
-        else
-                aux_xxlim(1) = xxlim(1);
-        end
-        if xxlim(2)>round(ERP.xmax*1000)
-                aux_xxlim(2) = round(ERP.xmax*1000);
-        else
-                aux_xxlim(2) = xxlim(2);
+        if strcmpi(datatype, 'ERP')
+                if xxlim(1)<round(ERP.xmin*1000)
+                        aux_xxlim(1) = round(ERP.xmin*1000);
+                else
+                        aux_xxlim(1) = xxlim(1);
+                end
+                if xxlim(2)>round(ERP.xmax*1000)
+                        aux_xxlim(2) = round(ERP.xmax*1000);
+                else
+                        aux_xxlim(2) = xxlim(2);
+                end
+        else  % fft
+                if xxlim(1)<5
+                        aux_xxlim(1) = 5; % to avoid including the spectrum under 5 Hz in calculating Y auto (too big!)
+                else
+                        aux_xxlim(1) = xxlim(1);
+                end
+                if xxlim(2)>round(fs/2);
+                        aux_xxlim(2) = round(fs/2);
+                else
+                        aux_xxlim(2) = xxlim(2);
+                end
         end
         
-        [p1 p2 checkw] = window2sample(ERP, aux_xxlim(1:2) , fs, 'relaxed');
+        %disp('start')
+        %aux_xxlim
+        %[ERP.xmin ERP.xmax]
+        %fs
+        [p1, p2, checkw] = window2sample(ERP, aux_xxlim(1:2) , fs, 'relaxed');
+        %disp('end')
         
         datresh = reshape(ERP.bindata(chanArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nchan);
         yymax   = max(datresh);
@@ -75,11 +106,20 @@ try
         % in case of flatlined ERPs
         %
         if yylim(1)==0 && yylim(2)==0
-                yylim(1:2) = [-1 1];
-                fprintf('WARNING: It seems like erpAutoYLim() found flatlined ERPs. So auto Y-limit was set to [-1 1].\n');
+                if strcmpi(datatype, 'ERP')
+                        yylim(1:2) = [-1 1];
+                        fprintf('WARNING: It seems like erpAutoYLim() found flatlined ERPs. So auto Y-limit was set to [-1 1].\n');
+                else
+                        yylim(1:2) = [0 1];
+                        fprintf('WARNING: It seems like erpAutoYLim() found flatlined Spectrum. So auto Y-limit was set to [0 1].\n');
+                end
         end
 catch
-        yylim(1:2) = [-10 10];
+        if strcmpi(datatype, 'ERP')
+                yylim(1:2) = [-10 10];
+        else
+                yylim(1:2) = [0 1];
+        end
         serror =1;
         fprintf('WARNING: ERPLAB could not find the auto Y limits for %s.\nPlease check your input parameters and waverforms.\n', ERP.erpname);
         fprintf('Default Y limit values were loaded.\n');

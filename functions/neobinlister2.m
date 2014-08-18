@@ -64,7 +64,7 @@
 % LES means LOG EVENT SELECTOR (prehome)
 
 
-function [EEG EVENTLIST binOfBins isparsenum] = neobinlister2(EEG, bdfilename, eventlistFile, neweventlistFile, forbiddenCodeArray, ignoreCodeArray, reportable, indexEL)
+function [EEG, EVENTLIST, binOfBins, isparsenum] = neobinlister2(EEG, bdfilename, eventlistFile, neweventlistFile, forbiddenCodeArray, ignoreCodeArray, reportable, indexEL)
 
 binOfBins  = [];
 EVENTLIST  = [];
@@ -102,7 +102,7 @@ version = geterplabversion;
 if isempty(bdfilename)
         error('ERPLAB says: bdfilename is empty.')
 end
-if ismember_bc2(neweventlistFile,{'none', 'no', ''})        
+if ismember(neweventlistFile,{'none', 'no', ''})        
         p = which('eegplugin_erplab');
         path_temp = p(1:findstr(p,'eegplugin_erplab.m')-1);
         newevefilepath = fullfile(path_temp, 'erplab_Box');
@@ -137,17 +137,17 @@ end
 %
 % Read EVENTLIST
 %
-if ismember_bc2(eventlistFile,{'none', 'no', ''}) % from dataset or erpset
+if ismember(eventlistFile,{'none', 'no', ''}) % from dataset or erpset
         if iserpstruct(EEG)
                 EVENTLIST = exporterpeventlist(EEG, indexEL);
                 fprintf('\n*** neobinlister is taking EVENTLIST from the current ERPset.\n\n')
         else
-                [EEGx EVENTLIST] = creaeventlist(EEG);
+                [EEGx, EVENTLIST] = creaeventlist(EEG);
                 clear EEGx
         end
 else % from text file
         % Read EVENTLIST file into EEG.EVENTLIST.eventinfo (also EEG.EVENTLIST.bdf )
-        [EEGx EVENTLIST] = readeventlist(EEG, eventlistFile); % ok
+        [EEGx, EVENTLIST] = readeventlist(EEG, eventlistFile); % ok
         clear EEGx
 end
 
@@ -277,12 +277,12 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
         %
         % Current (log) item status should not be forbidden (enable = -1) code
         %
-        cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember_bc2(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
+        cd1 = EVENTLIST.eventinfo(iLogitem).enable~=-1 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, forbiddenCodeArray);
         
         %
         % Current event code should not be a ignored (enable = 0) code
         %
-        cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember_bc2(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
+        cd2 =  EVENTLIST.eventinfo(iLogitem).enable~=0 && ~ismember(EVENTLIST.eventinfo(iLogitem).code, ignoreCodeArray);
         
         if cd1 && cd2 % check previous conditions
                 
@@ -301,8 +301,7 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                 %
                 % loop bins
                 %
-                for jBin=1:nbin  % BIN's loop
-                        
+                for jBin=1:nbin  % BIN's loop                        
                         writeflag = []; writeindx = [];
                         
                         %
@@ -333,8 +332,7 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                 else
                                         %
                                         % otherwise, compares home against the current event code
-                                        %
-                                        
+                                        %                                        
                                         nDesiredCodes   = nnz(BIN(jBin).athome(1).eventsign); % Number of non-negated codes (wanted codes)
                                         ishomedetected = ~isempty(find(BIN(jBin).athome(1).eventcode == EVENTLIST.eventinfo(iLogitem).code, 1));
                                         
@@ -404,8 +402,8 @@ for iLogitem = 1:nitem  % Reads each log item (item pointer)
                                                 end
                                                 
                                                 targetLogCode    = EVENTLIST.eventinfo(targetLogPointer).code;  % current event code to be tested, at current log item = targetLogPointer, from bin descriptor file.
-                                                isignoredc       = ismember_bc2(targetLogCode, ignoreCodeArray);    % is this code an ignored one?
-                                                isforbiddenc     = ismember_bc2(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
+                                                isignoredc       = ismember(targetLogCode, ignoreCodeArray);    % is this code an ignored one?
+                                                isforbiddenc     = ismember(targetLogCode, forbiddenCodeArray); % is this code a forbidden one?
                                                 
                                                 if isforbiddenc
                                                         % 'Stop! Forbidden code was found!
@@ -694,7 +692,7 @@ if iserpstruct(EEG)
         EVENTLIST = EEG.EVENTLIST(indexEL);
         exporterpeventlist(EEG, indexEL, neweventlistFile);
 else
-        [EEGx EVENTLIST] = creaeventlist(EEG, EVENTLIST, neweventlistFile);
+        [EEGx, EVENTLIST] = creaeventlist(EEG, EVENTLIST, neweventlistFile);
         clear EEGx
 end
 
@@ -800,12 +798,19 @@ targetLogItemArray  = find([EVENTLIST.eventinfo.time] >= t1 & [EVENTLIST.eventin
 if ~isempty(targetLogItemArray)
         targetLogCodeArray = [EVENTLIST.eventinfo(targetLogItemArray).code];      % LOGCODES within targetLogItemArray range
         targetLogTimeArray = [EVENTLIST.eventinfo(targetLogItemArray).time];      % Log times within targetLogItemArray range (T1 - T2)
-        tf   = ismember_bc2(targetLogCodeArray, targetEventCodeArray);
+        tf   = ismember(targetLogCodeArray, targetEventCodeArray);
         rcr  = find(tf,1,'first'); % local pointer!
         israngedetected = ~isempty(rcr);
 else
         israngedetected = 0;
 end
+
+
+%*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+%*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+%*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
 if israngedetected && isfrbddndetected   % Codes were detected but there was a pause code 04 February 2008
         timecodOK = targetLogTimeArray(rcr);
         targetLogPointer = targetLogItemArray(rcr);
@@ -838,8 +843,14 @@ if israngedetected && isfrbddndetected   % Codes were detected but there was a p
                                 jBin, targetLogItemArray(rcr) );  % Call the function flagTest 12 March 2008
                         [writeflag, writeindx] = writeTest(BIN, EVENTLIST, (les{kles}), mSeq, jBin,...
                                 targetLogPointer, writeflag, writeindx);
+                          
+                          
+                        %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                        %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                        %*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
                         
-                        if ~ishomeFlagdetected
+                        
+                        if ~ishomeFlagdetected   % BUG: isdetectedLES may not be declared!                              
                                 % event code did not satisfy flag condition:
                                 isdetectedLES = 0;
                         end

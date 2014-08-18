@@ -59,18 +59,32 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function ploterps(ERP, binArray, chanArray, pstyle, chMGFP,  blcorr, xaxlim, yaxlim, linew, isinvertedY, fschan, fslege, fsaxtick, errorstd,...
-        stdalpha, box, holdch, yauto, binleg, legepos, ismaxim, posfig, axsize, chanleg, minorticks, linespec, ftag)
+        stdalpha, box, holdch, yauto, binleg, legepos, ismaxim, posfig, axsize, chanleg, minorticks, linespec, ftag, ibckground)
 
 if nargin<1
         help ploterps
         return
+end
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
+if nargin<28
+        ibckground = 0; % do not invert; white {default}
 end
 if nargin<27
         ftag = 'ERP_figure';
 end
 if nargin<26
         %linespec = {'blue' 'green' 'red' 'cyan' 'magenta' 'yellow' 'black'}; % color for plotting
-        defcolor = repmat({'k' 'r' 'b' 'g' 'c' 'm' 'y' },1, ERP.nbin);% sorted according 1st erplab's version
+        cx = getcolorcellerps;
+        defcolor = repmat(cx,1, ERP.nbin);% sorted according 1st erplab's version
         defs     = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
         d = repmat(defs',1,length(defcolor));
         defstyle = reshape(d',1,length(defcolor)*length(defs));
@@ -129,10 +143,14 @@ if nargin<9
         linew = 2;
 end
 if nargin<8
+    if strcmpi(datatype, 'ERP')
         yaxlim = [-10 10];
+    else % FFT
+        yaxlim = [0 15];
+    end
 end
 if nargin<7
-        xaxlim = [round(ERP.xmin*1000) round(ERP.xmax*1000)];
+        xaxlim = [round(ERP.xmin*kktime) round(ERP.xmax*kktime)];
 end
 if nargin<6
         blcorr = 'pre';
@@ -163,6 +181,18 @@ nbin = length(binArray);
 nch  = length(chanArray);
 fs   = ERP.srate;
 
+if ibckground==1 % invert
+        BCKGCOLOR = [0 0 0];
+        FRGCOLOR  = [1 1 1];
+else
+        BCKGCOLOR = [1 1 1];
+        FRGCOLOR  = [0 0 0];
+end
+% if isfield(ERP, 'datatype')
+%     datatype = ERP.datatype;
+% else
+%     datatype = 'ERP';
+% end
 % check for time-lock latency
 ERP = checkerpzerolat(ERP);
 
@@ -184,53 +214,60 @@ dataaux = ERP.bindata;
 %
 % Baseline Correction
 %
-if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')        
-        if strcmpi(blcorr,'pre')
-                indxtimelock = find(ERP.times==0) ;   % zero-time locked
-                aa = 1;
-        elseif strcmpi(blcorr,'post')
-                indxtimelock = length(ERP.times);
-                aa = find(ERP.times==0);
-        elseif strcmpi(blcorr,'all')
-                indxtimelock = length(ERP.times);
-                aa = 1;
-        else
-                toffsa = abs(round(ERP.xmin*fs))+1;   % +1 October 2nd 2008
-                blcnum = str2num(blcorr)/1000;               % from msec to secs  03-28-2009
-                
-                %
-                % Check & fix baseline range
-                %
-                if blcnum(1)<ERP.xmin
-                        blcnum(1) = ERP.xmin;
+if strcmpi(datatype, 'ERP')
+        if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')
+                if strcmpi(blcorr,'pre')
+                        indxtimelock = find(ERP.times==0) ;   % zero-time locked
+                        aa = 1;
+                elseif strcmpi(blcorr,'post')
+                        indxtimelock = length(ERP.times);
+                        aa = find(ERP.times==0);
+                elseif strcmpi(blcorr,'all')
+                        indxtimelock = length(ERP.times);
+                        aa = 1;
+                else
+                        toffsa = abs(round(ERP.xmin*fs))+1;   % +1 October 2nd 2008
+                        blcnum = str2num(blcorr)/kktime;               % from msec to secs  03-28-2009
+                        
+                        %
+                        % Check & fix baseline range
+                        %
+                        if blcnum(1)<ERP.xmin
+                                blcnum(1) = ERP.xmin;
+                        end
+                        if blcnum(2)>ERP.xmax
+                                blcnum(2) = ERP.xmax;
+                        end
+                        
+                        plotset = evalin('base', 'plotset');
+                        plotset.ptime.blcorr = sprintf('%.0f  %.0f',blcnum*kktime); % plotting memory for baseline correction
+                        assignin('base','plotset', plotset);
+                        aa     = round(blcnum(1)*fs)+ toffsa; % in samples 12-16-2008
+                        indxtimelock = round(blcnum(2)*fs) + toffsa  ;    % in samples
                 end
-                if blcnum(2)>ERP.xmax
-                        blcnum(2) = ERP.xmax;
+                kk=1;
+                for i=1:nch
+                        for j=1:nbin
+                                baseline(kk) = mean(ERP.bindata(chanArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
+                                dataaux(chanArray(i),:,binArray(j)) = ERP.bindata(chanArray(i),:,binArray(j)) - baseline(kk);
+                                kk = kk + 1;
+                        end
                 end
-                
-                plotset = evalin('base', 'plotset');
-                plotset.ptime.blcorr = sprintf('%.0f  %.0f',blcnum*1000); % plotting memory for baseline correction
-                assignin('base','plotset', plotset);
-                aa     = round(blcnum(1)*fs)+ toffsa; % in samples 12-16-2008
-                indxtimelock = round(blcnum(2)*fs) + toffsa  ;    % in samples
         end
-        kk=1;
-        for i=1:nch
-                for j=1:nbin
-                        baseline(kk) = mean(ERP.bindata(chanArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
-                        dataaux(chanArray(i),:,binArray(j)) = ERP.bindata(chanArray(i),:,binArray(j)) - baseline(kk);
-                        kk=kk+1;
-                end
-        end
+else
+        blcorr = 'no';
 end
-
 %
 %  Fit Yaxis AUTO-SCALE
 %
 if yauto
-        yaxlim(1:2) = erpAutoYLim(ERP, binArray, chanArray, xaxlim);        
+        yaxlim(1:2) = erpAutoYLim(ERP, binArray, chanArray, xaxlim);
         plotset = evalin('base', 'plotset');
-        plotset.ptime.yscale = yaxlim;
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime.yscale = yaxlim;
+        else
+                plotset.pfrequ.yscale = yaxlim;
+        end
         assignin('base','plotset', plotset);
 end
 
@@ -238,6 +275,7 @@ end
 % Mean Global Field Power
 %
 if isMGFP
+        data_MGFP = zeros(1, ERP.pnts,nbin);
         nch = nch + 1;
         for j=1:nbin
                 MGFP_data = std(ERP.bindata(chMGFP,:,binArray(j)));
@@ -273,7 +311,7 @@ end
 % Create figure
 %
 hbig = figure('Name',['<< ' fname ' >>  Interactive (Click on figure for larger image)'],...
-        'NumberTitle','on', 'Tag', ftag);erplab_figtoolbar(hbig);
+        'NumberTitle','on', 'Tag', ftag, 'RendererMode', 'auto');erplab_figtoolbar(hbig);
 drawnow
 
 %
@@ -287,32 +325,41 @@ else
         end
 end
 
+
 %
-% White figure background
+% Figure background
 %
-set(hbig, 'Color', [1 1 1])
-opengl('OpenGLBitmapZbufferBug',1)
+set(hbig, 'Color', BCKGCOLOR)
+% opengl autoselect
+% opengl('OpenGLBitmapZbufferBug',1)
 % opengl software
 
 %
 % COLOR & Style
 %
-defs       = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
-defcol     = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };
-
+defs     = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
+defcol   = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w'};
 colorDef = regexp(linespec,'\w*','match');
 colorDef = [colorDef{:}];
 styleDef = regexp(linespec,'\W*','match');
 styleDef = [styleDef{:}];
 
-if isempty(colorDef)
+if isempty(colorDef)        
         colorDef  = repmat(defcol,1, nbin*length(defs));% sorted according 1st erplab's version
-        d = repmat(defs',1, nbin*length(defcol));
+        d = repmat(defs',1, nbin*length(defcol));        
         styleDef = reshape(d',1, numel(d));
 end
-if isempty(styleDef)
-        d = repmat(defs',1, nbin*length(defcol));
+if isempty(styleDef)        
+        d = repmat(defs',1, nbin*length(defcol));        
         styleDef = reshape(d',1, numel(d));
+end
+if holdch && length(colorDef)<nch*nbin
+        ncoldef  = length(colorDef);
+        colorDef = repmat(colorDef,1, round(nch*nbin/ncoldef));
+end
+if holdch && length(styleDef)<nch*nbin
+        nstydef  = length(styleDef);
+        styleDef = repmat(styleDef,1, round(nch*nbin/nstydef));
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -324,18 +371,18 @@ if pstyle==4 % topo
         else
                 tydir = 1;
         end
-        if xaxlim(1)<round(ERP.xmin*1000)
-                aux_xlim(1) = round(ERP.xmin*1000);
+        if xaxlim(1)<round(ERP.xmin*kktime)
+                aux_xlim(1) = round(ERP.xmin*kktime);
         else
                 aux_xlim(1) = xaxlim(1);
         end
-        if xaxlim(2)>round(ERP.xmax*1000)
-                aux_xlim(2) = round(ERP.xmax*1000);
+        if xaxlim(2)>round(ERP.xmax*kktime)
+                aux_xlim(2) = round(ERP.xmax*kktime);
         else
                 aux_xlim(2) = xaxlim(2);
         end
         
-        [tp1 tp2 checkw xlimc ] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
+        [tp1, tp2, checkw, xlimc ] = window2sample(ERP, aux_xlim(1:2) , fs, 'relaxed');
         
         if checkw==1
                 error('ploterps() error: time window cannot be larger than epoch.')
@@ -344,9 +391,12 @@ if pstyle==4 % topo
         end
         
         legendt = ERP.bindescr(binArray);
-        options ={ 'chanlocs' chanlocs 'legend' legendt  'limits' [xlimc yaxlim(1:2)] ...
-                'title' '' 'chans' chanArray 'ydir' tydir 'colors' linespec 'geom' [0 0] 'axsize' axsize};
-        plottopo_II( dataaux(:, tp1:tp2, binArray), options{:})
+        options = { 'chanlocs' chanlocs 'legend' legendt  'limits' [xlimc yaxlim(1:2)] ...
+                'title' '' 'chans' chanArray 'ydir' tydir 'colors' linespec 'geom' [0 0]...
+                'axsize' axsize 'XYcolor' FRGCOLOR};
+        plottopo_II( dataaux(:, tp1:tp2, binArray), options{:})       
+%         set(gca,'XColor', [1 0 0 ]);
+%         set(gca,'YColor', [1 0 0 ]);        
 else
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %  ERPLAB rectangular plotting    %
@@ -373,10 +423,10 @@ else
         end
         for i=1:nch
                 if holdch
-                        ich = 1;
-                        row = 1;
-                        col = 2;
-                        cobi=(i-1)*nbin;
+                        ich  = 1;
+                        row  = 1;
+                        col  = 2;
+                        cobi = (i-1)*nbin;
                         
                         if i==1
                                 labelch = chanlocs(chanArray(i)).labels;
@@ -405,7 +455,7 @@ else
                 if pstyle==1 || pstyle==2
                         colorpl = [.7 .9 .7]; % Original
                 else
-                        colorpl = [1 1 1];
+                        colorpl = BCKGCOLOR; % [1 1 1]
                 end
                 if isMGFP && i==nch
                         set(gca,'ydir','normal');
@@ -426,7 +476,7 @@ else
                 legendArray = {[]};
                 hold on
                 for ibin=1:nbin
-                        %                         hold on
+                        % hold on                                             
                         if holdch
                                 hplot(ibin+cobi) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
                                         'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
@@ -438,8 +488,6 @@ else
                                                 [labelch '>> ' ERP.bindescr{binArray(ibin)}]);
                                 end
                         else
-                                hplot(ibin) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
-                                        'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
                                 
                                 %
                                 % pending...
@@ -449,6 +497,12 @@ else
                                         yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
                                         ciplot(yt1,yt2, ERP.times, colorDef{ibin+cobi}, stdalpha);
                                 end
+                                
+                                
+                                hplot(ibin) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
+                                        'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
+                                
+                               
                                 if binleg
                                         legendArray{ibin} = ['BIN' num2str(binArray(ibin)) ': ' ERP.bindescr{binArray(ibin)}];
                                 else
@@ -461,11 +515,7 @@ else
                 
                 %
                 % Set X and Y axis
-                %
-                
-                %xaxlim
-                %yaxlim
-                
+                %                              
                 axis([xaxlim(1:2) yaxlim(1:2)])
                 %set(gca,'Layer','top')
                 
@@ -481,6 +531,9 @@ else
                 if minorticks(2)
                         set(gca,'YMinorTick','on')
                 end
+                
+                set(gca,'XColor', FRGCOLOR);
+                set(gca,'YColor', FRGCOLOR);
                 
                 %                 if ~isempty(ERP.binerror) && errorstd>=1
                 %                         gg=1; hh=1;
@@ -499,7 +552,7 @@ else
                 
                 if pstyle==1 || pstyle==2% Matlab figure and menues
                         %set(gca,'FontSize', fsaxtick);
-                        neozeroaxes(0, fsaxtick)                        
+                        neozeroaxes(0, fsaxtick, BCKGCOLOR)                        
                         %set(h,'String',{'cos(x)','sin(x)'})                        
                         %comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
                         %        'neozeroaxes(0);'];
@@ -508,7 +561,7 @@ else
                                 'neozeroaxes(0);'...
                                 'legend show;'...
                                 'legend(''''boxoff'''','...
-                                '''''Location'''',''''SouthEastOutside''''',...
+                                '''''Location'''',''''SouthEastOutside'''',',...
                                 '''''FontSize'''', 6);'];
                         if ~isempty(ERP.binerror) && errorstd>=1
                                 comax = [ 'sem2legend;' comax ];
@@ -516,21 +569,26 @@ else
                         if pstyle==2
                                 set(gca, 'YAxisLocation', 'right')
                         end
+                        CHLABCOLOR = [0 0 0];
                 else % classic
-                        neozeroaxes(1, fsaxtick)                       
+                        neozeroaxes(1, fsaxtick, BCKGCOLOR)                       
                         comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
                                 'neozeroaxes(1);'...
                                 'legend show;'...
                                 'legend(''''boxoff'''','...
-                                '''''Location'''',''''SouthEastOutside''''',...
+                                '''''Location'''',''''SouthEastOutside'''',',...
                                 '''''FontSize'''', 6)'];
                         if ~isempty(ERP.binerror) && errorstd>=1
                                 comax = ['sem2legend;' comax];
                         end
+                        CHLABCOLOR = FRGCOLOR;
                 end
                 
-                text(0,yposlabel, labelch, 'FontSize',fschan,'HorizontalAlignment', 'left', 'FontWeight', 'bold', 'BackgroundColor', colorpl);
-                set(gcf,'Color',[1 1 1]);
+                text(0,yposlabel, labelch, 'FontSize',fschan,'HorizontalAlignment', 'left', 'FontWeight', 'bold', 'Color', CHLABCOLOR,'BackgroundColor', colorpl);
+                %set(gcf,'Color',[1 1 1]);                
+                %set(gcf,'Color',[0 0 0]);
+                set(gca,'Color', BCKGCOLOR);  
+                %set(gca,'Layer','top')
                 drawnow
                 axcopy_modified(sp(ich), comax); % SouthEastOutside
                 hold off
@@ -546,7 +604,7 @@ else
                         case 3
                                 pf  = get(hbig,'position');
                                 figure('Name',['<< ' fname ' >>  BIN''s LEGEND'],'NumberTitle','on',...
-                                        'MenuBar','none', 'Tag', ftag, 'Color',[1 1 1],...
+                                        'MenuBar','none', 'Tag', ftag, 'Color',BCKGCOLOR,...
                                         'Position',[ pf(1) pf(2) pf(3)/2.5 pf(4)]);
                                 sh = subplot(1, 1, 1);
                 end
@@ -554,6 +612,8 @@ else
                 h_legend = legend(sh, hplot );
                 set(h_legend, 'position', p);
                 set(h_legend,'FontSize',fslege);
+                set(h_legend,'TextColor', FRGCOLOR);
+                
                 legend(sh,'boxoff')
                 %axcopy_modified(h_legend, 'set(newfig, ''''Tag'''', ''''copiedf'''')'); % Tag for new pop-up figures (external legend)
                 axis(sh,'off')

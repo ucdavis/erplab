@@ -16,12 +16,12 @@ if nargin > 2
 end
 if v >= 7.14
         [C,IA,IB] = unique(A,varargin{:},'legacy');
-        if true
-                [C2,IA2, IB2] = unique(A,varargin{:});
-                if ~isequal(C, C2) || ~isequal(IA, IA2) || ~isequal(IB, IB2)
-                        warning('Warn:BckwrdcompTest','backward compatibility issue with call to unique function');
-                end
-        end
+        %if true
+        %        [C2,IA2, IB2] = unique(A,varargin{:});
+        %        if ~isequal(C, C2) || ~isequal(IA, IA2') || ~isequal(IB, IB2')
+        %                warning('Warn:BckwrdcompTest','backward compatibility issue with call to unique function');
+        %        end
+        %end
 else
         [C,IA,IB] = unique(A,varargin{:});
-end;
+end

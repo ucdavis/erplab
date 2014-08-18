@@ -53,8 +53,30 @@ end
 % CHECK VERSION NUMBER & FOLDER NAME
 %
 foldernum = regexp(p,'erplab_(\d+\.+\d+\.+\d+\.+\d+)','tokens','ignorecase');
-if ~strcmp(foldernum{:}, erplabver)
-        fprintf('\nERPLAB WARNING: ERPLAB''s folder name does not match with the current version number.\n\n')
+if isempty(foldernum)
+        fprintf('\nERPLAB WARNING: ERPLAB''s folder name was found to be modified from the original.\n\n')
+else
+        if ~strcmp(foldernum{:}, erplabver)
+                fprintf('\nERPLAB WARNING: ERPLAB''s folder name does not match with the current version number.\n\n')
+        end
+end
+
+%
+% CHECK EEGLAB Version
+%
+if exist('memoryerp.erpm','file')==2
+        iserpmem = 1; % file for memory exists
+else
+        iserpmem = 0; % does not exist file for memory
+end
+egv = regexp(eeg_getversion,'^(\d+)\.+','tokens','ignorecase');
+eegversion = str2num(char(egv{:}));
+if eegversion==11
+        if iserpmem==1
+                warning('ERPLAB:Warning', 'ERPLAB is not compatible with EEGLAB 11. Please try either a newer or an older version of EEGLAB.')
+        else
+                warndlg(sprintf('ERPLAB is not compatible with EEGLAB 11.\nPlease try either a newer or an older version of EEGLAB.'),'!! Warning !!', 'modal')
+        end
 end
 
 %
@@ -73,7 +95,7 @@ end
 %
 % ERPLAB's WORKING MEMORY
 %
-if exist('memoryerp.erpm','file')~=2
+if iserpmem==0
         mshock = 0;
         try
                 % saves memory file
@@ -112,6 +134,7 @@ ALLERPCOM        = [];
 CURRENTERP       = 0;
 plotset.ptime    = [];
 plotset.pscalp   = [];
+plotset.pfrequ   = [];
 
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
@@ -236,6 +259,7 @@ comFerrCOL = 'Fcolorerror' ;
 comFS      = 'Seterplabfontsize';
 comRECB    = [trystrs.no_check '[EEG, LASTCOM] = pop_setcodebit(EEG);' catchstrs.new_and_hist];
 comEP2CON  = [trystrs.no_check '[EEG, LASTCOM] = pop_epoch2continuous(EEG);' catchstrs.new_and_hist];
+comBlab2eve  = [trystrs.no_check '[EEG, LASTCOM] = pop_binlabel2type(EEG);' catchstrs.new_and_hist];
 
 %
 % FILTER EEG callbacks
@@ -287,7 +311,7 @@ comCALIERP   = ['[ERP, ERPCOM]         = pop_calibraterp(ERP);' '[ERP, ALLERPCOM
 % Measurement and viewer
 comGAVG      = ['[ERP, ERPCOM]     = pop_gaverager(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comERPMT     = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
-comERPView   = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP,[],[],[],''Erpsets'', [],''Viewer'', ''on'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comERPView   = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP,[],[],[],''Erpsets'', 0,''Viewer'', ''on'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
 % export figure
 comEXPPDF    = ['[ERP, ERPCOM] = pop_exporterplabfigure(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -303,6 +327,7 @@ comhelpvideo = 'web http://erpinfo.org/erplab/erplab-documentation/video-documen
 %
 comFil    = ['[ERP, ERPCOM] = pop_filterp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comPASerp = ['ERP, LASTCOM = pop_fourierp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comEPSerp = ['ERP, LASTCOM = pop_getFFTfromERP(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MAIN      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -345,13 +370,14 @@ uimenu( submenu,'Label','Extract bin-based epochs','CallBack',comEB,'separator',
 uimenu( submenu,'Label','EEG Channel operations','CallBack',comCHOP,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 
 %
-% FILTER ERP submenus
+% FREQUENCY TOOLS & FILTERS EEG/ERP submenus
 %
 mFI = uimenu( submenu,'Label','Filter & Frequency Tools','separator','on','userdata','startup:off;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mFI,'Label','Filters for EEG data ','CallBack',comBFCD,'userdata','startup:off;continuous:on;epoch:on;study:on;erpset:off');
 uimenu( mFI,'Label','Plot amplitude spectrum for EEG data ','CallBack', comPAS,'userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 uimenu( mFI,'Label','Filters for ERP data ','CallBack',comFil,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mFI,'Label','Plot amplitude spectrum for ERP data ','CallBack', comPASerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mFI,'Label','Compute Evoked Power Spectrum from current ERPset','CallBack', comEPSerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mFI,'Label','EEG Linear detrend ','CallBack',comTK2,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:on');
 uimenu( mFI,'Label','ERP Linear detrend ','CallBack',comTK3,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mFI,'Label','EEG Polynomial detrend (continuous) (alpha version)','CallBack', comTK1,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
@@ -445,6 +471,8 @@ uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', co
 mUTI = uimenu( submenu,'Label','Utilities','tag','Utilities','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Trim continuous data','CallBack', comTrim, 'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mUTI,'Label','Convert an epoched dataset into a continuous one','CallBack', comEP2CON, 'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+uimenu( mUTI,'Label','Recover event codes from Bin Labels (recommended)','CallBack', comBlab2eve,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
+
 mINS = uimenu( mUTI, 'Label','Insert event codes','tag','insertcodes','separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mINS,'Label','Insert event codes using threshold (continuous EEG) ','CallBack', comICOF,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mINS,'Label','Insert event codes using latency(ies) (continuous EEG) ','CallBack', comICLA,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');

@@ -88,7 +88,7 @@ if nargin==1
         % read values in memory for this function
         def  = erpworkingmemory('pop_averager');
         if isempty(def)
-                def = {1 1 1 1 1};
+                def = {1 1 1 1 1 0 0};
         end
         
         % epochs per dataset
@@ -140,8 +140,13 @@ if nargin==1
         % exclude epochs having boundary events
         excbound = answer{5};
         
+        % Compute ERP, evoked power spectrum (EPS), and total power
+        % spectrum (TPS).
+        compu2do = answer{6}; % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
+        wintype  = answer{7}; % taper data with window: 0:no; 1:yes
+        
         % store setting in memory
-        def(1:5)    = {setindex, artcrite, 1, stderror, excbound};
+        def(1:7)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype};
         erpworkingmemory('pop_averager', def);
         
         if stderror==1
@@ -154,12 +159,71 @@ if nargin==1
         else
                 excboundstr = 'off';
         end
+        if wintype==1
+                wintypestr = 'on';
+        else
+                wintypestr = 'off';
+        end
         
         %
         % Somersault
         %
-        [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
-                'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'gui');
+        if compu2do>0
+                [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
+                        'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'implicit');
+                
+                ALLERP     = evalin('base', 'ALLERP');
+                CURRENTERP = evalin('base', 'CURRENTERP');
+                erpname    = ERP.erpname;
+                filename   = ERP.filename;
+                pathstr    = ERP.filepath;
+                
+                if compu2do==1 || compu2do==3
+                        disp('Computing Total Power Spectrum...')
+                        compuword = 'TFFT';
+                        CURRENTERP = CURRENTERP + 1;
+                        [ALLERP(CURRENTERP), erpcom1]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Compute', compuword, 'TaperWindow', wintypestr,...
+                                'Criterion', artcritestr, 'SEM', stdsstr, 'ExcludeBoundary', excboundstr, 'History', 'implicit');
+                        ALLERP(CURRENTERP).erpname = sprintf('%s-%s', erpname, compuword);
+                        ERP = ALLERP(CURRENTERP);
+                        
+                        %
+                        % Save FFT erpset(s)...
+                        %
+                        if ~isempty(filename)
+                                [pathxx, filename, extxx] = fileparts(filename);
+                                filenameHD = sprintf('%s-%s%s', filename, compuword, '.erp');
+                                save(fullfile(pathstr, filenameHD), 'ERP');
+                        end
+                        
+                        erpcom = sprintf('%s\n%s', erpcom, erpcom1);
+                end
+                if compu2do==2 || compu2do==3
+                        disp('Computing Evoked Power Spectrum...')
+                        compuword = 'EFFT';
+                        CURRENTERP = CURRENTERP + 1;
+                        [ALLERP(CURRENTERP), erpcom2]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Compute', compuword, 'TaperWindow', wintypestr,...
+                                'Criterion', artcritestr, 'SEM', stdsstr, 'ExcludeBoundary', excboundstr, 'History', 'implicit');
+                        ALLERP(CURRENTERP).erpname = sprintf('%s-%s', erpname, compuword);
+                        ERP = ALLERP(CURRENTERP);
+                        
+                        %
+                        % Save FFT erpset(s)...
+                        %
+                        if ~isempty(filename)
+                                [pathxx, filename, extxx] = fileparts(filename);
+                                filenameHD = sprintf('%s-%s%s', filename, compuword, '.erp');
+                                save(fullfile(pathstr, filenameHD), 'ERP');
+                        end
+                        erpcom = sprintf('%s\n%s', erpcom, erpcom2);
+                end
+                assignin('base','ALLERP',ALLERP);  % save to workspace
+                updatemenuerp(ALLERP,0)            % overwrite erpset at erpsetmenu
+                displayEquiComERP(erpcom);
+        else
+                [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
+                        'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'GUI');
+        end
         pause(0.1)
         return
 end
@@ -174,17 +238,20 @@ p.CaseSensitive = false;
 p.addRequired('ALLEEG', @isstruct);
 % option(s)
 p.addParamValue('DSindex', 1,@isnumeric);
-p.addParamValue('Criterion', 'good'); % 'all','good','bad', or numeric cell array with epoch indices
-p.addParamValue('SEM', 'off', @ischar); % 'on', 'off'
+p.addParamValue('Criterion', 'good');       % 'all','good','bad', or numeric cell array with epoch indices
 
-p.addParamValue('Stdev', '', @ischar); % 'on', 'off'
-
-
-
-p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
-p.addParamValue('Warning', 'off', @ischar); % 'on', 'off'
+p.addParamValue('Compute', 'ERP');          % 'ERP': compute the average of epochs per bin;
+% 'TFFT': Total power spectrum. Compute first the FFT of each epoch and
+%  then compute the average of the FFTs per bin
+% 'EFFT': Evoked power spectrum. Compute the FFT of the averaged ERP waveforms per bin
+p.addParamValue('TaperWindow', 'off');      % 'ERP': compute the average of epochs per bin;
+p.addParamValue('NFFT', []);                % number of points for the FFT
+p.addParamValue('SEM', 'off', @ischar);     % 'on', 'off'
+p.addParamValue('Stdev', '', @ischar);      % 'on', 'off'
+p.addParamValue('Saveas', 'off', @ischar);          % 'on', 'off'
+p.addParamValue('Warning', 'off', @ischar);         % 'on', 'off'
 p.addParamValue('ExcludeBoundary', 'off', @ischar); % 'on', 'off'
-p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('History', 'script', @ischar);      % history from scripting
 
 p.parse(ALLEEG, varargin{:});
 
@@ -208,20 +275,43 @@ if ~iscell(artc)
         elseif strcmpi(artc, 'bad') % bad
                 artcrite = 2;
         else
-                artcrite =  artc; % string
+                artcrite =  artc;   % string
         end
 else
-        artcrite =  artc; % cell. fixed bug Jkreither May 1, 2012
+        artcrite =  artc;           % cell. fixed bug Jkreither May 1, 2012
 end
+if strcmpi(p.Results.Compute,'ERP')
+        dcompu = 1; % ERP
+elseif strcmpi(p.Results.Compute,'TFFT')
+        dcompu = 2; % TFFT
+elseif strcmpi(p.Results.Compute,'EFFT')
+        dcompu = 3; % EFFT
+else
+        error('Invalid value for "Compute" parameter (only ''ERP'', ''TFFT'', or ''EFFT'' are accepted');
+end
+if strcmpi(p.Results.TaperWindow,'off')
+        iswindowed = 0;
+elseif strcmpi(p.Results.TaperWindow,'on')
+        iswindowed = 1;
+else
+        if ~isempty(p.Results.TaperWindow) && ischar(p.Results.TaperWindow)
+                iswindowed = p.Results.TaperWindow;
+        else
+                error('Unknow value for "TaperWindow"')
+        end
+end
+
+nfft = p.Results.NFFT;
+
 if ismember_bc2({p.Results.SEM}, {'on','yes'})
         stderror    = 1;
 else
         stderror    = 0;
 end
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
-        issaveas    = 1;
+        issaveas  = 1;
 else
-        issaveas    = 0;
+        issaveas  = 0;
 end
 if ismember_bc2({p.Results.Warning}, {'on','yes'})
         iswarn    = 1;
@@ -229,9 +319,9 @@ else
         iswarn    = 0;
 end
 if ismember_bc2({p.Results.ExcludeBoundary}, {'on','yes'})
-        excbound    = 1;
+        excbound  = 1;
 else
-        excbound    = 0;
+        excbound  = 0;
 end
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
@@ -244,15 +334,15 @@ else
 end
 
 nloadedset = length(ALLEEG);
-wavg       = 1; % weighted average
+wavg       = 1;                    % weighted average
 nset       = length(setindex);     % all selected datasets
-nrsetindex = unique_bc2(setindex);     % set indices with no repetitions
+nrsetindex = unique_bc2(setindex); % set indices with no repetitions
 nrnset     = length(nrsetindex);   % N of setindex with no repetitions
 
 if nset > nrnset
         msgboxText =  'Repeated dataset index will be ignored!';
         fprintf('\n\nERPLAB WARNING: %s\n\n', msgboxText);
-        setindex   = nrsetindex;           % set indices upgraded
+        setindex   = nrsetindex;             % set indices upgraded
         nset       = length(setindex);       % nset  upgraded
 end
 if nset > nloadedset
@@ -265,10 +355,13 @@ if max(setindex) > nloadedset
         igrtr       = setindex(setindex>nloadedset);
         indxgreater = num2str(igrtr);
         if length(igrtr)==1
-                msgboxText =  ['Hey!  dataset #' indxgreater ' does not exist!'];
+                %msgboxText =  ['Hey!  dataset #' indxgreater ' does not exist!'];
+                wdodoes = 'does';
         else
-                msgboxText =  ['Hey!  dataset #' indxgreater ' do not exist!'];
+                %msgboxText =  ['Hey!  dataset #' indxgreater ' do not exist!'];
+                wdodoes = 'do';
         end
+        msgboxText =  sprintf('Hey!  dataset #%g %s not exist!', indxgreater, wdodoes);
         title = 'ERPLAB: pop_averager() Error';
         errorfound(msgboxText, title);
         return
@@ -419,70 +512,22 @@ if nset>1
                 if ~condlab1
                         msgboxText = 'Datasets have different channel labels.\n';
                         if iswarn
-                                msgboxText = [msgboxText 'Do you want to continue anyway?'];
-                                title = 'ERPLAB: pop_averager() WARNING';
-                                button = askquest(sprintf(msgboxText), title);
-                                
-                                if ~strcmpi(button,'yes')
-                                        disp('User selected Cancel')
-                                        return
-                                end
-                        else
-                                msgboxText = ['ERPLAB Warning: ' msgboxText];
-                                try
-                                        colormsg = [1 0.52 0.2];
-                                        cprintf(colormsg, msgboxText');
-                                catch
-                                        fprintf(msgboxText);
-                                end
+                                warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                         end
                 end
                 if isrepeated(indexla)
-                        %fprintf('\nWARNING: Some channels have the same label.\n\n')
                         if ismember_bc2(0,strcmp(labelsA, labelsB)) && iswarn
                                 msgboxText =  'Datasets have different channel labels.\n';
-                                
                                 if iswarn
-                                        msgboxText = [msgboxText 'Do you want to continue anyway?'];
-                                        title = 'ERPLAB: pop_averager() WARNING';
-                                        button = askquest(sprintf(msgboxText), title);
-                                        
-                                        if ~strcmpi(button,'yes')
-                                                disp('User selected Cancel')
-                                                return
-                                        end
-                                else
-                                        msgboxText = ['ERPLAB Warning: ' msgboxText];
-                                        try
-                                                colormsg = [1 0.52 0.2];
-                                                cprintf(colormsg, msgboxText');
-                                        catch
-                                                fprintf(msgboxText);
-                                        end
+                                        warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                                 end
                         end
                 else
                         condlab2 = issorted(indexla);       % do the channel labels match by channel number?
                         if ~condlab2 && iswarn
                                 msgboxText =  'Channel numbering and channel labeling do not match among datasets!\n';
-                                
                                 if iswarn
-                                        msgboxText = [msgboxText 'Do you want to continue anyway?'];
-                                        title = 'ERPLAB: pop_averager() WARNING';
-                                        button = askquest(sprintf(msgboxText), title);
-                                        
-                                        if ~strcmpi(button,'yes')
-                                                disp('User selected Cancel')
-                                                return
-                                        end
-                                else
-                                        msgboxText = ['ERPLAB Warning: ' msgboxText];
-                                        try
-                                                colormsg = [1 0.52 0.2];
-                                                cprintf(colormsg, msgboxText');
-                                        catch
-                                                fprintf(msgboxText);
-                                        end
+                                        warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                                 end
                         end
                 end
@@ -493,7 +538,19 @@ end
 % Define ERP
 %
 nch  = ALLEEG(setindex(1)).nbchan;
-pnts = ALLEEG(setindex(1)).pnts;
+if dcompu==1 % ERP
+        pnts = ALLEEG(setindex(1)).pnts;
+else % FFT
+        if isempty(nfft)
+                %
+                % Javier's decision: FFT points will be as much as needed
+                % to get 1 point each 0.25 Hz, at least.
+                %
+                fnyqx = round(ALLEEG(setindex(1)).srate/2);
+                nfft  = 2.^nextpow2(4*fnyqx); % FFT
+        end
+        pnts  = nfft;
+end
 nbin = ALLEEG(setindex(1)).EVENTLIST.nbin;
 histoflags = zeros(nbin,16);
 flagbit    = bitshift(1, 0:15);
@@ -512,11 +569,12 @@ buttonA = 'Continue without merging';
 buttonB = 'Cancel';
 
 if nset>1
-        sumERP  = zeros(nch,pnts,nbin);      % makes a zero erp
+        sumERP  = zeros(nch,pnts,nbin);           % makes a zero erp
         if stderror
                 sumERP2 = zeros(nch,pnts,nbin);   % makes a zero weighted sum of squares: Sum(wi*xi^2)
         end
-        oriperbin  = zeros(1,nbin);             % original number of trials per bin counter init
+        
+        oriperbin  = zeros(1,nbin);               % original number of trials per bin counter init
         tperbin    = zeros(1,nbin);
         invperbin  = zeros(1,nbin);
         workfnameArray = {[]};
@@ -546,6 +604,17 @@ if nset>1
                                 
                                 if sync_status==2
                                         
+                                        %
+                                        %
+                                        %
+                                        %  Debo revisar que esto se esta
+                                        %  cumpliendo. Javier  7/19/2014
+                                        %
+                                        %
+                                        %
+                                        
+                                        
+                                        
                                         msgboxText = ['It looks like you have deleted some epochs from your dataset named %s.\n'...
                                                 'At the current version of ERPLAB, artifact info synchronization cannot be performed in this this case.\n'...
                                                 'So, artifact info synchronization will be skipped, and the corresponding averaged ERP will rely on the\n'...
@@ -554,8 +623,9 @@ if nset>1
                                         msgboxText = sprintf(msgboxText, ALLEEG(setindex(j)).setname);
                                         
                                         if iswarn
-                                                msgboxText = [msgboxText 'Do you want to continue anyway?'];
-                                                title = 'ERPLAB: pop_averager() WARNING';
+                                                %msgboxText = [msgboxText 'Do you want to continue anyway?'];
+                                                msgboxText = sprintf('%s Do you want to continue anyway?', msgboxText);
+                                                title  = 'ERPLAB: pop_averager() WARNING';
                                                 button = askquest(sprintf(msgboxText), title);
                                                 
                                                 if ~strcmpi(button,'yes')
@@ -564,13 +634,7 @@ if nset>1
                                                         break
                                                 end
                                         else
-                                                msgboxText = ['ERPLAB Warning: ' msgboxText];
-                                                try
-                                                        colormsg = [1 0.52 0.2];
-                                                        cprintf(colormsg, msgboxText');
-                                                catch
-                                                        fprintf(msgboxText);
-                                                end
+                                                warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                                         end
                                 elseif sync_status==0 && iswarn% bad synchro
                                         msgboxText =  ['Artifact info is not synchronized at dataset #%g!\n\n'...
@@ -584,15 +648,10 @@ if nset>1
                                                 break
                                         end
                                 elseif sync_status==0 && ~iswarn% bad synchro
-                                        msgboxText =  ['ERPLAB Warning: Artifact info is not synchronized at dataset #%g!\n\n'...
+                                        msgboxText =  ['Artifact info is not synchronized at dataset #%g!\n\n'...
                                                 longwarnmsg];
                                         msgboxText = sprintf(msgboxText, setindex(j));
-                                        try
-                                                colormsg = [1 0.52 0.2];
-                                                cprintf(colormsg, msgboxText');
-                                        catch
-                                                fprintf(msgboxText);
-                                        end
+                                        warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                                 end
                         end
                         artif = artcrite;
@@ -606,7 +665,7 @@ if nset>1
                 %
                 % Get individual averages
                 %
-                [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(ALLEEG(setindex(j)), artif, stderror, excbound);
+                [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(ALLEEG(setindex(j)), artif, stderror, excbound, dcompu, nfft, iswindowed);
                 
                 %
                 % Checks criteria for bad subject (dataset)
@@ -655,8 +714,8 @@ if nset>1
         
         if wavg  % weighted average. It was forced to be 1 by Steve...
                 for bb=1:nbin
-                        if tperbin(bb)>0                                
-                                ERP.bindata(:,:,bb) = sumERP(:,:,bb)./tperbin(bb); % get ERP!                                
+                        if tperbin(bb)>0
+                                ERP.bindata(:,:,bb) = sumERP(:,:,bb)./tperbin(bb); % get ERP!
                                 %
                                 % Standard deviation (weighted)
                                 %
@@ -667,6 +726,7 @@ if nset>1
                                         if nnz(insqrt<0)>0
                                                 ERP.binerror(:,:,bb) = zeros(nch, pnts, 1);
                                         else
+                                                %bb, insqrt
                                                 ERP.binerror(:,:,bb) = (1/tperbin(bb))*sqrt(insqrt);
                                         end
                                 end
@@ -705,44 +765,33 @@ else
                                 msgboxText = ['It looks like you have deleted some epochs from your dataset.\n'...
                                         'At the current version of ERPLAB, artifact info synchronization cannot be performed in this this case. '...
                                         'So, artifact info synchronization will be skipped, and the corresponding averaged ERP will rely on the '...
-                                        'information at EEG.event only.\n'];                                
-                                msgboxText = sprintf(msgboxText);                                
+                                        'information at EEG.event only.\n'];
+                                msgboxText = sprintf(msgboxText);
                                 if iswarn
                                         msgboxText = [msgboxText 'Do you want to continue anyway?'];
                                         title = 'ERPLAB: pop_averager() WARNING';
-                                        button = askquest(sprintf(msgboxText), title);                                        
+                                        button = askquest(sprintf(msgboxText), title);
                                         if ~strcmpi(button,'yes')
                                                 disp('User selected Cancel')
                                                 return
                                         end
                                 else
-                                        msgboxText = ['ERPLAB Warning: ' msgboxText];
-                                        try
-                                                colormsg = [1 0.52 0.2];
-                                                cprintf(colormsg, msgboxText');
-                                        catch
-                                                fprintf(msgboxText);
-                                        end
+                                        warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                                 end
                         elseif sync_status==0 && iswarn% bad synchro
                                 msgboxText =  ['Artifact info is not synchronized!\n\n'...
                                         longwarnmsg];
                                 title  = 'ERPLAB: pop_averager(), artifact info synchronization';
-                                button = askquest(sprintf(msgboxText), title, buttonA, buttonA, buttonB);                                
+                                button = askquest(sprintf(msgboxText), title, buttonA, buttonA, buttonB);
                                 if ~strcmpi(button, buttonA)
                                         disp('User selected Cancel')
                                         return
                                 end
                         elseif sync_status==0 && ~iswarn% bad synchro
-                                msgboxText =  ['ERPLAB Warning: Artifact info is not synchronized.\n\n'...
+                                msgboxText =  ['Artifact info is not synchronized.\n\n'...
                                         longwarnmsg];
                                 msgboxText = sprintf(msgboxText);
-                                try
-                                        colormsg = [1 0.52 0.2];
-                                        cprintf(colormsg, msgboxText');
-                                catch
-                                        fprintf(msgboxText);
-                                end
+                                warning('Caution:pop_averager', 'ERPLAB Warning: %s', msgboxText);
                         end
                 end
                 artif = artcrite;
@@ -756,7 +805,7 @@ else
         %
         % Get individual average
         %
-        [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(ALLEEG(setindex(1)), artif, stderror, excbound);
+        [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(ALLEEG(setindex(1)), artif, stderror, excbound, dcompu, nfft, iswindowed);
         
         %
         % Checks criteria for bad subject (dataset)
@@ -811,15 +860,21 @@ end
 % History
 %
 skipfields = {'ALLEEG', 'Saveas','Warning','History'};
-fn     = fieldnames(p.Results);
+if dcompu == 1 % ERP
+        skipfields = [skipfields 'Compute'];
+end
+fn      = fieldnames(p.Results);
+explica = 0;
 if length(setindex)==1 && setindex(1)==1
         inputvari  = 'EEG'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
         skipfields = [skipfields 'DSindex']; % SL
 else
+        if length(setindex)==1
+                explica   = 1;
+        end
         inputvari = inputname(1);
 end
 erpcom = sprintf( 'ERP = pop_averager( %s ', inputvari);
-
 for q=1:length(fn)
         fn2com = fn{q};
         if ~ismember_bc2(fn2com, skipfields)
@@ -866,6 +921,13 @@ switch shist
         case 1 % from GUI
                 %fprintf('%%Equivalent command:\n%s\n\n', erpcom);
                 displayEquiComERP(erpcom);
+                if explica
+                        try
+                                cprintf([0.1333    0.5451    0.1333], '%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove "''DSindex'',%g"\n',setindex);
+                        catch
+                                fprintf('%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove ''DSindex'',%g:\n',setindex);
+                        end
+                end
         case 2 % from script
                 ERP = erphistory(ERP, [], erpcom, 1);
         case 3

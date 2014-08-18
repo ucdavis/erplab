@@ -37,9 +37,11 @@ end
 plotset.ptime.posfig     = posfig;
 
 % adjusting
-plotset.ptime.binArray  = plotset.ptime.binArray(plotset.ptime.binArray<=ERP.nbin);
-plotset.ptime.chanArray = plotset.ptime.chanArray(plotset.ptime.chanArray<=ERP.nchan);
+plotset.ptime.binArray   = plotset.ptime.binArray(plotset.ptime.binArray<=ERP.nbin);
+plotset.ptime.chanArray  = plotset.ptime.chanArray(plotset.ptime.chanArray<=ERP.nchan);
 plotset.ptime.chanArray_MGFP = plotset.ptime.chanArray_MGFP(plotset.ptime.chanArray_MGFP<=ERP.nchan);
+
+plotset.ptime.ibckground = ibckground;
 
 % if plotset.ptime.xscale(1) < ERP.xmin*1000
 %       plotset.ptime.xscale(1) = ceil(ERP.xmin*1000);

@@ -54,11 +54,16 @@ function meaviewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for meaviewerGUI
 handles.output = [];
 defx   = erpworkingmemory('pop_geterpvalues');
-
+% try
+%         cerpi = evalin('base', 'CURRENTERP'); % current erp index
+% catch
+%         cerpi = 1;
+% end
+% handles.cerpi = cerpi;
 try
         ALLERP = varargin{1};
 catch
-        ALLERP          = builderpstruct;
+        ALLERP          = buildERPstruct;
         ALLERP.times    = -200:800;
         ALLERP.xmin     = -0.2;
         ALLERP.xmax     = 0.8;
@@ -70,6 +75,11 @@ catch
         ALLERP.bindescr = {'empty'};
         ALLERP.chanlocs.labels = 'empty';
 end
+% if strcmpi(datatype, 'ERP')
+%     meaword = 'latenc';
+% else
+%     meaword = 'frequenc';
+% end
 if isempty(defx)
         if isempty(ALLERP)
                 inp1   = 1; %from hard drive
@@ -78,7 +88,6 @@ if isempty(defx)
                 inp1   = 0; %from erpset menu
                 erpset = 1:length(ALLERP);
         end
-        
         defx = {inp1 erpset '' 0 1 1 'instabl' 1 3 'pre' 0 1 5 0 0.5 0 0 0 '' 0 1};
 end
 try
@@ -124,20 +133,40 @@ catch
         fracmearep = [];
         intfactor  = 1;
 end
+if isfield(ALLERP(setArray(1)), 'datatype')
+        datatype = ALLERP(setArray(1)).datatype;
+else
+        datatype = 'ERP';
+end
 if ~isempty(moption) && strcmpi(moption, 'instabl')
-        set(handles.checkbox_dmouse, 'String', 'Adjust measurement time by clicking with the mouse on the desired latency.')
+        if strcmpi(datatype, 'ERP')
+                set(handles.checkbox_dmouse, 'String', 'Adjust measurement time by clicking with the mouse on the desired latency.')
+        else
+                set(handles.checkbox_dmouse, 'String', 'Adjust measurement frequency by clicking with the mouse on the desired frequency.')
+        end
 else
         set(handles.checkbox_dmouse, 'String', 'Adjust measurement window with the mouse by click, hold, drag and release')
 end
-
-measurearray = {'Instantaneous amplitude',...
-        'Mean amplitude between two fixed latencies',...
-        'Peak amplitude',...
-        'Peak latency',...
-        'Fractional Peak latency',...
-        'Numerical integration/Area between two fixed latencies',...
-        'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-        'Fractional Area latency'};
+if strcmpi(datatype, 'ERP')
+        measurearray = {'Instantaneous amplitude',...
+                'Mean amplitude between two fixed latencies',...
+                'Peak amplitude',...
+                'Peak latency',...
+                'Fractional Peak latency',...
+                'Numerical integration/Area between two fixed latencies',...
+                'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
+                'Fractional Area latency'};
+else
+        blc        = 'none';
+        measurearray = {'Instantaneous power',...
+                'Mean power between two fixed frequencies',...
+                'Peak power',...
+                'Peak frequency',...
+                'Fractional Peak frequency',...
+                'Numerical integration/Area between two fixed frequencies',...
+                '---'...
+                'Fractional Area frequency'};
+end
 
 handles.measurearray = measurearray;
 
@@ -154,7 +183,11 @@ set(handles.text_measurementv, 'String', measurearray);
 if ismember_bc2(indxmeaX,[6 7 8 16])
         meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
 elseif ismember_bc2(indxmeaX,[9 10 11 17])
-        meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
+        if strcmpi(datatype, 'ERP')
+                meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
+        else
+                meamenu = 1; % 'Instantaneous amplitude',...
+        end
 elseif ismember_bc2(indxmeaX,[12 13 14 15])
         meamenu = 8; %  'Fractional Area latency'
 elseif ismember_bc2(indxmeaX,1)
@@ -265,8 +298,16 @@ ibin  = 1;
 ich   = 1;
 iset  = 1;
 times = ALLERP(setArray(1)).times;
-ylim  = [-20 20];
-xlim  = [min(times) max(times)];
+if strcmpi(datatype, 'ERP')
+        xlim  = [min(times) max(times)];
+        ylim  = [-20 20];
+        enablepolabutt = 'on';
+else
+        xlim  = [0 30];
+        ylim  = [0 15];
+        enablepolabutt = 'off';
+end
+
 set(handles.edit_ylim, 'String', num2str(ylim))
 set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)))
 set(handles.edit_bin, 'String', num2str(ibin))
@@ -282,6 +323,7 @@ end
 handles.frdm = frdm;
 word = 'positive';
 set(handles.togglebutton_y_axis_polarity, 'String', sprintf('<HTML><center><b>%s</b> is up', word));
+set(handles.togglebutton_y_axis_polarity, 'Enable', enablepolabutt);
 handles.ydir = 'normal';
 set(handles.checkbox_butterflybin,'Value', 0)
 set(handles.checkbox_butterflychan,'Value', 0)
@@ -304,6 +346,7 @@ if length(setArray)==1
         set(handles.pushbutton_right_file, 'Enable', 'off')
         set(handles.pushbutton_left_file, 'Enable', 'off')
 end
+handles.datatype = datatype;
 
 %
 % Color GUI
@@ -336,7 +379,7 @@ set(handles.pushbutton_narrow, 'Enable', 'off')
 set(handles.pushbutton_wide, 'Enable', 'off')
 set(handles.checkbox_3sigma, 'Value',0)
 set(handles.checkbox_3sigma, 'Enable', 'off')
-set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+% set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
 set(handles.gui_chassis,'DoubleBuffer','on')
 
 if isempty(AMP)
@@ -745,9 +788,9 @@ else
         if handles.frdm; set(handles.edit_file, 'Enable', 'on');end
         setinput  = str2num(get(handles.edit_file, 'String'));
         if length(setinput)>1 && ~handles.frdm
-                setinput = setinput(1);                
+                setinput = setinput(1);
                 [xxx, iset] = closest(setArray, setinput);
-                handles.iset=iset;              
+                handles.iset=iset;
                 set(handles.edit_file, 'String', num2str(setinput))
         end
         if length(setinput)<=1
@@ -1157,10 +1200,10 @@ meacodes  = handles.meacodes;
 moption   = handles.moption;
 mearea    = { 'areat', 'areap', 'arean','areazt','areazp','areazn', 'ninteg','nintegz'};
 dig       = handles.dig;
-times     = ALLERP(1).times;
+times     = ALLERP(setArray(1)).times;
 intfactor = handles.intfactor;
-pnts    = ALLERP(1).pnts;
-timeor  = ALLERP(1).times; % original time vector
+pnts    = ALLERP(setArray(1)).pnts;
+timeor  = ALLERP(setArray(1)).times; % original time vector
 p1      = timeor(1);
 p2      = timeor(end);
 
@@ -1312,10 +1355,21 @@ for seta = jseta
                                                         %                       line([xlim(1) xlim(2)], [ylim(2) ylim(1)], 'Color', cvl) % JLC. Feb 13, 2013
                                                         %                       line([xlim(1) xlim(2)], [ylim(1) ylim(2)], 'Color', cvl) % JLC. Feb 13, 2013
                                                 else
+                                                        
+                                                        %lat4mea
+                                                        
+                                                        
                                                         line([lat4mea lat4mea], ylim, 'Color', cvl)
                                                 end
                                         elseif ismember_bc2(moption, {'peaklatbl', 'fareatlat', 'fareaplat','fninteglat','fareanlat'})
+                                                
+                                                %val(iptch)
+                                                
+                                                
                                                 line([val(iptch)  val(iptch) ], ylim, 'Color', cvl)
+                                                
+                                                
+                                                
                                         elseif ismember_bc2(moption,  {'fpeaklat'}) % fractional peak latency
                                                 line([val(iptch)  val(iptch) ], ylim, 'Color', cvl) % fractional peak lat
                                                 line([lat4mea lat4mea], ylim, 'Color', cvl,'LineStyle',':')  % peak lat
@@ -1366,7 +1420,7 @@ if get(handles.radiobutton_histo, 'Value')
         chisto    = handles.chisto;
         fitnormd  = handles.fitnormd;
         cfitnorm  = handles.cfitnorm;
-        [valhist binhist] = hist(val, nhisto);
+        [valhist, binhist] = hist(val, nhisto);
         areahisto = sum(valhist)*mean(diff(binhist));
         
         if normhisto
@@ -1451,7 +1505,7 @@ elseif get(handles.radiobutton_scatter, 'Value') % JLC scatter plot
         catch
                 set(handles.radiobutton_histo, 'Value', 0)
                 return
-        end       
+        end
         if get(handles.checkbox_scatterlabels, 'Value')
                 labfont = 10;
                 text(x2+0.15,mu,'\mu','FontSize',labfont)
@@ -1520,6 +1574,10 @@ if ~get(handles.checkbox_butterflyset, 'Value') && nsetinput<=1
         % Update handles structure
         guidata(hObject, handles);
 end
+%
+% Files
+%
+setlabelx = '';
 if get(handles.checkbox_butterflyset, 'Value')
         if length(setArray)>10
                 var1 = vect2colon(setArray, 'Delimiter', 'off');
@@ -1531,10 +1589,17 @@ elseif nsetinput>0
                 var1 = vect2colon(jseta, 'Delimiter', 'off');
         else
                 var1 = num2str(jseta);
+                if nsetinput==1
+                        setlabelx = sprintf('(%s)', ALLERP(seta).erpname);
+                end
         end
 else
         var1 = ALLERP(seta).erpname;
 end
+%
+% Bins
+%
+binlabelx = '';
 if  get(handles.checkbox_butterflybin, 'Value')
         if length(binArray)>10
                 var2 = vect2colon(binArray, 'Delimiter', 'off');
@@ -1543,13 +1608,21 @@ if  get(handles.checkbox_butterflybin, 'Value')
         end
 elseif nbinput>0
         if nbinput>10
-                var2 = vect2colon(jbin, 'Delimiter', 'off');                
+                var2 = vect2colon(jbin, 'Delimiter', 'off');
         else
                 var2 = num2str(jbin);
+                if nbinput==1
+                        binlabelx = sprintf('(%s)', ALLERP(seta).bindescr{bin});
+                end
         end
 else
         var2 = ALLERP(seta).bindescr{bin};
 end
+
+%
+% Channels
+%
+chanlabelx = '';
 if get(handles.checkbox_butterflychan, 'Value')
         if length(chanArray)>10
                 var3 = vect2colon(chanArray, 'Delimiter', 'off');
@@ -1561,6 +1634,9 @@ elseif nchinput>0
                 var3 = vect2colon(jchannel, 'Delimiter', 'off');
         else
                 var3 = num2str(jchannel);
+                if nchinput==1
+                        chanlabelx = sprintf('(%s)', ALLERP(seta).chanlocs(channel).labels);
+                end
         end
 else
         var3 = ALLERP(seta).chanlocs(channel).labels;
@@ -1568,11 +1644,11 @@ end
 if  ~get(handles.checkbox_butterflybin, 'Value') && ~get(handles.checkbox_butterflychan, 'Value') && ~get(handles.checkbox_butterflyset, 'Value') &&...
                 nsetinput<=1 &&  nbinput<=1 && nchinput<=1
         % none checked
-        strfrmt = ['File   : %s\nBin    : %s\nChannel: %s\nMeasu  : %s\nWindow : %s\nLate   : %s\nValue  : %.' num2str(dig) 'f\n'];
-        values2print = {var1, var2, var3,  tittle, sprintf('%.2f\t', latency), sprintf('%.2f\t', truelat), val};
+        strfrmt = ['File   : %s %s\nBin    : %s %s\nChannel: %s %s\nMeasu  : %s\nWindow : %s\nLate   : %s\nValue  : %.' num2str(dig) 'f\n'];
+        values2print = {var1, setlabelx, var2, binlabelx, var3,  chanlabelx, tittle, sprintf('%.2f\t', latency), sprintf('%.2f\t', truelat), val};
 else
-        strfrmt = ['File   : %s\nBin    : %s\nChannel: %s\nMeasu  : %s\nWindow : %s\nLate   : %s\nMean Value  : %.' num2str(dig) 'f  +/- %.' num2str(dig) 'f\n'];
-        values2print = {var1, var2, var3,  tittle, sprintf('%.2f\t', latency), sprintf('%.2f\t', truelat), mean(val), std(val)};
+        strfrmt = ['File   : %s %s\nBin    : %s %s\nChannel: %s %s\nMeasu  : %s\nWindow : %s\nLate   : %s\nMean Value  : %.' num2str(dig) 'f  +/- %.' num2str(dig) 'f\n'];
+        values2print = {var1, setlabelx, var2, binlabelx, var3,  chanlabelx, tittle, sprintf('%.2f\t', latency), sprintf('%.2f\t', truelat), mean(val), std(val)};
 end
 
 repo = sprintf(strfrmt, values2print{:});
@@ -1735,9 +1811,12 @@ if get(hObject, 'Value')
         set(handles.pushbutton_wide, 'Enable', 'off')
         set(handles.pushbutton_histosetting,'Enable','on')
 else
+        datatype = handles.datatype;
         set(handles.pushbutton_color_val, 'Enable', 'on');
         set(handles.pushbutton_color_window, 'Enable', 'on');
-        set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+        if strcmpi(datatype, 'ERP')
+                set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+        end
         %set(handles.pushbutton_update, 'Enable', 'on');
         set(handles.edit_ylim, 'Enable', 'on');
         set(handles.edit_xlim, 'Enable', 'on');
@@ -1781,9 +1860,12 @@ if get(hObject, 'Value')
         end
         set(handles.pushbutton_histosetting,'Enable','off')
 else
+        datatype = handles.datatype;
         set(handles.pushbutton_color_val, 'Enable', 'on');
         set(handles.pushbutton_color_window, 'Enable', 'on');
-        set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+        if strcmpi(datatype, 'ERP')
+                set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+        end
         %set(handles.pushbutton_update, 'Enable', 'on');
         set(handles.edit_ylim, 'Enable', 'on');
         set(handles.edit_xlim, 'Enable', 'on');
@@ -1955,8 +2037,24 @@ xlim   = str2num(get(handles.edit_xlim, 'String' ));
 
 mplotdata(hObject, handles, ibin, ich, iset, xlim, ylim, tittle)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 %--------------------------------------------------------------------------
-function [ Amp, Lat latency] = getnewvals(hObject, handles, latency)
+function [ Amp, Lat, latency] = getnewvals(hObject, handles, latency)
 
 fntsz = get(handles.edit_report, 'FontSize');
 set(handles.edit_report, 'FontSize', fntsz)
@@ -1977,32 +2075,24 @@ locpeakrep  = handles.locpeakrep;
 frac        = handles.frac;
 fracmearep  = handles.fracmearep;
 intfactor   = handles.intfactor;
+datatype    = handles.datatype;
 
 [xxx, latsamp] = closest(ALLERP(setArray(end)).times, latency);
-fs = ALLERP(setArray(end)).srate;
-latency = (((latsamp-1)*1000)/fs) + ALLERP(setArray(end)).xmin*1000;
+
+if strcmpi(datatype, 'ERP')
+        fs = ALLERP(setArray(end)).srate;
+        latency = (((latsamp-1)*1000)/fs) + ALLERP(setArray(end)).xmin*1000;
+else
+        bx = unique(diff(ALLERP(setArray(end)).times));
+        latency = (latsamp-1)*bx(1);
+end
 
 Amp   = zeros(length(binArray), length(chanArray), length(setArray));
 Lat   = {[]};
 
 for k=1:nfile
         ERP = ALLERP(setArray(k));
-        [A lat4mea]  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor);
-        
-        
-        %         if isempty(A)
-        %                 errmsg = 'Empty outcome. Please check your input parameter';
-        %                 serror = 4;
-        %                 break
-        %         elseif ischar(A)
-        %                 errmsg = A;
-        %                 serror = 4;
-        %                 break
-        %         else
-        %                 errmsg = '???';
-        %                 serror = 4;
-        %                 break
-        %         end
+        [A, lat4mea]  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor);
         
         %
         % Store values
@@ -2010,38 +2100,6 @@ for k=1:nfile
         Amp(:,:,k) = A;  % bin x channel x erpset
         Lat{:,:,k} = lat4mea;  % bin x channel x erpset
 end
-
-
-% if serror ==1
-%         msgboxText =  sprintf('A problem was found at ERPset %s (%gth).', kname, kindex);
-%         title = 'ERPLAB: pop_geterpvalues';
-%         errorfound(msgboxText, title);
-%         return
-% end
-% if serror ==2
-%         msgboxText = ['Number of bins is different across datasets .\n'...
-%                 'You must use ERPset related to the same experiment.'];
-%         title = 'ERPLAB: pop_geterpvalues';
-%         errorfound(sprintf(msgboxText), title);
-%         return
-% end
-% if serror ==3
-%         msgboxText = ['The bin description set among datasets is different.\n'...
-%                 'You must use ERPset related to the same experiment.'];
-%         title = 'ERPLAB: pop_geterpvalues';
-%         errorfound(sprintf(msgboxText), title);
-%         return
-% end
-% if serror ==4
-%         msgboxText = ['Sorry, something went wrong.\n\n'...
-%                 errmsg '\n\n'...
-%                 'Check also for invalid latency/bin/channel range, or '...
-%                 'empty, flat, or zero bindata, etc.\n'];
-%         tittle = 'ERPLAB: geterpvalues() error:';
-%         errorfound(sprintf(msgboxText), tittle);
-%         return
-% end
-
 
 set(handles.edit_report, 'FontSize', fntsz )
 pause(0.1)

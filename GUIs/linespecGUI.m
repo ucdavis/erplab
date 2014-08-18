@@ -42,7 +42,7 @@ catch
 end
 
 defs       = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
-defcol     = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };
+defcol     = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w' };
 
 if isempty(def)
         %       defcolor = repmat({'k' 'r' 'b' 'g' 'c' 'm' 'y' },1, nbin);% sorted according 1st erplab's version
@@ -84,6 +84,51 @@ handles.nbin = nbin;
 setlistbox_color(hObject, handles, COLORDATA, nbin )
 setlistbox_style(hObject, handles, STYLEDATA, nbin )
 
+for k=1:length(defcol)
+      switch defcol{k}
+            case 'k'
+                  cwrd = 'BLACK';
+            case 'r'
+                  cwrd = 'RED';
+            case 'b'
+                  cwrd = 'BLUE';
+            case 'g'
+                  cwrd = 'GREEN';
+            case 'c'
+                  cwrd = 'CYAN';
+            case 'm'
+                  cwrd = 'MAGENTA';
+            case 'y'
+                  cwrd = 'YELLOW';
+            case 'w'
+                  cwrd = 'WHITE';
+            otherwise
+                  error('color error...')
+      end
+        set(handles.(['pushbutton_color' num2str(k)]),'UserData', cwrd)
+        setcolorbuttons(k, cwrd, hObject, eventdata, handles);
+end
+
+% defs       = {'-' '-.' '--' ':'};
+% solid   dash-dot   dashed   dotted
+for k=1:length(defs)
+        switch defs{k}
+                case '-'
+                        lwrd = 'solid';
+                case '-.'
+                        lwrd = 'dash-dot';
+                case '--'
+                        lwrd = 'dashed';
+                case ':'
+                        lwrd = 'dotted';
+                otherwise
+                        error('line error...')
+        end        
+        set(handles.(['pushbutton_line' num2str(k)]),'String', defs{k})
+        set(handles.(['pushbutton_line' num2str(k)]),'UserData', lwrd)
+        %setlinebuttons(k, lwrd, hObject, eventdata, handles);
+end
+
 %
 % Name & version
 %
@@ -118,6 +163,46 @@ delete(handles.gui_chassis);
 pause(0.1)
 
 % --------------------------------------------------------------------------------------------
+function setcolorbuttons(ind, colorword, hObject, eventdata, handles)
+try
+      [img,map]    = imread(['erplab_' colorword '.jpg']);
+      colormap(map)      
+      [row,column] = size(img);      
+      p = get(handles.(['pushbutton_color' num2str(ind)]),'Position');  
+      w = p(3); % width
+      h = p(4); % hight    
+      steprow   = ceil(row/(5*h));
+      stecolu   = ceil(column/(10*w));
+      imgbutton = img(1:steprow:end,1:stecolu:end,:);
+      set(handles.(['pushbutton_color' num2str(ind)]),'String','')
+      set(handles.(['pushbutton_color' num2str(ind)]),'CData',imgbutton);
+      set(handles.(['pushbutton_color' num2str(ind)]),'Position', [p(1) p(2) p(3)*1.25 p(4)*1.25]); 
+catch
+      %set(handles.pushbutton_help,'String','Help');
+      set(handles.(['pushbutton_color' num2str(ind)]),'String', lower(colorword(1:2)));
+end
+
+% % --------------------------------------------------------------------------------------------
+% function setlinebuttons(ind, lineword, hObject, eventdata, handles)
+% try
+%       [img,map]    = imread(['erplab_' colorword '.jpg']);
+%       colormap(map)      
+%       [row,column] = size(img);      
+%       p = get(handles.(['pushbutton_color' num2str(ind)]),'Position');  
+%       w = p(3); % width
+%       h = p(4); % hight    
+%       steprow   = ceil(row/(5*h));
+%       stecolu   = ceil(column/(10*w));
+%       imgbutton = img(1:steprow:end,1:stecolu:end,:);
+%       set(handles.(['pushbutton_color' num2str(ind)]),'String','')
+%       set(handles.(['pushbutton_color' num2str(ind)]),'CData',imgbutton);
+%       set(handles.(['pushbutton_color' num2str(ind)]),'Position', [p(1) p(2) p(3)*1.25 p(4)*1.25]); 
+% catch
+%       %set(handles.pushbutton_help,'String','Help');
+%       set(handles.(['pushbutton_color' num2str(ind)]),'String', lower(colorword(1:2)));
+% end
+
+% --------------------------------------------------------------------------------------------
 function COLORDATA  = colores(defcolor)
 % COLORDATA = struct(1);
 for i=1:length(defcolor);
@@ -145,7 +230,11 @@ for i=1:length(defcolor);
                   COLORDATA(i).colorhtmlcode = '#FF00FF';
             case 'y'
                   COLORDATA(i).colorname    = 'yellow';
-                  COLORDATA(i).colorhtmlcode = '#FFFF00';     % or gold #FDD017
+                  %COLORDATA(i).colorhtmlcode = '#FFFF00';     %
+                  COLORDATA(i).colorhtmlcode = '#FFD700';     % or gold #FDD017
+            case 'w'
+                  COLORDATA(i).colorname    = 'white';
+                  COLORDATA(i).colorhtmlcode = '#F1F1F1';     % winter white?
             otherwise
                   COLORDATA(i).colorname    = 'black';
                   COLORDATA(i).colorhtmlcode = '#000000';
@@ -233,7 +322,6 @@ end
 
 % --------------------------------------------------------------------------------------------
 function pushbutton_up_color_Callback(hObject, eventdata, handles)
-
 COLORDATA = handles.COLORDATA;
 nbin = handles.nbin;
 currline = get(handles.listbox_color, 'Value'); % current line
@@ -300,7 +388,6 @@ guidata(hObject, handles);
 
 % --------------------------------------------------------------------------------------------
 function pushbutton_down_color_Callback(hObject, eventdata, handles)
-
 COLORDATA = handles.COLORDATA;
 nbin = handles.nbin;
 currline = get(handles.listbox_color, 'Value'); % current line
@@ -451,6 +538,354 @@ end
 handles.STYLEDATA = STYLEDATA;
 % Update handles structure
 guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color1_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = 'BLUE';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+% % %     '<html><font color="#777777">empty..:<font color="#FF00FF">MAGENTA'
+
+%--------------------------------------------------------------------------
+function pushbutton_color2_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = '';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color3_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = '';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color4_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = '';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color5_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = '';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color6_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = '';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color7_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+% % % colorbtn = '';
+% % colorbtn = get(hObject, 'UserData');
+% % % v = get(handles.listbox_color, 'Value');
+% % currline = get(handles.listbox_color, 'Value'); % current line
+% % s = get(handles.listbox_color, 'String');
+% % w = regexp(s, '\w+$', 'match');
+% % w = [w{:}];
+% % ind = find(ismember(w, colorbtn), 1, 'last');
+% % 
+% % COLORDATA = handles.COLORDATA;
+% % nbin = handles.nbin;
+% % % currline = get(handles.listbox_color, 'Value'); % current line
+% % 
+% % ncolor = length(COLORDATA);
+% % 
+% % if nnz(~bitand(currline>=1,currline<=ncolor))==0
+% %       aux = COLORDATA(currline);
+% %       COLORDATA(currline) = COLORDATA(ind);
+% %       COLORDATA(ind) = aux;
+% %       setlistbox_color(hObject, handles, COLORDATA, nbin )
+% %       %set(handles.listbox_color, 'Value', 1);
+% % end
+% % handles.COLORDATA = COLORDATA;
+% % % Update handles structure
+% % guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_color8_Callback(hObject, eventdata, handles)
+ReplaceColoratList(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function ReplaceColoratList(hObject, eventdata, handles)
+% colorbtn = '';
+colorbtn = get(hObject, 'UserData');
+% v = get(handles.listbox_color, 'Value');
+currline = get(handles.listbox_color, 'Value'); % current line
+s = get(handles.listbox_color, 'String');
+w = regexp(s, '\w+$', 'match');
+w = [w{:}];
+ind = find(ismember(w, colorbtn), 1, 'last');
+
+COLORDATA = handles.COLORDATA;
+nbin = handles.nbin;
+% currline = get(handles.listbox_color, 'Value'); % current line
+
+ncolor = length(COLORDATA);
+
+if nnz(~bitand(currline>=1,currline<=ncolor))==0
+      aux = COLORDATA(currline);
+      COLORDATA(currline) = COLORDATA(ind);
+      COLORDATA(ind) = aux;
+      setlistbox_color(hObject, handles, COLORDATA, nbin )
+      %set(handles.listbox_color, 'Value', 1);
+end
+handles.COLORDATA = COLORDATA;
+% Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_line1_Callback(hObject, eventdata, handles)
+linebtn = get(hObject, 'UserData');
+% v = get(handles.listbox_color, 'Value');
+currline = get(handles.listbox_style, 'Value'); % current line
+s = get(handles.listbox_style, 'String');
+% w = regexp(s, '\w+$', 'match');
+w = regexp(s, '\w+-*\w*$', 'match');
+w = [w{:}];
+ind = find(ismember(w, linebtn), 1, 'last');
+
+STYLEDATA = handles.STYLEDATA;
+nbin = handles.nbin;
+% currline = get(handles.listbox_style, 'Value'); % current line
+
+ncolor = length(STYLEDATA);
+
+if nnz(~bitand(currline>=1,currline<=ncolor))==0
+      aux = STYLEDATA(currline);
+      STYLEDATA(currline) = STYLEDATA(ind);
+      STYLEDATA(ind) = aux;
+      setlistbox_style(hObject, handles, STYLEDATA, nbin )
+      %set(handles.listbox_style, 'Value', 1); % current line
+end
+
+handles.STYLEDATA = STYLEDATA;
+% Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_line2_Callback(hObject, eventdata, handles)
+linebtn = get(hObject, 'UserData');
+% v = get(handles.listbox_color, 'Value');
+currline = get(handles.listbox_style, 'Value'); % current line
+s = get(handles.listbox_style, 'String');
+% w = regexp(s, '\w+$', 'match');
+w = regexp(s, '\w+-*\w*$', 'match');
+w = [w{:}];
+ind = find(ismember(w, linebtn), 1, 'last');
+
+STYLEDATA = handles.STYLEDATA;
+nbin = handles.nbin;
+% currline = get(handles.listbox_style, 'Value'); % current line
+
+ncolor = length(STYLEDATA);
+
+if nnz(~bitand(currline>=1,currline<=ncolor))==0
+      aux = STYLEDATA(currline);
+      STYLEDATA(currline) = STYLEDATA(ind);
+      STYLEDATA(ind) = aux;
+      setlistbox_style(hObject, handles, STYLEDATA, nbin )
+      %set(handles.listbox_style, 'Value', 1); % current line
+end
+
+handles.STYLEDATA = STYLEDATA;
+% Update handles structure
+guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function pushbutton_line3_Callback(hObject, eventdata, handles)
+linebtn = get(hObject, 'UserData');
+% v = get(handles.listbox_color, 'Value');
+currline = get(handles.listbox_style, 'Value'); % current line
+s = get(handles.listbox_style, 'String');
+% w = regexp(s, '\w+$', 'match');
+w = regexp(s, '\w+-*\w*$', 'match');
+w = [w{:}];
+ind = find(ismember(w, linebtn), 1, 'last');
+
+STYLEDATA = handles.STYLEDATA;
+nbin = handles.nbin;
+% currline = get(handles.listbox_style, 'Value'); % current line
+
+ncolor = length(STYLEDATA);
+
+if nnz(~bitand(currline>=1,currline<=ncolor))==0
+      aux = STYLEDATA(currline);
+      STYLEDATA(currline) = STYLEDATA(ind);
+      STYLEDATA(ind) = aux;
+      setlistbox_style(hObject, handles, STYLEDATA, nbin )
+      %set(handles.listbox_style, 'Value', 1); % current line
+end
+
+handles.STYLEDATA = STYLEDATA;
+% Update handles structure
+guidata(hObject, handles);
+
+
+%--------------------------------------------------------------------------
+function pushbutton_line4_Callback(hObject, eventdata, handles)
+linebtn = get(hObject, 'UserData');
+% v = get(handles.listbox_color, 'Value');
+currline = get(handles.listbox_style, 'Value'); % current line
+s = get(handles.listbox_style, 'String');
+% w = regexp(s, '\w+$', 'match');
+w = regexp(s, '\w+-*\w*$', 'match');
+w = [w{:}];
+ind = find(ismember(w, linebtn), 1, 'last');
+
+STYLEDATA = handles.STYLEDATA;
+nbin = handles.nbin;
+% currline = get(handles.listbox_style, 'Value'); % current line
+
+ncolor = length(STYLEDATA);
+
+if nnz(~bitand(currline>=1,currline<=ncolor))==0
+      aux = STYLEDATA(currline);
+      STYLEDATA(currline) = STYLEDATA(ind);
+      STYLEDATA(ind) = aux;
+      setlistbox_style(hObject, handles, STYLEDATA, nbin )
+      %set(handles.listbox_style, 'Value', 1); % current line
+end
+
+handles.STYLEDATA = STYLEDATA;
+% Update handles structure
+guidata(hObject, handles);
+
 
 % --------------------------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)

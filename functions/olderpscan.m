@@ -131,7 +131,7 @@ try
     %
     % Version 1.0.0
     %
-    [ERP serror] = sorterpstruct(ERP);
+    [ERP, serror] = sorterpstruct(ERP);
 catch
     serror = 0;
 end

@@ -53,31 +53,37 @@
 
 function [ERP, erpcom] = pop_blcerp(ERP, varargin)
 erpcom = '';
-fprintf('pop_blcerp : START\n');
-
 if nargin < 1
         help pop_blcerp
         return
 end
-
+if isfield(ERP(1), 'datatype')
+      datatype = ERP.datatype;
+else
+      datatype = 'ERP';
+end
 %
 % Gui is working...
 %
 if nargin==1
+      title_msg  = 'ERPLAB: pop_blcerp() error:';
         if isempty(ERP)
                 ERP = preloadERP;
                 if isempty(ERP)
-                        msgboxText =  'No ERPset was found!';
-                        title_msg  = 'ERPLAB: pop_blcerp() error:';
+                        msgboxText =  'No ERPset was found!';                        
                         errorfound(msgboxText, title_msg);
                         return
                 end
         end
         if isempty(ERP.bindata)
-                msgboxText{1} =  'cannot work with an empty erpset!';
-                title = 'ERPLAB: pop_blcerp() error';
-                errorfound(msgboxText, title);
+                msgboxText =  'cannot work with an empty erpset!';
+                errorfound(msgboxText, title_msg);
                 return
+        end
+        if ~strcmpi(datatype, 'ERP')
+              msgboxText =  'Cannot baseline Power Spectrum waveforms. Sorry';
+              errorfound(msgboxText, title_msg);
+              return
         end
         
         titlegui = 'Baseline Correction';
@@ -109,6 +115,11 @@ p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(ERP, varargin{:});
 
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
 blcorr   = p.Results.Baseline;
 if strcmpi(p.Results.History,'implicit')
         shist = 3; % implicit
@@ -146,18 +157,18 @@ if ischar(blcorr)
             blcorrcomm = ['[' blcorr ']'];
       else            
             if strcmpi(blcorr,'pre')
-                  BLC  = 1000*[ERP.xmin 0]; % msecs
+                  BLC  = kktime*[ERP.xmin 0]; % msecs
                   blcorrcomm = ['''' blcorr ''''];
                   BLCp1 = 1;
                   BLCp2 = find(ERP.times==0);
                   
             elseif strcmpi(blcorr,'post')
-                  BLC  = 1000*[0 ERP.xmax];  % msecs
+                  BLC  = kktime*[0 ERP.xmax];  % msecs
                   blcorrcomm = ['''' blcorr ''''];
                   BLCp1 = find(ERP.times==0);
                   BLCp2 = ERP.pnts;                  
             elseif strcmpi(blcorr,'all')
-                  BLC  = 1000*[ERP.xmin ERP.xmax]; % msecs
+                  BLC  = kktime*[ERP.xmin ERP.xmax]; % msecs
                   blcorrcomm = ['''' blcorr ''''];
                   BLCp1 = 1;
                   BLCp2 = ERP.pnts;
@@ -170,7 +181,7 @@ else
       if length(blcorr)~=2
             error('ERPLAB says:  pop_blcerp will not be performed. Check your parameters.')
       end
-      if blcorr(1)>=blcorr(2)|| blcorr(1)>ERP.xmax*1000 || blcorr(2)<ERP.xmin*1000
+      if blcorr(1)>=blcorr(2)|| blcorr(1)>ERP.xmax*kktime || blcorr(2)<ERP.xmin*kktime
             error('ERPLAB says:  pop_blcerp will not be performed. Check your parameters.')
       end
       BLC  = blcorr;

@@ -10,6 +10,11 @@
 % artcrite        - criterion for artifact detection
 % stderror        - calculate standard error of the mean: 1 yes; 0 no
 % excbound        - exclude epochs having boundary events: 1 yes; 0 no
+% dcompu          - type of computation: 1:compute the average of all (selected) epochs (ERP)
+%                                        2:computes total power spectrum of each (selected) epoch via FFT, then gets the average across all spectra.
+%                                        3:computes evoked power spectrum via FFT of the averaged ERP.
+%
+% iswindowed      - if type of computation 2 (FFT) is selected then data are tapered with a hamming window: 1 yes; 0 no
 %
 % Outputs:
 %
@@ -53,11 +58,19 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP EVENTLIST countbiORI countbinINV countbinOK countflags workfiles] = averager(EEG, artcrite, stderror, excbound)
-
+function [ERP, EVENTLIST, countbiORI, countbinINV, countbinOK, countflags, workfiles] = averager(EEG, artcrite, stderror, excbound, dcompu, nfft, iswindowed)
 if nargin<1
         help averager
         return
+end
+if nargin<7
+        iswindowed = 0; % aply hamming window to data before FFT--> 0:no ; 1:yes
+end
+if nargin<6
+        nfft = [];
+end
+if nargin<5
+        dcompu = 1; % compute ERP by default;
 end
 if nargin<4
         excbound = 0; % 1=exclude epochs having boundary events; 0= do not exclude...
@@ -68,13 +81,26 @@ end
 
 % check for time-lock latency
 EEG    = checkeegzerolat(EEG);
+disp('Averaging data...please wait.')
 
 % build ERP strucure (keeping some of the EEGLAB's EEG structure fields)
 ERP    = buildERPstruct(EEG);
 nepoch = length(EEG.epoch);
 nchan  = EEG.nbchan;
-points = EEG.pnts;
+points = EEG.pnts; % ERP
 
+if isempty(nfft)
+        fnyqx = round(EEG.srate/2);
+        nfft = 2.^nextpow2(4*fnyqx); % FFT
+end
+switch dcompu
+        case {1,3} % ERP
+                xpnts = points;               
+        case 2 % TFFT
+                xpnts = nfft;                             
+        otherwise
+                xpnts = points;                
+end
 if isempty(EEG.filename)
         workfiles = EEG.setname;
 else
@@ -83,20 +109,20 @@ end
 
 EVENTLIST   = EEG.EVENTLIST;
 nbin        = EEG.EVENTLIST.nbin;           % total number of described bins
-binsum      = zeros(nchan, points, nbin);   % bin sumatory
-countbinOK  = zeros(1,nbin);              % trial counter (only good trials)
-countbiORI  = zeros(1,nbin);              % trial counter (ALL trials, originals)
-countbinINV = zeros(1,nbin);              % trial counter (invalid trials)
+binsum      = zeros(nchan, xpnts, nbin);   % bin sumatory
+countbinOK  = zeros(1,nbin);                % trial counter (only good trials)
+countbiORI  = zeros(1,nbin);                % trial counter (ALL trials, originals)
+countbinINV = zeros(1,nbin);                % trial counter (invalid trials)
 countflags  = zeros(nbin,nepoch);
-ERP.bindata = zeros(nchan,points,nbin);   % All averages are zeros at the beginning
+ERP.bindata = zeros(nchan,xpnts,nbin);     % All averages are zeros at the beginning
 F = fieldnames(EEG.reject);
 sfields1 = regexpi(F, '\w*E$', 'match');
 sfields2 = [sfields1{:}];
 fields4reject  = regexprep(sfields2,'E','');
 
 if stderror
-        ERP.binerror = zeros(nchan, points, nbin); % bins standard error
-        sumERP2 = zeros(nchan, points, nbin);   % sum of squares: Sum(xi^2)
+        ERP.binerror = zeros(nchan, xpnts, nbin); % bins standard error
+        sumERP2 = zeros(nchan, xpnts, nbin);   % sum of squares: Sum(xi^2)
 end
 
 %
@@ -112,7 +138,6 @@ end
 % Read file
 %
 if ischar(artcrite) % read a file having indices (only for 1 dataset so far)
-        
         error('ERPLAB says: artcrite cannot be a string. Use pop_averager if you want to load a file for reading the epoch indices.')
         %       %
         %       % open file containing epoch indices
@@ -194,21 +219,20 @@ for i = 1:nepoch
                         eitem     = [EEG.epoch(i).eventitem{:}]; % event code of the single event in this epoch.
                         condbound = 0;
                         if any(cellfun(@ischar, etype))
-                                [tfb indxb] = ismember_bc2({'-99' 'boundary'}, etype);
-                                
+                                [tfb, indxb] = ismember_bc2({'-99' 'boundary'}, etype);                                
                                 if any(tfb)
                                         condbound=1;
                                         indxb = nonzeros(indxb);
                                 end
                         else
                                 etype = [etype{:}];% double
-                                [tfb indxb] = ismember_bc2(-99, etype);
+                                [tfb, indxb] = ismember_bc2(-99, etype);
                                 if tfb
                                         condbound=1;
                                 end
                         end
                         % update enable fields at EEG.epoch and EEG.EVENTLIST.eventinfo (set to -1)
-                        if condbound==1                               
+                        if condbound==1
                                 [EEG.epoch(i).eventenable{indxb}] = deal(-1);
                                 [EEG.EVENTLIST.eventinfo(eitem(indxb)).enable] = deal(-1);
                                 % fprintf('(!) Epoch #%g had a "boundary" event, so it won''t be included in the averaging process.\n ', i)
@@ -238,9 +262,9 @@ for i = 1:nepoch
                                 catch
                                         fprintf('(!) Epoch #%g had either a "boundary" or an invalid event, so it won''t be included in the averaging process.\n ', i);
                                 end
-                        elseif ismember_bc2(-1, enableALL) && excbound % any event's (within this epoch) enable fields was -1
+                        elseif ismember(-1, enableALL) && excbound % any event's (within this epoch) enable fields was -1
                                 countbinINV(1,binslot) = countbinINV(1,binslot) + 1;  % trial counter (invalid trials)
-                                binslot = [];                                
+                                binslot = [];
                                 try
                                         cprintf([1 0 0],'(!) Epoch #%g had either a "boundary" or an invalid event, so it won''t be included in the averaging process.\n ', i);
                                 catch
@@ -266,7 +290,7 @@ for i = 1:nepoch
                                         % Custom epoch indices
                                         %
                                         epindx    = cell2mat(artcrite);
-                                        specepoch = ismember_bc2(i, epindx); % Is this epoch one of the specified ones?
+                                        specepoch = ismember(i, epindx); % Is this epoch one of the specified ones?
                                         
                                         if specepoch
                                                 fprintf('******* EPOCH #%g was included for averaging.\n', i)
@@ -283,13 +307,25 @@ for i = 1:nepoch
                         if ~isempty(binslot)
                                 repetibin = length(binslot);
                                 bouncebin = repmat(i,1,repetibin);
-                                binsum(:,:,binslot)   = binsum(:,:,binslot) + EEG.data(:,:,bouncebin);
+                                
+                                if dcompu==1  || dcompu==3  % ERP or EFFT
+                                        data2sum = EEG.data(:,:,bouncebin);
+                                elseif dcompu==2            % TFFT
+                                        [freq, data2sum] = getTrialFFT(EEG.data(:,:,bouncebin), ERP.srate, 2*nfft, iswindowed); % FFT
+                                        %disp('FFT')
+                                else
+                                        error('dcompu was not defined');
+                                end
+                                
+                                %binsum(:,:,binslot)   = binsum(:,:,binslot) + EEG.data(:,:,bouncebin);
+                                binsum(:,:,binslot)   = binsum(:,:,binslot) + data2sum;
                                 
                                 %
                                 % Sum of squares for standard error
                                 %
                                 if stderror
-                                        sumERP2(:,:,binslot) = sumERP2(:,:,binslot) + EEG.data(:,:,bouncebin).^2; % sum of squares: Sum(xi^2)
+                                        %sumERP2(:,:,binslot) = sumERP2(:,:,binslot) + EEG.data(:,:,bouncebin).^2; % sum of squares: Sum(xi^2)
+                                        sumERP2(:,:,binslot) = sumERP2(:,:,binslot) + data2sum.^2; % sum of squares: Sum(xi^2)
                                 end
                                 %fprintf('epoch = %g\n', i);
                                 %fprintf('bin   = %g\n',binslot);
@@ -333,8 +369,8 @@ for k=1:nbin
                         %ERP.binerror(:,:,k) = sqrt((1/(N-1))*sumERP2(:,:,k) - ERP.bindata(:,:,k).^2); % get ERP's standard deviation
                 end
                 if ~iscell(artcrite)
-                        prejectedT = (countbiORI(1,k)-countbinOK(1,k))*100/countbiORI(1,k);                 %19 setp 2008
-                        pinvalidT  = countbinINV(1,k)*100/countbiORI(1,k);                 %19 setp 2008
+                        prejectedT = (countbiORI(1,k) - countbinOK(1,k))*100/countbiORI(1,k);  %19 sept 2008
+                        pinvalidT  = countbinINV(1,k)*100/countbiORI(1,k);                     %19 sept 2008
                         fprintf('Bin %g was created with a %.1f %% of rejected trials\n', k, prejectedT);
                         fprintf('Bin %g was created with a %.1f %% of invalid trials\n', k, pinvalidT);
                 else
@@ -342,9 +378,49 @@ for k=1:nbin
                 end
         end
 end
+if dcompu==3 % EFFT
+        data4fft = zeros(nchan, nfft, nbin);
+        for k=1:nbin
+                [freq, data4fft(:,:,k)] = getTrialFFT(ERP.bindata(:,:,k), ERP.srate, 2*nfft, iswindowed); % FFT
+        end
+        ERP.bindata  = data4fft;
+        ERP.binerror = [];
+        ERP.times    = freq;
+        ERP.xmin     = min(ERP.times);
+        ERP.xmax     = max(ERP.times);
+        ERP.datatype = 'EFFT';
+elseif dcompu==2  % TFFT
+        ERP.times = freq;
+        ERP.xmin  = min(ERP.times);
+        ERP.xmax  = max(ERP.times);
+        ERP.datatype = 'TFFT';
+end
+ERP.pnts  = size(ERP.bindata, 2);
 if ~iscell(artcrite)
         fprintf('----------------------------------------------------------------------------------------\n');
 else
         countbiORI  = countbinOK;
         countbinINV = countbinOK*0;
 end
+
+%-------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------------------
+%-------------------- Estimate FFT on each trial selected for averaging --------------------------------------
+%-------------------------------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------------------------------
+function [f, fftepo] = getTrialFFT(datax, fs, NFFT, iswindowed)
+L      = size(datax,2);
+fnyq   = fs/2;
+f      = fnyq*linspace(0,1,NFFT/2);
+y  = datax';
+if iswindowed
+        y  = y.*repmat(hamming(size(y,1)),1,size(y,2)); % data tapered with a Hamming window.
+end
+Y = fft(y,NFFT)'/L;
+fftepo = abs(Y(:,1:NFFT/2)).^2; % power
+if rem(NFFT, 2)                 % odd NFFT excludes Nyquist point
+        fftepo(:, 2:end) = fftepo(:, 2:end).*2;
+else
+        fftepo(:, 2:end-1) = fftepo(:, 2:end-1).*2;
+end
+

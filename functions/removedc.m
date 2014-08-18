@@ -50,6 +50,9 @@ end
 if length(windowsam)~=2
          windowsam = [1 windowsam(1)];
 end
+if diff(windowsam)>size(data,2) % fixed: May 2014
+    windowsam = [1 size(data,2)];
+end
 
 meanvalue = mean(data(chanArray,windowsam(1):windowsam(2)),2);
 for chr=1:length(chanArray)

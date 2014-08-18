@@ -57,7 +57,7 @@ try
         d = size(ERP.bindata,2);
         e = length(ERP.times);        
         if a==b && b==c && d==e                
-                [ERP serror] = sorterpstruct(ERP);                
+                [ERP, serror] = sorterpstruct(ERP);                
                 if serror
                         checking = 0; % error at ordering
                 else

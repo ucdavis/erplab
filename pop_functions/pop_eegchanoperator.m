@@ -330,7 +330,7 @@ switch shist
                 com = '';
 end
 if modeoption==1 && issaveas
-        [ALLEEG EEG CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
+        [ALLEEG, EEG, CURRENTSET] = pop_newset( ALLEEG, EEG, CURRENTSET);
 end
 if issaveas==1
         eeglab  redraw % only when using GUI

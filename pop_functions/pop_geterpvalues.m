@@ -111,10 +111,10 @@ if nargin==1  % GUI
         if isstruct(ALLERP)
                 if ~iserpstruct(ALLERP(1));
                         ALLERP = [];
-                        nbinx = 1;
+                        nbinx  = 1;
                         nchanx = 1;
                 else
-                        nbinx = ALLERP(1).nbin;
+                        nbinx  = ALLERP(1).nbin;
                         nchanx = ALLERP(1).nchan;
                 end
         else
@@ -202,7 +202,7 @@ if nargin==1  % GUI
                 s2ws = 'off';
         end
         if viewmea
-                vmstr = 'on'; % send to workspace
+                vmstr = 'on'; % open viewer
         else
                 vmstr = 'off';
         end
@@ -332,13 +332,19 @@ measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed late
 erpsetArray  = p.Results.Erpsets;
 cond1 = iserpstruct(ALLERP);
 cond2 = isnumeric(erpsetArray);
-
 if isempty(latency)
         latency = 0;
 end
-if cond1 && cond2 % either from GUI or script, when ALLERP exist and erpset indices were specified
+if cond1 && cond2 % either from GUI or script, when ALLERP exist and erpset indices were specified        
         if isempty(erpsetArray)
                 erpsetArray =1:length(ALLERP);
+        elseif erpsetArray==0
+                try
+                        erpsetArray = evalin('base', 'CURRENTERP'); % current erp index
+                catch
+                        erpsetArray = length(ALLERP);
+                end
+                
         end
         nfile     = length(erpsetArray);
         optioni   = 0; % from erpset menu or ALLERP struct
@@ -351,6 +357,7 @@ if cond1 && cond2 % either from GUI or script, when ALLERP exist and erpset indi
         end
 else
         filelist = '';
+        optioni  = 1; % from file
         if iscell(ALLERP) % from the GUI, when ALLERP exist and user picks a list up as well
                 filelist = ALLERP{2};
                 ALLERP   = ALLERP{1};
@@ -370,16 +377,21 @@ else
                 inputfname  = cellstr(char(inputfnamex{:}));
                 nfile       = length(inputfname);
                 fclose(fid_list);
-                optioni     = 1; % from file
         elseif ~isempty(filelist) && iscell(filelist)
                 inputfname = filelist;
-                nfile      = length(inputfname);
-                optioni    = 1; % from file
+                nfile      = length(inputfname);                
         else
                 error('ERPLAB says: error at pop_geterpvalues(). Unrecognizable input ')
         end
         if isempty(erpsetArray)
                 erpsetArray =1:nfile;
+        elseif erpsetArray==0
+                try
+                        erpsetArray = evalin('base', 'CURRENTERP'); % current erp index
+                catch
+                        erpsetArray = nfile;
+                end
+                
         end
 end
 
@@ -641,7 +653,7 @@ for k=1:nfile
                 break
         end
         if k==1
-                n1bin  = ERP.nbin;
+                n1bin   = ERP.nbin;
                 n1chan  = ERP.nchan;
                 n1bdesc = ERP.bindescr;
                 
@@ -651,8 +663,7 @@ for k=1:nfile
                 if isempty(chanArray)
                         chanArray = 1:n1chan;
                 end
-                Amp   = zeros(length(binArray), length(chanArray), nfile);
-                
+                Amp = zeros(length(binArray), length(chanArray), nfile);                
         else
                 if ERP.nbin~=n1bin
                         serror = 2;
@@ -662,6 +673,14 @@ for k=1:nfile
                         serror = 3;
                         break
                 end
+        end        
+        if isfield(ERP, 'datatype')
+                datatype = ERP.datatype;
+        else
+                datatype = 'ERP';
+        end
+        if ~strcmpi(datatype, 'ERP') && ismember(moption, {'areazt','areazp','areazn', 'nintegz'}  )
+                error('This type of measurement (automatic area/integration) is not allowed for Power Spectrum data ');                
         end
         
         %
@@ -816,7 +835,7 @@ if viewmea==1
                         else
                                 comme = '. Integral';
                         end
-                case {'areazt','areazp','areazn', 'nintegz'}
+                case {'areazt','areazp','areazn', 'nintegz'}                        
                         moptionstr = measurearray{7};
                         if strcmpi(moption, 'areazt')
                                 comme = ', total';

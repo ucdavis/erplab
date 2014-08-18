@@ -41,8 +41,7 @@
 % 03-11-02 remove size option and added command option -ad 
 
 function axcopy_modified(fig, command)
-
-if (exist('fig') == 1) & strcmp(fig,'noticks')
+if (exist('fig') == 1) && strcmp(fig,'noticks')
    noticks = 1;
    if nargin> 1
      shift
@@ -50,23 +49,22 @@ if (exist('fig') == 1) & strcmp(fig,'noticks')
      fig = [];
    end
 end
-if ~(exist('fig') ==1) | isempty(fig) | fig == 0 
+if ~(exist('fig') ==1) || isempty(fig) || fig == 0 
    fig = gcf;
 end
-
 if ~strcmpi(get(fig, 'type'), 'axes')
     hndl= findobj('parent',fig,'type','axes');
 else
-    hndl=fig;
+    hndl = fig;
 end;
-offidx=[];
+offidx = [];
 if exist('command') ~= 1
     comstr = 'copyaxis_modified';
 else
    command_dbl = double(command);
    comstr = double(['copyaxis_modified(''' char(command_dbl) ''')']); 
 end;
-for a=1:length(hndl)                    % make all axes visible
+for a=1:length(hndl)             % make all axes visible
     allobjs = findobj('parent',hndl(a));
     for index = 1:length(allobjs)
         if isempty(get(allobjs(index), 'ButtonDownFcn'))

@@ -49,6 +49,18 @@ function ERP = lindetrenderp( ERP, interv)
 if nargin<1
         help lindetrenderp
 end
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else % FFT
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+    srate = ERP.srate;
+else
+    kktime = 1;
+    srate = ERP.pnts/ERP.xmax;
+end
 
 nbin = ERP.nbin;
 pnts   = ERP.pnts;
@@ -62,12 +74,11 @@ elseif strcmpi(interv,'post')
 elseif strcmpi(interv,'all')
         bb = pnts;  % full epoch
         aa = 1;
-else
-        
-        toffsa    = abs(round(ERP.xmin*ERP.srate)) + 1;
+else        
+        toffsa    = abs(round(ERP.xmin*srate)) + 1;
         inte2num  = str2double(interv); % interv in ms
-        aa = round(inte2num(1)*ERP.srate/1000) + toffsa   ;   % ms to samples
-        bb = round(inte2num(2)*ERP.srate/1000) + toffsa   ;   % ms to samples
+        aa = round(inte2num(1)*srate/kktime) + toffsa   ;   % ms to samples
+        bb = round(inte2num(2)*srate/kktime) + toffsa   ;   % ms to samples
         
         if (bb-aa<5 && bb-aa>pnts) || aa<1 || bb>pnts
                 fprintf('lindetrenderp error: unappropriated time interval: %s\n', interv);
@@ -87,7 +98,7 @@ else
         for i = 1:nbin
                 datadet   = detrend(ERP.bindata(:,aa:bb,i)', 'linear')';    % data detrended by segments
                 difdata   = ERP.bindata(:,aa:bb,i) - datadet;               % recovers straight lines
-                recutrend = interp1(aa:bb,difdata',1:pnts,'pchip');      % extrapolates from interval-based trending for all channel
-                ERP.bindata(:,:,i) = ERP.bindata(:,:,i)-recutrend';            % detrends full epochs
+                recutrend = interp1(aa:bb,difdata',1:pnts,'pchip');         % extrapolates from interval-based trending for all channel
+                ERP.bindata(:,:,i) = ERP.bindata(:,:,i)-recutrend';         % detrends full epochs
         end
 end

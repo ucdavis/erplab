@@ -1,5 +1,5 @@
 % PURPOSE: subroutine for pop_continuousartdet.m
-%          Rejects commonly recorded artifactual potentials (c.r.a.p.)
+%          Identifies windows containing commonly recorded artifactual potentials (c.r.a.p.) for rejection
 %
 % FORMAT
 %
