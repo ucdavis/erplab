@@ -56,15 +56,15 @@ for i=1:nepoch
       latcell = EEG.epoch(i).eventlatency;
       if iscell(latcell)
             latcell  =  cell2mat(latcell);
-            [v indx] = min(abs(latcell));
+            [v, indx] = min(abs(latcell));
             EEG.epoch(i).eventlatency = num2cell(latcell - latcell(indx));
       else
-            [v indx] = min(abs(latcell));
+            [v, indx] = min(abs(latcell));
             EEG.epoch(i).eventlatency = latcell - latcell(indx);
       end
 end
 auxtimes  = EEG.times;
-[v indx]  = min(abs(auxtimes));
+[v, indx]  = min(abs(auxtimes));
 EEG.times = auxtimes - auxtimes(indx);
 EEG.xmin  = min(EEG.times)/1000;
 EEG.xmax  = max(EEG.times)/1000;

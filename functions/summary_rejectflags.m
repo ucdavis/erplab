@@ -50,23 +50,18 @@ for b=1:nbin
                         if iscell(binix)
                                 binix = cell2mat(binix);
                         end
-                        if ismember_bc2(b, binix)
-                                
-                                flagx = [EEG.epoch(i).eventflag];
-                                
+                        if ismember(b, binix)                                
+                                flagx = [EEG.epoch(i).eventflag];                                
                                 if iscell(flagx)
                                         flagx = cell2mat(flagx);
-                                end
-                                
+                                end                                
                                 oldflag(b,i)   = flagx;
                         else
                                 oldflag(b,i) =0;
                         end
-                elseif length(EEG.epoch(i).eventlatency) > 1
-                        
-                        indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0,1,'first'); % catch zero-time locked type,
-                        
-                        if ismember_bc2(b, EEG.epoch(i).eventbini{indxtimelock})
+                elseif length(EEG.epoch(i).eventlatency) > 1                        
+                        indxtimelock = find(cell2mat(EEG.epoch(i).eventlatency) == 0,1,'first'); % catch zero-time locked type                        
+                        if ismember(b, EEG.epoch(i).eventbini{indxtimelock})
                                 oldflag(b,i)   = EEG.epoch(i).eventflag{indxtimelock};
                         else
                                 oldflag(b,i) =0;

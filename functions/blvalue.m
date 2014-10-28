@@ -38,6 +38,16 @@ function blv = blvalue(ERP, chan, bin, blcorr)
 %
 % Baseline assessment
 %
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else 
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
 if ischar(blcorr)
       
       if ~strcmpi(blcorr,'no') && ~strcmpi(blcorr,'none')
@@ -57,11 +67,11 @@ if ischar(blcorr)
                   %
                   % Check & fix baseline range
                   %
-                  if blcnum(1)<ERP.xmin*1000
-                        blcnum(1) = ERP.xmin*1000; %ms
+                  if blcnum(1)<ERP.xmin*kktime
+                        blcnum(1) = ERP.xmin*kktime; %ms
                   end
-                  if blcnum(2)>ERP.xmax*1000
-                        blcnum(2) = ERP.xmax*1000; %ms
+                  if blcnum(2)>ERP.xmax*kktime
+                        blcnum(2) = ERP.xmax*kktime; %ms
                   end
                   
                   [xxx, cindex] = closest(ERP.times, blcnum); % 04/21/2011
@@ -76,11 +86,11 @@ else
       %
       % Check & fix baseline range
       %
-      if blcorr(1)<ERP.xmin*1000
-            blcorr(1) = ERP.xmin*1000; %ms
+      if blcorr(1)<ERP.xmin*kktime
+            blcorr(1) = ERP.xmin*kktime; %ms
       end
-      if blcorr(2)>ERP.xmax*1000
-            blcorr(2) = ERP.xmax*1000; %ms
+      if blcorr(2)>ERP.xmax*kktime
+            blcorr(2) = ERP.xmax*kktime; %ms
       end
       [xxx, cindex] = closest(ERP.times, blcorr); % 04/21/2011
       aa = cindex(1); % ms to sample pos

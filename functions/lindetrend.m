@@ -81,6 +81,17 @@ elseif iserpstruct(ERPLAB)
 else
         error('ERPLAB says: error at lindetrend(). Invalid inputs')
 end
+if isfield(ERPLAB, 'datatype')
+    datatype = ERPLAB.datatype;
+else % FFT
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
+
 if strcmpi(interv,'pre')
         bb = find(ERPLAB.times==0);    % zero-time locked
         aa =1;
@@ -99,8 +110,8 @@ else
                 inte2num  = interv;
         end
         
-        aa = round(inte2num(1)*ERPLAB.srate/1000) + toffsa   ;   % ms to samples
-        bb = round(inte2num(2)*ERPLAB.srate/1000) + toffsa   ;   % ms to samples
+        aa = round(inte2num(1)*ERPLAB.srate/kktime) + toffsa   ;   % ms to samples
+        bb = round(inte2num(2)*ERPLAB.srate/kktime) + toffsa   ;   % ms to samples
         
         if (bb-aa<5 && bb-aa>pnts) || aa<1 || bb>pnts
                 msgboxText = ['Unappropriated time interval: [%g  %g]\n'...

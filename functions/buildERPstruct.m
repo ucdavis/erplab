@@ -53,21 +53,22 @@ if ~isempty(EEG.epoch) % epoched
         ERP.xmax         = EEG.xmax;
         ERP.times        = EEG.times;
         ERP.bindata      = zeros(EEG.nbchan, EEG.pnts, nbin); % data field
-        ERP.binerror     = []; % error field
+        ERP.binerror     = [];                                % error field
+        ERP.datatype     = 'ERP';
         ERP.chanlocs     = EEG.chanlocs;
         ERP.ref          = EEG.ref;
         ERP.bindescr     = {EEG.EVENTLIST.bdf(1:nbin).description};
         ERP.ntrials.accepted  = zeros(1,nbin);  % num of accepted trial per bin for averaging
         ERP.ntrials.rejected  = zeros(1,nbin);  % num of rejected trial per bin for averaging
         ERP.ntrials.invalid   = zeros(1,nbin);  % num of invalid trial per bin for averaging
-        ERP.pexcluded    = []; % proportion of excluded trials (total)
+        ERP.pexcluded    = [];                  % proportion of excluded trials (total)
         ERP.history      = EEG.history;
         ERP.saved        = 'no';
-        ERP.isfilt       = 0;   % 1= avg was filtered or smoothed
+        ERP.isfilt       = 0;                   % 1= avg was filtered or smoothed
         ERP.EVENTLIST    = EEG.EVENTLIST;
         ERP.version      = geterplabversion;
         ERP.splinefile   = EEG.splinefile;
-        [ERP serror]     = sorterpstruct(ERP);
+        [ERP, serror]    = sorterpstruct(ERP);
 else  % continuous
         ERP.erpname      = [];
         ERP.filename     = [];
@@ -83,6 +84,7 @@ else  % continuous
         ERP.times        = [];
         ERP.bindata      = [];
         ERP.binerror     = []; % error field
+        ERP.datatype     = 'ERP';
         ERP.chanlocs     = [];
         ERP.ref          = [];
         ERP.bindescr     = [];
@@ -96,6 +98,6 @@ else  % continuous
         ERP.EVENTLIST    = [];
         ERP.version      = geterplabversion;
         ERP.splinefile   = '';
-        [ERP serror]     = sorterpstruct(ERP);
+        [ERP, serror]    = sorterpstruct(ERP);
 end
 

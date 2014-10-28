@@ -129,10 +129,6 @@ else
         set(handles.pushbutton_tal_EL, 'Enable','on')
 end
 
-
-
-
-
 %--------------------------------------------------------------------------
 function edit_load_EL_CreateFcn(hObject, eventdata, handles)
 

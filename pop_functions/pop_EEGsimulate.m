@@ -295,7 +295,7 @@ end
 % Insert evoke activity
 %
 % type2insert = 502;
-fs          = EEG.srate;                                 %sample rate in Hz
+fs  = EEG.srate;                                 %sample rate in Hz
 
 for i=1:length(chanArray2)
         currchan = chanArray2(i);

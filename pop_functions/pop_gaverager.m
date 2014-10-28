@@ -292,7 +292,7 @@ end
 % subroutine
 %
 ERPaux = ERP;
-[ERP serror msgboxText ] = gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn);
+[ERP, serror, msgboxText ] = gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn);
 
 if serror>0
         title = 'ERPLAB: gaverager() Error';

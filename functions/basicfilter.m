@@ -167,7 +167,8 @@ if ~isempty(boundary) && isempty(EEG.epoch)
               indxbound = [];% oct-14-2013
       else
               if ischar(boundary) && iscell(codebound)
-                      indxbound  = strmatch(boundary, codebound, 'exact');
+                      %%%indxbound  = strmatch(boundary, codebound,'exact'); % obsolete                    
+                      indxbound   = find(strcmp(codebound, boundary));                      
               elseif ~ischar(boundary) && ~iscell(codebound)
                       indxbound  = find(codebound==boundary);
               elseif ischar(boundary) && ~iscell(codebound)
@@ -184,17 +185,19 @@ if ~isempty(boundary) && isempty(EEG.epoch)
                               indxbound = [];
                       end
               elseif ~ischar(boundary) && iscell(codebound)
-                      indxbound  = strmatch(num2str(boundary), codebound, 'exact');
+                      %%%indxbound  = strmatch(num2str(boundary), codebound, 'exact'); % obsolete
+                      indxbound   = find(strcmp(codebound, cellstr(num2str(boundary'))'));
               end
       end
-      if ~isempty(indxbound)            
+      if ~isempty(indxbound)   
+            pntrange  = [];% April 2014
             timerange = [ EEG.xmin*1000 EEG.xmax*1000 ];            
             if timerange(1)/1000~=EEG.xmin || timerange(2)/1000~=EEG.xmax
                   posi = round( (timerange(1)/1000-EEG.xmin)*EEG.srate )+1;
                   posf = min(round( (timerange(2)/1000-EEG.xmin)*EEG.srate )+1, EEG.pnts );
                   pntrange = posi:posf;
             end
-            if exist('pntrange')
+            if ~isempty(pntrange) % April 2014
                   latebound = [ EEG.event(indxbound).latency ] - 0.5 - pntrange(1) + 1;
                   latebound(find(latebound>=pntrange(end) - pntrange(1))) = [];
                   latebound(find(latebound<1)) = [];
@@ -202,7 +205,8 @@ if ~isempty(boundary) && isempty(EEG.epoch)
             else
                   latebound = [0 [ EEG.event(indxbound).latency ] - 0.5 EEG.pnts ];
             end
-            latebound = round(latebound);
+            latebound = round(latebound);            
+            latebound = [0 latebound(latebound>2)]; % April 2014            
       else
             latebound = [0 EEG.pnts];
             fprintf('WARNING: boundary events were not found.\n');

@@ -3,22 +3,12 @@ if nargin<2
         nline2end = 140; % max line length
         nd = nline2end;        % number of dashed lines
 end
-% try
-%         xcom = erpcom;
-% catch
-%         xcom = com;
-% end
-% if exist('erpcom', 'var')
-%         xcom = erpcom;
-% else
-%         if exist('com', 'var')
-%                 xcom = com;
-%         else
-%                 return
-%         end
-% end
 fprintf([repmat('-', 1,nd) '\n']);
-cprintf([0.1333    0.5451    0.1333], '%%Equivalent command:\n');
+try
+        cprintf([0.1333    0.5451    0.1333], '%%Equivalent command:\n');
+catch
+        fprintf('%%Equivalent command:\n');
+end
 if length(xcom)<nline2end
         fprintf('%s\n', xcom);
 else

@@ -54,12 +54,24 @@ try
         ERP   = varargin{1};
         nbin  = ERP.nbin;
         nchan = ERP.nchan;
+        if isfield(ERP, 'datatype')
+                datatype = ERP.datatype;
+        else
+                datatype = 'ERP';
+        end
 catch
         ERP   = [];
         nbin  = 1;
         nchan = 1;
+        datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+        kktime = 1000;
+else
+        kktime = 1;
 end
 
+handles.kktime     = kktime;
 handles.output     = [];
 handles.ispdf      = 0;
 handles.scalp      = 0;
@@ -91,6 +103,7 @@ handles = painterplab(handles);
 % Set font size
 %
 handles = setfonterplab(handles);
+handles.datatype = datatype;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -114,17 +127,26 @@ function varargout = ploterpGUI_OutputFcn(hObject, eventdata, handles)
 % try
 plotset = evalin('base', 'plotset');
 ispdf = handles.ispdf;
+datatype = handles.datatype;
 if ispdf
         %plotset = evalin('base', 'plotset');
-        plotset.ptime = 'pdf';
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime = 'pdf';
+        else
+                plotset.pfrequ = 'pdf';
+        end
         handles.output = plotset;
 end
 scalp = handles.scalp;
 if scalp
         %plotset = evalin('base', 'plotset');
-        plotset.ptime = 'scalp';
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime  = 'scalp';
+        else
+                plotset.pfrequ  = 'scalp';
+        end
         handles.output = plotset;
-        varargout{1} = handles.output;
+        varargout{1}   = handles.output;
         ERP = handles.ERP;
         varargout{2} = ERP;
         
@@ -134,12 +156,12 @@ if scalp
         ERP = pop_scalplot(ERP);
         return
 end
-ismini = handles.ismini;
-if ismini
-        %plotset = evalin('base', 'plotset');
-        plotset.ptime = 'mini';
-        handles.output = plotset;
-end
+% ismini = handles.ismini;
+% if ismini
+%         %plotset = evalin('base', 'plotset');
+%         plotset.ptime = 'mini';
+%         handles.output = plotset;
+% end
 varargout{1} = handles.output;
 varargout{2} = handles.ERP;
 % The figure can be deleted now
@@ -165,7 +187,6 @@ end
 
 %--------------------------------------------------------------------------
 function edit_bins_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -187,7 +208,6 @@ set(handles.popupmenu_columns, 'Value', pbox(2))
 
 %--------------------------------------------------------------------------
 function edit_chans_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -197,7 +217,6 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function popupmenu1_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -217,7 +236,6 @@ function listbox2_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function listbox2_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -264,7 +282,8 @@ if get(hObject, 'Value')
         set(handles.edit_custom, 'BackgroundColor', BackERPLABcolor)
         set(handles.edit_custom, 'Enable', 'inactive')
         ERP = handles.ERP;
-        set(handles.edit_custom, 'String', sprintf('%.1f  %g',ceil(ERP.xmin*1000), 0))
+        kktime = handles.kktime;
+        set(handles.edit_custom, 'String', sprintf('%.1f  %g',ceil(ERP.xmin*kktime), 0))
 else
         set(hObject, 'Value', 1)
 end
@@ -280,7 +299,8 @@ if get(hObject, 'Value')
         set(handles.edit_custom, 'BackgroundColor', BackERPLABcolor)
         set(handles.edit_custom, 'Enable', 'inactive')
         ERP = handles.ERP;
-        set(handles.edit_custom, 'String', sprintf('%g  %.1f', 0, floor(ERP.xmax*1000)))
+        kktime = handles.kktime;
+        set(handles.edit_custom, 'String', sprintf('%g  %.1f', 0, floor(ERP.xmax*kktime)))
 else
         set(hObject, 'Value', 1)
 end
@@ -296,7 +316,8 @@ if get(hObject, 'Value')
         set(handles.edit_custom, 'BackgroundColor', BackERPLABcolor)
         set(handles.edit_custom, 'Enable', 'inactive')
         ERP = handles.ERP;
-        set(handles.edit_custom, 'String', sprintf('%.1f  %.1f',ceil(ERP.xmin*1000), floor(ERP.xmax*1000)))
+        kktime = handles.kktime;
+        set(handles.edit_custom, 'String', sprintf('%.1f  %.1f',ceil(ERP.xmin*kktime), floor(ERP.xmax*kktime)))
 else
         set(hObject, 'Value', 1)
 end
@@ -364,7 +385,6 @@ function popupmenu_font_channel_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function popupmenu_font_channel_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -416,6 +436,7 @@ web http://erpinfo.org/erplab/erplab-documentation/manual_4/Plot_ERP_Waveforms.h
 function pushbutton_plot_Callback(hObject, eventdata, handles)
 binArray   = str2num(get(handles.edit_bins, 'String'));
 chanArray  = str2num(get(handles.edit_chans, 'String'));
+datatype   = handles.datatype;
 
 [chk, msgboxText] = chckbinandchan(handles.ERP, binArray, chanArray);
 if chk>0
@@ -425,14 +446,22 @@ if chk>0
 end
 
 plotset = getplotset(hObject, eventdata, handles);
-if isempty(plotset.ptime)
-        return
+
+if strcmpi(datatype, 'ERP')        
+        if isempty(plotset.ptime)
+                return
+        end
 else
-        handles.output = plotset;
-        % Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.gui_chassis);
+        if isempty(plotset.pfrequ) %FFT
+                return
+        end
 end
+
+handles.output = plotset;
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.gui_chassis);
+
 
 %--------------------------------------------------------------------------
 function edit_yscale_Callback(hObject, eventdata, handles)
@@ -466,6 +495,7 @@ end
 function radiobutton_yauto_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
         ERP       = handles.ERP;
+        kktime = handles.kktime;
         chanArray = str2num(get(handles.edit_chans, 'String'));
         binArray  = str2num(get(handles.edit_bins, 'String'));
         fs        = ERP.srate;
@@ -487,13 +517,13 @@ if get(hObject,'Value')
                 drawnow
                 return
         end
-        if xxlim(1)<round(ERP.xmin*1000)
-                aux_xxlim(1) = round(ERP.xmin*1000);
+        if xxlim(1)<round(ERP.xmin*kktime)
+                aux_xxlim(1) = round(ERP.xmin*kktime);
         else
                 aux_xxlim(1) = xxlim(1);
         end
-        if xxlim(2)>round(ERP.xmax*1000)
-                aux_xxlim(2) = round(ERP.xmax*1000);
+        if xxlim(2)>round(ERP.xmax*kktime)
+                aux_xxlim(2) = round(ERP.xmax*kktime);
         else
                 aux_xxlim(2) = xxlim(2);
         end
@@ -645,60 +675,122 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 %--------------------------------------------------------------------------
+function popupmenu_ibckground_Callback(hObject, eventdata, handles)
+
+%--------------------------------------------------------------------------
+function popupmenu_ibckground_CreateFcn(hObject, eventdata, handles)
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
 function pushbutton_reset_Callback(hObject, eventdata, handles)
 plotset = evalin('base', 'plotset');
-plotset.ptime = [];
+plotset.ptime  = [];
+plotset.pfrequ = [];
 assignin('base','plotset', plotset);
 setall(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function pushbutton_scalp_Callback(hObject, eventdata, handles)
-plotset = getplotset(hObject, eventdata, handles);
-if isempty(plotset.ptime)
-        return
+plotset  = getplotset(hObject, eventdata, handles);
+datatype = handles.datatype;
+
+if strcmpi(datatype, 'ERP')       
+        if isempty(plotset.ptime)
+                return
+        else
+                plotset.pscalp.binArray     = plotset.ptime.binArray;
+                plotset.pscalp.latencyArray = 0;
+                plotset.pscalp.exchanArray  = [];
+                plotset.pscalp.measurement  = 'insta';
+                plotset.pscalp.baseline = 'pre';
+                plotset.pscalp.cscale   = 'maxmin';
+                
+                %plotset.pscalp.colorbar = 1;
+                plotset.pscalp.ispdf    = 0;
+                
+                %plotset.pscalp.binleg   = 1;
+                %plotset.pscalp.showelec = 1;
+                %plotset.pscalp.ismaxim  = 0;
+                plotset.pscalp.mtype   = '2D'; % map type  0=2D; 1=3D
+                plotset.pscalp.mapview = 0; % numeric
+                
+                %       plegend       = plotset.pscalp.plegend; % numeric
+                plotset.pscalp.plegend.binnum     = 1;
+                plotset.pscalp.plegend.bindesc    = 0;
+                plotset.pscalp.plegend.type       = 1;
+                plotset.pscalp.plegend.latency    = 1;
+                plotset.pscalp.plegend.electrodes = 1;
+                plotset.pscalp.plegend.colorbar   = 1;
+                plotset.pscalp.plegend.maximize   = 0;
+                plotset.pscalp.plegend.colormap   = 1;
+                
+                assignin('base','plotset', plotset);
+                handles.scalp = 1;
+                %Update handles structure
+                guidata(hObject, handles);
+                uiresume(handles.gui_chassis);
+        end
 else
-        plotset.pscalp.binArray = plotset.ptime.binArray;
-        plotset.pscalp.latencyArray = 0;
-        plotset.pscalp.exchanArray  = [];
-        plotset.pscalp.measurement  = 'insta';
-        plotset.pscalp.baseline = 'pre';
-        plotset.pscalp.cscale   = 'maxmin';
-        
-        %plotset.pscalp.colorbar = 1;
-        plotset.pscalp.ispdf    = 0;
-        
-        %plotset.pscalp.binleg   = 1;
-        %plotset.pscalp.showelec = 1;
-        %plotset.pscalp.ismaxim  = 0;
-        plotset.pscalp.mtype   = '2D'; % map type  0=2D; 1=3D
-        plotset.pscalp.mapview = 0; % numeric
-        
-        %       plegend       = plotset.pscalp.plegend; % numeric
-        plotset.pscalp.plegend.binnum     = 1;
-        plotset.pscalp.plegend.bindesc    = 0;
-        plotset.pscalp.plegend.type       = 1;
-        plotset.pscalp.plegend.latency    = 1;
-        plotset.pscalp.plegend.electrodes = 1;
-        plotset.pscalp.plegend.colorbar   = 1;
-        plotset.pscalp.plegend.maximize   = 0;
-        plotset.pscalp.plegend.colormap   = 1;
-        
-        assignin('base','plotset', plotset);
-        handles.scalp = 1;
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.gui_chassis);
+        if isempty(plotset.pfrequ)
+                return
+        else
+                plotset.pscalp.binArray     = plotset.pfrequ.binArray;
+                plotset.pscalp.latencyArray = 10;
+                plotset.pscalp.exchanArray  = [];
+                plotset.pscalp.measurement  = 'insta';
+                plotset.pscalp.baseline = 'none';
+                plotset.pscalp.cscale   = 'maxmin';
+                
+                %plotset.pscalp.colorbar = 1;
+                plotset.pscalp.ispdf    = 0;
+                
+                %plotset.pscalp.binleg   = 1;
+                %plotset.pscalp.showelec = 1;
+                %plotset.pscalp.ismaxim  = 0;
+                plotset.pscalp.mtype   = '2D'; % map type  0=2D; 1=3D
+                plotset.pscalp.mapview = 0; % numeric
+                
+                %       plegend       = plotset.pscalp.plegend; % numeric
+                plotset.pscalp.plegend.binnum     = 1;
+                plotset.pscalp.plegend.bindesc    = 1;
+                plotset.pscalp.plegend.type       = 1;
+                plotset.pscalp.plegend.latency    = 1;
+                plotset.pscalp.plegend.electrodes = 1;
+                plotset.pscalp.plegend.colorbar   = 1;
+                plotset.pscalp.plegend.maximize   = 0;
+                plotset.pscalp.plegend.colormap   = 1;
+                
+                assignin('base','plotset', plotset);
+                handles.scalp = 1;
+                %Update handles structure
+                guidata(hObject, handles);
+                uiresume(handles.gui_chassis);
+        end
 end
 
 %--------------------------------------------------------------------------
 function plotset = getplotset(hObject, eventdata, handles)
+ERP      = handles.ERP;
+datatype = handles.datatype;
 
-ERP        = handles.ERP;
+if strcmpi(datatype, 'ERP')
+        kktime = 1000;
+else
+        kktime = 1;
+end
+
+kktime     = handles.kktime;
 plotset    = evalin('base', 'plotset');
 binArray   = str2num(get(handles.edit_bins, 'String'));
 chanArray  = str2num(get(handles.edit_chans, 'String'));
 xautoticks = get(handles.checkbox_autotimeticks, 'Value');
 yautoticks = get(handles.checkbox_autoyticks, 'Value');
+ibckground = get(handles.popupmenu_ibckground, 'Value')-1;
 
 %
 % X scale
@@ -715,22 +807,37 @@ linewidth = handles.linewidth;
 pstyle    = get(handles.popupmenu_plotstyle, 'Value');
 
 if size(timew,1)~=1  || size(timew,2)~=2
-        msgboxText =  'Wrong time range to plot!';
+        if strcmpi(datatype, 'ERP')
+                msgboxText =  'Wrong time range to plot!';
+                plotset.ptime = [];
+        else
+                msgboxText =  'Wrong frequency range to plot!';
+                plotset.pfrequ = [];
+        end
         title      = 'ERPLAB: ploterpGUI inputs';
-        errorfound(msgboxText, title);
-        plotset.ptime = [];
+        errorfound(msgboxText, title);        
         return
 end
 if timew(1)==timew(2)
-        msgboxText =  'Wrong time range to plot!';
+        if strcmpi(datatype, 'ERP')
+                msgboxText =  'Wrong time range to plot!';
+                plotset.ptime = [];
+        else
+                msgboxText =  'Wrong frequency range to plot!';
+                plotset.pfrequ = [];
+        end
         title = 'ERPLAB: ploterpGUI inputs';
-        errorfound(msgboxText, title);
-        plotset.ptime = [];
+        errorfound(msgboxText, title);        
         return
 end
 if timew(1)>timew(2)
-        msgboxText = ['Inverted time range to plot!\n'...
-                'Values will be adjusted.'];
+        if strcmpi(datatype, 'ERP')
+                msgboxText = ['Inverted time range to plot!\n'...
+                        'Values will be adjusted.'];
+        else
+                msgboxText = ['Inverted frequency range to plot!\n'...
+                        'Values will be adjusted.'];
+        end
         title = 'ERPLAB: ploterpGUI inputs';
         errorfound(sprintf(msgboxText), title);
         timew  = circshift(timew',1)';
@@ -754,98 +861,106 @@ if ~isempty(timeticks)
                         msgboxText = 'Tick values must be monotonically increasing!\n';
                         title = 'ERPLAB: ploterpGUI inputs';
                         errorfound(sprintf(msgboxText), title);
-                        plotset.ptime = [];
+                        if strcmpi(datatype, 'ERP')
+                                plotset.ptime = [];
+                        else
+                                plotset.pfrequ = [];
+                        end
                         return
                 end
         end
 end
-if get(handles.radiobutton_BLC_no, 'Value')
-        blcorr = 'no';
-end
-if get(handles.radiobutton_BLC_pre, 'Value')
-        blcorr = 'pre';
-end
-if get(handles.radiobutton_BLC_post, 'Value')
-        blcorr = 'post';
-end
-if get(handles.radiobutton_BLC_whole, 'Value')
-        blcorr = 'all';
-end
-if get(handles.radiobutton_BLC_custom, 'Value')
-        blcorr = get(handles.edit_custom, 'String');
-        cmpbasel = str2num(blcorr);
-        if isempty(cmpbasel)
-                if strcmpi(blcorr,'none')
-                        blcorr = 'no';
-                end
-                if ~ismember_bc2(lower(blcorr),{'no' 'pre' 'post' 'all'})
-                        set(handles.edit_custom, 'String','none');
-                        set(handles.edit_custom, 'Enable','off');
-                        msgboxText =  'Wrong baseline range!';
-                        title = 'ERPLAB: ploterpGUI inputs';
-                        errorfound(msgboxText, title);
-                        set(handles.radiobutton_BLC_custom, 'Value', 0);
-                        set(handles.radiobutton_BLC_pre, 'Value', 1);
-                        plotset.ptime = [];
-                        return
-                end
-        else
-                if size(cmpbasel,1)~=1  || size(cmpbasel,2)~=2
-                        set(handles.edit_custom, 'String','none');
-                        set(handles.edit_custom, 'Enable','off');
-                        msgboxText =  'Wrong baseline range!';
-                        title = 'ERPLAB: ploterpGUI inputs';
-                        errorfound(msgboxText, title);
-                        set(handles.radiobutton_BLC_custom, 'Value', 0);
-                        set(handles.radiobutton_BLC_no, 'Value', 1);
-                        %plotset = evalin('base', 'plotset');
-                        plotset.ptime = [];
-                        return
-                end
-                if cmpbasel(1)>cmpbasel(2)
-                        set(handles.edit_custom, 'String','none');
-                        set(handles.edit_custom, 'Enable','off');
-                        msgboxText = ['Inverted baseline range!.\n'...
-                                'Values will be adjusted.'];
-                        title = 'ERPLAB: ploterpGUI inputs';
-                        errorfound(sprintf(msgboxText), title);
-                        cmpbasel  = circshift(cmpbasel',1)'; %
-                end
-                if abs((cmpbasel(2)/1000-cmpbasel(1)/1000)*ERP.srate)<1
-                        set(handles.edit_custom, 'String','none');
-                        set(handles.edit_custom, 'Enable','off');
-                        title = 'ERPLAB: ploterpGUI inputs';
-                        question = ['You are specifying 1 point per baseline correction!\n'...
-                                'Do you want to continue anyway?'];
-                        button = askquest(sprintf(question), title);
-                        
-                        if ~strcmpi(button,'yes')
-                                disp('User selected Cancel')
+if strcmpi(datatype, 'ERP')
+        if get(handles.radiobutton_BLC_no, 'Value')
+                blcorr = 'no';
+        end
+        if get(handles.radiobutton_BLC_pre, 'Value')
+                blcorr = 'pre';
+        end
+        if get(handles.radiobutton_BLC_post, 'Value')
+                blcorr = 'post';
+        end
+        if get(handles.radiobutton_BLC_whole, 'Value')
+                blcorr = 'all';
+        end
+        if get(handles.radiobutton_BLC_custom, 'Value')
+                blcorr = get(handles.edit_custom, 'String');
+                cmpbasel = str2num(blcorr);
+                if isempty(cmpbasel)
+                        if strcmpi(blcorr,'none')
+                                blcorr = 'no';
+                        end
+                        if ~ismember_bc2(lower(blcorr),{'no' 'pre' 'post' 'all'})
+                                set(handles.edit_custom, 'String','none');
+                                set(handles.edit_custom, 'Enable','off');
+                                msgboxText =  'Wrong baseline range!';
+                                title = 'ERPLAB: ploterpGUI inputs';
+                                errorfound(msgboxText, title);
+                                set(handles.radiobutton_BLC_custom, 'Value', 0);
+                                set(handles.radiobutton_BLC_pre, 'Value', 1);
+                                plotset.ptime = [];
+                                return
+                        end
+                else
+                        if size(cmpbasel,1)~=1  || size(cmpbasel,2)~=2
+                                set(handles.edit_custom, 'String','none');
+                                set(handles.edit_custom, 'Enable','off');
+                                msgboxText =  'Wrong baseline range!';
+                                title = 'ERPLAB: ploterpGUI inputs';
+                                errorfound(msgboxText, title);
+                                set(handles.radiobutton_BLC_custom, 'Value', 0);
+                                set(handles.radiobutton_BLC_no, 'Value', 1);
                                 %plotset = evalin('base', 'plotset');
                                 plotset.ptime = [];
                                 return
                         end
+                        if cmpbasel(1)>cmpbasel(2)
+                                set(handles.edit_custom, 'String','none');
+                                set(handles.edit_custom, 'Enable','off');
+                                msgboxText = ['Inverted baseline range!.\n'...
+                                        'Values will be adjusted.'];
+                                title = 'ERPLAB: ploterpGUI inputs';
+                                errorfound(sprintf(msgboxText), title);
+                                cmpbasel  = circshift(cmpbasel',1)'; %
+                        end
+                        if abs((cmpbasel(2)/kktime-cmpbasel(1)/kktime)*ERP.srate)<1
+                                set(handles.edit_custom, 'String','none');
+                                set(handles.edit_custom, 'Enable','off');
+                                title = 'ERPLAB: ploterpGUI inputs';
+                                question = ['You are specifying 1 point per baseline correction!\n'...
+                                        'Do you want to continue anyway?'];
+                                button = askquest(sprintf(question), title);
+                                
+                                if ~strcmpi(button,'yes')
+                                        disp('User selected Cancel')
+                                        %plotset = evalin('base', 'plotset');
+                                        plotset.ptime = [];
+                                        return
+                                end
+                        end
+                        if cmpbasel(1)<ERP.xmin*kktime
+                                set(handles.edit_custom, 'String','none');
+                                set(handles.edit_custom, 'Enable','off');
+                                msgboxText = ['Wrong lower baseline value!\n'...
+                                        'Value will be adjusted.'];
+                                title = 'ERPLAB: ploterpGUI inputs';
+                                errorfound(sprintf(msgboxText), title);
+                                cmpbasel(1)=ceil(ERP.xmin*kktime);
+                        end
+                        if cmpbasel(2)>ERP.xmax*kktime
+                                set(handles.edit_custom, 'String','none');
+                                set(handles.edit_custom, 'Enable','off');
+                                msgboxText = ['Wrong upper baseline value!\n'...
+                                        'Value will be adjusted.'];
+                                title = 'ERPLAB: ploterpGUI inputs';
+                                errorfound(sprintf(msgboxText), title);
+                                cmpbasel(2) = floor(ERP.xmax*kktime);
+                        end
+                        blcorr = num2str(cmpbasel);
                 end
-                if cmpbasel(1)<ERP.xmin*1000
-                        set(handles.edit_custom, 'String','none');
-                        set(handles.edit_custom, 'Enable','off');
-                        msgboxText = ['Wrong lower baseline value!\n'...
-                                'Value will be adjusted.'];
-                        title = 'ERPLAB: ploterpGUI inputs';
-                        errorfound(sprintf(msgboxText), title);
-                        cmpbasel(1)=ceil(ERP.xmin*1000);
-                end
-                if cmpbasel(2)>ERP.xmax*1000
-                        set(handles.edit_custom, 'String','none');
-                        set(handles.edit_custom, 'Enable','off');
-                        msgboxText = ['Wrong upper baseline value!\n'...
-                                'Value will be adjusted.'];
-                        title = 'ERPLAB: ploterpGUI inputs';
-                        errorfound(sprintf(msgboxText), title);
-                        cmpbasel(2) = floor(ERP.xmax*1000);
-                end
-                blcorr = num2str(cmpbasel);
         end
+else % FFT
+        blcorr = 'no';
 end
 
 %
@@ -859,20 +974,31 @@ else
         yticks = handles.yticks;
 end
 if size(yyscale,1)~=1 || size(yyscale,2)~=2
-        msgboxText =  'Wrong time range to plot!';
+        if strcmpi(datatype, 'ERP')
+                msgboxText =  'Wrong time range to plot!';
+                plotset.ptime = [];
+        else
+                msgboxText =  'Wrong frequency range to plot!';
+                plotset.pfrequ = [];
+        end
         title = 'ERPLAB: ploterpGUI inputs';
-        errorfound(msgboxText, title);
-        %plotset = evalin('base', 'plotset');
-        plotset.ptime = [];
+        errorfound(msgboxText, title);      
         return
 end
 if yyscale(1)==yyscale(2)
-        msgboxText =  ['Wrong Y range to plot!\n'...
-                'Y limits must be different, dude.'];
+        if strcmpi(datatype, 'ERP')
+                msgboxText =  ['Wrong Y range to plot!\n'...
+                        'Y limits must be different, dude.'];
+                plotset.ptime = [];
+        else
+                msgboxText =  ['Wrong Y range to plot!\n'...
+                        'Y limits must be different, dude.'];
+                plotset.pfrequ = [];
+        end
         title = 'ERPLAB: ploterpGUI inputs';
         errorfound(sprintf(msgboxText), title);
         %plotset = evalin('base', 'plotset');
-        plotset.ptime = [];
+        
         return
 end
 if yyscale(1)>yyscale(2)
@@ -880,8 +1006,7 @@ if yyscale(1)>yyscale(2)
                 'Values will be adjusted.'];
         title = 'ERPLAB: ploterpGUI inputs';
         errorfound(sprintf(msgboxText), title);
-        yyscale  = circshift(yyscale',1)'; %
-        
+        yyscale  = circshift(yyscale',1)'; %        
 end
 if ~isempty(yticks)
         if pstyle==4 % topo
@@ -899,10 +1024,15 @@ if ~isempty(yticks)
                 %                   end
         else
                 if ~issorted(yticks)   ||  isrepeated(yticks)
-                        msgboxText = 'Tick values must be monotonically increasing!\n';
+                        if strcmpi(datatype, 'ERP')
+                                msgboxText = 'Tick values must be monotonically increasing!\n';
+                                plotset.ptime = [];
+                        else
+                                msgboxText = 'Tick values must be monotonically increasing!\n';
+                                plotset.pfrequ = [];
+                        end
                         title = 'ERPLAB: ploterpGUI inputs';
-                        errorfound(sprintf(msgboxText), title);
-                        plotset.ptime = [];
+                        errorfound(sprintf(msgboxText), title);                        
                         return
                 end
         end
@@ -925,6 +1055,7 @@ if errorstd==1
                 errorstd = get(handles.popupmenu_std_factor, 'Value')-1;
         end
 end
+
 stdalpha       = (get(handles.popupmenu_transpa,'Value')-1)/10;
 pbox(1)        = get(handles.popupmenu_rows, 'Value');
 pbox(2)        = get(handles.popupmenu_columns, 'Value');
@@ -944,7 +1075,11 @@ if isMGFP && isempty(chanArray_MGFP)
                 'However, there is no specified channels for doing so...'];
         title = 'ERPLAB: ploterpGUI inputs';
         errorfound(sprintf(msgboxText), title);
-        plotset.ptime = [];
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime = [];
+        else
+                plotset.pfrequ = [];
+        end
         return
 end
 
@@ -998,7 +1133,11 @@ posfig  = [];
 %
 % Set read values in plotset
 %
-setplotset_time % call script
+if strcmpi(datatype, 'ERP')
+        setplotset_time % call script
+else
+        setplotset_frequ % call script
+end
 
 %--------------------------------------------------------------------------
 function setall(hObject, eventdata, handles)
@@ -1023,6 +1162,8 @@ catch %ME
         CURRENTERP = 0;
 end
 handles.ispdf = 0;
+datatype = handles.datatype;
+kktime   = handles.kktime;
 
 %
 % Name & version
@@ -1034,15 +1175,18 @@ set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   ERP Plotting GUI  -  
 try
         plotset = evalin('base', 'plotset');
 catch
-        plotset.ptime = [];
+        plotset.ptime  = [];
+        plotset.pfrequ = [];
         plotset.pscalp = [];
 end
 try
         if ERP.nchan<1
-                plotset.ptime = [];
+                plotset.ptime  = [];
+                plotset.pfrequ = [];
         end
 catch
-        plotset.ptime = [];
+        plotset.ptime  = [];
+        plotset.pfrequ = [];
 end
 
 BackERPLABcolor = geterplabcolor;
@@ -1052,103 +1196,221 @@ set(handles.checkbox_includenumberbin, 'Value', 1)
 % if ~ispc
 %         set(handles.pushbutton_pdf, 'ForegroundColor', [0 0 0])
 % end
-if ~isempty(plotset.ptime)
-        
-        %
-        % Get the plotset struct
-        %
-        getplotset_time
-        defs   = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
-        defcol = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };
-        
-        if isempty(linespeci)
-                colorline = [];
-                styleline = [];
-        else
-                colorline = regexp(linespeci,'\w*','match');
-                colorline = [colorline{:}];
-                styleline = regexp(linespeci,'\W*','match');
-                styleline = [styleline{:}];
-        end
-        if isempty(colorline)
-                colorline  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
-                d = repmat(defs',1, ERP.nbin*length(defcol));
-                styleline = reshape(d',1, numel(d));
-        else
-                defcol = unique_bc2(colorline);
-                if isempty(styleline)
+if strcmpi(datatype, 'ERP')
+        if ~isempty(plotset.ptime)
+                
+                %
+                % Get the plotset struct
+                %
+                getplotset_time
+                defs   = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
+                defcol = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w' };
+                
+                if isempty(linespeci)
+                        colorline = [];
+                        styleline = [];
+                else
+                        colorline = regexp(linespeci,'\w*','match');
+                        colorline = [colorline{:}];
+                        styleline = regexp(linespeci,'\W*','match');
+                        styleline = [styleline{:}];
+                end
+                if isempty(colorline)
+                        colorline  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
                         d = repmat(defs',1, ERP.nbin*length(defcol));
                         styleline = reshape(d',1, numel(d));
                 else
-                        for i=1:length(styleline)
-                                if isempty(styleline{i})
-                                        styleline{i} = '-';
+                        defcol = unique_bc2(colorline);
+                        if isempty(styleline)
+                                d = repmat(defs',1, ERP.nbin*length(defcol));
+                                styleline = reshape(d',1, numel(d));
+                        else
+                                for i=1:length(styleline)
+                                        if isempty(styleline{i})
+                                                styleline{i} = '-';
+                                        end
                                 end
                         end
                 end
+                if isMGFP==0
+                        chanArray_MGFP =[];
+                end
+                if isempty(axsize) %&& istopo==1
+                        axsize = [0.05 0.08];
+                end
+        else
+                %
+                % ticks for time
+                %
+                xtickarray = str2num(char(default_time_ticks(ERP)));
+                xxs1       = ceil(kktime*ERP.xmin);
+                xxs2       = floor(kktime*ERP.xmax);
+                
+                % Default values
+                binArray       = 1:ERP.nbin;
+                plotallbin     = 1;
+                chanArray      = 1:ERP.nchan;
+                plotallch      = 1;
+                chanArray_MGFP = [];
+                blcorr         = 'pre';  %by default
+                xxscale        = [xxs1 xxs2 xtickarray];
+                [ytarr, miny, maxy] = default_amp_ticks(ERP, binArray);
+                ytickarray        = str2num(char(ytarr));
+                yyscale        = [miny maxy ytickarray];
+                linewidth      = 1;
+                isiy           = 0;
+                fschan         = 10;
+                fslege         = 12;
+                fsaxtick       = 10;
+                %meap          = 1;
+                pstyle         = 3; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
+                errorstd       = 0; % pointer for std factor
+                stdalpha       = 0; % transparency for plotting standard error
+                pbox           = squareplot(chanArray, hObject, eventdata, handles);
+                %counterbinwin  = 1;
+                counterwin     = [1 1];
+                holdch         = 0; % to draw different channels for same bin in one figure
+                yauto          = 1;
+                xautoticks     = 1;
+                yautoticks     = 1;
+                binleg         = 1;
+                chanleg        = 1; % 1 means show chan labels
+                isMGFP         = 0;
+                ismaxim        = 1; % maximize figure
+                %istopo         = 0;
+                axsize         = [];
+                minorticks     = [0 0];
+                legepos        = 1; % legend position=bottom, by default
+                linespeci      = [];
+                posgui         = get(handles.gui_chassis,'Position');
+                posfig         = [];
+                posminigui     = [];
+                ibckground     = 0; % do not invert {default}
+
+                
+                defs       = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
+                defcol     = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w'};
+                colorline  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
+                d = repmat(defs',1, ERP.nbin*length(defcol));
+                styleline = reshape(d',1, numel(d));
+                %       set(handles.popupmenu_columns, 'String', num2str([1:256]'))
+                %       set(handles.popupmenu_rows, 'String', num2str([1:256]'))
+                set(handles.radiobutton_yauto, 'Value', 1)
         end
-        if isMGFP==0
-                chanArray_MGFP =[];
-        end
-        if isempty(axsize) %&& istopo==1
-                axsize = [0.05 0.08];
-        end
+        
+        %
+        % store default values at plotset
+        %
+        setplotset_time % call script
+        assignin('base','plotset', plotset);
+        
 else
-        %
-        % ticks for time
-        %
-        xtickarray = str2num(char(default_time_ticks(ERP)));
-        xxs1       = ceil(1000*ERP.xmin);
-        xxs2       = floor(1000*ERP.xmax);
+        if ~isempty(plotset.pfrequ)
+                
+                %
+                % Get the plotset struct
+                %
+                getplotset_frequ
+                defs   = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
+                defcol = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w'};
+                
+                if isempty(linespeci)
+                        colorline = [];
+                        styleline = [];
+                else
+                        colorline = regexp(linespeci,'\w*','match');
+                        colorline = [colorline{:}];
+                        styleline = regexp(linespeci,'\W*','match');
+                        styleline = [styleline{:}];
+                end
+                if isempty(colorline)
+                        colorline  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
+                        d = repmat(defs',1, ERP.nbin*length(defcol));
+                        styleline = reshape(d',1, numel(d));
+                else
+                        defcol = unique_bc2(colorline);
+                        if isempty(styleline)
+                                d = repmat(defs',1, ERP.nbin*length(defcol));
+                                styleline = reshape(d',1, numel(d));
+                        else
+                                for i=1:length(styleline)
+                                        if isempty(styleline{i})
+                                                styleline{i} = '-';
+                                        end
+                                end
+                        end
+                end
+                if isMGFP==0
+                        chanArray_MGFP =[];
+                end
+                if isempty(axsize) %&& istopo==1
+                        axsize = [0.05 0.08];
+                end
+        else
+                %
+                % ticks for time
+                %
+                xtickarray = str2num(char(default_time_ticks(ERP)));
+                xxs1       = ceil(kktime*ERP.xmin);
+                xxs2       = floor(kktime*ERP.xmax)/8;
+                
+                % Default values
+                binArray       = 1:ERP.nbin;
+                plotallbin     = 1;
+                chanArray      = 1:ERP.nchan;
+                plotallch      = 1;
+                chanArray_MGFP = [];
+                blcorr         = 'none';  %by default
+                xxscale        = [xxs1 xxs2 xtickarray];
+                %[ytarr, miny, maxy] = default_amp_ticks(ERP, binArray);
+                %[ytarr, miny, maxy] = default_amp_ticks(ERP, binArray);
+                %ytickarray        = str2num(char(ytarr));
+                yyscale        = [0 40 10 20 30 40];
+                linewidth      = 1;
+                isiy           = 0;
+                fschan         = 10;
+                fslege         = 12;
+                fsaxtick       = 10;
+                %meap          = 1;
+                pstyle         = 1; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
+                errorstd       = 0; % pointer for std factor
+                stdalpha       = 0; % transparency for plotting standard error
+                pbox           = squareplot(chanArray, hObject, eventdata, handles);
+                %counterbinwin  = 1;
+                counterwin     = [1 1];
+                holdch         = 0; % to draw different channels for same bin in one figure
+                yauto          = 1;
+                xautoticks     = 1;
+                yautoticks     = 1;
+                binleg         = 1;
+                chanleg        = 1; % 1 means show chan labels
+                isMGFP         = 0;
+                ismaxim        = 1; % maximize figure
+                %istopo         = 0;
+                axsize         = [];
+                minorticks     = [0 0];
+                legepos        = 1; % legend position=bottom, by default
+                linespeci      = [];
+                posgui         = get(handles.gui_chassis,'Position');
+                posfig         = [];
+                posminigui     = [];
+                ibckground     = 0; % do not invert {default}
+                
+                defs       = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
+                defcol     = getcolorcellerps; %{'k' 'r' 'b' 'g' 'c' 'm' 'y' 'w'};
+                colorline  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
+                d = repmat(defs',1, ERP.nbin*length(defcol));
+                styleline = reshape(d',1, numel(d));
+                %       set(handles.popupmenu_columns, 'String', num2str([1:256]'))
+                %       set(handles.popupmenu_rows, 'String', num2str([1:256]'))
+                set(handles.radiobutton_yauto, 'Value', 1)
+        end
         
-        % Default values
-        binArray       = 1:ERP.nbin;
-        plotallbin     = 1;
-        chanArray      = 1:ERP.nchan;
-        plotallch      = 1;
-        chanArray_MGFP = [];
-        blcorr         = 'pre';  %by default
-        xxscale        = [xxs1 xxs2 xtickarray];
-        [ytarr miny maxy] = default_amp_ticks(ERP, binArray);
-        ytickarray        = str2num(char(ytarr));
-        yyscale        = [miny maxy ytickarray];
-        linewidth      = 1;
-        isiy           = 0;
-        fschan         = 10;
-        fslege         = 12;
-        fsaxtick       = 10;
-        %meap          = 1;
-        pstyle         = 3; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
-        errorstd       = 0; % pointer for std factor
-        stdalpha       = 0; % transparency for plotting standard error
-        pbox           = squareplot(chanArray, hObject, eventdata, handles);
-        %counterbinwin  = 1;
-        counterwin     = [1 1];
-        holdch         = 0; % to draw different channels for same bin in one figure
-        yauto          = 1;
-        xautoticks     = 1;
-        yautoticks     = 1;
-        binleg         = 1;
-        chanleg        = 1; % 1 means show chan labels
-        isMGFP         = 0;
-        ismaxim        = 1; % maximize figure
-        %istopo         = 0;
-        axsize         = [];
-        minorticks     = [0 0];
-        legepos        = 1; % legend position=bottom, by default
-        linespeci      = [];
-        posgui         = get(handles.gui_chassis,'Position');
-        posfig         = [];
-        posminigui     = [];
-        
-        defs       = {'-' '-.' '--' ':'};% sorted according 1st erplab's version
-        defcol     = {'k' 'r' 'b' 'g' 'c' 'm' 'y' };
-        colorline  = repmat(defcol,1, ERP.nbin*length(defs));% sorted according 1st erplab's version
-        d = repmat(defs',1, ERP.nbin*length(defcol));
-        styleline = reshape(d',1, numel(d));
-        %       set(handles.popupmenu_columns, 'String', num2str([1:256]'))
-        %       set(handles.popupmenu_rows, 'String', num2str([1:256]'))
-        set(handles.radiobutton_yauto, 'Value', 1)
+        %
+        % store default values at plotset
+        %
+        setplotset_frequ % call script
+        assignin('base','plotset', plotset);
 end
 
 set(handles.popupmenu_columns, 'String', num2str([1:256]'))
@@ -1224,15 +1486,9 @@ end
 % MGFP
 %
 set(handles.edit_MGFP_chans,'String', vect2colon(chanArray_MGFP, 'Delimiter','off', 'Repeat', 'off'))
-
 counterbinwin  = counterwin(1);
 counterchanwin = counterwin(2);
 
-%
-% store default values at plotset
-%
-setplotset_time % call script
-assignin('base','plotset', plotset);
 set(handles.gui_chassis,'Position', posgui)
 set(handles.radiobutton_yauto, 'Value', yauto)
 set(handles.checkbox_autotimeticks, 'Value', xautoticks)
@@ -1323,72 +1579,112 @@ end
 set(handles.checkbox_maximize, 'Value', ismaxim)
 
 %
+% Invert background color
+%
+set(handles.popupmenu_ibckground, 'Value', ibckground+1)
+
+%
 % Axis polarity
 %
-if ~isiy
+if strcmpi(datatype, 'ERP')
+        set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+        if ~isiy
+                word = 'positive';
+                set(handles.togglebutton_y_axis_polarity, 'Value', 0);
+        else
+                word = 'negative';
+                set(handles.togglebutton_y_axis_polarity, 'Value', 1);
+        end
+        set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));        
+        set(handles.text_X_range, 'String', 'Time range (min max, in ms)');
+        set(handles.checkbox_autotimeticks, 'String', 'auto time-ticks');
+else
         word = 'positive';
         set(handles.togglebutton_y_axis_polarity, 'Value', 0);
-else
-        word = 'negative';
-        set(handles.togglebutton_y_axis_polarity, 'Value', 1);
+        set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
+        set(handles.togglebutton_y_axis_polarity, 'Enable', 'off');        
+        set(handles.text_X_range, 'String', 'Freq range (min max, in Hz)');
+        set(handles.checkbox_autotimeticks, 'String', 'auto freq-ticks');
 end
-set(handles.togglebutton_y_axis_polarity, 'string', sprintf('<HTML><center><b>%s</b> is up', word));
 
 %
 % Baseline correction memory-setting
 %
-cmpbasel = str2num(blcorr);
-if isempty(cmpbasel)
-        switch blcorr
-                case 'no'
-                        set(handles.radiobutton_BLC_no,'Value', 1)
-                        set(handles.radiobutton_BLC_pre,'Value', 0)
-                        set(handles.radiobutton_BLC_post,'Value', 0)
-                        set(handles.radiobutton_BLC_whole,'Value', 0)
-                        set(handles.radiobutton_BLC_custom,'Value', 0)
-                        set(handles.edit_custom, 'String', 'none')
-                case 'pre'
-                        set(handles.radiobutton_BLC_no,'Value', 0)
-                        set(handles.radiobutton_BLC_pre,'Value', 1)
-                        set(handles.radiobutton_BLC_post,'Value', 0)
-                        set(handles.radiobutton_BLC_whole,'Value', 0)
-                        set(handles.radiobutton_BLC_custom,'Value', 0)
-                        set(handles.edit_custom, 'String', sprintf('%.1f  %g', ceil(ERP.xmin*1000), 0))
-                case 'post'
-                        set(handles.radiobutton_BLC_no,'Value', 0)
-                        set(handles.radiobutton_BLC_pre,'Value', 0)
-                        set(handles.radiobutton_BLC_post,'Value', 1)
-                        set(handles.radiobutton_BLC_whole,'Value', 0)
-                        set(handles.radiobutton_BLC_custom, 'Value', 0)
-                        set(handles.edit_custom, 'String', sprintf('%g  %.1f',0, ERP.xmax*1000))
-                case 'all'
-                        set(handles.radiobutton_BLC_no,'Value', 0)
-                        set(handles.radiobutton_BLC_pre,'Value', 0)
-                        set(handles.radiobutton_BLC_post,'Value', 0)
-                        set(handles.radiobutton_BLC_whole,'Value', 1)
-                        set(handles.radiobutton_BLC_custom, 'Value', 0)
-                        set(handles.edit_custom, 'String', sprintf('%.1f  %.1f',ceil(ERP.xmin*1000), floor(ERP.xmax*1000)))
+if strcmpi(datatype, 'ERP')
+        set(handles.radiobutton_BLC_no,'Enable', 'on')
+        set(handles.radiobutton_BLC_pre,'Enable', 'on')
+        set(handles.radiobutton_BLC_post,'Enable', 'on')
+        set(handles.radiobutton_BLC_whole,'Enable', 'on')
+        set(handles.radiobutton_BLC_custom,'Enable', 'on')
+        set(handles.edit_custom, 'Enable', 'on')        
+        cmpbasel = str2num(blcorr);
+        
+        if isempty(cmpbasel)
+                switch blcorr
+                        case 'no'
+                                set(handles.radiobutton_BLC_no,'Value', 1)
+                                set(handles.radiobutton_BLC_pre,'Value', 0)
+                                set(handles.radiobutton_BLC_post,'Value', 0)
+                                set(handles.radiobutton_BLC_whole,'Value', 0)
+                                set(handles.radiobutton_BLC_custom,'Value', 0)
+                                set(handles.edit_custom, 'String', 'none')
+                        case 'pre'
+                                set(handles.radiobutton_BLC_no,'Value', 0)
+                                set(handles.radiobutton_BLC_pre,'Value', 1)
+                                set(handles.radiobutton_BLC_post,'Value', 0)
+                                set(handles.radiobutton_BLC_whole,'Value', 0)
+                                set(handles.radiobutton_BLC_custom,'Value', 0)
+                                set(handles.edit_custom, 'String', sprintf('%.1f  %g', ceil(ERP.xmin*kktime), 0))
+                        case 'post'
+                                set(handles.radiobutton_BLC_no,'Value', 0)
+                                set(handles.radiobutton_BLC_pre,'Value', 0)
+                                set(handles.radiobutton_BLC_post,'Value', 1)
+                                set(handles.radiobutton_BLC_whole,'Value', 0)
+                                set(handles.radiobutton_BLC_custom, 'Value', 0)
+                                set(handles.edit_custom, 'String', sprintf('%g  %.1f',0, ERP.xmax*kktime))
+                        case 'all'
+                                set(handles.radiobutton_BLC_no,'Value', 0)
+                                set(handles.radiobutton_BLC_pre,'Value', 0)
+                                set(handles.radiobutton_BLC_post,'Value', 0)
+                                set(handles.radiobutton_BLC_whole,'Value', 1)
+                                set(handles.radiobutton_BLC_custom, 'Value', 0)
+                                set(handles.edit_custom, 'String', sprintf('%.1f  %.1f',ceil(ERP.xmin*kktime), floor(ERP.xmax*kktime)))
+                end
+                set(handles.edit_custom, 'BackgroundColor', BackERPLABcolor)
+                set(handles.edit_custom, 'Enable', 'inactive')
+        else
+                set(handles.radiobutton_BLC_no,'Value', 0)
+                set(handles.radiobutton_BLC_pre,'Value', 0)
+                set(handles.radiobutton_BLC_post,'Value', 0)
+                set(handles.radiobutton_BLC_whole,'Value', 0)
+                set(handles.radiobutton_BLC_custom, 'Value', 1)
+                set(handles.edit_custom, 'BackgroundColor', [1 1 1])
+                set(handles.edit_custom, 'Enable', 'on')
+                blcorr = regexprep(blcorr, '(\s+)\1', ' ');
+                set(handles.edit_custom,'String', blcorr)
         end
-        set(handles.edit_custom, 'BackgroundColor', BackERPLABcolor)
-        set(handles.edit_custom, 'Enable', 'inactive')
 else
-        set(handles.radiobutton_BLC_no,'Value', 0)
+        set(handles.radiobutton_BLC_no,'Value', 1)
         set(handles.radiobutton_BLC_pre,'Value', 0)
         set(handles.radiobutton_BLC_post,'Value', 0)
         set(handles.radiobutton_BLC_whole,'Value', 0)
-        set(handles.radiobutton_BLC_custom, 'Value', 1)
-        set(handles.edit_custom, 'BackgroundColor', [1 1 1])
-        set(handles.edit_custom, 'Enable', 'on')
-        blcorr = regexprep(blcorr, '(\s+)\1', ' ');
-        set(handles.edit_custom,'String', blcorr)
+        set(handles.radiobutton_BLC_custom,'Value', 0)
+        set(handles.edit_custom, 'String', 'none')
+        
+        set(handles.radiobutton_BLC_no,'Enable', 'off')
+        set(handles.radiobutton_BLC_pre,'Enable', 'off')
+        set(handles.radiobutton_BLC_post,'Enable', 'off')
+        set(handles.radiobutton_BLC_whole,'Enable', 'off')
+        set(handles.radiobutton_BLC_custom,'Enable', 'off')
+        set(handles.edit_custom, 'Enable', 'off')
 end
 
 %
 % X scale & ticks
 %
 if length(xxscale)>=2 && xxscale(1)==0 && xxscale(2)==0
-        xxscale(1) = ERP.xmin*1000;
-        xxscale(2) = ERP.xmax*1000;
+        xxscale(1) = ERP.xmin*kktime;
+        xxscale(2) = ERP.xmax*kktime;
 end
 val_edit_time_range = sprintf('%.1f %.1f', xxscale(1), xxscale(2));
 if length(xxscale)>2
@@ -2035,10 +2331,18 @@ end
 
 %--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
-plotset = evalin('base', 'plotset');
-plotset.ptime.posgui = get(handles.gui_chassis,'Position');
-assignin('base','plotset', plotset);
-plotset.ptime=[];
+datatype = handles.datatype;
+plotset  = evalin('base', 'plotset');
+if strcmpi(datatype, 'ERP')
+        plotset.ptime.posgui = get(handles.gui_chassis,'Position');
+        assignin('base','plotset', plotset);
+        plotset.ptime=[];
+else
+        plotset.pfrequ.posgui = get(handles.gui_chassis,'Position');
+        assignin('base','plotset', plotset);
+        plotset.pfrequ=[];
+end
+
 handles.output = plotset;
 % Update handles structure
 guidata(hObject, handles);
@@ -2046,21 +2350,30 @@ uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function figure1_CloseRequestFcn(hObject, eventdata, handles)
-
 if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         %The GUI is still in UIWAIT, us UIRESUME
-        plotset = evalin('base', 'plotset');
-        plotset.ptime.posgui = get(handles.gui_chassis,'Position');
-        assignin('base','plotset', plotset);
-        plotset.ptime  = [];
+        datatype = handles.datatype;
+        plotset  = evalin('base', 'plotset');
+        if strcmpi(datatype, 'ERP')
+                plotset.ptime.posgui = get(handles.gui_chassis,'Position');
+                assignin('base','plotset', plotset);
+                plotset.ptime=[];
+        else
+                plotset.pfrequ.posgui = get(handles.gui_chassis,'Position');
+                assignin('base','plotset', plotset);
+                plotset.pfrequ=[];
+        end
+        
         handles.output = plotset;
-        %Update handles structure
+        % Update handles structure
         guidata(hObject, handles);
         uiresume(handles.gui_chassis);
 else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
 
 
 

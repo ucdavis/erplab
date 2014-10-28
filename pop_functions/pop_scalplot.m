@@ -244,56 +244,56 @@ if nargin==1
                                 'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
                         title_msg  = 'ERPLAB: pop_scalplot() missing info:';
                         errorfound(sprintf(msgboxText), title_msg);
-                        return     
+                        return
                 elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
                         %if splineinfo.new==1
-                                headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+                        headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
                         %        splineinfo.new = 0;
-                                %plotset.pscalp.splineinfo = splineinfo;
+                        %plotset.pscalp.splineinfo = splineinfo;
                         %end
                         %if splineinfo.save
                         %        ERP.splinefile = splineinfo.path;
-                        %        ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');        
+                        %        ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
                         %        erplab redraw
                         %        splineinfo.save = 0;
                         %        %plotset.pscalp.splineinfo = splineinfo;
                         %end
-                        splinefile = splineinfo.path;                       
-                        %disp('A2')                        
+                        splinefile = splineinfo.path;
+                        %disp('A2')
                 elseif ~isempty(ERP.splinefile) && ~isempty(splineinfo.path)
                         headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                        splinefile = splineinfo.path;                        
+                        splinefile = splineinfo.path;
                         %disp('B')
                         
-%                         if splineinfo.new==1
-%                                 headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-%                                 splineinfo.new = 0;
-%                                 %plotset.pscalp.splineinfo = splineinfo;
-%                         end
-%                         if splineinfo.save
-%                                 question = ['This ERPset already has spline file info.\n'...
-%                                         'Would you like to replace it?'];
-%                                 title_msg   = 'ERPLAB: spline file';
-%                                 button   = askquest(sprintf(question), title_msg);
-%                                 
-%                                 if ~strcmpi(button,'yes')
-%                                         disp('User selected Cancel')
-%                                         return
-%                                 else
-%                                         ERP.splinefile = splineinfo.path;
-%                                         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
-%                                         erplab redraw
-%                                 end
-%                         end
-%                         splinefile = splineinfo.path;
-                else                        
-                        %disp('C')                       
+                        %                         if splineinfo.new==1
+                        %                                 headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+                        %                                 splineinfo.new = 0;
+                        %                                 %plotset.pscalp.splineinfo = splineinfo;
+                        %                         end
+                        %                         if splineinfo.save
+                        %                                 question = ['This ERPset already has spline file info.\n'...
+                        %                                         'Would you like to replace it?'];
+                        %                                 title_msg   = 'ERPLAB: spline file';
+                        %                                 button   = askquest(sprintf(question), title_msg);
+                        %
+                        %                                 if ~strcmpi(button,'yes')
+                        %                                         disp('User selected Cancel')
+                        %                                         return
+                        %                                 else
+                        %                                         ERP.splinefile = splineinfo.path;
+                        %                                         ERP = pop_savemyerp(ERP, 'gui', 'erplab', 'History', 'off');
+                        %                                         erplab redraw
+                        %                                 end
+                        %                         end
+                        %                         splinefile = splineinfo.path;
+                else
+                        %disp('C')
                         splinefile = ERP.splinefile;
                 end
         else
                 %splinefile = '';
-                splinefile = ERP.splinefile;               
-                %disp('D')               
+                splinefile = ERP.splinefile;
+                %disp('D')
         end
         
         %
@@ -397,6 +397,19 @@ p.addParamValue('Splinefile', '', @ischar);
 p.addParamValue('Chanlocfile', '', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(ERP, binArray, latencyArray, varargin{:});
+
+if isfield(ERP, 'datatype')
+        datatype = ERP.datatype;
+else
+        datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+        kktime = 1000;
+        srate = ERP.srate;
+else
+        kktime = 1;
+        srate = ERP.pnts/ERP.xmax;
+end
 
 %
 % Searching channel location
@@ -503,14 +516,14 @@ if isempty(ERP.splinefile) && isempty(splinefile) && strcmpi(mtype, '3d')
         error('ERPLAB says: no spline file info was found.')
 end
 
-indxh   = find(latencyArray>ERP.xmax*1000,1);
+indxh   = find(latencyArray>ERP.xmax*kktime,1);
 if ~isempty(indxh)
-        msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(ERP.xmax*1000) ' msec!'];
+        msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(ERP.xmax*kktime) ' msec!'];
         error(msgboxText);
 end
-indxl  = find(latencyArray<ERP.xmin*1000,1);
+indxl  = find(latencyArray<ERP.xmin*kktime,1);
 if ~isempty(indxl)
-        msgboxText =  ['Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(ERP.xmin*1000) ' msec!'];
+        msgboxText =  ['Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(ERP.xmin*kktime) ' msec!'];
         error(msgboxText);
 end
 if strcmpi(p.Results.History,'implicit')
@@ -554,8 +567,8 @@ else
         mview = mapview;
 end
 
-toffsa    = abs(round(ERP.xmin*ERP.srate))+1;
-latArray  = round(latencyArray.*ERP.srate/1000) + toffsa;   %sec to samples
+toffsa    = abs(round(ERP.xmin*srate))+1;
+latArray  = round(latencyArray.*srate/kktime) + toffsa;   %sec to samples
 nbin      = length(binArray);
 
 if strcmp(measurestr, 'insta') || strcmp(measurestr, 'instalapla')
@@ -593,8 +606,13 @@ else
         [pathstrt, fnamet, extt] = fileparts(ERP.erpname) ;
 end
 if ismoviex==0
-        hsig = figure('Position',pos1, 'Name',['<< ' fnamet ' >>  Plot ERP map by Bins x latency'],...
-                'NumberTitle','on', 'Tag','Scalp_figure');erplab_figtoolbar(hsig, mtype);
+        if strcmpi(datatype, 'ERP')
+                hsig = figure('Position',pos1, 'Name',['<< ' fnamet ' >>  Plot ERP map by Bins x latency'],...
+                        'NumberTitle','on', 'Tag','Scalp_figure');erplab_figtoolbar(hsig, mtype);
+        else % FFT
+                hsig = figure('Position',pos1, 'Name',['<< ' fnamet ' >>  Plot ERP map by Bins x frequency'],...
+                        'NumberTitle','on', 'Tag','Scalp_figure');erplab_figtoolbar(hsig, mtype);
+        end
         
         if ~isempty(posfig)
                 set(hsig, 'Position', posfig)
@@ -703,7 +721,7 @@ while iadj<=nadj && continueplot
                                         data2plot = sqrt(mean(datap(:,latArray(ilat,1):latArray(ilat,2)).^2, 2));
                                 case {'area','areat','areap','arean','ninteg'}
                                         data2plot = geterpvalues(ERP, [latArray(ilat,1) latArray(ilat,2)],...
-                                                binArray(ibin), 1:ERP.nchan, measurestr, baseline, 1)';                                       
+                                                binArray(ibin), 1:ERP.nchan, measurestr, baseline, 1)';
                                 case 'instalapla'
                                         data2plot = del2map( datap(:,latArray(ilat)), ERP.chanlocs);
                                 case 'meanlapla'
@@ -744,7 +762,7 @@ while iadj<=nadj && continueplot
                                         erpsinglecolorbar(HeadAxes, ColorbarHandle, nlat)
                                         drawnow
                                 elseif clrbar==0
-                                        set(ColorbarHandle, 'Visible','off')    
+                                        set(ColorbarHandle, 'Visible','off')
                                         set(get(ColorbarHandle, 'Children'), 'Visible','off')
                                         drawnow
                                 end
@@ -1012,9 +1030,21 @@ return
 %---------------------------------------------------------------------------------------------------
 %-----------------base line mean value--------------------------------------------------------------
 function blv = blvalue(ERP, chan, bin, bl)
+if isfield(ERP, 'datatype')
+        datatype = ERP.datatype;
+else
+        datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+        kktime = 1000;
+        srate = ERP.srate;
+else
+        kktime = 1;
+        srate  = ERP.pnts/ERP.xmax;
+end
 if isnumeric(bl)
-        toffsa   = abs(round(ERP.xmin*ERP.srate))+1;
-        baseline = round((bl/1000)*ERP.srate) + toffsa; %msec to samples
+        toffsa   = abs(round(ERP.xmin*srate))+1;
+        baseline = round((bl/kktime)*srate) + toffsa; %msec to samples
         p1 = baseline(1);
         p2 = baseline(2);
 else
@@ -1039,13 +1069,23 @@ blv = mean(ERP.bindata(chan,p1:p2, bin));
 %---------------------------------------------------------------------------------------------------
 %-----------------       legend       --------------------------------------------------------------
 function titulo = titlemaker(ERP, binleg, bindesc, vtype, vlatency, binArray, measurestr, latetitle, ibin)
+if isfield(ERP, 'datatype')
+        datatype = ERP.datatype;
+else
+        datatype = 'ERP';
+end
+
 strbinnum = ['Bin' num2str(binArray(ibin))];
 strequal  = ' = ';
 strbindes = ERP.bindescr{binArray(ibin)};
 strcomma1 = ',';
 strvtype  = [''''  measurestr ''''];
 strcomma2 = ',';
-strvlate  = [latetitle ' ms'];
+if strcmpi(datatype, 'ERP')
+        strvlate  = [latetitle ' ms'];
+else %FFT
+        strvlate  = [latetitle ' Hz'];
+end
 
 t = [strbinnum*binleg  strequal*binleg*bindesc  strbindes*bindesc strcomma1*(vtype&(binleg|bindesc))...
         strvtype*vtype  strcomma2*(vlatency&(binleg|bindesc|vtype))  strvlate*vlatency];

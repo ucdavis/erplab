@@ -57,7 +57,7 @@ try
         end
 catch
 end
-[version reldate] = geterplabversion;
+[version, reldate] = geterplabversion;
 howold = num2str(datenum(date)-datenum(reldate));
 set(handles.gui_chassis,'Name', ['ABOUT  ERPLAB ' version ' (' howold ' days old)'])
 
@@ -102,7 +102,7 @@ function playcredit(numfig, xfig, yfig, hObject, eventdata, handles)
 try
         textabout = handles.textabout;
         fontcred  = handles.fontcred;
-        [banner fcolor1 fcolor2 info ] = loadtheme(numfig, hObject, eventdata, handles);
+        [banner, fcolor1, fcolor2, info ] = loadtheme(numfig, hObject, eventdata, handles);
         %set(handles.gui_chassis, 'Position', [xfig-(0.6*info.Width) 100 1.2*info.Width 1.1*info.Height])
         set(handles.gui_chassis, 'Position', [xfig yfig 1.2*info.Width 1.1*info.Height])
         set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Position', [0 50 1.2*info.Width info.Height])
@@ -118,13 +118,11 @@ try
         set(handles.pushbutton_erpinfo,'Units', 'pixels');
         set(handles.pushbutton_relaunch,'Units', 'pixels');
         set(handles.pushbutton_youtube,'Units', 'pixels');       
-        set(handles.pushbutton_close,'Units', 'pixels');
-        
+        set(handles.pushbutton_close,'Units', 'pixels');        
         set(handles.pushbutton_erpinfo,'Position', [x1 yb wb hb]);
         set(handles.pushbutton_relaunch,'Position', [x2 yb wb hb]);
         set(handles.pushbutton_youtube,'Position', [x3 yb wb hb]);
-        set(handles.pushbutton_close,'Position', [x4 yb wb hb]);
-        
+        set(handles.pushbutton_close,'Position', [x4 yb wb hb]);        
         axes(handles.axes1)
         holgu  = 0.12*info.Width;
         dimmer = 0.98*sin(0:pi/160:0.8*pi); %[0:9 9 9 9 9:-1:4];
@@ -244,8 +242,7 @@ pause(0.2)
 web('http://www.erpinfo.org/erplab/','-browser')
 
 % -----------------------------------------------------------------------
-function [banner fcolor1 fcolor2 info ] = loadtheme(numfig, hObject, eventdata, handles)
-
+function [banner, fcolor1, fcolor2, info ] = loadtheme(numfig, hObject, eventdata, handles)
 if numfig==8 || numfig==1
         set(handles.gui_chassis,'Color',[0 0 0]);
         set(handles.text_cover,'BackgroundColor',[0 0 0]);
@@ -272,22 +269,26 @@ info    = imfinfo(namefig);      % Determine the size of the image file
 %
 % Edition banner
 %
-edition  = double(imread('p_zombie.tif'));             % Read the image file banner.jpg
-edmask   = edition;
-aindx  = ismember_bc2(edmask(:,:,1),12);
-bindx  = ismember_bc2(edmask(:,:,2),255);
-cindx  = ismember_bc2(edmask(:,:,3),0);
-edmask = repmat(aindx&bindx&cindx, [1 1 3]);
+% edition  = double(imread('p_zombie.tif'));             % Read the image file banner.jpg
+% edmask   = edition;
+% aindx  = ismember_bc2(edmask(:,:,1),12);
+% bindx  = ismember_bc2(edmask(:,:,2),255);
+% cindx  = ismember_bc2(edmask(:,:,3),0);
+% edmask = repmat(aindx&bindx&cindx, [1 1 3]);
+% 
+% edsum  = edition;
+% aindx  = ~ismember_bc2(edsum(:,:,1),12);
+% bindx  = ~ismember_bc2(edsum(:,:,2),255);
+% cindx  = ~ismember_bc2(edsum(:,:,3),0);
+% edsum  = repmat(aindx&bindx&cindx, [1 1 3]);
+% edsum  = edition.*edsum;
+% 
+% banner = banner .* edmask;
+% banner = banner + edsum*0.9;
 
-edsum  = edition;
-aindx  = ~ismember_bc2(edsum(:,:,1),12);
-bindx  = ~ismember_bc2(edsum(:,:,2),255);
-cindx  = ~ismember_bc2(edsum(:,:,3),0);
-edsum  = repmat(aindx&bindx&cindx, [1 1 3]);
-edsum  = edition.*edsum;
-
-banner = banner .* edmask;
-banner = banner + edsum*0.9;
+%
+% correction
+%
 banner = uint8(round(banner));
 
 %--------------------------------------------------------------------------

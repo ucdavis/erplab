@@ -65,7 +65,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP serror msgboxText ] =  gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn)
+function [ERP, serror, msgboxText ] =  gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn)
 
 % ERPaux = ERP; % original ERP
 naccepted = [];
@@ -88,7 +88,7 @@ for j=1:nfile
                 ERPT = ALLERP(erpset(j));
         end
         
-        [ERPT conti serror] = olderpscan(ERPT, warn);
+        [ERPT, conti, serror] = olderpscan(ERPT, warn);
         
         if conti==0
                 break
@@ -127,11 +127,21 @@ for j=1:nfile
                         serror = 1;
                         break
                 end
+                % basic test for data type (for now...)
+                if ~strcmpi(pre_dtype, ERPT.datatype)
+                        msgboxText =  sprintf('Erpsets #%g and #%g have different type of data (see ERP.datatype)', j-1, j);
+                        %title = 'ERPLAB: pop_gaverager() Error';
+                        %errorfound(msgboxText, title);
+                        %return
+                        serror = 1;
+                        break
+                end
         end
         
-        pre_nchan = ERPT.nchan;
-        pre_pnts  = ERPT.pnts;
-        pre_nbin  = ERPT.nbin;
+        pre_nchan  = ERPT.nchan;
+        pre_pnts   = ERPT.pnts;
+        pre_nbin   = ERPT.nbin;
+        pre_dtype  = ERPT.datatype;
         
         %
         % Sum ERPsets
@@ -156,7 +166,7 @@ for j=1:nfile
         %
         if ds==1
                 workfileArray    = ERPT.workfiles;
-                [nch npnts nbin] = size(ERPT.bindata);
+                [nch, npnts, nbin] = size(ERPT.bindata);
                 sumERP           = zeros(nch,npnts,nbin);
                 if stderror
                         sumERP2  = zeros(nch,npnts,nbin);
@@ -179,6 +189,9 @@ for j=1:nfile
                 ERP.times      = ERPT.times;
                 ERP.bindata    = [];
                 ERP.binerror   = [];
+                
+                ERP.datatype   = ERPT.datatype;
+                
                 ERP.chanlocs   = ERPT.chanlocs;
                 ERP.ref        = ERPT.ref;
                 ERP.bindescr   = ERPT.bindescr;

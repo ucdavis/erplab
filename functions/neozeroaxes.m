@@ -8,9 +8,18 @@
 % Davis, CA
 % 2012
 
-function neozeroaxes(type, fontsizeticks)
+function neozeroaxes(type, fontsizeticks, mcolor)
+if nargin<3
+        mcolor = []; %[.7 .9 .7];
+end
 if nargin<2
         fontsizeticks = 8;
+end
+if isempty(fontsizeticks)
+        fontsizeticks = 8;
+end
+if isempty(mcolor)
+        mcolor = get(gcf,'Color');
 end
 linew     = 1; % axes line width
 holdwason = ishold;
@@ -27,7 +36,8 @@ sentido    = get(axesin,'YDir');       % get Ydir from the old Y axis
 
 if type==0 % matlab
         set(axesin,'Visible','on'); % make old axes visible
-        axcolor    =  [.7 .9 .7]; % Original
+        Xaxcolor   = [.7 .9 .7]; % Original   
+        Yaxcolor   = [.7 .9 .7]; % Original
         xxticks    = [];
         yyticks    = [];
         xmt        = 'off';
@@ -35,7 +45,8 @@ if type==0 % matlab
         set(axesin,'FontSize', fontsizeticks);
 else % zero crossing axes
         set(axesin,'Visible','off');% make old axes invisible
-        axcolor = [0 0 0];
+        Xaxcolor = 1 - mcolor;
+        Yaxcolor = 1 - mcolor;
         xxticks    = get(axesin,'XTick');      % get XTick from the old X axis
         yyticks    = get(axesin,'YTick');      % get YTick from the old Y axis
         xmt        = get(axesin,'XMinorTick'); % get XMinorTick from the old X axis
@@ -57,8 +68,7 @@ YAxisXLimits = polyval(f,[0 YAxisWidth*abs(xmax - xmin)]);
 f   = polyfit([ax(3) ax(4)],[posi(2) posi(2)+posi(4)],1);
 YAxisYLimits = polyval(f,[ymin ymax]);
 XAxisYLimits = polyval(f,[0 XAxisHeight*abs(ymax - ymin)]);
-bgcolour     = get(gcf,'color');
-
+bgcolour     = get(gcf,'color'); % gets background color
 
 % right (new) XY axes intersection in case Y is inversed.
 if strcmp(sentido, 'reverse')
@@ -76,11 +86,10 @@ AX.hX = axes('position',XAxisPosition,...
         'TickDir','out',...
         'XScale',xscale,...
         'YColor',bgcolour,...
-        'XColor', axcolor,...
+        'XColor', Xaxcolor,...
         'LineWidth', linew,...
         'FontSize', fontsizeticks,...
         'color','none');
-
 
 % new Y axis position
 YAxisPosition = [YAxisXLimits(1) YAxisYLimits(1) YAxisXLimits(2) - YAxisXLimits(1) YAxisYLimits(2) - YAxisYLimits(1)];
@@ -92,14 +101,12 @@ AX.hY = axes('position',YAxisPosition,...
         'Xtick',[],...
         'TickDir','out',...
         'YScale',yscale,...
-        'YColor', axcolor,...
+        'YColor', Yaxcolor,...
         'XColor',bgcolour,...
         'LineWidth', linew,...
         'FontSize', fontsizeticks,...
         'color','none',...
         'YDir', sentido); % JLC, May 12th 2008
-
-
 %
 % Set new axes
 %
@@ -186,11 +193,11 @@ ydir = get(axesin,'YDir');
 p = get(axesin,'Position');
 nn = 1000;
 ss = linspace(xlim(1), xlim(2), nn);
-[aa bb] = min(abs(ss));
+[aa, bb] = min(abs(ss));
 px0 = bb/nn; % proportion of axis X when Y intersects X
 set(AX.hY,'Position',[p(1)+p(3)*px0 p(2) eps p(4)]);  % set Y axis new pos
 ss = linspace(ylim(1), ylim(2), nn);
-[aa bb] = min(abs(ss));
+[aa, bb] = min(abs(ss));
 if strcmpi(ydir, 'reverse')
         py0 = 1-bb/nn; % proportion of axis Y when X intersects Y
 else

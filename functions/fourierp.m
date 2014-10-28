@@ -153,9 +153,12 @@ for k=1:nchan
                 end
         end
 end
-msgn   = 'all bins';
-avgfft = mean(ffterp,1);
-avgfft = mean(avgfft,3);
+msgn    = 'all bins';
+avgfft  = mean(ffterp,1);
+avgdim3 = size(avgfft,3);
+if avgdim3>1
+    avgfft = mean(avgfft,3);
+end
 f1sam  = round((f1*NFFT/2)/fnyq);
 f2sam  = round((f2*NFFT/2)/fnyq);
 if f1sam<1

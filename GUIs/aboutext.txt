@@ -1,4 +1,4 @@
-Copyright Regents of the University of California, 2008-2014 #
+Copyright Regents of the University of California, 2008-2015 #
 #
 #
 Designed by Steve Luck and Javier Lopez-Calderon #
@@ -68,6 +68,7 @@ License long with this program.  If not, see #
 #
 #
 #
-#Davis, California #
+Davis, California #
+a great place to live, work, and study #
 #
-#2013
+#2007-2015

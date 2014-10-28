@@ -265,7 +265,7 @@ end
                         CURRENTERP = evalin('base', 'CURRENTERP');
                         ALLERP(CURRENTERP) = ERP;
                         assignin('base','ALLERP',ALLERP);  % save to workspace
-                        updatemenuerp(ALLERP,1) % overwrite erpset at erpsetmenu
+                        updatemenuerp(ALLERP,1)            % overwrite erpset at erpsetmenu
                 else
                         issave = 0;
                         return

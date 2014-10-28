@@ -14,12 +14,12 @@ if isempty(EEG.epoch)
 end
 for i=1:nepoch
       latcell  =  cell2mat(EEG.epoch(i).eventlatency);
-      [v indx] = min(abs(latcell));
+      [v, indx] = min(abs(latcell));
       EEG.epoch(i).eventlatency = num2cell(latcell - latcell(indx));
 end
 
 auxtimes  = EEG.times;
-[v indx]  = min(abs(auxtimes));
+[v, indx]  = min(abs(auxtimes));
 EEG.times = auxtimes - auxtimes(indx);
 EEG.xmin  = min(EEG.times)/1000;
 EEG.xmax  = max(EEG.times)/1000;

@@ -70,7 +70,7 @@ handles.blc  = blc;
 % % % set(handles.checkbox_blc,'Value', 1)
 set(handles.edit_epoch,'String', num2str([xmin xmax]));
 if isnumeric(blc)
-        set(handles.radiobutton_custom,'Value', 1) 
+        set(handles.radiobutton_custom,'Value', 1)
         set(handles.edit_custom,'String', num2str(blc));
 else
         set(handles.edit_custom,'Enable','off')
@@ -84,7 +84,7 @@ else
                 case 'none'
                         set(handles.radiobutton_none,'Value', 1)
                 otherwise
-                        set(handles.radiobutton_custom,'Value', 1)                        
+                        set(handles.radiobutton_custom,'Value', 1)
         end
 end
 
@@ -103,6 +103,11 @@ handles = painterplab(handles);
 % Set font size
 %
 handles = setfonterplab(handles);
+
+tooltip1  = ['<html><i>If you are going to estimate power spectrum at some point later then<br>increase the size of your epochs''s window a 5% (of the originally planned width)<br>'...
+        'on each side. This strategy offsets the minimal weight applied to the<br>end of the epoch due to the Hamming window function.'];
+
+set(handles.edit_hint, 'tooltip',tooltip1);
 
 % Update handles structure
 guidata(hObject, handles);
@@ -135,7 +140,7 @@ end
 function edit_epoch_Callback(hObject, eventdata, handles)
 
 % if strcmp(get(hObject,'String'),'')
-% % % %         set(handles.checkbox_blc,'Value',0)        
+% % % %         set(handles.checkbox_blc,'Value',0)
 % end
 
 %--------------------------------------------------------------------------
@@ -168,7 +173,7 @@ if isempty(epoch)
         title = 'ERPLAB: Bin-based epoch inputs';
         errorfound(msgboxText, title);
         return
-else        
+else
         repoch = size(epoch,1);
         cepoch = size(epoch,2);
         blc = handles.blc;
@@ -179,7 +184,7 @@ else
         % Checks updated custom blc values
         %
         if cusbutt
-                blctest  = str2num(get(handles.edit_custom,'String'));                
+                blctest  = str2num(get(handles.edit_custom,'String'));
                 if isempty(blctest)
                         if strcmpi(get(handles.edit_custom,'String'),'none')
                                 custupdated = 1;
@@ -198,16 +203,15 @@ else
                         end
                 else
                         rblc = size(blctest,1);
-                        cblc = size(blctest,2);                        
+                        cblc = size(blctest,2);
                         extvalcond = max(epoch)>=max(blctest) && min(epoch)<=min(blctest);
                         custupdated = rblc==1 && cblc==2 && extvalcond;
                         blc = blctest;
                 end
         else
                 custupdated =1;
-        end        
+        end
         if repoch==1 && cepoch==2 && custupdated
-                
                 if epoch(1)>=epoch(2)
                         msgboxText{1} =  'For epoch range, lower time limit must be on the left';
                         msgboxText{2} =  'Additionally, lower time limit must be at least 1/sample rate second lesser than the higher one.';
@@ -215,21 +219,18 @@ else
                         errorfound(msgboxText, title);
                         return
                 end
-                
                 if epoch(1)>0 || epoch(2)<0
                         msgboxText =  'Epoch range must span across time zero';
                         title = 'ERPLAB: Bin-based epoch inputs';
                         errorfound(msgboxText, title);
                         return
                 end
-                
                 if epoch(1)>=0 && strcmpi(blc,'pre')
                         msgboxText =  'There is no pre-stimulus interval';
                         title = 'ERPLAB: Bin-based epoch inputs';
                         errorfound(msgboxText, title);
                         return
                 end
-                
                 if epoch(2)<=0 && strcmpi(blc,'post')
                         msgboxText =  'There is no post-stimulus interval';
                         title = 'ERPLAB: Bin-based epoch inputs';
@@ -244,7 +245,7 @@ else
                 
                 % Update handles structure
                 guidata(hObject, handles);
-                uiresume(handles.gui_chassis);               
+                uiresume(handles.gui_chassis);
         else
                 if custupdated
                         msgboxText =  'Wrong epoch range!';
@@ -320,7 +321,6 @@ guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
-
 if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
         %The GUI is still in UIWAIT, us UIRESUME
         handles.output = [];
@@ -334,7 +334,7 @@ end
 
 % % % %--------------------------------------------------------------------------
 % % % function checkbox_blc_Callback(hObject, eventdata, handles)
-% % % 
+% % %
 % % % if get(hObject,'Value')% && repoch==1 && cepoch==2
 % % %         set(handles.radiobutton_none,'Enable','on')
 % % %         set(handles.radiobutton_pre,'Enable','on')
@@ -344,21 +344,21 @@ end
 % % %         set(handles.edit_custom,'Enable','on')
 % % % else
 % % %         set(handles.checkbox_blc,'Value',0)
-% % %         
+% % %
 % % %         set(handles.radiobutton_none,'Value',1)
 % % %         set(handles.radiobutton_pre,'Value',0)
 % % %         set(handles.radiobutton_post,'Value',0)
 % % %         set(handles.radiobutton_all,'Value',0)
 % % %         set(handles.radiobutton_custom,'Value',0)
 % % %         set(handles.edit_custom,'String','')
-% % %         
+% % %
 % % %         set(handles.radiobutton_none,'Enable','off')
 % % %         set(handles.radiobutton_pre,'Enable','off')
 % % %         set(handles.radiobutton_post,'Enable','off')
 % % %         set(handles.radiobutton_all,'Enable','off')
 % % %         set(handles.radiobutton_custom,'Enable','off')
 % % %         set(handles.edit_custom,'Enable','off')
-% % % 
+% % %
 % % %         blc = 'none';
 % % %         handles.blc = blc;
 % % %         % Update handles structure

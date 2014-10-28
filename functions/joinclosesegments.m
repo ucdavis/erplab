@@ -8,7 +8,7 @@
 % INPUTS:
 %
 % WinRej         - latency array. Each row is a pair of values (start end), so the array has 2 columns.
-% chanrej        - marked channels array 
+% chanrej        - marked channels array
 % shortisisam    - inter window time. (marked windows closer than this value will be joined together)
 %
 %
@@ -46,43 +46,57 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [WinRej2 ChanRej2 ] = joinclosesegments(WinRej, chanrej, shortisisam)
+function [WinRej2, ChanRej2 ] = joinclosesegments(WinRej, chanrej, shortisisam)
 
 WinRej2= []; ChanRej2 = [];
 fprintf('\nWARNING: Marked segments that are closer than %g samples will be join together.\n\n', shortisisam);
-chanrej = uint8(chanrej);
+if ~isempty(chanrej)
+        chanrej = uint8(chanrej);
+end
 a = WinRej(1,1);
 b = WinRej(1,2);
 m = 1;
 working = 0;
-chrej2 = uint8(zeros(1,size(chanrej,2)));
+if ~isempty(chanrej)
+        chrej2 = uint8(zeros(1,size(chanrej,2)));
+end
 nwin = size(WinRej,1);
 for j=2:nwin
-    isi = WinRej(j,1) - WinRej(j-1,2);
-    if isi<shortisisam
-        b = WinRej(j,2);
-        chrej2 = bitor(chrej2, bitor(chanrej(j,:),chanrej(j-1,:)));
-        working = 1;
-        if j==nwin
-            WinRej2(m,:)  = [a b];
-            ChanRej2(m,:) = chrej2;
-        end
-    else
-        if working==1
-            WinRej2(m,:)  = [a b];
-            ChanRej2(m,:) = chrej2;
-            %                     a = WinRej(j,1);
-            working = 0;
+        isi = WinRej(j,1) - WinRej(j-1,2);
+        if isi<shortisisam
+                b = WinRej(j,2);
+                if ~isempty(chanrej)
+                        chrej2 = bitor(chrej2, bitor(chanrej(j,:),chanrej(j-1,:)));
+                end
+                working = 1;
+                if j==nwin
+                        WinRej2(m,:)  = [a b];
+                        if ~isempty(chanrej)
+                                ChanRej2(m,:) = chrej2;
+                        end
+                end
         else
-            WinRej2(m,:)  = [a b];
-            ChanRej2(m,:) = chanrej(j-1);
-            %                     a = WinRej(j,1);
-            %                     b = WinRej(j,2);
+                if working==1
+                        WinRej2(m,:)  = [a b];
+                        if ~isempty(chanrej)
+                                ChanRej2(m,:) = chrej2;
+                        end
+                        %                     a = WinRej(j,1);
+                        working = 0;
+                else
+                        WinRej2(m,:)  = [a b];
+                        if ~isempty(chanrej)
+                                ChanRej2(m,:) = chanrej(j-1);
+                        end
+                        %                     a = WinRej(j,1);
+                        %                     b = WinRej(j,2);
+                end
+                a = WinRej(j,1);
+                b = WinRej(j,2);
+                chrej2 = uint8(zeros(1,size(chanrej,2)));
+                m = m + 1;
         end
-        a = WinRej(j,1);
-        b = WinRej(j,2);
-        chrej2 = uint8(zeros(1,size(chanrej,2)));
-        m = m + 1;
-    end
 end
-ChanRej2  = double(ChanRej2);
+if ~isempty(chanrej)
+        ChanRej2  = double(ChanRej2);
+end

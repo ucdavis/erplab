@@ -25,7 +25,7 @@
 %
 % Rewritten by JLC. Nov 10th, 2013
 %
-function [def miny maxy] = default_amp_ticks(ERP, binArray, yrange)
+function [def, miny, maxy] = default_amp_ticks(ERP, binArray, yrange)
 def   = {'-1 1'};
 if nargin<3
         yrange = [];

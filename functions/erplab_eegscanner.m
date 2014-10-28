@@ -33,7 +33,7 @@
 % Davis, CA
 % 2009
 
-function serror = erplab_eegscanner(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chckeventlist, varargin)
+function serror = erplab_eegscanner(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chcknoevents, chckeventlist, varargin)
 
 serror = 0; % no problem by default
 if nargin<1
@@ -52,10 +52,11 @@ p.addRequired('funcname',@ischar);
 p.addRequired('chckmultieeg', @isnumeric);
 p.addRequired('chckemptyeeg', @isnumeric);
 p.addRequired('chckepocheeg', @isnumeric);
+p.addRequired('chcknoevents', @isnumeric);
 p.addRequired('chckeventlist',@isnumeric);
 % Parameters
 p.addParamValue('ErrorMsg', 'popup', @ischar);
-p.parse(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chckeventlist,varargin{:});
+p.parse(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chcknoevents, chckeventlist,varargin{:});
 
 if strcmpi(p.Results.ErrorMsg, 'popup') || strcmpi(p.Results.ErrorMsg, 'on')
         errormsg = 1; % popup window with error message
@@ -110,7 +111,17 @@ for k=1:N
                 msgboxText =  '%s only works with epoched data';
                 serror = 1;
                 break
+        end        
+        if chcknoevents==0 && isempty(EEG(k).event)
+                msgboxText =  '%s : There is not event codes in this dataset!';
+                serror = 1;
+                break
         end
+        if chcknoevents==1 && ~isempty(EEG(k).event)
+                msgboxText =  '%s : This dataset has event codes already!';
+                serror = 1;
+                break
+        end        
         if chckeventlist~=2
                 if isfield(EEG(k), 'EVENTLIST')
                         if chckeventlist==1 % accept only

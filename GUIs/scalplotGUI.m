@@ -82,6 +82,11 @@ try
         splinefile = ERP.splinefile;
         xmax  = ERP.xmax;
         xmin  = ERP.xmin;
+        if isfield(ERP, 'datatype')
+                datatype = ERP.datatype;
+        else
+                datatype = 'ERP';
+        end
 catch
         ERP   = [];
         nchan = 0;
@@ -89,7 +94,15 @@ catch
         splinefile = '';
         xmax  = 0.8;
         xmin  = -0.2;
+        datatype = 'ERP';
 end
+if strcmpi(datatype, 'ERP')
+        kktime = 1000;
+else %FFT
+        kktime = 1;
+end
+handles.kktime   = kktime;
+handles.datatype = datatype;
 try
         chanlocs = varargin{2};
 catch
@@ -206,6 +219,8 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
 ERP  = handles.ERP;
+datatype = handles.datatype;
+kktime = handles.kktime;
 if get(handles.radio_3D, 'Value')
         if isempty(handles.splinefile) && isempty(ERP.splinefile)
                 msgboxText =  ['You must specify a spline file for 3D scalp maps.\n\n'...
@@ -217,12 +232,12 @@ if get(handles.radio_3D, 'Value')
                 splineinfo.path    = ERP.splinefile;
                 splineinfo.new     = 0;
                 splineinfo.save    = 0;
-                splineinfo.newname = [];                
-        elseif ~isempty(handles.splinefile) && isempty(ERP.splinefile)                
+                splineinfo.newname = [];
+        elseif ~isempty(handles.splinefile) && isempty(ERP.splinefile)
                 splineinfo.path    = handles.splinefile;
                 splineinfo.new     = 0;
                 splineinfo.save    = 0;
-                splineinfo.newname = [];                
+                splineinfo.newname = [];
                 
                 % %
                 % % Open GUI
@@ -269,17 +284,25 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                 errorfound(msgboxText, title);
                 return
         end
-        indxh   = find(latencyArray>handles.xmax*1000,1);
+        indxh   = find(latencyArray>handles.xmax*kktime,1);
         if ~isempty(indxh)
-                msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(handles.xmax*1000) ' msec!'];
+                if strcmpi(datatype, 'ERP')
+                        msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(handles.xmax*kktime) ' msec!'];
+                else %FFT
+                        msgboxText =  ['Frequency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(handles.xmax*kktime) ' Hz!'];
+                end
                 title_msg  = 'ERPLAB: scalplotGUI() error:';
                 errorfound(msgboxText, title_msg);
                 return
         end
         
-        indxl  = find(latencyArray<handles.xmin*1000,1);
+        indxl  = find(latencyArray<handles.xmin*kktime,1);
         if ~isempty(indxl)
-                msgboxText =  ['Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(handles.xmin*1000) ' msec!'];
+                if strcmpi(datatype, 'ERP')
+                        msgboxText =  ['Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(handles.xmin*kktime) ' msec!'];
+                else %FFT
+                        msgboxText =  ['Frequency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(handles.xmin*kktime) ' Hz!'];
+                end
                 title_msg  = 'ERPLAB: scalplotGUI() error:';
                 errorfound(msgboxText, title_msg);
                 return
@@ -338,16 +361,26 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
         switch meamenu
                 case {2, 4, 5} % mean, meanlapla, rms
                         if size(latencyArray,2)<2
-                                msgboxText =  ['You must specify 2 latencies, at least, for getting %s-values.\n\n'...
-                                        'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
-                                        'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
+                                if strcmpi(datatype, 'ERP')
+                                        msgboxText =  ['You must specify 2 latencies, at least, for getting %s-values.\n\n'...
+                                                'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
+                                                'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
+                                else %FFT
+                                        msgboxText =  ['You must specify 2 frequencies, at least, for getting %s-values.\n\n'...
+                                                'For specifying two or more mean value maps, please use semicolon (;) to separate each frequency range.'...
+                                                'For instance, to plot mean value maps for 8 to 12 Hz AND 30 to 50 Hz just write 8 12;30 50'];
+                                end
                                 title = 'ERPLAB: scalplotGUI() error:';
                                 errorfound(sprintf(msgboxText, measurement), title);
                                 return
                         end
                 case {1,3} % insta, instalapla
                         if size(latencyArray,1)>1
-                                msgboxText =  'For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
+                                if strcmpi(datatype, 'ERP')
+                                        msgboxText =  'For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
+                                else %FFT
+                                        msgboxText =  'For %s you must specify as many frequencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
+                                end
                                 title = 'ERPLAB: scalplotGUI() error:';
                                 errorfound(sprintf(msgboxText, measurement), title);
                                 return
@@ -422,7 +455,7 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
         
         %
         % Animation
-        %        
+        %
         if get(handles.checkbox_animation, 'Value')
                 if get(handles.checkbox_adjust1frame, 'Value')
                         isagif    = 2; % adjust first frame
@@ -507,7 +540,11 @@ if  ~isempty(latencyArray) && ~isempty(binArray)
                 end
         end
 else
-        msgboxText =  'You must specify Bin AND Latency(ies) for making a scalp map.';
+        if strcmpi(datatype, 'ERP')
+                msgboxText =  'You must specify Bin AND Latency(ies) for making a scalp map.';
+        else % FFT
+                msgboxText =  'You must specify Bin AND Frequency(ies) for making a scalp map.';
+        end
         title = 'ERPLAB: scalpplotGUI empty input';
         errorfound(msgboxText, title);
         return
@@ -615,11 +652,16 @@ plotset = handles.output;
 if ~isfield(plotset, 'pscalp')
         plotset.pscalp = [];
 end
+datatype = handles.datatype;
 
 % measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
 %         'Area between two fixed latencies', 'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
-measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
-        'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
+if strcmpi(datatype, 'ERP')
+        measurearray = {'Instantaneous amplitude','Mean amplitude between two fixed latencies',...
+                'Instantaneous amplitude Laplacian', 'Mean amplitude Laplacian', 'Root mean square value'};
+else %FFT
+        measurearray = {'Instantaneous power','Mean power between two fixed frequencies'};
+end
 set(handles.popupmenu_measurement, 'String', measurearray);
 %set(handles.popupmenu_videospeed, 'String', {'0.1X','0.25X','0.5X', '0.75X','1X', '2X'});
 %set(handles.popupmenu_videospeed, 'Value', 5); % 1X
@@ -634,7 +676,11 @@ if isempty(plotset.pscalp)
         latrows = 1;
         latencyArraystr = vect2colon(latvals, 'Delimiter','off');
         measurement = 'insta';
-        baseline    = 'pre';
+        if strcmpi(datatype, 'ERP')
+                baseline    = 'pre';
+        else %FFT
+                baseline = 'none';
+        end
         cscale      = 'maxmin';
         mtype       = '2D';
         mapview     = '+X';
@@ -702,26 +748,44 @@ end
 %
 % Value to plot menu
 %
-if strcmpi(measurement,'insta')
-        meamenu =1;
-elseif strcmpi(measurement,'mean')
-        meamenu =2;
-elseif strcmpi(measurement,'instalapla') || strcmpi(measurement,'lapla')
-        meamenu =3;
-elseif strcmpi(measurement,'meanlapla')
-        meamenu =4;
-elseif strcmpi(measurement,'rms')
-        meamenu =5;
-else
-        meamenu =1;
+if strcmpi(datatype, 'ERP')
+        if strcmpi(measurement,'insta')
+                meamenu =1;
+        elseif strcmpi(measurement,'mean')
+                meamenu =2;
+        elseif strcmpi(measurement,'instalapla') || strcmpi(measurement,'lapla')
+                meamenu =3;
+        elseif strcmpi(measurement,'meanlapla')
+                meamenu =4;
+        elseif strcmpi(measurement,'rms')
+                meamenu =5;
+        else
+                meamenu =1;
+        end
+else %FFT
+        if strcmpi(measurement,'insta')
+                meamenu =1;
+        elseif strcmpi(measurement,'mean')
+                meamenu =2;
+        else
+                meamenu =1;
+        end
 end
 
 set(handles.popupmenu_measurement, 'Value', meamenu);
 switch meamenu
         case {1,4}
-                set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
+                if strcmpi(datatype, 'ERP')
+                        set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
+                else % FFT
+                        set(handles.text_example,'String','e.g. 10 or 10:5:35 to plot scalp maps at 10 or at 10,15,20,...,35 Hz')
+                end
         case {2,3,5,6}
-                set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
+                if strcmpi(datatype, 'ERP')
+                        set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
+                else % FFT
+                        set(handles.text_example,'String','e.g., 30 40 ; 40 50 to plot scalp maps for 30-40, 40-50 Hz)')
+                end
 end
 
 % colormap
@@ -731,38 +795,58 @@ set(handles.checkbox_colorbar, 'Value', Legcolorbar)
 %
 % Baseline setting
 %
-if ischar(baseline)
-        if strcmpi(baseline,'none')
-                set(handles.radiobutton_BLC_no,'Value',1);
-        elseif strcmpi(baseline,'pre')
-                set(handles.radiobutton_BLC_pre,'Value',1);
-        elseif strcmpi(baseline,'post')
-                set(handles.radiobutton_BLC_post,'Value',1);
-        elseif strcmpi(baseline,'all')
-                set(handles.radiobutton_BLC_whole,'Value',1);
-        else
-                numblc = str2num(baseline);
-                if isempty(numblc)
-                        set(handles.radiobutton_BLC_pre,'Value',1); %default
-                        set(handles.edit_customblc,'Enable', 'off')
+if strcmpi(datatype, 'ERP')
+        set(handles.radiobutton_BLC_no,'Enable','on');
+        set(handles.radiobutton_BLC_pre,'Enable','on');
+        set(handles.radiobutton_BLC_post,'Enable','on');
+        set(handles.radiobutton_BLC_whole,'Enable','on');
+        set(handles.radiobutton_BLC_custom,'Enable','on');
+        if ischar(baseline)
+                if strcmpi(baseline,'none')
+                        set(handles.radiobutton_BLC_no,'Value',1);
+                elseif strcmpi(baseline,'pre')
+                        set(handles.radiobutton_BLC_pre,'Value',1);
+                elseif strcmpi(baseline,'post')
+                        set(handles.radiobutton_BLC_post,'Value',1);
+                elseif strcmpi(baseline,'all')
+                        set(handles.radiobutton_BLC_whole,'Value',1);
                 else
-                        if size(numblc,1)~=1 || size(numblc,2)~=2
+                        numblc = str2num(baseline);
+                        if isempty(numblc)
                                 set(handles.radiobutton_BLC_pre,'Value',1); %default
                                 set(handles.edit_customblc,'Enable', 'off')
                         else
-                                set(handles.radiobutton_BLC_custom,'Value',1); %custom
-                                set(handles.edit_customblc,'String', baseline); %custom
+                                if size(numblc,1)~=1 || size(numblc,2)~=2
+                                        set(handles.radiobutton_BLC_pre,'Value',1); %default
+                                        set(handles.edit_customblc,'Enable', 'off')
+                                else
+                                        set(handles.radiobutton_BLC_custom,'Value',1); %custom
+                                        set(handles.edit_customblc,'String', baseline); %custom
+                                end
                         end
                 end
-        end
-else
-        if size(baseline,1)~=1 || size(baseline,2)~=2
-                set(handles.radiobutton_BLC_pre,'Value',1); %default
-                set(handles.edit_customblc,'Enable', 'off')
         else
-                set(handles.radiobutton_BLC_custom,'Value',1); %custom
-                set(handles.edit_customblc,'String', num2str(baseline)); %custom
+                if size(baseline,1)~=1 || size(baseline,2)~=2
+                        set(handles.radiobutton_BLC_pre,'Value',1); %default
+                        set(handles.edit_customblc,'Enable', 'off')
+                else
+                        set(handles.radiobutton_BLC_custom,'Value',1); %custom
+                        set(handles.edit_customblc,'String', num2str(baseline)); %custom
+                end
         end
+else %FFT
+        set(handles.radiobutton_BLC_no,'Value',1);
+        set(handles.radiobutton_BLC_pre,'Value',0);
+        set(handles.radiobutton_BLC_post,'Value',0);
+        set(handles.radiobutton_BLC_whole,'Value',0);
+        set(handles.radiobutton_BLC_custom,'Value',0);
+        
+        set(handles.radiobutton_BLC_no,'Enable','off');
+        set(handles.radiobutton_BLC_pre,'Enable','off');
+        set(handles.radiobutton_BLC_post,'Enable','off');
+        set(handles.radiobutton_BLC_whole,'Enable','off');
+        set(handles.radiobutton_BLC_custom,'Enable','off');
+        
 end
 
 %
@@ -818,7 +902,7 @@ if strcmpi(mtype,'2D')
         set(handles.radio_2D, 'Value', 1);
         set(handles.radio_3D, 'Value', 0);
         set(handles.edit_customview, 'Enable', 'off')
-        set(handles.pushbutton_splinefile, 'Enable', 'off')       
+        set(handles.pushbutton_splinefile, 'Enable', 'off')
 else % 3D
         splinefile = handles.splinefile;
         if isempty(splinefile)
@@ -854,28 +938,39 @@ set(handles.popupmenu_orientation, 'String', morimenu);
 set(handles.popupmenu_orientation, 'Value', mview);
 popupmenu_orientation_Callback(hObject, eventdata, handles)
 
-if isfield(plotset.pscalp, 'agif')
-        agif   = plotset.pscalp.agif.value;
-        FPS    = plotset.pscalp.agif.fps;
-        fnameagif = plotset.pscalp.agif.fname;
-        
-        if agif>0
-                set(handles.checkbox_animation,'Value', 1)
-                set(handles.checkbox_adjust1frame,'Enable', 'on')
-                set(handles.edit_fps,'Enable', 'on')
-                set(handles.edit_fps,'String', num2str(FPS))
-                set(handles.edit_fname_animation,'Enable', 'on')
-                set(handles.edit_fname_animation,'String', fnameagif)
-                set(handles.pushbutton_browse_animation,'Enable', 'on')
+if strcmpi(datatype, 'ERP')
+        if isfield(plotset.pscalp, 'agif')
+                agif   = plotset.pscalp.agif.value;
+                FPS    = plotset.pscalp.agif.fps;
+                fnameagif = plotset.pscalp.agif.fname;
                 
-                if agif==2
-                        set(handles.checkbox_adjust1frame,'Value', 1)
+                if agif>0
+                        set(handles.checkbox_animation,'Value', 1)
+                        set(handles.checkbox_adjust1frame,'Enable', 'on')
+                        set(handles.edit_fps,'Enable', 'on')
+                        set(handles.edit_fps,'String', num2str(FPS))
+                        set(handles.edit_fname_animation,'Enable', 'on')
+                        set(handles.edit_fname_animation,'String', fnameagif)
+                        set(handles.pushbutton_browse_animation,'Enable', 'on')
+                        
+                        if agif==2
+                                set(handles.checkbox_adjust1frame,'Value', 1)
+                        else
+                                set(handles.checkbox_adjust1frame,'Value', 0)
+                        end
+                        set(handles.checkbox_adjust1frame,'Enable', 'on')
                 else
+                        set(handles.checkbox_animation,'Value', 0)
+                        set(handles.checkbox_animation,'Value', 0)
                         set(handles.checkbox_adjust1frame,'Value', 0)
+                        set(handles.checkbox_adjust1frame,'Enable', 'off')
+                        set(handles.edit_fps,'Enable', 'off')
+                        set(handles.edit_fname_animation,'Enable', 'off')
+                        set(handles.pushbutton_browse_animation,'Enable', 'off')
+                        set(handles.checkbox_adjust1frame,'Value', 0)
+                        set(handles.checkbox_adjust1frame,'Enable', 'off')
                 end
-                set(handles.checkbox_adjust1frame,'Enable', 'on')
         else
-                set(handles.checkbox_animation,'Value', 0)
                 set(handles.checkbox_animation,'Value', 0)
                 set(handles.checkbox_adjust1frame,'Value', 0)
                 set(handles.checkbox_adjust1frame,'Enable', 'off')
@@ -885,7 +980,7 @@ if isfield(plotset.pscalp, 'agif')
                 set(handles.checkbox_adjust1frame,'Value', 0)
                 set(handles.checkbox_adjust1frame,'Enable', 'off')
         end
-else
+else  %FFT
         set(handles.checkbox_animation,'Value', 0)
         set(handles.checkbox_adjust1frame,'Value', 0)
         set(handles.checkbox_adjust1frame,'Enable', 'off')
@@ -1171,6 +1266,7 @@ end
 %--------------------------------------------------------------------------
 function popupmenu_measurement_Callback(hObject, eventdata, handles)
 v = get(hObject, 'Value');
+datatype = handles.datatype;
 % switch v
 %         case {1,4}
 %                 set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
@@ -1181,10 +1277,19 @@ v = get(hObject, 'Value');
 % end
 switch v
         case {1,3}
-                set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
-                set(handles.checkbox_realtime, 'Enable', 'on');
+                if strcmpi(datatype, 'ERP')
+                        set(handles.text_example,'String','e.g. 300 or 100:50:350 to plot scalp maps at 300 or at 100,150,200,...,350 ms')
+                        set(handles.checkbox_realtime, 'Enable', 'on');
+                else %FFT
+                        set(handles.text_example,'String','e.g. 8 or 8:2:16 to plot scalp maps at 8 or at 8,10,12,...,16 Hz')
+                        set(handles.checkbox_realtime, 'Enable', 'off');
+                end
         case {2,4,5}
-                set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
+                if strcmpi(datatype, 'ERP')
+                        set(handles.text_example,'String','e.g., 300 400 ; 400 500 to plot scalp maps for 300-400, 400-500 ms)')
+                else %FFT
+                        set(handles.text_example,'String','e.g., 8 12 ; 30 50 to plot scalp maps for 8-12, 30-50 Hz)')
+                end
                 set(handles.checkbox_realtime, 'Enable', 'off');
 end
 

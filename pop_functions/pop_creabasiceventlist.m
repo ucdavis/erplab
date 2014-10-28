@@ -1,7 +1,7 @@
 % PURPOSE  :	Creates the EVENTLIST structure with the event information
-%               extracted and reorganized from EEG.event (default) or from
-%               an external list (text file). The EVENTLIST structure is
-%               attached to the EEG structure.
+%                 extracted and reorganized from EEG.event (default) or from
+%                 an external list (text file). The EVENTLIST structure is
+%                 attached to the EEG structure.
 %
 % FORMAT   :
 %
@@ -73,7 +73,7 @@ if isobject(EEG) % eegobj
         return
 end
 if nargin==1
-        serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 2);
+        serror = erplab_eegscanner(EEG, 'pop_creabasiceventlist', 2, 0, 0, 0, 2);
         if serror
                 return
         end

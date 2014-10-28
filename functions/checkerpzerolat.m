@@ -47,11 +47,21 @@ if ~iserpstruct(ERP)
       fprintf('\nWARNING: checkeegzerolat() only works with ERP structure. This call was ignored.\n')
       return
 end
+if isfield(ERP, 'datatype')
+    datatype = ERP.datatype;
+else % FFT
+    datatype = 'ERP';
+end
+if strcmpi(datatype, 'ERP')
+    kktime = 1000;
+else
+    kktime = 1;
+end
 auxtimes  = ERP.times;
-[v indx]  = min(abs(auxtimes));
+[v, indx] = min(abs(auxtimes));
 ERP.times = auxtimes - auxtimes(indx);
-ERP.xmin  = min(ERP.times)/1000;
-ERP.xmax  = max(ERP.times)/1000;
+ERP.xmin  = min(ERP.times)/kktime;
+ERP.xmax  = max(ERP.times)/kktime;
 ERP.srate = round(ERP.srate);
 if ERP.times(1)~=auxtimes(1)
       msg = ['\nWarning: zero time-locked stimulus latency values were not found.\n'...

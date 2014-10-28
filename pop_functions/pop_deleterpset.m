@@ -41,6 +41,7 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
+        
         prompt    = {'Erpset(s) to clear:'};
         dlg_title = 'Delete erpset(s)';
         num_lines = 1;

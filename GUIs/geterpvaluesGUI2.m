@@ -57,13 +57,18 @@ handles.indxlistb  = [];
 handles.listch     = '';
 handles.indxlistch = [];
 handles.owfp       = 0;  % over write file permission. 1:allowed; 0:do not overwrite w/o asking.
+try
+        cerpi = varargin{3};
+catch
+        cerpi = 0;
+end
 
 try
         ALLERP = varargin{1};
         if isstruct(ALLERP)
-                handles.xmin  = ALLERP(1).xmin;
-                handles.xmax  = ALLERP(1).xmax;
-                handles.srate = ALLERP(1).srate;
+                handles.xmin  = ALLERP(cerpi).xmin;
+                handles.xmax  = ALLERP(cerpi).xmax;
+                handles.srate = ALLERP(cerpi).srate;
                 handles.nsets = length(ALLERP);
         else
                 handles.xmin  = [];
@@ -71,18 +76,31 @@ try
                 handles.srate = [];
                 handles.nsets = [];
         end
+        if isfield(ALLERP, 'datatype')
+                datatype = ALLERP(cerpi).datatype;
+        else
+                datatype = 'ERP';
+        end
 catch
         ALLERP = [];
         handles.xmin  = [];
         handles.xmax  = [];
         handles.srate = [];
         handles.nsets = [];
+        datatype = 'ERP';
 end
+handles.datatype = datatype;
+if strcmpi(datatype, 'ERP')
+        kktime = 1000;
+else %FFT
+        kktime = 1;
+        handles.srate = ALLERP(1).pnts/ALLERP(cerpi).xmax;
+end
+handles.kktime     = kktime;
 try
         def = varargin{2};
         handles.def = def;
 catch
-        
         def = {1, 1, '', 0, 1, 1, 'instabl', 1, 3, 'pre', 0, 1, 5, 0, 0.5, NaN, 0, 1, '', 0, 1};
         
         %         def =
@@ -112,11 +130,6 @@ catch
         %                 sampeak = 3;
         %         end
         handles.def = def;
-end
-try
-        cerpi = varargin{3};
-catch
-        cerpi = 0;
 end
 
 handles.binmem    = def{5};
@@ -237,7 +250,7 @@ prename = get(handles.edit_fname,'String');
 % if ispc
 %         [filename, filepath, filterindex] = uiputfile({'*.xls';'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
 % else
-        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
+[filename, filepath, filterindex] = uiputfile({'*.txt';'*.dat';'*.*'}, 'Save Output file as', prename);
 % end
 if isequal(filename,0)
         disp('User selected Cancel')
@@ -304,6 +317,14 @@ web http://erpinfo.org/erplab/erplab-documentation/manual_4/ERP_Measurement_Tool
 
 %--------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)
+datatype = handles.datatype;
+kktime = handles.kktime;
+if kktime==1 % sec or Hz
+        TimeOp = 0;
+else % ms
+        TimeOp = 1;
+end
+
 binArraystr  = get(handles.edit_bins, 'String');
 chanArraystr = get(handles.edit_channels, 'String');
 latestr      = get(handles.edit_latency, 'String');
@@ -316,7 +337,7 @@ srate = handles.srate;
 
 if get(handles.radiobutton_erpset, 'Value')
         erpset   = str2num(char(get(handles.edit_erpset, 'String')));
-        [chkerp xxx msgboxText] = checkERPs(hObject, eventdata, handles);
+        [chkerp, xxx, msgboxText] = checkERPs(hObject, eventdata, handles);
         
         if chkerp>0
                 title = 'ERPLAB: geterpvaluesGUI()';
@@ -455,29 +476,46 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
         nlate      = length(late);
         
         if nlate==2
-                if late(1)<xmin*1000 && ms2sample(abs(late(1)-xmin*1000), srate)>2
-                        msgboxText =  'The onset of your measurement window cannot be more than 2 samples earlier than the ERP window (%.1f ms)\n';
+                if late(1)<xmin*kktime && time2sample(TimeOp, abs(late(1)-xmin*kktime), srate)>2
+                        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                msgboxText =  'The onset of your measurement window cannot be more than 2 samples earlier than the FFT window (%.1f Hz)\n';
+                        else
+                                msgboxText =  'The onset of your measurement window cannot be more than 2 samples earlier than the ERP window (%.1f ms)\n';
+                        end
                         title = 'ERPLAB: measurement window';
-                        errorfound(sprintf(msgboxText, xmin*1000), title);
+                        errorfound(sprintf(msgboxText, xmin*kktime), title);
                         return
                 end
-                if late(2)>xmax*1000 && ms2sample(abs(late(2)-xmax*1000), srate)>2
-                        msgboxText =  'The offset of your measurement window cannot be more than 2 samples later than the ERP window (%.1f ms)\n';
+                if late(2)>xmax*kktime && time2sample(TimeOp, abs(late(2)-xmax*kktime), srate)>2
+                        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                msgboxText =  'The offset of your measurement window cannot be more than 2 samples later than the FFT window (%.1f Hz)\n';
+                        else
+                                msgboxText =  'The offset of your measurement window cannot be more than 2 samples later than the ERP window (%.1f ms)\n';
+                        end
                         title = 'ERPLAB: measurement window';
-                        errorfound(sprintf(msgboxText,xmax*1000), title);
+                        errorfound(sprintf(msgboxText,xmax*kktime), title);
                         return
                 end
                 if late(1)>=late(2)
-                        msgboxText =  ['For the measurement window, lower time limit must be on the left.\n'...
-                                'Additionally, lower latency limit must be at least 1/fs seconds\n'...
-                                'lesser than the higher one.'];
+                        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                msgboxText =  ['For the measurement window, lower frequency limit must be on the left.\n'...
+                                        'Additionally, lower frequency limit must be not less than 1 Hz(recommended)\n'];
+                        else
+                                msgboxText =  ['For the measurement window, lower time limit must be on the left.\n'...
+                                        'Additionally, lower latency limit must be at least 1/fs seconds\n'...
+                                        'lesser than the higher one.'];
+                        end
                         title = 'ERPLAB: measurement window';
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
         elseif nlate==1
-                if late<xmin*1000 || late>xmax*1000
-                        msgboxText =  'For measuring, latency value cannot be lower than pre-stimulus onset nor greater than the ERP window.';
+                if late<xmin*kktime || late>xmax*kktime
+                        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                msgboxText =  'For measuring, frequency value cannot be lower than 1 (recommended) nor greater than the Nyquist frequency (fs/2).';
+                        else
+                                msgboxText =  'For measuring, latency value cannot be lower than pre-stimulus onset nor greater than the ERP window.';
+                        end
                         title = 'ERPLAB: measurement window';
                         errorfound(sprintf(msgboxText), title);
                         return
@@ -493,17 +531,30 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
         measure_option = get(handles.popupmenu_measurement, 'Value');
         areatype       = get(handles.popupmenu_areatype,'Value');  % 1=total ; 2=pos; 3=neg
         
-        msgboxText4peak = ['The requested measurement window is invalid given the number of points specified for finding a local peak '...
-                'and the epoch length of the ERP waveform.\n\n You have specified a local peak over ±%g points, which means that '...
-                'there must be %g sample points between the onset of your measurement window and the onset of the waveform, '...
-                'and/or %g sample points between the end of your measurement window and the end of the waveform.\n\n'...
-                'Because the waveform starts at %.1f ms and ends at %.1f ms, your measurement window cannot go beyond [%.1f  %.1f] ms (unless you reduce '...
-                'the number of points required to define the local peak).'];
+        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                msgboxText4peak = ['The requested measurement window is invalid given the number of points specified for finding a local peak '...
+                        'and the epoch length of the FFT waveform.\n\n You have specified a local peak over ±%g points, which means that '...
+                        'there must be %g sample points between the onset of your measurement window and the onset of the waveform, '...
+                        'and/or %g sample points between the end of your measurement window and the end of the waveform.\n\n'...
+                        'Because the waveform starts at %.1f Hz and ends at %.1f Hz, your measurement window cannot go beyond [%.1f  %.1f] Hz (unless you reduce '...
+                        'the number of points required to define the local peak).'];
+        else
+                msgboxText4peak = ['The requested measurement window is invalid given the number of points specified for finding a local peak '...
+                        'and the epoch length of the ERP waveform.\n\n You have specified a local peak over ±%g points, which means that '...
+                        'there must be %g sample points between the onset of your measurement window and the onset of the waveform, '...
+                        'and/or %g sample points between the end of your measurement window and the end of the waveform.\n\n'...
+                        'Because the waveform starts at %.1f ms and ends at %.1f ms, your measurement window cannot go beyond [%.1f  %.1f] ms (unless you reduce '...
+                        'the number of points required to define the local peak).'];
+        end
         
         switch measure_option
                 case 1  % instabl
                         if nlate~=1
-                                msgboxText =  'You must define only one latency';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define only one frequency';
+                                else
+                                        msgboxText =  'You must define only one latency';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -512,7 +563,11 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         fprintf('\nInstantaneous amplitude measurement in progress...\n');
                 case 2  % meanbl
                         if nlate~=2
-                                msgboxText =  'You must define two latencies';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define two frequencies';
+                                else
+                                        msgboxText =  'You must define two latencies';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -521,7 +576,11 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         fprintf('\nMean amplitude measurement in progress...\n');
                 case 3  % peakampbl
                         if nlate~=2
-                                msgboxText =  'You must define two latencies';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define two frequencies';
+                                else
+                                        msgboxText =  'You must define two latencies';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -531,23 +590,27 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
                         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
                         
-                        cc1    = late(1)-sample2ms(sampeak, srate) < xmin*1000;
-                        ccdiff = abs((late(1)-sample2ms(sampeak, srate)) - xmin*1000);
-                        cc2    = ms2sample(ccdiff, srate)>2;
-                        cc3    = late(2)+sample2ms(sampeak, srate)>xmax*1000;
-                        ccdiff = abs((late(2)+sample2ms(sampeak, srate)) - xmax*1000);
-                        cc4    = ms2sample(ccdiff, srate)>2;
+                        cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
+                        ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
+                        cc2    = time2sample(TimeOp, ccdiff, srate)>2;
+                        cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
+                        ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
+                        cc4    = time2sample(TimeOp, ccdiff, srate)>2;
                         
                         if (cc1 && cc2) || (cc3 && cc4)
                                 msgboxText =  msgboxText4peak;
                                 title = 'ERPLAB: measurement window';
-                                errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*1000, xmax*1000, xmin*1000+sample2ms(sampeak,srate), xmax*1000-sample2ms(sampeak,srate)), title);
+                                errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), title);
                                 return
                         end
                         fprintf('\nLocal peak measurement in progress...\n');
                 case 4  % peaklatbl
                         if nlate~=2
-                                msgboxText =  'You must define two latencies';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define two frequencies';
+                                else
+                                        msgboxText =  'You must define two latencies';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -557,23 +620,31 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
                         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
                         
-                        cc1    = late(1)-sample2ms(sampeak, srate) < xmin*1000;
-                        ccdiff = abs((late(1)-sample2ms(sampeak, srate)) - xmin*1000);
-                        cc2    = ms2sample(ccdiff, srate)>2;
-                        cc3    = late(2)+sample2ms(sampeak, srate)>xmax*1000;
-                        ccdiff = abs((late(2)+sample2ms(sampeak, srate)) - xmax*1000);
-                        cc4    = ms2sample(ccdiff, srate)>2;
+                        cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
+                        ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
+                        cc2    = time2sample(TimeOp, ccdiff, srate)>2;
+                        cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
+                        ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
+                        cc4    = time2sample(TimeOp, ccdiff, srate)>2;
                         
                         if (cc1 && cc2) || (cc3 && cc4)
                                 msgboxText =  msgboxText4peak;
                                 title = 'ERPLAB: measurement window';
-                                 errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*1000, xmax*1000, xmin*1000+sample2ms(sampeak,srate), xmax*1000-sample2ms(sampeak,srate)), title);
+                                errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), kktime);
                                 return
                         end
-                        fprintf('\nLocal peak latency measurement in progress...\n');
+                        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                fprintf('\nLocal peak frequency measurement in progress...\n');
+                        else
+                                fprintf('\nLocal peak latency measurement in progress...\n');
+                        end
                 case 5  % fpeaklat
                         if nlate~=2
-                                msgboxText =  'You must define two latencies';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define two frequencies';
+                                else
+                                        msgboxText =  'You must define two latencies';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -586,23 +657,31 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
                         fracmearep = 2-get(handles.popupmenu_fracreplacement,'Value');
                         
-                        cc1    = late(1)-sample2ms(sampeak, srate) < xmin*1000;
-                        ccdiff = abs((late(1)-sample2ms(sampeak, srate)) - xmin*1000);
-                        cc2    = ms2sample(ccdiff, srate)>2;
-                        cc3    = late(2)+sample2ms(sampeak, srate)>xmax*1000;
-                        ccdiff = abs((late(2)+sample2ms(sampeak, srate)) - xmax*1000);
-                        cc4    = ms2sample(ccdiff, srate)>2;
+                        cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
+                        ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
+                        cc2    = time2sample(TimeOp, ccdiff, srate)>2;
+                        cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
+                        ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
+                        cc4    = time2sample(TimeOp, ccdiff, srate)>2;
                         
                         if (cc1 && cc2) || (cc3 && cc4)
                                 msgboxText =  msgboxText4peak;
                                 title = 'ERPLAB: measurement window';
-                                 errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*1000, xmax*1000, xmin*1000+sample2ms(sampeak,srate), xmax*1000-sample2ms(sampeak,srate)), title);
+                                errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), title);
                                 return
                         end
-                        fprintf('\nFractional Peak Latency measurement in progress...\n');
+                        if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                fprintf('\nFractional Peak Frequency measurement in progress...\n');
+                        else
+                                fprintf('\nFractional Peak Latency measurement in progress...\n');
+                        end
                 case 6  % inte/area value (fixed latencies)
                         if nlate~=2
-                                msgboxText =  'You must define two latencies';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define two frequencies';
+                                else
+                                        msgboxText =  'You must define two latencies';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -622,9 +701,19 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                                         fprintf('\nNegative area measurement in progress...\n');
                         end
                         
-                case 7   % inte/area value (auto latencies)
+                case 7   % inte/area value (auto latencies)                        
+                        if ~strcmpi(datatype, 'ERP')
+                                msgboxText = 'Sorry. This type of measurement is not allowed for Power Spectrum data';
+                                title = 'ERPLAB: geterpvaluesGUI() -> invalid input';
+                                errorfound(sprintf(msgboxText), title);
+                                return
+                        end
                         if nlate~=1
-                                msgboxText =  'You must define only one latency';
+                                %if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                %        msgboxText =  'You must define only one frequency';
+                                %else
+                                        msgboxText =  'You must define only one latency';
+                                %end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -646,7 +735,11 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         
                 case 8   % fractional inte/area latency
                         if nlate~=2
-                                msgboxText =  'You must define two latencies';
+                                if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
+                                        msgboxText =  'You must define two frequencies';
+                                else
+                                        msgboxText =  'You must define two latencies';
+                                end
                                 title = 'ERPLAB: measurement window';
                                 errorfound(sprintf(msgboxText), title);
                                 return
@@ -654,21 +747,25 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         
                         set(handles.text_fraca,'String', 'Fractional Area')
                         frac = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
-                        
+                        if strcmpi(datatype, 'ERP')
+                                meawordx = 'Latency';
+                        else
+                                meawordx = 'Frequency';
+                        end
                         switch areatype
                                 case 1
                                         moption = 'fareatlat';
-                                        fprintf('\nFractional Total Area Latency measurement in progress...\n');
+                                        fprintf('\nFractional Total Area %s measurement in progress...\n', meawordx);
                                 case 2
                                         moption = 'fninteglat';
-                                        fprintf('\nFractional Total Area Latency measurement in progress...\n');
+                                        fprintf('\nFractional Total Area %s measurement in progress...\n', meawordx);
                                 case 3
                                         moption = 'fareaplat';
-                                        fprintf('\nFractional Positive Area Latency measurement in progress...\n');
+                                        fprintf('\nFractional Positive Area %s measurement in progress...\n', meawordx);
                                         
                                 case 4
                                         moption = 'fareanlat';
-                                        fprintf('\nFractional Negative Area Latency measurement in progress...\n');
+                                        fprintf('\nFractional Negative Area %s measurement in progress...\n', meawordx);
                                 otherwise
                                         error('wrong area type.')
                         end
@@ -714,7 +811,7 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                                 errorfound(sprintf(msgboxText), title);
                                 return
                         end
-                        blcnum = blcnumx/1000;               % from msec to secs  03-28-2009
+                        blcnum = blcnumx/kktime;               % from msec to secs  03-28-2009
                         
                         %
                         % Check & fix baseline range
@@ -725,7 +822,7 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
                         if blcnum(2)>xmax
                                 blcnum(2) = xmax;
                         end
-                        blc = blcnum*1000;  % sec to msec
+                        blc = blcnum*kktime;  % sec to msec
                 end
         end
         
@@ -850,7 +947,7 @@ else
                         
                         if i==1 && length(fulltext)-1==0  % put this one on the list
                                 ERP1 = load(newline, '-mat');
-                                ERP = ERP1.ERP;
+                                ERP  = ERP1.ERP;
                                 
                                 if ~iserpstruct(ERP)
                                         error('')
@@ -952,7 +1049,6 @@ end
 
 %--------------------------------------------------------------------------
 function edit_bins_CreateFcn(hObject, eventdata, handles)
-
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
 end
@@ -1094,7 +1190,7 @@ if lentext>1
         try
                 filereadin = strtrim(lista{1});
                 ERP1 = load(filereadin, '-mat');
-                ERP = ERP1.ERP;
+                ERP  = ERP1.ERP;
                 
                 if ~iserpstruct(ERP)
                         error('')
@@ -1146,16 +1242,20 @@ if get(handles.radiobutton_erpset, 'Value')
         else
                 return
         end
-        [chkerp erp_ini] = checkERPs(hObject, eventdata, handles);
+        [chkerp, erp_ini] = checkERPs(hObject, eventdata, handles);
         if chkerp>0
                 return % problem was found
         end
         ALLERP = handles.ALLERP;
         handles = preparelists(hObject, eventdata, handles, ALLERP(erp_ini));
 end
-
 %--------------------------------------------------------------------------
-function [chkerp erp_ini msgboxText] = checkERPs(hObject, eventdata, handles)
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+function [chkerp, erp_ini, msgboxText] = checkERPs(hObject, eventdata, handles)
 chkerp = 0; % no problem
 msgboxText = '';
 erp_ini    = [];
@@ -1192,10 +1292,11 @@ nerp2      = length(indexerp);
 
 for k=1:nerp2
         try
-                kbin(k)  = ALLERP(indexerp(k)).nbin;
-                kchan(k) = ALLERP(indexerp(k)).nchan;
+                kbin(k)   = ALLERP(indexerp(k)).nbin;
+                kchan(k)  = ALLERP(indexerp(k)).nchan;
+                kdtype{k} = ALLERP(indexerp(k)).datatype;
         catch
-                msgboxText = 'ERPset %g has a invalid number of bins/channel\n';
+                msgboxText = 'ERPset %g has a invalid number of bins/channel or different data type.\n';
                 chkerp  = 4; % invalid number of bins/channel
                 break
         end
@@ -1204,9 +1305,13 @@ if chkerp==4
         return
 end
 
-bintest  = length(unique_bc2(kbin));
-chantest = length(unique_bc2(kchan));
+bintest   = length(unique(kbin));
+chantest  = length(unique(kchan));
+dtypetest = length(unique(kdtype));
 
+%
+% bins
+%
 if bintest>1
         fprintf('Detail:\n')
         fprintf('-------\n')
@@ -1221,6 +1326,10 @@ if bintest>1
 else
         nbin = unique_bc2(kbin);
 end
+
+%
+% channels
+%
 if chantest>1
         fprintf('Detail:\n')
         fprintf('-------\n')
@@ -1234,6 +1343,22 @@ if chantest>1
         return
 else
         nchan = unique_bc2(kchan);
+end
+
+%
+% datatype
+%
+if dtypetest>1
+        fprintf('Detail:\n')
+        fprintf('-------\n')
+        
+        for j=1:nerp2
+                fprintf('Erpset #%g has data type ''%s''\n', indexerp(j),ALLERP(indexerp(j)).datatype)
+        end
+        msgboxText =  ['Type of data across ERPsets is different!\n\n'...
+                'See detail at command window.\n'];
+        chkerp  = 10; % data type across ERPsets is different
+        return
 end
 
 indxbin  = str2num(get(handles.edit_bins, 'String'));
@@ -1545,7 +1670,6 @@ handles.chanmem = selchan;
 
 % Update handles structure
 guidata(hObject, handles);
-
 drawnow
 
 % -------------------------------------------------------------------------
@@ -1564,9 +1688,7 @@ fulltext = char(strtrim(get(handles.listbox_erpnames,'String')));
 if length(fulltext)>1
         fullname = get(handles.edit_filelist, 'String');
         if ~strcmp(fullname,'')
-                
                 fid_list   = fopen( fullname , 'w');
-                
                 for i=1:size(fulltext,1)
                         fprintf(fid_list,'%s\n', fulltext(i,:));
                 end
@@ -1618,13 +1740,14 @@ end
 
 %--------------------------------------------------------------------------
 function popupmenu_samp_amp_Callback(hObject, eventdata, handles)
+kktime = handles.kktime;
 srate = handles.srate;
 pnts  = get(handles.popupmenu_samp_amp,'Value')-1;
 intfactor = get(handles.popupmenu_interpofactor,'Value');
 if isempty(srate)
         msecstr = sprintf('pnts ( ? ms)');
 else
-        msecstr = sprintf('pnts (%4.1f ms)', (pnts/srate*intfactor)*1000);
+        msecstr = sprintf('pnts (%4.1f ms)', (pnts/srate*intfactor)*kktime);
 end
 set(handles.text_samp,'String',msecstr)
 
@@ -1636,10 +1759,8 @@ end
 
 %--------------------------------------------------------------------------
 function popupmenu_measurement_Callback(hObject, eventdata, handles)
-
 meamenu   = get(handles.popupmenu_measurement, 'String');
 currentm  = get(handles.popupmenu_measurement, 'Value');
-
 if currentm==7
         mnamex = 'Numerical integration/Area between two (automatically detected) zero-crossing latencies';
         question = [ '%s\n\nThis tool is still in alpha phase.\n'...
@@ -1654,8 +1775,15 @@ end
 
 areatype  = get(handles.popupmenu_areatype,'Value');
 formatout = get(handles.popupmenu_formatout,'Value');
-version  = geterplabversion;
+version   = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   ERP Measurements GUI   -   ' meamenu{currentm}])
+
+datatype = handles.datatype;
+if strcmpi(datatype, 'ERP')
+        meawordx = 'latenc';
+else
+        meawordx = 'frequenc';
+end
 
 %
 %  NEW MENU
@@ -1674,12 +1802,12 @@ switch currentm
         case 1 % 'Instantaneous amplitude'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use one latency)');
+                set(handles.text_tip_inputlat, 'String',['(use one ' meawordx 'y)']);
                 set(handles.popupmenu_areatype,'Enable','off')
         case {2,6} % mean, area, integral between fixed latencies
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 if currentm==6
                         set(handles.popupmenu_areatype,'Enable','on')
                 else
@@ -1688,19 +1816,19 @@ switch currentm
         case {3,4} % 'Peak amplitude', 'Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 set(handles.popupmenu_areatype,'Enable','off')
                 set(handles.popupmenu_fracreplacement, 'String', {'fractional absolute peak','"not a number" (NaN)'});
         case 5 % 'Fractional Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Peak')
                 set(handles.popupmenu_areatype,'Enable','off')
         case {7} % area, integral automatic limits
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use one "seed" latency)');
+                set(handles.text_tip_inputlat, 'String',['(use one "seed" ' meawordx 'y)']);
                 if currentm==7
                         set(handles.popupmenu_areatype,'Enable','on')
                 else
@@ -1709,14 +1837,14 @@ switch currentm
         case 8 % 'Fractional Area latency'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Area')
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_fracreplacement, 'String', {'show error message','"not a number" (NaN)'});
         otherwise % 'test'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
 end
 
 %--------------------------------------------------------------------------
@@ -1784,9 +1912,10 @@ else
         nbin  = 1;
         nchan = 1;
 end
-
+datatype = handles.datatype;
 set(handles.popupmenu_samp_amp,'String',cellstr(num2str([0:40]')))
 set(handles.popupmenu_precision,'String', num2str([1:6]'))
+kktime = handles.kktime;
 
 %
 %  NEW MENU
@@ -1810,15 +1939,25 @@ set(handles.popupmenu_precision,'String', num2str([1:6]'))
 % 4 = 'Only negative area'
 %
 
-measurearray = {'Instantaneous amplitude',...
-        'Mean amplitude between two fixed latencies',...
-        'Peak amplitude',...
-        'Peak latency',...
-        'Fractional Peak latency',...
-        'Numerical integration/Area between two fixed latencies',...
-        'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-        'Fractional Area latency'};
-
+if strcmpi(datatype, 'ERP')
+        measurearray = {'Instantaneous amplitude',...
+                'Mean amplitude between two fixed latencies',...
+                'Peak amplitude',...
+                'Peak latency',...
+                'Fractional Peak latency',...
+                'Numerical integration/Area between two fixed latencies',...
+                'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
+                'Fractional Area latency'};
+else
+        measurearray = {'Instantaneous power',...
+                'Mean power between two fixed frequencies',...
+                'Peak power',...
+                'Peak frequency',...
+                'Fractional Peak frequency',...
+                'Numerical integration/Area between two fixed frequencies',...
+                '------------------------------------------------------'...
+                'Fractional Area frequency'};
+end
 set(handles.popupmenu_measurement, 'String', measurearray);
 set(handles.popupmenu_locpeakreplacement, 'String', {'absolute peak','"not a number" (NaN)','show error message'});
 set(handles.popupmenu_fracreplacement, 'String', {'closest value','"not a number" (NaN)','show error message'});
@@ -1847,16 +1986,21 @@ def = handles.def;
 % def{:}
 
 if ~isempty(def)
-        optioni    = def{1}; %1 means from hard drive, 0 means from erpsets menu; 2 means current erpset (at erpset menu)
-        erpset     = def{2}; % indices of erpset or filename of list of erpsets
+        optioni    = def{1};  %1 means from hard drive, 0 means from erpsets menu; 2 means current erpset (at erpset menu)
+        erpset     = def{2};  % indices of erpset or filename of list of erpsets
         fname      = def{3};
         latency    = def{4};
         binArray   = def{5};
         chanArray  = def{6};
-        op         = def{7}; % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
+        op         = def{7};  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
         coi        = def{8};
         dig        = def{9};
-        blc        = def{10};
+        
+        if strcmpi(datatype, 'ERP')
+                blc        = def{10};
+        else
+                blc = 'none';
+        end
         binlabop   = def{11}; % 0: bin# as bin label for table, 1 bin label
         polpeak    = def{12}; % local peak polarity
         sampeak    = def{13}; % number of samples (one-side) for local peak detection criteria
@@ -1882,7 +2026,11 @@ else
         op         = 'instabl'; % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
         coi        = 0; % ignore overlapped components
         dig        = 3;
-        blc        = 'pre';
+        if strcmpi(datatype, 'ERP')
+                blc        = 'pre';
+        else
+                blc        = 'none';
+        end
         binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
         polpeak    = 1; % local peak polarity
         sampeak    = 3; % number of samples (one-side) for local peak detection criteria
@@ -1912,13 +2060,18 @@ end
 areatype=1; % 1=total; 2=integral; 3=pos; 4= neg
 fracmenuindex = 2-fracmearep;
 
-if ismember_bc2(indxmeaX,[6 7 8 16])
+if ismember(indxmeaX,[6 7 8 16])
         indxmea = 6;
         areatype = find(indxmeaX==[6 16 7 8]);  % 1,2,3,4
-elseif ismember_bc2(indxmeaX,[9 10 11 17])
+elseif ismember(indxmeaX,[9 10 11 17])
         areatype = find(indxmeaX==[9 17 10 11]);  % 1,2,3,4
-        indxmea = 7;
-elseif ismember_bc2(indxmeaX,[12 13 14 15])
+        
+        if strcmpi(datatype, 'ERP')
+                indxmea = 7;
+        else
+                indxmea = 1;
+        end
+elseif ismember(indxmeaX,[12 13 14 15])
         areatype = find(indxmeaX==[12 13 14 15]);  % 1,2,3,4
         indxmea = 8;
         fracmenuindex = round(2^(fracmearep/2)); % when 0 means 1, when 2 means 2;
@@ -1931,31 +2084,43 @@ end
 %
 measurearray = {'None','Pre','Post','Whole','Custom'};
 set(handles.popupmenu_baseliner, 'String', measurearray);
-
-if ischar(blc)
-        [tfm indxblc] = ismember_bc2({blc}, {'none', 'pre', 'post', 'whole', 'all'} );
-        if indxblc == 5
-                indxblc = 4;
-        elseif indxblc==0
-                indxblc = 1;
+if strcmpi(datatype, 'ERP')
+        mwordx = 'latenc';
+        if ischar(blc)
+                [tfm, indxblc] = ismember_bc2({blc}, {'none', 'pre', 'post', 'whole', 'all'} );
+                if indxblc == 5
+                        indxblc = 4;
+                elseif indxblc==0
+                        indxblc = 1;
+                end
+        else
+                indxblc = 5;
         end
-else
-        indxblc = 5;
-end
-
-%
-% Set blc buttons
-%
-set(handles.popupmenu_baseliner, 'Value', indxblc)
-if indxblc==5
-        set(handles.edit_custombr,'Enable','on')
-        try
-                blcstrm = num2str(blc);
-        catch
-                blcstrm = '?????';
+        
+        %
+        % Set blc buttons
+        %
+        set(handles.popupmenu_baseliner, 'Value', indxblc)
+        if indxblc==5
+                set(handles.edit_custombr,'Enable','on')
+                try
+                        blcstrm = num2str(blc);
+                catch
+                        blcstrm = '?????';
+                end
+                set(handles.edit_custombr,'String', blcstrm)
+        else
+                set(handles.edit_custombr,'Enable','off')
         end
-        set(handles.edit_custombr,'String', blcstrm)
+        
+        set(handles.text_meawinunit, 'String', 'ms');
+        
+        
 else
+        mwordx = 'frequenc';
+        set(handles.popupmenu_baseliner, 'Value', 1);
+        set(handles.popupmenu_baseliner, 'Enable', 'off');
+        set(handles.text_meawinunit, 'String', 'Hz');
         set(handles.edit_custombr,'Enable','off')
 end
 
@@ -1978,7 +2143,6 @@ end
 
 % interpolation
 set(handles.popupmenu_interpofactor, 'Value', intfactor);
-
 
 %
 % Measurements
@@ -2005,11 +2169,11 @@ switch indxmea
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
                 set(handles.popupmenu_areatype,'Enable','off')
-                set(handles.text_tip_inputlat, 'String','(use one latency)');
+                set(handles.text_tip_inputlat, 'String',['(use one ' mwordx 'y)']);
         case {2,6} % mean, area, integral between fixed latencies
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
                 if indxmea==6
                         set(handles.popupmenu_areatype,'Enable','on')
                         set(handles.popupmenu_areatype,'Value',areatype)
@@ -2019,7 +2183,7 @@ switch indxmea
         case {3,4} % 'Peak amplitude', 'Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
                 set(handles.popupmenu_pol_amp,'value',2-polpeak)
                 %set(handles.popupmenu_samp_amp,'value',sampeak+1);
                 set(handles.popupmenu_locpeakreplacement,'value',2-locpeakrep);
@@ -2029,7 +2193,7 @@ switch indxmea
                 menufareaon(hObject, eventdata, handles)
                 fracpos = round(frac*100)+1;
                 set(handles.popupmenu_fraca,'Value', fracpos)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Peak')
                 set(handles.popupmenu_pol_amp,'value',2-polpeak)
                 %set(handles.popupmenu_samp_amp,'value',sampeak+1);
@@ -2039,7 +2203,7 @@ switch indxmea
         case 7     % area and integral with auto limits
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use one "seed" latency)');
+                set(handles.text_tip_inputlat, 'String',['(use one "seed" ' mwordx 'y)']);
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_areatype,'Value',areatype)
                 
@@ -2048,7 +2212,7 @@ switch indxmea
                 menufareaon(hObject, eventdata, handles)
                 fracpos = round(frac*100)+1;
                 set(handles.popupmenu_fraca,'Value', fracpos)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Area')
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_areatype,'Value',areatype)
@@ -2056,7 +2220,7 @@ switch indxmea
         otherwise
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_tip_inputlat, 'String','(use two latencies)');
+                set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
 end
 
 set(handles.edit_latency, 'String',  sprintf('%.2f  ', unique_bc2(latency)))
@@ -2188,7 +2352,7 @@ end
 
 srate = handles.srate;
 try
-        msecstr = sprintf('pnts (%4.1f ms)', (sampeak/srate*intfactor)*1000);
+        msecstr = sprintf('pnts (%4.1f ms)', (sampeak/srate*intfactor)*kktime);
 catch
         msecstr = 'pnts (... ms)';
 end
@@ -2257,14 +2421,14 @@ end
 
 %--------------------------------------------------------------------------
 function popupmenu_interpofactor_Callback(hObject, eventdata, handles)
-
+kktime = handles.kktime;
 srate = handles.srate;
 pnts  = get(handles.popupmenu_samp_amp,'Value')-1;
 intfactor = get(handles.popupmenu_interpofactor,'Value');
 if isempty(srate)
         msecstr = sprintf('pnts ( ? ms)');
 else
-        msecstr = sprintf('pnts (%4.1f ms)', (pnts/srate*intfactor)*1000);
+        msecstr = sprintf('pnts (%4.1f ms)', (pnts/srate*intfactor)*kktime);
 end
 set(handles.text_samp,'String',msecstr)
 

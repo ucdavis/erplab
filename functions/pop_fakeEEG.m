@@ -71,7 +71,8 @@ d1 = datenum(matlabrel);
 d2 = datenum('9-Oct-2008');
 if d1>d2
         %In versions of MATLAB beginning with R2008b, the simplest way to do this is to execute the following command at the beginning of each MATLAB session:
-        reset(RandStream.getDefaultStream,sum(100*clock))
+        %reset(RandStream.getDefaultStream,sum(100*clock))
+        rng shuffle
 else
         %For versions of MATLAB prior to R2008b you can execute the following commands:
         rand('twister',sum(100*clock))

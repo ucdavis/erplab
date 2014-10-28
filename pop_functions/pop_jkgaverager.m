@@ -157,7 +157,7 @@ for k=0:nfile
         if optioni==1 % from file
                 jklist   = lista(1:nfile~=k);
                 nerp     = length(jklist);
-                ALLERPX  = builderpstruct([]);
+                ALLERPX  = buildERPstruct([]);
                 
                 for m=1:nerp
                         ERPTX = load(jklist{m}, '-mat');                        
@@ -174,7 +174,7 @@ for k=0:nfile
                 ERP = pop_gaverager(ALLERPX, 'Erpsets', jkerpset, 'Criterion', artcrite,...
                         'SEM', stdsstr, 'Weighted', wavgstr);
         else
-                jkerpset = erpset(~ismember_bc2(1:nfile, k));
+                jkerpset = erpset(~ismember(1:nfile, k));
                 ERP = pop_gaverager(ALLERP, 'Erpsets', jkerpset, 'Criterion', artcrite,...
                         'SEM', stdsstr, 'Weighted', wavgstr);
         end
@@ -184,7 +184,7 @@ for k=0:nfile
         %
         if k>0
                 zi    = z0 - floor(log10(k)); % number of characters - 1
-                zstr  = repmat('0',1,zi); % number of zeros to keep constant bin index lenght
+                zstr  = repmat('0',1,zi);     % number of zeros to keep constant bin index lenght
                 kindx = sprintf('%s%d', zstr, k);
         else
                 kindx = repmat('0',1,z0+1);

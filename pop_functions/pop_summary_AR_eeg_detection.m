@@ -189,12 +189,12 @@ for i=1:nbin
                         if iscell(binix)
                                 binix = cell2mat(binix);
                         end
-                        if ismember_bc2(i, binix)
+                        if ismember(i, binix)
                                 Sumbin(i) = Sumbin(i) + histT(j);
                         end
                 elseif length(EEG.epoch(j).eventlatency) > 1                        
                         indxtimelock = find(cell2mat(EEG.epoch(j).eventlatency) == 0,1,'first'); % catch zero-time locked type,                        
-                        if ismember_bc2(i, EEG.epoch(j).eventbini{indxtimelock})
+                        if ismember(i, EEG.epoch(j).eventbini{indxtimelock})
                                 Sumbin(i) = Sumbin(i) + histT(j);
                         end
                 end
@@ -210,8 +210,9 @@ if fidsumm~=-99
         hdr = {'Bin' '#(%) accepted' '#(%) rejected' '# F2' '# F3' '# F4' '# F5' '# F6' '# F7' '# F8' };
         fprintf(fidsumm, '%s %15s %15s %7s %7s %7s %7s %7s %7s %7s\n', hdr{:});
 end
-acce = [];
-rej  = [];
+
+acce = zeros(1,nbin);
+rej  = zeros(1,nbin);
 
 for i=1:nbin
         rej(i)   = Sumbin(i) ;

@@ -45,6 +45,10 @@ if iserpstruct(ERPold)
         if ~isfield(ERPnew,'binerror')
                 ERPnew.binerror = [];
                 upderp = 1;
+        end        
+        if ~isfield(ERPnew,'datatype')
+                ERPnew.datatype = 'ERP';
+                upderp = 1;
         end
         if ~isfield(ERPnew,'splinefile')
               ERPnew.splinefile = '';

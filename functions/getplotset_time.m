@@ -56,3 +56,4 @@ legepos        = plotset.ptime.legepos;
 posgui         = plotset.ptime.posgui;
 posminigui     = plotset.ptime.posminigui;
 posfig         = plotset.ptime.posfig;
+ibckground     = plotset.ptime.ibckground;

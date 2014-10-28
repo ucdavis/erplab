@@ -157,97 +157,104 @@
 function [EEG, com] = pop_continuousartdet(EEG, varargin)% ampth, winms, stepms, chanArray, varargin)
 com='';
 if nargin<1
-        help pop_continuousartdet
-        return
+    help pop_continuousartdet
+    return
 end
 if isobject(EEG) % eegobj
-        whenEEGisanObject % calls a script for showing an error window
-        return
+    whenEEGisanObject % calls a script for showing an error window
+    return
 end
 if nargin==1
-        if length(EEG)>1
-                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                title = 'ERPLAB: pop_continuousartdet';
-                errorfound(msgboxText, title);
-                return
-        end
-        if ~isempty(EEG.epoch)
-                msgboxText =  'pop_continuousartdet() only works on continuous datasets.';
-                title = 'ERPLAB: pop_continuousartdet';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.data)
-                msgboxText =  'pop_continuousartdet() cannot work on an empty dataset!';
-                title = 'ERPLAB: pop_continuousartdet';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isica(EEG)
-                msgboxText = ['This tool is thought to improve ICA performance by removing c.r.a.p. '...
-                        '(commonly recorded artifact potentials) in an early stage\n\n'...
-                        'However, your dataset is already ICA-ed\n\n'...
-                        'Applying this tool will wipe out all ICA information\n\n'...
-                        'Do you want to continue anyway?'];
-                
-                title = 'ERPLAB: pop_continuousartdet() WARNING';
-                button = askquest(sprintf(msgboxText), title);
-                
-                if ~strcmpi(button,'yes')
-                        disp('User selected Cancel')
-                        return
-                end
-        end
-        
-        %
-        % Call GUI
-        %
-        answer    = continuousartifactGUI(EEG.srate, EEG.nbchan, EEG.chanlocs);
-        if isempty(answer)
-                disp('User selected Cancel')
-                return
-        end
-        ampth     = answer{1};
-        winms     = answer{2};
-        stepms    = answer{3};
-        chanArray = answer{4};
-        fcutoff   = [answer{5} answer{6}];
-        includef  = answer{7};
-        
-        if ~isempty(includef)
-                if includef==0 && fcutoff(1)~=fcutoff(2)% when it means "excluded" frequency cuttof is inverse to make a notch filter
-                        fcutoff = circshift(fcutoff',1)';
-                elseif includef==1 && fcutoff(1)==0 && fcutoff(2)==0
-                        fcutoff = [inf inf]; % [inf inf] to include the mean of data; fcutoff = [0 0] means exclude the mean
-                else
-                        %...
-                end
-        end
-        
-        forder    = 100; % fixed order when GUI is used
-        firstdet  = answer{8};
-        if firstdet==1
-                fdet = 'on';
-        else
-                fdet = 'off';
-        end
-        shortisi  = answer{9};
-        shortseg  = answer{10};
-        winoffset = answer{11};
-        memoryCARTGUI = erpworkingmemory('continuousartifactGUI');
-        colorseg  = memoryCARTGUI.colorseg;
-        %colorseg  = answer{12};
-        EEG.setname = [EEG.setname '_car'];
-        
-        %
-        % Somersault
-        %
-        [EEG, com] = pop_continuousartdet(EEG, 'chanArray', chanArray, 'ampth', ampth,...
-                'winms', winms, 'stepms', stepms, 'firstdet', fdet, 'fcutoff', fcutoff,...
-                'forder', forder, 'shortisi', shortisi, 'shortseg', shortseg,...
-                'winoffset', winoffset, 'colorseg', colorseg, 'History', 'gui');
-        pause(0.1)
+    
+    serror = erplab_eegscanner(EEG, 'pop_continuousartdet', 0, 0, 0, 2, 0);
+    if serror
         return
+    end
+    
+    
+    %         if length(EEG)>1
+    %                 msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+    %                 title = 'ERPLAB: pop_continuousartdet';
+    %                 errorfound(msgboxText, title);
+    %                 return
+    %         end
+    %         if ~isempty(EEG.epoch)
+    %                 msgboxText =  'pop_continuousartdet() only works on continuous datasets.';
+    %                 title = 'ERPLAB: pop_continuousartdet';
+    %                 errorfound(msgboxText, title);
+    %                 return
+    %         end
+    %         if isempty(EEG.data)
+    %                 msgboxText =  'pop_continuousartdet() cannot work on an empty dataset!';
+    %                 title = 'ERPLAB: pop_continuousartdet';
+    %                 errorfound(msgboxText, title);
+    %                 return
+    %         end
+    if isica(EEG)
+        msgboxText = ['This tool is thought to improve ICA performance by removing c.r.a.p. '...
+            '(commonly recorded artifact potentials) in an early stage\n\n'...
+            'However, your dataset is already ICA-ed\n\n'...
+            'Applying this tool will wipe out all ICA information\n\n'...
+            'Do you want to continue anyway?'];
+        
+        title = 'ERPLAB: pop_continuousartdet() WARNING';
+        button = askquest(sprintf(msgboxText), title);
+        
+        if ~strcmpi(button,'yes')
+            disp('User selected Cancel')
+            return
+        end
+    end
+    
+    %
+    % Call GUI
+    %
+    answer    = continuousartifactGUI(EEG.srate, EEG.nbchan, EEG.chanlocs);
+    if isempty(answer)
+        disp('User selected Cancel')
+        return
+    end
+    ampth     = answer{1};
+    winms     = answer{2};
+    stepms    = answer{3};
+    chanArray = answer{4};
+    fcutoff   = [answer{5} answer{6}];
+    includef  = answer{7};
+    
+    if ~isempty(includef)
+        if includef==0 && fcutoff(1)~=fcutoff(2)% when it means "excluded" frequency cuttof is inverse to make a notch filter
+            fcutoff = circshift(fcutoff',1)';
+        elseif includef==1 && fcutoff(1)==0 && fcutoff(2)==0
+            fcutoff = [inf inf]; % [inf inf] to include the mean of data; fcutoff = [0 0] means exclude the mean
+        else
+            %...
+        end
+    end
+    
+    forder    = 100; % fixed order when GUI is used
+    firstdet  = answer{8};
+    if firstdet==1
+        fdet = 'on';
+    else
+        fdet = 'off';
+    end
+    shortisi  = answer{9};
+    shortseg  = answer{10};
+    winoffset = answer{11};
+    memoryCARTGUI = erpworkingmemory('continuousartifactGUI');
+    colorseg  = memoryCARTGUI.colorseg;
+    %colorseg  = answer{12};
+    EEG.setname = [EEG.setname '_car'];
+    
+    %
+    % Somersault
+    %
+    [EEG, com] = pop_continuousartdet(EEG, 'chanArray', chanArray, 'ampth', ampth,...
+        'winms', winms, 'stepms', stepms, 'firstdet', fdet, 'fcutoff', fcutoff,...
+        'forder', forder, 'shortisi', shortisi, 'shortseg', shortseg,...
+        'winoffset', winoffset, 'colorseg', colorseg, 'History', 'gui');
+    pause(0.1)
+    return
 end
 
 %
@@ -274,16 +281,16 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(EEG, varargin{:});
 
 if length(EEG)>1
-        msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-        error(msgboxText)
+    msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+    error(msgboxText)
 end
 if ~isempty(EEG.epoch)
-        msgboxText =  'pop_continuousartdet() only works on continuous datasets.';
-        error(msgboxText)
+    msgboxText =  'pop_continuousartdet() only works on continuous datasets.';
+    error(msgboxText)
 end
 if isempty(EEG.data)
-        msgboxText =  'pop_continuousartdet() cannot work on an empty dataset!';
-        error(msgboxText);
+    msgboxText =  'pop_continuousartdet() cannot work on an empty dataset!';
+    error(msgboxText);
 end
 
 ampth     = p.Results.ampth;
@@ -292,18 +299,18 @@ stepms    = p.Results.stepms;
 chanArray = p.Results.chanArray;
 
 if strcmpi(p.Results.firstdet, 'on') || strcmpi(p.Results.firstdet, 'yes')
-        firstdet = 1;
+    firstdet = 1;
 else
-        firstdet = 0;
+    firstdet = 0;
 end
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
 fcutoff   = p.Results.fcutoff;
 forder    = p.Results.forder;
@@ -313,71 +320,71 @@ winoffset = p.Results.winoffset; % shortest segment in ms
 colorseg  = p.Results.colorseg;
 
 if numel(ampth)~=1 && numel(ampth)~=2
-        error('ERPLAB says: for threshold amplitude you must specify 1 or 2 values only.')
+    error('ERPLAB says: for threshold amplitude you must specify 1 or 2 values only.')
 end
 if ~isempty(forder)
-        if mod(forder,2)~=0
-                forder = forder+1;
-                fprintf('filter order was changed to an even number (%g) because of the forward-reverse filtering.\n', forder)
-        end
+    if mod(forder,2)~=0
+        forder = forder+1;
+        fprintf('filter order was changed to an even number (%g) because of the forward-reverse filtering.\n', forder)
+    end
 end
 if ischar(fcutoff)
-        %
-        % Pre-defined bands
-        %
-        % Removing
-        if strcmpi(fcutoff,'rdc') || strcmpi(fcutoff,'rmean')
-                fcutoff = [0 0];           % remove mean
-        elseif strcmpi(fcutoff,'rdelta') % remove delta
-                fcutoff = [4 0.1];
-        elseif strcmpi(fcutoff,'rtheta') % remove theta
-                fcutoff = [8 4];
-        elseif strcmpi(fcutoff,'ralpha') % remove alpha
-                fcutoff = [13 8];
-        elseif strcmpi(fcutoff,'rbeta')  % remove beta
-                fcutoff = [30 13];
-        elseif strcmpi(fcutoff,'rgamma') % remove gamma
-                fcutoff = [80 30];
-                % keeping
-        elseif strcmpi(fcutoff,'dc') || strcmpi(fcutoff,'mean') % keep only the mean
-                fcutoff = [inf inf];
-        elseif strcmpi(fcutoff,'delta') % keep only delta
-                fcutoff = [0.1 4];
-        elseif strcmpi(fcutoff,'theta') % keep only theta
-                fcutoff = [4 8];
-        elseif strcmpi(fcutoff,'alpha') % keep only alpha
-                fcutoff = [8 13];
-        elseif strcmpi(fcutoff,'beta')  % keep only beta
-                fcutoff = [13 30];
-        elseif strcmpi(fcutoff,'gamma') % keep only gamma
-                fcutoff = [30 80];
-        elseif strcmpi(fcutoff,'off') || strcmpi(fcutoff,'no') % turn off filtering
-                fcutoff = [];
-        else
-                error('error: unknown pre-defined band. Try with a numeric range of frequencies.')
-        end
+    %
+    % Pre-defined bands
+    %
+    % Removing
+    if strcmpi(fcutoff,'rdc') || strcmpi(fcutoff,'rmean')
+        fcutoff = [0 0];           % remove mean
+    elseif strcmpi(fcutoff,'rdelta') % remove delta
+        fcutoff = [4 0.1];
+    elseif strcmpi(fcutoff,'rtheta') % remove theta
+        fcutoff = [8 4];
+    elseif strcmpi(fcutoff,'ralpha') % remove alpha
+        fcutoff = [13 8];
+    elseif strcmpi(fcutoff,'rbeta')  % remove beta
+        fcutoff = [30 13];
+    elseif strcmpi(fcutoff,'rgamma') % remove gamma
+        fcutoff = [80 30];
+        % keeping
+    elseif strcmpi(fcutoff,'dc') || strcmpi(fcutoff,'mean') % keep only the mean
+        fcutoff = [inf inf];
+    elseif strcmpi(fcutoff,'delta') % keep only delta
+        fcutoff = [0.1 4];
+    elseif strcmpi(fcutoff,'theta') % keep only theta
+        fcutoff = [4 8];
+    elseif strcmpi(fcutoff,'alpha') % keep only alpha
+        fcutoff = [8 13];
+    elseif strcmpi(fcutoff,'beta')  % keep only beta
+        fcutoff = [13 30];
+    elseif strcmpi(fcutoff,'gamma') % keep only gamma
+        fcutoff = [30 80];
+    elseif strcmpi(fcutoff,'off') || strcmpi(fcutoff,'no') % turn off filtering
+        fcutoff = [];
+    else
+        error('error: unknown pre-defined band. Try with a numeric range of frequencies.')
+    end
 else
-        if ~isempty(fcutoff)
-                if numel(fcutoff)~=2
-                        error('error: 2 values are needed for cutoff.')
-                end
-                if ~isinf(fcutoff(1)) && ~isinf(fcutoff(2)) && ~isnan(fcutoff(1)) && ~isnan(fcutoff(2))
-                        if fcutoff(1)~=0 && fcutoff(1)==fcutoff(2)
-                                error('error: cutoff must have 2 different values. Except for [0 0] or [Inf Inf]. See help pop_continuousartdet')
-                        end
-                        if fcutoff(1)<0 || fcutoff(2)<0
-                                error('error: Cutoff values must be >= 0, or Inf')
-                        end
-                        if fcutoff(1)>EEG.srate/2 || fcutoff(2)>EEG.srate/2
-                                error('error: frequency cutoff is higher than nyquist frequency (EEG.srate/2)')
-                        end
-                else
-                        if (isinf(fcutoff(1)) && ~isinf(fcutoff(2))) || (~isinf(fcutoff(1)) && isinf(fcutoff(2))) ||...
-                                        (isnan(fcutoff(1)) || isnan(fcutoff(2)))
-                                error('error: cutoff can not have NaN or Inf number. Only [Inf Inf] is allowed for evaluating the mean value.')
-                        end
-                end
+    if ~isempty(fcutoff)
+        if numel(fcutoff)~=2
+            error('error: 2 values are needed for cutoff.')
         end
+        if ~isinf(fcutoff(1)) && ~isinf(fcutoff(2)) && ~isnan(fcutoff(1)) && ~isnan(fcutoff(2))
+            if fcutoff(1)~=0 && fcutoff(1)==fcutoff(2)
+                error('error: cutoff must have 2 different values. Except for [0 0] or [Inf Inf]. See help pop_continuousartdet')
+            end
+            if fcutoff(1)<0 || fcutoff(2)<0
+                error('error: Cutoff values must be >= 0, or Inf')
+            end
+            if fcutoff(1)>EEG.srate/2 || fcutoff(2)>EEG.srate/2
+                error('error: frequency cutoff is higher than nyquist frequency (EEG.srate/2)')
+            end
+        else
+            if (isinf(fcutoff(1)) && ~isinf(fcutoff(2))) || (~isinf(fcutoff(1)) && isinf(fcutoff(2))) ||...
+                    (isnan(fcutoff(1)) || isnan(fcutoff(2)))
+                error('error: cutoff can not have NaN or Inf number. Only [Inf Inf] is allowed for evaluating the mean value.')
+            end
+        end
+    end
 end
 
 %
@@ -389,76 +396,76 @@ shortsegsam  = floor(shortseg*EEG.srate/1000);  % to samples
 winoffsetsam = floor(winoffset*EEG.srate/1000); % to samples
 
 if isempty(WinRej)
-        fprintf('\nCriterion was not found. No rejection was performed.\n');
+    fprintf('\nCriterion was not found. No rejection was performed.\n');
 else
-        %colorseg = [1.0000    0.9765    0.5294];
-        if ~isempty(shortisisam)
-                [WinRej, chanrej ] = joinclosesegments(WinRej, chanrej, shortisisam);
+    %colorseg = [1.0000    0.9765    0.5294];
+    if ~isempty(shortisisam)
+        [WinRej, chanrej ] = joinclosesegments(WinRej, chanrej, shortisisam);
+    end
+    if ~isempty(shortsegsam)
+        [WinRej, chanrej ] = discardshortsegments(WinRej, chanrej, shortsegsam);
+    end
+    if ~isempty(winoffsetsam)
+        [WinRej, chanrej ] = movesegments(WinRej, chanrej, winoffsetsam, EEG.pnts);
+    end
+    
+    colormatrej = repmat(colorseg, size(WinRej,1),1);
+    matrixrej = [WinRej colormatrej chanrej];
+    assignin('base', 'WinRej', WinRej)
+    fprintf('\n %g segments were marked.\n\n', size(WinRej,1));
+    
+    commrej = sprintf('%s = eeg_eegrej( %s, WinRej);', inputname(1), inputname(1));
+    % call figure
+    eegplot(EEG.data, 'winrej', matrixrej, 'srate', EEG.srate,'butlabel','REJECT','command', commrej,'events', EEG.event,'winlength', 50);
+    
+    EEG = eeg_checkset( EEG );
+    if length(EEG.event)>=1
+        if EEG.event(end).latency>EEG.pnts
+            EEG = pop_editeventvals(EEG,'delete',length(EEG.event));
+            EEG = eeg_checkset( EEG );
         end
-        if ~isempty(shortsegsam)
-                [WinRej, chanrej ] = discardshortsegments(WinRej, chanrej, shortsegsam);
+    end
+    if length(EEG.event)>=1
+        if EEG.event(1).latency<1
+            EEG = pop_editeventvals(EEG,'delete',1);
+            EEG = eeg_checkset( EEG );
         end
-        if ~isempty(winoffsetsam)
-                [WinRej, chanrej ] = movesegments(WinRej, chanrej, winoffsetsam, EEG.pnts);
-        end
-        
-        colormatrej = repmat(colorseg, size(WinRej,1),1);
-        matrixrej = [WinRej colormatrej chanrej];
-        assignin('base', 'WinRej', WinRej)
-        fprintf('\n %g segments were marked.\n\n', size(WinRej,1));
-        
-        commrej = sprintf('%s = eeg_eegrej( %s, WinRej);', inputname(1), inputname(1));
-        % call figure
-        eegplot(EEG.data, 'winrej', matrixrej, 'srate', EEG.srate,'butlabel','REJECT','command', commrej,'events', EEG.event,'winlength', 50);
-        
-        EEG = eeg_checkset( EEG );
-        if length(EEG.event)>=1
-                if EEG.event(end).latency>EEG.pnts
-                        EEG = pop_editeventvals(EEG,'delete',length(EEG.event));
-                        EEG = eeg_checkset( EEG );
-                end
-        end
-        if length(EEG.event)>=1
-                if EEG.event(1).latency<1
-                        EEG = pop_editeventvals(EEG,'delete',1);
-                        EEG = eeg_checkset( EEG );
-                end
-        end
-        EEG = eeg_checkset( EEG );
+    end
+    EEG = eeg_checkset( EEG );
 end
 
 skipfields = {'EEG', 'History'};
 fn  = fieldnames(p.Results);
 com = sprintf( '%s = pop_continuousartdet( %s ',  inputname(1), inputname(1));
 for q=1:length(fn)
-        fn2com = fn{q};
-        if ~ismember_bc2(fn2com, skipfields)
-                fn2res = p.Results.(fn2com);
-                if ~isempty(fn2res)
-                        if ischar(fn2res)
-                                if ~strcmpi(fn2res,'off')
-                                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
-                                end
-                        else
-                                com = sprintf( '%s, ''%s'', %s', com, fn2com, vect2colon(fn2res,'Repeat','on'));
-                        end
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
                 end
+            else
+                com = sprintf( '%s, ''%s'', %s', com, fn2com, vect2colon(fn2res,'Repeat','on'));
+            end
         end
+    end
 end
 com = sprintf( '%s );', com);
 
 % get history from script. EEG
 switch shist
-        case 1 % from GUI
-                com = sprintf('%s %% GUI: %s', com, datestr(now));
-                %fprintf('%%Equivalent command:\n%s\n\n', com);
-                displayEquiComERP(com);
-        case 2 % from script
-                EEG = erphistory(EEG, [], com, 1);
-        case 3
-                % implicit
-        otherwise %off or none
-                com = '';
+    case 1 % from GUI
+        com = sprintf('%s %% GUI: %s', com, datestr(now));
+        %fprintf('%%Equivalent command:\n%s\n\n', com);
+        displayEquiComERP(com);
+    case 2 % from script
+        EEG = erphistory(EEG, [], com, 1);
+    case 3
+        % implicit
+    otherwise %off or none
+        com = '';
 end
 
 %

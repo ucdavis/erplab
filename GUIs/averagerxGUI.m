@@ -56,38 +56,43 @@ handles.listname = [];
 handles.indxline = 1;
 
 try
-      currdata = varargin{1};
+        currdata = varargin{1};
 catch
-      currdata = [];
+        currdata = [];
 end
 try
-      def = varargin{2};
-      setindex = def{1};   % datasets to average
-      
-      %
-      % Artifact rejection criteria for averaging
-      %
-      %  artcrite = 0 --> averaging all (good and bad trials)
-      %  artcrite = 1 --> averaging only good trials
-      %  artcrite = 2 --> averaging only bad trials
-      artcrite = def{2};
-     
-      % Weighted average option. 1= yes, 0=no
-      %wavg     = def{3};
-      
-      stderror    = def{4};% compute standard error
-      excbound = def{5};% exclude epochs having "boundary" events (or -99)
+        def = varargin{2};
+        setindex = def{1};   % datasets to average
+        
+        %
+        % Artifact rejection criteria for averaging
+        %
+        %  artcrite = 0 --> averaging all (good and bad trials)
+        %  artcrite = 1 --> averaging only good trials
+        %  artcrite = 2 --> averaging only bad trials
+        artcrite = def{2};
+        
+        % Weighted average option. 1= yes, 0=no
+        %wavg     = def{3};
+        
+        stderror = def{4};% compute standard error
+        excbound = def{5};% exclude epochs having "boundary" events (or -99)        
+        compu2do = def{6}; % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
+        wintype  = def{7}; % taper data with window: 0:no; 1:yes
+        
 catch
-      setindex = 1;
-      artcrite = 1;
-      %wavg     = 1;
-      stderror    = 1;
-      excbound = 0;
+        setindex = 1;
+        artcrite = 1;
+        %wavg     = 1;
+        stderror = 1;
+        excbound = 0;
+        compu2do = 0; % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
+        wintype  = 0; % taper data with window: 0:no; 1:yes
 end
 try
-      nepochperdata = varargin{3};
+        nepochperdata = varargin{3};
 catch
-      nepochperdata = [];
+        nepochperdata = [];
 end
 
 %
@@ -157,6 +162,37 @@ end
 set(handles.checkbox_SEM, 'Value', stderror); % compute standard error
 set(handles.checkbox_exclude_boundary, 'Value', excbound); % exclude epochs having "boundary" events (or -99)
 
+
+% 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
+switch compu2do
+        case 1
+                set(handles.checkbox_Total_Power, 'Value', 1);
+                set(handles.checkbox_Evoked_Power, 'Value', 0);
+        case 2
+                set(handles.checkbox_Total_Power, 'Value', 0);
+                set(handles.checkbox_Evoked_Power, 'Value', 1);
+        case 3
+                set(handles.checkbox_Total_Power, 'Value', 1);
+                set(handles.checkbox_Evoked_Power, 'Value', 1);
+        otherwise
+                set(handles.checkbox_Total_Power, 'Value', 0);
+                set(handles.checkbox_Evoked_Power, 'Value', 0);
+end
+if wintype
+set(handles.checkbox_Hamming, 'Value', 1);
+end
+
+tooltip1  = ['<html><i>Each epoch (selected for getting the ERP waveform) is transformed<br>via fast-Fourier transform (FFT) to power spectrum, and then the <br>'...
+             'average across all spectra is derived.'];
+tooltip2  = '<html><i>The ERP waveform is transformed via fast-Fourier transform (FFT) <br>to power spectrum.';
+
+tooltip3  = ['<html><i>Windowing functions act on raw data to reduce the effects of the<br>leakage that occurs during an FFT of the data. Leakage amounts to<br>'...
+             'spectral information from an FFT showing up at the wrong frequencies.'];
+
+set(handles.edit_tip_totalpower, 'tooltip',tooltip1);
+set(handles.edit_tip_evokedpower, 'tooltip',tooltip2);
+set(handles.edit_tip_hamming, 'tooltip',tooltip3);
+
 %
 % Name & version
 %
@@ -217,6 +253,25 @@ incart   = get(handles.checkbox_onlyartifacts, 'Value');
 incIndx  = get(handles.checkbox_include_indices, 'Value');
 excbound = get(handles.checkbox_exclude_boundary, 'Value'); % exclude epochs having boundary events
 
+Tspectrum  = get(handles.checkbox_Total_Power, 'Value');   % total power spectrum
+Espectrum  = get(handles.checkbox_Evoked_Power, 'Value');  % evoked power spectrum
+iswindowed = get(handles.checkbox_Hamming, 'Value');       % apply a hamming window?
+
+if Tspectrum==0 && Espectrum==0 % do ERP
+        compu2do = 0;
+elseif Tspectrum==0 && Espectrum==1 % do ERP + evoked spectrum
+        compu2do = 2;
+elseif Tspectrum==1 && Espectrum==0
+        compu2do = 1; % do ERP + total spectrum
+elseif Tspectrum==1 && Espectrum==1
+        compu2do = 3; % do ERP + total spectrum + evoked spectrum
+else
+        error('algo salio mal...')
+end
+
+%compu2do = answer{6}; % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
+%wintype  = answer{7}; % taper data with window: 0:no; 1:yes
+
 if incALL && ~excart && ~incart && ~incIndx % average all (good and bad trials)
       artcrite = 0;
       disp('averaging all (good and bad epochs)...')
@@ -240,8 +295,10 @@ elseif ~incALL && ~excart && ~incart && incIndx
             return
       end
       
-      [tf epochArray] = getEpochIndices(hObject, eventdata, handles);
-      
+      %
+      % epochs' indices
+      %
+      [tf, epochArray] = getEpochIndices(hObject, eventdata, handles);      
       
       if  ~get(handles.radiobutton_usefilename, 'Value') && size(epochArray,1)>1            
             if isempty(handles.listname)
@@ -338,7 +395,7 @@ if isempty(dataset)
 else
       wavg = 1; %get(handles.checkbox_wavg,'Value'); % always weighted now...
       stderror = get(handles.checkbox_SEM, 'Value');
-      handles.output = {dataset, artcrite, wavg, stderror, excbound};
+      handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed};
       
       % Update handles structure
       guidata(hObject, handles);
@@ -415,7 +472,6 @@ function checkbox_SEM_Callback(hObject, eventdata, handles)
 
 % -------------------------------------------------------------------------
 function checkbox_include_indices_Callback(hObject, eventdata, handles)
-
 if get(hObject,'Value')
       set(handles.checkbox_includeALL,'Value',0)
       set(handles.checkbox_excludeartifacts,'Value',0)
@@ -538,6 +594,40 @@ return
 % %       errorfound(sprintf(msgboxText), title);
 % %       return
 % % end
+
+
+
+% -------------------------------------------------------------------------
+function checkbox_Total_Power_Callback(hObject, eventdata, handles)
+if get(hObject,'Value')
+        set(handles.checkbox_Hamming,'Enable', 'on')        
+else
+        if ~get(handles.checkbox_Evoked_Power,'Value')
+                set(handles.checkbox_Hamming,'Value', 0)
+                set(handles.checkbox_Hamming,'Enable', 'off')
+        end        
+end
+
+% -------------------------------------------------------------------------
+function checkbox_Evoked_Power_Callback(hObject, eventdata, handles)
+if get(hObject,'Value')
+        set(handles.checkbox_Hamming,'Enable', 'on')        
+else
+        if ~get(handles.checkbox_Total_Power,'Value')
+                set(handles.checkbox_Hamming,'Value', 0)
+                set(handles.checkbox_Hamming,'Enable', 'off')
+        end        
+end
+
+% -------------------------------------------------------------------------
+function checkbox_Hamming_Callback(hObject, eventdata, handles)
+
+
+
+
+
+
+
 
 % -------------------------------------------------------------------------
 function [tf epochArray] = getEpochIndices(hObject, eventdata, handles)
