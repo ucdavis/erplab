@@ -19,6 +19,9 @@
 % 		             'bad'   - include only epochs marked with artifact rejection
 %                         NOTE: for including epochs selected by the user, specify these one as a cell array. e.g {2 8 14 21 40:89}
 %
+%                        'Compute' - Allows it to compute only the averaged ERPset ('ERP'){default} plus the Total Power
+%                                    Spectrum ('TFFT') and/or the Evoked Power Spectrum ('EFFT')
+%
 %        'SEM'              - include standard error of the mean. 'on'/'off'
 %        'ExcludeBoundary'  - exclude epochs having boundary events. 'on'/'off'
 %        'Saveas'           - (optional) open GUI for saving averaged ERPset. 'on'/'off'
@@ -168,7 +171,7 @@ if nargin==1
         %
         % Somersault
         %
-        if compu2do>0
+        if compu2do>0 % compu2do--> 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
                 [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
                         'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'implicit');
                 
@@ -220,7 +223,8 @@ if nargin==1
                 assignin('base','ALLERP',ALLERP);  % save to workspace
                 updatemenuerp(ALLERP,0)            % overwrite erpset at erpsetmenu
                 displayEquiComERP(erpcom);
-        else
+
+        else % compu2do--> 0:ERP;
                 [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
                         'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'GUI');
         end
@@ -551,6 +555,7 @@ else % FFT
         end
         pnts  = nfft;
 end
+
 nbin = ALLEEG(setindex(1)).EVENTLIST.nbin;
 histoflags = zeros(nbin,16);
 flagbit    = bitshift(1, 0:15);
@@ -612,8 +617,6 @@ if nset>1
                                         %
                                         %
                                         %
-                                        
-                                        
                                         
                                         msgboxText = ['It looks like you have deleted some epochs from your dataset named %s.\n'...
                                                 'At the current version of ERPLAB, artifact info synchronization cannot be performed in this this case.\n'...
@@ -906,7 +909,7 @@ if issaveas
         [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
         if issave>0
                 if issave==2
-                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+                        erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
                         msgwrng = '*** Your ERPset was saved on your hard drive.***';
                 else
                         msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
@@ -919,20 +922,21 @@ end
 % get history from script. ERP
 switch shist
         case 1 % from GUI
-                %fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
                 displayEquiComERP(erpcom);
                 if explica
                         try
-                                cprintf([0.1333    0.5451    0.1333], '%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove "''DSindex'',%g"\n',setindex);
+
+                            cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove "''DSindex'',%g"\n',setindex);
                         catch
-                                fprintf('%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove ''DSindex'',%g:\n',setindex);
+                            fprintf('%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove ''DSindex'',%g:\n',setindex);
                         end
                 end
         case 2 % from script
                 ERP = erphistory(ERP, [], erpcom, 1);
         case 3
                 % implicit
-        otherwise %off or none
+        otherwise % off or none
                 erpcom = '';
 end
 %

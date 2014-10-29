@@ -1,3 +1,14 @@
+% resample ERPset
+%
+% INPUT
+% ERP          - input ERPset
+% newsrate     - new sample rate
+%
+% OUTPUT
+% ERP          - resampled ERPset
+%
+%
+% Javier L-C
 
 function ERP = erpresample(ERP, newsrate)
 if isfield(ERP, 'datatype')
@@ -22,7 +33,7 @@ x2    = linspace(1,endp,Db);
 aafc  = 128*N/D;
 % Anti-aliasing filter
 fprintf('Applying anti-aliasing filter at %.1fHz...\n', aafc);
-ERP = pop_filterp( ERP,  1:40 , 'Cutoff',  (newsrate/4), 'Design', 'butter', 'Filter', 'lowpass', 'Order',  4 );
+ERP = pop_filterp( ERP,  1:ERP.nchan , 'Cutoff',  (newsrate/4), 'Design', 'butter', 'Filter', 'lowpass', 'Order',  4 );
 xbindata = zeros(nchan, Db, nbin);
 for k=1:nchan
         for m=1:nbin

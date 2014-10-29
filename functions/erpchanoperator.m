@@ -348,7 +348,12 @@ if confirma
                                 ERPout.chanlocs(realchanpos(1)).labels = newlabel;
                         end
                         if ~isempty(ERPin.binerror)
+                            % Bug fixed. Johanna. Sept 11, 2014
+                            try
                                 ERPout.binerror(newchan,:,:)= zeros(1,ERPin.pnts, nbin);
+                            catch
+                                ERPout.binerror = [];
+                            end
                         end
 
                         ERPout.nchan = size(ERPout.bindata, 1);

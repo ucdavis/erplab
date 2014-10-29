@@ -353,7 +353,7 @@ uimenu( ELmenu,'Label','Export EEG EVENTLIST to text file ','CallBack', comSLFee
 uimenu( ELmenu,'Label','Shuffle events/bins/samples ','CallBack', comShuff,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
 uimenu( ELmenu,'Label','Summarize current EEG event codes (output at command window) ','CallBack', comSMMRZ,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 mRTs = uimenu( ELmenu,'Label','Export reaction times to text','tag','ReactionTime','ForegroundColor', [0.6 0 0],'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:on'); % Reaction Times
-uimenu( mRTs,'Label','From EEG ','CallBack', comEXRTeeg,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off'); % Reaction Times
+uimenu( mRTs,'Label','From EEG ','CallBack', comEXRTeeg,'userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off'); % Reaction Times
 uimenu( mRTs,'Label','From ERP ','CallBack', comEXRTerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on'); % Reaction Times
 % EVENTLIST for ERP submenu
 uimenu( ELmenu,'Label','Import ERP EVENTLIST from text file ','CallBack',comRLFerp,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');

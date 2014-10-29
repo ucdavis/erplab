@@ -157,7 +157,7 @@ for k=0:nfile
         if optioni==1 % from file
                 jklist   = lista(1:nfile~=k);
                 nerp     = length(jklist);
-                ALLERPX  = builderpstruct([]);
+                ALLERPX  = buildERPstruct([]);
                 
                 for m=1:nerp
                         ERPTX = load(jklist{m}, '-mat');                        

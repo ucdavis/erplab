@@ -1,5 +1,5 @@
-erplabver = '4.0.3.0';                % current erplab version
-erplabrel = '28-Jul-2014';            % DOB. Also, my father's birthday.
+erplabver = '4.0.3.1';                % current erplab version
+erplabrel = '25-Aug-2014';            % DOB
 %ColorB = [170 180 195]/255;          % old background color (until version 3)
 %ColorB = [0.9216 0.8353 0.6078];     % background color for version 4
 %ColorB = [0.7020 0.7647 0.8392];     % background color since version 4.0.0.3
