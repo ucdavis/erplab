@@ -9,6 +9,17 @@ ColorF       = [0.02 0.02 0.02];       % foreground color since version 4.0.2.0
 errorColorF  = [0 0 0];                % foreground color for error window
 errorColorB  = [0.6824 1 0.6353];      % background color for error window
 fontunitsGUI = 'pixels';
+
+% Jason: Copied function ISRETINAD() into this script ---------------------
+set(0,'Units','pixels')
+thisscreen = get(0, 'ScreenSize');
+if thisscreen(3)==1440 && thisscreen(4)>=878 && thisscreen(4)<1000 && ismac
+    isretinad = 1;
+elseif thisscreen(3)>=1440 && thisscreen(4)>=1000  && ismac
+    isretinad = 2;
+end
+%---------------------------------------------------------------------------
+
 if isretinad==1
         fontsizeGUI = 12; % retina display
 elseif isretinad==2
@@ -16,3 +27,7 @@ elseif isretinad==2
 else
         fontsizeGUI = 8.2;
 end
+
+
+
+
