@@ -232,12 +232,12 @@ for i=1:nbin
         end
 end
 
-trej   = sum(Sumbin);
-tacce  = sum(EEG.EVENTLIST.trialsperbin)-trej;
-tpacce = (tacce/(tacce+trej))*100;
-tprej  = (trej/(tacce+trej))*100;
-tpaccestr = sprintf('%.1f', tpacce);
-tprejstr  = sprintf('%.1f', tprej);
+trej        = sum(Sumbin);
+tacce       = sum(EEG.EVENTLIST.trialsperbin)-trej;
+tpacce      = (tacce/(tacce+trej))*100;
+tprej       = (trej/(tacce+trej))*100;
+tpaccestr   = sprintf('%.1f', tpacce);
+tprejstr    = sprintf('%.1f', tprej);
 thistoflags = sum(histoflags,1);
 if fidsumm~=-99
         fprintf(fidsumm, [repmat('_',1,100) '\n']);
