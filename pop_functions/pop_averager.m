@@ -223,7 +223,6 @@ if nargin==1
                 assignin('base','ALLERP',ALLERP);  % save to workspace
                 updatemenuerp(ALLERP,0)            % overwrite erpset at erpsetmenu
                 displayEquiComERP(erpcom);
-
         else % compu2do--> 0:ERP;
                 [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
                         'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'GUI');
@@ -293,16 +292,17 @@ elseif strcmpi(p.Results.Compute,'EFFT')
 else
         error('Invalid value for "Compute" parameter (only ''ERP'', ''TFFT'', or ''EFFT'' are accepted');
 end
+
 if strcmpi(p.Results.TaperWindow,'off')
-        iswindowed = 0;
+    iswindowed = 0;
 elseif strcmpi(p.Results.TaperWindow,'on')
-        iswindowed = 1;
+    iswindowed = 1;
 else
-        if ~isempty(p.Results.TaperWindow) && ischar(p.Results.TaperWindow)
-                iswindowed = p.Results.TaperWindow;
-        else
-                error('Unknow value for "TaperWindow"')
-        end
+    if ~isempty(p.Results.TaperWindow) && ischar(p.Results.TaperWindow)
+        iswindowed = p.Results.TaperWindow;
+    else
+        error('Unknown value for "TaperWindow"')
+    end
 end
 
 nfft = p.Results.NFFT;
@@ -925,12 +925,11 @@ switch shist
                 % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
                 displayEquiComERP(erpcom);
                 if explica
-                        try
-
-                            cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove "''DSindex'',%g"\n',setindex);
-                        catch
-                            fprintf('%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove ''DSindex'',%g:\n',setindex);
-                        end
+                    try
+                        cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove "''DSindex'',%g"\n',setindex);
+                    catch
+                        fprintf('%%IMPORTANT: For pop_averager, you may use EEG instead of ALLEEG, and remove ''DSindex'',%g:\n',setindex);
+                    end
                 end
         case 2 % from script
                 ERP = erphistory(ERP, [], erpcom, 1);
