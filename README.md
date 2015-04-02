@@ -12,7 +12,6 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 
 ###### [ERPLAB 4.0.3.1 Release Notes:](http://erpinfo.org/erplab/erplab-documentation/manual/release-notes)
 This version has been updated to be compatible with the changes implemented in Matlab R2013. 
-[ERPLAB 4.0.3.1 Release Notes:](http://erpinfo.org/erplab/erplab-documentation/manual/release-notes)
 
 ####### UTILITIES
 Convert and Epoch dataset into a continuous one: After using this tool, users have the option of using a second tool to recover the original event codes from bin labels. This tool is called Recover event codes from bin labels.
