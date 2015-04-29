@@ -10,10 +10,11 @@
 % funcname      - function name that calls erplab_eegscanner.
 %
 % Criteria:
-% chckmultieeg  = check for multiple dataset (md).    0= do not accept md;  1=accept only md;  2=do not care
-% chckemptyeeg  = check for empty dataset (ed).       0= do not accept ed;  1=accept only ed;  2=do not care
-% chckepocheeg  = check for epoched dataset (epd).    0= do not accept epd; 1=accept only epd; 2=do not care
-% chckeventlist = check for EVENTLIST structure (ES). 0= do not accept ES;  1=accept only ES;  2=do not care
+% chckmultieeg  = check for multiple dataset (md).    0= do not accept md;    1=accept only md;  2=do not care
+% chckemptyeeg  = check for empty dataset (ed).       0= do not accept ed;    1=accept only ed;  2=do not care
+% chckepocheeg  = check for epoched dataset (epd).    0= do not accept epd;   1=accept only epd; 2=do not care
+% chcknoevents  = check for no event codes (ev).      0= do not accept if no event   1=accept if no events; 
+% chckeventlist = check for EVENTLIST structure (ES). 0= do not accept ES;    1=accept only ES;  2=do not care
 %
 % Option (parameter-value)
 %
