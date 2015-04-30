@@ -1,3 +1,28 @@
+% PURPOSE  :    Import ERP from Neuroscan average file (AVG-file)
+%
+% FORMAT   :
+%
+%               ERP = pop_importavg(filename, filepath);
+%
+% INPUTS   :
+%
+%               filename: (String) Name of the Neuroscan AVG-file to import
+%               filepath: (String) Directory/Path of the input AVG-file
+%
+% OUTPUTS  :
+%
+%               ERP: ERPLAB ERP data structure containing imported AVG-file
+%               data
+%
+%
+% EXAMPLE  :
+%
+%               ERP = pop_importavg('neuroscan_file.avg', '.');
+%
+%
+% See also pop_importerp.m loadavg2.m
+%
+%
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
 % Center for Mind and Brain
@@ -102,9 +127,9 @@ pause(0.1);
 %
 % History
 %
-skipfields = {'Saveas','History'};
-fn     = fieldnames(p.Results);
-erpcom = sprintf( ' ERP = pop_importavg(');
+skipfields  = {'Saveas','History','filename','filepath'};
+fn         	= fieldnames(p.Results);
+erpcom      = sprintf( ' ERP = pop_importavg(''%s'', ''%s''', filename{1}, filepath{1});
 for q=1:length(fn)
         fn2com = fn{q};
         if ~ismember_bc2(fn2com, skipfields)
