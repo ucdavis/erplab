@@ -1,3 +1,4 @@
+<img src="https://github.com/lucklab/erplab/blob/master/images/logoerplab6.jpg">
 
 ERPLAB
 ======
