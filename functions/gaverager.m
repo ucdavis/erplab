@@ -68,12 +68,13 @@
 function [ERP, serror, msgboxText ] =  gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn)
 
 % ERPaux = ERP; % original ERP
-naccepted = [];
-nrejected = [];
-ninvalid  = [];
-narflags  = [];
-serror = 0;
-msgboxText = '';
+naccepted    = [];
+auxnaccepted = []; % ###
+nrejected    = [];
+ninvalid     = [];
+narflags     = [];
+serror       = 0;
+msgboxText   = '';
 ds=1;
 
 %
@@ -172,6 +173,7 @@ for j=1:nfile
                         sumERP2  = zeros(nch,npnts,nbin);
                 end
                 naccepted      = zeros(1,nbin);
+                auxnaccepted   = zeros(1,nbin); % ###
                 nrejected      = zeros(1,nbin);
                 ninvalid       = zeros(1,nbin);
                 narflags       = zeros(nbin,8);
@@ -209,10 +211,11 @@ for j=1:nfile
         end
         
         countbinOK = [ERPT.ntrials.accepted]; % These work as weights
+        auxbinok   = countbinOK;   % ###
         
-        if wavg || exclunullbin % weighted or exclude null bins. JLC                
+        if wavg || exclunullbin % weighted or exclude null bins. JLC    
                 if exclunullbin
-                        countbinOK = ~ismember_bc2(countbinOK, 0); % Jav's trick for converting a weighted averaging into a classic averaging.
+                        countbinOK = ~ismember_bc2(countbinOK, 0); % converts a weighted averaging into a classic averaging when exclunullbin is set .
                         if ~all(countbinOK)
                                 inullb = find(~countbinOK);
                                 fprintf('\nNOTE: Excluding null bin(s) %s from ERPset # %d "%s"\n\n', num2str(inullb), j, ERPT.erpname);
@@ -244,17 +247,32 @@ for j=1:nfile
                 if stderror
                         sumERP2   = sumERP2 + ERPT.bindata.^2;    % cumulative sum of squares: Sum(xi^2)
                 end
-        end
-        
-        naccepted = naccepted + countbinOK;                       % cumulative sum of weights: Sum(wi)
-        nrejected = nrejected + ERPT.ntrials.rejected;
-        ninvalid  = ninvalid  + ERPT.ntrials.invalid;
-        
-        %
-        % Sum flags counter per bin
-        %
-        if isfield(ERPT.ntrials, 'arflags')
+        end   
+        if length(naccepted)==length(countbinOK)
+            naccepted    = naccepted + countbinOK;                      % cumulative sum of weights: Sum(wi)
+            auxnaccepted = auxnaccepted + auxbinok;                      % ###
+            nrejected    = nrejected + ERPT.ntrials.rejected;
+            ninvalid     = ninvalid  + ERPT.ntrials.invalid;
+            
+            %
+            % Sum flags counter per bin
+            %
+            if isfield(ERPT.ntrials, 'arflags')
                 narflags  = narflags  + ERPT.ntrials.arflags;
+            end
+        else
+            warning('naccepted field size does not match the number of current bins')
+            naccepted    = naccepted + ones(1,nbin);                       % cumulative sum of weights: Sum(wi)
+            auxnaccepted = auxnaccepted + ones(1,nbin) ;                      % ###
+            nrejected    = nrejected + zeros(1,nbin);
+            ninvalid     = ninvalid  + zeros(1,nbin);
+            
+            %
+            % Sum flags counter per bin
+            %
+            if isfield(ERPT.ntrials, 'arflags')
+                narflags  = narflags  + zeros(nbin,8);
+            end
         end
         
         ds = ds+1; % counter for clean ERPsets (keep it that way until Steve might eventually decide to reject subjects automatically...)
@@ -303,7 +321,7 @@ if wavg || exclunullbin % weighted or exclude null bins
                 end
         end
 else % classic
-        ERP.bindata   = sumERP./nfile; % get ERP!  --> general sum is divided by the number of files (erpsets)
+        ERP.bindata = sumERP./nfile; % get ERP!  --> general sum is divided by the number of files (erpsets)
         if stderror
                 fprintf('\nEstimating standard error of the mean...\n');
                 ERP.binerror  = sqrt(sumERP2.*(1/nfile) - ERP.bindata.^2) ; % ERP stderror
@@ -318,11 +336,11 @@ if ~isempty(ERP.binerror)
         end
 end
 
-ERP.ntrials.accepted = naccepted;
+ERP.ntrials.accepted = auxnaccepted;  % ###
 ERP.ntrials.rejected = nrejected;
 ERP.ntrials.invalid  = ninvalid;
 ERP.ntrials.arflags  = narflags;
-vali = round(1000*(sum(nrejected)/(sum(naccepted)+sum(nrejected))))/10;
+vali = round(1000*(sum(nrejected)/(sum(auxnaccepted)+sum(nrejected))))/10;  % ###
 ERP.pexcluded = vali;
 
 [ERP, serror] = sorterpstruct(ERP);

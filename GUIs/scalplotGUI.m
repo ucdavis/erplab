@@ -127,6 +127,7 @@ handles.electrodes = [];
 handles.colorbar   = [];
 handles.clrmap     = [];
 handles.ismaxim    = [];
+handles.smapstyle = 'both';
 
 %
 % Name & version
@@ -550,6 +551,11 @@ else
         return
 end
 
+smapstylenum = get(handles.popupmenu_mapstyle, 'Value');
+smapstylestr = cellstr(get(handles.popupmenu_mapstyle, 'String'));
+smapstyle    = smapstylestr{smapstylenum};
+mapoutside   = get(handles.checkbox_outside, 'Value');
+
 %
 % Prepares output
 %
@@ -566,7 +572,9 @@ plotset.pscalp.agif.fps     = FPS;
 plotset.pscalp.agif.fname   = fnameagif;
 plotset.pscalp.posgui       = get(handles.gui_chassis,'Position');
 plotset.pscalp.mtype        = mtype; % map type  0=2D; 1=3D
-plotset.pscalp.mapview      = mapview; % numeric?
+plotset.pscalp.smapstyle    = smapstyle;   % map style: 'fill' 'both' 
+plotset.pscalp.mapview      = mapview; 
+plotset.pscalp.mapoutside   = mapoutside; 
 plotset.pscalp.splineinfo   = splineinfo;
 % legends
 plotset.pscalp.plegend.binnum     = handles.Legbinnum;
@@ -574,6 +582,9 @@ plotset.pscalp.plegend.bindesc    = handles.Legbindesc;
 plotset.pscalp.plegend.type       = handles.Legtype;
 plotset.pscalp.plegend.latency    = handles.Leglatency;
 plotset.pscalp.plegend.electrodes = handles.Legelectrodes;
+plotset.pscalp.plegend.elestyle   = handles.Legelestyle;
+plotset.pscalp.plegend.elec3D     = handles.Legelec3D;
+
 plotset.pscalp.plegend.colorbar   = handles.Legcolorbar;
 plotset.pscalp.plegend.colormap   = handles.Legcolormap;
 plotset.pscalp.plegend.maximize   = handles.Legismaxim;
@@ -666,6 +677,14 @@ set(handles.popupmenu_measurement, 'String', measurearray);
 %set(handles.popupmenu_videospeed, 'String', {'0.1X','0.25X','0.5X', '0.75X','1X', '2X'});
 %set(handles.popupmenu_videospeed, 'Value', 5); % 1X
 set(handles.popupmenu_colormap,'String', 'jet|hsv|hot|cool|gray')
+set(handles.popupmenu_mapstyle,'String', 'map|contour|both|fill|blank')
+
+% 'map'      -> plot colored map only
+% 'contour'  -> plot contour lines only
+% 'both'     -> plot both colored map and contour lines
+% 'fill'     -> plot constant color between contour lines
+% 'blank'    -> plot electrode locations only {default: 'both'}
+% 
 
 %
 % Set GUI
@@ -683,13 +702,17 @@ if isempty(plotset.pscalp)
         end
         cscale      = 'maxmin';
         mtype       = '2D';
+        smapstyle   = 'both';
         mapview     = '+X';
+        mapoutside  = 0; % no=0; yes=1;
         
         Legbinnum     = 1;
         Legbindesc    = 0;
         Legtype       = 0;
         Leglatency    = 1;
         Legelectrodes = 1;
+        Legelestyle   = 'on';
+        Legelec3D     = 'off';
         Legcolorbar   = 0; % no color bar by default
         Legismaxim    = 0; % no maximize figure by default
         Legcolormap   = 1; % jet color map
@@ -713,14 +736,19 @@ else
         %clrbar       = plotset.pscalp.colorbar;
         %showelec     = plotset.pscalp.showelec;
         %binleg       = plotset.pscalp.binleg;
-        mtype         = plotset.pscalp.mtype; % map type  0=2D; 1=3D
-        mapview       = plotset.pscalp.mapview; % numeric?
-        plegend       = plotset.pscalp.plegend; % numeric
+        mtype         = plotset.pscalp.mtype; % map type '2D' or '3D'
+        smapstyle     = plotset.pscalp.smapstyle;
+        mapview       = plotset.pscalp.mapview; 
+        mapoutside    = plotset.pscalp.mapoutside;
+        
+        plegend       = plotset.pscalp.plegend; 
         Legbinnum     = plegend.binnum;
         Legbindesc    = plegend.bindesc;
         Legtype       = plegend.type ;
         Leglatency    = plegend.latency;
         Legelectrodes = plegend.electrodes;
+        Legelestyle   = plegend.elestyle;
+        Legelec3D     = plegend.elec3D;
         Legcolorbar   = plegend.colorbar;
         Legismaxim    = plegend.maximize;
         Legcolormap   = plegend.colormap; % jet color map
@@ -792,6 +820,18 @@ end
 set(handles.popupmenu_colormap, 'Value', Legcolormap)
 set(handles.checkbox_colorbar, 'Value', Legcolorbar)
 
+% Map style
+if strcmpi(mtype, '2D')
+        smapstylestr  = cellstr(get(handles.popupmenu_mapstyle, 'String'));
+        indxsmapstyle = find(ismember(smapstylestr, smapstyle));
+        set(handles.popupmenu_mapstyle, 'Value', indxsmapstyle)
+        set(handles.checkbox_outside, 'Value', mapoutside)
+else
+        set(handles.checkbox_outside, 'Value', 0)
+        set(handles.checkbox_outside, 'Enable', 'off')
+        set(handles.popupmenu_mapstyle, 'Enable', 'off')
+end
+
 %
 % Baseline setting
 %
@@ -845,8 +885,7 @@ else %FFT
         set(handles.radiobutton_BLC_pre,'Enable','off');
         set(handles.radiobutton_BLC_post,'Enable','off');
         set(handles.radiobutton_BLC_whole,'Enable','off');
-        set(handles.radiobutton_BLC_custom,'Enable','off');
-        
+        set(handles.radiobutton_BLC_custom,'Enable','off');        
 end
 
 %
@@ -996,6 +1035,8 @@ handles.Legbindesc    = Legbindesc;
 handles.Legtype       = Legtype;
 handles.Leglatency    = Leglatency;
 handles.Legelectrodes = Legelectrodes;
+handles.Legelestyle   = Legelestyle;
+handles.Legelec3D     = Legelec3D;
 handles.Legcolorbar   = Legcolorbar;
 handles.Legcolormap   = Legcolormap;
 handles.Legismaxim    = Legismaxim;
@@ -1122,27 +1163,33 @@ bindesc    = handles.Legbindesc;
 type       = handles.Legtype;
 latency    = handles.Leglatency;
 electrodes = handles.Legelectrodes;
+elestyle   = handles.Legelestyle;
+elec3D     = handles.Legelec3D;
 % colorbar   = handles.Legcolorbar;
 ismaxim    = handles.Legismaxim;
 
 %values = [binnum bindesc type latency electrodes colorbar ismaxim];
-values = [binnum bindesc type latency electrodes ismaxim];
+values  = {binnum bindesc type latency electrodes elestyle elec3D ismaxim};
+is2Dmap = get(handles.radio_2D, 'Value'); %check 2D map
 
 %
 % call gui
 %
-answer = includelabelscalpGUI(values);
+answer = includelabelscalpGUI(values, is2Dmap);
 if isempty(answer)
         disp('User selected Cancel')
         return
 end
-handles.Legbinnum     = answer(1);
-handles.Legbindesc    = answer(2);
-handles.Legtype       = answer(3);
-handles.Leglatency    = answer(4);
-handles.Legelectrodes = answer(5);
+% handles.output = [binnum bindesc type latency electrodes elestyle ismaxim];
+handles.Legbinnum     = answer{1};
+handles.Legbindesc    = answer{2};
+handles.Legtype       = answer{3};
+handles.Leglatency    = answer{4};
+handles.Legelectrodes = answer{5};
+handles.Legelestyle   = answer{6};
+handles.Legelec3D     = answer{7};
 % handles.Legcolorbar   = answer(6);
-handles.Legismaxim    = answer(6);
+handles.Legismaxim    = answer{8};
 
 %Update handles structure
 guidata(hObject, handles);
@@ -1171,6 +1218,9 @@ if get(hObject,'Value')
         set(handles.popupmenu_orientation, 'Enable', 'off')% sept 12, 2012. JLC
         set(handles.edit_customview, 'Enable', 'off')
         set(handles.pushbutton_splinefile, 'Enable', 'off')
+        
+        set(handles.checkbox_outside, 'Enable', 'on')
+        set(handles.popupmenu_mapstyle, 'Enable', 'on')
 else
         set(handles.radio_2D, 'Value',1)
 end
@@ -1196,7 +1246,12 @@ if get(hObject,'Value')
         set(handles.popupmenu_orientation, 'Enable', 'on') % sept 12, 2012. JLC
         set(handles.popupmenu_orientation, 'Value', 1)
         set(handles.popupmenu_orientation, 'String', morimenu)
-        set(handles.pushbutton_splinefile, 'Enable', 'on')
+        set(handles.pushbutton_splinefile, 'Enable', 'on')        
+        
+        set(handles.checkbox_outside, 'Value', 0)
+        set(handles.checkbox_outside, 'Enable', 'off')
+        set(handles.popupmenu_mapstyle, 'Enable', 'off')
+        
         popupmenu_orientation_Callback(hObject, eventdata, handles)
 else
         set(handles.radio_3D, 'Value',1)
@@ -1297,6 +1352,31 @@ end
 function popupmenu_measurement_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function popupmenu_mapstyle_Callback(hObject, eventdata, handles)
+% smapstyle = get(handles.popupmenu_mapstyle, 'Value');
+% handles.smapstyle = smapstyle;
+% 
+% % Update handles structure
+% guidata(hObject, handles);
+
+%--------------------------------------------------------------------------
+function checkbox_outside_Callback(hObject, eventdata, handles)
+% if get(hObject,'Value')
+%         
+% else
+%         
+% end
+
+%--------------------------------------------------------------------------
+function popupmenu_mapstyle_CreateFcn(hObject, eventdata, handles)
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------

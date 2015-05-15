@@ -1,16 +1,34 @@
-% PURPOSE  : 	Import ERP from Universal Text file format
+% PURPOSE  : 	Import averaged ERP(s) from different file formats
 %
 % FORMAT   :
 %
-% EEG = pop_importerp();
+% EEG = pop_importerp(options);
 %
-% INPUTS   :
+% Options   :
 %
-% -All options will be selected in GUI
+% 'Filename'       - filename to load
+% 'Filepath'       - file's path
+% 'Filetype'       - file format: 'txt','.txt','text','.asc','asc','ascii',
+%                    or 'avg','.avg','neuro','neuroscan'. Default 'text'
+% 'Time'           - if time values are include in the file use 'on'.
+%                    Deafult is 'off'
+% 'Timeunit'       - time unit. Default milliseconds (1E-3)
+% 'Elabel'         - if electrode labels are include in the file use 'on'.
+%                    Deafult is 'off'
+% 'Pointat'        - where are the sample points? at the 'rows' or
+%                    'columns'. Default 'columns'
+% 'Srate'          - sample rate. Default 1000
+% 'Xlim'           - ERP's time window. Default [-200 800]
 %
-% OUTPUTS  :
 %
-% Import GUI will appear. You will then have to select various options.
+% OUTPUT  :
+%
+%
+% ERP              - new ERPset
+%
+%
+% Using the GUI.
+% You will have to select various options.
 %
 % If in ERPSS format- no options need to be selected
 %
@@ -27,7 +45,8 @@
 %
 % EXAMPLE  :
 %
-% EEG = pop_importerp();
+% ERP = pop_importerp( 'Filename', {'s2.txt' }, 'Filepath', {'/Users/javlopez/Desktop/ASCII' }, 'Filetype', {'text' }, 'Pointat',...
+% 'column', 'Srate',  1000, 'Xlim', [ 0 1000] );
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Javier Lopez-Calderon
@@ -56,6 +75,9 @@
 %
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
+%
+%
+% Last update: April 22, 2015. JLC
 
 function [ERP, erpcom] = pop_importerp(varargin)
 erpcom = '';
@@ -125,9 +147,9 @@ p.CaseSensitive = false;
 p.addParamValue('Filename', {''}, @iscell);
 p.addParamValue('Filepath', {''}, @iscell);
 p.addParamValue('Filetype', {'text'}, @iscell);
-p.addParamValue('Time', 'on', @ischar);
+p.addParamValue('Time', 'off', @ischar);
 p.addParamValue('Timeunit', 1E-3, @isnumeric);   % milliseconds by default
-p.addParamValue('Elabel', 'on', @ischar);
+p.addParamValue('Elabel', 'off', @ischar);
 p.addParamValue('Pointat', 'column', @ischar);
 p.addParamValue('Srate', 1E3, @isnumeric);
 p.addParamValue('Xlim', [-200 800], @isnumeric);
@@ -208,6 +230,7 @@ nuftype = length(uftype);
 
 if nuftype==1
         if ismember_bc2({lower(char(uftype))}, {'txt','.txt','text','.asc','asc','ascii'});   %filetype==1
+            
                 [ERPx, serror] = asc2erp(filename, filepath, transpose, includetime, elabel, timeunit, fs, xlim);
                 
                 if serror==1

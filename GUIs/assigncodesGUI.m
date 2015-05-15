@@ -88,10 +88,18 @@ end
 set(handles.checkbox_update_EEG, 'Value', updateEEG)
 
 if iscell(boundarystrcode)
+    if isempty(boundarystrcode)
+        boundarystrcode = ''; % bug fixed. Javier. 01/19/2015
+    else
         boundarystrcode = boundarystrcode{1};
+    end
 end
 if iscell(newboundarynumcode)
+    if isempty(newboundarynumcode)
+        newboundarynumcode = []; % bug fixed. Javier. 01/19/2015
+    else
         newboundarynumcode = newboundarynumcode{1};
+    end
 end
 if strcmpi(boundarystrcode, 'boundary') && newboundarynumcode==-99
         set(handles.checkbox_addm99code,'Value', 1)

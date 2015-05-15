@@ -44,6 +44,7 @@ sel = gca;
 set(fig,'Units','normalized');
 place     = get(fig,'Position');
 axiscolor = get(fig,'Color');
+tagf      = [get(fig,'Tag') '_copy'];
 % axiscolor2=get(sel,'Color')
 
 cmap  = colormap;
@@ -64,6 +65,7 @@ newfig = figure('Units','Normalized','Position',[newx,newy,place(1,3:4)]);
 % Copy object to new figure
 %
 set(newfig,'Color', axiscolor);
+set(newfig,'Tag', tagf);
 copyobj(sel,newfig);
 set(gca,'Position',[0.130 0.110 0.775 0.815]);
 colormap(cmap);

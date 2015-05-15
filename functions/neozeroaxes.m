@@ -7,6 +7,8 @@
 % University of California, Davis,
 % Davis, CA
 % 2012
+%
+% Apr-2015: updated/fixed to deal with Matlab's HG2 update (Matlab 2014b and later). JLC
 
 function neozeroaxes(type, fontsizeticks, mcolor)
 if nargin<3
@@ -141,26 +143,10 @@ end
 setappdata(axesin,'CENTERAXES', AX);
 
 % when any property of the old axes changes these functions will keep the new ones updated
-plistener(axesin,'XLim',@xylim)
-plistener(axesin,'YLim',@xylim)
-plistener(axesin,'Position',@xylim)
-
-%-----------------------------------------------------------------
-function [] = plistener(axesin,prp,func)
-% Sets the properties listeners.  From proplistener by Yair Altman.
-psetact = 'PropertyPostSet';
-hC = handle(axesin);
-hSrc = hC.findprop(prp);
-hl = handle.listener(hC, hSrc, psetact, {func, axesin});
-p = findprop(hC, 'Listeners__');
-if isempty(p)
-        p = schema.prop(hC, 'Listeners__', 'handle vector');
-        set(p,'AccessFlags.Serialize', 'off', ...
-                'AccessFlags.Copy', 'off',...
-                'FactoryValue', [], 'Visible', 'off');
-end
-hC.Listeners__ = hC.Listeners__(ishandle(hC.Listeners__));
-hC.Listeners__ = [hC.Listeners__; hl];
+% JLC, April 2015
+addlistener(axesin,'XLim', 'PostSet', @(varargin) xylim(varargin{:}, axesin));
+addlistener(axesin,'YLim', 'PostSet', @(varargin) xylim(varargin{:}, axesin));
+addlistener(axesin,'Position', 'PostSet', @(varargin) xylim(varargin{:}, axesin));
 
 %-----------------------------------------------------------------
 function [] = xylim(varargin)
@@ -179,7 +165,6 @@ set(AX.hY,'YDir', ydir);
 set(AX.hX,'XDir', xdir);
 % Adjusts pos
 adjpos(axesin)
-%disp('xylim was called')
 
 %-----------------------------------------------------------------
 function [] = adjpos(axesin)

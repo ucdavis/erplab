@@ -107,22 +107,28 @@ try
         set(handles.gui_chassis, 'Position', [xfig yfig 1.2*info.Width 1.1*info.Height])
         set(handles.axes1, 'Visible', 'off', 'Units', 'pixels', 'Position', [0 50 1.2*info.Width info.Height])
         set(handles.text_cover,'Position', [0 0 1.2*info.Width 0.007*info.Height]);
-        wb = 91;
+        wb = 88;
         hb = 40.92;
         yb = 6.38;
         wfig = get(handles.gui_chassis, 'Position');
-        x1 = wfig(3)*0.2-wb/2;
-        x2 = wfig(3)*0.4-wb/2;
-        x3 = wfig(3)*0.6-wb/2;
-        x4 = wfig(3)*0.8-wb/2;
+        nbuttons = 5;  % number of buttons
+        kk = 1/(nbuttons*1.03); 
+        x1 = wfig(3)*kk-9*wb/10;
+        x2 = wfig(3)*2*kk-9*wb/10;
+        x3 = wfig(3)*3*kk-9*wb/10;
+        x4 = wfig(3)*4*kk-9*wb/10;
+        x5 = wfig(3)*5*kk-9*wb/10;
         set(handles.pushbutton_erpinfo,'Units', 'pixels');
+        set(handles.pushbutton_publication,'Units', 'pixels');
         set(handles.pushbutton_relaunch,'Units', 'pixels');
         set(handles.pushbutton_youtube,'Units', 'pixels');       
-        set(handles.pushbutton_close,'Units', 'pixels');        
+        set(handles.pushbutton_close,'Units', 'pixels');           
         set(handles.pushbutton_erpinfo,'Position', [x1 yb wb hb]);
-        set(handles.pushbutton_relaunch,'Position', [x2 yb wb hb]);
-        set(handles.pushbutton_youtube,'Position', [x3 yb wb hb]);
-        set(handles.pushbutton_close,'Position', [x4 yb wb hb]);        
+        set(handles.pushbutton_publication,'Position', [x2 yb wb hb]); 
+        set(handles.pushbutton_relaunch,'Position', [x3 yb wb hb]);
+        set(handles.pushbutton_youtube,'Position', [x4 yb wb hb]);
+        set(handles.pushbutton_close,'Position', [x5 yb wb hb]);   
+        
         axes(handles.axes1)
         holgu  = 0.12*info.Width;
         dimmer = 0.98*sin(0:pi/160:0.8*pi); %[0:9 9 9 9 9:-1:4];
@@ -240,6 +246,18 @@ if handles.running  == 0;
 end
 pause(0.2)
 web('http://www.erpinfo.org/erplab/','-browser')
+
+% -----------------------------------------------------------------------
+function pushbutton_publication_Callback(hObject, eventdata, handles)
+posgui = get(handles.gui_chassis,'Position');
+erpworkingmemory('abouterplabGUI', posgui);
+
+set(handles.pushbutton_close,'Value', 1)
+if handles.running  == 0;
+        delete(handles.gui_chassis)
+end
+pause(0.2)
+web('http://journal.frontiersin.org/article/10.3389/fnhum.2014.00213/abstract','-browser')
 
 % -----------------------------------------------------------------------
 function [banner, fcolor1, fcolor2, info ] = loadtheme(numfig, hObject, eventdata, handles)

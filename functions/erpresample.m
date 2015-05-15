@@ -45,7 +45,7 @@ end
 ERP.bindata  = xbindata;
 ERP.binerror = [];
 ERP.srate    = ERP.srate*N/D;
-ERP.setname  = [ERP.erpname '_resampled'];
+ERP.erpname  = [ERP.erpname '_resampled'];
 ERP.pnts     = size(ERP.bindata,2);
-ERP.xmax     = ERP.xmin + (ERP.pnts-1)/ERP.srate; % cko: recompute xmax, since we may have removed a few of the trailing samples
+ERP.xmax     = ERP.xmin + (ERP.pnts-1)/ERP.srate; 
 ERP.times    = linspace(ERP.xmin*kktime, ERP.xmax*kktime, ERP.pnts);

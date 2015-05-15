@@ -102,6 +102,7 @@ set(handles.text_bottom, 'String', bottomline)
 set(handles.text_bottom, 'Backgroundcolor', bcolor, 'FontSize', 10,'ForegroundColor', fcolor)
 set(handles.main_figure_error,'Name', title,'WindowStyle','modal', 'Units', 'pixels')
 set(handles.main_figure_error,'Color', bcolor)
+set(handles.checkbox_quack,'Backgroundcolor', bcolor)
 
 try
         he = findobj('tag','EEGLAB');
@@ -156,7 +157,8 @@ drawnow
 %
 if isempty(defquack) || defquack==1
         try
-                [s,fs] = wavread('quack8000.wav');
+                %[s,fs] = wavread('quack8000.wav');
+                [s,fs] = audioread('quack8000.wav');
                 sound(s,fs);
         catch
                 set(handles.checkbox_quack, 'Value', 0)
@@ -208,7 +210,8 @@ if get(hObject, 'Value')
     % Quack
     %
     try
-        [s,fs] = wavread('quack8000.wav');
+        %[s,fs] = wavread('quack8000.wav');
+        [s,fs] = audioread('quack8000.wav');
         sound(s,fs);
     catch
         set(handles.checkbox_quack, 'Value', 0)

@@ -1,5 +1,5 @@
-erplabver = '4.0.3.1';                % current erplab version
-erplabrel = '25-Aug-2014';            % DOB
+erplabver = '4.0.4.1';                % current erplab version
+erplabrel = '27-Apr-2015';            % DOB
 %ColorB = [170 180 195]/255;          % old background color (until version 3)
 %ColorB = [0.9216 0.8353 0.6078];     % background color for version 4
 %ColorB = [0.7020 0.7647 0.8392];     % background color since version 4.0.0.3
@@ -9,25 +9,18 @@ ColorF       = [0.02 0.02 0.02];       % foreground color since version 4.0.2.0
 errorColorF  = [0 0 0];                % foreground color for error window
 errorColorB  = [0.6824 1 0.6353];      % background color for error window
 fontunitsGUI = 'pixels';
-
-% Jason: Copied function ISRETINAD() into this script ---------------------
-set(0,'Units','pixels')
+v = 0;
+set(0,'Units','pixels') 
 thisscreen = get(0, 'ScreenSize');
 if thisscreen(3)==1440 && thisscreen(4)>=878 && thisscreen(4)<1000 && ismac
-    isretinad = 1;
+    v = 1;
 elseif thisscreen(3)>=1440 && thisscreen(4)>=1000  && ismac
-    isretinad = 2;
+    v = 2;
 end
-%---------------------------------------------------------------------------
-
-if isretinad==1
+if v==1
         fontsizeGUI = 12; % retina display
-elseif isretinad==2
+elseif v==2
         fontsizeGUI = 11; % iMac display
 else
         fontsizeGUI = 8.2;
 end
-
-
-
-

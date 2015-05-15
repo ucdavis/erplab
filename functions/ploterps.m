@@ -257,6 +257,7 @@ if strcmpi(datatype, 'ERP')
 else
         blcorr = 'no';
 end
+
 %
 %  Fit Yaxis AUTO-SCALE
 %
@@ -311,7 +312,8 @@ end
 % Create figure
 %
 hbig = figure('Name',['<< ' fname ' >>  Interactive (Click on figure for larger image)'],...
-        'NumberTitle','on', 'Tag', ftag, 'RendererMode', 'auto');erplab_figtoolbar(hbig);
+    'NumberTitle','on', 'Tag', ftag);erplab_figtoolbar(hbig);
+set(hbig, 'Renderer', 'painters');
 drawnow
 
 %
@@ -325,14 +327,10 @@ else
         end
 end
 
-
 %
 % Figure background
 %
 set(hbig, 'Color', BCKGCOLOR)
-% opengl autoselect
-% opengl('OpenGLBitmapZbufferBug',1)
-% opengl software
 
 %
 % COLOR & Style
@@ -394,9 +392,7 @@ if pstyle==4 % topo
         options = { 'chanlocs' chanlocs 'legend' legendt  'limits' [xlimc yaxlim(1:2)] ...
                 'title' '' 'chans' chanArray 'ydir' tydir 'colors' linespec 'geom' [0 0]...
                 'axsize' axsize 'XYcolor' FRGCOLOR};
-        plottopo_II( dataaux(:, tp1:tp2, binArray), options{:})       
-%         set(gca,'XColor', [1 0 0 ]);
-%         set(gca,'YColor', [1 0 0 ]);        
+        plottopo_II( dataaux(:, tp1:tp2, binArray), options{:})            
 else
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %  ERPLAB rectangular plotting    %
@@ -493,20 +489,29 @@ else
                                 % pending...
                                 %
                                 if ~isempty(ERP.binerror) && errorstd>=1
-                                        yt1 = data4plot(1,:,binArray(ibin)) - ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
-                                        yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
-                                        ciplot(yt1,yt2, ERP.times, colorDef{ibin+cobi}, stdalpha);
+                                       yt1 = data4plot(1,:,binArray(ibin)) - ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
+                                       yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
+                                       ciplot(yt1,yt2, ERP.times, colorDef{ibin+cobi}, stdalpha);
+                                       
+                                       set(gcf, 'InvertHardcopy', 'off', 'PaperPositionMode', 'auto', 'PaperOrientation', 'portrait');
                                 end
+                                
+                                %                                 if ~isempty(ERP.binerror) && errorstd>=1
+                                %                                     HSH = shadedErrorBar(ERP.times, data4plot(1,:,binArray(ibin)), ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd,colorDef{ibin+cobi},1);
+                                %                                     hplot(ibin)= HSH.mainLine;
+                                %                                 else
+                                %                                     hplot(ibin) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
+                                %                                         'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
+                                %                                 end
                                 
                                 
                                 hplot(ibin) = plot(ERP.times, data4plot(1,:,binArray(ibin)),...
-                                        'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
+                                    'LineWidth',linew, 'Color', colorDef{ibin+cobi}, 'LineStyle',styleDef{ibin+cobi});
                                 
-                               
                                 if binleg
-                                        legendArray{ibin} = ['BIN' num2str(binArray(ibin)) ': ' ERP.bindescr{binArray(ibin)}];
+                                    legendArray{ibin} = ['BIN' num2str(binArray(ibin)) ': ' ERP.bindescr{binArray(ibin)}];
                                 else
-                                        legendArray{ibin} = ERP.bindescr{binArray(ibin)};
+                                    legendArray{ibin} = ERP.bindescr{binArray(ibin)};
                                 end
                                 legendArray{ibin} = strrep(legendArray{ibin},'_','\_'); % trick for dealing with '_'. JLC
                                 set(hplot(ibin),'DisplayName', legendArray{ibin});
@@ -551,14 +556,8 @@ else
                 %                 end
                 
                 if pstyle==1 || pstyle==2% Matlab figure and menues
-                        %set(gca,'FontSize', fsaxtick);
-                        neozeroaxes(0, fsaxtick, BCKGCOLOR)                        
-                        %set(h,'String',{'cos(x)','sin(x)'})                        
-                        %comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
-                        %        'neozeroaxes(0);'];
-                        
-                        comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
-                                'neozeroaxes(0);'...
+                        neozeroaxes(0, fsaxtick, BCKGCOLOR)                                                
+                        comax = ['neozeroaxes(0);'...
                                 'legend show;'...
                                 'legend(''''boxoff'''','...
                                 '''''Location'''',''''SouthEastOutside'''',',...
@@ -572,8 +571,7 @@ else
                         CHLABCOLOR = [0 0 0];
                 else % classic
                         neozeroaxes(1, fsaxtick, BCKGCOLOR)                       
-                        comax = ['set(newfig, ''''Tag'''', ''''copiedf'''');'...
-                                'neozeroaxes(1);'...
+                        comax = ['neozeroaxes(1);'...
                                 'legend show;'...
                                 'legend(''''boxoff'''','...
                                 '''''Location'''',''''SouthEastOutside'''',',...
@@ -585,8 +583,6 @@ else
                 end
                 
                 text(0,yposlabel, labelch, 'FontSize',fschan,'HorizontalAlignment', 'left', 'FontWeight', 'bold', 'Color', CHLABCOLOR,'BackgroundColor', colorpl);
-                %set(gcf,'Color',[1 1 1]);                
-                %set(gcf,'Color',[0 0 0]);
                 set(gca,'Color', BCKGCOLOR);  
                 %set(gca,'Layer','top')
                 drawnow
