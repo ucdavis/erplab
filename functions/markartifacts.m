@@ -3,22 +3,22 @@
 %
 % FORMAT
 % 
-% [EEG errorm] = markartifacts(EEG, flagv, chanArray, ch, currEpochNum, isRT, issincro)
+% [EEG errorm] = markartifacts(EEG, flagv, chanArray, ch, i, isRT, issincro)
 %
 % INPUTS:
 %
-% EEG           - epoched dataset
-% flagv         - flag(s) to mark (1-8). Flag 0 means unmark flags
-% chanArray     - whole channel indices array
-% ch            - channel(s) to mark
-% currEpochNum  - current epoch
-% isRT          - sync artifact info on RTs
-% issincro      - mark also EEGLAB's fields for artifact detection (1=yes; 0=no)
+% EEG        - epoched dataset
+% flagv      - flag(s) to mark (1-8). Flag 0 means unmark flags
+% chanArray  - whole channel indices array
+% ch         - channel(s) to mark
+% i          - current epoch
+% isRT       - sync artifact info on RTs
+% issincro   - mark also EEGLAB's fields for artifact detection (1=yes; 0=no)
 %
 % OUTPUT
 %
-% EEG           - epoched dataset (with marked epochs and flags)
-% errorm        - error flag. 0 means no error; 1 otherwise.
+% EEG        - epoched dataset (with marked epochs and flags)
+% errorm     - error flag. 0 means no error; 1 otherwise.
 %
 % See also pop_artblink pop_artderiv pop_artdiff pop_artflatline pop_artmwppth pop_artstep artifactmenuGUI.m 
 %
@@ -51,22 +51,22 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG, errorm]= markartifacts(EEG, flagv, chanArray, ch, currEpochNum, isRT, issincro)
+function [EEG errorm]= markartifacts(EEG, flagv, chanArray, ch, i, isRT, issincro)
 
 if nargin<7
       issincro=0;
 end
 
-% currEpochNum: current trial (epoch)
+% i: current trial (epoch)
 errorm = 0;
 
 if ~issincro %not for sincro
-      EEG.reject.rejmanual(currEpochNum)                    = 1;   % mark epoch with artifact
-      EEG.reject.rejmanualE(chanArray(ch), currEpochNum)    = 1;   % mark channel with artifact
+      EEG.reject.rejmanual(i) = 1; % marks epoch with artifact
+      EEG.reject.rejmanualE(chanArray(ch), i) = 1; % marks channel with artifact
 end
 
 nflag = length(flagv);
-xitem = EEG.epoch(currEpochNum).eventitem;                      % item index(ices) from event within this epoch
+xitem = EEG.epoch(i).eventitem; % item index(ices) from event within this epoch
 nitem = length(xitem);
 
 if iscell(xitem)
@@ -75,7 +75,7 @@ else
       item = xitem;
 end
 
-oldflag = EEG.epoch(currEpochNum).eventflag; % flags from event within this epoch
+oldflag = EEG.epoch(i).eventflag; % flags from event within this epoch
 
 %
 %
@@ -89,7 +89,7 @@ else
       isfcell = 0;
 end
 
-laten = EEG.epoch(currEpochNum).eventlatency;
+laten = EEG.epoch(i).eventlatency;
 
 if iscell(laten)
       laten = cell2mat(laten);
@@ -111,9 +111,9 @@ for f=1:nflag
             end            
             if flag>=0 && flag<=8
                   if isfcell==1
-                        EEG.epoch(currEpochNum).eventflag{indxtimelock}  = newflag;
+                        EEG.epoch(i).eventflag{indxtimelock}  = newflag;
                   else
-                        EEG.epoch(currEpochNum).eventflag(indxtimelock)  = newflag;
+                        EEG.epoch(i).eventflag(indxtimelock)  = newflag;
                   end
                   EEG.EVENTLIST.eventinfo(itemzero).flag = newflag;
             end
@@ -130,8 +130,8 @@ end
 %
 % RTs
 %
-if isRT && isFieldNested(EEG, 'rtitem')
-      bin = unique_bc2(cell2mat(EEG.epoch(currEpochNum).eventbini)); 
+if isRT
+      bin = unique_bc2(cell2mat(EEG.epoch(i).eventbini)); 
       bin = bin(bin>0);
       rtitem = EEG.EVENTLIST.bdf(bin).rtitem;
       
@@ -148,51 +148,10 @@ if isRT && isFieldNested(EEG, 'rtitem')
                   end
             end
       end
-      
-      % Jason: Mark the RTFLAG variable -----------------------
-      epochBins         = unique(cell2mat(EEG.epoch(currEpochNum).eventbini));    % Select all the bins the epoch belongs to
-      epochBins         = epochBins(epochBins>0);
-      epochEventNums    = EEG.epoch(currEpochNum).eventitem;                      % Select the event-code index(ices) within this epoch
-      if iscell(epochEventNums)
-          epochEventNums = cell2mat(epochEventNums);                              % Convert the cell array to a matrix array for the FOR-loop
-      end
-      
-      for binIndex = 1:length(epochBins)                                            % For each bin the epoch belongs to
-          for eventNumIndex = 1:length(epochEventNums)                              %  For each event number
-              epochEventNum = epochEventNums(eventNumIndex);
-              epochBinNum   = epochBins(binIndex);
-              
-              % Find the RT-index which corresponds to the epoch event num
-              rtFlagIndex = find(epochEventNum==EEG.EVENTLIST.bdf(epochBinNum).rtitem);
-              
-              % Use that RT-index to locate and set the RTFLAG to the new flag
-              if(~isempty(rtFlagIndex))
-                  EEG.EVENTLIST.bdf(epochBinNum).rtflag(rtFlagIndex) = newflag; % bitset(EEG.EVENTLIST.bdf(epochBinNum).rtflag(rtFlagIndex), flag);
-              end
-          end
-      end
-      %-------------------------------------------------------------------------------
-      
-      
 end
 
 
 
 
-function isFieldResult = isFieldNested(inStruct, fieldName)
-% inStruct is the name of the structure or an array of structures to search
-% fieldName is the name of the field for which the function searches
-isFieldResult = 0;
-f = fieldnames(inStruct(1));
-for i=1:length(f)
-    if(strcmp(f{i},strtrim(fieldName)))
-        isFieldResult = 1;
-        return;
-    elseif isstruct(inStruct(1).(f{i}))
-        isFieldResult = isFieldNested(inStruct(1).(f{i}), fieldName);
-        if isFieldResult
-            return;
-        end
-    end
-end
+
 

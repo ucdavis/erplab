@@ -717,7 +717,10 @@ if strcmpi(datatype, 'ERP')
                 %plotset.pscalp.showelec = 1;
                 %plotset.pscalp.ismaxim  = 0;
                 plotset.pscalp.mtype   = '2D'; % map type  0=2D; 1=3D
+                plotset.pscalp.smapstyle = 'both';   % map style: 'fill' 'both' 
+
                 plotset.pscalp.mapview = 0; % numeric
+                plotset.pscalp.mapoutside = 0;
                 
                 %       plegend       = plotset.pscalp.plegend; % numeric
                 plotset.pscalp.plegend.binnum     = 1;
@@ -725,6 +728,10 @@ if strcmpi(datatype, 'ERP')
                 plotset.pscalp.plegend.type       = 1;
                 plotset.pscalp.plegend.latency    = 1;
                 plotset.pscalp.plegend.electrodes = 1;
+                
+                plotset.pscalp.plegend.elestyle   = 'on';
+                plotset.pscalp.plegend.elec3D     = 'off';
+                
                 plotset.pscalp.plegend.colorbar   = 1;
                 plotset.pscalp.plegend.maximize   = 0;
                 plotset.pscalp.plegend.colormap   = 1;
@@ -753,7 +760,9 @@ else
                 %plotset.pscalp.showelec = 1;
                 %plotset.pscalp.ismaxim  = 0;
                 plotset.pscalp.mtype   = '2D'; % map type  0=2D; 1=3D
+                plotset.pscalp.smapstyle = 'both';   % map style: 'fill' 'both' 
                 plotset.pscalp.mapview = 0; % numeric
+                plotset.pscalp.smapstyle = 'both';   % map style: 'fill' 'both' 
                 
                 %       plegend       = plotset.pscalp.plegend; % numeric
                 plotset.pscalp.plegend.binnum     = 1;
@@ -761,6 +770,10 @@ else
                 plotset.pscalp.plegend.type       = 1;
                 plotset.pscalp.plegend.latency    = 1;
                 plotset.pscalp.plegend.electrodes = 1;
+                
+                plotset.pscalp.plegend.elestyle   = 'on';
+                plotset.pscalp.plegend.elec3D     = 'off';
+                
                 plotset.pscalp.plegend.colorbar   = 1;
                 plotset.pscalp.plegend.maximize   = 0;
                 plotset.pscalp.plegend.colormap   = 1;
@@ -1365,7 +1378,7 @@ else
                 %[ytarr, miny, maxy] = default_amp_ticks(ERP, binArray);
                 %[ytarr, miny, maxy] = default_amp_ticks(ERP, binArray);
                 %ytickarray        = str2num(char(ytarr));
-                yyscale        = [0 40 10 20 30 40];
+                yyscale        = [0 10 10 20 30 40];
                 linewidth      = 1;
                 isiy           = 0;
                 fschan         = 10;
@@ -1701,7 +1714,7 @@ handles.timeticks = timeticks;
 %
 %  Y scale
 %
-yscalestr1 = sprintf('%.1f %.1f', yyscale(1), yyscale(2));
+yscalestr1 = sprintf('%.4f %.4f', yyscale(1), yyscale(2));
 if length(yyscale)>2
         yticks = yyscale(3:end);
         yscalestr2 = sprintf('%s',vect2colon(yyscale(3:end),'Delimiter','off', 'Repeat', 'off'));
@@ -2089,7 +2102,7 @@ if get(hObject, 'Value')==4 % topo
         handles.mxscale =  wxscale;
         handles.myscale =  wyscale;
         set(handles.edit_time_range, 'String', sprintf('%.1f %.1f', wxscale(1), wxscale(2)));
-        set(handles.edit_yscale, 'String', sprintf('%.1f %.1f', wyscale(1), wyscale(2)));
+        set(handles.edit_yscale, 'String', sprintf('%.4f %.4f', wyscale(1), wyscale(2)));
         
         % Update handles structure
         guidata(hObject, handles);
@@ -2102,7 +2115,7 @@ else
         %
         trangestr = sprintf('%.1f %.1f', mxscale(1), mxscale(2));
         set(handles.edit_time_range,'String', trangestr)
-        yscalestr = sprintf('%.1f %.1f', myscale(1), myscale(2));
+        yscalestr = sprintf('%.4f %.4f', myscale(1), myscale(2));
         set(handles.edit_yscale, 'String', yscalestr)
         ERP = handles.ERP;
         %       set(handles.popupmenu_line,'Enable', 'on')
@@ -2302,8 +2315,8 @@ ERP       = handles.ERP;
 chanArray = str2num(get(handles.edit_chans, 'String'));
 binArray  = str2num(get(handles.edit_bins, 'String'));
 xxlim     = str2num(get(handles.edit_time_range, 'String'));
-[yylim, serror] = erpAutoYLim(ERP, binArray, chanArray, xxlim);
-set(handles.edit_yscale, 'String', sprintf('%.1f %.1f', yylim(1), yylim(2)));
+[yylim, serror] = erpAutoYLim(ERP, binArray, chanArray, xxlim)
+set(handles.edit_yscale, 'String', sprintf('%.4f %.4f', yylim(1), yylim(2)));
 
 %--------------------------------------------------------------------------
 function popupmenu_font_axistick_Callback(hObject, eventdata, handles)
@@ -2372,8 +2385,3 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
-
-
-
-
-

@@ -32,6 +32,13 @@
 %                                     -'instalapla'      - Instantaneous amplitude Laplacian (needs 1 latency value)
 %                                     -'meanlapla'       - Mean amplitude Laplacian between two fixed latencies
 %         'Maptype'           - '2D' or '3D'
+%
+%         'Mapstyle'          - 'map'      -> plot colored map only
+%                               'contour'  -> plot contour lines only
+%                               'both'     -> plot both colored map and contour lines
+%                               'fill'     -> plot constant color between contour lines
+%                               'blank'    -> plot electrode locations only {default: 'both'}
+%
 %         'Maplimit'          - 'maxmin', 'absmax', or [custom_min custom_max]- Enter own numbers for min and max
 %         'Mapview'           - direction of nose or camera viewpoint in degrees [azimuth elevation]. default [143 18]
 %                                       'back'      = [0 30]
@@ -216,6 +223,8 @@ if nargin==1
         fullgifname  = plotset.pscalp.agif.fname;
         posfig       = plotset.pscalp.posfig;
         mtype        = plotset.pscalp.mtype;   % map type: 2D or 3D
+        smapstyle    = plotset.pscalp.smapstyle;   % map style: 'fill' 'both' 
+        mapoutside   = plotset.pscalp.mapoutside;
         mapview      = plotset.pscalp.mapview;
         splineinfo   = plotset.pscalp.splineinfo;
         plegend      = plotset.pscalp.plegend;
@@ -224,6 +233,8 @@ if nargin==1
         vtype        = plegend.type ;          % show type of measurement at legend
         vlatency     = plegend.latency;        % show latency(ies) at legend
         showelec     = plegend.electrodes;     % show electrodes on scalp
+        elestyle     = plegend.elestyle  ;     %         
+        elec3D       = plegend.elec3D;
         clrbar       = plegend.colorbar;       % show color bar
         ismaxim      = plegend.maximize;       % show color bar
         clrmap       = plegend.colormap;       % show color bar
@@ -305,6 +316,11 @@ if nargin==1
                 colorbari = 'on';
         else
                 colorbari = 'off';
+        end        
+        if mapoutside==1   % 'plotrad',mplotrad,
+                mplotrad = [];
+        else
+                mplotrad = 0.55;
         end
         
         %'jet|hsv|hot|cool|gray'
@@ -339,7 +355,7 @@ if nargin==1
                 binlegx = 'off';
         end
         if showelec==1
-                showelecx = 'on';
+                showelecx = elestyle;
         else
                 showelecx = 'off';
         end
@@ -359,7 +375,8 @@ if nargin==1
         %
         [ERP, erpcom] = pop_scalplot(ERP, binArray, latencyArray, 'Value', measurestr, 'Blc', baseline, 'Maplimit', maplimit, 'Colorbar', colorbari,...
                 'Colormap', cmap,'Animated', ismoviexx, 'AdjustFirstFrame', aff, 'FPS', FPS, 'Filename', fullgifname, 'Legend', mapleg, 'Electrodes', showelecx,...
-                'Position', posfig, 'Maptype', mtype, 'Mapview', mapview, 'Splinefile', splinefile, 'Maximize', maxim, 'History', 'gui');
+                'Position', posfig, 'Maptype', mtype, 'Mapstyle', smapstyle, 'Plotrad', mplotrad,'Mapview', mapview, 'Splinefile', splinefile,...
+                'Maximize', maxim, 'Electrodes3d', elec3D,'History', 'gui');
         pause(0.1)
         return
 end
@@ -388,10 +405,13 @@ p.addParamValue('VideoIntro', 'erplab', @ischar);
 p.addParamValue('Quality', 60, @isnumeric); % number between 1 and 100
 p.addParamValue('Compression', 'none', @ischar);
 p.addParamValue('Electrodes', 'on', @ischar);
+p.addParamValue('Electrodes3d', 'off', @ischar);
 p.addParamValue('Legend', 'bn-la', @ischar); % all -> 'bn-bd-me-lat' (at legend:bin number (bn), bin desc (bd), measure (me), latency (la))
 p.addParamValue('Maximize', 'off', @ischar); % off | on
 p.addParamValue('Position', [], @isnumeric);
-p.addParamValue('Maptype', '2D', @ischar); % size ([w h] ) for each channel when topoplot is being used.
+p.addParamValue('Maptype', '2D', @ischar); % 
+p.addParamValue('Mapstyle', 'both', @ischar); % 'fill' 'both'
+p.addParamValue('Plotrad', 0.55, @isnumeric); % 'fill' 'both'
 p.addParamValue('Mapview', '+X');
 p.addParamValue('Splinefile', '', @ischar);
 p.addParamValue('Chanlocfile', '', @ischar);
@@ -488,15 +508,18 @@ else
         adj1frame = 0;
 end
 
-showelecx   = p.Results.Electrodes;
-if strcmpi(showelecx,'on')
-        showelec = 1;
-else
-        showelec = 0;
-end
+elestyle   = p.Results.Electrodes;
+elec3D     = p.Results.Electrodes3d;
+% if strcmpi(showelecx,'on')
+%         showelec = 1;
+% else
+%         showelec = 0;
+% end
 posfig      = p.Results.Position;
 mtype       = lower(p.Results.Maptype);
+smapstyle   = lower(p.Results.Mapstyle);
 mapview     = lower(p.Results.Mapview);
+mplotrad    = lower(p.Results.Plotrad);
 splinefile  = p.Results.Splinefile;
 fontsizel   = p.Results.FontSize;
 fontnamel   = p.Results.FontName;
@@ -576,11 +599,11 @@ if strcmp(measurestr, 'insta') || strcmp(measurestr, 'instalapla')
 else
         nlat = size(latArray,1);  % couples of latencyes can be defined. e.g [50 100; 120 350; 400 600]
 end
-if showelec==1
-        showe = 'on';
-else
-        showe = 'off';
-end
+% if showelec==1
+%         showe = 'on';
+% else
+%         showe = 'off';
+% end
 
 wi   = 0.9/nlat;
 hi   = 0.9/nbin;
@@ -637,6 +660,7 @@ else
         end
 end
 set(hsig,'Color', [1 1 1])
+% set(hsig, 'Renderer', 'painters');
 if ischar(cmap)  % 'jet|hsv|hot|cool|gray'
         switch lower(cmap)
                 case 'jet'
@@ -677,6 +701,7 @@ while iadj<=nadj && continueplot
                         if ~isempty(posfig)
                                 set(hsig, 'Position', posfig)
                         end
+                        %set(hsig, 'Renderer', 'painters');
                 end
                 for ibin=1:nbin
                         if ismoviex>0
@@ -747,14 +772,31 @@ while iadj<=nadj && continueplot
                                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                                 %                  Plot 3D scalp map, at current latency, current bin                  %
                                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                                if strcmpi(elestyle, 'off')
+                                        auxelestyle = 'off';
+                                        elclbls = 0;
+                                else
+                                        auxelestyle = 'on';
+                                        switch elestyle
+                                                case 'on'
+                                                        elclbls = 0;
+                                                case {'numbers','ptsnumbers'}
+                                                        elclbls = 1;
+                                                case {'labels','ptslabels'}
+                                                        elclbls = 2;
+                                                otherwise
+                                                        elclbls = 0;                                                        
+                                        end
+                                        
+                                end                                
                                 
                                 % colorbar and plot
                                 cb3d = 0;
                                 %
                                 % Plot ERP on a 3D head
                                 %
-                                [HeadAxes(ksub), ColorbarHandle] = headplot(data2plot, splinefile, 'electrodes', showe, 'view', mview,...
-                                        'maplimits', maplimit, 'cbar', cb3d,'colormap', clrmap, 'title', titulo); %Plots the 3d scalp plot.
+                                [HeadAxes(ksub), ColorbarHandle] = headplot_erp(data2plot, splinefile, 'electrodes', auxelestyle, 'view', mview,...
+                                        'maplimits', maplimit, 'cbar', cb3d,'colormap', clrmap, 'title', titulo, 'electrodes3d', elec3D, 'labels', elclbls); %Plots the 3d scalp plot.                                
                                 
                                 
                                 if clrbar==1 && clrbarcustom==1
@@ -790,9 +832,12 @@ while iadj<=nadj && continueplot
                                 %
                                 % Plot ERP on a 2D map
                                 %
+                                mapnumcontour = 12;
+                                mheadrad      = 0.5; 
                                 topoplot( data2plot, ERP.chanlocs,...
-                                        'style', 'fill', 'plotrad',0.55, 'headrad', 0.5,'emarker', {'.','k',[],1},...
-                                        'numcontour',12, 'maplimits', maplimit, 'colormap', clrmap,'electrodes', showe, 'nosedir', mapview);
+                                       'style', smapstyle, 'plotrad',mplotrad, 'headrad', mheadrad,'emarker', {'.','k',[],1},...
+                                       'numcontour', mapnumcontour, 'maplimits', maplimit, 'colormap', clrmap,'electrodes', elestyle, 'nosedir', mapview);
+                                    
                                 HeadAxes(ksub) = gca;
                                 
                                 % Color Bar
@@ -975,6 +1020,9 @@ skipfields = {'ERP','binArray','latencyArray','History'};
 if ismoviex==0
         skipfields = [skipfields {'FPS','Filename','Quality','Compression','VideoIntro'}];
 end
+if strcmpi(mtype, '2d')
+        skipfields = [skipfields {'Electrodes3d'}];
+end
 fn = fieldnames(p.Results);
 erpcom = sprintf( '%s = pop_scalplot( %s, %s, %s ',  inputname(1), inputname(1), binArraystr, latencystr);
 
@@ -1078,6 +1126,7 @@ end
 strbinnum = ['Bin' num2str(binArray(ibin))];
 strequal  = ' = ';
 strbindes = ERP.bindescr{binArray(ibin)};
+strbindes = strrep(strbindes,'_','\_'); % trick for dealing with '_'. JLC
 strcomma1 = ',';
 strvtype  = [''''  measurestr ''''];
 strcomma2 = ',';

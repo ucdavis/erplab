@@ -415,6 +415,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                 %%%%%%%%%% a) detects by event code (number), assigns event label          %%%%%%%%%%%%%%%%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 xbin = []; % bin number accumulator
+                fprintf('\n');
                 disp('Assigning code labels to numeric codes. Looking for numeric codes...')
                 
                 for i=1:nline
@@ -430,7 +431,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                         [EVENTLIST.eventinfo(indxm).codelabel] = deal(codelabelx);
                                         
                                         if ~strcmpi(codelabelx,'""')
-                                                fprintf('\n #: Event codes %g were labeled %s . \n', codex, codelabelx);
+                                                fprintf('\n #: Event codes %g were labeled %s \n', codex, codelabelx);
                                         end
                                 end
                                 
@@ -448,11 +449,11 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                 if ~isempty(numbin) && ~isempty(indxm)   % bin was specified, code was found
                                         binII = unique_bc2([numbin prebin]);
                                         [EVENTLIST.eventinfo(indxm).bini] = deal(binII);
-                                        fprintf('\n #: Event codes %g were bined %d . \n', codex, numbin);
+                                        fprintf('\n #: Event codes %g were bined %d \n', codex, numbin);
                                         [EVENTLIST.eventinfo(indxm).binlabel]  = deal(binlabelx);
                                         
                                         if ~strcmpi(binlabelx,'""')
-                                                fprintf('\n #: Event codes %g were bin-labeled %s . \n', codex, binlabelx);
+                                                fprintf('\n #: Event codes %g were bin-labeled %s \n', codex, binlabelx);
                                         end
                                         
                                         EVENTLIST.bdf(numbin).description = binlabelx;
@@ -464,7 +465,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                         [EVENTLIST.eventinfo(indxm).bini] = deal(-1);
                                         [EVENTLIST.eventinfo(indxm).binlabel] = deal('""');
                                 else
-                                        fprintf('\n\nWARNING:  Event code %g was not found at %s .\n\n', codex, EEG.setname)
+                                        fprintf('\n !!!: Event code %g was not found at %s \n', codex, EEG.setname)
                                 end
                         end
                 end
@@ -472,6 +473,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%%%%%%%%%%%%%%% b) detects by event label, assigns event number       %%%%%%%%%%%%%%%%%%%%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                fprintf('\n');
                 disp('Assigning numeric codes to alphanumeric codes. Moving alphanumeric codes to code labels. Looking for alphanumeric codes...')
                 
                 for i=1:nline
@@ -482,7 +484,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                         
                                         codex = str2num(inputLine{i}{1});
                                         [EVENTLIST.eventinfo(indxm).code] = deal(codex);
-                                        fprintf('\n #: Event codelabels %s were encoded %d . \n', codelabelx, codex);
+                                        fprintf('\n #: Event codelabels %s were encoded %d \n', codelabelx, codex);
                                 end
                                 
                                 numbin = str2num(inputLine{i}{3});
@@ -501,14 +503,14 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                         [EVENTLIST.eventinfo(indxm).binlabel]  = deal(binlabelx);
                                         
                                         if ~strcmpi(binlabelx,'""')
-                                                fprintf('\n #: Event codes %g were bin-labeled %s . \n', codex, binlabelx);
+                                                fprintf('\n #: Event codes %g were bin-labeled %s \n', codex, binlabelx);
                                         end
                                         
                                         EVENTLIST.bdf(numbin).description = binlabelx;
                                         EVENTLIST.bdf(numbin).namebin     = ['BIN' num2str(numbin)];
                                         
                                         if numbin>0
-                                                fprintf('\n #: Event codelabels %s were bined %d . \n', codelabelx, numbin);
+                                                fprintf('\n #: Event codelabels %s were bined %d \n', codelabelx, numbin);
                                         end
                                 elseif ~isempty(numbin) && isempty(indxm)
                                         EVENTLIST.bdf(numbin).description = binlabelx;
@@ -519,7 +521,7 @@ if ~strcmp(editlistname,'') && ~strcmp(editlistname,'no') && ~strcmp(editlistnam
                                                 [EVENTLIST.eventinfo(indxm).binlabel] = deal('""');
                                         end
                                 else
-                                        fprintf('\n\nWARNING:  Event codelabel %s was not found at %s .\n\n', codelabelx, EEG.setname)
+                                        fprintf('\n\nWARNING:  Event codelabel %s was not found at %s \n\n', codelabelx, EEG.setname)
                                 end
                         end
                 end

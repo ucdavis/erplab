@@ -100,9 +100,9 @@ ferrorn = regexp({figdir1.name}, 'logoerplaberror\d*.tif','match', 'ignorecase')
 fnames  = cellstr(char([ferrorn{:}]));  
 %for i=1:7; fnames{i} = sprintf('logoerplaberror%g.jpg',i);end
 try
-        [IconData IconCMap] = loadrandimage(fnames);
+        [IconData, IconCMap] = loadrandimage(fnames);
 catch
-        [IconData IconCMap] = imread('logoerplaberror1.tif');
+        [IconData, IconCMap] = imread('logoerplaberror1.tif');
 end
 
 button = errorGUI(message, title, IconData, IconCMap, bkgrncolor, frgrncolor, showfig);

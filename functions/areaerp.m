@@ -14,7 +14,12 @@
 % fs       - sampling frequency
 % latsam   - integration limits in samples. Two values for fixed integration limits.
 %            One or two values for automatic integration limit seeding.
-% op       - 'auto' means look for automatic integration limits. Otherwise is fixed.
+% op       - 'auto'  gets area under the curve, using automatic integration limits (otherwise is fixed)
+%            'autot' gets area under the curve, using automatic integration limits (total area. same as 'auto')
+%            'autop' gets area under the curve, using automatic integration limits (positive area only)
+%            'auton' gets area under the curve, using automatic integration limits (negative area only)
+%          - 'integral' gets integral of the curve (positive and negative areas get subtracted)
+%          -
 % coi      - Only for op='auto'. When an ERP waveform is not delimited by 2 zero-crossing latencies,
 %            but the first one (lower integration limit), the second latency (upper integration limit)
 %            will be the offset (if any) of a second or higher ERP waveform.
@@ -58,11 +63,7 @@
 
 function varargout = areaerp(data, fs,latsam, op, coi, frac, fracarearep, intfactor)
 if nargin<8
-        %if fs>=1000;
                 intfactor = 1;
-        %else
-        %        intfactor = 1000/fs; % to bring it to fs=1000 Hz
-        %end
 end
 if nargin<7
         fracarearep = 0; %NaN;  in case frac area lat is not found.
@@ -76,7 +77,7 @@ end
 if nargin<4
         op = 'integral';
 end
-if length(latsam)==1 && ~ismember_bc2({op},{'auto','autot','autop','auton'})
+if length(latsam)==1 && ~ismember({op},{'auto','autot','autop','auton'})
         error('ERPLAB says: error at areaerp(). You must enter 2 latencies for non-automatic limits')
 end
 if ~isempty(frac) && (frac<0 || frac>1)
@@ -93,7 +94,7 @@ if intfactor>1 % interpolate data
 else
         Ts = 1/fs;     % sample period
 end
-if ismember_bc2({op},{'auto','autot','autop','auton'})
+if ismember({op},{'auto','autot','autop','auton'})
         if length(latsam)==2
                 
                 %
@@ -188,11 +189,11 @@ end
 if isempty(a) || isempty(b)
         A = 0;   % either of the integration limits failed
 else
-        if ismember_bc2({op},{'autot','total'})
+        if ismember({op},{'autot','total'})
                 data = abs(data);
-        elseif ismember_bc2({op},{'autop','positive'})
+        elseif ismember({op},{'autop','positive'})
                 data(data<0) = 0;
-        elseif ismember_bc2({op},{'auton','negative'})
+        elseif ismember({op},{'auton','negative'})
                 data = -data;
                 data(data<0) = 0; % negative values get positive, and the previously positive ones get zeroed.
         end

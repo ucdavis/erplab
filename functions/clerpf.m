@@ -34,7 +34,10 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function clerpf
-findplot = findobj('Tag','ERP_figure','-or', 'Tag','Scalp_figure','-or', 'Tag','copiedf','-or', 'Tag','Viewer_figure');
+findplot = findobj('Tag','ERP_figure','-or', 'Tag','Scalp_figure',...
+                   '-or', 'Tag','copiedf','-or', 'Tag','ERP_figure_copy',...
+                   '-or', 'Tag','Scalp_figure_copy',...
+                   '-or', 'Tag','Viewer_figure');
 if isempty(findplot)
         fprintf('*** no ERPLAB figure found ***\n');
         return

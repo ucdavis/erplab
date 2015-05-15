@@ -154,8 +154,13 @@ if ncall==1
                 end  
                 binline = sprintf(binline);
                 fprintf(fid_values,  '%s\t', binline); 
-                frmt = [ '%' num2str(round(lenerpn/2)) 's\n'];
-                fprintf(fid_values, frmt, 'ERPset');               
+                if isempty(mlabel)
+                    frmt = [ '%' num2str(round(lenerpn/2)) 's\n'];
+                    fprintf(fid_values, frmt, 'ERPset');
+                else
+                    frmt = [ '%' num2str(round((length(mlabel))/2)) 's\t%' num2str(round(lenerpn/2)) 's\n'];
+                    fprintf(fid_values, frmt, 'mlabel', 'ERPset');
+                end
         elseif formatout==1 % one measurement per line (LONG)
                 headerline = {'value', 'chindex','chlabel',  'bini'};
                 lenheader  = length(headerline);
@@ -203,9 +208,13 @@ if formatout==0 % one erpset per line (WIDE)
                         fprintf(fid_values,  frmt, valstr);
                 end
         end
-        
-        frmt = ['%' num2str(lenerpn) 's'];  
-        fprintf(fid_values,  frmt, ERP.erpname );
+        if isempty(mlabel)
+            frmt = ['%' num2str(lenerpn) 's'];
+            fprintf(fid_values,  frmt, ERP.erpname );
+        else
+            frmt = ['%' num2str(length(mlabel)) 's\t%' num2str(lenerpn) 's'];
+            fprintf(fid_values,  frmt, mlabel, ERP.erpname );
+        end
         fprintf(fid_values,'\n');        
 elseif formatout==1 % one measurement per line (LONG)        
         fstr1 = ['%.' num2str(dig) 'f'];

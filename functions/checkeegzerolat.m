@@ -64,7 +64,7 @@ for i=1:nepoch
       end
 end
 auxtimes  = EEG.times;
-[v, indx]  = min(abs(auxtimes));
+[v, indx] = min(abs(auxtimes));
 EEG.times = auxtimes - auxtimes(indx);
 EEG.xmin  = min(EEG.times)/1000;
 EEG.xmax  = max(EEG.times)/1000;

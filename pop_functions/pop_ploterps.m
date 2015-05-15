@@ -322,7 +322,7 @@ p.addRequired('chanArray', @isnumeric);
 p.addParamValue('Mgfp', [], @isnumeric);
 p.addParamValue('Blc', 'none', @ischar);
 p.addParamValue('xscale', [], @isnumeric);
-p.addParamValue('yscale', [-10 10], @isnumeric);
+p.addParamValue('yscale', [], @isnumeric);
 p.addParamValue('LineWidth', 1, @isnumeric);
 p.addParamValue('YDir', 'normal', @ischar); % normal | reverse
 p.addParamValue('FontSizeChan', 10, @isnumeric);
@@ -537,6 +537,9 @@ if strcmpi(p.Results.AutoYlim,'on')
 else
         qyauto = 0;
 end
+% if ~isempty(qyscale)
+%      qyauto = 0;
+% end
 if strcmpi(p.Results.BinNum,'on')
         qbinleg = 1;
 else

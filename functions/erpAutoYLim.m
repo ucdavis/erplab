@@ -100,12 +100,16 @@ try
         datresh = reshape(ERP.bindata(chanArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nchan);
         yymax   = max(datresh);
         yymin   = min(datresh);
-        yylim(1:2) = round([yymin*1.2 yymax*1.1]); % JLC. Sept 26, 2012
+        if abs(yymax)<1 && abs(yymin)<1
+            yylim(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
+        else
+            yylim(1:2) = round([yymin*1.2 yymax*1.1]); % JLC. Sept 26, 2012
+        end
         
         %
         % in case of flatlined ERPs
         %
-        if yylim(1)==0 && yylim(2)==0
+        if yylim(1)<1E-6 && yylim(2)<1E-6
                 if strcmpi(datatype, 'ERP')
                         yylim(1:2) = [-1 1];
                         fprintf('WARNING: It seems like erpAutoYLim() found flatlined ERPs. So auto Y-limit was set to [-1 1].\n');

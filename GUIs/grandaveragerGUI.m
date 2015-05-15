@@ -590,11 +590,12 @@ else
 end
 try
         fid_list = fopen( fullname );
+        formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', ''); % JLC.05/12/15
 catch
         fprintf('WARNING: %s was not found or is corrupted\n', fullname)
         return
 end
-formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
+
 lista = formcell{:};
 % extra line forward
 lista   = cat(1, lista, {'new erpset'});
