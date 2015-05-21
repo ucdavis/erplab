@@ -1,5 +1,5 @@
-
-
+function [EEG, com]= pop_syncroartifacts(EEG, varargin)
+%POP_SYNCROARTIFACTS
 % PURPOSE  :	Synchonizes artifact dtection information between EEGLAB and ERPLAB
 %                 (EEG.reject, EEG.epoch.eventflag, EEG.EVENTLIST.eventinfo.flag, EEG.EVENTLIST.eventinfo.bepoch)
 %
@@ -55,7 +55,6 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG, com]= pop_syncroartifacts(EEG, varargin)
 com = '';
 if isobject(EEG) % eegobj
         whenEEGisanObject % calls a script for showing an error window
@@ -130,7 +129,7 @@ if length(EEG) > 1
         return;
 end
 
-erplab_eegscanner(EEG, 'pop_syncroartifacts', 0, 0, 1, 1);
+erplab_eegscanner(EEG, 'pop_syncroartifacts', 0, 0, 1, 0, 1);
 
 if strcmpi(p.Results.Direction,'no') || strcmpi(p.Results.Direction,'none')
         direction = 0;

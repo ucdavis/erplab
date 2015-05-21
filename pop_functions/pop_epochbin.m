@@ -277,7 +277,7 @@ if isempty(EEG.epoch)
                 bintype  = cell(1);
                 k = 1;
                 for i= 1:bb-1
-                        numbin = str2double(char(strbin{i}));
+                        numbin = str2num(char(strbin{i})); %#ok<ST2NM>
                         tf = ismember_bc2(numbin, binArray);
                         if ~isempty(find(tf==1, 1))
                                 bintype{k} = bintypecrude{i}; % EEGLAB can use the same "type" multiples times

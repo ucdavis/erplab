@@ -43,9 +43,15 @@ end
 
 chfields = {'theta', 'radius', 'X', 'Y', 'Z', 'sph_theta', 'sph_phi', 'sph_radius', 'type', 'urchan'};
 
-newERP.bindata = zeros(ERP.nchan, ERP.pnts, ERPout.nbin);
-newERP.nbin    = ERPout.nbin;
-newERP.bindescr = ERPout.bindescr;
+newERP.bindata          = zeros(ERP.nchan, ERP.pnts, ERPout.nbin);
+newERP.nbin             = ERPout.nbin;
+newERP.bindescr         = ERPout.bindescr;
+
+newERP.ntrials.accepted = ERP.ntrials.accepted(1:ERPout.nbin);
+newERP.ntrials.rejected = ERP.ntrials.rejected(1:ERPout.nbin);
+newERP.ntrials.invalid  = ERP.ntrials.invalid(1:ERPout.nbin);
+newERP.ntrials.arflags  = ERP.ntrials.arflags(1:ERPout.nbin,:);
+
 
 nch = length(ERPout.chanlocs);
 

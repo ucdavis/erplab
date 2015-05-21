@@ -100,3 +100,5 @@ end
 if ~isempty(chanrej)
         ChanRej2  = double(ChanRej2);
 end
+
+WinRej2(end+1,:) = WinRej(end,:); % Save/append the last rejection window

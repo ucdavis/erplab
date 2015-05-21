@@ -122,6 +122,7 @@ pause(0.1);
 skipfields = {'Saveas','History','filename','filepath'};
 fn         = fieldnames(p.Results);
 erpcom     = sprintf( ' ERP = pop_importavg(''%s'', ''%s''', filename{1}, filepath{1});
+
 for q=1:length(fn)
         fn2com = fn{q};
         if ~ismember_bc2(fn2com, skipfields)

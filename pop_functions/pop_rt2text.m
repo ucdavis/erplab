@@ -416,13 +416,17 @@ if strcmp(listformat,'basic')   %%%%%%%%%% BASIC FORMAT %%%%%%%%%%%
                                 if isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
                                         [values{1,k}] = [];
                                 else
-                                        vrt   = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j);
-                                        if eliminAR  % eliminates RTs with Artifact Rejection (detection) marks.
-                                                flgrt = ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j);
-                                                vrt(flgrt>0) = [];
-                                        end
-                                        valrt = num2cell(vrt);
-                                        [values{1:length(vrt),k}] = valrt{:};
+                                    vrt   = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j);
+                                    if eliminAR  % eliminates RTs with Artifact Rejection (detection) marks.
+                                        
+                                        numBits     = 16;
+                                        allFlags    = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
+                                        flgrt       = bin2dec(allFlags(:,numBits/2+1:end));
+                                        vrt(flgrt>0) = [];
+                                        
+                                    end
+                                    valrt = num2cell(vrt);
+                                    [values{1:length(vrt),k}] = valrt{:};
                                 end
                                 k = k + 1;
                         end

@@ -9,18 +9,13 @@ ColorF       = [0.02 0.02 0.02];       % foreground color since version 4.0.2.0
 errorColorF  = [0 0 0];                % foreground color for error window
 errorColorB  = [0.6824 1 0.6353];      % background color for error window
 fontunitsGUI = 'pixels';
-v = 0;
-set(0,'Units','pixels') 
+
+set(0,'Units','pixels')
 thisscreen = get(0, 'ScreenSize');
 if thisscreen(3)==1440 && thisscreen(4)>=878 && thisscreen(4)<1000 && ismac
-    v = 1;
+    fontsizeGUI = 12; % retina display
 elseif thisscreen(3)>=1440 && thisscreen(4)>=1000  && ismac
-    v = 2;
-end
-if v==1
-        fontsizeGUI = 12; % retina display
-elseif v==2
-        fontsizeGUI = 11; % iMac display
+    fontsizeGUI = 11; % iMac display
 else
-        fontsizeGUI = 8.2;
+    fontsizeGUI = 8.2;
 end
