@@ -180,12 +180,13 @@ plistener(ax,'XTickMode',@xytmd)
 plistener(ax,'LineWidth',@xylnw)
 
 
-function [] = plistener(axesin,prp,func)
+function [] = plistener(ax,prp,func)
 % Sets the properties listeners.  From proplistener by Yair Altman.
-psetact = 'PostSet';
-hC      = handle(axesin);
-hl      = addlistener(hC, prp, psetact, func);
-p       = findprop(hC, 'Listeners__');
+psetact = 'PropertyPostSet';
+hC = handle(ax);
+hSrc = hC.findprop(prp);
+hl = handle.listener(hC, hSrc, psetact, {func,ax});
+p = findprop(hC, 'Listeners__');
 if isempty(p)
       p = schema.prop(hC, 'Listeners__', 'handle vector');
       set(p,'AccessFlags.Serialize', 'off', ...
