@@ -43,7 +43,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG EVENTLIST] = creaeventlist(EEG, EVENTLIST, lfname, wf)
+function [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, lfname, wf)
 if nargin < 1
         help creaeventlist
         return
@@ -174,7 +174,7 @@ else
 end
 
 EVENTLIST.eldate   = datestr(now);
-[EVENTLIST serror] = sorteventliststruct(EVENTLIST);  % organizes EVENTLIST
+[EVENTLIST, serror] = sorteventliststruct(EVENTLIST);  % organizes EVENTLIST
 eegnbchan = 0;
 if wf ==1
         fprintf('Creating an EventList text file...\n');

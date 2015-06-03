@@ -57,7 +57,7 @@ p.addRequired('chcknoevents', @isnumeric);
 p.addRequired('chckeventlist',@isnumeric);
 % Parameters
 p.addParamValue('ErrorMsg', 'popup', @ischar);
-p.parse(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chcknoevents, chckeventlist,varargin{:});
+p.parse(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chcknoevents, chckeventlist, varargin{:});
 
 if strcmpi(p.Results.ErrorMsg, 'popup') || strcmpi(p.Results.ErrorMsg, 'on')
         errormsg = 1; % popup window with error message

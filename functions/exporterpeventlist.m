@@ -139,7 +139,7 @@ else % write a text file
         
         EVENTLIST.eldate  = datestr(now);
         
-        [EVENTLIST serror] = sorteventliststruct(EVENTLIST);  % organizes EVENTLIST
+        [EVENTLIST, serror] = sorteventliststruct(EVENTLIST);  % organizes EVENTLIST
         
         if wf ==1
                 fprintf('Creating an ERP EventList text file...\n');

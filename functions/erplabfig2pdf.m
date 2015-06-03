@@ -79,36 +79,43 @@ nft = length(figtag);
 NumMatver = str2num(char(regexp(version, '^\d*\.\d*', 'match'))); % Matlab's version
 
 for k=1:nft
-    find_erplabfigure   = findobj('Tag', figtag{k});    
+    find_erplabfigure   = findobj('Tag', figtag{k});
     % find_erplabfigure   = findobj('Tag','ERP_figure');
     % find_SCALP = findobj('Tag','Scalp_figure');
     % find_erplabfigure = findobj('Tag','Plotting_ERP');
-    if strcmpi(saveasmode, 'saveascurrent')
-        find_erplabfigure = find_erplabfigure(1);
-    end
+    %     if strcmpi(saveasmode, 'saveascurrent')
+    %         find_erplabfigure = find_erplabfigure(1);
+    %     end
     
-    if isempty(find_erplabfigure)
-        find_erplabfigure = 0;
-    end   
-    if find_erplabfigure>0
+    %if isempty(find_erplabfigure)
+    %    find_erplabfigure = 0;
+    %end
+    %if find_erplabfigure>0
+    if ~isempty(find_erplabfigure)
         nferpfig = length(find_erplabfigure);
         msgboxText =  'erplabfig2pdf found %g figure(s) having a "%s" tag\n';
         fprintf(msgboxText, nferpfig,figtag{k});
+        if strcmpi(saveasmode, 'saveascurrent')
+            find_erplabfigure = find_erplabfigure(1);
+            if nferpfig>1
+                msgboxText =  'However, since ''saveascurrent'' was set only the current figure will be converted.\n';
+                fprintf(msgboxText);
+            end
+            nferpfig = 1;
+        end
         for f=1:nferpfig
             fig1    = figure(find_erplabfigure(f));
             namefig = regexp(get(fig1,'Name'),'<<(.*)?>>', 'tokens');
             namefig = char(namefig{:});
-            filterIndex = 0;
-            
+            filterIndex = 0;            
             if strcmpi(saveasmode, 'saveas') || strcmpi(saveasmode, 'saveascurrent')
-                    
-                    %find_erplabfigure(f)
                 
-                    if NumMatver<=8.31 % old Matlabs
-                            erpfignumber = num2str(find_erplabfigure(f));
-                    else % Matlab's new Graphics System (figures handles are no longer numbers...)
-                            erpfignumber = find_erplabfigure(f).Number;
-                    end
+                %find_erplabfigure(f)
+                if NumMatver<8.4 % old Matlabs. JLC
+                    erpfignumber = num2str(find_erplabfigure(f));
+                else % Matlab's new Graphics System (figures handles are no longer numbers...)
+                    erpfignumber = find_erplabfigure(f).Number;
+                end
                 
                 [filename, pathname, filterIndex] = uiputfile({'*.pdf';'*.eps';'*.jpg';'*.tiff'},...
                     'Save Current Figure as',...
@@ -118,7 +125,9 @@ for k=1:nft
                     disp('User selected Cancel')
                     return
                 else
-                    [pt,fn,ext] = fileparts(filename);
+                    [pt,fn,ext] = fileparts(filename);                    
+                    fn = strtrim(fn);
+                    fn = regexprep(fn,'\W*','_'); % replace in between white space(s) by a single '_'. JLC
                     
                     %if isempty(ext) || (~strcmp(ext,'.pdf') && ~strcmp(ext,'.eps') && ~strcmp(ext,'.jpg')&& ~strcmp(ext,'.tiff'))
                     if  filterIndex==1
@@ -131,8 +140,18 @@ for k=1:nft
                         ext = '.tiff';
                     end
                     filename = [fn ext;];
-                    %end
+                    %end                    
                     
+                    if ismember(pathname, {'\','/'})  % i.e. when pointig to 'Macintosh'
+                        if ispc
+                            userdir = winqueryreg('HKEY_CURRENT_USER',...
+                                ['Software\Microsoft\Windows\CurrentVersion\' ...
+                                'Explorer\Shell Folders'],'Personal');                            
+                        else
+                            userdir = char(java.lang.System.getProperty('user.home'));                      
+                        end
+                        pathname = fullfile(userdir, 'Desktop'); % i.e. when pointig to 'Macintosh'
+                    end
                     filenameAll = fullfile(pathname, filename);
                 end
             else % auto save or input name argument

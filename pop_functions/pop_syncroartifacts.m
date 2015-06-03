@@ -129,7 +129,9 @@ if length(EEG) > 1
         return;
 end
 
-erplab_eegscanner(EEG, 'pop_syncroartifacts', 0, 0, 1, 0, 1);
+%erplab_eegscanner(EEG, funcname, chckmultieeg, chckemptyeeg, chckepocheeg, chcknoevents, chckeventlist, varargin)
+erplab_eegscanner(EEG, 'pop_syncroartifacts', 2, 0, 1, 2, 1); % bug fixed. JLC. May 26, 2015
+
 
 if strcmpi(p.Results.Direction,'no') || strcmpi(p.Results.Direction,'none')
         direction = 0;
@@ -351,18 +353,22 @@ fprintf('\n---------------------------------------------------------\n');
 fprintf('STEP 1: Synchronizing EEG.EVENTLIST.eventinfo and EEG.epoch by EEG.reject.{ar_tool}...\n');
 fprintf('---------------------------------------------------------\n\n');
 
-selarfields = arfields(indx); % not empty EEGLAB's artifact rejection fields
-nsarf = length(selarfields);
-for i=1:nepoch;
+if isempty(indx)
+    fprintf('All EEG.reject fields are empty, so no artifact rejection has been performed in EEGLAB...\n');
+    EEG.reject.rejmanual = zeros(1, nepoch); % initiating EEG.reject.rejmanual since it was empty
+else
+    selarfields = arfields(indx); % not empty EEGLAB's artifact rejection fields
+    nsarf = length(selarfields);
+    for i=1:nepoch;
         r = zeros(1,nsarf);
         for j=1:nsarf
-                r(j) = EEG.reject.(selarfields{j})(i);
+            r(j) = EEG.reject.(selarfields{j})(i);
         end
         if nnz(r)>0
-                EEG = markartifacts(EEG, 1, [], [], i, isRT, 1); % mark at ERPLAB, if values >0
+            EEG = markartifacts(EEG, 1, [], [], i, isRT, 1); % mark at ERPLAB, if values >0
         end
+    end
 end
-
 %
 % Step 2
 % erplab to eeglab synchro by info at EEG.epoch.eventflag
@@ -371,13 +377,13 @@ fprintf('\n---------------------------------------------------------\n');
 fprintf('STEP 2: Synchronizing EEG.reject.rejmanual by EEG.epoch.eventflag...\n');
 fprintf('---------------------------------------------------------\n\n');
 
-for i=1:nepoch
-        cflag = EEG.epoch(i).eventflag; % flag(s) from event(s) within this epoch
+for qEpoch=1:nepoch
+        cflag = EEG.epoch(qEpoch).eventflag; % flag(s) from event(s) within this epoch
         if iscell(cflag)
                 %cflag = cell2mat(cflag);
                 cflag = uint16([cflag{:}]); % giving some problems with uint16 type of flags
         end
-        laten = EEG.epoch(i).eventlatency;% latency(ies) from event(s) within this epoch
+        laten = EEG.epoch(qEpoch).eventlatency;% latency(ies) from event(s) within this epoch
         if iscell(laten)
                 laten = cell2mat(laten);
         end
@@ -385,11 +391,11 @@ for i=1:nepoch
         indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,
         flag  = cflag(indxtimelock);
         
-        if flag>0 && EEG.reject.rejmanual(i) == 0
-                EEG.reject.rejmanual(i) = 1; % % marks epoch with artifact only if flag is marked (no unmarking)
-                %EEG.reject.rejmanualE(chanArray(ch), i) = 1; % marks channel with artifact
+        if flag>0 && EEG.reject.rejmanual(qEpoch) == 0
+                EEG.reject.rejmanual(qEpoch) = 1; % % marks epoch with artifact only if flag is marked (no unmarking)
+                %EEG.reject.rejmanualE(chanArray(ch), qEpoch) = 1; % marks channel with artifact
                 iflag = find(bitget(flag,1:8));
-                fprintf('Epoch # %g was marked due to flag(s) # %s was(were) set for its home item.\n',i, num2str(iflag));
+                fprintf('Epoch # %g was marked due to flag(s) # %s was(were) set for its home item.\n',qEpoch, num2str(iflag));
         end
 end
 
@@ -401,16 +407,22 @@ fprintf('STEP 3: Synchronizing EEG.reject.rejmanual by EEG.EVENTLIST.eventinfo.f
 fprintf('---------------------------------------------------------\n\n');
 nitem = length(EEG.EVENTLIST.eventinfo);
 
-for i=1:nitem
-        flag   = EEG.EVENTLIST.eventinfo(i).flag;
-        bepoch = EEG.EVENTLIST.eventinfo(i).bepoch;
-        if bepoch>0
-                if flag>0 && EEG.reject.rejmanual(bepoch) == 0
-                        EEG.reject.rejmanual(bepoch) = 1; % marks epoch with artifact only if flag is marked (no unmarking)
-                        iflag = find(bitget(flag,1:8));
-                        fprintf('Epoch # %g was marked due to flag(s) # %s was(were) set for item # %g.\n',bepoch, num2str(iflag), i);
-                end
+for qItem=1:nitem
+    flag   = EEG.EVENTLIST.eventinfo(qItem).flag;
+    bepoch = EEG.EVENTLIST.eventinfo(qItem).bepoch;
+    if bepoch>0
+        if bepoch<=nepoch
+            if flag>0 && EEG.reject.rejmanual(bepoch) == 0
+                EEG.reject.rejmanual(bepoch) = 1; % marks epoch with artifact only if flag is marked (no unmarking)
+                iflag = find(bitget(flag,1:8));
+                fprintf('Epoch # %g was marked due to flag(s) # %s was(were) set for item # %g.\n',bepoch, num2str(iflag), qItem);
+            end
+        else
+            if flag>0
+                warning('off', 'Epoch # %g containing item # %g does not longer exist in this dataset.\n',bepoch, qItem);
+            end
         end
+    end
 end
 % fprintf('\nEEG.reject.rejmanual(i) was synchronized according to EEG.epoch(i).eventflag values.\n')
 return

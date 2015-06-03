@@ -56,7 +56,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEGout conti] = eegchanoperator(EEGin, EEGout, expression, warningme)
+function [EEGout, conti] = eegchanoperator(EEGin, EEGout, expression, warningme)
 
 if nargin<1
       help eegchanoperator
@@ -77,7 +77,7 @@ if ~isempty(tokreref)
         %chdelop    = regexprep(chdelop,'\[|\]','','ignorecase');
         %chdelop    = regexprep(chdelop,',',' ');
         
-        [sep1 u2] = regexp(strtrim(chdelop), ',','match','split');
+        [sep1, u2] = regexp(strtrim(chdelop), ',','match','split');
         nu2 = length(u2);
         formref  =   u2{1};
         exclchan = [];
@@ -103,7 +103,7 @@ expression = regexprep(expression, '([*/^])', '.$1','ignorecase');
 %
 % looking for label
 %
-[matlabel toklabel]    = regexpi(expression, '\s*label\s*\=*\s*(.*)', 'match', 'tokens');
+[matlabel, toklabel]    = regexpi(expression, '\s*label\s*\=*\s*(.*)', 'match', 'tokens');
 if ~isempty(toklabel) && ~isempty(EEGin.chanlocs)
       newlabel   = toklabel{:}{1};
       
@@ -128,7 +128,7 @@ if ~isempty(tokavgchan)
       %
       [nchsyn] = regexpi(expression, 'nch[an]*', 'match');
       
-      if ~isempty(nchsyn) && warningme==1
+      if isempty(nchsyn) && warningme==1 % bug fixed. JLC. May 26, 2015
             question= ['Warning: You are using the avgchan function in combination with the recursive updating mode.\n'...
                   'This combination is almost always an error. In recursive updating mode, each channel that '...
                   'you change will then change the average of all channels, so you will end up not using the '...
@@ -186,10 +186,10 @@ if isempty(materase)
             %
             % Matlab 7.3 and higher %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %
-            [expspliter formulasp] = regexp(strtrim(expression), '=','match','split');
+            [expspliter, formulasp] = regexp(strtrim(expression), '=','match','split');
             leftsize  =   formulasp{1};
             
-            [mater tok2]  = regexpi(leftsize, '(\w+)', 'match', 'tokens');
+            [mater, tok2]  = regexpi(leftsize, '(\w+)', 'match', 'tokens');
             
             if isempty(mater)
                   error(['ERPLAB says: errot at eegchanoperator(). Formula ' expression ' contains errors.'])
@@ -311,7 +311,7 @@ else
       %
       % look for channel index(ices)
       %
-      [mat tok] = regexpi(expression, 'ch[an]*(\d+)', 'match', 'tokens'); % looking for channel index
+      [mat, tok] = regexpi(expression, 'ch[an]*(\d+)', 'match', 'tokens'); % looking for channel index
       nindices = size(tok,2);
       
       if nindices>2
