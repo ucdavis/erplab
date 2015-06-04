@@ -485,11 +485,15 @@ else
                         rtnamex = ERPLAB.EVENTLIST(indexel).bdf(i).rtname{j};
                         if ~isempty(rtnamex)
                                 if ~isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
-                                        vrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j); % RTs
-                                        if eliminAR  % changes to NaN RTs with Artifact Rejection (detection) marks.
-                                                flgrt = ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j);
-                                                vrt(flgrt>0) = NaN;
-                                        end
+                                    vrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j); % RTs
+                                    if eliminAR  % changes to NaN RTs with Artifact Rejection (detection) marks.
+                                        %                                         flgrt = ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j);
+                                        numBits     = 16;
+                                        allFlags    = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
+                                        flgrt       = bin2dec(allFlags(:,numBits/2+1:end));
+                                        
+                                        vrt(flgrt>0) = NaN;
+                                    end
                                         irt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtitem(:,j);      % item
                                         hrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rthomecode(:,j);  % home code
                                         crt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtcode(:,j);      % evaluated event code (about RT)
