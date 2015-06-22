@@ -42,7 +42,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [LH RH ZH LHlabels RHlabels ZHlabels LHlatelabels RHlatelabels ZHlatelabels] = splitbrain2(ERP, varargin)
+function [LH, RH, ZH, LHlabels, RHlabels, ZHlabels, LHlatelabels, RHlatelabels, ZHlatelabels] = splitbrain2(ERP, varargin)
 LH=[];
 RH=[];
 ZH=[];
@@ -87,7 +87,7 @@ elecMat = {[]};
 j = 1; mi=1;
 
 for i=1:nchan        
-        [mt tk] = regexp(ERP.chanlocs(chanArray(i)).labels, '([a-z]+)(\d+)','ignorecase', 'match', 'tokens');        
+        [mt, tk] = regexp(ERP.chanlocs(chanArray(i)).labels, '([a-z]+)(\d+)','ignorecase', 'match', 'tokens');        
         if size([tk{:}],2)==2
                 elecMat{j,1} = char(tk{1}{1}) ;
                 elecMat{j,2} = str2double(char(tk{1}{2})) ;
@@ -115,7 +115,7 @@ for i=1:j-1
         isfirst = 1;
         if ~isempty(elecMat{i,1})
                 
-                % load a husband channel
+                % load a spouse channel
                 label01 = char(elecMat{i,1});
                 s0 = s;
                 
@@ -159,7 +159,7 @@ for i=1:j-1
                         [elecMatSorted(s0:s-1, :)] = deal(elecMatSorted(modindx, :));
                         
                         %
-                        % deleting successfully found husband channel from the searching list
+                        % deleting successfully found spouse channel from the searching list
                         %
                         elecMat{i,1} = [];
                         elecMat{i,2} = [];

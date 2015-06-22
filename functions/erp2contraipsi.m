@@ -3,15 +3,13 @@
 %
 % FORMAT   :
 %
-% ERP = swapLRbrain(ERP, LH, RH);
+% ERP = erp2contraipsi(ERPout, ERP)
 %
 %
 % INPUTS   :
 %
-% ERP             - input ERPset
-% LH              - all left channel indices
-% RH              - all right channel indices (same length as LH)
-%
+% ERPout             - input ERPset
+% ERPout             - input ERPset
 %
 % OUTPUTS  :
 %
@@ -30,7 +28,7 @@
 function newERP = erp2contraipsi(ERPout, ERP)
 newERP = ERP;
 if nargin<1
-        help swapLRbrain
+        help erp2contraipsi
         return
 end
 
@@ -38,7 +36,7 @@ end
 %         [LH RH] = splitbrain2(ERP);
 % end
 % if nargin ==2 || nargin>3
-%         error('ERPLAB says: swapLRbrain works either using 1 or 3 input variables. Check the help.')
+%         error('ERPLAB says: erp2contraipsi works either using 1 or 3 input variables. Check the help.')
 % end
 
 chfields = {'theta', 'radius', 'X', 'Y', 'Z', 'sph_theta', 'sph_phi', 'sph_radius', 'type', 'urchan'};
@@ -60,13 +58,12 @@ for k=1:nch
         [a, b] = regexp(strtrim(cilabel), '/|&','match','split');
         
         if length(b)==2
-                lb1 = strtrim(b{1});
-                lb2 = strtrim(b{2});
-                indxch1 = find(strncmpi(lb1, {ERP.chanlocs.labels}, length(lb1)),1,'first');
-                indxch2 = find(strncmpi(lb2, {ERP.chanlocs.labels}, length(lb2)),1,'first');
-                newERP.chanlocs(indxch1).labels = sprintf('%s/%s',lb1, lb2);
-                
-                newERP.bindata(indxch1,:,:) = ERPout.bindata(k,:,:);
+                lb1     = strtrim(b{1});
+                lb2     = strtrim(b{2});
+                indxch1 = find(strcmpi(lb1, {ERP.chanlocs.labels}),1,'first'); % bug fixed.June 21, 2015. JLC
+                indxch2 = find(strcmpi(lb2, {ERP.chanlocs.labels}),1,'first') ;% bug fixed.June 21, 2015. JLC
+                newERP.chanlocs(indxch1).labels = sprintf('%s/%s',lb1, lb2);                
+                newERP.bindata(indxch1,:,:)     = ERPout.bindata(k,:,:);
                 
                 for f=1:length(chfields)
                         if isfield(ERP.chanlocs, chfields{f})

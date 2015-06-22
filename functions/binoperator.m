@@ -635,9 +635,12 @@ else
                                 if orinchan~=newnchan
                                         ERPout.chanlocs = [];
                                         for s=1:ERPout.nchan
+                                            %s
+                                            %LABEL{s}
                                                 ERPout.chanlocs(s).labels = LABEL{s};
                                         end
                                 else
+                                    disp('aqui')
                                         ERPout.chanlocs = ERPin.chanlocs;
                                 end
                                 
