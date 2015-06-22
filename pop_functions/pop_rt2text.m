@@ -401,168 +401,223 @@ nbin    = ERPLAB.EVENTLIST(indexel).nbin;
 ndig    = 3; % decimal places
 ndigstr = num2str(ndig);
 
-if strcmp(listformat,'basic')   %%%%%%%%%% BASIC FORMAT %%%%%%%%%%%
-        %%%%%%%%%%              %%%%%%%%%%%
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        k      = 1;
-        values = cell(1);
-        label  = cell(1);
-        
-        for i=1:nbin
-                for j=1:length(ERPLAB.EVENTLIST(indexel).bdf(i).rtname)
-                        rtnamex = ERPLAB.EVENTLIST(indexel).bdf(i).rtname{j};
-                        if ~isempty(rtnamex)
-                                label{k} = strrep(rtnamex, ' ', '_');
-                                if isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
-                                        [values{1,k}] = [];
-                                else
-                                    vrt   = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j);
-                                    if eliminAR  % eliminates RTs with Artifact Rejection (detection) marks.
-                                        
-                                        numBits     = 16;
-                                        allFlags    = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
-                                        flgrt       = bin2dec(allFlags(:,numBits/2+1:end));
-                                        vrt(flgrt>0) = [];
-                                        
-                                    end
-                                    valrt = num2cell(vrt);
-                                    [values{1:length(vrt),k}] = valrt{:};
-                                end
-                                k = k + 1;
-                        end
-                end
-        end
-        
-        %
-        % Empty values will be NaN
-        %
-        aa = find(cellfun(@isempty, values));
-        [values{aa}] = deal(NaN);
-        
-        if strcmp(ext,'.xls')
-                xlswrite(filename, [label; values]);
-        else
-                nsp = 7;
-                %txtspace1 = max(cellfun(@length, label));
-                %txtspace2 = num2str(txtspace1+ndig+nsp);
-                txtspace  = max(cellfun(@length, label));
-                if txtspace<2*ndig
-                        txtspace  = num2str(2*ndig+nsp);
+if strcmp(listformat,'basic')
+    %%%%%%%%%% BASIC FORMAT %%%%%%%%%%%
+    %%%%%%%%%%              %%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    k      = 1;
+    values = cell(1);
+    label  = cell(1);
+    
+    for i=1:nbin
+        for j=1:length(ERPLAB.EVENTLIST(indexel).bdf(i).rtname)
+            rtnamex = ERPLAB.EVENTLIST(indexel).bdf(i).rtname{j};
+            if ~isempty(rtnamex)
+                label{k} = strrep(rtnamex, ' ', '_');
+                if isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
+                    [values{1,k}] = [];
                 else
-                        txtspace  = num2str(txtspace+nsp);
+                    % select all the RT values for that bin
+                    vrt   = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j);
+                    
+                    if eliminAR  % eliminates RTs with Artifact Rejection (detection) marks.
+                        
+                        
+                        %% CHECK BOTH THE RTHOMEFLAG AND THE RTFLAG
+                        numBits     = 16;
+                        % select all the rtflags and
+                        % convert them to binary
+                        % filter out the last 8 bits of the
+                        % binary rt-flags to get the
+                        % artifact flag (vs, the
+                        % user-defined flag)
+                        allRTFlags      = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
+                        allRTFlags      = allRTFlags(:,numBits/2+1:end);
+                        
+                        
+                        % Do the same as above for the RT
+                        % home flags
+                        allRTHomeFlags  = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j), numBits);
+                        allRTHomeFlags  = allRTHomeFlags(:,numBits/2+1:end);
+                        
+                        
+                        % Combine the rtflags with the
+                        % rthome flags
+                        allFlags        = bitor(bin2dec(allRTFlags), bin2dec(allRTHomeFlags));
+                        flgrt           = allFlags;
+                        
+                        
+                        % delete all the rts that have a
+                        vrt(flgrt>0) = [];
+                        
+                    end
+                    valrt = num2cell(vrt);
+                    [values{1:length(vrt),k}] = valrt{:};
                 end
-                
-                CC        = cell2mat(values);
-                fid_rt    = fopen(filename, 'w');
-                fseek(fid_rt, 0, 'eof');
-                
-                %
-                % Include Header?
-                %
-                if strcmp(header,'on')
-                        %repmat(['%' txtspace 's\t'], 1,length(label))
-                        fprintf(fid_rt, [repmat(['%' txtspace 's\t'], 1,length(label)) '\n'] , label{:});
-                end
-                
-                %
-                % Print values
-                %
-                %repmat(['%' num2str(txtspace1+nsp-1) '.' ndigstr 'f\t'], 1,size(values,2))
-                fprintf(fid_rt, [repmat(['%' txtspace '.' ndigstr 'f\t'], 1,size(values,2)) '\n'] ,CC');
-                fclose(fid_rt);
+                k = k + 1;
+            end
         end
-else
-        %%%%%%%%%% DETAILED FORMAT (ITEMIZED)%%%%%%%%%%%
-        %%%%%%%%%%                           %%%%%%%%%%%
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        k         = 1;
-        values    = [];
-        lenbinlab = [];
-        binlabelarray  = cell(1);
-        
-        for i=1:nbin
-                for j=1:length(ERPLAB.EVENTLIST(indexel).bdf(i).rtname)
-                        rtnamex = ERPLAB.EVENTLIST(indexel).bdf(i).rtname{j};
-                        if ~isempty(rtnamex)
-                                if ~isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
-                                    vrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j); % RTs
-                                    if eliminAR  % changes to NaN RTs with Artifact Rejection (detection) marks.
-                                        %                                         flgrt = ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j);
-                                        numBits     = 16;
-                                        allFlags    = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
-                                        flgrt       = bin2dec(allFlags(:,numBits/2+1:end));
-                                        
-                                        vrt(flgrt>0) = NaN;
-                                    end
-                                        irt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtitem(:,j);      % item
-                                        hrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rthomecode(:,j);  % home code
-                                        crt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtcode(:,j);      % evaluated event code (about RT)
-                                        brt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtbini(:,j);      % bin index
-                                        
-                                        istart = size(values, 1) + 1;
-                                        istop  = length(vrt) + istart - 1;
-                                        
-                                        values(istart:istop, 1) = irt;  % item
-                                        values(istart:istop, 2) = vrt;  % RT value
-                                        values(istart:istop, 3) = hrt;  % home code
-                                        values(istart:istop, 4) = crt;  % evaluated event code
-                                        values(istart:istop, 5) = brt;  % bin index
-                                        
-                                        [binlabelarray{istart:istop}] = deal(strrep(rtnamex, ' ', '_'));
-                                        lenbinlab(k) = length(rtnamex);
-                                        k = k+1;
-                                end
-                        end
-                        %disp('stop')
-                end
-        end
-        if eliminAR  % deletes RTs with Artifact Rejection (detection) marks.
-                idxnan = find(isnan(values(:,2)));
-                binlabelarray(idxnan)=[];
-                values(idxnan,:)=[];
-        end
-        
-        % Sort "values" matrix according to the item value (column #1)
-        [vaux,IX] = sort(values(:,1));
-        values    = values(IX,:);
-        binlabelarray = binlabelarray(IX);
-        values    =  num2cell(values);
-        FULLTABLE = [values binlabelarray'];
-        %label = {'Item' 'RTime' 'Ecode' 'Bin#' 'BinLab'};
-        label = {'Item' 'RTime' 'HomeCode' 'EvalCode' 'Bin#' 'BinLab'};
-        % Item RTime HomeCode RespCode Bin# BinLab
-        
-        if strcmp(ext,'.xls')
-                xlswrite(filename, [label; FULLTABLE]);
+    end
+    
+    %
+    % Empty values will be NaN
+    %
+    aa = find(cellfun(@isempty, values));
+    [values{aa}] = deal(NaN);
+    
+    if strcmp(ext,'.xls')
+        xlswrite(filename, [label; values]);
+    else
+        nsp = 7;
+        %txtspace1 = max(cellfun(@length, label));
+        %txtspace2 = num2str(txtspace1+ndig+nsp);
+        txtspace  = max(cellfun(@length, label));
+        if txtspace<2*ndig
+            txtspace  = num2str(2*ndig+nsp);
         else
-                fid_rt  = fopen(filename, 'w');
-                fseek(fid_rt, 0, 'eof');
-                %ndig = 3;
-                maxitem = num2str(length(num2str(max([values{:,1}]))));
-                maxRT   = num2str(length(num2str(round(max([values{:,2}]))))+ ndig + 5);
-                maxhc   = num2str(length(num2str(max([values{:,3}])))+7);
-                maxec   = num2str(length(num2str(max([values{:,4}])))+7);
-                maxbini = num2str(length(num2str(max([values{:,5}])))+7);
-                maxblab = num2str(max(lenbinlab)+7);
-                
-                %
-                % Include Header?
-                %
-                if strcmp(header,'on')
-                        %fprintf(fid_rt, [repmat('%s\t', 1,length(label)) '\n'] , label{:});
-                        fprintf(fid_rt, ['%' maxitem 's\t%' maxRT 's\t%' maxhc 's\t%' maxec 's\t%' ...
-                                maxbini 's\t%' maxblab 's\n'] , label{:});
-                end
-                
-                %
-                % Print values
-                %
-                for i=1:length(binlabelarray)
-                        fprintf(fid_rt, ['%' maxitem 'g\t%' maxRT '.' ndigstr 'f\t%' maxhc 'g\t%' maxec 'g\t%' ...
-                                maxbini 'g\t%' maxblab 's\n'] ,values{i,:}, binlabelarray{i});
-                end
-                fclose(fid_rt);
+            txtspace  = num2str(txtspace+nsp);
         end
+        
+        CC        = cell2mat(values);
+        fid_rt    = fopen(filename, 'w');
+        fseek(fid_rt, 0, 'eof');
+        
+        %
+        % Include Header?
+        %
+        if strcmp(header,'on')
+            %repmat(['%' txtspace 's\t'], 1,length(label))
+            fprintf(fid_rt, [repmat(['%' txtspace 's\t'], 1,length(label)) '\n'] , label{:});
+        end
+        
+        %
+        % Print values
+        %
+        %repmat(['%' num2str(txtspace1+nsp-1) '.' ndigstr 'f\t'], 1,size(values,2))
+        fprintf(fid_rt, [repmat(['%' txtspace '.' ndigstr 'f\t'], 1,size(values,2)) '\n'] ,CC');
+        fclose(fid_rt);
+    end
+else
+    %%%%%%%%%% DETAILED FORMAT (ITEMIZED)%%%%%%%%%%%
+    %%%%%%%%%%                           %%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    k         = 1;
+    values    = [];
+    lenbinlab = [];
+    binlabelarray  = cell(1);
+    
+    for i=1:nbin
+        for j=1:length(ERPLAB.EVENTLIST(indexel).bdf(i).rtname)
+            rtnamex = ERPLAB.EVENTLIST(indexel).bdf(i).rtname{j};
+            if ~isempty(rtnamex)
+                if ~isempty([ERPLAB.EVENTLIST(indexel).bdf(i).rt])
+                    vrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rt(:,j); % RTs
+                    if eliminAR  % changes to NaN RTs with Artifact Rejection (detection) marks.
+                        %                                         flgrt = ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j);
+                        
+                        
+                        %
+                        %                                         numBits     = 16;
+                        %                                         allFlags    = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
+                        %                                         flgrt       = bin2dec(allFlags(:,numBits/2+1:end));
+                        
+                        %% CHECK BOTH THE RTHOMEFLAG AND THE RTFLAG
+                        numBits     = 16;
+                        % select all the rtflags and
+                        % convert them to binary
+                        % filter out the last 8 bits of the
+                        % binary rt-flags to get the
+                        % artifact flag (vs, the
+                        % user-defined flag)
+                        allRTFlags      = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rtflag(:,j), numBits);
+                        allRTFlags      = allRTFlags(:,numBits/2+1:end);
+                        
+                        
+                        % Do the same as above for the RT
+                        % home flags
+                        allRTHomeFlags  = dec2bin(ERPLAB.EVENTLIST(indexel).bdf(i).rthomeflag(:,j), numBits);
+                        allRTHomeFlags  = allRTHomeFlags(:,numBits/2+1:end);
+                        
+                        
+                        % Combine the rtflags with the
+                        % rthome flags
+                        allFlags        = bitor(bin2dec(allRTFlags), bin2dec(allRTHomeFlags));
+                        flgrt           = allFlags;
+                        
+                        
+                        vrt(flgrt>0) = NaN;
+                    end
+                    irt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtitem(:,j);      % item
+                    hrt  = ERPLAB.EVENTLIST(indexel).bdf(i).rthomecode(:,j);  % home code
+                    crt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtcode(:,j);      % evaluated event code (about RT)
+                    brt  = ERPLAB.EVENTLIST(indexel).bdf(i).rtbini(:,j);      % bin index
+                    
+                    istart = size(values, 1) + 1;
+                    istop  = length(vrt) + istart - 1;
+                    
+                    values(istart:istop, 1) = irt;  % item
+                    values(istart:istop, 2) = vrt;  % RT value
+                    values(istart:istop, 3) = hrt;  % home code
+                    values(istart:istop, 4) = crt;  % evaluated event code
+                    values(istart:istop, 5) = brt;  % bin index
+                    
+                    [binlabelarray{istart:istop}] = deal(strrep(rtnamex, ' ', '_'));
+                    lenbinlab(k) = length(rtnamex);
+                    k = k+1;
+                end
+            end
+            %disp('stop')
+        end
+    end
+    
+    
+    if eliminAR  % deletes RTs with Artifact Rejection (detection) marks.
+        idxnan = find(isnan(values(:,2)));
+        binlabelarray(idxnan)=[];
+        values(idxnan,:)=[];
+    end
+    
+    % Sort "values" matrix according to the item value (column #1)
+    [vaux,IX] = sort(values(:,1));
+    values    = values(IX,:);
+    binlabelarray = binlabelarray(IX);
+    values    =  num2cell(values);
+    FULLTABLE = [values binlabelarray'];
+    %label = {'Item' 'RTime' 'Ecode' 'Bin#' 'BinLab'};
+    label = {'Item' 'RTime' 'HomeCode' 'EvalCode' 'Bin#' 'BinLab'};
+    % Item RTime HomeCode RespCode Bin# BinLab
+    
+    if strcmp(ext,'.xls')
+        xlswrite(filename, [label; FULLTABLE]);
+    else
+        fid_rt  = fopen(filename, 'w');
+        fseek(fid_rt, 0, 'eof');
+        %ndig = 3;
+        maxitem = num2str(length(num2str(max([values{:,1}]))));
+        maxRT   = num2str(length(num2str(round(max([values{:,2}]))))+ ndig + 5);
+        maxhc   = num2str(length(num2str(max([values{:,3}])))+7);
+        maxec   = num2str(length(num2str(max([values{:,4}])))+7);
+        maxbini = num2str(length(num2str(max([values{:,5}])))+7);
+        maxblab = num2str(max(lenbinlab)+7);
+        
+        %
+        % Include Header?
+        %
+        if strcmp(header,'on')
+            %fprintf(fid_rt, [repmat('%s\t', 1,length(label)) '\n'] , label{:});
+            fprintf(fid_rt, ['%' maxitem 's\t%' maxRT 's\t%' maxhc 's\t%' maxec 's\t%' ...
+                maxbini 's\t%' maxblab 's\n'] , label{:});
+        end
+        
+        %
+        % Print values
+        %
+        for i=1:length(binlabelarray)
+            fprintf(fid_rt, ['%' maxitem 'g\t%' maxRT '.' ndigstr 'f\t%' maxhc 'g\t%' maxec 'g\t%' ...
+                maxbini 'g\t%' maxblab 's\n'] ,values{i,:}, binlabelarray{i});
+        end
+        fclose(fid_rt);
+    end
 end
 
 disp(['A new file containing Reaction Times data was created at <a href="matlab: open(''' filename ''')">' filename '</a>'])

@@ -157,18 +157,28 @@ if isRT && isFieldNested(EEG, 'rtitem')
           epochEventNums = cell2mat(epochEventNums);                              % Convert the cell array to a matrix array for the FOR-loop
       end
       
-      for binIndex = 1:length(epochBins)                                            % For each bin the epoch belongs to
-          for eventNumIndex = 1:length(epochEventNums)                              %  For each event number
+      for binIndex = 1:length(epochBins)                                          % A single epoch may belong to multple bins
+          for eventNumIndex = 1:length(epochEventNums)                            %  A single epoch may also contain multiple event codes
               epochEventNum = epochEventNums(eventNumIndex);
               epochBinNum   = epochBins(binIndex);
               
-              % Find the RT-index which corresponds to the epoch event num
+              % Set the RTFLAG
+              %    First, find the RT-index via the epoch event num
               rtFlagIndex = find(epochEventNum==EEG.EVENTLIST.bdf(epochBinNum).rtitem);
-              
-              % Use that RT-index to locate and set the RTFLAG to the new flag
+              %    Use that RT-index to set the RTFLAG
               if(~isempty(rtFlagIndex))
-                  EEG.EVENTLIST.bdf(epochBinNum).rtflag(rtFlagIndex) = newflag; % bitset(EEG.EVENTLIST.bdf(epochBinNum).rtflag(rtFlagIndex), flag);
+                  EEG.EVENTLIST.bdf(epochBinNum).rtflag(rtFlagIndex) = newflag;
               end
+              
+              % Set the RTHOMEFLAG
+              %    First, find the RT-index via the epoch event num
+              rtHomeFlagIndex = find(epochEventNum==EEG.EVENTLIST.bdf(epochBinNum).rthomeitem);
+              %    Use that RT-index to set the RTHOMEFLAG
+              if(~isempty(rtHomeFlagIndex))
+                  EEG.EVENTLIST.bdf(epochBinNum).rthomeflag(rtHomeFlagIndex) = newflag;
+              end
+              
+              
           end
       end
       %-------------------------------------------------------------------------------
