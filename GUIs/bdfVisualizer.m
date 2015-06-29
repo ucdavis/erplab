@@ -71,7 +71,7 @@ handles.numBits                   = 16;
 tableEventList                    = struct2table(handles.EEG.EVENTLIST.eventinfo);
 tableEventList.binaryFlag         = dec2bin(tableEventList.flag, handles.numBits);    % Convert artifact flags & user flags to binary
 hUITableELIST                     = handle(handles.uitableELIST);
-hUITableELIST.data                = table2cell(tableEventList);
+hUITableELIST.Data                = table2cell(tableEventList);
 hUITableELIST.ColumnName          = tableEventList.Properties.VariableNames';
 
 
@@ -79,19 +79,19 @@ hUITableELIST.ColumnName          = tableEventList.Properties.VariableNames';
 
 % UPDATE GUI: Eventlist Max window
 hEditEventlistMax                 = handle(handles.editTxtEventlistMax);              % Retrieve data from the GUI
-hEditEventlistMax.string          = num2str(length(hUITableELIST.data));
+hEditEventlistMax.String          = num2str(length(hUITableELIST.Data));
 
 
 %% Load default BDF
 handles.bdf                     = generateDefaultBDFStruct();                         % load the text-string into HANDLES
 
 hEditBDF                        = handle(handles.editBDF);                   
-hEditBDF.string                 = handles.bdf;                                        % Display BDF to GUI
+hEditBDF.String                 = handles.bdf;                                        % Display BDF to GUI
 
 
 %% Initiate default BDF Feedback Window
 hUITableBinlisterFeedback         = handle(handles.uitableBinlisterFeedback);   
-hUITableBinlisterFeedback.data    = {{ 'Total Event Codes', 'Bin 1'  }', [0         , 0        ]'};                   
+hUITableBinlisterFeedback.Data    = {'Total Event Codes', 'Bin 1'; 0         , 0        };                   
 
 
 handles.lastPath = pwd;
@@ -146,14 +146,14 @@ try
     %     set(InterfaceObj,'Enable','off');
     
     hEditEventlistMax   = handle(handles.editTxtEventlistMax);              % Retrieve BDF data from the GUI
-    eventlistMax        = str2double(hEditEventlistMax.string);
+    eventlistMax        = str2double(hEditEventlistMax.String);
 
     
     % Load BDF
     hEditBDF        = handle(handles.editBDF);              % Retrieve BDF data from the GUI
     BDFfilename     = fullfile(pwd,'BDF-tmp.txt');          % Create temporary BDF-file
     fileID          = fopen(BDFfilename, 'wt');             %
-    fprintf(fileID,'%s\n', hEditBDF.string{:});             %
+    fprintf(fileID,'%s\n', hEditBDF.String{:});             %
     fclose( fileID);
     
     % Load ELIST
@@ -177,7 +177,7 @@ try
     tableEventList                    = struct2table(handles.EEG.EVENTLIST.eventinfo);
     tableEventList.binaryFlag         = dec2bin(tableEventList.flag, handles.numBits);                % Convert artifact flags & user flags to binary
     hUITableELIST                     = handle(handles.uitableELIST);
-    hUITableELIST.data                = table2cell(tableEventList);
+    hUITableELIST.Data                = table2cell(tableEventList);
     hUITableELIST.ColumnName          = tableEventList.Properties.VariableNames';
     
     % hUITableELIST.columnWidth         = 'auto';
@@ -189,7 +189,7 @@ try
     totalEvents                       = length(handles.EEG.EVENTLIST.eventinfo);
     hUITableBinlisterFeedback         = handle(handles.uitableBinlisterFeedback);
     %     hUITableBinlisterFeedback.rowName = { 'Total Event Codes', handles.EEG.EVENTLIST.bdf.namebin };
-    hUITableBinlisterFeedback.data    = [{'Total Event Codes' handles.EEG.EVENTLIST.bdf.namebin}', num2cell([totalEvents handles.EEG.EVENTLIST.trialsperbin])'];
+    hUITableBinlisterFeedback.Data    = [{'Total Event Codes' handles.EEG.EVENTLIST.bdf.namebin}', num2cell([totalEvents handles.EEG.EVENTLIST.trialsperbin])'];
     %% Cleanup
     delete(BDFfilename);                                    % Delete temporary BDF-file
 %     delete(ELISTfilename);                                  % Delete temporary ELIST-file
@@ -249,7 +249,7 @@ try
             
             %% DISPLAY LOADED BDF TO GUI
             hEditBDF               = handle(handles.editBDF);
-            hEditBDF.string        = handles.bdf;
+            hEditBDF.String        = handles.bdf;
     end
     
 catch errorObj
@@ -284,7 +284,7 @@ try
     if(pathName)
         % Clear the Binlister Feedback uiTable
         hUITableBinlisterFeedback         = handle(handles.uitableBinlisterFeedback);
-        hUITableBinlisterFeedback.data    = {{ 'Total Event Codes', 'Bin 1'  }', [0         , 0        ]'};
+        hUITableBinlisterFeedback.Data    = {'Total Event Codes', 'Bin 1'; 0         , 0         };
 
         [~,~,fileExtension] = fileparts(fileName);
         handles.lastPath    = pathName;                                                             % Update the last directory in HANDLES
@@ -308,12 +308,12 @@ try
             tableEventList                    = struct2table(handles.EEG.EVENTLIST.eventinfo);
             tableEventList.binaryFlag              = dec2bin(tableEventList.flag, handles.numBits);                % Convert artifact flags & user flags to binary
             hUITableELIST                     = handle(handles.uitableELIST);
-            hUITableELIST.data                = table2cell(tableEventList);
+            hUITableELIST.Data                = table2cell(tableEventList);
             hUITableELIST.ColumnName          = tableEventList.Properties.VariableNames';
 
             % UPDATE GUI: Eventlist Max window
             hEditEventlistMax                 = handle(handles.editTxtEventlistMax);              % Retrieve data from the GUI
-            hEditEventlistMax.string          = num2str(length(hUITableELIST.data));
+            hEditEventlistMax.String          = num2str(length(hUITableELIST.Data));
 
             
         case '.set' % EEG-SET file
@@ -335,12 +335,12 @@ try
             tableEventList                    = struct2table(handles.EEG.EVENTLIST.eventinfo);
             tableEventList.binaryFlag              = dec2bin(tableEventList.flag, handles.numBits);                % Convert artifact flags & user flags to binary
             hUITableELIST                     = handle(handles.uitableELIST);
-            hUITableELIST.data                = table2cell(tableEventList);
+            hUITableELIST.Data                = table2cell(tableEventList);
             hUITableELIST.ColumnName          = tableEventList.Properties.VariableNames';
 
             % UPDATE GUI: Eventlist Max window
             hEditEventlistMax                 = handle(handles.editTxtEventlistMax);              % Retrieve data from the GUI
-            hEditEventlistMax.string          = num2str(length(hUITableELIST.data));
+            hEditEventlistMax.String          = num2str(length(hUITableELIST.Data));
            
         otherwise
     end
