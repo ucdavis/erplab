@@ -2,5 +2,6 @@
 *.erpm
 
 erplab_Box/*
+!erplab_Box_readme.md
 
 *.m~
