@@ -216,6 +216,9 @@ comMEL    = [trystrs.no_check '[EEG, LASTCOM] = pop_overwritevent(EEG);' catchst
 % BIN-BASED EPOCHING callback
 %
 comEB     = [trystrs.no_check '[EEG, LASTCOM] = pop_epochbin(EEG);' catchstrs.new_and_hist];
+comBV     = 'bdfVisualizer;';
+
+
 
 %
 % EEG CHANNEL OPERATION callback
@@ -360,6 +363,7 @@ uimenu( ELmenu,'Label','Import ERP EVENTLIST from text file ','CallBack',comRLFe
 uimenu( ELmenu,'Label','Export ERP EVENTLIST to text file ','CallBack',comSLFerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 % Binlister
 uimenu( submenu,'Label','Assign bins (BINLISTER)','CallBack', comCBL,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( submenu,'Label','BDF Visualizer','CallBack',comBV,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
 uimenu( submenu,'Label','Transfer eventinfo to EEG.event (optional)','CallBack',comMEL,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 % bepoching
 uimenu( submenu,'Label','Extract bin-based epochs','CallBack',comEB,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
