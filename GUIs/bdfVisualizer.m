@@ -142,8 +142,9 @@ function pushbuttonAnalyzeBDF_Callback(~, ~, handles)
 
 try
     % Turn the interface off for processing.
-    %     InterfaceObj=findobj(handle(handles.windowBDFVisualizer),'Enable','on');
-    %     set(InterfaceObj,'Enable','off');
+    InterfaceObj=findobj(handle(handles.windowBDFVisualizer),'Enable','on');
+    set(InterfaceObj,'Enable','off');
+    drawnow;
     
     hEditEventlistMax   = handle(handles.editTxtEventlistMax);              % Retrieve BDF data from the GUI
     eventlistMax        = str2double(hEditEventlistMax.String);
@@ -192,12 +193,12 @@ try
     hUITableBinlisterFeedback.Data    = [{'Total Event Codes' handles.EEG.EVENTLIST.bdf.namebin}', num2cell([totalEvents handles.EEG.EVENTLIST.trialsperbin])'];
     %% Cleanup
     delete(BDFfilename);                                    % Delete temporary BDF-file
-%     delete(ELISTfilename);                                  % Delete temporary ELIST-file
-%     set( findall(handles.windowBDFVisualizer, '-property', 'Enable'), 'Enable', 'on')
+    %     delete(ELISTfilename);                                  % Delete temporary ELIST-file
+    %     set( findall(handles.windowBDFVisualizer, '-property', 'Enable'), 'Enable', 'on')
     
     % Turn the interface back on 
-    %     set(InterfaceObj,'Enable','on');
-    
+    set(InterfaceObj,'Enable','on');
+    drawnow;
     
 catch errorObj
     % If there is a problem, display the error message
