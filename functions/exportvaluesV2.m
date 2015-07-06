@@ -107,7 +107,11 @@ else
         fid_values  = fopen(fname, 'a'); %append
         fseek(fid_values, 0, 'eof');
 end
-% disp(['An output file with your measuring work was create at <a href="matlab: open(''' fname ''')">' fname '</a>'])
+if fid_values<0      % JLC. Jul 1, 2015
+      warning('ERPLAB says: Check your Current Folder settings. It looks like you do not have privileges to create a file there... ')
+      return
+end
+
 VALUES  = values{1};
 
 %

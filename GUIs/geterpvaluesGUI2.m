@@ -2131,7 +2131,7 @@ end
 %
 if foutput==0
         set(handles.popupmenu_formatout, 'Value', 1);
-        set(handles.edit_label_mea,'Enable', 'off')
+        %set(handles.edit_label_mea,'Enable', 'off')
         set(handles.checkbox_include_used_latencies, 'Enable', 'off');
 else
         set(handles.popupmenu_formatout, 'Value', 2);
@@ -2396,7 +2396,7 @@ return
 function radiobutton_f0_1erp_per_line_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
         set(handles.radiobutton_f1_1mea_per_line,'Value',0)
-        set(handles.edit_label_mea,'Enable', 'off')
+        %set(handles.edit_label_mea,'Enable', 'off')
 else
         set(hObject,'Value',1)
 end
@@ -2489,7 +2489,7 @@ if get(hObject,'Value')==2
         areatype = get(handles.popupmenu_areatype,'Value');
         meatxt   = get(handles.edit_label_mea,'String');
 else
-        set(handles.edit_label_mea,'Enable','off')
+        %set(handles.edit_label_mea,'Enable','off')
         set(handles.checkbox_include_used_latencies,'Enable','off')
 end
 

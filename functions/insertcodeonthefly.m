@@ -113,7 +113,7 @@ end
 % total point of the continuous EEG
 npoints = EEG.pnts;
 n = nevent+1; % next event
-i = 1;
+ii = 1;
 toggle =1;
 p=0;
 k=0;
@@ -138,28 +138,30 @@ lename  = length(names);
 nchan = length(channel);
 %forstr = [repmat('\b',1,11) '%6.2f%% ...'];
 fprintf('Searching...\n');
-while i <= npoints
+while ii <= npoints
         ch=1;cond = 1;
         while  ch<=nchan && cond==1
                 switch rela(ch)
                         case {1,2} % ==
-                                condch = datax(ch,i)==thresh(ch);
+                                condch = datax(ch,ii)==thresh(ch);
                         case 3 % ~=
-                                condch = datax(ch,i)~=thresh(ch);
+                                condch = datax(ch,ii)~=thresh(ch);
                         case 4 % <
-                                condch = datax(ch,i)<thresh(ch);
+                                condch = datax(ch,ii)<thresh(ch);
                         case 5 % <=
-                                condch = datax(ch,i)<=thresh(ch);
+                                condch = datax(ch,ii)<=thresh(ch);
                         case 6 % >=
-                                condch = datax(ch,i)>=thresh(ch);
+                                condch = datax(ch,ii)>=thresh(ch);
                         case 7 % >
-                                condch = datax(ch,i)>thresh(ch);
+                                condch = datax(ch,ii)>thresh(ch);
+                    otherwise
+                        error('!!!')
                 end
                 ch=ch+1;
                 cond = cond & condch;  % cond is true if all specified channels meet the correspondig conditions;
         end       
         if cond && toggle
-                lat = i;
+                lat = ii;
                 toggle = 0;
                 p = 1;
         elseif cond && ~toggle
@@ -176,19 +178,21 @@ while i <= npoints
                         EEG.event(n).urevent  = n;
                         
                         for j=1:lename
+                              %names{j}
+                              %{EEG.event.(names{j})}
                                 v = vogue({EEG.event.(names{j})});
                                 [EEG.event(n).(names{j})]  = deal(v); % fill extra fields
                         end
                         
                         n = n + 1;
                         %next search will start refracsamp samples later
-                        i = lat + refracsamp;
+                        ii = lat + refracsamp;
                 end
                 k = 0;
                 p = 0;
                 toggle = 1;
         else
-                i =  i + 1;
+                ii =  ii + 1;
         end
         %fprintf(1, forstr, 100*i/npoints);
 end

@@ -17,6 +17,9 @@ if iscell(A)
                 A = cat(2,A{:});
         end
         
+        hxx    = cellfun(@isempty,A);
+        A(hxx) = '';
+        
         n = length(A);
         h = cellfun(@isnumeric,A);
         g = nnz(h);
@@ -26,7 +29,7 @@ if iscell(A)
                 B(1).x = [A{h}];  % cell num
                 B(2).x = A(~h);   % cell str
         elseif g>0 && g==n        % only cell numbers
-                B.x = cell2mat(A);
+                B.x = cell2mat(A);              
         else
                 B.x = A;
         end
@@ -38,8 +41,11 @@ for i=1:length(B)
         u = unique_bc2(B(i).x)';
         [tf, ind] = ismember_bc2(B(i).x, u);                
         if ind>0
-                [k f2]= mode(ind);
+                [k, f2] = mode(ind);
                 m = u(k);
+                if iscell(m)
+                      m=m{1};
+                end
         else
                 m = NaN;
                 f2= 0;
