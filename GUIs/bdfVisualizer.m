@@ -52,6 +52,15 @@ function bdfVisualizer_OpeningFcn(hObject, ~, handles, varargin) %#ok<*DEFNU>
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to bdfVisualizer (see VARARGIN)
 
+
+if(verLessThan('matlab', '8.2'))
+    err_msg   = sprintf('Upgrade Matlab 8.2 (2013b) or higher.\n\n BDF Visualizer is not available for this Matlab version: %s.', version); 
+    err_title = 'Matlab Version Incompatibility';
+    errorfound(err_msg, err_title);
+    return;
+end
+    
+
 % Choose default command line output for bdfVisualizer
 handles.output = hObject;
 
@@ -213,6 +222,10 @@ catch errorObj
         errordlg(getReport(errorObj,'extended','hyperlinks','off'),'Error');
     end
 
+    % Turn the interface back on
+    set(InterfaceObj,'Enable','on');
+    drawnow;
+    
 end
 
 % --- Executes on button press in pushbuttonLoadBDF.
@@ -273,7 +286,10 @@ function pushbuttonImportEventList_Callback(hObject, ~, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 try
-    
+    % Turn the interface off for processing.
+    InterfaceObj=findobj(handle(handles.windowBDFVisualizer),'Enable','on');
+    set(InterfaceObj,'Enable','off');
+    drawnow;
     
     [fileName, pathName]        = uigetfile(               ...
         {'*.txt;*.set', 'ELIST (*.txt) or EEG file (*.set)';            ...
@@ -281,7 +297,7 @@ try
         , 'MultiSelect', 'off'                                          ...
         , 'Select Event List Source'                                    ...
     , handles.lastPath);   % Get filename/filepath
-    
+
     if(pathName)
         % Clear the Binlister Feedback uiTable
         hUITableBinlisterFeedback         = handle(handles.uitableBinlisterFeedback);
@@ -328,7 +344,7 @@ try
                 , 'AlphanumericCleaning'    , 'on'              ...
                 , 'BoundaryNumeric'         , { -99 }           ...
                 , 'BoundaryString'          , { 'boundary' }    ...
-                , 'Warning'                 , 'on'              ...
+                , 'Warning'                 , 'off'              ...
                 );
             
             
@@ -348,6 +364,12 @@ try
     
     guidata(hObject,handles);                                                                   % Update the HANDLES data-structure
     
+    
+    % Turn the interface back on
+    set(InterfaceObj,'Enable','on');
+    drawnow;
+    
+    
 catch errorObj
     % If there is a problem, display the error message
     display(getReport(errorObj,'extended','hyperlinks','on'),'Error');
@@ -359,6 +381,11 @@ catch errorObj
         errordlg(getReport(errorObj,'extended','hyperlinks','off'),'Error');
     end
 
+    % Turn the interface back on
+    set(InterfaceObj,'Enable','on');
+    drawnow;
+    
+    
 end
 
 
