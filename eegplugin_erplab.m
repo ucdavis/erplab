@@ -365,6 +365,7 @@ uimenu( ELmenu,'Label','Export ERP EVENTLIST to text file ','CallBack',comSLFerp
 uimenu( submenu,'Label','Assign bins (BINLISTER)','CallBack', comCBL,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 if(verLessThan('matlab', '8.2'))
     % Do not add BDF Visualizer tool if Matlab version is less that 8.2
+    uimenu( submenu,'Label','BDF Visualizer - Disabled','CallBack',comBV,'separator','off','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
 else
     uimenu( submenu,'Label','BDF Visualizer','CallBack',comBV,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
 end
