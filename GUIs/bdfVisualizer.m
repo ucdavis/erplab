@@ -54,7 +54,7 @@ function bdfVisualizer_OpeningFcn(hObject, ~, handles, varargin) %#ok<*DEFNU>
 
 
 if(verLessThan('matlab', '8.2'))
-    err_msg   = sprintf('Upgrade Matlab 8.2 (2013b) or higher.\n\n BDF Visualizer is not available for this Matlab version: %s.', version); 
+    err_msg   = sprintf('Upgrade to Matlab 8.2 (2013b) or higher.\n\n BDF Visualizer will not run correctly for this Matlab version: %s.', version); 
     err_title = 'Matlab Version Incompatibility';
     errorfound(err_msg, err_title);
     return;
@@ -182,6 +182,13 @@ try
         , []                ...         % ignoreCodeArray
         , 0                 );          % reportable
     
+    
+    if(isempty(handles.EEG.EVENTLIST));  
+        % Turn the interface back on
+        set(InterfaceObj,'Enable','on');
+        drawnow;
+        return; 
+    end
     
     %% Display updated ELIST-struct to GUI
     tableEventList                    = struct2table(handles.EEG.EVENTLIST.eventinfo);
@@ -337,16 +344,17 @@ try
             handles.EEG = pop_loadset('filename',fileName,'filepath',pathName);
             handles.EEG = eeg_checkset( handles.EEG );
             
-            
-            % Create EVENTLIST from EEG dataset
-            handles.EEG  = pop_creabasiceventlist( handles.EEG ...
-                ... %         , 'Eventlist','/Users/etfoo/Documents/MATLAB/Eventlist.txt' ...
-                , 'AlphanumericCleaning'    , 'on'              ...
-                , 'BoundaryNumeric'         , { -99 }           ...
-                , 'BoundaryString'          , { 'boundary' }    ...
-                , 'Warning'                 , 'off'              ...
-                );
-            
+            % If EEG.EVENTLIST does not exist
+            if(~isfield(handles.EEG, 'EVENTLIST'))
+                % Create EVENTLIST from EEG dataset
+                handles.EEG  = pop_creabasiceventlist( handles.EEG ...
+                    ... %         , 'Eventlist','/Users/etfoo/Documents/MATLAB/Eventlist.txt' ...
+                    , 'AlphanumericCleaning'    , 'on'              ...
+                    , 'BoundaryNumeric'         , { -99 }           ...
+                    , 'BoundaryString'          , { 'boundary' }    ...
+                    , 'Warning'                 , 'off'              ...
+                    );
+            end
             
             % Update the GUI ELIST uiTable
             tableEventList                    = struct2table(handles.EEG.EVENTLIST.eventinfo);

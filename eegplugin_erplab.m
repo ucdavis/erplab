@@ -363,7 +363,12 @@ uimenu( ELmenu,'Label','Import ERP EVENTLIST from text file ','CallBack',comRLFe
 uimenu( ELmenu,'Label','Export ERP EVENTLIST to text file ','CallBack',comSLFerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 % Binlister
 uimenu( submenu,'Label','Assign bins (BINLISTER)','CallBack', comCBL,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu( submenu,'Label','BDF Visualizer','CallBack',comBV,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
+if(verLessThan('matlab', '8.2'))
+    % Do not add BDF Visualizer tool if Matlab version is less that 8.2
+else
+    uimenu( submenu,'Label','BDF Visualizer','CallBack',comBV,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
+end
+
 uimenu( submenu,'Label','Transfer eventinfo to EEG.event (optional)','CallBack',comMEL,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 % bepoching
 uimenu( submenu,'Label','Extract bin-based epochs','CallBack',comEB,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
