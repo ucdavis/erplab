@@ -90,6 +90,10 @@ if length(filenames)>2
         recycle on;
         delete(fullfile(dirBox,'*'))
         fprintf('\nERPLAB WARNING: Temporary files (from your last session) within erplab_Box folder were sent to recycle bin.\n\n')
+        
+        file_id = fopen(fullfile(dirBox, 'erplab_box_readme.md'), 'w');
+        fprintf(file_id, 'This is a placeholder file, so that git does not delete the `erplab_Box` folder.');
+        fclose(file_id);
 end
 
 %
