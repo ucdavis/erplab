@@ -8,6 +8,10 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 <br/>
 <br/>
 <br/>
+<br/>
+<br/>
+<br/>
+----
 ### Requirements
 - Matlab
   - We recommend versions 2010a, 2012a, 2014b, 2015
@@ -26,7 +30,7 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 <br/>
 <br/>
 ------
-ERPLAB 5.0.0.0 Release Notes
+### ERPLAB 5.0.0.0 Release Notes
 
 <p align="center" >
   <a href="https://github.com/lucklab/erplab/releases/download/5.0.0.0/erplab-5.0.0.0.zip">
