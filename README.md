@@ -14,8 +14,8 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
   - **Matlab's Signal Processing Toolbox is required.**
 
 - EEGLAB Toolbox
- -ERPLAB has mainly been tested with versions 9.0.8.6b, and 12.01.0b of EEGLAB. We recommend versions 9 and 12.  
- - **Do not use version 11 of EEGLAB**
+  -ERPLAB has mainly been tested with versions 9.0.8.6b, and 12.01.0b of EEGLAB. We recommend versions 9 and 12.  
+  - **Do not use version 11 of EEGLAB**
 
 - Operating System
   - ERPLAB has mainly been tested with Mac OS X and Windows.  
