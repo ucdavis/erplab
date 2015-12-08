@@ -8,6 +8,21 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 <br/>
 <br/>
 <br/>
+### Requirements
+- Matlab
+  - We recommend versions 2010a, 2012a, 2014b, 2015
+  - **Matlab's Signal Processing Toolbox is required.**
+
+- EEGLAB Toolbox
+ -ERPLAB has mainly been tested with versions 9.0.8.6b, and 12.01.0b of EEGLAB. We recommend versions 9 and 12.  
+ - **Do not use version 11 of EEGLAB**
+
+- Operating System
+  - ERPLAB has mainly been tested with Mac OS X and Windows.  
+  - It should work with Linux, but this has not been extensively tested.
+  - EEGLAB and ERPLAB work best if you have plenty of RAM. We recommend at least 8 GB. Note, however, that your computer will not be able to take advantage of more than 4 GB of RAM unless you have a 64-bit version of Matlab installed (along with a 64-bit operating system).
+
+<br/>
 ------
 ERPLAB 5.0.0.0 Release Notes
 
