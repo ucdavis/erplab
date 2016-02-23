@@ -59,7 +59,7 @@ end
 
 handles.nepochperdata = nepochperdata;
 
-ardetect_list = {'ignore artifact detection','exclude marked epochs (recommended)', 'include ONLY marked epochs (be cautios!)'};
+ardetect_list = {'ignore artifact detection','exclude marked epochs (recommended)', 'include ONLY marked epochs (use with care)'};
 catching_list = {'sequential','at random', 'odd epochs', 'even epochs', 'prime epochs'};
 instance_list = {'first','anywhere', 'last'};
 
@@ -71,6 +71,7 @@ set(handles.popupmenu_instance,'String', instance_list)
 % Gui memory
 %
 epoch4avgGUI = erpworkingmemory('epoch4avgGUI');
+epoch4avgGUI.save_not_selected = 0;
 
 if isempty(epoch4avgGUI)
         
@@ -81,6 +82,7 @@ if isempty(epoch4avgGUI)
         episode       = 'any';
         instance      = 0;
         warnme        = 1;
+        save_not_selected = 0;
 else
         nepochsperbin = epoch4avgGUI.nepochsperbin;
         ardetcriterio = epoch4avgGUI.ardetcriterio;
@@ -89,6 +91,7 @@ else
         episode       = epoch4avgGUI.episode;
         instance      = epoch4avgGUI.instance;
         warnme        = epoch4avgGUI.warnme;
+        save_not_selected = epoch4avgGUI.save_not_selected;
 end
 
 %Number of epochs per bin to average
@@ -151,6 +154,12 @@ if warnme
         set(handles.checkbox_warnme, 'Value', 1)
 else
         set(handles.checkbox_warnme, 'Value', 0)
+end
+
+if save_not_selected
+    set(handles.not_selected_epochs_to_workspace, 'Value', 1)
+else
+    set(handles.not_selected_epochs_to_workspace, 'Value', 0)
 end
 
 %
@@ -364,6 +373,10 @@ end
 function checkbox_warnme_Callback(hObject, eventdata, handles)
 
 %-------------------------------------------------------------------------
+
+function not_selected_epochs_to_workspace_Callback(hObject, eventdata, handles)
+
+%-------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
 % Update handles structure
@@ -474,8 +487,14 @@ elseif get(handles.popupmenu_instance,'Value')==3; % odd epochs
         instance = 2;
 end
 
+
+%
+% Save non-selected?
+%
+save_not_selected = get(handles.not_selected_epochs_to_workspace,'Value');
+
 warnme = get(handles.checkbox_warnme, 'Value');
-handles.output = {nepochsperbin, ardetcriterio, catching, reference, episode, instance, warnme};
+handles.output = {nepochsperbin, ardetcriterio, catching, reference, episode, instance, warnme, save_not_selected};
 
 %
 % memory for Gui
@@ -487,6 +506,7 @@ epoch4avgGUI.reference     = reference;
 epoch4avgGUI.episode       = episode;
 epoch4avgGUI.instance      = instance;
 epoch4avgGUI.warnme        = warnme;
+epoch4avgGUI.save_not_selected = save_not_selected;
 erpworkingmemory('epoch4avgGUI', epoch4avgGUI);
 
 % Update handles structure
@@ -533,14 +553,7 @@ else
         set(hObject,'Value', 1)
 end
 
-%--------------------------------------------------------------------------
-function radiobutton14_Callback(hObject, eventdata, handles)
 
-%--------------------------------------------------------------------------
-function radiobutton15_Callback(hObject, eventdata, handles)
-
-%--------------------------------------------------------------------------
-function radiobutton16_Callback(hObject, eventdata, handles)
 
 %--------------------------------------------------------------------------
 function popupmenu_instance_Callback(hObject, eventdata, handles)
@@ -566,3 +579,12 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
+% --- Executes during object creation, after setting all properties.
+function not_selected_epochs_to_workspace_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to not_selected_epochs_to_workspace (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+save_not_selected = 0;
+

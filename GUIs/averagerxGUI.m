@@ -996,8 +996,14 @@ end
 
 %%%%%%% change dataset and bin
 
+old_epochs_n = size(ALLEEG(3).epoch,2);
+old_epochs = [1:old_epochs_n];
+
 epocharray = getepochindex6(ALLEEG, 'Dataset', setindex, 'Bin', 1:ALLEEG(setindex(1)).EVENTLIST.nbin, 'Nepoch', nepoch,...
     'Artifact', artifact, 'Catching', catching, 'Indexing', indexing, 'Episode', episode, 'Instance', instance, 'Warning', warning);
+
+old_epochs(ismember(old_epochs,epocharray{:}))=[];
+other_epochs{:}=old_epochs;
 
 % epocharray = cell2mat(epocharray);
 %
@@ -1015,6 +1021,15 @@ filename = answer{2};
 overw    = answer{3};
 acolon   = answer{4};
 openfile = answer{5};
+save_others = answer{6};
+
+if size(filename) <= 1
+    filename = [pwd, '\saved_epochs.txt'];
+end
+
+if save_others
+    wepoch2file([filename, '_non-selected.txt'],other_epochs,acolon,overw);
+end
 
 if option==0 % to editor
     

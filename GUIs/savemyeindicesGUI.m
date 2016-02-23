@@ -226,7 +226,13 @@ else
         return
 end
 
-handles.output = {option, filename, overw, acolon, openfile};
+if get(handles.checkbox_save_other_subset,'Value')
+    save_other = 1;
+else
+    save_other = 0;
+end
+
+handles.output = {option, filename, overw, acolon, openfile, save_other};
 
 % Update handles structure
 guidata(hObject, handles);
@@ -245,3 +251,12 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
+% --- Executes on button press in checkbox_save_other_subset.
+function checkbox_save_other_subset_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_save_other_subset (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_save_other_subset
