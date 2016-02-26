@@ -71,7 +71,7 @@ set(handles.popupmenu_instance,'String', instance_list)
 % Gui memory
 %
 epoch4avgGUI = erpworkingmemory('epoch4avgGUI');
-epoch4avgGUI.save_not_selected = 0;
+
 
 if isempty(epoch4avgGUI)
         
@@ -84,6 +84,7 @@ if isempty(epoch4avgGUI)
         warnme        = 1;
         save_not_selected = 0;
 else
+    
         nepochsperbin = epoch4avgGUI.nepochsperbin;
         ardetcriterio = epoch4avgGUI.ardetcriterio;
         catching      = epoch4avgGUI.catching;
@@ -93,6 +94,8 @@ else
         warnme        = epoch4avgGUI.warnme;
         save_not_selected = epoch4avgGUI.save_not_selected;
 end
+
+epoch4avgGUI.save_not_selected = 0;
 
 %Number of epochs per bin to average
 if ischar(nepochsperbin)
@@ -588,3 +591,9 @@ function not_selected_epochs_to_workspace_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 save_not_selected = 0;
 
+
+% --- Executes during object creation, after setting all properties.
+function uipanel5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to uipanel5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

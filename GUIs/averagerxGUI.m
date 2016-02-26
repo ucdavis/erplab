@@ -996,8 +996,8 @@ end
 
 %%%%%%% change dataset and bin
 
-old_epochs_n = size(ALLEEG(3).epoch,2);
-old_epochs = [1:old_epochs_n];
+old_epochs_n = size(ALLEEG(setindex).epoch,2);
+old_epochs = 1:old_epochs_n;
 
 epocharray = getepochindex6(ALLEEG, 'Dataset', setindex, 'Bin', 1:ALLEEG(setindex(1)).EVENTLIST.nbin, 'Nepoch', nepoch,...
     'Artifact', artifact, 'Catching', catching, 'Indexing', indexing, 'Episode', episode, 'Instance', instance, 'Warning', warning);
