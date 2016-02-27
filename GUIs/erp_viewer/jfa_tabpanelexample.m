@@ -1,0 +1,59 @@
+%% A TabPanel Example
+% This example shows how to use tabs within a layout. It also shows how to
+% use the TabPanel Callback property to update other GUI elements when the
+% visible tab is changed.
+%
+% Copyright 2009-2013 The MathWorks, Inc.
+
+%% Open the window
+% Open a new figure window and remove the toolbar and menus
+window = figure( 'Name', 'A TabPanel example', ...
+    'MenuBar', 'none', ...
+    'Toolbar', 'none', ...
+    'NumberTitle', 'off' );
+
+%% Create the layout
+% The layout involves two panels side by side. This is done using a
+% flexible horizontal box. The left-hand side is filled with a standard
+% panel and the right-hand side with some tabs.
+hbox = uix.HBoxFlex('Parent', window, 'Spacing', 3);
+panel = uix.Panel( ...
+    'Parent', hbox, ...
+    'Padding', 5, ...
+    'Title', 'Left' );
+tabpanel = uix.TabPanel( 'Parent', ...
+    hbox, ...
+    'Padding', 0);
+
+%% Add a list on the left
+% Note that we link the callbacks from the list to the tab selection and
+% the tab callback to the list such that they are kept in sync.
+panellist = uicontrol( 'Style', 'list', ...
+    'Parent', panel, ...
+    'String', {'1', '2', '3'}, ...
+    'BackgroundColor', 'w', ...
+    'Callback', @(a,b) set( tabpanel, 'Selection', get( a, 'Value' ) ) );
+set( tabpanel, 'SelectionChangedFcn', @(a,b) set( panellist, 'Value', b.NewValue ) );
+
+%% Create some contents
+% Each tab is filled with a list box showing some numbers
+htab1 = uix.Panel( 'Parent', tabpanel, 'Padding', 5, 'Title', '1');
+uicontrol( 'Style', 'listbox', 'Parent', htab1, ...
+    'String', {'1', '1', '1'}, ...
+    'BackgroundColor', 'w' );
+
+htab2 = uix.Panel( 'Parent', tabpanel, 'Padding', 5, 'Title', '2');
+uicontrol( 'Style', 'listbox', 'Parent', htab2, ...
+    'String', {'2', '2', '2'}, ...
+    'BackgroundColor', 'w' );
+
+htab3 = uix.Panel( 'Parent', tabpanel, 'Padding', 5, 'Title', '3');
+uicontrol( 'Style', 'listbox', 'Parent', htab3, ...
+    'String', {'3', '3', '3'}, ...
+    'BackgroundColor', 'w' );
+
+%% Update the tab titles
+tabpanel.TabTitles = {'1', '2', '3'};
+
+%% Show the first tab
+tabpanel.Selection = 1;
