@@ -18,6 +18,9 @@ function jfa_demoBrowser()
 
 
 %% Setup Data
+pheightmin = 20;
+pheightmax = 200;
+
 data = createData();
 
 %% Setup GUI
@@ -113,9 +116,8 @@ displayEndOfDemoMessage('')
         mainLayout = uix.HBoxFlex( 'Parent', gui.Window, 'Spacing', 3 );
         
         % + Create the panels
-        controlPanel = uix.BoxPanel( ...
-            'Parent', mainLayout, ...
-             );
+        gui.controlPanel = uix.BoxPanel( ...
+            'Parent', mainLayout );
         gui.ViewPanel = uix.BoxPanel( ...
             'Parent', mainLayout, ...
             'Title', 'Viewing: ???', ...
@@ -123,16 +125,17 @@ displayEndOfDemoMessage('')
         gui.ViewContainer = uicontainer( ...
             'Parent', gui.ViewPanel );        
 
-        % + Adjust the main layout
-        set( mainLayout, 'Widths', [-1,-2]  );
+
         
         
         %% + Create the controls
         controlLayout = uix.VBox( ...
-            'Parent' , controlPanel, ...
-            'Padding', 3, ...
+            'Parent' , gui.controlPanel, ...
+            'Padding', 3 , ...
             'Spacing', 3 );
-        
+
+        % + Adjust the main layout
+        set( mainLayout, 'Widths', [-1,-2]  );
         
         %         gui.ListBox = uicontrol( 'Style', 'list', ...
         %             'BackgroundColor'   , 'w', ...
@@ -147,45 +150,49 @@ displayEndOfDemoMessage('')
         %             'Callback'          , @onDemoHelp );
         %
         
-        panelBoxes = { ...
-            uix.BoxPanel( 'Title', 'measurement', 'Parent', controlLayout )   , ...
-            uix.BoxPanel( 'Title', 'scales'     , 'Parent', controlLayout )   , ...
-            uix.BoxPanel( 'Title', 'plot values', 'Parent', controlLayout )   , ...
-            uix.BoxPanel( 'Title', 'color'      , 'Parent', controlLayout )   };
         
-        panelNames = { ...
-            'measurement'   , ...
-            'scales'        , ...
-            'plot values'   , ...
-            'color'         };
+        measurementBox = uix.BoxPanel( 'Title', 'measurement', 'Parent', controlLayout ); %#ok<NASGU>
+        scalesBox = uix.BoxPanel( 'Title', 'scales'     , 'Parent', controlLayout ); %#ok<NASGU>
+        valuesBox = uix.BoxPanel( 'Title', 'plot values', 'Parent', controlLayout ); %#ok<NASGU>
+        colorBox = uix.BoxPanel( 'Title', 'color'      , 'Parent', controlLayout );
         
-        panelContainer = containers.Map(panelNames, panelBoxes);
+        %% Add 2 Horizontal Button Boxes
+        %         hbox = uix.HButtonBox( ...
+        %             'Parent', controlLayout, ...
+        %             'Spacing', 10, ...
+        %             'Padding', 1 );
+        %         gui.CancelButton = uicontrol( ...
+        %             'Style', 'PushButton', ...
+        %             'Parent', hbox, ...
+        %             'String', 'Cancel' );
+        %         gui.MeasurementToolButton = uicontrol( ...
+        %             'Style', 'PushButton', ...
+        %             'Parent', hbox, ...
+        %             'String', 'Measurement Tool' );
+        
+        %% Hook up the minimize callback
+        
+        for panelIndex = 1:length(controlLayout.Children)
+            if(strcmpi(controlLayout.Children(panelIndex).Type, 'uipanel'))
+                set( controlLayout.Children(panelIndex), 'MinimizeFcn', {@nMinimize, panelIndex} );
+            end
+        end
         
         gui.ListBox = uicontrol( 'Style', 'list', ...
             'BackgroundColor'   , 'w', ...
-            'Parent'            , controlLayout, ...
+            'Parent'            , colorBox, ...
             'String'            , demoList(:), ...
             'Value'             , 1, ...
             'Callback'          , @onListSelection);
         
-        %% Add 2 Horizontal Button Boxes
-        hbox = uix.HButtonBox( ...
-            'Parent', controlLayout, ...
-            'Spacing', 10, ...
-            'Padding', 1 );
-        gui.CancelButton = uicontrol( ...
-            'Style', 'PushButton', ...
-            'Parent', hbox, ...
-            'String', 'Cancel' );
-        gui.MeasurementToolButton = uicontrol( ...
-            'Style', 'PushButton', ...
-            'Parent', hbox, ...
-            'String', 'Measurement Tool' );
+
         
         
         
         % Make the list fill the space
-        set( controlLayout, 'Heights', [-1 28 28] ); 
+
+        panelHeights = ones([1 length(controlLayout.Contents)])+pheightmax;
+        set( controlLayout, 'Heights', panelHeights ); 
         
         % + Create the view
         p = gui.ViewContainer;
@@ -194,7 +201,7 @@ displayEndOfDemoMessage('')
         
         %% JFA Adds
         %% Set Callbacks: the dock/undock callback
-        set( controlPanel, 'DockFcn', {@nDock, 1} );
+        set( gui.controlPanel, 'DockFcn', {@nDock, 1} );
         
     end % createInterface
 
@@ -206,16 +213,16 @@ displayEndOfDemoMessage('')
         % Update the list and menu to show the current demo
         set( gui.ListBox, 'Value', data.SelectedDemo );
         % Update the help button label
-        demoName = data.DemoNames{ data.SelectedDemo };
-        set( gui.HelpButton, 'String', ['Help for ',demoName] );
+        %         demoName = data.DemoNames{ data.SelectedDemo };
+        %         set( gui.HelpButton, 'String', ['Help for ',demoName] );
         % Update the view panel title
-        set( gui.ViewPanel, 'Title', sprintf( 'Viewing: %s', demoName ) );
+        %         set( gui.ViewPanel, 'Title', sprintf( 'Viewing: %s', demoName ) );
         % Untick all menus
         menus = get( gui.ViewMenu, 'Children' );
         set( menus, 'Checked', 'off' );
         % Use the name to work out which menu item should be ticked
-        whichMenu = strcmpi( demoName, get( menus, 'Label' ) );
-        set( menus(whichMenu), 'Checked', 'on' );
+        %         whichMenu = strcmpi( demoName, get( menus, 'Label' ) );
+        %         set( menus(whichMenu), 'Checked', 'on' );
     end % updateInterface
 
 %-------------------------------------------------------------------------%
@@ -294,24 +301,24 @@ displayEndOfDemoMessage('')
 %-------------------------------------------------------------------------%
 %     function nDock( eventSource, eventData, whichpanel ) %#ok<INUSL>
 %         % Set the flag
-%         controlPanel.Docked = ~controlPanel.Docked;
-%         if controlPanel.Docked
+%         gui.controlPanel.Docked = ~gui.controlPanel.Docked;
+%         if gui.controlPanel.Docked
 %             % Put it back into the layout
-%             newfig = get( controlPanel, 'Parent' );
-%             set( controlPanel, 'Parent', box );
+%             newfig = get( gui.controlPanel, 'Parent' );
+%             set( gui.controlPanel, 'Parent', box );
 %             delete( newfig );
 %         else
 %             % Take it out of the layout
-%             pos = getpixelposition( controlPanel );
+%             pos = getpixelposition( gui.controlPanel );
 %             newfig = figure( ...
-%                 'Name', get( controlPanel, 'Title' ), ...
+%                 'Name', get( gui.controlPanel, 'Title' ), ...
 %                 'NumberTitle', 'off', ...
 %                 'MenuBar', 'none', ...
 %                 'Toolbar', 'none', ...
 %                 'CloseRequestFcn', {@nDock, whichpanel} );
 %             figpos = get( newfig, 'Position' );
 %             set( newfig, 'Position', [figpos(1,1:2), pos(1,3:4)] );
-%             set( controlPanel, 'Parent', newfig, ...
+%             set( gui.controlPanel, 'Parent', newfig, ...
 %                 'Units', 'Normalized', ...
 %                 'Position', [0 0 1 1] );
 %         end
@@ -320,19 +327,19 @@ displayEndOfDemoMessage('')
 
     function nMinimize( eventSource, eventData, whichpanel ) %#ok<INUSL>
         % A panel has been maximized/minimized
-        s   = get( box, 'Heights' );
-        pos = get( fig, 'Position' );
-        panel{whichpanel}.Minimized = ~panel{whichpanel}.Minimized;
-        if panel{whichpanel}.Minimized
+        s   = get( gui.controlPanel.Children, 'Heights' );
+        %         pos = get( gui.Window, 'Position' );
+        gui.controlPanel.Children.Children(whichpanel).Minimized = ~gui.controlPanel.Children.Children(whichpanel).Minimized;
+        if gui.controlPanel.Children.Children(whichpanel).Minimized
             s(whichpanel) = pheightmin;
         else
             s(whichpanel) = pheightmax;
         end
-        set( box, 'Heights', s );
+        set( gui.controlPanel.Children, 'Heights', s );
         
         % Resize the figure, keeping the top stationary
-        delta_height = pos(1,4) - sum( box.Heights );
-        set( fig, 'Position', pos(1,:) + [0 delta_height 0 -delta_height] );
+        %         delta_height = pos(1,4) - sum( gui.controlPanel.Children.Heights );
+        %         set( gui.Window, 'Position', pos(1,:) + [0 delta_height 0 -delta_height] );
     end % nMinimize
 
 end % EOF
