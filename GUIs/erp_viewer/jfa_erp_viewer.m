@@ -1,4 +1,4 @@
-function jfa_demoBrowser()
+function jfa_erp_viewer()
 %demoBrowser: an example of using layouts to build a user interface
 %
 %   demoBrowser() opens a simple GUI that allows several of MATLAB's
