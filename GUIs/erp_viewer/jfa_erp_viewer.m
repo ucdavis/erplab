@@ -47,10 +47,10 @@ redrawDemo();
         % Load an example ERPSET
         ALLERP(1) = pop_loaderp(            ...
             'filename', 'S1_ERPs.erp'       , ...
-            'filepath', './example_data/'   );
+            'filepath', './sample_data/'   );
         ALLERP(2) = pop_loaderp(            ...
             'filename', 'S2_ERPs.erp'       , ...
-            'filepath', './example_data/'   );
+            'filepath', './sample_data/'   );
         
         
         data = struct( ...
@@ -122,6 +122,11 @@ redrawDemo();
             'Parent', controlLayout     ); %#ok<NASGU>
         
         
+        %% Resize the window
+        %         pos = get( gui.Window, 'Position' );
+        %         set( fig, 'Position', [pos(1,1:2),width,sum(controlLayout.Heights)] );
+        
+        
         
         %% Add 2 Horizontal Button Boxes
         %         hbox = uix.HButtonBox( ...
@@ -182,6 +187,8 @@ redrawDemo();
         % Use the name to work out which menu item should be ticked
         %         whichMenu = strcmpi( demoName, get( menus, 'Label' ) );
         %         set( menus(whichMenu), 'Checked', 'on' );
+        
+        
     end % updateInterface
 
 %-------------------------------------------------------------------------%
@@ -212,6 +219,8 @@ redrawDemo();
 %% JFA Adds
 
     function nMinimize( ~, ~, whichpanel )
+        originalWindowPosition = S.gui.Window.Position;
+        
         % A panel has been maximized/minimized
         allGUIControlPanels = S.gui.controlPanel.Children;
         currGUIControlPanel = S.gui.controlPanel.Children.Children(whichpanel);
@@ -228,8 +237,10 @@ redrawDemo();
         set( allGUIControlPanels, 'Heights', panelHeights );
         
         % Resize the figure, keeping the top stationary
-        delta_height = pos(1,4) - sum( S.gui.controlPanel.Children.Heights );
-        set( S.gui.Window, 'Position', pos(1,:) + [0 delta_height 0 -delta_height] );
+%         delta_height = originalWindowPosition(1,4) ... 
+%             - sum( S.gui.controlPanel.Children.Heights );
+%         set( S.gui.Window, 'Position', ...
+%             originalWindowPosition(1,:) + [0 delta_height 0 -delta_height]);
     end % nMinimize
 
 end % EOF
