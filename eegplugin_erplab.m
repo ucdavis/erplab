@@ -336,6 +336,11 @@ comFil    = ['[ERP, ERPCOM] = pop_filterp(ERP);' '[ERP, ALLERPCOM] = erphistory(
 comPASerp = ['ERP, LASTCOM = pop_fourierp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comEPSerp = ['ERP, LASTCOM = pop_getFFTfromERP(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
+
+% Working memory
+comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MAIN      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MENU      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -511,9 +516,15 @@ uimenu( mSETT,'Label','ERPLAB Background Color ','CallBack',comBCOL,'separator',
 uimenu( mSETT,'Label','ERPLAB Foreground Color ','CallBack', comFCOL,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Error window Background Color ','CallBack',comBerrCOL,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Error window Foreground Color ','CallBack', comFerrCOL,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mSETT,'Label','Reset ERPLAB''s working memory','CallBack','erplabamnesia(1)','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+%uimenu( mSETT,'Label','Reset ERPLAB''s working memory','CallBack','erplabamnesia(1)','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Backup this ERPLAB version','CallBack','backuperplab','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Set Backup location','CallBack','setbackuploc','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+% erpmem submenu in Settings
+mMEM = uimenu( mSETT, 'Label','ERPLAB Memory Settings','tag','MemoryOps','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mMEM,'Label','Reset ERPLAB''s working memory','CallBack','erplabamnesia(1)','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mMEM,'Label','Save a copy of the current working memory as...','CallBack','working_mem_save_load(1)','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mMEM,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+
 
 %
 % SUPPORT
