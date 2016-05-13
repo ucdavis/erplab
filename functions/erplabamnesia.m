@@ -78,7 +78,7 @@ else
         vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,...
                                     'fontunitsGUI',fontunitsGUI,'mshock',mshock, 'errorColorF', errorColorF, 'errorColorB', errorColorB);
         assignin('base','vmemoryerp',vmemoryerp);
-        fprintf('\n* ERPLAB''s working memory was resetted (variable "vmemoryerp", at workspace, was rebuild with default values).\n');
+        fprintf('\n* ERPLAB''s working memory was reset (variable "vmemoryerp", at workspace, was rebuild with default values).\n');
 end
 
 % check file for memory

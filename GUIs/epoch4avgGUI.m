@@ -67,6 +67,7 @@ set(handles.popupmenu_ardetection,'String', ardetect_list)
 set(handles.popupmenu_catching,'String', catching_list)
 set(handles.popupmenu_instance,'String', instance_list)
 
+
 %
 % Gui memory
 %
@@ -159,11 +160,6 @@ else
         set(handles.checkbox_warnme, 'Value', 0)
 end
 
-if save_not_selected
-    set(handles.not_selected_epochs_to_workspace, 'Value', 1)
-else
-    set(handles.not_selected_epochs_to_workspace, 'Value', 0)
-end
 
 %
 % Color GUI
@@ -377,7 +373,6 @@ function checkbox_warnme_Callback(hObject, eventdata, handles)
 
 %-------------------------------------------------------------------------
 
-function not_selected_epochs_to_workspace_Callback(hObject, eventdata, handles)
 
 %-------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
@@ -494,7 +489,7 @@ end
 %
 % Save non-selected?
 %
-save_not_selected = get(handles.not_selected_epochs_to_workspace,'Value');
+save_not_selected = 0;  % Deal with this in 'savemyindicies' instead, but create now
 
 warnme = get(handles.checkbox_warnme, 'Value');
 handles.output = {nepochsperbin, ardetcriterio, catching, reference, episode, instance, warnme, save_not_selected};
@@ -584,16 +579,3 @@ else
 end
 
 
-% --- Executes during object creation, after setting all properties.
-function not_selected_epochs_to_workspace_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to not_selected_epochs_to_workspace (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-save_not_selected = 0;
-
-
-% --- Executes during object creation, after setting all properties.
-function uipanel5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to uipanel5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called

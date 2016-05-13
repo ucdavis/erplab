@@ -12,10 +12,10 @@ fontunitsGUI = 'pixels';
 
 set(0,'Units','pixels')
 thisscreen = get(0, 'ScreenSize');
-if thisscreen(3)==1440 && thisscreen(4)>=878 && thisscreen(4)<1000 && ismac
-    fontsizeGUI = 12; % retina display
-elseif thisscreen(3)>=1440 && thisscreen(4)>=1000  && ismac
-    fontsizeGUI = 11; % iMac display
+if thisscreen(4)>=1440
+    fontsizeGUI = 12; % high-res (Retina-type) display
+elseif thisscreen(4)==1440
+    fontsizeGUI = 11; % iMac-type display
 else
     fontsizeGUI = 8.2;
 end

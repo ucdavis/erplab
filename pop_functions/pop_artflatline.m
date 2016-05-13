@@ -273,7 +273,7 @@ for ch=1:nch
                         %
                         % subroutine
                         %
-                        % flaf 1 is obligatory
+                        % flag 1 is obligatory
                         [EEG, errorm]= markartifacts(EEG, flag, chanArray, ch, i, isRT);
                         if errorm==1
                                 error(['ERPLAB says: There was not latency at the epoch ' num2str(i)])

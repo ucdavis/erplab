@@ -333,7 +333,7 @@ p.addParamValue('SEM', 'off', @ischar); % standard error of the mean
 p.addParamValue('Transparency', 1, @isnumeric); % transparency value for plotting SEM
 p.addParamValue('Box', [], @isnumeric);
 p.addParamValue('HoldCh', 'off', @ischar);
-p.addParamValue('AutoYlim', 'on', @ischar);
+p.addParamValue('AutoYlim', 'on_default', @ischar);
 p.addParamValue('BinNum', 'off', @ischar);
 p.addParamValue('ChLabel', 'on', @ischar);
 p.addParamValue('LegPos', 'bottom', @ischar);
@@ -532,14 +532,28 @@ if strcmpi(p.Results.HoldCh,'on')
 else
         qholdch = 0;
 end
-if strcmpi(p.Results.AutoYlim,'on')
-        qyauto = 1;
-else
-        qyauto = 0;
+
+
+if strcmpi(p.Results.AutoYlim,'on_default')
+    % If AutoYlim is on-by-default, then check yscale first - axs
+    if isempty(qyscale)
+        qyauto = 1;     % AutoYlim ON, when on-by-default AND no yscale specified.
+    else
+        qyauto = 0;     % AutoYlim OFF, when on-by-default AND a specific yscale requested
+    end
+    
+    
+elseif strcmpi(p.Results.AutoYlim,'off')
+    % If AutoYlim is specified as 'off'
+    qyauto = 0;
+
+
+else   % take to be strcmpi(p.Results.AutoYlim,'on')
+    % If AutoYlim is specified as 'on'
+    qyauto = 1;
 end
-% if ~isempty(qyscale)
-%      qyauto = 0;
-% end
+
+
 if strcmpi(p.Results.BinNum,'on')
         qbinleg = 1;
 else
