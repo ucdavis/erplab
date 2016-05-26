@@ -130,7 +130,7 @@ if nargin<3
         binArray = 1:ERP.nbin;
 end
 if ischar(blc)
-        blcnum = str2num(blc);
+        blcnum = str2num(blc); %#ok<ST2NM>
         if isempty(blcnum)
                 if ~ismember_bc2(blc,{'no','none','pre','post','all','whole'})
                         msgboxText =  'Invalid baseline range dude!';
@@ -184,7 +184,6 @@ nbin    = length(binArray);
 nchan   = length(chanArray);
 nlat    = length(latency);
 VALUES  = zeros(nbin,nchan);
-LATENCY = struct([]);
 timeor  = ERP.times; % original time vector
 mintime = ERP.xmin*1000;
 maxtime = ERP.xmax*1000;
@@ -213,7 +212,7 @@ msgboxText4peak = ['The requested measurement window is invalid given the number
 [worklate{1:nbin,1:nchan}] = deal(latency); % specified latency(ies) for getting measurements.
 
 if length(latency)==2
-        [xxx, latsamp, latdiffms] = closest(timex, latency);
+        [~, latsamp, latdiffms] = closest(timex, latency);
         if latency(1)<mintime && ms2sample(latdiffms(1),fs)>2 %JLC.10/16/2013
                 msgboxText =  sprintf('The onset of your measurement window cannot be more than 2 samples earlier than the ERP window (%.1f ms)\n', timex(1));
                 varargout{1} = msgboxText;
@@ -239,7 +238,7 @@ if length(latency)==2
                 fprintf('%s\n\n', repmat('*',1,60));
         end
 elseif length(latency)==1
-        [xxx, latsamp, latdiffms] = closest(timex, latency(1));
+        [~, latsamp, latdiffms] = closest(timex, latency(1));
         if  (latsamp(1)<=(1+sampeak) || latsamp(1)>=(pnts-sampeak)) && (ms2sample(latdiffms(1),fs)<(-2+sampeak) || ms2sample(latdiffms(1),fs)>(2-sampeak)) %JLC.20/08/13
                 msgboxText =  sprintf('The specified latency is more than 2 samples away from the ERP window [%.1f %.1f] ms\n', timex(1), timex(end));
                 varargout{1} = msgboxText;
@@ -300,7 +299,7 @@ try
                                         end
                                         
                                         % gets values
-                                        [A, Lx, il] =  areaerp(dataux, fs, latsamp, aoption, coi);
+                                        [A, ~, il] =  areaerp(dataux, fs, latsamp, aoption, coi);
                                         worklate{b,ch} = sample2ms((il-1),fs) + mintime;   % integratin limits
                                         VALUES(b,ch)   = A;
                                 elseif strcmpi(moption,'nintegz')
@@ -312,7 +311,7 @@ try
                                         %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
                                         
                                         % gets values
-                                        [A, Lx, il]  =  areaerp(dataux, fs,latsamp, 'auto', coi);
+                                        [A, ~, il]  =  areaerp(dataux, fs,latsamp, 'auto', coi);
                                         worklate{b,ch} = sample2ms((il-1),fs) + mintime;   % integratin limits
                                         VALUES(b,ch)  = A;
                                 elseif strcmpi(moption,'instabl')
@@ -360,8 +359,8 @@ try
                                         [valx, latpeak] = localpeak(dataux, timex2, 'Neighborhood',sampeak, 'Peakpolarity', polpeak, 'Measure','amplitude',...
                                                 'Peakreplace', localoptstr);
                                         
-                                        if isempty(valx)
-                                                error('Peak-related measurement failed...')
+                                        if isnan(valx)
+                                            warning(['Peak-related measurement failed in bin #' int2str(b)])
                                         end
                                         
                                         worklate{b,ch} = latpeak; %((il-1)/fs + ERP.xmin)*1000;
@@ -389,8 +388,8 @@ try
                                         % gets values
                                         valx = localpeak(dataux, timex2, 'Neighborhood', sampeak, 'Peakpolarity', polpeak, 'Measure','peaklat',...
                                                 'Peakreplace', localoptstr);
-                                        if isempty(valx)
-                                                error('Peak-related measurement failed...')
+                                        if isnan(valx)
+                                            warning(['Peak-related measurement failed in bin #' int2str(b)])
                                         end
                                         
                                         VALUES(b,ch) = valx;
@@ -484,8 +483,8 @@ try
                                         [aaaxxx, latpeak, latfracpeak] = localpeak(dataux, timex2, 'Neighborhood',sampeak, 'Peakpolarity', polpeak, 'Measure','fraclat',...
                                                 'Peakreplace', localoptstr, 'Fraction', frac, 'Fracpeakreplace', fracmearepstr);
                                         
-                                        if isempty(aaaxxx)
-                                                error('Peak-related measurement failed...')
+                                        if isnan(aaaxxx)
+                                            warning(['Peak-related measurement failed in bin #' int2str(b)]);
                                         end
                                         
                                         worklate{b,ch} = latpeak; % peak
@@ -551,18 +550,17 @@ try
                                         %dataux = ERP.bindata(chanArray(ch), :, binArray(b)) - blv;
                                         
                                         % gets values
-                                        [A, Lx, il]    =  areaerp(dataux, fs,latsamp, 'auto', coi);
+                                        [A, ~, il]    =  areaerp(dataux, fs,latsamp, 'auto', coi);
                                         worklate{b,ch} = sample2ms((il-1),fs) + mintime; % integratin limits
                                         VALUES(b,ch)   = A;
                                 end
                         end
                 end
         end
-catch
-        serr = lasterror;
-        varargout{1} = serr.message;
+catch ME1
+        varargout{1} = ME1.message;
         varargout{2} = [];
-        return
+        return;
 end
 
 %
