@@ -52,12 +52,12 @@ end
 %
 % CHECK VERSION NUMBER & FOLDER NAME
 %
-foldernum = regexp(p,'erplab_(\d+\.+\d+\.+\d+\.+\d+)','tokens','ignorecase');
+foldernum = p(end-7:end-1);   % Grab the end of the path, like '5.1.1.0'
 if isempty(foldernum)
         fprintf('\nERPLAB WARNING: ERPLAB''s folder name was found to be modified from the original.\n\n')
 else
-        if ~strcmp(foldernum{:}, erplabver)
-                fprintf('\nERPLAB WARNING: ERPLAB''s folder name does not match with the current version number.\n\n')
+        if ~strcmp(foldernum, erplabver)
+                fprintf('\nERPLAB''s folder does not show the current version number.\n\n')
         end
 end
 
@@ -86,7 +86,7 @@ dirBox    = fullfile(p,'erplab_Box');
 filst     = dir(dirBox);
 filenames = {filst.name};
 
-if length(filenames)>2
+if length(filenames)>3    % '.'    '..'    'erplab_box_readme.md'
         recycle on;
         delete(fullfile(dirBox,'*'))
         fprintf('\nERPLAB WARNING: Temporary files (from your last session) within erplab_Box folder were sent to recycle bin.\n\n')
