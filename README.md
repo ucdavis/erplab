@@ -11,70 +11,107 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 <br/>
 <br/>
 <br/>
-----
-### Requirements
-- Matlab versions 2010a, 2012a, 2014b, 2015
-  - **Matlab's Signal Processing Toolbox is required.**
 
-- [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/) version 9, 12, 13 
-  - **Do not use version 11 of EEGLAB**
-
-- Operating System
-  - ERPLAB has mainly been tested with Mac OS X and Windows.  
-  - It should work with Linux, but this has not been extensively tested.
-  - EEGLAB and ERPLAB work best if you have plenty of RAM. We recommend at least 8 GB. Note, however, that your computer will not be able to take advantage of more than 4 GB of RAM unless you have a 64-bit version of Matlab installed (along with a 64-bit operating system).
-
-<br/>
-<br/>
-<br/>
-------
-### ERPLAB 5.0.0.0 Release Notes
+### ERPLAB 5.1.1.0 Install
 
 <p align="center" >
   <a href="https://github.com/lucklab/erplab/releases/download/5.0.0.0/erplab-5.0.0.0.zip">
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
-
-### Matlab 2014b/2015 Compatible
-ERPLAB has been updated to handle Matlab's new graphics system that was introduced in Matlab R2014b and 2015. This fixes issues when plotting ERPs via `plot_erps`. 
+# ERPLAB v5.1.1.0 Download
 
 
-</br>
+<p align="center" >
+  <a href="https://github.com/lucklab/erplab/releases/download/5.1/erplab-5.1.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+<br/>
+  
+  <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
+ </a>
+</p>
+
+To install ERPLAB v5.1.1.0, download zip file (linked above), unzip and place the folder in the 'plugins' folder of your EEGLAB installation (so something like /Users/steve/Documents/MATLAB/eeglab13_5_4b/plugins/erplab_5.1.1.0/eegplugin_erplab.m exists). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki).
+
+To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
+
+We encourage most users to use this latest major version.
+
 ----
-### New BDF Visualizer tool
-We're introducting a new tool to help you create and test your bin descriptor files (BDF-files). The `BDF Visualizer` tool allows you to write bin descriptor definitions and quickly see the results on an event-list. You can load in your own event lists through either EEG-sets or through your saved event-list files. 
-![screen shot 2015-07-01 at 2 56 19 pm](https://cloud.githubusercontent.com/assets/5808953/8465785/58d2b404-2001-11e5-81e0-f048c0253962.png)
+# ERPLAB compatibility
+
+We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
+
+We do recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this. The Matlab Signal Processing Toolbox is required.
+
+The old v11 of EEGLAB is *not* recommended.
+
+Find installation help [here](http://erpinfo.org/erplab)
+
+## ERPLAB compatibility table
+
+Here is a list of some confirmed-working environments for ERPLAB.
+
+**ERPLAB v5.1.1.0**
+
+**OS** | **Matlab** | **EEGLAB** | Working?
+--- | --- | --- | ---
+Mac OS X 10.11.4 'El Capitan'	| Matlab R2015a |	EEGLAB v13.5.4b |	✓
+Mac OS X 10.11.4 'El Capitan' |	Matlab R2016a |	EEGLAB v13.5.4b	 | ✓ *
+Windows 7	| Matlab R2014a | EEGLAB v13.5.4b |	✓
+Windows 8.1 |	Matlab R2014a |	EEGLAB v13.5.4b	| ✓
+Ubuntu 14.04 LTS |	Matlab R2014a |	EEGLAB v13.5.4b |	✓
+
+``*`` - (but with some non-critical warnings)
+<br/>
+<br/>
+<br/>
+------
 
 
-</br>
-----
-### New Power Spectrum Averaging
-When averaging EEG data, you can now also calculate the power spectrum (total and evoked) using the same epochs selected for averaging. An optional Taper function was also added to minimize edge effects during FFT computation and/or selecting an epoch's subwindow to compute the power spectrum.
-![averager-power_spectra_highlight](https://cloud.githubusercontent.com/assets/5808953/8528776/2b576160-23ca-11e5-89e2-e9dac4e801d1.png)
+# ERPLAB v5.1.1.0 Release Notes
+
+With ERPLAB v5.1.1.0, we include a variety of user-interface improvements, bug-fixes, and improvements to existing functions. Among these, we have:
+
+### - Improved epoch subset selection tool
+
+When selecting epochs for further analysis with 'Compute Average ERPs', the epoch 'Assitant' window can help choose specific epochs. This tool make it easier to do things like separately averaging the first and last halves of a session, or selecting random subsets of trials for split half comparisons.
+
+This Assistant has been updated and bug-fixed, with new options to save a list of the non-selected epochs, write this to a file, revised GUI options, and clear instruction these functions do.
 
 
-</br>
-----
-### New Plot Scalp Map Options
-Plot Scalp Maps has more options for displaying the maps, legends, and electrodes labels.
-![screen shot 2015-07-06 at 10 38 03 am](https://cloud.githubusercontent.com/assets/5808953/8528886/1e6bcce2-23cb-11e5-9beb-689b240a2f6e.png)
 
-</br>
-----
-### Update PDF Exporting
-Exporting ERPLAB's PDF images is now compatible with newer Matlab versions (2014b and above)
+### - ERPLAB 'Working Memory' options
+
+ERPLAB saves some data about user-interface settings in a 'Working Memory' structure. We include new functionality to save the state of this memory, and to load previously-saved erpmem. We have new GUI elements in ERPLAB -> Settings -> to clear, save or load erpmem state.
 
 
-</br>
-----
-### Measurement Labelling
-In the ERP Measurement Tool, a new measurement label field is now available for exporting measured values for both long and wide format.
-![measurement_tool_-_output_format_highlighted](https://cloud.githubusercontent.com/assets/5808953/8529420/c4fa4b30-23ce-11e5-869e-a3b4419c0990.png)
+### - Fixed the ERP plot 'AutoYLim' problem
+
+When plotting ERPs, there was an occasional issue where setting the YScale via the GUI options could give a plot with 'AutoYLim' being off, but the equivalent script command would leave 'AutoYLim' on.
+
+A workaround for the this was to include 'AutoYLim', 'off' in the scripting command. We have now changed the default behaviour of pop_ploterps() to act more as expected, and so 'AutoYLim' is taken to be 'off' by default when Yscale is specified via script.
+
+As such, 'AutoYLim', 'off' no longer needs to be set in scripts in cases like this, but scripts including these arguments will still work as expected.
 
 
-</br>
+### - ERPLAB system diagnostic
+
+In order to check some requirements for ERPLAB, we have a simple new function to report the system status:
+```matlab
+[allok, systemchk_table] = systemchk_erplab
+```
+
+This can useful for bug reporting and verification that the current computer meets the requirements.
+
+
+### - High-resolution displays
+
+As well as interface scaling on Mac, the appearence is now also improved in non-Mac high-resolution displays.
+
+
+
+
 ----
 ### Bug Fixes
 
-[12 bug fixes as detailed here](https://github.com/lucklab/erplab/issues?q=is%3Aissue+is%3Aclosed+milestone%3A%22ERPLAB+5.0.0.0%22)
+[Bug fixes as detailed here](https://github.com/lucklab/erplab/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed)
