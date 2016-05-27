@@ -1,43 +1,29 @@
-<img src="https://github.com/lucklab/erplab/blob/master/images/logoerplab6.jpg" 
- height="252px" width="180px" 
- alt="ERPLAB Logo"
- align="left" />
 
-## ERPLAB
+# ERPLAB
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users. 
 <br/>
 <br/>
-<br/>
-<br/>
-<br/>
-<br/>
 
-### ERPLAB 5.1.1.0 Install
 
-<p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/5.0.0.0/erplab-5.0.0.0.zip">
-  <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
- </a>
-</p>
-# ERPLAB v5.1.1.0 Download
+## ERPLAB v5.1.1.0 - Download Latest Release Version
 
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/5.1/erplab-5.1.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/5.1.1.0/erplab-5.1.1.0.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
   
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v5.1.1.0, download zip file (linked above), unzip and place the folder in the 'plugins' folder of your EEGLAB installation (so something like /Users/steve/Documents/MATLAB/eeglab13_5_4b/plugins/erplab_5.1.1.0/eegplugin_erplab.m exists). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki).
+To install ERPLAB v5.1.1.0, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (so something like /Users/steve/Documents/MATLAB/eeglab13_5_4b/plugins/erplab_5.1.1.0/eegplugin_erplab.m exists). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
 
 We encourage most users to use this latest major version.
 
 ----
-# ERPLAB compatibility
+## ERPLAB compatibility
 
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
@@ -47,7 +33,7 @@ The old v11 of EEGLAB is *not* recommended.
 
 Find installation help [here](http://erpinfo.org/erplab)
 
-## ERPLAB compatibility table
+### ERPLAB compatibility table
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
@@ -107,9 +93,6 @@ This can useful for bug reporting and verification that the current computer mee
 ### - High-resolution displays
 
 As well as interface scaling on Mac, the appearence is now also improved in non-Mac high-resolution displays.
-
-
-
 
 ----
 ### Bug Fixes
