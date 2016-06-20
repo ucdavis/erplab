@@ -1,9 +1,21 @@
-Copyright Regents of the University of California, 2008-2015 #
+Copyright Regents of the University of California, 2008-2016 #
 #
 #
 Designed by Steve Luck and Javier Lopez-Calderon #
 #
-Software written primarily by Javier Lopez-Calderon #
+Main developers for version 5:
+Andrew X Stewart
+axstewart@ucdavis.edu
+Center for Mind and Brain, University of California, Davis #
+
+Jason Arita
+
+#
+Find latest on Github:
+https://github.com/lucklab/erplab
+#
+#
+Software originally written primarily by Javier Lopez-Calderon #
 Center for Mind and Brain, University of California, Davis #
 javlopez@ucdavis.edu, sjluck@ucdavis.edu#
 #
@@ -30,7 +42,7 @@ Srinivas Rachakonda and Kent Kiehl #
 #
 #
 #
-Because this is not commercial software, bugs are inevitable #
+This is not commercial software,  and bugs can happen #
 In some cases,  errors will occur leading to a message that #
 instructs you to report the error to the EEGLAB developers. #
 If this happens, please report the error to erplab@erpinfo.org #
@@ -71,4 +83,4 @@ License long with this program.  If not, see #
 Davis, California #
 a great place to live, work, and study #
 #
-#2007-2015
+#2007-2016
