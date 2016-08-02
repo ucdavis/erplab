@@ -43,11 +43,9 @@ if length(p)>1
 end
 p = p{1};
 p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-if ~exist('pop_binlister.m','file')
-        addpath(genpath(p))
-        %         addpath(p);
-        %         addpath([p 'erplab_Box'], [p 'functions'], [p 'GUIs'], [p 'images'], [p 'pop_functions'], [p 'deprecated_functions']); % Thanks to Grega Repovs
-end
+% add all ERPLAB subfolders
+addpath(genpath(p))
+
 
 %
 % CHECK VERSION NUMBER & FOLDER NAME
