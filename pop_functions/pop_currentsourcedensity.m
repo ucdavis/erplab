@@ -90,18 +90,18 @@ M = ExtractMontage('loc_csd.csd',chan_label);
 MapMontage(M)
 
 %%%
-% Run CSD GUI to get m-constant value
-[csd_m] = csd_generate;
+% Run CSD GUI to get 3 CSD parameters
+[csd_param] = csd_generate;
 
 % generate transform matrices
-[csd_G, csd_H] = GetGH(M, csd_m);
+[csd_G, csd_H] = GetGH(M, csd_param(1));
 % optionally, set a more flexible m-constant of 2 or 3 with 2nd arg, but
 % default of 4 is recommended
 
 
 csd_data = zeros(size(EEG.data));
 for i = 1:numel(EEG.epoch)
-    csd_data(:,:,i) = current_source_density(EEG.data(:,:,i),csd_G, csd_H);
+    csd_data(:,:,i) = current_source_density(EEG.data(:,:,i),csd_G, csd_H,csd_param(2),csd_param(3));
 end
 
 % save new EEG set

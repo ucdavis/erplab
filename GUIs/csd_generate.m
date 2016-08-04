@@ -22,7 +22,7 @@ function varargout = csd_generate(varargin)
 
 % Edit the above text to modify the response to help csd_generate
 
-% Last Modified by GUIDE v2.5 26-Jul-2016 15:02:50
+% Last Modified by GUIDE v2.5 03-Aug-2016 19:48:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,8 +64,18 @@ handles = painterplab(handles);
 %
 handles = setfonterplab(handles);
 
+% initialise with defaults
+handles.mcont   = 4;
+handles.smoothl = 0.00001;
+handles.headrad = 10;
+
+
 % Update handles structure
 guidata(hObject, handles);
+
+
+
+
 
 % help
 %helpbutton
@@ -97,7 +107,19 @@ function generate_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles.output = handles.mcont;
+% Sanity-check output
+if isa(handles.mcont,'double') ~= 1 || isnan(handles.mcont)
+    ertext = 'mcont was set to 4';
+    disp(ertext)
+    handles.mcont = 4;
+end
+    
+
+
+handles.output = [handles.mcont handles.smoothl handles.headrad];
+
+
+
   % Update handles structure
     guidata(hObject, handles);
     uiresume(handles.figure1);
@@ -109,21 +131,7 @@ function reset_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 web('http://psychophysiology.cpmc.columbia.edu/software/CSDtoolbox/index.html','-browser');
 
-% --- Executes when selected object changed in unitgroup.
-function unitgroup_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in unitgroup 
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-if (hObject == handles.english)
-    set(handles.text4, 'String', 'lb/cu.in');
-    set(handles.text5, 'String', 'cu.in');
-    set(handles.text6, 'String', 'lb');
-else
-    set(handles.text4, 'String', 'kg/cu.m');
-    set(handles.text5, 'String', 'cu.m');
-    set(handles.text6, 'String', 'kg');
-end
 
 % --------------------------------------------------------------------
 function initialize_gui(fig_handle, handles, isreset)
@@ -159,6 +167,78 @@ guidata(hObject,handles)
 % --- Executes during object creation, after setting all properties.
 function mcont_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to mcont (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function headplot_fig_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to headplot_fig (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate headplot_fig
+axes(hObject)
+imshow('CSD_elec_plot.png')
+
+
+% --- Executes during object creation, after setting all properties.
+function uipanel1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to uipanel1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+
+function lambdabox_Callback(hObject, eventdata, handles)
+% hObject    handle to lambdabox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of lambdabox as text
+%        str2double(get(hObject,'String')) returns contents of lambdabox as a double
+smoothl = str2double(get(hObject,'String'));
+% Save the new  value
+handles.smoothl = smoothl;
+guidata(hObject,handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function lambdabox_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to lambdabox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function headradbox_Callback(hObject, eventdata, handles)
+% hObject    handle to headradbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of headradbox as text
+%        str2double(get(hObject,'String')) returns contents of headradbox as a double
+headrad = str2double(get(hObject,'String'));
+% Save the new  value
+handles.headrad = headrad;
+guidata(hObject,handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function headradbox_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to headradbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
