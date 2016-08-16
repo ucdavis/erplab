@@ -41,8 +41,19 @@
 
 function [EEG, erpcom] = pop_currentsourcedensity(EEG, varargin)
 
+% check input dataset
+elec_num = length(EEG.chanlocs);
+if elec_num < 1
+    msgboxText =  'Can''t generate CSD on empty dataset';
+    title      = 'ERPLAB: CSD dataset problems?';
+    errorfound(msgboxText, title);
+    return
+        
+end
+
+
 % check locations exist for each channel
-has_loc = zeros(EEG.nbchan,1);
+has_loc = zeros(elec_num,1);
 try    
     for i = 1:EEG.nbchan
         has_loc(i) = EEG.chanlocs(i).X;

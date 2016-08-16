@@ -22,6 +22,7 @@ if nargin < 1
   return
 end
 figure;
+set(gcf,'Visible','off')
 nElec = size(Montage.xy,1);
 tsize = 20;
 if nElec > 64; tsize = 12; end;
@@ -53,5 +54,6 @@ for e = 1:nElec
 end
 set(gcf,'PaperPositionMode','auto')
 set(gcf,'PaperType','a5')
-print('CSD_elec_plot','-dpng','-r0');
+fign = get(groot,'CurrentFigure');
+print(fign.Number,'CSD_elec_plot','-dpng','-r0');
 close(gcf)
