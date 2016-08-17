@@ -22,7 +22,7 @@ function varargout = csd_generate(varargin)
 
 % Edit the above text to modify the response to help csd_generate
 
-% Last Modified by GUIDE v2.5 03-Aug-2016 19:48:47
+% Last Modified by GUIDE v2.5 17-Aug-2016 13:37:29
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,18 +57,19 @@ handles.output = hObject;
 %
 % Color GUI
 %
-handles = painterplab(handles);
+%handles = painterplab(handles);
 
 %
 % Set font size
 %
-handles = setfonterplab(handles);
+%handles = setfonterplab(handles);
 
 % initialise with defaults
 handles.mcont   = 4;
 handles.smoothl = 0.00001;
 handles.headrad = 10;
 
+handles.csdsave = 1;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -116,7 +117,7 @@ end
     
 
 
-handles.output = [handles.mcont handles.smoothl handles.headrad];
+handles.output = [handles.mcont handles.smoothl handles.headrad handles.csdsave];
 
 
 
@@ -138,9 +139,7 @@ function initialize_gui(fig_handle, handles, isreset)
 % If the metricdata field is present and the reset flag is false, it means
 % we are we are just re-initializing a GUI by calling it from the cmd line
 % while it is up. So, bail out as we dont want to reset the data.
-if isfield(handles, 'metricdata') && ~isreset
-    return;
-end
+
 
 
 
@@ -243,6 +242,36 @@ function headradbox_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+
+
+% --- Executes on selection change in savepop.
+function savepop_Callback(hObject, eventdata, handles)
+% hObject    handle to savepop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns savepop contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from savepop
+csdsave = contents{get(hObject,'Value')};
+% Save the new  value
+handles.csdsave = csdsave;
+guidata(hObject,handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function savepop_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to savepop (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');

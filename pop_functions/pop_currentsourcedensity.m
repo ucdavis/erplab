@@ -121,5 +121,8 @@ EEG2.data = csd_data;
 
 EEG2 = pop_saveset( EEG2, 'filename',[EEG.setname '_with_csd.set']);
 
+
+erpcom = 'pop_currentsourcedensity(EEG)';
+
 eeglab redraw
 
