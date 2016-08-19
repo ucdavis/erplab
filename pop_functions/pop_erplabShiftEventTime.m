@@ -145,10 +145,12 @@ inputParameters.parse(EEG, varargin{:});
 
 
 
-
-
-
-
+% Execute: Shift specified event codes
+EEG = erplabShiftEventTime(EEG...
+    , inputParameters.Results.Eventcodes...
+    , inputParameters.Results.Timeshift ...
+    , inputParameters.Results.Rounding);
+EEG = eeg_checkset( EEG ); % ensure EEG structure is well-formed
 
 
 
@@ -166,7 +168,7 @@ inputParameters.parse(EEG, varargin{:});
 %
 skipfields  = {'EEG', 'DisplayFeedback', 'History'};
 fn          = fieldnames(inputParameters.Results);
-commandHistory         = sprintf( '%s  = pop_erplabShiftEventTime( %s ', inputname(1), inputname(1));
+commandHistory         = sprintf( '%s  = erplabShiftEventTime( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
     fn2com = fn{q}; % get fieldname
     if ~ismember(fn2com, skipfields)
@@ -219,6 +221,7 @@ switch inputParameters.Results.History
     otherwise %off or none
         commandHistory = '';
 end
+
 
 
 %

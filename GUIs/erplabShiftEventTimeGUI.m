@@ -52,15 +52,43 @@ function erplabShiftEventTimeGUI_OpeningFcn(hObject, eventdata, handles, varargi
 % varargin   command line arguments to erplabShiftEventTimeGUI (see VARARGIN)
 
 % Choose default command line output for erplabShiftEventTimeGUI
-handles.output = hObject;
+handles.output = []; % hObject;
+
+
+
+%
+% Set Default Values
+%
+handles.roundingInput = 'nearest';
+handles.eventcodes    = '[]';
+handles.timeshift     = 0;
+
+%
+% Set Color GUI
+%
+handles = painterplab(handles);
+
+%
+% Set font size
+%
+handles = setfonterplab(handles);
 
 % Update handles structure
 guidata(hObject, handles);
 
+
+
+ 
+
+
+% Run intialization procedures
 initialize_gui(hObject, handles, false);
 
+% Update handles structure
+guidata(hObject, handles);
+
 % UIWAIT makes erplabShiftEventTimeGUI wait for user response (see UIRESUME)
-uiwait(handles.gui_figure);
+uiwait(handles.gui_chassis);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -74,71 +102,14 @@ function varargout = erplabShiftEventTimeGUI_OutputFcn(hObject, eventdata, handl
 varargout{1} = handles.output;
 
 % The figure can be deleted now
-delete(handles.gui_figure);
+delete(handles.gui_chassis);
 pause(0.5)
 
 
-% --- Executes during object creation, after setting all properties.
-% function density_CreateFcn(hObject, eventdata, handles)
-% % hObject    handle to editboxEventCodes (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    empty - handles not created until after all CreateFcns called
-% 
-% % Hint: popupmenu controls usually have a white background on Windows.
-% %       See ISPC and COMPUTER.
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
 
 
 
-% function density_Callback(hObject, eventdata, handles)
-% % hObject    handle to editboxEventCodes (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% % Hints: get(hObject,'String') returns contents of editboxEventCodes as text
-% %        str2double(get(hObject,'String')) returns contents of editboxEventCodes as a double
-% editboxEventCodes = str2double(get(hObject, 'String'));
-% if isnan(editboxEventCodes)
-%     set(hObject, 'String', 0);
-%     errordlg('Input must be a number','Error');
-% end
-% 
-% % Save the new editboxEventCodes value
-% handles.metricdata.editboxEventCodes = editboxEventCodes;
-% guidata(hObject,handles)
-% 
-% % --- Executes during object creation, after setting all properties.
-% function volume_CreateFcn(hObject, eventdata, handles)
-% % hObject    handle to editboxTimeshift (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    empty - handles not created until after all CreateFcns called
-% 
-% % Hint: popupmenu controls usually have a white background on Windows.
-% %       See ISPC and COMPUTER.
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%     set(hObject,'BackgroundColor','white');
-% end
-% 
-% 
-% 
-% function volume_Callback(hObject, eventdata, handles)
-% % hObject    handle to editboxTimeshift (see GCBO)
-% % eventdata  reserved - to be defined in a future version of MATLAB
-% % handles    structure with handles and user data (see GUIDATA)
-% 
-% % Hints: get(hObject,'String') returns contents of editboxTimeshift as text
-% %        str2double(get(hObject,'String')) returns contents of editboxTimeshift as a double
-% editboxTimeshift = str2double(get(hObject, 'String'));
-% if isnan(editboxTimeshift)
-%     set(hObject, 'String', 0);
-%     errordlg('Input must be a number','Error');
-% end
-% 
-% % Save the new editboxTimeshift value
-% handles.metricdata.editboxTimeshift = editboxTimeshift;
-% guidata(hObject,handles)
+
 
 % --- Executes on button press in pushbutton_shiftEvents.
 function pushbutton_shiftEvents_Callback(hObject, eventdata, handles)
@@ -146,11 +117,9 @@ function pushbutton_shiftEvents_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% mass = handles.metricdata.density * handles.metricdata.volume;
-% set(handles.mass, 'String', mass);
 
 % Command-line feedback to user
-display('Shifting events');
+display('Shifting events...');
 
 % editboxEventCodes_Callback(hObject, eventdata, handles)
 
@@ -163,7 +132,7 @@ handles.output = {        ...
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.gui_figure);
+uiresume(handles.gui_chassis);
 
 % --- Executes on button press in pushbutton_cancel.
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
@@ -179,7 +148,7 @@ handles.output = [];
 
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.gui_figure);
+uiresume(handles.gui_chassis);
 
 % --- Executes when selected object changed in uipanelRounding.
 function uipanelRounding_SelectionChangedFcn(hObject, eventdata, handles)
@@ -205,16 +174,8 @@ guidata(hObject,handles)
 
 % --------------------------------------------------------------------
 function initialize_gui(fig_handle, handles, isreset)
-% If the metricdata field is present and the pushbutton_cancel flag is false, it means
-% we are we are just re-initializing a GUI by calling it from the cmd line
-% while it is up. So, bail out as we dont want to pushbutton_cancel the data.
 
 
-
-handles.roundingInput = 'nearest';
-handles.eventcodes    = '[]';
-handles.timeshift     = 0;
- 
 % erplabShiftEventTime(EEG, eventcodes, timeshift, rounding, (opt) displayfeedback)
 
 set(handles.editboxEventCodes, 'String',         handles.eventcodes);
@@ -226,21 +187,12 @@ set(handles.uipanelRounding,   'SelectedObject', handles.radioBtnNearest);
 % Name & version
 %
 version = geterplabversion;
-set(handles.gui_figure,'Name', ['ERPLAB ' version '   -   EXTRACT BINEPOCHS GUI'])
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   SHIFT EVENTS GUI'])
 
-%
-% Color GUI
-%
-handles = painterplab(handles);
-
-%
-% Set font size
-%
-handles = setfonterplab(handles);
 
 
 % Update handles structure
-guidata(handles.gui_figure, handles);
+guidata(handles.gui_chassis, handles);
 
 
 
