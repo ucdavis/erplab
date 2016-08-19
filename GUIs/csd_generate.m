@@ -22,16 +22,16 @@ function varargout = csd_generate(varargin)
 
 % Edit the above text to modify the response to help csd_generate
 
-% Last Modified by GUIDE v2.5 17-Aug-2016 13:37:29
+% Last Modified by GUIDE v2.5 18-Aug-2016 16:03:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @csd_generate_OpeningFcn, ...
-                   'gui_OutputFcn',  @csd_generate_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @csd_generate_OpeningFcn, ...
+    'gui_OutputFcn',  @csd_generate_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -70,6 +70,10 @@ handles.smoothl = 0.00001;
 handles.headrad = 10;
 
 handles.csdsave = 1;
+
+handles.output = [handles.mcont handles.smoothl handles.headrad handles.csdsave];
+
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -114,16 +118,16 @@ if isa(handles.mcont,'double') ~= 1 || isnan(handles.mcont)
     disp(ertext)
     handles.mcont = 4;
 end
-    
+
 
 
 handles.output = [handles.mcont handles.smoothl handles.headrad handles.csdsave];
 
 
 
-  % Update handles structure
-    guidata(hObject, handles);
-    uiresume(handles.figure1);
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.figure1);
 
 % --- Executes on button press in reset.
 function reset_Callback(hObject, eventdata, handles)
@@ -174,18 +178,6 @@ function mcont_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes during object creation, after setting all properties.
-function headplot_fig_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to headplot_fig (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: place code in OpeningFcn to populate headplot_fig
-axes(hObject)
-imshow('CSD_elec_plot.png')
-
 
 % --- Executes during object creation, after setting all properties.
 function uipanel1_CreateFcn(hObject, eventdata, handles)
@@ -251,28 +243,49 @@ end
 
 
 
-% --- Executes on selection change in savepop.
-function savepop_Callback(hObject, eventdata, handles)
-% hObject    handle to savepop (see GCBO)
+
+
+% --- Executes on button press in savenew.
+function savenew_Callback(hObject, eventdata, handles)
+% hObject    handle to savenew (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: contents = cellstr(get(hObject,'String')) returns savepop contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from savepop
-csdsave = contents{get(hObject,'Value')};
+% Hint: get(hObject,'Value') returns toggle state of savenew
+csdsave = get(hObject,'Value');
 % Save the new  value
-handles.csdsave = csdsave;
+handles.csdsave = 1;
 guidata(hObject,handles)
 
 
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.output = [handles.mcont handles.smoothl handles.headrad handles.csdsave];
+
+
+if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = '';
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.figure1);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.figure1);
+end
+
+
 % --- Executes during object creation, after setting all properties.
-function savepop_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to savepop (see GCBO)
+function bigheadplot_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to bigheadplot (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+% Hint: place code in OpeningFcn to populate bigheadplot
+
+axes(hObject)
+imshow('CSD_elec_plot.png')
+
