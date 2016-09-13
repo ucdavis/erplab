@@ -73,4 +73,10 @@ end
 ERP.datatype = 'SEM';
 ERP.bindata = ERP.binerror;
 
-pop_savemyerp(ERP,'erpname',[ERP.erpname '_SEM_data'],'gui','erplab')
+
+% Write the history with a SEM note
+ERP = erphistory(ERP,[],'% converted dataset to Standard Error of Mean datatype',1);
+ERP = erphistory(ERP,[],'ERP = make_SEM_set(ERP)',1);
+ERP = orderfields(ERP);
+
+pop_savemyerp(ERP,'erpname',['SEM_data_' ERP.erpname],'gui','erplab')

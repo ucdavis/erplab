@@ -5,3 +5,7 @@ erplab_Box/*
 !erplab_Box_readme.md
 
 *.m~
+
+GUIs/.DS_Store
+
+.DS_Store

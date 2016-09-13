@@ -41,6 +41,14 @@
 
 function [EEG, erpcom] = pop_currentsourcedensity(EEG, varargin)
 erpcom = '';
+savepref = 1;
+
+if isfield(EEG,'bindata')
+    isERP = 1;
+    EEG.nbchan = EEG.nchan;
+else
+    isERP = 0;
+end
 
 % check input dataset
 elec_num = length(EEG.chanlocs);
@@ -56,9 +64,6 @@ end
 % check locations exist for each channel
 if isfield(EEG,'nbchan')
     has_loc = zeros(EEG.nbchan,1);
-else
-    has_loc = zeros(EEG.nchan,1);
-    EEG.nbchan = EEG.nchan;  % 
 end
 
 try    
@@ -122,49 +127,69 @@ MapMontage(M)
 % Run CSD GUI to get 3 CSD parameters
 [csd_param] = csd_generate;
 
+% check if user cancelled GUI
+
+
 % generate transform matrices
 [csd_G, csd_H] = GetGH(M, csd_param(1));
 % optionally, set a more flexible m-constant of 2 or 3 with 2nd arg, but
 % default of 4 is recommended
 
 
-if isfield(EEG,'bindata')
+% clean up CSD fields from EEG structure
+EEG = rmfield(EEG,'chaninfo');
+
+if isERP
     
     % For ERP bindata -> CSD
     csd_data = zeros(size(EEG.bindata));
-    for i = 1:numel(EEG.nbin)
+    for i = 1:EEG.nbin
         csd_data(:,:,i) = current_source_density(EEG.bindata(:,:,i),csd_G, csd_H,csd_param(2),csd_param(3));
     end
+    
+    EEG = rmfield(EEG,'nbchan');
+    EEG = orderfields(EEG);
     
 else
     
     % For EEG data -> CSD
     csd_data = zeros(size(EEG.data));
-    for i = 1:numel(EEG.epoch)
+    
+    if numel(EEG.epoch) == 0
+        len_epoch_dim = 1;
+    else
+        len_epoch_dim = numel(EEG.epoch);
+    end
+    
+    for i = 1:len_epoch_dim
         csd_data(:,:,i) = current_source_density(EEG.data(:,:,i),csd_G, csd_H,csd_param(2),csd_param(3));
     end
     
 end
 
-% save new csd dataset
 
-
+% Write the history with a SEM note
+EEG = erphistory(EEG,[],'% converted dataset to Current Source Density datatype',1);
 EEG.datatype = 'csd';
 
-if isfield(EEG,'bindata')
-    EEG.bindata = csd_data;
-    pop_savemyerp(EEG)
-    
-    erpcom = 'pop_currentsourcedensity(ERP)';
-    
-else
-    EEG.data = csd_data;
-    %pop_saveset(EEG2)  - save in normal menu?
-    
-    erpcom = 'pop_currentsourcedensity(EEG)';
+
+% save new csd dataset
+if savepref == 1
+    if isERP
+        EEG.bindata = csd_data;
+        pop_savemyerp(EEG,'erpname',[EEG.erpname '_CSD'],'filename',[EEG.erpname '_CSD.set'],'gui','erplab','overwriteatmenu','no')
+        
+        erpcom = 'pop_currentsourcedensity(ERP)';
+        
+    else
+        EEG.data = csd_data;
+        % If called from ERPLAB GUI, will save EEG from there
+        
+        erpcom = 'pop_currentsourcedensity(EEG)';
+    end
 end
 
 
 
-eeglab redraw
+%eeglab redraw
 

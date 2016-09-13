@@ -56,6 +56,10 @@ try
         nchan = ERP.nchan;
         if isfield(ERP, 'datatype')
                 datatype = ERP.datatype;
+                
+                if strcmp(datatype,'CSD')
+                    datatype = 'ERP';     % if CSD data, treat as ERP data here
+                end
         else
                 datatype = 'ERP';
         end
