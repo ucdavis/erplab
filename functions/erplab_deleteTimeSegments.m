@@ -1,11 +1,11 @@
-% erplabDeleteLongTimeSegments.m (alpha version)
+% erplab_deleteTimeSegments.m
 %
 % Deletes data segments between 2 event codes (string or number) if the size of the segment
 % is greater than a user-specified threshold (in msec)
 %
 % USAGE
 %
-% EEG = erplabDeleteLongTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
+% EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
 %
 %
 % Input:
@@ -16,7 +16,7 @@
 %  endEventCodeBufferMS     - time buffer around last event code
 %
 % Optional
-%  ignoreEventCodes         - 
+%  ignoreEventCodes         - array of event code numbers to ignore
 %  displayEEGPLOTGUI        - (true|false)
 %
 % Output:
@@ -27,7 +27,7 @@
 % Example: Delete segment of data between any two event codes when it is 
 %          longer than 3000 ms (3 secs).
 %
-%      EEG = erplabDeleteLongTimeSegments(EEG, 3000, 100, 200, []);   
+%      EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);   
 %
 %
 %
@@ -60,17 +60,17 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG, rejectionWindows] = erplabDeleteLongTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, varargin)
+function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, varargin)
 
 
 % Error check the input variables
 if nargin<1
-    help erplabDeleteLongTimeSegments
+    help erplab_deleteTimeSegments
     return
 elseif nargin<4
-    error('ERPLAB:erplabDeleteLongTimeSegments: needs 4 inputs.')
+    error('ERPLAB:erplab_deleteTimeSegments: needs 4 inputs.')
 elseif length(varargin) > 2                                      % only want 3 optional inputs at most
-    error('ERPLAB:erplabDeleteLongTimeSegments:TooManyInputs', ...
+    error('ERPLAB:erplab_deleteTimeSegments:TooManyInputs', ...
         'requires at most 2 optional inputs');
 else
     disp('Working...')
@@ -103,31 +103,15 @@ endPeriodBufferSample   = round(inputEndPeriodBufferMS   *(EEG.srate/1000));  % 
 %% Set up WORKING event codes + IGNORED event codes
 if ischar(EEG.event(1).type)
     analyzedEventCodes    = setdiff({EEG.event.type}, ignoreEventCodes);                        % Filter out the ignored event code
-    analyzedEventIndices  = ismember({EEG.event.type}, analyzedEventCodes);                       %
-    analyzedSamples       = round([EEG.event(analyzedEventIndices).latency]);                     % Convert event codes to samples
+    analyzedEventIndices  = ismember({EEG.event.type}, analyzedEventCodes);                     %
+    analyzedSamples       = round([EEG.event(analyzedEventIndices).latency]);                   % Convert event codes to samples
 else
     analyzedEventCodes    = setdiff([EEG.event.type], ignoreEventCodes);                        % Filter out the ignored event code
-    analyzedEventIndices  = ismember([EEG.event.type], analyzedEventCodes);                       %
-    analyzedSamples       = round([EEG.event(analyzedEventIndices).latency]);                     % Convert event codes to samples
+    analyzedEventIndices  = ismember([EEG.event.type], analyzedEventCodes);                     %
+    analyzedSamples       = round([EEG.event(analyzedEventIndices).latency]);                   % Convert event codes to samples
 end
 
-% if  iscell(analyzedEventCodes)
-%         % latx  = strmatch(analyzedEventCodes, {EEG.event.type}, 'exact');
-%         try
-%                 latx  = find(ismember({EEG.event.type}, analyzedEventCodes));
-%         catch
-%                 error('ERPLAB: Your specified code must have the same format as your event codes (string or numeric).')
-%         end
-% elseif ischar(EEG.event(1).type) && ischar(analyzedEventCodes)
-%         latx = find(ismember({EEG.event.type}, {analyzedEventCodes}));
-% elseif ~ischar(EEG.event(1).type) && isnumeric(analyzedEventCodes)
-%         latx = find(ismember([EEG.event.type], analyzedEventCodes));
-% else
-%         error('ERPLAB: Your specified code must have the same format as your event codes (string or numeric).')
-% end
 
-
-% analyzedSamples = round([EEG.event.latency]);
 if analyzedSamples(1) ~= 1
     analyzedSamples = [1 analyzedSamples];          % add first time point index
 end
@@ -156,8 +140,16 @@ for ii=1:length(analyzedSamples)
                        t2 ];
         % else add time buffer to inital and end data points
         else
-            rejWin  = [t1 + startPeriodBufferSample ...
-                       t2 - endPeriodBufferSample];
+            rejWindowMin = t1 + startPeriodBufferSample;
+            rejWindowMax = t2 - endPeriodBufferSample;
+            
+            % Test to ensure overlapping buffer windows do not delete
+            % the overlapping time segment
+            if rejWindowMin < rejWindowMax
+                rejWin  = [rejWindowMin rejWindowMax];
+            else
+                rejWin = [];
+            end
         end
         
         rejectionWindows = vertcat(rejectionWindows, rejWin); %#ok<AGROW>
@@ -186,7 +178,13 @@ else
         rejectionCommand                = sprintf('%s = eeg_eegrej( %s, rejectionWindows);', 'EEG', 'EEG');             % inputname(1), inputname(1));
         
         assignin('base', 'rejectionWindows', rejectionWindows); % not sure why this is needed
-        eegplot(EEG.data, 'winrej', rejectionWindowMatrix, 'srate', EEG.srate,'butlabel','REJECT','command', rejectionCommand,'events', EEG.event,'winlength', 20);
+        eegplot(EEG.data, ...
+            'winrej',       rejectionWindowMatrix,  ...
+            'srate',        EEG.srate,              ...
+            'butlabel',     'REJECT',               ...
+            'command',      rejectionCommand,       ...
+            'events',       EEG.event,              ...
+            'winlength',    20);
         fprintf('\n %g rejection segments marked.\n\n', size(rejectionWindows,1));
     else
         EEG = eeg_eegrej( EEG, rejectionWindows);

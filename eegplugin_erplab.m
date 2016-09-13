@@ -190,6 +190,7 @@ set(hframe,'position', [posframe(1:2) posframe(3)*wfactor2 posframe(4)]);
 
 menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
 
+%%
 %****************************************************************************************************
 %****************************************|        MENU      |****************************************
 %****************************************|      CALLBACKS   |****************************************
@@ -200,6 +201,7 @@ menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
 comTrim   = [trystrs.no_check '[EEG, LASTCOM]   = pop_eegtrim(EEG);' catchstrs.new_and_hist ];
 comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.store_and_hist ];
 comShiftEvents = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEventTime(EEG);' catchstrs.new_and_hist];
+comDeleteTimeSegments = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);' catchstrs.new_and_hist];
 
 
 
@@ -343,7 +345,7 @@ comEPSerp = ['ERP, LASTCOM = pop_getFFTfromERP(ERP);' '[ERP, ALLERPCOM] = erphis
 % Working memory
 comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
 
-
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MAIN      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MENU      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -354,13 +356,18 @@ submenu = uimenu( menuERPLAB,'Label','ERPLAB','separator','on','tag','ERPLAB','u
 set(submenu,'position', 6); % thanks Arno!
 
 %
-% Artifact detection in continuous data
+% Artifact rejection in continuous data
 %
 uimenu( submenu,'Label','Artifact rejection in continuous data','CallBack', comREJCON,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( submenu ...
     ,'Label'   , 'Shift Eventcodes EEG' ...
     ,'CallBack', comShiftEvents ...
     ,'userdata', 'startup:on;continuous:on;epoch:off;study:off;erpset:off');
+uimenu( submenu ...
+    ,'Label'   , 'Delete Time Segments EEG' ...
+    ,'CallBack', comDeleteTimeSegments ...
+    ,'userdata', 'startup:on;continuous:on;epoch:off;study:off;erpset:off');
+
 
 %
 % EVENTLIST for EEG menu and submenu
