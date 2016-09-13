@@ -22,7 +22,7 @@ function varargout = csd_generate(varargin)
 
 % Edit the above text to modify the response to help csd_generate
 
-% Last Modified by GUIDE v2.5 18-Aug-2016 16:03:12
+% Last Modified by GUIDE v2.5 13-Sep-2016 13:38:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -288,4 +288,3 @@ function bigheadplot_CreateFcn(hObject, eventdata, handles)
 
 axes(hObject)
 imshow('CSD_elec_plot.png')
-

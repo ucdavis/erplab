@@ -30,8 +30,12 @@ serror = 0;
 if nargin<1
         error('erpAutoYLim needs 1 input argument at least.')
 end
+
 if isfield(ERP, 'datatype')
         datatype = ERP.datatype;
+        if strcmp(datatype,'CSD')
+            datatype = 'ERP';     % if CSD data, treat as ERP data here
+        end
 else
         datatype = 'ERP';
 end
@@ -55,11 +59,14 @@ if isempty(chanArray)
         chanArray = 1:ERP.nchan;
 end
 if isempty(xxlim)
-        if strcmpi(datatype, 'ERP')
-                xxlim = [ERP.xmin ERP.xmax]*1000;
-        else
-                xxlim = [ERP.xmin ERP.xmax];
+    if strcmpi(datatype, 'ERP')
+        if strcmp(datatype,'CSD')
+            datatype = 'ERP';     % if CSD data, treat as ERP data here
         end
+        xxlim = [ERP.xmin ERP.xmax]*1000;
+    else
+        xxlim = [ERP.xmin ERP.xmax];
+    end
 end
 try
         nbin  = length(binArray);
@@ -67,6 +74,10 @@ try
         fs    = ERP.srate;
         
         if strcmpi(datatype, 'ERP')
+            
+            if strcmp(datatype,'CSD')
+        datatype = 'ERP';     % if CSD data, treat as ERP data here
+    end
                 if xxlim(1)<round(ERP.xmin*1000)
                         aux_xxlim(1) = round(ERP.xmin*1000);
                 else

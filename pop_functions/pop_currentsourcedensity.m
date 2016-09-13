@@ -92,7 +92,7 @@ end
 
 % check not already CSD data
 if isfield(EEG,'datatype')
-    if strcmp(EEG.datatype,'csd') == 1
+    if strcmp(EEG.datatype,'CSD') == 1
         msgboxText =  'This dataset is already CSD data';
         title      = 'ERPLAB: CSD dataset problems?';
         errorfound(msgboxText, title);
@@ -127,8 +127,12 @@ MapMontage(M)
 % Run CSD GUI to get 3 CSD parameters
 [csd_param] = csd_generate;
 
-% check if user cancelled GUI
-
+% check if user cancelled GUI. If so, end here.
+if numel(csd_param) == 0
+    display('User selected cancel')
+    return
+end
+    
 
 % generate transform matrices
 [csd_G, csd_H] = GetGH(M, csd_param(1));
@@ -170,7 +174,7 @@ end
 
 % Write the history with a SEM note
 EEG = erphistory(EEG,[],'% converted dataset to Current Source Density datatype',1);
-EEG.datatype = 'csd';
+EEG.datatype = 'CSD';
 
 
 % save new csd dataset
