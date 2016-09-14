@@ -55,13 +55,23 @@ function gui_erplabDeleteTimeSegments_OpeningFcn(hObject, eventdata, handles, va
 handles.output = []; % hObject;
 
 
+% Handle input parameters from ERPLABWORKINGMEMORY
+try
+    handles.maxDistanceMS               = varargin{1}{1};
+    handles.startEventCodeBufferMS      = varargin{1}{2};
+    handles.endEventCodeBufferMS        = varargin{1}{3};
+    handles.ignoreEventCodes            = varargin{1}{4};
+    handles.displayEEG                  = varargin{1}{5};
+    
+catch
+    handles.maxDistanceMS               = 0;
+    handles.startEventCodeBufferMS      = 0;
+    handles.endEventCodeBufferMS        = 0;
+    handles.ignoreEventCodes            = [];
+    handles.displayEEG                  = false;
+end
 
-handles.maxDistanceMS               = 0;
-handles.startEventCodeBufferMS      = 0;
-handles.endEventCodeBufferMS        = 0;
-handles.ignoreEventCodes            = [];
-handles.displayEEG                  = false;
- 
+
 set(handles.editbox_maxDistanceMS...
     , 'String', num2str(handles.maxDistanceMS));
 set(handles.editbox_startEventCodeBufferMS ...

@@ -75,12 +75,18 @@ if nargin==1
     % Get previous input parameters
     def  = erpworkingmemory('pop_erplabDeleteTimeSegments');
     if isempty(def); def = {}; end % if no parameters, clear DEF var
+    
+    
+    %% !!!!
+    
 
     %% Call GUI: gui_erplabDeleteTimeSegments to get the input parameters
     inputstrMat = gui_erplabDeleteTimeSegments(def);  % GUI
-
+    
+    
+    %% !!!!
     % Exit when CANCEL button is pressed
-    if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
+    if isempty(inputstrMat) && ~strcmp(inputstrMat,'') 
         commandHistory = 'User selected cancel';
         return;
     end
@@ -180,7 +186,7 @@ outputEEG = erplab_deleteTimeSegments(inputEEG ...
 %
 
 commandHistory  = '';
-skipfields      = {'inputEEG', 'DisplayFeedback', 'History'};
+skipfields      = {'inputEEG', 'History'};
 fn              = fieldnames(inputParameters.Results);
 commandHistory         = sprintf( '%s  = pop_erplabDeleteTimeSegments( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
@@ -206,6 +212,10 @@ for q=1:length(fn)
                     if ~strcmpi(fn2res,'off')
                         commandHistory = sprintf( '%s, ''%s'', ''%s''', commandHistory, fn2com, fn2res);
                     end
+                elseif(islogical(fn2res))
+                    fn2resstr = num2str(fn2res);
+                    fnformat = '%s';
+                    commandHistory = sprintf( ['%s, ''%s'', ' fnformat], commandHistory, fn2com, fn2resstr);
                 else
                     %if iscell(fn2res)
                     %        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
