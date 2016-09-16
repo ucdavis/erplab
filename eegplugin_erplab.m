@@ -202,7 +202,7 @@ comTrim   = [trystrs.no_check '[EEG, LASTCOM]   = pop_eegtrim(EEG);' catchstrs.n
 comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.store_and_hist ];
 comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEventTime(EEG);'              catchstrs.new_and_hist];
 comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
-comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabSelectChannelInterpolation(EEG);'  catchstrs.new_and_hist];
+comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
 
 
 

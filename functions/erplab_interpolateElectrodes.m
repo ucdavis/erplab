@@ -1,6 +1,6 @@
-% erplab_selectiveEegInterpolation() - interpolate data channels
+% erplab_interpolateElectrodes() - interpolate data channels
 %
-% Usage: EEG = erplab_selectiveEegInterpolation(ORIEEG, bad_elec, ignored_elec, method)
+% Usage: EEG = erplab_interpolateElectrodes(ORIEEG, bad_elec, ignored_elec, method)
 %
 % Inputs:
 %     EEG      - EEGLAB dataset
@@ -40,11 +40,11 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function EEG = erplab_selectiveEegInterpolation(ORIEEG, bad_elec, ignored_elec, method, varargin)
+function EEG = erplab_interpolateElectrodes(ORIEEG, bad_elec, ignored_elec, method, varargin)
 
 %% Error check input variables
 if nargin < 2
-    help erplab_selectiveEegInterpolation;
+    help erplab_interpolateElectrodes;
     return;
 end;
 EEG = ORIEEG;

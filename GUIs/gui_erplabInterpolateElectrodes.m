@@ -1,35 +1,35 @@
-function varargout = gui_erplabSelectChannelInterpoation(varargin)
-% gui_erplabSelectChannelInterpoation MATLAB code for gui_erplabSelectChannelInterpoation.fig
-%      gui_erplabSelectChannelInterpoation, by itself, creates a new gui_erplabSelectChannelInterpoation or raises the existing
+function varargout = gui_erplabInterpolateElectrodes(varargin)
+% gui_erplabInterpolateElectrodes MATLAB code for gui_erplabInterpolateElectrodes.fig
+%      gui_erplabInterpolateElectrodes, by itself, creates a new gui_erplabInterpolateElectrodes or raises the existing
 %      singleton*.
 %
-%      H = gui_erplabSelectChannelInterpoation returns the handle to a new gui_erplabSelectChannelInterpoation or the handle to
+%      H = gui_erplabInterpolateElectrodes returns the handle to a new gui_erplabInterpolateElectrodes or the handle to
 %      the existing singleton*.
 %
-%      gui_erplabSelectChannelInterpoation('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in gui_erplabSelectChannelInterpoation.M with the given input arguments.
+%      gui_erplabInterpolateElectrodes('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in gui_erplabInterpolateElectrodes.M with the given input arguments.
 %
-%      gui_erplabSelectChannelInterpoation('Property','Value',...) creates a new gui_erplabSelectChannelInterpoation or raises
+%      gui_erplabInterpolateElectrodes('Property','Value',...) creates a new gui_erplabInterpolateElectrodes or raises
 %      the existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before gui_erplabSelectChannelInterpoation_OpeningFcn gets called.  An
+%      applied to the GUI before gui_erplabInterpolateElectrodes_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to gui_erplabSelectChannelInterpoation_OpeningFcn via varargin.
+%      stop.  All inputs are passed to gui_erplabInterpolateElectrodes_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help gui_erplabSelectChannelInterpoation
+% Edit the above text to modify the response to help gui_erplabInterpolateElectrodes
 
-% Last Modified by GUIDE v2.5 14-Sep-2016 15:18:55
+% Last Modified by GUIDE v2.5 16-Sep-2016 12:17:18
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @gui_erplabSelectChannelInterpoation_OpeningFcn, ...
-                   'gui_OutputFcn',  @gui_erplabSelectChannelInterpoation_OutputFcn, ...
+                   'gui_OpeningFcn', @gui_erplabInterpolateElectrodes_OpeningFcn, ...
+                   'gui_OutputFcn',  @gui_erplabInterpolateElectrodes_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -43,15 +43,15 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-% --- Executes just before gui_erplabSelectChannelInterpoation is made visible.
-function gui_erplabSelectChannelInterpoation_OpeningFcn(hObject, eventdata, handles, varargin) %#ok<*INUSL>
+% --- Executes just before gui_erplabInterpolateElectrodes is made visible.
+function gui_erplabInterpolateElectrodes_OpeningFcn(hObject, eventdata, handles, varargin) %#ok<*INUSL>
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to gui_erplabSelectChannelInterpoation (see VARARGIN)
+% varargin   command line arguments to gui_erplabInterpolateElectrodes (see VARARGIN)
 
-% Choose default command line output for gui_erplabSelectChannelInterpoation
+% Choose default command line output for gui_erplabInterpolateElectrodes
 handles.output = []; % hObject;
 
 %
@@ -95,12 +95,12 @@ guidata(hObject, handles);
 % Run intialization procedures
 initialize_gui(hObject, handles, false);
 
-% UIWAIT makes gui_erplabSelectChannelInterpoation wait for user response (see UIRESUME)
+% UIWAIT makes gui_erplabInterpolateElectrodes wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = gui_erplabSelectChannelInterpoation_OutputFcn(hObject, eventdata, handles)
+function varargout = gui_erplabInterpolateElectrodes_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -170,9 +170,9 @@ function initialize_gui(fig_handle, handles, isreset) %#ok<*INUSD>
 %
 % Name & version
 %
-version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Select Channel Interpolation GUI'])
-
+version     = geterplabversion;
+windowTitle =  ['ERPLAB ' version '   -   Interpolate Electrodes GUI'];
+set(handles.gui_chassis,'Name', windowTitle);
 
 % Update handles structure
 guidata(handles.gui_chassis, handles);

@@ -1,9 +1,9 @@
-function [outputEEG, commandHistory] = pop_erplabSelectChannelInterpolation( EEG, varargin )
-%pop_erplabSelectChannelInterpolation In EEG data, replace specific channels through interpolation with the option to ignore specific channels
+function [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes( EEG, varargin )
+%pop_erplabInterpolateElectrodes In EEG data, replace specific channels through interpolation with the option to ignore specific channels
 %
 % FORMAT
 %
-%    EEG = pop_erplabSelectChannelInterpolation(inEEG, replaceChannels, ignoreChannels)
+%    EEG = pop_erplabInterpolateElectrodes(inEEG, replaceChannels, ignoreChannels)
 %
 % INPUT:
 %
@@ -34,7 +34,7 @@ function [outputEEG, commandHistory] = pop_erplabSelectChannelInterpolation( EEG
 %     replaceChannels       = {'22', '19'};
 %     ignoreChannels        = 0.015;
 %     interpolationMethod   = 'floor';
-%     outputEEG             = pop_erplabSelectChannelInterpolation(EEG, replaceChannels, ignoreChannels, interpolationMethod);
+%     outputEEG             = pop_erplabInterpolateElectrodes(EEG, replaceChannels, ignoreChannels, interpolationMethod);
 %     
 %
 % Requirements:
@@ -53,7 +53,7 @@ function [outputEEG, commandHistory] = pop_erplabSelectChannelInterpolation( EEG
 
 %% Return help if given no input
 if nargin < 1
-    help pop_erplabSelectChannelInterpolation
+    help pop_erplabInterpolateElectrodes
     return
 end
 
@@ -67,11 +67,11 @@ if isobject(EEG) % eegobj
 end
 
 %% Call GUI
-% When only 1 input is given the GUI is then called
+%   When only 1 input is given
 if nargin==1
     
      % Input EEG error check
-    serror = erplab_eegscanner(EEG, 'pop_erplabSelectChannelInterpolation',...
+    serror = erplab_eegscanner(EEG, 'pop_erplabInterpolateElectrodes',...
         0, ... % 0 = do not accept md;
         0, ... % 0 = do not accept empty dataset;
         0, ... % 0 = do not accept epoched EEG;
@@ -82,11 +82,11 @@ if nargin==1
     if serror; return; end
     
     % Get previous input parameters
-    def  = erpworkingmemory('pop_erplabSelectChannelInterpolation');
+    def  = erpworkingmemory('pop_erplabInterpolateElectrodes');
     if isempty(def); def = {}; end
     
-    % Call GUI function 
-    inputstrMat = gui_erplabSelectChannelInterpoation(def);  % GUI
+    %% Call GUI function 
+    inputstrMat = gui_erplabInterpolateElectrodes(def);  % GUI
     
     % Exit when CANCEL button is pressed
     if isempty(inputstrMat)
@@ -102,22 +102,23 @@ if nargin==1
     %
     
     % Save the GUI inputs to memory
-    erpworkingmemory('pop_erplabSelectChannelInterpolation', ...
+    erpworkingmemory('pop_erplabInterpolateElectrodes', ...
         {replaceChannels,    ...
         ignoreChannels,      ...
         interpolationMethod, ...
         displayEEG           });
-%         displayFeedback });
     
     
-    % New output EEG set name
+    %% New output EEG setname w/ suffix
+    setnameSuffix = '_interp';
     if length(EEG)==1
-        EEG.setname = [EEG.setname '_channelInterpolated'];
+        EEG.setname = [EEG.setname setnameSuffix];
     end
     
     
     
-    [outputEEG, commandHistory] = pop_erplabSelectChannelInterpolation(EEG, ...
+    %% Run the pop_ command with the user input from the GUI
+    [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes(EEG, ...
         'replaceChannels'    , replaceChannels,     ...
         'ignoreChannels'     , ignoreChannels,      ...
         'interpolationMethod', interpolationMethod, ...
@@ -158,7 +159,7 @@ ignoreChannels      = inputParameters.Results.ignoreChannels;
 interpolationMethod = inputParameters.Results.interpolationMethod;
 displayEEG          = inputParameters.Results.displayEEG;
 
-outputEEG = erplab_selectiveEegInterpolation(EEG ...
+outputEEG = erplab_interpolateElectrodes(EEG ...
     , replaceChannels       ...
     , ignoreChannels        ...
     , interpolationMethod   ...
@@ -181,7 +182,7 @@ outputEEG = erplab_selectiveEegInterpolation(EEG ...
 commandHistory  = ''; %#ok<*NASGU>
 skipfields      = {'EEG', 'DisplayFeedback', 'History'};
 fn              = fieldnames(inputParameters.Results);
-commandHistory         = sprintf( '%s  = pop_erplabSelectChannelInterpolation( %s ', inputname(1), inputname(1));
+commandHistory         = sprintf( '%s  = pop_erplabInterpolateElectrodes( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
     fn2com = fn{q}; % get fieldname
     if ~ismember(fn2com, skipfields)
@@ -249,59 +250,3 @@ return
 end
 
 
-
-
-% function runGUI(EEG) 
-%  % Input EEG error check
-%     serror = erplab_eegscanner(EEG, 'pop_erplabSelectChannelInterpolation',...
-%         0, ... % 0 = do not accept md;
-%         0, ... % 0 = do not accept empty dataset;
-%         0, ... % 0 = do not accept epoched EEG;
-%         0, ... % 0 = do not accept if no event codes
-%         2);    % 2 = do not care if there exists an ERPLAB EVENTLIST struct
-%     
-%     % Quit if there is an error with the input EEG
-%     if serror
-%         return
-%     end
-%     
-%     % Get previous input parameters
-%     def  = erpworkingmemory('pop_erplabSelectChannelInterpolation');
-%     if isempty(def)
-%         def = {};
-%     end
-%     
-%     % Call GUI
-%     inputstrMat = gui_erplab_selectiveEegInterpolation(def);  % GUI
-%     
-%     % Exit when CANCEL button is pressed
-%     if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
-%         commandHistory = 'User selected cancel';
-%         return;
-%     end
-%     
-%     replaceChannels          = inputstrMat{1};
-%     ignoreChannels           = inputstrMat{2};
-%     interpolationMethod      = inputstrMat{3};
-%     %     displayFeedback     = inputstrMat{4};
-%     %
-%     %     erpworkingmemory('pop_erplabSelectChannelInterpolation', ...
-%     %         {replaceChannels, ignoreChannels, interpolationMethod, displayFeedback});
-%     %
-%     
-%     % New output EEG name
-%     if length(EEG)==1
-%         EEG.setname = [EEG.setname '_interpolated'];
-%     end
-%     
-%     
-%     
-%     [EEG, commandHistory] = pop_erplabSelectChannelInterpolation(EEG, ...
-%         'replaceChannels'    , replaceChannels,  ...
-%         'ignoreChannels'     , ignoreChannels,   ...
-%         'interpolationMethod', interpolationMethod,    ...
-%         'History'            , 'gui');
-%     
-%     
-%     return
-% end
