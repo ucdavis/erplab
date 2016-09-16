@@ -104,13 +104,13 @@ if nargin==1
           displayEEG });
     
 
-    % New output EEG set name
+    %% New output EEG setname w/ suffix
+    setnameSuffix = '_del';
     if length(EEG)==1
-        EEG.setname = [EEG.setname '_deletedTimeSegment'];
+        EEG.setname = [EEG.setname setnameSuffix];
     end
 
-    
-    %% Execute POP_ERPLABDELETETIMESEGMENTS 
+    %% Run the pop_ command with the user input from the GUI
     [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments(EEG,   ...
         'maxDistanceMS'             , maxDistanceMS,            ...
         'startEventCodeBufferMS'    , startEventCodeBufferMS,   ...

@@ -320,18 +320,18 @@ EEG = eeg_checkset(EEG);
 % Needs to occur before actually deleting the time segments in EEG
 if eegplotGUIFeedback
     % Plot EEG data with to-be-rejected time windows
-%     windowChannelMatrix    = zeros(size(rejectionWindows,1),EEG.nbchan, 1);                                % do not mark any channel in EEGPLOT
-%     windowColorMatrix      = repmat([1 0 0], size(rejectionWindows,1),1);                                  % color matrix for EEGPLOT highlighting
-%     windowMatrix           = [windowColorMatrix windowChannelMatrix];   % combined rejection window highlighting for EEGPLOT
-    closeCommand           = [];             % Do nothing
-    closeButtonLabel       = 'Close';
-    eegplot(EEG.data, ...
-        'srate',        EEG.srate,          ...
-        'butlabel',     closeButtonLabel,   ...
-        'command',      closeCommand,       ...
-        'events',       EEG.event,          ...
-        'winlength',    10);
     
+    eegplotoptions = { ...
+        'events',       EEG.event,          ...
+        'srate',        EEG.srate,          ...
+        'winlength',    10};
+    
+    % Display channel labels instead of numbers
+    if ~isempty(EEG.chanlocs)
+        eegplotoptions = [ eegplotoptions {'eloc_file', EEG.chanlocs}];
+    end;
+    
+    eegplot(EEG.data, eegplotoptions{:});   
     
 end
 

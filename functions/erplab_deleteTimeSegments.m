@@ -168,16 +168,25 @@ if eegplotGUIFeedback
     windowChannelMatrix    = zeros(size(rejectionWindows,1),EEG.nbchan, 1);                                % do not mark any channel in EEGPLOT
     windowColorMatrix      = repmat([1 0 0], size(rejectionWindows,1),1);                                  % color matrix for EEGPLOT highlighting
     windowMatrix           = [rejectionWindows windowColorMatrix windowChannelMatrix];   % combined rejection window highlighting for EEGPLOT
-    closeCommand           = [];             % Do nothing
     
-    assignin('base', 'rejectionWindows', rejectionWindows); % not sure why this is needed
-    eegplot(EEG.data, ...
-        'winrej',       windowMatrix,  ...
-        'srate',        EEG.srate,              ...
-        'butlabel',     'Close',               ...
-        'command',      closeCommand,       ...
-        'events',       EEG.event,              ...
-        'winlength',    20);
+%     assignin('base', 'rejectionWindows', rejectionWindows); % not sure why this is needed
+
+    eegplotoptions = { ...
+        'events',       EEG.event,          ...
+        'srate',        EEG.srate,          ...
+        'winlength',    20                  ...
+        'winrej',       windowMatrix};
+
+
+    % If channel labels exist then display labels instead of numbers
+    if ~isempty(EEG.chanlocs)
+        eegplotoptions = [ eegplotoptions {'eloc_file', EEG.chanlocs}];
+    end
+    
+    % Run EEGPLOT
+    eegplot(EEG.data, eegplotoptions{:});   
+    
+    
     fprintf('\n %g rejection segments marked.\n\n', size(rejectionWindows,1));
 end
 
