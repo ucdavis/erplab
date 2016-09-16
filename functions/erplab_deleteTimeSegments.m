@@ -63,7 +63,7 @@
 function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, varargin)
 
 
-% Error check the input variables
+%% Error check the input variables
 if nargin<1
     help erplab_deleteTimeSegments
     return
@@ -161,6 +161,28 @@ end
 rejectionWindows(any(rejectionWindows==0,2),:) = []; % trim empty rows
 
 
+%% Display input EEG plot to user with rejection windows marked
+% Needs to occur before actually deleting the time segments in EEG
+if eegplotGUIFeedback
+    % Plot EEG data with to-be-rejected time windows
+    windowChannelMatrix    = zeros(size(rejectionWindows,1),EEG.nbchan, 1);                                % do not mark any channel in EEGPLOT
+    windowColorMatrix      = repmat([1 0 0], size(rejectionWindows,1),1);                                  % color matrix for EEGPLOT highlighting
+    windowMatrix           = [rejectionWindows windowColorMatrix windowChannelMatrix];   % combined rejection window highlighting for EEGPLOT
+    closeCommand           = [];             % Do nothing
+    
+    assignin('base', 'rejectionWindows', rejectionWindows); % not sure why this is needed
+    eegplot(EEG.data, ...
+        'winrej',       windowMatrix,  ...
+        'srate',        EEG.srate,              ...
+        'butlabel',     'Close',               ...
+        'command',      closeCommand,       ...
+        'events',       EEG.event,              ...
+        'winlength',    20);
+    fprintf('\n %g rejection segments marked.\n\n', size(rejectionWindows,1));
+end
+
+
+
 %% Via EEGLAB.EEG_EEGREJ, delete the rejected windows
 rejectionWindowCount = size(rejectionWindows, 2);
 if rejectionWindowCount < 1
@@ -170,27 +192,8 @@ else
         rejectionWindows = joinclosesegments(rejectionWindows, [], 5);
     end
     
-    if eegplotGUIFeedback
-        % Plot EEG data with to-be-rejected time windows
-        rejectionWindowChannelMatrix    = zeros(size(rejectionWindows,1),EEG.nbchan, 1);                                % do not mark any channel in EEGPLOT
-        rejectionWindowColorMatrix      = repmat([1 0 0], size(rejectionWindows,1),1);                                  % color matrix for EEGPLOT highlighting
-        rejectionWindowMatrix           = [rejectionWindows rejectionWindowColorMatrix rejectionWindowChannelMatrix];   % combined rejection window highlighting for EEGPLOT
-        rejectionCommand                = sprintf('%s = eeg_eegrej( %s, rejectionWindows);', 'EEG', 'EEG');             % inputname(1), inputname(1));
-        
-        assignin('base', 'rejectionWindows', rejectionWindows); % not sure why this is needed
-        eegplot(EEG.data, ...
-            'winrej',       rejectionWindowMatrix,  ...
-            'srate',        EEG.srate,              ...
-            'butlabel',     'REJECT',               ...
-            'command',      rejectionCommand,       ...
-            'events',       EEG.event,              ...
-            'winlength',    20);
-        fprintf('\n %g rejection segments marked.\n\n', size(rejectionWindows,1));
-    else
-        EEG = eeg_eegrej( EEG, rejectionWindows);
-    end
-    
-    
+    EEG = eeg_eegrej( EEG, rejectionWindows);
+      
 end
 
 %% Delete first boundary event code when it is the first sample.
@@ -199,7 +202,6 @@ if ischar(EEG.event(1).type)
         EEG = pop_editeventvals(EEG,'delete',1);
     end
 end
-
 
 
 

@@ -1,4 +1,4 @@
-function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( inputEEG, varargin )
+function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, varargin )
 % Deletes data segments between 2 event codes if the size of the segment
 % is greater than a user-specified threshold (in msec)
 %
@@ -53,7 +53,7 @@ end
 %% Error Checks
 
 % Error check: Input EEG structure
-if isobject(inputEEG) % eegobj
+if isobject(EEG) % eegobj
     whenEEGisanObject % calls a script for showing an error window
     return
 end
@@ -62,7 +62,7 @@ end
 % When only 1 input is given the GUI is then called
 if nargin==1
      % Input validation setttings
-    serror = erplab_eegscanner(inputEEG, 'pop_erplabDeleteTimeSegments',...
+    serror = erplab_eegscanner(EEG, 'pop_erplabDeleteTimeSegments',...
         0, ... % 0 = do not accept md;
         0, ... % 0 = do not accept empty dataset;
         0, ... % 0 = do not accept epoched EEG;
@@ -76,17 +76,15 @@ if nargin==1
     def  = erpworkingmemory('pop_erplabDeleteTimeSegments');
     if isempty(def); def = {}; end % if no parameters, clear DEF var
     
-    
-    %% !!!!
-    
+        
 
     %% Call GUI: gui_erplabDeleteTimeSegments to get the input parameters
     inputstrMat = gui_erplabDeleteTimeSegments(def);  % GUI
     
     
-    %% !!!!
     % Exit when CANCEL button is pressed
-    if isempty(inputstrMat) && ~strcmp(inputstrMat,'') 
+    if isempty(inputstrMat)
+        outputEEG      = [];
         commandHistory = 'User selected cancel';
         return;
     end
@@ -106,14 +104,14 @@ if nargin==1
           displayEEG });
     
 
-    % New output EEG name
-    if length(inputEEG)==1
-        inputEEG.setname = [inputEEG.setname '_deletedTimeSegment'];
+    % New output EEG set name
+    if length(EEG)==1
+        EEG.setname = [EEG.setname '_deletedTimeSegment'];
     end
 
     
     %% Execute POP_ERPLABDELETETIMESEGMENTS 
-    [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments(inputEEG,   ...
+    [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments(EEG,   ...
         'maxDistanceMS'             , maxDistanceMS,            ...
         'startEventCodeBufferMS'    , startEventCodeBufferMS,   ...
         'endEventCodeBufferMS'      , endEventCodeBufferMS,     ...
@@ -141,7 +139,7 @@ inputParameters.FunctionName  = mfilename;
 inputParameters.CaseSensitive = false;
 
 % Required parameters
-inputParameters.addRequired('inputEEG');
+inputParameters.addRequired('EEG');
 
 % Optional named parameters (vs Positional Parameters)
 inputParameters.addParameter('maxDistanceMS'            , 0);
@@ -151,7 +149,7 @@ inputParameters.addParameter('ignoreEventCodes'         , []);
 inputParameters.addParameter('displayEEG'               , false);
 inputParameters.addParameter('History'                  , 'script', @ischar); % history from scripting
 
-inputParameters.parse(inputEEG, varargin{:});
+inputParameters.parse(EEG, varargin{:});
 
 
 
@@ -164,7 +162,7 @@ endEventCodeBufferMS    = inputParameters.Results.endEventCodeBufferMS;
 ignoreEventCodes        = inputParameters.Results.ignoreEventCodes;
 displayEEG              = inputParameters.Results.displayEEG;
 
-outputEEG = erplab_deleteTimeSegments(inputEEG ...
+outputEEG = erplab_deleteTimeSegments(EEG ...
     , maxDistanceMS             ...
     , startEventCodeBufferMS    ...
     , endEventCodeBufferMS      ...
@@ -185,8 +183,8 @@ outputEEG = erplab_deleteTimeSegments(inputEEG ...
 %% Generate equivalent history command
 %
 
-commandHistory  = '';
-skipfields      = {'inputEEG', 'History'};
+commandHistory  = ''; %#ok<*NASGU>
+skipfields      = {'EEG', 'History'};
 fn              = fieldnames(inputParameters.Results);
 commandHistory         = sprintf( '%s  = pop_erplabDeleteTimeSegments( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
@@ -239,7 +237,7 @@ switch inputParameters.Results.History
         %fprintf('%%Equivalent command:\n%s\n\n', commandHistory);
         displayEquiComERP(commandHistory);
     case 'script' % from script
-        inputEEG = erphistory(inputEEG, [], commandHistory, 1);
+        EEG = erphistory(EEG, [], commandHistory, 1);
     case 'implicit'
         % implicit
     otherwise %off or none

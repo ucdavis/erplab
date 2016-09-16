@@ -22,7 +22,7 @@ function varargout = gui_erplabDeleteTimeSegments(varargin)
 
 % Edit the above text to modify the response to help gui_erplabDeleteTimeSegments
 
-% Last Modified by GUIDE v2.5 19-Aug-2016 15:49:19
+% Last Modified by GUIDE v2.5 14-Sep-2016 15:04:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,6 +64,7 @@ try
     handles.displayEEG                  = varargin{1}{5};
     
 catch
+    % Default values for GUI
     handles.maxDistanceMS               = 0;
     handles.startEventCodeBufferMS      = 0;
     handles.endEventCodeBufferMS        = 0;
@@ -82,7 +83,6 @@ set(handles.editbox_ignoreEventCodes, ...
     'String', num2str(handles.ignoreEventCodes));
 
 
-% Set 
 set(handles.gui_chassis, ...       % Name & version
     'Name', ['ERPLAB ' geterplabversion() '   -   EXTRACT BINEPOCHS GUI']);
 handles = painterplab(handles);   % Color GUI
@@ -294,3 +294,21 @@ handles.displayEEG = get(hObject,'Value');
 
 % Save the new value
 guidata(hObject,handles)
+
+
+% --- Executes when user attempts to close gui_chassis.
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to gui_chassis (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+      %The GUI is still in UIWAIT, us UIRESUME
+      handles.output = '';
+      %Update handles structure
+      guidata(hObject, handles);
+      uiresume(handles.gui_chassis);
+else
+    % Hint: delete(hObject) closes the figure
+    delete(hObject);
+end

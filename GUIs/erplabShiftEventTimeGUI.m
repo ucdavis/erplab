@@ -55,7 +55,6 @@ function erplabShiftEventTimeGUI_OpeningFcn(hObject, eventdata, handles, varargi
 handles.output = []; % hObject;
 
 
-
 %
 % Set Default Values
 %
@@ -75,10 +74,6 @@ handles = setfonterplab(handles);
 
 % Update handles structure
 guidata(hObject, handles);
-
-
-
- 
 
 
 % Run intialization procedures
