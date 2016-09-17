@@ -19,7 +19,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %   rounding          - 'earlier'   - Round to earlier timestamp
 %                     - 'later'     - Round to later timestamp
 %                     - 'nearest'   - Round to nearest timestamp   
-%    displayFeedback  - 'summary'   - (default) Print summarized info to Command Window
+%   displayFeedback   - 'summary'   - (default) Print summarized info to Command Window
 %                     - 'detailed'  - Print event table with latency differences
 %                                     to Command Window
 %                     - 'both'      - Print both summarized & detailed info
@@ -81,7 +81,7 @@ if nargin < 1
     return
 elseif nargin < 3
     error('ERPLAB:erplab_shiftEventCodes: needs at least 3 inputs: EEG, eventcodes, timeshift')
-elseif length(varargin) > 2                                      % only want 3 optional inputs at most
+elseif length(varargin) > 3   % only want 3 optional inputs at most
     error('ERPLAB:erplab_deleteTimeSegments:TooManyInputs', ...
         'requires at most 2 optional inputs');
 else
@@ -158,18 +158,17 @@ outEEG                  = eeg_checkset(outEEG, 'eventconsistency', 'checkur');
 if displayEEG
    
     eegplotoptions = { ...
-        'events',       EEG.event,          ...
-        'srate',        EEG.srate,          ...
-        'winlength',    20                  ...
-        'winrej',       windowMatrix};
+        'events',       outEEG.event,          ...
+        'srate',        outEEG.srate,          ...
+        'winlength',    20 };
 
     % If channel labels exist then display labels instead of numbers
-    if ~isempty(EEG.chanlocs)
-        eegplotoptions = [ eegplotoptions {'eloc_file', EEG.chanlocs}];
+    if ~isempty(outEEG.chanlocs)
+        eegplotoptions = [ eegplotoptions {'eloc_file', outEEG.chanlocs}];
     end
     
     % Run EEGPLOT
-    eegplot(EEG.data, eegplotoptions{:});   
+    eegplot(outEEG.data, eegplotoptions{:});   
     
     
 end

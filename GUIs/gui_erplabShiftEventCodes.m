@@ -1,4 +1,4 @@
-function varargout = gui_erplabShiftEventCodes(varargin)
+ function varargout = gui_erplabShiftEventCodes(varargin)
 % GUI_ERPLABSHIFTEVENTCODES MATLAB code for gui_erplabShiftEventCodes.fig
 %      GUI_ERPLABSHIFTEVENTCODES, by itself, creates a new GUI_ERPLABSHIFTEVENTCODES or raises the existing
 %      singleton*.
@@ -66,7 +66,7 @@ catch
     % Default values for GUI
     handles.eventcodes          = '[]';
     handles.timeshift           = 0;
-    handles.roundingInput       = 'floor';
+    handles.roundingInput       = 'earlier';
     handles.displayEEG          = false;
 end
 
@@ -74,10 +74,26 @@ set(handles.editboxEventCodes, ...
     'String',         handles.eventcodes);
 set(handles.editboxTimeshift,  ...
     'String',         num2str(handles.timeshift));
-set(handles.uipanelRounding,   ...
-    'SelectedObject', handles.radioBtnRoundEarlier);
 set(handles.checkbox_displayEEG, ...
     'Value',          handles.displayEEG);
+
+% Set correct rounding radio button
+switch handles.roundingInput
+    case 'earlier'
+        set(handles.uipanelRounding,   ...
+            'SelectedObject', handles.radioBtnRoundEarlier);
+    case 'nearest'
+        set(handles.uipanelRounding,   ...
+            'SelectedObject', handles.radioBtnRoundNearest);
+    case 'later'
+        set(handles.uipanelRounding,   ...
+            'SelectedObject', handles.radioBtnRoundLater);
+    otherwise
+        set(handles.uipanelRounding,   ...
+            'SelectedObject', handles.radioBtnRoundEarlier);
+end
+
+
 
 
 % Set Window title
