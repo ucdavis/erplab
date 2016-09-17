@@ -1,35 +1,35 @@
-function varargout = erplabShiftEventTimeGUI(varargin)
-% ERPLABSHIFTEVENTTIMEGUI MATLAB code for erplabShiftEventTimeGUI.fig
-%      ERPLABSHIFTEVENTTIMEGUI, by itself, creates a new ERPLABSHIFTEVENTTIMEGUI or raises the existing
+function varargout = gui_erplabShiftEventCodes(varargin)
+% GUI_ERPLABSHIFTEVENTCODES MATLAB code for gui_erplabShiftEventCodes.fig
+%      GUI_ERPLABSHIFTEVENTCODES, by itself, creates a new GUI_ERPLABSHIFTEVENTCODES or raises the existing
 %      singleton*.
 %
-%      H = ERPLABSHIFTEVENTTIMEGUI returns the handle to a new ERPLABSHIFTEVENTTIMEGUI or the handle to
+%      H = GUI_ERPLABSHIFTEVENTCODES returns the handle to a new GUI_ERPLABSHIFTEVENTCODES or the handle to
 %      the existing singleton*.
 %
-%      ERPLABSHIFTEVENTTIMEGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in ERPLABSHIFTEVENTTIMEGUI.M with the given input arguments.
+%      GUI_ERPLABSHIFTEVENTCODES('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in GUI_ERPLABSHIFTEVENTCODES.M with the given input arguments.
 %
-%      ERPLABSHIFTEVENTTIMEGUI('Property','Value',...) creates a new ERPLABSHIFTEVENTTIMEGUI or raises
+%      GUI_ERPLABSHIFTEVENTCODES('Property','Value',...) creates a new GUI_ERPLABSHIFTEVENTCODES or raises
 %      the existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before erplabShiftEventTimeGUI_OpeningFcn gets called.  An
+%      applied to the GUI before gui_erplabShiftEventCodes_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to erplabShiftEventTimeGUI_OpeningFcn via varargin.
+%      stop.  All inputs are passed to gui_erplabShiftEventCodes_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help erplabShiftEventTimeGUI
+% Edit the above text to modify the response to help gui_erplabShiftEventCodes
 
-% Last Modified by GUIDE v2.5 06-Apr-2016 13:25:07
+% Last Modified by GUIDE v2.5 16-Sep-2016 16:01:39
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @erplabShiftEventTimeGUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @erplabShiftEventTimeGUI_OutputFcn, ...
+                   'gui_OpeningFcn', @gui_erplabShiftEventCodes_OpeningFcn, ...
+                   'gui_OutputFcn',  @gui_erplabShiftEventCodes_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -43,37 +43,51 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-% --- Executes just before erplabShiftEventTimeGUI is made visible.
-function erplabShiftEventTimeGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before gui_erplabShiftEventCodes is made visible.
+function gui_erplabShiftEventCodes_OpeningFcn(hObject, eventdata, handles, varargin) %#ok<*INUSL>
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to erplabShiftEventTimeGUI (see VARARGIN)
+% varargin   command line arguments to gui_erplabShiftEventCodes (see VARARGIN)
 
-% Choose default command line output for erplabShiftEventTimeGUI
+% Choose default command line output for gui_erplabShiftEventCodes
 handles.output = []; % hObject;
 
 
-%
-% Set Default Values
-%
-handles.roundingInput = 'nearest';
-handles.eventcodes    = '[]';
-handles.timeshift     = 0;
+% Handle input parameters from ERPLABWORKINGMEMORY
+try
+    handles.eventcodes          = varargin{1}{1};
+    handles.timeshift           = varargin{1}{2};
+    handles.roundingInput       = varargin{1}{3};
+    handles.displayEEG          = varargin{1}{4};
+    
+catch
+    % Default values for GUI
+    handles.eventcodes          = '[]';
+    handles.timeshift           = 0;
+    handles.roundingInput       = 'floor';
+    handles.displayEEG          = false;
+end
 
-%
-% Set Color GUI
-%
-handles = painterplab(handles);
+set(handles.editboxEventCodes, ...
+    'String',         handles.eventcodes);
+set(handles.editboxTimeshift,  ...
+    'String',         num2str(handles.timeshift));
+set(handles.uipanelRounding,   ...
+    'SelectedObject', handles.radioBtnRoundEarlier);
+set(handles.checkbox_displayEEG, ...
+    'Value',          handles.displayEEG);
 
-%
-% Set font size
-%
-handles = setfonterplab(handles);
 
-% Update handles structure
-guidata(hObject, handles);
+% Set Window title
+windowTitle = ['ERPLAB ' geterplabversion() '   -   Shift Event Codes GUI'];
+set(handles.gui_chassis, 'Name', windowTitle);
+
+handles = painterplab(handles);     % Set color GUI
+handles = setfonterplab(handles);   % Set font size
+
+
 
 
 % Run intialization procedures
@@ -82,12 +96,12 @@ initialize_gui(hObject, handles, false);
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes erplabShiftEventTimeGUI wait for user response (see UIRESUME)
+% UIWAIT makes gui_erplabShiftEventCodes wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = erplabShiftEventTimeGUI_OutputFcn(hObject, eventdata, handles)
+function varargout = gui_erplabShiftEventCodes_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -101,13 +115,19 @@ delete(handles.gui_chassis);
 pause(0.5)
 
 
+% --------------------------------------------------------------------
+function initialize_gui(fig_handle, handles, isreset) %#ok<*INUSD>
+
+
+% Update handles structure
+guidata(handles.gui_chassis, handles);
 
 
 
 
 
 % --- Executes on button press in pushbutton_shiftEvents.
-function pushbutton_shiftEvents_Callback(hObject, eventdata, handles)
+function pushbutton_shiftEvents_Callback(hObject, eventdata, handles) %#ok<*DEFNU>
 % hObject    handle to pushbutton_shiftEvents (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -123,6 +143,7 @@ handles.output = {        ...
     handles.eventcodes,   ...
     handles.timeshift,    ...
     handles.roundingInput ...
+    handles.displayEEG    ...
     };
 
 % Update handles structure
@@ -153,12 +174,12 @@ function uipanelRounding_SelectionChangedFcn(hObject, eventdata, handles)
 
 
 % Set rounding input value depending on which radial button was selected
-if (hObject == handles.radioBtnNearest)
+if (hObject == handles.radioBtnRoundNearest)
     handles.roundingInput = 'nearest';
-elseif (hObject == handles.radioBtnFloor)
-    handles.roundingInput = 'floor';
-elseif (hObject == handles.radioBtnCeiling)
-    handles.roundingInput = 'ceiling';
+elseif (hObject == handles.radioBtnRoundEarlier)
+    handles.roundingInput = 'earlier';
+elseif (hObject == handles.radioBtnRoundLater)
+    handles.roundingInput = 'later';
 end
 
 % Save the new rounding value
@@ -167,27 +188,6 @@ guidata(hObject,handles)
 
 
 
-% --------------------------------------------------------------------
-function initialize_gui(fig_handle, handles, isreset)
-
-
-% erplabShiftEventTime(EEG, eventcodes, timeshift, rounding, (opt) displayfeedback)
-
-set(handles.editboxEventCodes, 'String',         handles.eventcodes);
-set(handles.editboxTimeshift,  'String',         num2str(handles.timeshift));
-set(handles.uipanelRounding,   'SelectedObject', handles.radioBtnNearest);
-
-
-%
-% Name & version
-%
-version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   SHIFT EVENTS GUI'])
-
-
-
-% Update handles structure
-guidata(handles.gui_chassis, handles);
 
 
 
@@ -222,7 +222,7 @@ function editboxTimeshift_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of editboxTimeshift as text
 %        str2double(get(hObject,'String')) returns contents of editboxTimeshift as a double
 
-handles.timeshift = str2num(get(hObject,'String'));
+handles.timeshift = str2num(get(hObject,'String')); %#ok<ST2NM>
 
 % Save the new ignore channels value
 guidata(hObject,handles)
@@ -239,3 +239,17 @@ function editboxTimeshift_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in checkbox_displayEEG.
+function checkbox_displayEEG_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_displayEEG (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_displayEEG
+% returns contents of editbox_EndEventCodeBufferMS as a double
+handles.displayEEG = get(hObject,'Value'); 
+
+% Save the new value
+guidata(hObject,handles);

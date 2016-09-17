@@ -1,9 +1,9 @@
-function [EEG, commandHistory] = pop_erplabShiftEventTime( EEG, varargin )
-%POP_ERPLABSHIFTEVENTTIME In EEG data, shift the timing of user-specified event codes.
+function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
+%pop_erplabShiftEventCodes In EEG data, shift the timing of user-specified event codes.
 %
 % FORMAT
 %
-%    EEG = pop_erplabShiftEventTime(inEEG, eventcodes, timeshift)
+%    EEG = pop_erplabShiftEventCodes(inEEG, eventcodes, timeshift)
 %
 % INPUT:
 %
@@ -17,12 +17,15 @@ function [EEG, commandHistory] = pop_erplabShiftEventTime( EEG, varargin )
 %                       - 'floor'      Round to nearest ingtowards positive infinity
 %                       - 'ceiling'    Round to nearest integer towards negative infinity
 % 
+%
 % OPTIONAL INPUT:
 %
 %    displayFeedback  Type of feedback to display at Command window
 %                        - 'summary'   (default) Print summarized info to Command Window
 %                        - 'detailed'  Print event table with latency differences
 %                        - 'both'      Print both summarized & detailed info
+%   displayEEG        - true/false  - Display a plot of the EEG when finished
+%
 %
 % OUTPUT:
 %
@@ -34,7 +37,7 @@ function [EEG, commandHistory] = pop_erplabShiftEventTime( EEG, varargin )
 %     eventcodes = {'22', '19'};
 %     timeshift  = 0.015;
 %     rounding   = 'floor';
-%     outputEEG  = erplabShiftEventTime(inputEEG, eventcodes, timeshift, rounding);
+%     outputEEG  = erplab_shiftEventCodes(inputEEG, eventcodes, timeshift, rounding);
 %     
 %
 % Requirements:
@@ -54,7 +57,7 @@ commandHistory = '';
 
 % Return help if given no input
 if nargin < 1
-    help pop_erplabShiftEventTime
+    help pop_erplabShiftEventCodes
     return
 end
 
@@ -70,7 +73,7 @@ end
 if nargin==1
     
     % Input EEG error check
-    serror = erplab_eegscanner(EEG, 'pop_erplabShiftEventTime',...
+    serror = erplab_eegscanner(EEG, 'pop_erplabShiftEventCodes',...
         0, ... % 0 = do not accept md;
         0, ... % 0 = do not accept empty dataset;
         0, ... % 0 = do not accept epoched EEG;
@@ -83,14 +86,14 @@ if nargin==1
     end
     
     %     % Get previous input parameters
-    def  = erpworkingmemory('pop_erplabShiftEventTime');
+    def  = erpworkingmemory('pop_erplabShiftEventCodes');
     if isempty(def)
         def = {};
     end
     
     
     % Call GUI
-    inputstrMat = erplabShiftEventTimeGUI(def);  % GUI
+    inputstrMat = gui_erplabShiftEventCodes(def);  % GUI
     
     % Exit when CANCEL button is pressed
     if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
@@ -101,19 +104,24 @@ if nargin==1
     eventcodes          = inputstrMat{1};
     timeshift           = inputstrMat{2};
     rounding            = inputstrMat{3};
+    displayEEG          = inputstrMat{4};
     %     displayFeedback     = inputstrMat{4};
     %
-    %     erpworkingmemory('pop_erplabShiftEventTime', ...
-    %         {eventcodes, timeshift, rounding, displayFeedback});
-    %
     
-    % New output EEG name
+    % Save GUI input to working memory
+    erpworkingmemory('pop_erplabShiftEventCodes', ...
+        {eventcodes, timeshift, rounding, displayEEG});
+    
+    
+    %% New output EEG name w/ setname suffix
+    setnameSuffix = '_shift';
     if length(EEG)==1
-        EEG.setname = [EEG.setname '_eventTimeshifted'];
+        EEG.setname = [EEG.setname setnameSuffix];
     end
     
     
-    [EEG, commandHistory] = pop_erplabShiftEventTime(EEG, ...
+    %% Run pop_ command again with the inputs from the GUI
+    [EEG, commandHistory] = pop_erplabShiftEventCodes(EEG, ...
         'Eventcodes'    , eventcodes,  ...
         'Timeshift'     , timeshift,   ...
         'Rounding'      , rounding,    ...
@@ -137,7 +145,8 @@ inputParameters.addRequired('EEG');
 % Optional named parameters (vs Positional Parameters)
 inputParameters.addParameter('Eventcodes'         , []);
 inputParameters.addParameter('Timeshift'          , 0);
-inputParameters.addParameter('Rounding'           , 'nearest');
+inputParameters.addParameter('Rounding'           , 'earlier');
+inputParameters.addParameter('DisplayEEG'         , false);
 inputParameters.addParameter('DisplayFeedback'    , 'summary'); % old parameter for BoundaryString
 inputParameters.addParameter('History'            , 'script', @ischar); % history from scripting
 
@@ -146,10 +155,11 @@ inputParameters.parse(EEG, varargin{:});
 
 
 % Execute: Shift specified event codes
-EEG = erplabShiftEventTime(EEG...
-    , inputParameters.Results.Eventcodes...
-    , inputParameters.Results.Timeshift ...
-    , inputParameters.Results.Rounding);
+EEG = erplab_shiftEventCodes(EEG,       ...
+    inputParameters.Results.Eventcodes, ...
+    inputParameters.Results.Timeshift,  ...
+    inputParameters.Results.Rounding,   ...
+    inputParameters.Results.DisplayEEG );
 EEG = eeg_checkset( EEG ); % ensure EEG structure is well-formed
 
 
@@ -168,7 +178,7 @@ EEG = eeg_checkset( EEG ); % ensure EEG structure is well-formed
 %
 skipfields  = {'EEG', 'DisplayFeedback', 'History'};
 fn          = fieldnames(inputParameters.Results);
-commandHistory         = sprintf( '%s  = erplabShiftEventTime( %s ', inputname(1), inputname(1));
+commandHistory         = sprintf( '%s  = pop_erplabShiftEventCodes( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
     fn2com = fn{q}; % get fieldname
     if ~ismember(fn2com, skipfields)
@@ -192,6 +202,10 @@ for q=1:length(fn)
                     if ~strcmpi(fn2res,'off')
                         commandHistory = sprintf( '%s, ''%s'', ''%s''', commandHistory, fn2com, fn2res);
                     end
+                elseif islogical(fn2res)
+                    fn2resstr = int2str(fn2res);
+                    fnformat = '%s';
+                    commandHistory = sprintf( ['%s, ''%s'', ' fnformat], commandHistory, fn2com, fn2resstr);
                 else
                     %if iscell(fn2res)
                     %        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');

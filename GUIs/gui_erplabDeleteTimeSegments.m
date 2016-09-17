@@ -81,21 +81,24 @@ set(handles.editbox_endEventCodeBufferMS ...
     , 'String', handles.endEventCodeBufferMS);
 set(handles.editbox_ignoreEventCodes, ...
     'String', num2str(handles.ignoreEventCodes));
+set(handles.checkbox_displayEEG, ...
+    'Value', handles.displayEEG);
+
+% Set window title
+windowTitle = ['ERPLAB ' geterplabversion() '   -   Delete Time Segments GUI'];
+set(handles.gui_chassis, 'Name', windowTitle);      
+
+handles = painterplab(handles);                     % Set color GUI
+handles = setfonterplab(handles);                   % Set font size
 
 
-set(handles.gui_chassis, ...       % Name & version
-    'Name', ['ERPLAB ' geterplabversion() '   -   EXTRACT BINEPOCHS GUI']);
-handles = painterplab(handles);   % Color GUI
-handles = setfonterplab(handles); % Set font size
 
 
-
-
+% Run intialization procedures
+initialize_gui(hObject, handles, false);
 
 % Update handles structure
 guidata(hObject, handles);
-
-initialize_gui(hObject, handles, false);
 
 % UIWAIT makes gui_erplabDeleteTimeSegments wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
@@ -293,7 +296,7 @@ function checkbox_displayEEG_Callback(hObject, eventdata, handles)
 handles.displayEEG = get(hObject,'Value'); 
 
 % Save the new value
-guidata(hObject,handles)
+guidata(hObject,handles);
 
 
 % --- Executes when user attempts to close gui_chassis.

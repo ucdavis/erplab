@@ -1,24 +1,31 @@
-function [ outEEG ] = erplab_shiftEventsEeg(inEEG, eventcodes, timeshift, sample_rounding,  displayFeedback)
+function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varargin)
 %ERPLAB_SHIFTEVENTS_EEG Shift the timing of user-specified event codes.
 %
-% FORMAT
+% FORMAT:
 %
-%    EEG = erplab_shiftEventsEeg(inEEG, eventcodes, timeshift)
+%    EEG = erplab_shiftEventCodes(inEEG, eventcodes, timeshift)
+%
 %
 % INPUT:
 %
-%    EEG              - EEGLAB EEG dataset
+%    inEEG            - EEGLAB EEG dataset
 %    eventcodes       - list of event codes to shift
-%    timeshift        - time in sec. If timeshift is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
+%    timeshift        - time in milliseconds. If timeshift is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
 %                       If timeshift is negative, the event code time-values are shifted to the left (e.g decreasing delay).
 %                       If timeshift is 0, the EEG's time values are not shifted.
+%
 % OPTIONAL INPUT:
 %
-%    displayFeedback  - 'summary'  - (default) Print summarized info to Command Window
-%                     - 'detailed' - Print event table with latency differences
-%                                    to Command Window
-%                     - 'both'     - Print both summarized & detailed info
-%                                    to Command Window
+%   rounding          - 'earlier'   - Round to earlier timestamp
+%                     - 'later'     - Round to later timestamp
+%                     - 'nearest'   - Round to nearest timestamp   
+%    displayFeedback  - 'summary'   - (default) Print summarized info to Command Window
+%                     - 'detailed'  - Print event table with latency differences
+%                                     to Command Window
+%                     - 'both'      - Print both summarized & detailed info
+%                                      to Command Window
+%   displayEEG        - true/false  - Display a plot of the EEG when finished
+%
 %
 % OUTPUT:
 %
@@ -29,7 +36,8 @@ function [ outEEG ] = erplab_shiftEventsEeg(inEEG, eventcodes, timeshift, sample
 %
 %    eventcodes = {22, 19};
 %    timeshift  = 0.015;
-%    outEEG     = erplab_shiftEventsEeg(inEEG, eventcodes, timeshift);
+%    rounding   = 'later'
+%    outEEG     = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, rounding);
 %
 %
 % Requirements:
@@ -67,32 +75,51 @@ function [ outEEG ] = erplab_shiftEventsEeg(inEEG, eventcodes, timeshift, sample
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-% Fill in optional variable.
-switch nargin
-    case 3
-        sample_rounding = 'floor';
-        displayFeedback = 'summary';
-    case 4
-        displayFeedback = 'summary';
+%% Error check the input variables
+if nargin < 1
+    help erplab_shiftEventCodes
+    return
+elseif nargin < 3
+    error('ERPLAB:erplab_shiftEventCodes: needs at least 3 inputs: EEG, eventcodes, timeshift')
+elseif length(varargin) > 2                                      % only want 3 optional inputs at most
+    error('ERPLAB:erplab_deleteTimeSegments:TooManyInputs', ...
+        'requires at most 2 optional inputs');
+else
+    disp('Working...')
 end
 
 
 
-outEEG              = inEEG;
+%% Handle optional variables
+optargs = {'earlier', 'summary', false}; % Default optional inputs
+
+% Put defaults into the valuesToUse cell array,
+% and overwrite the ones specified in varargin.
+optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep their default values. If vargin is specified then it overwrites
+
+% Place optional args into variable names
+[sample_rounding, displayFeedback, displayEEG] = optargs{:};
+
+
+
+
+
+%% Convert time shift to seconds
+timeshift = timeshift/1000;
 
 % Convert the shift time into samples to shift
 switch sample_rounding
-    case 'floor'
-        % Round to nearest ingtowards positive infinity
+    case 'earlier'
+        % Round to nearest integer earlier, towards negative infinity
         sample_shift = floor(timeshift * inEEG.srate);  
-    case 'ceiling'
-        % Round to nearest integer towards negative infinity
+    case 'later'
+        % Round to nearest integer later, towards positive infinity
         sample_shift = ceil(timeshift * inEEG.srate);   
     case 'nearest'
         % Round to the nearest integer
         sample_shift = round(timeshift * inEEG.srate);  
     otherwise
-        error('Rounding method is unspecified. Should be either "floor", "ceiling", "nearest".');
+        error('Unrecognized rounding input. Valid options are: "earlier", "later", or "nearest".');
 end
             
 
@@ -102,7 +129,11 @@ eventsTable            = struct2table(inEEG.event);
 
 % Convert event codes to a categorical variable type for selection
 eventsTable.type       = categorical(eventsTable.type);
-eventcodes             = categorical(eventcodes);
+if(ischar(eventcodes))
+    eventcodes         = categorical(cellstr(eventcodes));
+else
+    eventcodes             = categorical(eventcodes);
+end
 
 % Select latencies of the user-specified events and shift them
 rows                   = ismember(eventsTable.type, eventcodes);
@@ -111,12 +142,37 @@ eventsTable{rows,vars} = eventsTable{rows,vars}+sample_shift;
 
 % Save the shifted events/latencies back into the EEGLAB EEG dataset
 eventsTable.type       = char(eventsTable.type);
+outEEG                 = inEEG;
 outEEG.event           = table2struct(eventsTable)';
 
 % check for out of bound events / Re-sort ur events
-outEEG = eeg_checkset(outEEG, 'eventconsistency', 'checkur');
+outEEG                  = eeg_checkset(outEEG, 'eventconsistency', 'checkur');
 
 
+
+
+
+
+
+%% Display input EEG plot to user with rejection windows marked
+if displayEEG
+   
+    eegplotoptions = { ...
+        'events',       EEG.event,          ...
+        'srate',        EEG.srate,          ...
+        'winlength',    20                  ...
+        'winrej',       windowMatrix};
+
+    % If channel labels exist then display labels instead of numbers
+    if ~isempty(EEG.chanlocs)
+        eegplotoptions = [ eegplotoptions {'eloc_file', EEG.chanlocs}];
+    end
+    
+    % Run EEGPLOT
+    eegplot(EEG.data, eegplotoptions{:});   
+    
+    
+end
 
 
 %% Detailed Feedback
@@ -137,7 +193,6 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     disp(eventtable_output);
 end
     
-
 
 
 %% Summarized Feedback

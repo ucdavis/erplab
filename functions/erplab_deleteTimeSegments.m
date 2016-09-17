@@ -1,35 +1,44 @@
-% erplab_deleteTimeSegments.m
-%
-% Deletes data segments between 2 event codes (string or number) if the size of the segment
+function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, varargin)
+% ERPLAB_DELETETIMESEGMENTSS Deletes data segments between 2 event codes (string or number) if the size of the segment
 % is greater than a user-specified threshold (in msec)
 %
-% USAGE
+% FORMAT:
 %
-% EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
-%
-%
-% Input:
-%
-%  EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
-%  maxDistanceMS            - user-specified time threshold
-%  startEventCodeBufferMS   - time buffer around first event code
-%  endEventCodeBufferMS     - time buffer around last event code
-%
-% Optional
-%  ignoreEventCodes         - array of event code numbers to ignore
-%  displayEEGPLOTGUI        - (true|false)
-%
-% Output:
-%
-% EEG                       - continuous EEG dataset (EEGLAB's EEG struct)
+%   EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
 %
 %
-% Example: Delete segment of data between any two event codes when it is 
-%          longer than 3000 ms (3 secs).
+% INPUT:
 %
-%      EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);   
+%   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
+%   maxDistanceMS            - user-specified time threshold
+%   startEventCodeBufferMS   - time buffer around first event code
+%   endEventCodeBufferMS     - time buffer around last event code
 %
 %
+% OPTIONAL INPUT:
+%
+%   ignoreEventCodes         - array of event code numbers to ignore
+%   displayEEG              - true/false  - Display a plot of the EEG when finished
+%
+% OUTPUT:
+%
+%   EEG                       - continuous EEG dataset (EEGLAB's EEG struct)
+%
+%
+% EXAMPLE: 
+%
+%   Delete segment of data between any two event codes when it is 
+%   longer than 3000 ms (3 secs).
+%
+%   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);   
+%
+%
+%
+%
+% Requirements:
+%   - none
+%
+% See also ...
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -60,8 +69,6 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, varargin)
-
 
 %% Error check the input variables
 if nargin<1
@@ -76,10 +83,7 @@ else
     disp('Working...')
 end
 
-if length(EEG.event)<1
-    fprintf('\ndelshortseg.m did not find remaining event codes.\n')
-    return
-end
+
 
 
 
