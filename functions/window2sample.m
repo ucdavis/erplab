@@ -54,9 +54,14 @@ xlimc = [];
 pnts  = ERPLAB.pnts;
 if isfield(ERPLAB, 'datatype')
     datatype = ERPLAB.datatype;
+    if strcmp(datatype,'CSD')
+        datatype = 'ERP';     % if CSD data, treat as ERP data here
+    end
+    
 else
     datatype = 'ERP';
 end
+
 if strcmpi(datatype, 'ERP')
     Ktime  = 1000; % ms
     toffsa = abs(round(ERPLAB.xmin*fs))+1;

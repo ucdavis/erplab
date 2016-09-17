@@ -86,7 +86,7 @@ if nargin<2
         title = '???';
 end
 if nargin<1
-        message = 'Wassup?';
+        message = 'Message???';
 end
 p = which('eegplugin_erplab');
 p = p(1:strfind(p,'eegplugin_erplab.m')-1);

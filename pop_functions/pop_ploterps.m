@@ -122,8 +122,14 @@ if nargin==1  %with GUI
                 errorfound(msgboxText, title_msg);
                 return
         end
+        
         if isfield(ERP, 'datatype')
                 datatype = ERP.datatype;
+                
+                if strcmp(datatype,'CSD')
+                    datatype = 'ERP';     % if CSD data, treat as ERP data here
+                end
+                
         else
                 datatype = 'ERP';
         end

@@ -43,11 +43,9 @@ if length(p)>1
 end
 p = p{1};
 p = p(1:findstr(p,'eegplugin_erplab.m')-1);
-if ~exist('pop_binlister.m','file')
-        addpath(genpath(p))
-        %         addpath(p);
-        %         addpath([p 'erplab_Box'], [p 'functions'], [p 'GUIs'], [p 'images'], [p 'pop_functions'], [p 'deprecated_functions']); % Thanks to Grega Repovs
-end
+% add all ERPLAB subfolders
+addpath(genpath(p))
+
 
 %
 % CHECK VERSION NUMBER & FOLDER NAME
@@ -273,6 +271,8 @@ comFS      = 'Seterplabfontsize';
 comRECB    = [trystrs.no_check '[EEG, LASTCOM] = pop_setcodebit(EEG);' catchstrs.new_and_hist];
 comEP2CON  = [trystrs.no_check '[EEG, LASTCOM] = pop_epoch2continuous(EEG);' catchstrs.new_and_hist];
 comBlab2eve  = [trystrs.no_check '[EEG, LASTCOM] = pop_binlabel2type(EEG);' catchstrs.new_and_hist];
+comEEG2CSD     = [trystrs.no_check '[EEG, LASTCOM] = pop_currentsourcedensity(EEG);' catchstrs.new_and_hist];
+comERP2CSD     = [trystrs.no_check '[ERP, LASTCOM] = pop_currentsourcedensity(ERP);' catchstrs.add_to_hist];
 
 
 %% FILTER EEG callbacks
@@ -541,6 +541,9 @@ uimenu( mUTI,'Label','Save current ERPset history for scripting','CallBack', com
 uimenu( mUTI,'Label','Find more here! (for scripting) ','CallBack','web(''http://www.erpinfo.org/erplab/erplab-documentation/utilities/view'',''-browser'');','separator','on',...
         'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Simulate EEG/ERP data  (alpha version)','CallBack',comESIM,'separator','on' );
+uimenu( mUTI,'Label','Generate Current Source Density (CSD) data from EEG set data','CallBack',comEEG2CSD,'separator','on' );
+uimenu( mUTI,'Label','Generate Current Source Density (CSD) data from averaged ERP data','CallBack',comERP2CSD,'separator','off' );
+
 
 
 %% Settings submenus
