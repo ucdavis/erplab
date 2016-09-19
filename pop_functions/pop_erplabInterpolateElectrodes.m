@@ -68,69 +68,75 @@ end
 
 %% Call GUI
 %   When only 1 input is given
-if nargin==1
-    
-     % Input EEG error check
-    serror = erplab_eegscanner(EEG, 'pop_erplabInterpolateElectrodes',...
-        0, ... % 0 = do not accept md;
-        0, ... % 0 = do not accept empty dataset;
-        0, ... % 0 = do not accept epoched EEG;
-        0, ... % 0 = do not accept if no event codes
-        2);    % 2 = do not care if there exists an ERPLAB EVENTLIST struct
-    
-    % Quit if there is an error with the input EEG
-    if serror; return; end
-    
-    % Get previous input parameters
-    def  = erpworkingmemory('pop_erplabInterpolateElectrodes');
-    if isempty(def); def = {}; end
-    
-    %% Call GUI function 
-    inputstrMat = gui_erplabInterpolateElectrodes(def);  % GUI
-    
-    % Exit when CANCEL button is pressed
-    if isempty(inputstrMat)
-        outputEEG      = [];
-        commandHistory = 'User selected cancel';
+try
+    if nargin==1
+        
+        % Input EEG error check
+        serror = erplab_eegscanner(EEG, 'pop_erplabInterpolateElectrodes',...
+            0, ... % 0 = do not accept md;
+            0, ... % 0 = do not accept empty dataset;
+            0, ... % 0 = do not accept epoched EEG;
+            0, ... % 0 = do not accept if no event codes
+            2);    % 2 = do not care if there exists an ERPLAB EVENTLIST struct
+        
+        % Quit if there is an error with the input EEG
+        if serror; return; end
+        
+        % Get previous input parameters
+        def  = erpworkingmemory('pop_erplabInterpolateElectrodes');
+        if isempty(def); def = {}; end
+        
+        %% Call GUI function
+        inputstrMat = gui_erplabInterpolateElectrodes(def);  % GUI
+        
+        
+        % Exit when CANCEL button is pressed
+        if isempty(inputstrMat)
+            outputEEG      = [];
+            commandHistory = 'User selected cancel';
+            return;
+        end
+        
+        replaceChannels          = inputstrMat{1};
+        ignoreChannels           = inputstrMat{2};
+        interpolationMethod      = inputstrMat{3};
+        displayEEG               = inputstrMat{4};
+        %
+        
+        % Save the GUI inputs to memory
+        erpworkingmemory('pop_erplabInterpolateElectrodes', ...
+            {replaceChannels,    ...
+            ignoreChannels,      ...
+            interpolationMethod, ...
+            displayEEG           });
+        
+        
+        %% New output EEG setname w/ suffix
+        setnameSuffix = '_interp';
+        if length(EEG)==1
+            EEG.setname = [EEG.setname setnameSuffix];
+        end
+        
+        
+        
+        %% Run the pop_ command with the user input from the GUI
+        [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes(EEG, ...
+            'replaceChannels'    , replaceChannels,     ...
+            'ignoreChannels'     , ignoreChannels,      ...
+            'interpolationMethod', interpolationMethod, ...
+            'displayEEG'         , displayEEG,               ...
+            'History'            , 'gui');
+        
         return;
+        
+        
+        
+        
     end
-    
-    replaceChannels          = inputstrMat{1};
-    ignoreChannels           = inputstrMat{2};
-    interpolationMethod      = inputstrMat{3};
-    displayEEG               = inputstrMat{4};
-    %
-    
-    % Save the GUI inputs to memory
-    erpworkingmemory('pop_erplabInterpolateElectrodes', ...
-        {replaceChannels,    ...
-        ignoreChannels,      ...
-        interpolationMethod, ...
-        displayEEG           });
-    
-    
-    %% New output EEG setname w/ suffix
-    setnameSuffix = '_interp';
-    if length(EEG)==1
-        EEG.setname = [EEG.setname setnameSuffix];
-    end
-    
-    
-    
-    %% Run the pop_ command with the user input from the GUI
-    [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes(EEG, ...
-        'replaceChannels'    , replaceChannels,     ...
-        'ignoreChannels'     , ignoreChannels,      ...
-        'interpolationMethod', interpolationMethod, ...
-        'displayEEG'         , displayEEG,               ...
-        'History'            , 'gui');
-    
-    return;
-    
-    
+catch
+    error_msg = sprintf('Error: ERPLAB GUI\n\n If the problem persists, then restart ERPLAB''s working memory in ERPLAB > Settings > ERPLAB Memory Settings > Reset ERPLAB"s Working Memory');
+    error(error_msg);
 end
-
-
 %% Parse named input parameters (vs positional input parameters)
 
 inputParameters               = inputParser;
