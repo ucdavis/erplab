@@ -76,11 +76,7 @@ try
                 handles.srate = [];
                 handles.nsets = [];
         end
-        if isfield(ALLERP, 'datatype')
-                datatype = ALLERP(cerpi).datatype;
-        else
-                datatype = 'ERP';
-        end
+        datatype = checkdatatype(ALLERP(cerpi));
 catch
         ALLERP = [];
         handles.xmin  = [];

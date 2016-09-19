@@ -418,11 +418,8 @@ p.addParamValue('Chanlocfile', '', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(ERP, binArray, latencyArray, varargin{:});
 
-if isfield(ERP, 'datatype')
-        datatype = ERP.datatype;
-else
-        datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
+
 if strcmpi(datatype, 'ERP')
         kktime = 1000;
         srate = ERP.srate;

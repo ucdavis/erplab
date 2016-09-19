@@ -38,11 +38,7 @@ function blv = blvalue(ERP, chan, bin, blcorr)
 %
 % Baseline assessment
 %
-if isfield(ERP, 'datatype')
-    datatype = ERP.datatype;
-else 
-    datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
 else

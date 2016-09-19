@@ -287,4 +287,8 @@ function bigheadplot_CreateFcn(hObject, eventdata, handles)
 % Hint: place code in OpeningFcn to populate bigheadplot
 
 axes(hObject)
-imshow('CSD_elec_plot.png')
+
+path_to_pic = which('CSD_elec_plot.png');
+if numel(path_to_pic) ~= 0     % iff a path to the pic exists, show it
+  imshow('CSD_elec_plot.png')
+end

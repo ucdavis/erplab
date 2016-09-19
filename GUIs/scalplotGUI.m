@@ -82,11 +82,7 @@ try
         splinefile = ERP.splinefile;
         xmax  = ERP.xmax;
         xmin  = ERP.xmin;
-        if isfield(ERP, 'datatype')
-                datatype = ERP.datatype;
-        else
-                datatype = 'ERP';
-        end
+        datatype = checkdatatype(ERP);
 catch
         ERP   = [];
         nchan = 0;

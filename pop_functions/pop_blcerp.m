@@ -57,11 +57,7 @@ if nargin < 1
         help pop_blcerp
         return
 end
-if isfield(ERP(1), 'datatype')
-      datatype = ERP.datatype;
-else
-      datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
 %
 % Gui is working...
 %

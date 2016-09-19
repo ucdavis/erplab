@@ -34,11 +34,7 @@ if nargin < 1
       help pop_calibraterp
       return
 end
-if isfield(ERP(1), 'datatype')
-      datatype = ERP.datatype;
-else
-      datatype = 'ERP';
-end
+datatype = checkdatatype(ERP(1));
 %
 % Gui is working...
 %

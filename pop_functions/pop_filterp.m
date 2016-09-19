@@ -85,11 +85,7 @@ if isempty(ERP(1).bindata)
     errorfound(msgboxText, title);
     return
 end
-if isfield(ERP(1), 'datatype')
-    datatype = ERP.datatype;
-else
-    datatype = 'ERP';
-end
+datatype = checkdatatype(ERP(1));
 if nargin==1
     if ~strcmpi(datatype, 'ERP')
         msgboxText =  'Cannot filter Power Spectrum waveforms!';

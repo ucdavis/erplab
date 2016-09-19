@@ -22,15 +22,7 @@
 % 2012
 
 function def = default_time_ticks(ERP, trange)
-if isfield(ERP, 'datatype')
-    datatype = ERP.datatype;
-    
-    if strcmp(datatype,'CSD')
-        datatype = 'ERP';     % if CSD data, treat as ERP data here
-    end
-else
-    datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
     kf = 100;

@@ -54,11 +54,7 @@ if nargin<1
       help erptimeshift
       return
 end
-if isfield(ERP, 'datatype')
-    datatype = ERP.datatype;
-else
-    datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
 else

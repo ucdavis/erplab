@@ -139,11 +139,7 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ERP, formulas, varargin{:});
 
-if isfield(ERP, 'datatype')
-    datatype = ERP.datatype;
-else
-    datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
 
 if strcmpi(p.Results.Warning,'on')
         wchmsgon = 1;

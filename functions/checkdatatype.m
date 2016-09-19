@@ -1,21 +1,18 @@
-% PURPOSE: Tests whether an actual 0 (zero) latency value is part of ERP.times or not.
-%         
-% FORMAT:
+% PURPOSE   :   Datatype check
+% Checking the datatype in a consistent function makes later changes easier
+% axs 19-Sep-2016
 %
-% ERP = checkerpzerolat(ERP)
+% FORMAT:
+% datatype_string = checkdatatype(ERP)
 %
 % INPUT:
-%
-% ERP        - ERPset
-%
+% ERP structure
 %
 % OUTPUT:
-%
-% ERP        - ERPset
-%
+% datatype      -  A string specifying the datatype
 %
 % *** This function is part of ERPLAB Toolbox ***
-% Author: Javier Lopez-Calderon
+% Author: Andrew X Stewart
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -42,30 +39,21 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function ERP = checkerpzerolat(ERP)
-if ~iserpstruct(ERP)
-      fprintf('\nWARNING: checkeegzerolat() only works with ERP structure. This call was ignored.\n')
-      return
-end
+function datatype = checkdatatype(ERP)
 
-datatype = checkdatatype(ERP);
 
-if strcmpi(datatype, 'ERP')
-    kktime = 1000;
+
+if isfield(ERP,'datatype')
+    if strcmpi(ERP.datatype(end-2:end),'FFT')     % power-like FFT, EFFT or TFFT
+        datatype = ERP.datatype;  %
+        
+    elseif strcmpi(ERP.datatype, 'ERP') || strcmpi(ERP.datatype, 'CSD')
+        datatype = 'ERP';                % ERP-like ERP or CSD
+        
+    else
+        datatype = 'ERP';                 % if unknown, try treating like ERP for now
+    end
 else
-    kktime = 1;
+    datatype = 'ERP';                 % if unstated, try treating like ERP for now
 end
-auxtimes  = ERP.times;
-[v, indx] = min(abs(auxtimes));
-ERP.times = auxtimes - auxtimes(indx);
-ERP.xmin  = min(ERP.times)/kktime;
-ERP.xmax  = max(ERP.times)/kktime;
-ERP.srate = round(ERP.srate);
-if ERP.times(1)~=auxtimes(1)
-      msg = ['\nWarning: zero time-locked stimulus latency values were not found.\n'...
-      'Therefore, ERPLAB adjusted latency values at ERP.times, ERP.xmin,and ERP.xmax.\n\n'];
-      fprintf(msg);
-      fprintf('Time range is now [%.3f  %.3f] sec.\n', ERP.xmin, ERP.xmax )
-else
-      %fprintf('Zero latencies OK.\n')
 end

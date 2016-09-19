@@ -49,11 +49,7 @@ function ERP = lindetrenderp( ERP, interv)
 if nargin<1
         help lindetrenderp
 end
-if isfield(ERP, 'datatype')
-    datatype = ERP.datatype;
-else % FFT
-    datatype = 'ERP';
-end
+datatype = checkdatatype(ERP);
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
     srate = ERP.srate;

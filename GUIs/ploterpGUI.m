@@ -54,17 +54,9 @@ try
         ERP   = varargin{1};
         nbin  = ERP.nbin;
         nchan = ERP.nchan;
-        if isfield(ERP, 'datatype')
-                datatype = ERP.datatype;
-                
-                if strcmp(datatype,'CSD')
-                    datatype = 'ERP';     % if CSD data, treat as ERP data here
-                end
-        else
-                datatype = 'ERP';
-        end
+        datatype = checkdatatype(ERP);
 catch
-        ERP   = [];
+    ERP   = [];
         nbin  = 1;
         nchan = 1;
         datatype = 'ERP';
