@@ -1,10 +1,10 @@
 % erplab_interpolateElectrodes() - interpolate data channels
 %
-% Usage: EEG = erplab_interpolateElectrodes(ORIEEG, bad_elec, ignored_elec, method)
+% Usage: EEG = erplab_interpolateElectrodes(ORIEEG, replace_elec, ignored_elec, method)
 %
 % Inputs:
 %     EEG      - EEGLAB dataset
-%     bad_elec - [integer array] indices of channels to interpolate.
+%     replace_elec - [integer array] indices of channels to interpolate.
 %                For instance, these channels might be bad.
 %                [chanlocs structure] channel location structure containing
 %                either locations of channels to interpolate or a full
@@ -40,7 +40,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function EEG = erplab_interpolateElectrodes(ORIEEG, bad_elec, ignored_elec, method, varargin)
+function EEG = erplab_interpolateElectrodes(ORIEEG, replace_elec, ignored_elec, method, varargin)
 
 %% Error check input variables
 if nargin < 2
@@ -53,20 +53,40 @@ EEG = ORIEEG;
 if nargin < 4
     disp('Using spherical interpolation');
     method = 'spherical';
-end;
+end
 
-% check channel structure
+% Error check: channel structure exists
 tmplocs = ORIEEG.chanlocs;
 if isempty(tmplocs) || isempty([tmplocs.X])
-    error('Channel locations are needed to interpolate. Add channel locations through EEGLAB > Edit > Channel locations');
-end;
+    error('Missing Channel Locations:\n\nChannel locations are needed to interpolate. Add channel locations through EEGLAB > Edit > Channel locations');
+end
 
-% Error check: Overlapping electrode lists
-overlap_elec = intersect(bad_elec, ignored_elec);
+
+% Error check: Overlapping electrode lists in replace_elecs and
+% ignore_elecs
+overlap_elec = intersect(replace_elec, ignored_elec);
 if ~isempty(overlap_elec)
-    error('There is overlap between the bad electrodes and the electrodes you wish to skip for interpolation.\nFix the input electrode lists to avoid this overlap of bad and ignored electrodes\n\nBad electrodes:\t\t%s\nIgnore electrodes:\t%s\nOverlapping electrodes:\t%s'...
-        , num2str(bad_elec), num2str(ignored_elec), num2str(overlap_elec))
-end;
+    error('Replace/Ignore Electrode Overlap:\n\nThere is overlap in the replace electrodes and the ignore electrodes.\nFix the input to avoid this overlap.\n\nBad electrodes:\t\t%s\nIgnore electrodes:\t%s\nOverlapping electrodes:\t%s', ...
+        num2str(replace_elec), num2str(ignored_elec), num2str(overlap_elec))
+end
+
+% Error check: When the user inputs electrodes not found in the input EEG dataset
+missing_replace_elecs = setdiff(replace_elec, [ORIEEG.chanlocs.urchan]);
+if(~isempty(missing_replace_elecs))
+    error('Missing Replace Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t\t%s', ...
+        num2str(missing_replace_elecs));
+end
+
+% Warning check: Missing ignored electrodes in EEG dataset
+missing_ignore_elecs = setdiff(ignored_elec, [ORIEEG.chanlocs.urchan]);
+if(~isempty(missing_ignore_elecs))
+    warning('TMissing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
+        num2str(missing_ignore_elecs));
+end
+
+
+
+
 
 %% Handle optional input variables
 optargs = {false}; % Default optional inputs
@@ -81,32 +101,32 @@ optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep t
 
 
 %%
-if isstruct(bad_elec)
+if isstruct(replace_elec)
     
     % add missing channels in interpolation structure
     % -----------------------------------------------
-    lab1 = { bad_elec.labels };
+    lab1 = { replace_elec.labels };
     tmpchanlocs = EEG.chanlocs;
     lab2 = { tmpchanlocs.labels };
     [~, tmpchan] = setdiff_bc( lab2, lab1);
     tmpchan = sort(tmpchan);
     if ~isempty(tmpchan)
         newchanlocs = [];
-        fields = fieldnames(bad_elec);
+        fields = fieldnames(replace_elec);
         for index = 1:length(fields)
-            if isfield(bad_elec, fields{index})
+            if isfield(replace_elec, fields{index})
                 for cind = 1:length(tmpchan)
                     fieldval = getfield( EEG.chanlocs, { tmpchan(cind) },  fields{index});
                     newchanlocs = setfield(newchanlocs, { cind }, fields{index}, fieldval);
                 end;
             end;
         end;
-        newchanlocs(end+1:end+length(bad_elec)) = bad_elec;
-        bad_elec = newchanlocs;
+        newchanlocs(end+1:end+length(replace_elec)) = replace_elec;
+        replace_elec = newchanlocs;
     end;
-    if length(EEG.chanlocs) == length(bad_elec), return; end;
+    if length(EEG.chanlocs) == length(replace_elec), return; end;
     
-    lab1          = { bad_elec.labels };
+    lab1          = { replace_elec.labels };
     tmpchanlocs   = EEG.chanlocs;
     lab2          = { tmpchanlocs.labels };
     [~, badchans] = setdiff_bc( lab1, lab2);
@@ -114,7 +134,7 @@ if isstruct(bad_elec)
     fprintf('Interpolating %d channels...\n', length(badchans));
     
     if isempty(badchans), return; end;
-    goodchans      = sort(setdiff(1:length(bad_elec), badchans));
+    goodchans      = sort(setdiff(1:length(replace_elec), badchans));
     
     % re-order good channels
     % ----------------------
@@ -126,7 +146,7 @@ if isstruct(bad_elec)
     % looking at channels for ICA
     % ---------------------------
     %[~, sorti] = sort(neworder);
-    %{ EEG.chanlocs(EEG.icachansind).labels; bad_elec(goodchans(sorti(EEG.icachansind))).labels }
+    %{ EEG.chanlocs(EEG.icachansind).labels; replace_elec(goodchans(sorti(EEG.icachansind))).labels }
     
     % update EEG dataset (add blank channels)
     % ---------------------------------------
@@ -146,21 +166,21 @@ if isstruct(bad_elec)
         %data(icachansind,:)
         %data2(icachansind2,:)
     end;
-    % { EEG.chanlocs(neworder).labels; bad_elec(sort(goodchans)).labels }
-    %tmpdata                  = zeros(length(bad_elec), size(EEG.data,2), size(EEG.data,3));
+    % { EEG.chanlocs(neworder).labels; replace_elec(sort(goodchans)).labels }
+    %tmpdata                  = zeros(length(replace_elec), size(EEG.data,2), size(EEG.data,3));
     %tmpdata(goodchans, :, :) = EEG.data;
     
     % looking at the data
     % -------------------
     %tmp1 = mattocell(EEG.data(sorti,1));
     %tmp2 = mattocell(tmpdata(goodchans,1));
-    %{ EEG.chanlocs.labels; bad_elec(goodchans).labels; tmp1{:}; tmp2{:} }
+    %{ EEG.chanlocs.labels; replace_elec(goodchans).labels; tmp1{:}; tmp2{:} }
     %EEG.data      = tmpdata;
     
-    EEG.chanlocs  = bad_elec;
+    EEG.chanlocs  = replace_elec;
     
 else
-    badchans  = bad_elec;
+    badchans  = replace_elec;
     goodchans = setdiff_bc(1:EEG.nbchan, badchans);
     oldelocs  = EEG.chanlocs;
     EEG       = pop_select(EEG, 'nochannel', badchans);
@@ -216,7 +236,7 @@ end
 
 
 %% Warning check: Ignored bad channels
-flatlinechans = intersect(bad_elec, ignored_elec);
+flatlinechans = intersect(replace_elec, ignored_elec);
 if(~isempty(flatlinechans))
     warning('Warning: %d channels contain no data because they are interpolated with ignored channels: %s', length(flatlinechans), int2str(flatlinechans));
 end
@@ -304,7 +324,7 @@ else
     fprintf('\n');
 end;
 
-tmpdata               = zeros(length(bad_elec), EEG.pnts, EEG.trials);
+tmpdata               = zeros(length(replace_elec), EEG.pnts, EEG.trials);
 tmpdata(origoodchans, :,:) = EEG.data;
 %if input data are epoched reshape badchansdata for Octave compatibility...
 if length(size(tmpdata))==3
