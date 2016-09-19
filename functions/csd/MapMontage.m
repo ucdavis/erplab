@@ -21,12 +21,12 @@ if nargin < 1
   disp('*** Error: No EEG montage specified');
   return
 end
-figure;
+figstr = 'EEG Channel Montage';
+fignum = figure('name',figstr);
 set(gcf,'Visible','off')
 nElec = size(Montage.xy,1);
 tsize = 20;
 if nElec > 64; tsize = 12; end;
-set(gcf,'Name',sprintf('%d-channel EEG Montage',nElec),'NumberTitle','off')
 m = 100;
 t = [0:pi/100:2*pi]; 
 r = m/2 + 0.5;
@@ -55,6 +55,6 @@ for e = 1:nElec
 end
 set(gcf,'PaperPositionMode','auto')
 set(gcf,'PaperType','a5')
-fign = get(groot,'CurrentFigure');
-print(fign.Number,'CSD_elec_plot','-dpng','-r0');
+%fignum = get(groot,'CurrentFigure');   % Doesn't work with pre-R2014
+print(fignum,'CSD_elec_plot','-dpng','-r0');
 close(gcf)
