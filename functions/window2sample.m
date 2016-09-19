@@ -52,14 +52,18 @@ if nargin<4
 end
 xlimc = [];
 pnts  = ERPLAB.pnts;
-if isfield(ERPLAB, 'datatype')
-    datatype = ERPLAB.datatype;
-    if strcmp(datatype,'CSD')
-        datatype = 'ERP';     % if CSD data, treat as ERP data here
+if isfield(ERPLAB,'datatype')
+    if strcmpi(ERPLAB.datatype(end-2:end),'FFT')     % power-like FFT, EFFT or TFFT
+        datatype = ERPLAB.datatype;  %
+        
+    elseif strcmpi(ERPLAB.datatype, 'ERP') || strcmpi(ERPLAB.datatype, 'CSD')
+        datatype = 'ERP';                % ERP-like ERP or CSD
+        
+    else
+        datatype = 'ERP';                 % if unknown, try treating like ERP for now
     end
-    
 else
-    datatype = 'ERP';
+    datatype = 'ERP';                 % if unstated, try treating like ERP for now
 end
 
 if strcmpi(datatype, 'ERP')

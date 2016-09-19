@@ -31,14 +31,22 @@ if nargin<1
         error('erpAutoYLim needs 1 input argument at least.')
 end
 
-if isfield(ERP, 'datatype')
-        datatype = ERP.datatype;
-        if strcmp(datatype,'CSD')
-            datatype = 'ERP';     % if CSD data, treat as ERP data here
-        end
+if isfield(ERP,'datatype')
+    if strcmpi(ERP.datatype(end-2:end),'FFT')     % power-like FFT, EFFT or TFFT
+        datatype = ERP.datatype;  %
+        
+    elseif strcmpi(ERP.datatype, 'ERP') || strcmpi(ERP.datatype, 'CSD')
+        datatype = 'ERP';                % ERP-like ERP or CSD
+        
+    else
+        datatype = 'ERP';                 % if unknown, try treating like ERP for now
+    end
 else
-        datatype = 'ERP';
+    datatype = 'ERP';                 % if unstated, try treating like ERP for now
 end
+
+
+
 if nargin<4
         if strcmpi(datatype, 'ERP')
                 xxlim = [ERP.xmin ERP.xmax]*1000;
@@ -73,32 +81,34 @@ try
         nchan = length(chanArray);
         fs    = ERP.srate;
         
+        if strcmpi(datatype,'CSD')
+            datatype = 'ERP';     % if CSD data, treat as ERP data here
+        end
+        
         if strcmpi(datatype, 'ERP')
             
-            if strcmp(datatype,'CSD')
-        datatype = 'ERP';     % if CSD data, treat as ERP data here
-    end
-                if xxlim(1)<round(ERP.xmin*1000)
-                        aux_xxlim(1) = round(ERP.xmin*1000);
-                else
-                        aux_xxlim(1) = xxlim(1);
-                end
-                if xxlim(2)>round(ERP.xmax*1000)
-                        aux_xxlim(2) = round(ERP.xmax*1000);
-                else
-                        aux_xxlim(2) = xxlim(2);
-                end
+
+            if xxlim(1)<round(ERP.xmin*1000)
+                aux_xxlim(1) = round(ERP.xmin*1000);
+            else
+                aux_xxlim(1) = xxlim(1);
+            end
+            if xxlim(2)>round(ERP.xmax*1000)
+                aux_xxlim(2) = round(ERP.xmax*1000);
+            else
+                aux_xxlim(2) = xxlim(2);
+            end
         else  % fft
-                if xxlim(1)<5
-                        aux_xxlim(1) = 5; % to avoid including the spectrum under 5 Hz in calculating Y auto (too big!)
-                else
-                        aux_xxlim(1) = xxlim(1);
-                end
-                if xxlim(2)>round(fs/2);
-                        aux_xxlim(2) = round(fs/2);
-                else
-                        aux_xxlim(2) = xxlim(2);
-                end
+            if xxlim(1)<5
+                aux_xxlim(1) = 5; % to avoid including the spectrum under 5 Hz in calculating Y auto (too big!)
+            else
+                aux_xxlim(1) = xxlim(1);
+            end
+            if xxlim(2)>round(fs/2);
+                aux_xxlim(2) = round(fs/2);
+            else
+                aux_xxlim(2) = xxlim(2);
+            end
         end
         
         %disp('start')

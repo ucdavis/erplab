@@ -65,11 +65,21 @@ if nargin<1
         help ploterps
         return
 end
-if isfield(ERP, 'datatype')
-    datatype = ERP.datatype;
+
+if isfield(ERP,'datatype')
+    if strcmpi(ERP.datatype(end-2:end),'FFT')     % power-like FFT, EFFT or TFFT
+        datatype = ERP.datatype;  %
+        
+    elseif strcmpi(ERP.datatype, 'ERP') || strcmpi(ERP.datatype, 'CSD')
+        datatype = 'ERP';                % ERP-like ERP or CSD
+        
+    else
+        datatype = 'ERP';                 % if unknown, try treating like ERP for now
+    end
 else
-    datatype = 'ERP';
+    datatype = 'ERP';                 % if unstated, try treating like ERP for now
 end
+
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
 else
