@@ -188,15 +188,21 @@ set(hframe,'position', [posframe(1:2) posframe(3)*wfactor2 posframe(4)]);
 
 menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
 
-%****************************************************************************************************
-%****************************************|        MENU      |****************************************
-%****************************************|      CALLBACKS   |****************************************
-%****************************************************************************************************
+
+%% ****************************************************************************************************
+%  ****************************************|        MENU      |****************************************
+%  ****************************************|      CALLBACKS   |****************************************
+%  ****************************************************************************************************
 %
 % ARTIFACT DETECTION FOR CONTINUOUS DATA callback
 %
 comTrim   = [trystrs.no_check '[EEG, LASTCOM]   = pop_eegtrim(EEG);' catchstrs.new_and_hist ];
 comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.store_and_hist ];
+comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG);'              catchstrs.new_and_hist];
+comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
+comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
+
+
 
 %
 % EVENTLIST callback
@@ -248,8 +254,8 @@ comARSUMM2 = [trystrs.no_check '[EEG, pr, acce rej, histoflags,  LASTCOM] = pop_
 comARSUMM3 = [trystrs.no_check '[EEG, MPD, LASTCOM] = getardetection(EEG, 1);' catchstrs.add_to_hist];
 comARSUMerp1 = ['[ERP, tacce, trej, histoflags,  ERPCOM] = pop_summary_AR_erp_detection(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
-%
-% UTILITIES  callbacks
+
+%% UTILITIES  callbacks
 %
 comEEC     = [trystrs.no_check '[EEG, LASTCOM] = pop_eraseventcodes(EEG);' catchstrs.new_and_hist];
 comICOF    = [trystrs.no_check '[EEG, LASTCOM] = pop_insertcodeonthefly(EEG);' catchstrs.new_and_hist];
@@ -268,8 +274,8 @@ comBlab2eve  = [trystrs.no_check '[EEG, LASTCOM] = pop_binlabel2type(EEG);' catc
 comEEG2CSD     = [trystrs.no_check '[EEG, LASTCOM] = pop_currentsourcedensity(EEG);' catchstrs.new_and_hist];
 comERP2CSD     = [trystrs.no_check '[ERP, LASTCOM] = pop_currentsourcedensity(ERP);' catchstrs.add_to_hist];
 
-%
-% FILTER EEG callbacks
+
+%% FILTER EEG callbacks
 %
 comBFCD    = [trystrs.no_check '[EEG, LASTCOM] = pop_basicfilter(EEG);' catchstrs.new_and_hist];
 comPAS     = [trystrs.no_check '[EEG, LASTCOM] = pop_fourieeg(EEG);' catchstrs.add_to_hist];
@@ -278,8 +284,8 @@ comTK1     = [trystrs.no_check '[EEG, LASTCOM] = pop_polydetrend(EEG);' catchstr
 comTK2     = [trystrs.no_check '[EEG, LASTCOM] = pop_eeglindetrend(EEG);' catchstrs.new_and_hist ];
 comTK3     = '[ERP, ERPCOM]  = pop_erplindetrend(ERP); [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);';
 
-%
-% ERP processing callbacks
+
+%% ERP processing callbacks
 %
 comERPBDR    = ['[ERP, ERPCOM] = pop_bdfrecovery(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSLFerp    = ['[ERP, ERPCOM] = pop_exporterpeventlist(ERP);'  '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -301,47 +307,47 @@ comSendemail = ['[ALLERP, ERPCOM]     = pop_senderpbymail(ALLERP);' '[ERP, ALLER
 comSaveH     = ['[ERP, ERPCOM] = pop_saveERPhistory(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSetemail  = 'setemailGUI;';
 
-% export ERP
+%% export ERP
 comEXPAVG    = ['[ERP, ERPCOM] = pop_erp2asc(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comEXPUNI    = ['[ERP, ERPCOM] = pop_export2text(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
-% import ERP
+%% import ERP
 comIMPERP    = ['[ERP, ERPCOM] = pop_importerp;' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comIMPERPSS  = ['[ERP, ALLERP, ERPCOM] = pop_importerpss; ' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comIMPNEURO  = ['[ERP, ERPCOM] = pop_importavg(''''); ' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
-% load ERP
+%% load ERP
 comLDERP     = ['[ERP, ALLERP, ERPCOM] = pop_loaderp('''');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);' ];
 comDELERP    = ['[ALLERP, ERPCOM]      = pop_deleterpset(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCALIERP   = ['[ERP, ERPCOM]         = pop_calibraterp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
-% Measurement and viewer
+%% Measurement and viewer
 comGAVG      = ['[ERP, ERPCOM]     = pop_gaverager(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comERPMT     = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comERPView   = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP,[],[],[],''Erpsets'', 0,''Viewer'', ''on'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
-% export figure
+%% export figure
 comEXPPDF    = ['[ERP, ERPCOM] = pop_exporterplabfigure(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
-% help
+%% help
 comhelpman   = 'pop_erphelp;' ;
 comhelptut   = 'pop_erphelptut;' ;
 comhelpsrp   = 'pop_erphelpscript;' ;
 comhelpvideo = 'web http://erpinfo.org/erplab/erplab-documentation/video-documentation -browser';
 
-%
-% Filter ERP callbacks
+
+%% Filter ERP callbacks
 %
 comFil    = ['[ERP, ERPCOM] = pop_filterp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comPASerp = ['ERP, LASTCOM = pop_fourierp(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comEPSerp = ['ERP, LASTCOM = pop_getFFTfromERP(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
 
-% Working memory
+%% Working memory
 comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MAIN      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        MENU      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -350,13 +356,44 @@ comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(
 submenu = uimenu( menuERPLAB,'Label','ERPLAB','separator','on','tag','ERPLAB','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 set(submenu,'position', 6); % thanks Arno!
 
-%
-% Artifact detection in continuous data
-%
-uimenu( submenu,'Label','Artifact rejection in continuous data','CallBack', comREJCON,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 
-%
-% EVENTLIST for EEG menu and submenu
+%% Continuous EEG Preprocessing Submenu
+
+preProcMenu_userdata = [ ...
+    'startup:off;'      ...
+    'continuous:on;'    ...
+    'epoch:off;'        ...
+    'study:off;'        ...
+    'erpset:off'        ];
+
+preProcMenu = uimenu( submenu,                              ...
+    'Label'    , 'Preprocess Continuous EEG',               ...
+    'tag'      , 'PreprocessContinuousEEG',                 ... 
+    'separator', 'on',                                      ...  
+    'userdata' , preProcMenu_userdata);
+% Artifact rejection in continuous data
+uimenu( preProcMenu,                                        ...
+    'Label'    , 'Artifact rejection in continuous data',   ...
+    'CallBack' , comREJCON,                                 ...
+    'userdata' , preProcMenu_userdata);
+% Shift Event Codes
+uimenu( preProcMenu,                                        ...
+    'Label'   , 'Shift Event Codes',                        ... 
+    'CallBack', comShiftEvents,                             ...
+    'userdata', preProcMenu_userdata);
+% Delete Time Segments
+uimenu( preProcMenu,                                        ...
+    'Label'   , 'Delete Time Segments',                     ...
+    'CallBack', comDeleteTimeSegments,                      ...
+    'userdata', preProcMenu_userdata);
+% Selective Electrode Interpolation
+uimenu( preProcMenu,                                        ...
+    'Label'   , 'Interpolate Electrodes',        ...
+    'CallBack', comInterpolateElectrodes,         ...     
+    'userdata', preProcMenu_userdata);
+
+
+%% EVENTLIST for EEG menu and submenu
 %
 ELmenu = uimenu( submenu,'Label','EventList','tag','EventList','separator','on','userdata','startup:off;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( ELmenu,'Label','Create EEG EVENTLIST ','CallBack', comCLF1,'userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
@@ -383,13 +420,13 @@ uimenu( submenu,'Label','Transfer eventinfo to EEG.event (optional)','CallBack',
 % bepoching
 uimenu( submenu,'Label','Extract bin-based epochs','CallBack',comEB,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 
-%
-% EEG CHANNEL OPERATIONS
+
+%% EEG CHANNEL OPERATIONS
 %
 uimenu( submenu,'Label','EEG Channel operations','CallBack',comCHOP,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 
-%
-% FREQUENCY TOOLS & FILTERS EEG/ERP submenus
+
+%% FREQUENCY TOOLS & FILTERS EEG/ERP submenus
 %
 mFI = uimenu( submenu,'Label','Filter & Frequency Tools','separator','on','userdata','startup:off;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mFI,'Label','Filters for EEG data ','CallBack',comBFCD,'userdata','startup:off;continuous:on;epoch:on;study:on;erpset:off');
@@ -401,8 +438,8 @@ uimenu( mFI,'Label','EEG Linear detrend ','CallBack',comTK2,'separator','on','us
 uimenu( mFI,'Label','ERP Linear detrend ','CallBack',comTK3,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mFI,'Label','EEG Polynomial detrend (continuous) (alpha version)','CallBack', comTK1,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
 
-%
-% ARTIFACT DETECTION FOR EPOCHED DATA submenus
+
+%% ARTIFACT DETECTION FOR EPOCHED DATA submenus
 %
 mAR = uimenu( submenu,'Label','Artifact detection in epoched data','tag','ART','separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Simple voltage threshold','CallBack', comAR0,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
@@ -415,8 +452,8 @@ uimenu( mAR,'Label','Blocking & flat line','CallBack', comAR8,'userdata','startu
 uimenu( mAR,'Label','Clear artifact detection marks on EEG ','CallBack', comRSTAR,'separator','on','ForegroundColor', [0.6 0 0],'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Synchronize artifact info in EEG and EVENTLIST ','CallBack', comARSinc1,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 
-%
-% ARTIFACT DETECTION summaries submenus
+
+%% ARTIFACT DETECTION summaries submenus
 %
 mSAR = uimenu( submenu,'Label','Summarize artifact detection','tag','ART','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
 uimenu( mSAR,'Label','Summarize EEG artifacts in one value','CallBack', comARSUMM3,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
@@ -424,13 +461,13 @@ uimenu( mSAR,'Label','Summarize EEG artifacts in a table','CallBack', comARSUMM2
 uimenu( mSAR,'Label','Summarize EEG artifacts in a graphic','CallBack', comARSUMM,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
 uimenu( mSAR,'Label','Summarize ERP artifacts in a table ','CallBack', comARSUMerp1,'ForegroundColor', [0 0 0.6],'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
-%
-% AVERAGE ERP
+
+%% AVERAGE ERP
 %
 uimenu( submenu,'Label','Compute averaged ERPs ','CallBack',comAVG,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
 
-%
-% ERP OPERATIONS submenus
+
+%% ERP OPERATIONS submenus
 %
 mERPOP = uimenu( submenu,'Label','ERP Operations','tag','ERPop','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mERPOP,'Label','ERP Bin operations ','CallBack', comBOP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
@@ -441,8 +478,8 @@ uimenu( mERPOP,'Label','ERP Calibration ','CallBack', comCALIERP,'separator','on
 
 
 
-%
-% PLOT ERP WAVEFORMS AND MAPS
+
+%% PLOT ERP WAVEFORMS AND MAPS
 %
 mERPLOT = uimenu( submenu,'Label','Plot ERP','tag','ERPlot','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP waveforms ','CallBack', comPLOT,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
@@ -453,8 +490,8 @@ uimenu( mERPLOT,'Label','Load ERP channel location info using EEGLAB','CallBack'
 uimenu( mERPLOT,'Label','Clear ERP channel location info ','CallBack', comCERPch,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Close all ERPLAB figures ','CallBack','clerpf','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 
-%
-% EXPORT & IMPORT ERP submenus
+
+%% EXPORT & IMPORT ERP submenus
 %
 mEXERP = uimenu( submenu,'Label','Export & Import ERP','tag','Exerp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mEXERP,'Label','Export ERP to text (readable by ERPSS) ','CallBack', comEXPAVG,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
@@ -463,8 +500,8 @@ uimenu( mEXERP,'Label','Import ERP from text (ERPSS) ','CallBack', comIMPERPSS,'
 uimenu( mEXERP,'Label','Import ERP from Neuroscan (*.avg) ','CallBack', comIMPNEURO,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mEXERP,'Label','Import ERP from text (universal) ','CallBack', comIMPERP,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 
-%
-% LOAD & SAVE ERPset(s)
+
+%% LOAD & SAVE ERPset(s)
 %
 uimenu( submenu,'Label','Load existing ERPset','CallBack',comLDERP,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( submenu,'Label','Clear ERPset(s)','CallBack',comDELERP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
@@ -473,19 +510,19 @@ uimenu( submenu,'Label','Save current ERPset as '   ,'CallBack', comSAVEas,'user
 uimenu( submenu,'Label','Duplicate or rename current ERPset '   ,'CallBack', comDUPLI,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( submenu,'Label','Send ERPset by e-mail '   ,'CallBack', comSendemail,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
-%
-% MEASUREMENT TOOL
+
+%% MEASUREMENT TOOL
 %
 uimenu( submenu,'Label','ERP Measurement Tool ','CallBack', comERPMT,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( submenu,'Label','ERP Viewer ','CallBack', comERPView,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
-%
-% GRAND AVERAGE
+
+%% GRAND AVERAGE
 %
 uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', comGAVG,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 
-%
-% UTILITIES submenus
+
+%% UTILITIES submenus
 %
 mUTI = uimenu( submenu,'Label','Utilities','tag','Utilities','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Trim continuous data','CallBack', comTrim, 'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
@@ -508,8 +545,8 @@ uimenu( mUTI,'Label','Generate Current Source Density (CSD) data from EEG set da
 uimenu( mUTI,'Label','Generate Current Source Density (CSD) data from averaged ERP data','CallBack',comERP2CSD,'separator','off' );
 
 
-%
-% Settings submenus
+
+%% Settings submenus
 %
 mSETT = uimenu( submenu,'Label','Settings','tag','Settings','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Set font size for ERPLAB''s GUIs','CallBack', comFS,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
@@ -529,8 +566,8 @@ uimenu( mMEM,'Label','Save a copy of the current working memory as...','CallBack
 uimenu( mMEM,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 
 
-%
-% SUPPORT
+
+%% SUPPORT
 %
 mhelp = uimenu( submenu,'Label','Help','tag','erphelp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','About ERPLAB','CallBack','abouterplabGUI','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
@@ -541,9 +578,11 @@ uimenu( mhelp,'Label','ERPLAB video tutorials','CallBack', comhelpvideo,'separat
 uimenu( mhelp,'Label','Contact us','CallBack','web(''mailto:erplabtoolbox@gmail.com?subject=contact&body=Dear%20Steve%20and%20Javier,'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','Send question/feedback to the ERPLAB email list','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 
-%
-% CREATE ERPset MAIN MENU
+
+%% CREATE ERPset MAIN MENU
 %
 erpmenu = uimenu( menuERPLAB,'Label','ERPsets','separator','on','tag','erpsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 set(erpmenu,'position', 7);
 set(erpmenu,'enable','off');
+
+
