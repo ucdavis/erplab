@@ -522,6 +522,18 @@ uimenu( submenu,'Label','ERP Viewer ','CallBack', comERPView,'userdata','startup
 uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', comGAVG,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 
 
+
+%% Data Transformations submenu
+%
+mDTF = uimenu( submenu,'Label','Data Transformations','tag','Data Transformations','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mDTF,'Label','Compute Evoked Power Spectrum from current averaged ERP data','CallBack', comEPSerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from EEG set data','CallBack',comEEG2CSD,'separator','on' );
+uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from averaged ERP data','CallBack',comERP2CSD,'separator','off' );
+
+
+
+
+
 %% UTILITIES submenus
 %
 mUTI = uimenu( submenu,'Label','Utilities','tag','Utilities','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
@@ -541,8 +553,6 @@ uimenu( mUTI,'Label','Save current ERPset history for scripting','CallBack', com
 uimenu( mUTI,'Label','Find more here! (for scripting) ','CallBack','web(''http://www.erpinfo.org/erplab/erplab-documentation/utilities/view'',''-browser'');','separator','on',...
         'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Simulate EEG/ERP data  (alpha version)','CallBack',comESIM,'separator','on' );
-uimenu( mUTI,'Label','Generate Current Source Density (CSD) data from EEG set data','CallBack',comEEG2CSD,'separator','on' );
-uimenu( mUTI,'Label','Generate Current Source Density (CSD) data from averaged ERP data','CallBack',comERP2CSD,'separator','off' );
 
 
 

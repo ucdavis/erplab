@@ -51,13 +51,13 @@ else
 end
 
 % check input dataset
-elec_num = length(EEG.chanlocs);
-if elec_num < 1
+try 
+    elec_num = length(EEG.chanlocs);
+    assert(elec_num >= 1)
+catch
     msgboxText =  'Can''t generate CSD on empty dataset';
     title      = 'ERPLAB: CSD dataset problems?';
     errorfound(msgboxText, title);
-    return
-        
 end
 
 
