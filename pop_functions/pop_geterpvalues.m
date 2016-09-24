@@ -41,6 +41,7 @@
 % 'SendtoWorkspace' - {'on'/'off'} send values to workspace (matrix)
 % 'Viewer'          - open viewer
 % 'Mlabel'          - include a measurement label
+% 'Peakonset'       - 1 indicates finding the pre-peak onset for measuring fractional amplitude, 2 indicates finding the post-peak offset
 %
 %
 %
@@ -177,6 +178,7 @@ if nargin==1  % GUI
         inclate    = instr{21}; % include used latency values for measurements like mean, peak, area...
         intfactor  = instr{22};
         viewmea    = instr{23}; % viewer
+        peak_onset = instr{24}; % 1 for 
         
         if optioni==1 % from files
                 filelist    = erpset;
@@ -209,7 +211,8 @@ if nargin==1  % GUI
         
         erpworkingmemory('pop_geterpvalues', {optioni, erpset, fnamer, latency,...
                 binArray, chanArray, moption, coi, dig, blc, binlabop, polpeak,...
-                sampeak, locpeakrep, frac, fracmearep, send2ws, foutput, mlabel, inclate, intfactor});
+                sampeak, locpeakrep, frac, fracmearep, send2ws, foutput, mlabel,...
+                inclate, intfactor, peak_onset});
         
         if binlabop==0
                 binlabopstr = 'off';
@@ -261,7 +264,8 @@ if nargin==1  % GUI
                 moption, 'Component', coi, 'Resolution', dig, 'Baseline', blc, 'Binlabel', binlabopstr, 'Peakpolarity',...
                 polpeakstr, 'Neighborhood', sampeak, 'Peakreplace', locpeakrepstr, 'Filename', fname, 'Warning','on',...
                 'SendtoWorkspace', s2ws, 'Append', appfstr, 'FileFormat', foutputstr,'Afraction', frac, 'Mlabel', mlabel,...
-                'Fracreplace', fracmearepstr,'IncludeLat', inclatestr, 'InterpFactor', intfactor, 'Viewer', vmstr, 'History', 'gui');
+                'Fracreplace', fracmearepstr,'IncludeLat', inclatestr, 'InterpFactor', intfactor, 'Viewer', vmstr,...
+                'PeakOnset',peak_onset,'History', 'gui');
         
         pause(0.1)
         return
@@ -299,6 +303,7 @@ p.addParamValue('Mlabel', '', @ischar);
 p.addParamValue('InterpFactor', 1, @isnumeric);
 p.addParamValue('Viewer', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('PeakOnset',1,@isnumeric);
 
 % Parsing
 p.parse(ALLERP, latency, binArray, chanArray, varargin{:});
@@ -476,6 +481,8 @@ blc     = p.Results.Baseline;
 dig     = p.Results.Resolution;
 coi     = p.Results.Component;
 moption = lower(p.Results.Measure);
+
+peak_onset = p.Results.PeakOnset;
 
 if isempty(moption)
         error('ERPLAB says: User must specify a type of measurement.')
@@ -673,12 +680,9 @@ for k=1:nfile
                         serror = 3;
                         break
                 end
-        end        
-        if isfield(ERP, 'datatype')
-                datatype = ERP.datatype;
-        else
-                datatype = 'ERP';
         end
+        
+        datatype = checkdatatype(ERP);
         if ~strcmpi(datatype, 'ERP') && ismember(moption, {'areazt','areazp','areazn', 'nintegz'}  )
                 error('This type of measurement (automatic area/integration) is not allowed for Power Spectrum data ');                
         end
@@ -692,10 +696,10 @@ for k=1:nfile
         fprintf('Taking measurements across ERPset #%g...\n', erpsetArray(k))
         
         if inclate || viewmea % JLC. Sept 2012
-                [A, lat4mea]  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor);
+                [A, lat4mea]  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor,peak_onset);
         else
                 %ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor
-                A = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor);
+                A = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, locpeakrep, frac, fracmearep, intfactor,peak_onset);
                 lat4mea = [];
         end
         

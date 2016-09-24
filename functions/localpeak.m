@@ -77,6 +77,9 @@ p.addParamValue('Sfactor', 1, @isnumeric);
 p.addParamValue('Measure', 'amplitude', @ischar); % 'amplitude', 'peaklat', 'fraclat'
 p.addParamValue('Peakreplace', 'NaN', @ischar); % alterantive amplitude (when no local peak was found)
 p.addParamValue('Fracpeakreplace', 'NaN', @ischar); % alterantive amplitude (when no local peak was found)
+p.addParamValue('Peakonset', 1, @isnumeric);
+
+
 
 try
       p.parse(datax, timex, varargin{:});
@@ -104,6 +107,7 @@ npoints  = round(p.Results.Neighborhood);  % sample(s) at one side of the peak
 nsamples = length(datax);
 peakpol  = p.Results.Peakpolarity;
 Fk       = round(p.Results.Sfactor);  % oversampling factor
+peakonset = p.Results.Peakonset;
 
 %
 % Oversampling
@@ -243,6 +247,13 @@ if strcmpi(p.Results.Measure,'fraclat') % fractional latency assessment
       if ~isempty(frac)
             if frac>0 && ltypeoutput~=3
                   
+                a_change = -1;  % by default, have the index decrease by one, moving back thru the datapoints
+                if peakonset == 2
+                    a_change = 1; % if instead looking for the offset, have the index increase by one on each loop
+                end
+                
+                
+                
                   %if ~isnan(poslocalpf)
                   a = poslocalpf; % this might be local or absolute...
                   while a>0
@@ -252,7 +263,7 @@ if strcmpi(p.Results.Measure,'fraclat') % fractional latency assessment
                               latfracpeak = timex(posfrac);   % latency for fractional peak
                               break
                         end
-                        a = a-1;
+                        a = a + a_change;
                   end
                   if isempty(latfracpeak) %&& strcmpi(p.Results.Fracpeakreplace,'abs') % replaces with frac abs peak values
                         latfracpeak = NaN;

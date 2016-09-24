@@ -87,7 +87,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function varargout  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, localopt, frac, fracmearep, intfactor)
+function varargout  = geterpvalues(ERP, latency, binArray, chanArray, moption, blc, coi, polpeak, sampeak, localopt, frac, fracmearep, intfactor,peakonset)
 
 if nargin<1
         help geterpvalues
@@ -95,6 +95,9 @@ if nargin<1
 end
 if nargin<2
         error('ERROR geterpvalues(): You must specify ERP struct and latency(ies), at least.')
+end
+if nargin<14
+    peakonset = 1;
 end
 if nargin<13
         intfactor = 1;
@@ -482,7 +485,7 @@ try
                                         
                                         % gets values
                                         [aaaxxx, latpeak, latfracpeak] = localpeak(dataux, timex2, 'Neighborhood',sampeak, 'Peakpolarity', polpeak, 'Measure','fraclat',...
-                                                'Peakreplace', localoptstr, 'Fraction', frac, 'Fracpeakreplace', fracmearepstr);
+                                                'Peakreplace', localoptstr, 'Fraction', frac, 'Fracpeakreplace', fracmearepstr, 'Peakonset',peakonset);
                                         
                                         if isempty(aaaxxx)
                                                 error('Peak-related measurement failed...')
