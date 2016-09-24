@@ -57,6 +57,7 @@ handles.indxlistb  = [];
 handles.listch     = '';
 handles.indxlistch = [];
 handles.owfp       = 0;  % over write file permission. 1:allowed; 0:do not overwrite w/o asking.
+handles.rise       = 1;
 try
         cerpi = varargin{3};
 catch
@@ -182,20 +183,31 @@ pause(0.1)
 %--------------------------------------------------------------------------
 function menupeakoff(hObject, eventdata, handles)
 set(handles.popupmenu_pol_amp, 'Enable', 'off')
-set(handles.text_pre, 'Enable', 'off')
+set(handles.text_fa1, 'Enable', 'off')
 set(handles.popupmenu_samp_amp, 'Enable', 'off')
 set(handles.text_samp, 'Enable', 'off')
 set(handles.text12, 'Enable', 'off')
 set(handles.popupmenu_locpeakreplacement, 'Enable', 'off')
+set(handles.popupmenu_rise, 'Enable', 'off')
+set(handles.text_fa1, 'Enable', 'off')
+set(handles.text_fa2, 'Enable', 'off')
+set(handles.text_fa3, 'Enable', 'off')
+set(handles.text_fa4, 'Enable', 'off')
 
 %--------------------------------------------------------------------------
 function menupeakon(hObject, eventdata, handles)
 set(handles.popupmenu_pol_amp, 'Enable', 'on')
-set(handles.text_pre, 'Enable', 'on')
+set(handles.text_fa1, 'Enable', 'on')
 set(handles.popupmenu_samp_amp, 'Enable', 'on')
 set(handles.text_samp, 'Enable', 'on')
 set(handles.text12, 'Enable', 'on')
 set(handles.popupmenu_locpeakreplacement, 'Enable', 'on')
+set(handles.popupmenu_rise, 'Enable', 'on')
+set(handles.text_fa1, 'Enable', 'on')
+set(handles.text_fa2, 'Enable', 'on')
+set(handles.text_fa3, 'Enable', 'on')
+set(handles.text_fa4, 'Enable', 'on')
+
 
 %--------------------------------------------------------------------------
 function menufareaoff(hObject, eventdata, handles)
@@ -838,12 +850,14 @@ if ~strcmp(chanArraystr, '') && ~isempty(chanArraystr) && ~strcmp(latestr, '') &
         inclate   = get(handles.checkbox_include_used_latencies, 'Value');
         intfactor = get(handles.popupmenu_interpofactor, 'Value');
         
+        peakonset = get(handles.popupmenu_rise, 'Value');  % axs - get onset from menu value
+        
         %
         % Output
         %
         outstr = {foption, erpset, fname, late, binArray, chanArray, moption,...
                 coi, dig, blc, binlabop, polpeak, sampeak, locpeakrep, frac, fracmearep,...
-                send2ws, appendfile, foutput, mlabel, inclate, intfactor, viewmea};
+                send2ws, appendfile, foutput, mlabel, inclate, intfactor, viewmea, peakonset};
         handles.output = outstr;
         
         % Update handles structure
@@ -2567,3 +2581,40 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
+% --- Executes on selection change in popupmenu_rise.
+function popupmenu_rise_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu_rise (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_rise contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu_rise
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu_rise_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu_rise (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function text_punit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to text_punit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function text_fa1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to text_fa1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
