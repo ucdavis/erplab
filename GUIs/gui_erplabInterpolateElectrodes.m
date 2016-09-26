@@ -22,7 +22,7 @@ function varargout = gui_erplabInterpolateElectrodes(varargin)
 
 % Edit the above text to modify the response to help gui_erplabInterpolateElectrodes
 
-% Last Modified by GUIDE v2.5 16-Sep-2016 12:17:18
+% Last Modified by GUIDE v2.5 24-Sep-2016 21:19:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -80,15 +80,9 @@ set(handles.uipanel_interpolationMethod, ...
 set(handles.checkbox_displayEEG, ...
     'Value', handles.displayEEG);
 
-%
-% Set Color GUI
-%
-handles = painterplab(handles);
-
-%
-% Set font size
-%
-handles = setfonterplab(handles);
+handles = painterplab(handles);     % Set Color GUI
+handles = setfonterplab(handles);   % Set font size
+helpbutton;                         % Set help button image info
 
 
 % Update handles structure
@@ -286,3 +280,13 @@ handles.displayEEG = get(hObject,'Value');
 
 % Save the new value
 guidata(hObject,handles)
+
+
+% --- Executes on button press in pushbutton_help.
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+web('http://erpinfo.org/erplab/erplab-documentation/',...
+    '-browser');

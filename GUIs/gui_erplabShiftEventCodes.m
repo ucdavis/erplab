@@ -22,7 +22,7 @@
 
 % Edit the above text to modify the response to help gui_erplabShiftEventCodes
 
-% Last Modified by GUIDE v2.5 16-Sep-2016 16:01:39
+% Last Modified by GUIDE v2.5 24-Sep-2016 21:38:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -102,7 +102,7 @@ set(handles.gui_chassis, 'Name', windowTitle);
 
 handles = painterplab(handles);     % Set color GUI
 handles = setfonterplab(handles);   % Set font size
-
+helpbutton;                         % Set help pushbutton image
 
 
 
@@ -269,3 +269,13 @@ handles.displayEEG = get(hObject,'Value');
 
 % Save the new value
 guidata(hObject,handles);
+
+
+% --- Executes on button press in pushbutton_help.
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+web('http://erpinfo.org/erplab/erplab-documentation/',...
+    '-browser');
