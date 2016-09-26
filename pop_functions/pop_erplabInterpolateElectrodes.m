@@ -1,46 +1,47 @@
 function [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes( EEG, varargin )
-%pop_erplabInterpolateElectrodes In EEG data, replace specific channels through interpolation with the option to ignore specific channels
+% pop_erplabInterpolateElectrodes Replace specific electrodes in continuous EEG data through interpolation with the option to ignore specific channels
 %
-% FORMAT
-%
+% Format
 %    EEG = pop_erplabInterpolateElectrodes(inEEG, replaceChannels, ignoreChannels)
 %
-% INPUT:
 %
-%    EEG                EEGLAB EEG dataset
-%    replaceChannels       list of event codes to shift
-%    ignoreChannels        time in sec. If ignoreChannels is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
-%                       - If ignoreChannels is negative, the event code time-values are shifted to the left (e.g decreasing delay).
-%                       - If ignoreChannels is 0, the EEG's time values are not shifted.
-%    interpolationMethod         Type of interpolationMethod to use
-%                       - 'nearest'    (default) Round to the nearest integer          
-%                       - 'floor'      Round to nearest ingtowards positive infinity
-%                       - 'ceiling'    Round to nearest integer towards negative infinity
-% 
-% OPTIONAL INPUT:
-%
-%    displayFeedback  Type of feedback to display at Command window
-%                        - 'summary'   (default) Print summarized info to Command Window
-%                        - 'detailed'  Print event table with latency differences
-%                        - 'both'      Print both summarized & detailed info
-%
-% OUTPUT:
-%
-%    EEG               EEGLAB EEG dataset with the specified channels replaced through interpolation
+% Input
+%    EEG                    - EEG dataset
+%    replaceChannels        - list of event codes to shift
+%    ignoreChannels         -  time in sec. 
+%                               - If ignoreChannels is positive, the EEG event code time-values are shifted LATER (e.g. increasing delay).
+%                               - If ignoreChannels is negative, the event code time-values are shifted EARLIER to the left (e.g decreasing delay).
+%                               - If ignoreChannels is 0, the EEG's time values are not shifted.
+%    interpolationMethod    - Type of interpolationMethod to use
+%                               - 'nearest'    (default) Round to the nearest integer          
+%                               - 'floor'      Round to nearest ingtowards positive infinity
+%                               - 'ceiling'    Round to nearest integer towards negative infinity
 %
 %
-% EXAMPLE:
+% Optional Input
+%    displayFeedback        - Type of feedback to display at Command window
+%                               - 'summary'   (default) Print summarized info to Command Window
+%                               - 'detailed'  Print event table with latency differences
+%                               - 'both'      Print both summarized & detailed info
 %
-%     replaceChannels       = {'22', '19'};
-%     ignoreChannels        = 0.015;
-%     interpolationMethod   = 'floor';
-%     outputEEG             = pop_erplabInterpolateElectrodes(EEG, replaceChannels, ignoreChannels, interpolationMethod);
+% Output
+%   EEG               EEGLAB EEG dataset with the specified channels replaced through interpolation
+%
+%
+% Example use
+%   replaceChannels       = {'22', '19'};
+%   ignoreChannels        = 0.015;
+%   interpolationMethod   = 'floor';
+%   outputEEG             = pop_erplabInterpolateElectrodes(EEG, replaceChannels, ignoreChannels, interpolationMethod);
 %     
 %
-% Requirements:
-%   - EEG_CHECKSET (eeglab function)
+% Requirements
+%   - eeg_checkset.m (eeglab function)
 %
-% See also eegignoreChannels.m erpignoreChannels.m
+%
+% See also 
+%   - functions/erplab_interpolateElectrodes.m
+%   - GUIs/gui_erplabInterpolateElectrodes.m
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -135,8 +136,10 @@ try
     end
 catch
     error_msg = sprintf('Error: ERPLAB GUI\n\n If the problem persists, then restart ERPLAB''s working memory in ERPLAB > Settings > ERPLAB Memory Settings > Reset ERPLAB"s Working Memory');
-    error(error_msg);
+    error(error_msg); %#ok<SPERR>
 end
+
+
 %% Parse named input parameters (vs positional input parameters)
 
 inputParameters               = inputParser;
@@ -154,8 +157,6 @@ inputParameters.addParameter('displayEEG'          , false);
 inputParameters.addParameter('History'             , 'script', @ischar); % history from scripting
 
 inputParameters.parse(EEG, varargin{:});
-
-
 
 
 

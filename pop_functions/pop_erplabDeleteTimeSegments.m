@@ -1,38 +1,40 @@
 function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, varargin )
-% Deletes data segments between 2 event codes if the size of the segment
+% pop_erplabDeleteTimeSegments Deletes data segments between 2 event codes if the size of the segment
 % is greater than a user-specified threshold (in msec)
 %
-% USAGE
-%
-% EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
-%
-%
-% Input:
-%
-%  EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
-%  maxDistanceMS            - user-specified time threshold
-%  startEventCodeBufferMS   - time buffer around first event code
-%  endEventCodeBufferMS     - time buffer around end event code
-%
-% Optional
-%  ignoreEventCodes         - array of event code numbers to ignore
-%  displayEEGPLOTGUI        - (true|false)
-%
-% Output:
-%
-% EEG                       - continuous EEG dataset (EEGLAB's EEG struct)
+% Format
+%   EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
 %
 %
-% Example: Delete segment of data between any two event codes when it is
+% Input
+%   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
+%   maxDistanceMS            - user-specified time threshold
+%   startEventCodeBufferMS   - time buffer around first event code
+%   endEventCodeBufferMS     - time buffer around end event code
+%
+%
+% Optional Input
+%   ignoreEventCodes         - array of event code numbers to ignore
+%   displayEEGPLOTGUI        - (true|false)
+%
+%
+% Output
+%   EEG                       - continuous EEG dataset (EEGLAB's EEG struct)
+%
+%
+% EXAMPLE: Delete segment of data between any two event codes when it is
 %          longer than 3000 ms (3 secs).
 %
-%      EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);
+%   
+%   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);
 %
 %
 % Requirements:
-%   -
+%   - none
 %
-% See also
+% See also 
+%   - functions/erplab_deleteTimeSegments.m
+%   - GUIs/gui_erplabDeleteTimeSegments.m
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
