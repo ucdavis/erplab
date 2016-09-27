@@ -3,22 +3,20 @@
 % Usage: EEG = erplab_interpolateElectrodes(ORIEEG, replace_elecs, ignore_elecs, method)
 %
 % Inputs:
-%     EEG          - EEGLAB dataset
+%     EEG           - EEGLAB dataset
 %     replace_elecs - [integer array] indices of channels to interpolate.
-%                    For instance, these channels might be bad.
-%                    [chanlocs structure] channel location structure containing
-%                    either locations of channels to interpolate or a full
-%                    channel structure (missing channels in the current
-%                    dataset are interpolated).
-%     ignore_elecs - Do not include these electrodes as input for interopolation
-%     method       - [string] method used for interpolation (default is 'spherical').
-%                    'invdist'/'v4' uses inverse distance on the scalp
-%                   'spherical' uses superfast spherical interpolation.
-%                   'spacetime' uses griddata3 to interpolate both in space
-%                   and time (very slow and cannot be interupted).
+%                     For instance, these channels might be bad.
+%                     [chanlocs structure] channel location structure containing
+%                     either locations of channels to interpolate or a full
+%                     channel structure (missing channels in the current
+%                     dataset are interpolated).
+%     ignore_elecs  - Do not include these electrodes as input for interopolation
+%     method        - [string] method used for interpolation (default is 'spherical').
+%                     'invdist'/'v4' uses inverse distance on the scalp
+%                     'spherical' uses superfast spherical interpolation.
 % Output:
-%     EEGOUT      - data set with bad electrode data replaced by
-%                   interpolated data
+%     EEGOUT        - data set with bad electrode data replaced by
+%                     interpolated data
 %
 % Author: Jason Arita
 %

@@ -3,44 +3,45 @@ function [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes( EEG, var
 %
 % FORMAT
 %
-%    EEG = pop_erplabInterpolateElectrodes(inEEG, replaceChannels, ignoreChannels)
+%    EEG = pop_erplabInterpolateElectrodes(EEG, replace_elecs, ignore_elecs)
 %
 % INPUT:
 %
-%    EEG                EEGLAB EEG dataset
-%    replaceChannels       list of event codes to shift
-%    ignoreChannels        time in sec. If ignoreChannels is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
-%                       - If ignoreChannels is negative, the event code time-values are shifted to the left (e.g decreasing delay).
-%                       - If ignoreChannels is 0, the EEG's time values are not shifted.
-%    interpolationMethod         Type of interpolationMethod to use
-%                       - 'nearest'    (default) Round to the nearest integer          
-%                       - 'floor'      Round to nearest ingtowards positive infinity
-%                       - 'ceiling'    Round to nearest integer towards negative infinity
-% 
+%     EEG           - EEGLAB dataset
+%     replace_elecs - [integer array] indices of channels to interpolate.
+%                     For instance, these channels might be bad.
+%                     [chanlocs structure] channel location structure containing
+%                     either locations of channels to interpolate or a full
+%                     channel structure (missing channels in the current
+%                     dataset are interpolated).
+%     ignore_elecs  - Do not include these electrodes as input for interopolation
+%     method        - [string] method used for interpolation (default is 'spherical').
+%                     'invdist'/'v4' uses inverse distance on the scalp
+%                     'spherical' uses superfast spherical interpolation.
 % OPTIONAL INPUT:
 %
-%    displayFeedback  Type of feedback to display at Command window
+%    displayFeedback  - Type of feedback to display at Command window
 %                        - 'summary'   (default) Print summarized info to Command Window
 %                        - 'detailed'  Print event table with latency differences
 %                        - 'both'      Print both summarized & detailed info
 %
 % OUTPUT:
 %
-%    EEG               EEGLAB EEG dataset with the specified channels replaced through interpolation
+%    EEG               - EEGLAB EEG dataset with the specified electrodes replaced through interpolation
 %
 %
-% EXAMPLE:
+% EXAMPLE: Interpolate electrodes 1,2,3,4,5 while ignoring electrodes 6,7,8,9,10, 11 via spherical interpolation
 %
-%     replaceChannels       = {'22', '19'};
-%     ignoreChannels        = 0.015;
-%     interpolationMethod   = 'floor';
-%     outputEEG             = pop_erplabInterpolateElectrodes(EEG, replaceChannels, ignoreChannels, interpolationMethod);
+%     replace_elecs  = [1 2 3 4 5];
+%     ignore_elecs   = [6 7 8 9 10 11];
+%     method         = 'spherical';
+%     outputEEG      = pop_erplabInterpolateElectrodes(EEG, replace_elecs, ignore_elecs, method);
 %     
 %
 % Requirements:
 %   - EEG_CHECKSET (eeglab function)
 %
-% See also eegignoreChannels.m erpignoreChannels.m
+% See also erplab_interpolateElectrodes.m, eeg_interp.m
 %
 %
 % *** This function is part of ERPLAB Toolbox ***

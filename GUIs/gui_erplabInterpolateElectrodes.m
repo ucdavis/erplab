@@ -70,15 +70,26 @@ catch
     handles.displayEEG          = false;
 end
 
-
+% Set values in the GUI
 set(handles.editbox_replaceChannels,     ...
     'String',         num2str(handles.replaceChannels));
 set(handles.editbox_ignoreChannels,      ...
     'String',         num2str(handles.ignoreChannels));
-set(handles.uipanel_interpolationMethod, ...
-    'SelectedObject', handles.radiobutton_spherical);
 set(handles.checkbox_displayEEG, ...
     'Value', handles.displayEEG);
+
+switch handles.interpolationMethod
+    case 'spherical'
+        set(handles.uipanel_interpolationMethod, ...
+            'SelectedObject', handles.radiobutton_spherical);
+    case 'invdist'
+         set(handles.uipanel_interpolationMethod, ...
+            'SelectedObject', handles.radiobutton_inverseDistance);
+    otherwise
+        error('Unrecognized interpolation method specified');
+end
+
+    
 
 handles = painterplab(handles);     % Set Color GUI
 handles = setfonterplab(handles);   % Set font size
@@ -244,8 +255,6 @@ if (hObject == handles.radiobutton_spherical)
     handles.interpolationMethod = 'spherical';
 elseif (hObject == handles.radiobutton_inverseDistance)
     handles.interpolationMethod = 'invdist';
-elseif (hObject == handles.radiobutton_spaceTime)
-    handles.interpolationMethod = 'spacetime';
 end
 
 % Save the new interpolation method value
@@ -288,5 +297,5 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-web('http://erpinfo.org/erplab/erplab-documentation/',...
+web('https://github.com/lucklab/erplab/wiki/Continuous-EEG-Preprocessing#interpolate-electrodes',...
     '-browser');
