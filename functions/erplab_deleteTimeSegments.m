@@ -197,10 +197,11 @@ end
 
 
 %% Via EEGLAB.EEG_EEGREJ, delete the rejected windows
-rejectionWindowCount = size(rejectionWindows, 2);
+rejectionWindowCount = size(rejectionWindows, 1);
 if rejectionWindowCount < 1
-    fprintf('\nNote: No large segment was found.\n')
+    fprintf('\nNote: No large segments were found.\n')
 else
+    
     if(rejectionWindowCount > 1)
         rejectionWindows = joinclosesegments(rejectionWindows, [], 5);
     end
