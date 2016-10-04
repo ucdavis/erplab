@@ -1,22 +1,18 @@
 
-# ERPLAB
+
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users. 
-<br/>
-<br/>
 
-
-## ERPLAB v5.1.1.0 - Download Latest Release Version
-
+## ERPLAB v6.0 - Download Latest Release Version
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/5.1.1.0/erplab-5.1.1.0.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/6.0/erplab6.0.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
   
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v5.1.1.0, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (so something like /Users/steve/Documents/MATLAB/eeglab13_5_4b/plugins/erplab_5.1.1.0/eegplugin_erplab.m exists). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki).
+To install ERPLAB v6.0, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (so something like /Users/steve/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.0/eegplugin_erplab.m exists). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
 
@@ -37,7 +33,7 @@ Find installation help [here](http://erpinfo.org/erplab)
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v5.1.1.0**
+**ERPLAB v6.0**
 
 **OS** | **Matlab** | **EEGLAB** | Working?
 --- | --- | --- | ---
@@ -54,45 +50,39 @@ Ubuntu 14.04 LTS |	Matlab R2014a |	EEGLAB v13.5.4b |	✓
 ------
 
 
-# ERPLAB v5.1.1.0 Release Notes
 
-With ERPLAB v5.1.1.0, we include a variety of user-interface improvements, bug-fixes, and improvements to existing functions. Among these, we have:
+# ERPLAB v6.0 Release Notes
 
-### - Improved epoch subset selection tool
-
-When selecting epochs for further analysis with 'Compute Average ERPs', the epoch 'Assitant' window can help choose specific epochs. This tool make it easier to do things like separately averaging the first and last halves of a session, or selecting random subsets of trials for split half comparisons.
-
-This Assistant has been updated and bug-fixed, with new options to save a list of the non-selected epochs, write this to a file, revised GUI options, and clear instruction these functions do.
+With ERPLAB v6.0, we include a variety of new features, user-interface improvements, bug-fixes, and improvements to existing functions. Among these, we have:
 
 
+### - Current Source Density Tool
 
-### - ERPLAB 'Working Memory' options
+EEG or ERP data can be used to compute an estimate of the Current Source Density (CSD). We include new functions to take data loaded in ERPLAB (either EEG or ERP) and compute the CSD data. We use CSD methods from Jürgen Kayser (from the [CSD Toolbox](http://psychophysiology.cpmc.columbia.edu/Software/CSDtoolbox/)).
 
-ERPLAB saves some data about user-interface settings in a 'Working Memory' structure. We include new functionality to save the state of this memory, and to load previously-saved erpmem. We have new GUI elements in ERPLAB -> Settings -> to clear, save or load erpmem state.
-
-
-### - Fixed the ERP plot 'AutoYLim' problem
-
-When plotting ERPs, there was an occasional issue where setting the YScale via the GUI options could give a plot with 'AutoYLim' being off, but the equivalent script command would leave 'AutoYLim' on.
-
-A workaround for the this was to include 'AutoYLim', 'off' in the scripting command. We have now changed the default behaviour of pop_ploterps() to act more as expected, and so 'AutoYLim' is taken to be 'off' by default when Yscale is specified via script.
-
-As such, 'AutoYLim', 'off' no longer needs to be set in scripts in cases like this, but scripts including these arguments will still work as expected.
+These tools can be found in the new 'ERPLAB -> Data Transformations' menu. A new ERPLAB dataset is generated, with CSD data in the place of EEG/ERP data.
 
 
-### - ERPLAB system diagnostic
+### - Fractional peak measurement can now be offset (post-peak) as well as onset (pre-peak)
 
-In order to check some requirements for ERPLAB, we have a simple new function to report the system status:
-```matlab
-[allok, systemchk_table] = systemchk_erplab
-```
-
-This can useful for bug reporting and verification that the current computer meets the requirements.
+In the ERP Measurement tool, ERPLAB can record measurements of local peaks and the time of a fractional peak, like 50% peak. Previously, this fractional peak measurement was taken from the 'onset' of the peak, before the peak. In v6.0, ERPLAB also has an option to measure the fractional peak 'offset', the 50% peak value after the peak.
 
 
-### - High-resolution displays
+### - ERPLAB documentation on GitHub
 
-As well as interface scaling on Mac, the appearence is now also improved in non-Mac high-resolution displays.
+For more easy editing, ERPLAB documentation has been moved to a [wiki here](https://github.com/lucklab/erplab/wiki).
+
+### - Continuous EEG Preprocessing tools
+
+#### - Delete Time Segments tool
+With the new `Delete Time Segments` tool you can now remove segments of irrelevant continuous EEG data, like data recorded during breaks in the experiment. 
+
+#### - Time delay event code shifting tool
+With the new `Shift Event Codes` tool you can now time-shift specific event codes either to either earlier or later timepoints in the EEG data. This tool was created to counter the delay between visual stimulus onset on the monitor and its corresponding event code recorded in the EEG data. 
+
+#### - Selective Electrode Interpolation tool
+The new `Selective Electrode Interpolation` tool is based off of EEGLAB's own interpolation function and adds the ability to specify which electrodes to use as input for interpolation.
+
 
 ----
 ### Bug Fixes
