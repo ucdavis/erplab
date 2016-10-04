@@ -55,7 +55,14 @@ end
 [pspliter, dvdigits] = regexp(dataversion, '\.','match','split');
 ndd = length(dvdigits);
 
-if ndd==3
+if ndd==2 && str2num(dvdigits{1}) >= 6
+    % if after 6.0
+    dmayor       = str2num(dvdigits{1});
+    dminor       = str2num(dvdigits{2});
+    dformat      = 1;
+    dmaintenance = 0;
+    
+elseif ndd==3
     dmayor       = str2num(dvdigits{1});
     dminor       = 0;
     dformat      = 0;
@@ -87,8 +94,16 @@ if isempty(cversion); return;end
 [pspliter, cvdigits] = regexp(cversion, '\.','match','split');
 cmayor       = str2num(cvdigits{1}); % A
 cminor       = str2num(cvdigits{2}); % B
-cformat      = str2num(cvdigits{3}); % C
-cmaintenance = str2num(cvdigits{4}); % D
+
+% For after v6, take format to be 1
+if cmayor >= 6
+    cformat      = '1'; % C
+    cmaintenance = '0'; % D
+    
+else  % if older, get format from version
+    cformat      = str2num(cvdigits{3}); % C
+    cmaintenance = str2num(cvdigits{4}); % D
+end
 
 %
 % Greater allowed version number :  999999999.999999999.999999999.999999999

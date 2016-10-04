@@ -247,9 +247,9 @@ if strcmpi(p.Results.Measure,'fraclat') % fractional latency assessment
       if ~isempty(frac)
             if frac>0 && ltypeoutput~=3
                   
-                a_change = -1;  % by default, have the index decrease by one, moving back thru the datapoints
+                a_change = -1;  % by default, have the index decrease by one, moving back thru the datapoints, looking for peak onset
                 if peakonset == 2
-                    a_change = 1; % if instead looking for the offset, have the index increase by one on each loop
+                    a_change = 1; % if instead looking for the peak 'offset', have the index increase by one on each loop
                 end
                 
                 

@@ -41,6 +41,6 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function com = pop_erphelpscript
-web http://erpinfo.org/erplab/erplab-documentation/scripting_4 -browser 
+web https://github.com/lucklab/erplab/wiki/Scripting-Guide -browser 
 com = 'pop_erphelpscript';
 return

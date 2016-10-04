@@ -55,7 +55,7 @@ if exist(fullfile(p,'memoryerp.erpm'), 'file')
                 version = char(cv{:});
         end
 else
-        cv = regexp(p, 'erplab_(\d*.\d*.\d*.\d*)', 'tokens');
+        cv = regexp(p, 'erplab[-_ ](\d*.\d*.\d*.\d*)', 'tokens');
         version = char(cv{:});
 end
 

@@ -3,7 +3,7 @@ Copyright Regents of the University of California, 2008-2016 #
 #
 Designed by Steve Luck and Javier Lopez-Calderon #
 #
-Main developers for version 5:
+Main developers for v5 and v6:
 Andrew X Stewart
 axstewart@ucdavis.edu
 Center for Mind and Brain, University of California, Davis #

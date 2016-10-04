@@ -50,14 +50,20 @@ addpath(genpath(p))
 %
 % CHECK VERSION NUMBER & FOLDER NAME
 %
-foldernum = p(end-7:end-1);   % Grab the end of the path, like '5.1.1.0'
-if isempty(foldernum)
-        fprintf('\nERPLAB WARNING: ERPLAB''s folder name was found to be modified from the original.\n\n')
-else
-        if ~strcmp(foldernum, erplabver)
-                fprintf('\nERPLAB''s folder does not show the current version number.\n\n')
-        end
+% Grab the end of the path, like '6.0'
+char_i_erplab = regexp(p, 'erplab','end'); 
+char_i_erplab = char_i_erplab(end);
+
+try
+    foldernum = p(char_i_erplab+1:char_i_erplab+3);
+    if ~strcmp(foldernum, erplabver)
+        fprintf('\nERPLAB''s folder does not show the current version number.\n')
+    end
+    
+catch
+    fprintf('\nERPLAB''s folder does not show the current version number.\n')
 end
+
 
 %
 % CHECK EEGLAB Version
@@ -356,6 +362,12 @@ comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(
 submenu = uimenu( menuERPLAB,'Label','ERPLAB','separator','on','tag','ERPLAB','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 set(submenu,'position', 6); % thanks Arno!
 
+erpverMenu = uimenu( submenu,                              ...
+    'Label'    , [' *** ERPLAB v' erplabver ' ***'],               ...
+    'tag'      , 'erpver',                 ... 
+    'separator', 'off',                                      ...  
+    'userdata' , 'startup:off;continuous:off;epoch:off;study:off;erpset:off');
+
 
 %% Continuous EEG Preprocessing Submenu
 
@@ -523,9 +535,9 @@ uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', co
 
 
 
-%% Data Transformations submenu
+%% Datatype Transformations submenu
 %
-mDTF = uimenu( submenu,'Label','Data Transformations','tag','Data Transformations','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+mDTF = uimenu( submenu,'Label','Datatype Transformations','tag','Data Transformations','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mDTF,'Label','Compute Evoked Power Spectrum from current averaged ERP data','CallBack', comEPSerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from EEG set data','CallBack',comEEG2CSD,'separator','on' );
 uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from averaged ERP data','CallBack',comERP2CSD,'separator','off' );
