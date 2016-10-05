@@ -321,7 +321,7 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_geterpvalues
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/ERP_Measurement_Tool.html -browser
+web https://github.com/lucklab/erplab/wiki/ERP-Measurement-Tool -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)
