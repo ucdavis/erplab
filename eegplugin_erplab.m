@@ -339,6 +339,7 @@ comEXPPDF    = ['[ERP, ERPCOM] = pop_exporterplabfigure(ERP);' '[ERP, ALLERPCOM]
 comhelpman   = 'pop_erphelp;' ;
 comhelptut   = 'pop_erphelptut;' ;
 comhelpsrp   = 'pop_erphelpscript;' ;
+comhelplist  = 'web https://lists.ucdavis.edu/sympa/arc/erplab -browser';
 comhelpvideo = 'web http://erpinfo.org/erplab/erplab-documentation/video-documentation -browser';
 
 
@@ -593,12 +594,15 @@ uimenu( mMEM,'Label','Load a previous working memory file','CallBack',comLoadWM,
 %
 mhelp = uimenu( submenu,'Label','Help','tag','erphelp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','About ERPLAB','CallBack','abouterplabGUI','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mhelp,'Label','ERPLAB Manual','CallBack', comhelpman,'separator','on', 'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mhelp,'Label','ERPLAB Tutorial','CallBack', comhelptut,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','ERPLAB Tutorial','CallBack', comhelptut,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','ERPLAB Manual','CallBack', comhelpman, 'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Scripting','CallBack', comhelpsrp,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB video tutorials','CallBack', comhelpvideo,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mhelp,'Label','Contact us','CallBack','web(''mailto:erplabtoolbox@gmail.com?subject=contact&body=Dear%20Steve%20and%20Javier,'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','Send question/feedback to the ERPLAB email list','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','ERPLAB mailing list archive (may need to register)','CallBack', comhelplist,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','Email ERPLAB team','CallBack','web(''mailto:erplabtoolbox@gmail.com?subject=contact&body=Dear%20ERPLAB%20team,'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','Download latest ERPLAB','CallBack','web(''https://github.com/lucklab/erplab/releases'', ''-browser'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','Submit an issue report on the ERPLAB GitHub page','CallBack','web(''https://github.com/lucklab/erplab/issues'', ''-browser'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 
 
 %% CREATE ERPset MAIN MENU

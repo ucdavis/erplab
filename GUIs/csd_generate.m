@@ -22,7 +22,7 @@ function varargout = csd_generate(varargin)
 
 % Edit the above text to modify the response to help csd_generate
 
-% Last Modified by GUIDE v2.5 13-Sep-2016 13:38:14
+% Last Modified by GUIDE v2.5 13-Oct-2016 19:09:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -75,6 +75,8 @@ handles.output = [handles.mcont handles.smoothl handles.headrad handles.csdsave]
 
 
 
+
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -83,7 +85,7 @@ guidata(hObject, handles);
 
 
 % help
-%helpbutton
+helpbutton
 
 % UIWAIT makes csd_generate wait for user response (see UIRESUME)
 uiwait(handles.figure1);
@@ -292,3 +294,11 @@ path_to_pic = which('CSD_elec_plot.png');
 if numel(path_to_pic) ~= 0     % iff a path to the pic exists, show it
   imshow('CSD_elec_plot.png')
 end
+
+
+% --- Executes on button press in pushbutton_help.
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+web https://github.com/lucklab/erplab/wiki/Current-Source-Density-(CSD)-tool -browser
