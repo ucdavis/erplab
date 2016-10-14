@@ -178,8 +178,14 @@ end
 if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     eventtable_input            = struct2table(inEEG.event);
     eventtable_output           = struct2table(outEEG.event);
-    eventtable_output.urevent   = [];
-    eventtable_output.duration  = [];
+    
+    try
+        eventtable_output.urevent   = [];
+        eventtable_output.duration  = [];
+    catch
+        % do nothing if can't find variable
+    end
+    
     latency_diff                = (  eventtable_output.latency ...
         - eventtable_input.latency  );
     time_diff                   = latency_diff * (1/inEEG.srate);
