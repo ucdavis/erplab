@@ -27,7 +27,7 @@ We do recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern c
 
 The old v11 of EEGLAB is *not* recommended.
 
-Find installation help [here](http://erpinfo.org/erplab)
+Find installation help [here](http://erpinfo.org/erplab).
 
 ### ERPLAB compatibility table
 
@@ -61,6 +61,8 @@ With ERPLAB v6.0, we include a variety of new features, user-interface improveme
 EEG or ERP data can be used to compute an estimate of the Current Source Density (CSD). We include new functions to take data loaded in ERPLAB (either EEG or ERP) and compute the CSD data. We use CSD methods from Jürgen Kayser (from the [CSD Toolbox](http://psychophysiology.cpmc.columbia.edu/Software/CSDtoolbox/)).
 
 These tools can be found in the new 'ERPLAB -> Data Transformations' menu. A new ERPLAB dataset is generated, with CSD data in the place of EEG/ERP data.
+
+Find [CSD documentation here](https://github.com/lucklab/erplab/wiki/Current-Source-Density-(CSD)-tool)
 
 
 ### - Fractional peak measurement can now be offset (post-peak) as well as onset (pre-peak)
