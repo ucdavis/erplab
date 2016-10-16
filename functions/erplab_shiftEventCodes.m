@@ -102,8 +102,6 @@ optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep t
 
 
 
-
-
 %% Convert time shift to seconds
 timeshift = timeshift/1000;
 
@@ -126,6 +124,11 @@ end
 % Convert EEG.data structure to a Matlab table
 % in order to select the user-specified event code latency
 eventsTable            = struct2table(inEEG.event);
+
+% Save the originial `urevent` to a separate variable for later use when
+% displaying the "Detailed Feedback" table
+eventsTable.original_urevent = eventsTable.urevent;
+
 
 % Convert event codes to a categorical variable type for selection
 eventsTable.type       = categorical(eventsTable.type);
@@ -176,26 +179,89 @@ end
 
 %% Detailed Feedback
 if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
-    eventtable_input            = struct2table(inEEG.event);
-    eventtable_output           = struct2table(outEEG.event);
+
     
+    % Extract both the input events and output events into tables
+    Original         = struct2table(inEEG.event);
+    Shifted          = struct2table(outEEG.event);
+        
+    
+    % Rename variables
+    Original.Properties.VariableNames{'urevent'} = 'Original_Position';
+    Original.Properties.VariableNames{'latency'} = 'Latency_Sample';
+    Original.Properties.VariableNames{'type'}    = 'Event_Code';
+
+    Shifted.Properties.VariableNames{'urevent'} = 'Shifted_Position';
+    Shifted.Properties.VariableNames{'latency'} = 'Latency_Sample';
+    Shifted.Properties.VariableNames{'type'}    = 'Event_Code';
+    Shifted.Properties.VariableNames{'original_urevent'} = 'Original_Position';
+
+    
+    % Delete `duration` variable (since it is unused)
     try
-        eventtable_output.urevent   = [];
-        eventtable_output.duration  = [];
+        Original.duration = [];
+        Shifted.duration  = [];
     catch
-        % do nothing if can't find variable
+        % do nothing if `duration` does not exist
     end
     
-    latency_diff                = (  eventtable_output.latency ...
-        - eventtable_input.latency  );
-    time_diff                   = latency_diff * (1/inEEG.srate);
     
-    eventtable_output = [ eventtable_output ...
-                         table(eventtable_input.latency ...
-                         ,'VariableNames', {'original_latency'}) ...
-                         table(latency_diff) ...
-                         table(time_diff)  ];
-    disp(eventtable_output);
+    % Convert `urevent` numbers to strings (in order to `join` the tables)
+    Shifted.Original_Position  = cellfun(@num2str,Shifted.Original_Position,'UniformOutput',false);
+    Original.Original_Position = cellfun(@num2str,Original.Original_Position, 'UniformOutput',false);
+    
+    % Join the input/original events with the output/shifted events 
+    Combined_table = innerjoin(Original, Shifted, ...
+        'Keys', 'Original_Position');
+    
+    
+    
+    % Convert `urevent` to number
+    Combined_table.Original_Position = cellfun(@str2num, Combined_table.Original_Position, 'UniformOutput', false);
+    
+    
+    % Delete urevents with missing values (i.e. boundary events)
+    rows2Delete = cell2mat(cellfun(@isempty, Combined_table.Original_Position, 'UniformOutput', false));
+    Combined_table(rows2Delete,:) = [];
+    
+    Combined_table = sortrows(Combined_table, 'Latency_Sample_Shifted');
+    
+    
+    % Calculate the latency differences between the input and output
+    Latency_Difference         = (  ...
+        Combined_table.Latency_Sample_Original - Combined_table.Latency_Sample_Shifted  );
+    
+    % Calculate the time differences based on the latency differences
+    Time_Difference            = Latency_Difference * (1000/inEEG.srate);
+    
+    
+    Combined_table = [ Combined_table ...
+        table(Latency_Difference) ...
+        table(Time_Difference)  ];
+    
+    % Reposition the variable columns
+    Combined_table = Combined_table(:, [1 4 2 5 3 6 7 8 9]);
+    
+    
+    
+    % Write to File
+    [path_erplab, ~, ~] = fileparts(which('eegplugin_erplab'));
+    path_temp   = fullfile(path_erplab, 'erplab_Box');
+    
+    % If erplab's temp directory does not exist then create it
+    if ~exist(path_temp, 'dir'); mkdir(path_temp); end;
+    
+    
+    output_filename = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
+    output_filespec = fullfile(path_temp, output_filename);
+    
+    writetable(Combined_table, output_filespec, ...
+        'Delimiter',   ',', ...
+        'QuoteStrings', true);
+    
+    disp(Combined_table);
+    disp(['A new shift event code file was created at <a href="matlab: open(''' output_filespec ''')">' output_filespec '</a>'])
+    
 end
     
 
@@ -205,7 +271,7 @@ if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
     numEventCodesShifted = height(eventsTable(rows,:));
     numEventCodes        = height(eventsTable);
     
-    fprintf('%7d of %7d event codes shifted %+2.3f seconds\n\n' ...
+    fprintf('\n\n%7d of %7d event codes shifted %+2.3f seconds\n\n' ...
         , numEventCodesShifted ...
         , numEventCodes ...
         , timeshift);

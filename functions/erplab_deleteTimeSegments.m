@@ -18,11 +18,11 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistan
 % OPTIONAL INPUT:
 %
 %   ignoreEventCodes         - array of event code numbers to ignore
-%   displayEEG              - true/false  - Display a plot of the EEG when finished
+%   displayEEG               - true/false  - Display a plot of the EEG when finished
 %
 % OUTPUT:
 %
-%   EEG                       - continuous EEG dataset (EEGLAB's EEG struct)
+%   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
 %
 %
 % EXAMPLE: 
@@ -84,9 +84,6 @@ else
 end
 
 
-
-
-
 %% Handle optional variables
 optargs = {[] false}; % Default optional inputs
 
@@ -105,15 +102,26 @@ endPeriodBufferSample   = round(inputEndPeriodBufferMS   *(EEG.srate/1000));  % 
 
 
 %% Set up WORKING event codes + IGNORED event codes
-if ischar(EEG.event(1).type)
-    analyzedEventCodes    = setdiff({EEG.event.type}, ignoreEventCodes);                        % Filter out the ignored event code
-    analyzedEventIndices  = ismember({EEG.event.type}, analyzedEventCodes);                     %
-    analyzedSamples       = round([EEG.event(analyzedEventIndices).latency]);                   % Convert event codes to samples
-else
-    analyzedEventCodes    = setdiff([EEG.event.type], ignoreEventCodes);                        % Filter out the ignored event code
-    analyzedEventIndices  = ismember([EEG.event.type], analyzedEventCodes);                     %
-    analyzedSamples       = round([EEG.event(analyzedEventIndices).latency]);                   % Convert event codes to samples
+
+% Convert events to table
+tb_events         = struct2table(EEG.event);
+
+% Convert event codes to strings in order to use setdiff
+tb_events.type = cellfun(@num2str, tb_events.type, 'UniformOutput', false);
+
+% Find set of all unique event codes
+eventcodes_all    = unique(tb_events.type);
+
+% Convert ignore event codes set to strings
+if(~isempty(ignoreEventCodes))
+    ignoreEventCodes = textscan(num2str(ignoreEventCodes), '%s');
+    ignoreEventCodes = ignoreEventCodes{1};
 end
+
+% remove ignored eventcodes from the set of all eventcodes to analyze
+analyzedEventcodes    = setdiff(eventcodes_all, ignoreEventCodes);          
+analyzedEventIndices  = ismember(tb_events.type, analyzedEventcodes);
+analyzedSamples       = round(tb_events(analyzedEventIndices, :).latency)';                   % Convert event codes to samples
 
 
 if analyzedSamples(1) ~= 1

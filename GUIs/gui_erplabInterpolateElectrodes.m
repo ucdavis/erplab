@@ -93,7 +93,7 @@ end
 
 handles = painterplab(handles);     % Set Color GUI
 handles = setfonterplab(handles);   % Set font size
-helpbutton;                         % Set help button image info
+% helpbutton;                         % Set help button image info
 
 
 % Update handles structure

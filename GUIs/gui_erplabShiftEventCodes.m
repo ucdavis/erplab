@@ -102,7 +102,7 @@ set(handles.gui_chassis, 'Name', windowTitle);
 
 handles = painterplab(handles);     % Set color GUI
 handles = setfonterplab(handles);   % Set font size
-helpbutton;                         % Set help pushbutton image
+% helpbutton;                         % Set help pushbutton image
 
 
 

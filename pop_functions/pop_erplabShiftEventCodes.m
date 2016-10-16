@@ -20,11 +20,11 @@ function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
 %
 % OPTIONAL INPUT:
 %
-%    displayFeedback  Type of feedback to display at Command window
+%    DisplayFeedback  Type of feedback to display at Command window
 %                        - 'summary'   (default) Print summarized info to Command Window
 %                        - 'detailed'  Print event table with latency differences
 %                        - 'both'      Print both summarized & detailed info
-%   displayEEG        - true/false  - Display a plot of the EEG when finished
+%    DisplayEEG        - true/false  - Display a plot of the EEG when finished
 %
 %
 % OUTPUT:
@@ -85,6 +85,7 @@ if nargin==1
         return
     end
     
+    
     %     % Get previous input parameters
     def  = erpworkingmemory('pop_erplabShiftEventCodes');
     if isempty(def)
@@ -97,6 +98,7 @@ if nargin==1
     
     % Exit when CANCEL button is pressed
     if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
+        EEG            = [];
         commandHistory = 'User selected cancel';
         return;
     end
@@ -105,9 +107,7 @@ if nargin==1
     timeshift           = inputstrMat{2};
     rounding            = inputstrMat{3};
     displayEEG          = inputstrMat{4};
-    %     displayFeedback     = inputstrMat{4};
-    %
-    
+   
     % Save GUI input to working memory
     erpworkingmemory('pop_erplabShiftEventCodes', ...
         {eventcodes, timeshift, rounding, displayEEG});
@@ -122,11 +122,12 @@ if nargin==1
     
     %% Run pop_ command again with the inputs from the GUI
     [EEG, commandHistory] = pop_erplabShiftEventCodes(EEG, ...
-        'Eventcodes'    , eventcodes,  ...
-        'Timeshift'     , timeshift,   ...
-        'Rounding'      , rounding,    ...
-        'DisplayEEG'    , displayEEG,  ...
-        'History'       , 'gui');
+        'Eventcodes'     , eventcodes,  ...
+        'Timeshift'      , timeshift,   ...
+        'Rounding'       , rounding,    ...
+        'DisplayEEG'     , displayEEG,  ...
+        'DisplayFeedback', 'both',     ...
+        'History'        , 'gui');
     
     
     return
@@ -178,7 +179,7 @@ EEG = eeg_checkset( EEG ); % ensure EEG structure is well-formed
 
 %% Generate equivalent command (for history)
 %
-skipfields  = {'EEG', 'DisplayFeedback', 'History'};
+skipfields  = {'EEG', 'History'};
 fn          = fieldnames(inputParameters.Results);
 commandHistory         = sprintf( '%s  = pop_erplabShiftEventCodes( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
