@@ -107,8 +107,12 @@ endPeriodBufferSample   = round(inputEndPeriodBufferMS   *(EEG.srate/1000));  % 
 tb_events         = struct2table(EEG.event);
 
 % Convert event codes to strings in order to use setdiff
-tb_events.type = cellfun(@num2str, tb_events.type, 'UniformOutput', false);
-
+if(isnumeric(tb_events.type))
+    tb_events.type = arrayfun(@num2str, tb_events.type, 'UniformOutput', false);
+elseif(iscell(tb_events.type))
+    tb_events.type = cellfun(@num2str, tb_events.type, 'UniformOutput', false);
+end
+    
 % Find set of all unique event codes
 eventcodes_all    = unique(tb_events.type);
 
