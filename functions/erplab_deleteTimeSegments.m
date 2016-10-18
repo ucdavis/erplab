@@ -230,6 +230,11 @@ if ischar(EEG.event(1).type)
 end
 
 
+%% Warn if previously create EVENTLIST
+if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
+    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected\n____________________________________________\n\nThis function might change the order of your original events.\n\nRemember to re-create a new ERPLAB EVENTLIST\n____________________________________________\n');
+    warning(warning_txt); %#ok<SPWRN>
+end
 
 
 

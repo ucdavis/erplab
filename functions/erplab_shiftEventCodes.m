@@ -127,8 +127,11 @@ eventsTable            = struct2table(inEEG.event);
 
 % Save the originial `urevent` to a separate variable for later use when
 % displaying the "Detailed Feedback" table
-eventsTable.original_urevent = eventsTable.urevent;
-
+try
+    eventsTable.original_urevent = eventsTable.urevent;
+catch
+    eventsTable.original_urevent = eventsTable.item;
+end
 
 % Convert event codes to a categorical variable type for selection
 eventsTable.type       = categorical(eventsTable.type);
@@ -187,11 +190,21 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
         
     
     % Rename variables
-    Original.Properties.VariableNames{'urevent'} = 'Original_Position';
+    
+    % This is a special case when the `urevent` variable/column does not
+    % exist and instead is named `item`. This occurs when the EEG dataset
+    % has gone through `Create EVENTLIST`.
+    try
+        Original.Properties.VariableNames{'urevent'} = 'Original_Position';
+        Shifted.Properties.VariableNames{'urevent'}  = 'Shifted_Position';
+    catch
+        Original.Properties.VariableNames{'item'}    = 'Original_Position';
+        Shifted.Properties.VariableNames{'item'}     = 'Shifted_Position';
+    end
+    
     Original.Properties.VariableNames{'latency'} = 'Latency_Sample';
     Original.Properties.VariableNames{'type'}    = 'Event_Code';
 
-    Shifted.Properties.VariableNames{'urevent'} = 'Shifted_Position';
     Shifted.Properties.VariableNames{'latency'} = 'Latency_Sample';
     Shifted.Properties.VariableNames{'type'}    = 'Event_Code';
     Shifted.Properties.VariableNames{'original_urevent'} = 'Original_Position';
@@ -207,9 +220,14 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     
     
     % Convert `urevent` numbers to strings (in order to `join` the tables)
-    Shifted.Original_Position  = cellfun(@num2str,Shifted.Original_Position,'UniformOutput',false);
-    Original.Original_Position = cellfun(@num2str,Original.Original_Position, 'UniformOutput',false);
-    
+    if(isnumeric(Original.Original_Position) || isnumeric(Shifted.Original_Position))
+        Shifted.Original_Position  = arrayfun(@num2str,Shifted.Original_Position,'UniformOutput',false);
+        Original.Original_Position = arrayfun(@num2str,Original.Original_Position, 'UniformOutput',false);
+    elseif(iscell(Original.Original_Position) || iscell(Shifted.Original_Position))
+        Shifted.Original_Position  = cellfun(@num2str,Shifted.Original_Position,'UniformOutput',false);
+        Original.Original_Position = cellfun(@num2str,Original.Original_Position, 'UniformOutput',false);
+    end
+        
     % Join the input/original events with the output/shifted events 
     Combined_table = innerjoin(Original, Shifted, ...
         'Keys', 'Original_Position');
@@ -217,8 +235,12 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     
     
     % Convert `urevent` to number
-    Combined_table.Original_Position = cellfun(@str2num, Combined_table.Original_Position, 'UniformOutput', false);
-    
+    if(isnumeric(Combined_table.Original_Position))
+        Combined_table.Original_Position = arrayfun(@str2num, Combined_table.Original_Position, 'UniformOutput', false);
+    elseif(iscell(Combined_table.Original_Position))
+        Combined_table.Original_Position = cellfun(@str2num, Combined_table.Original_Position, 'UniformOutput', false);
+    end
+            
     
     % Delete urevents with missing values (i.e. boundary events)
     rows2Delete = cell2mat(cellfun(@isempty, Combined_table.Original_Position, 'UniformOutput', false));
@@ -229,7 +251,7 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     
     % Calculate the latency differences between the input and output
     Latency_Difference         = (  ...
-        Combined_table.Latency_Sample_Original - Combined_table.Latency_Sample_Shifted  );
+        Combined_table.Latency_Sample_Shifted - Combined_table.Latency_Sample_Original );
     
     % Calculate the time differences based on the latency differences
     Time_Difference            = Latency_Difference * (1000/inEEG.srate);
@@ -239,27 +261,37 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
         table(Latency_Difference) ...
         table(Time_Difference)  ];
     
-    % Reposition the variable columns
-    Combined_table = Combined_table(:, [1 4 2 5 3 6 7 8 9]);
+    % Filter & Reposition the variable columns for display
+    Display_vars = {...
+        'Event_Code_Original', ...
+        'Original_Position', ...
+        'Latency_Sample_Original', ...
+        'Latency_Sample_Shifted', ...
+        'Latency_Difference', ...
+        'Time_Difference'};
     
-    
+    Display_table = table( ...
+        Combined_table{:, Display_vars{1}}, ...
+        Combined_table{:, Display_vars{2}}, ...
+        Combined_table{:, Display_vars{3}}, ...
+        Combined_table{:, Display_vars{4}}, ...
+        Combined_table{:, Display_vars{5}}, ...
+        Combined_table{:, Display_vars{6}}, ...
+        'VariableNames', Display_vars);
     
     % Write to File
     [path_erplab, ~, ~] = fileparts(which('eegplugin_erplab'));
-    path_temp   = fullfile(path_erplab, 'erplab_Box');
+    path_temp          = fullfile(path_erplab, 'erplab_Box');
+    if ~exist(path_temp, 'dir'); mkdir(path_temp); end;           % If erplab's temp directory does not exist then create it
+    output_filename     = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
+    output_filespec     = fullfile(path_temp, output_filename);
     
-    % If erplab's temp directory does not exist then create it
-    if ~exist(path_temp, 'dir'); mkdir(path_temp); end;
-    
-    
-    output_filename = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
-    output_filespec = fullfile(path_temp, output_filename);
-    
-    writetable(Combined_table, output_filespec, ...
+    writetable(Display_table, output_filespec, ...
         'Delimiter',   ',', ...
         'QuoteStrings', true);
     
-    disp(Combined_table);
+    % Display to command line
+    disp(Display_table);
     disp(['A new shift event code file was created at <a href="matlab: open(''' output_filespec ''')">' output_filespec '</a>'])
     
 end
@@ -277,6 +309,9 @@ if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
         , timeshift);
 end
 
-
-
+%% Warn if previously create EVENTLIST
+if(isfield(inEEG, 'EVENTLIST') && ~isempty(inEEG.EVENTLIST))
+    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected\n____________________________________________\n\nThis function might change the order of your original events.\n\nRemember to re-create a new ERPLAB EVENTLIST\n____________________________________________\n');
+    warning(warning_txt); %#ok<SPWRN>
+end
 
