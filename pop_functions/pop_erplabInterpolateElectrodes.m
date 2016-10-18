@@ -69,9 +69,9 @@ end
 
 %% Call GUI
 %   When only 1 input is given
-try
-    if nargin==1
-        
+
+if nargin==1
+    try
         % Input EEG error check
         serror = erplab_eegscanner(EEG, 'pop_erplabInterpolateElectrodes',...
             0, ... % 0 = do not accept md;
@@ -117,27 +117,26 @@ try
         if length(EEG)==1
             EEG.setname = [EEG.setname setnameSuffix];
         end
-        
-        
-        
-        %% Run the pop_ command with the user input from the GUI
-        [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes(EEG, ...
-            'replaceChannels'    , replaceChannels,     ...
-            'ignoreChannels'     , ignoreChannels,      ...
-            'interpolationMethod', interpolationMethod, ...
-            'displayEEG'         , displayEEG,               ...
-            'History'            , 'gui');
-        
-        return;
-        
-        
-        
-        
+    catch
+        error_msg = sprintf('Error: ERPLAB GUI\n\n If the problem persists, then restart ERPLAB''s working memory in ERPLAB > Settings > ERPLAB Memory Settings > Reset ERPLAB"s Working Memory');
+        error(error_msg); %#ok<SPERR>
     end
-catch
-    error_msg = sprintf('Error: ERPLAB GUI\n\n If the problem persists, then restart ERPLAB''s working memory in ERPLAB > Settings > ERPLAB Memory Settings > Reset ERPLAB"s Working Memory');
-    error(error_msg);
+    
+    %% Run the pop_ command with the user input from the GUI
+    [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes(EEG, ...
+        'replaceChannels'    , replaceChannels,     ...
+        'ignoreChannels'     , ignoreChannels,      ...
+        'interpolationMethod', interpolationMethod, ...
+        'displayEEG'         , displayEEG,               ...
+        'History'            , 'gui');
+    
+    return;
+    
+    
+    
+    
 end
+
 %% Parse named input parameters (vs positional input parameters)
 
 inputParameters               = inputParser;

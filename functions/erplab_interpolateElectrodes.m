@@ -50,7 +50,7 @@ end;
 % Error check: channel structure exists
 tmplocs = ORIEEG.chanlocs;
 if isempty(tmplocs) || isempty([tmplocs.X])
-    error('Missing Channel Locations:\n\nChannel locations are needed to interpolate. Add channel locations through EEGLAB > Edit > Channel locations');
+    error(sprintf('Missing Channel Locations:\n\nChannel locations are needed to interpolate. Add channel locations through EEGLAB > Edit > Channel locations')); %#ok<*SPERR>
 end
 
 
@@ -72,7 +72,7 @@ end
 % Warning check: Missing ignored electrodes in EEG dataset
 missing_ignore_elecs = setdiff(ignore_elecs, [ORIEEG.chanlocs.urchan]);
 if(~isempty(missing_ignore_elecs))
-    warning('TMissing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
+    warning('Missing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
         num2str(missing_ignore_elecs));
 end
 
