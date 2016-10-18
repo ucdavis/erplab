@@ -58,22 +58,24 @@ end
 % ignore_elecs
 overlap_elec = intersect(replace_elecs, ignore_elecs);
 if ~isempty(overlap_elec)
-    error('Replace/Ignore Electrode Overlap:\n\nThere is overlap in the replace electrodes and the ignore electrodes.\nFix the input to avoid this overlap.\n\nBad electrodes:\t\t%s\nIgnore electrodes:\t%s\nOverlapping electrodes:\t%s', ...
-        num2str(replace_elecs), num2str(ignore_elecs), num2str(overlap_elec))
+    error(sprintf('Replace/Ignore Electrode Overlap:\n\nThere is overlap in the replace electrodes and the ignore electrodes.\nFix the input to avoid this overlap.\n\nBad electrodes:\t\t%s\nIgnore electrodes:\t%s\nOverlapping electrodes:\t%s', ...
+        num2str(replace_elecs), ...
+        num2str(ignore_elecs), ...
+        num2str(overlap_elec)));
 end
 
 % Error check: When the user inputs electrodes not found in the input EEG dataset
 missing_replace_elecss = setdiff(replace_elecs, [ORIEEG.chanlocs.urchan]);
 if(~isempty(missing_replace_elecss))
-    error('Missing Replace Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t\t%s', ...
-        num2str(missing_replace_elecss));
+    error(sprintf('Missing Replace Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t\t%s', ...
+        num2str(missing_replace_elecss)));
 end
 
 % Warning check: Missing ignored electrodes in EEG dataset
 missing_ignore_elecs = setdiff(ignore_elecs, [ORIEEG.chanlocs.urchan]);
 if(~isempty(missing_ignore_elecs))
-    warning('Missing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
-        num2str(missing_ignore_elecs));
+    warning(sprintf('Missing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
+        num2str(missing_ignore_elecs))); %#ok<SPWRN>
 end
 
 
