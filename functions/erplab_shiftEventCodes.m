@@ -309,9 +309,12 @@ if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
         , timeshift);
 end
 
-%% Warn if previously create EVENTLIST
-if(isfield(inEEG, 'EVENTLIST') && ~isempty(inEEG.EVENTLIST))
-    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected\n____________________________________________\n\nThis function might change the order of your original events.\n\nRemember to re-create a new ERPLAB EVENTLIST\n____________________________________________\n');
+%% Warn if previously created EVENTLIST detected
+if(isfield(outEEG, 'EVENTLIST') && ~isempty(outEEG.EVENTLIST))
+    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected & Deleted \n _________________________________________________________________________\n\n This function changes your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n Remember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
     warning(warning_txt); %#ok<SPWRN>
+    
+    % DELETE PRIOR EVENTLIST
+    outEEG.EVENTLIST = [];
 end
 
