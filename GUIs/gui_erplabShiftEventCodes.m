@@ -22,7 +22,7 @@
 
 % Edit the above text to modify the response to help gui_erplabShiftEventCodes
 
-% Last Modified by GUIDE v2.5 24-Sep-2016 21:38:49
+% Last Modified by GUIDE v2.5 25-Oct-2016 10:44:33
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,18 +64,19 @@ try
     
 catch
     % Default values for GUI
-    handles.eventcodes          = '[]';
+    handles.eventcodes          = '';
     handles.timeshift           = 0;
     handles.roundingInput       = 'earlier';
     handles.displayEEG          = false;
 end
 
 set(handles.editboxEventCodes, ...
-    'String',         handles.eventcodes);
+    'String', num2str(handles.eventcodes));
 set(handles.editboxTimeshift,  ...
-    'String',         num2str(handles.timeshift));
+    'String', num2str(handles.timeshift));
 set(handles.checkbox_displayEEG, ...
-    'Value',          handles.displayEEG);
+    'Value',  handles.displayEEG);
+
 
 % Set correct rounding radio button
 switch handles.roundingInput
@@ -102,7 +103,6 @@ set(handles.gui_chassis, 'Name', windowTitle);
 
 handles = painterplab(handles);     % Set color GUI
 handles = setfonterplab(handles);   % Set font size
-% helpbutton;                         % Set help pushbutton image
 
 
 
@@ -133,6 +133,10 @@ pause(0.5)
 
 % --------------------------------------------------------------------
 function initialize_gui(fig_handle, handles, isreset) %#ok<*INUSD>
+% If the metricdata field is present and the pushbutton_cancel flag is false, it means
+% we are we are just re-initializing a GUI by calling it from the cmd line
+% while it is up. So, bail out as we dont want to pushbutton_cancel the data.
+
 
 
 % Update handles structure
@@ -279,3 +283,16 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 
 web('https://github.com/lucklab/erplab/wiki/Continuous-EEG-Preprocessing#shift-event-codes',...
     '-browser');
+
+
+% --- Executes during object creation, after setting all properties.
+function editboxEventCodes_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editboxEventCodes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

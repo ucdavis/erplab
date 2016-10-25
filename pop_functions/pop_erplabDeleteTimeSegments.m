@@ -72,6 +72,13 @@ if nargin==1
     % Quit if there is an error with the input EEG
     if serror; return; end
 
+    %% Warn if previously created EVENTLIST detected
+    if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
+        warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected\n _________________________________________________________________________\n\n Running this function changes your event codes, and so your prior Eventlist will be deleted. \n\n Re-create a new ERPLAB Eventlist afterwards.\n _________________________________________________________________________\n');
+        warndlg2(warning_txt);
+    end
+    
+    
     % Get previous input parameters
     def  = erpworkingmemory('pop_erplabDeleteTimeSegments');
     if isempty(def); def = {}; end % if no parameters, clear DEF var

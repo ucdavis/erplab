@@ -81,12 +81,17 @@ if nargin < 1
     return
 elseif nargin < 3
     error('ERPLAB:erplab_shiftEventCodes: needs at least 3 inputs: EEG, eventcodes, timeshift')
-elseif length(varargin) > 3   % only want 3 optional inputs at most
+elseif length(varargin) > 4   % only want 4 optional inputs at most
     error('ERPLAB:erplab_deleteTimeSegments:TooManyInputs', ...
-        'requires at most 2 optional inputs');
+        'requires at most 4 optional inputs');
 else
     disp('Working...')
 end
+
+% Error check input TIMESHIFT variable
+assert(isnumeric(timeshift), 'Error: TIMESHIFT input variable must be numeric');
+assert(length(timeshift) == 1, 'Error: TIMESHIFT input variable must be a single number');
+
 
 
 
@@ -100,7 +105,11 @@ optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep t
 % Place optional args into variable names
 [sample_rounding, displayFeedback, displayEEG] = optargs{:};
 
-
+% %% Warn if previously created EVENTLIST detected
+% if(isfield(inEEG, 'EVENTLIST') && ~isempty(inEEG.EVENTLIST) && warningPopup)
+%     warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected\n _________________________________________________________________________\n\n This function changes your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n Remember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
+%     warndlg2(warning_txt);
+% end
 
 %% Convert time shift to seconds
 timeshift = timeshift/1000;
@@ -195,18 +204,18 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     % exist and instead is named `item`. This occurs when the EEG dataset
     % has gone through `Create EVENTLIST`.
     try
-        Original.Properties.VariableNames{'urevent'} = 'Original_Position';
-        Shifted.Properties.VariableNames{'urevent'}  = 'Shifted_Position';
+        Original.Properties.VariableNames{'urevent'}     = 'Original_Position';
+        Shifted.Properties.VariableNames{'urevent'}      = 'Shifted_Position';
     catch
-        Original.Properties.VariableNames{'item'}    = 'Original_Position';
-        Shifted.Properties.VariableNames{'item'}     = 'Shifted_Position';
+        Original.Properties.VariableNames{'item'}        = 'Original_Position';
+        Shifted.Properties.VariableNames{'item'}         = 'Shifted_Position';
     end
     
-    Original.Properties.VariableNames{'latency'} = 'Latency_Sample';
-    Original.Properties.VariableNames{'type'}    = 'Event_Code';
+    Original.Properties.VariableNames{'latency'}         = 'Latency_Sample';
+    Original.Properties.VariableNames{'type'}            = 'Event_Code';
 
-    Shifted.Properties.VariableNames{'latency'} = 'Latency_Sample';
-    Shifted.Properties.VariableNames{'type'}    = 'Event_Code';
+    Shifted.Properties.VariableNames{'latency'}          = 'Latency_Sample';
+    Shifted.Properties.VariableNames{'type'}             = 'Event_Code';
     Shifted.Properties.VariableNames{'original_urevent'} = 'Original_Position';
 
     
@@ -221,11 +230,15 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     
     % Convert `urevent` numbers to strings (in order to `join` the tables)
     if(isnumeric(Original.Original_Position) || isnumeric(Shifted.Original_Position))
-        Shifted.Original_Position  = arrayfun(@num2str,Shifted.Original_Position,'UniformOutput',false);
+        
+        Shifted.Original_Position  = arrayfun(@num2str,Shifted.Original_Position,  'UniformOutput',false);
         Original.Original_Position = arrayfun(@num2str,Original.Original_Position, 'UniformOutput',false);
+    
     elseif(iscell(Original.Original_Position) || iscell(Shifted.Original_Position))
-        Shifted.Original_Position  = cellfun(@num2str,Shifted.Original_Position,'UniformOutput',false);
-        Original.Original_Position = cellfun(@num2str,Original.Original_Position, 'UniformOutput',false);
+    
+        Shifted.Original_Position  = cellfun(@num2str,Shifted.Original_Position,   'UniformOutput',false);
+        Original.Original_Position = cellfun(@num2str,Original.Original_Position,  'UniformOutput',false);
+    
     end
         
     % Join the input/original events with the output/shifted events 
@@ -291,7 +304,7 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
         'QuoteStrings', true);
     
     % Display to command line
-    disp(Display_table);
+    disp(Display_table(1:10,:));
     disp(['A new shift event code file was created at <a href="matlab: open(''' output_filespec ''')">' output_filespec '</a>'])
     
 end

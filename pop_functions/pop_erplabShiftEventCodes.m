@@ -72,7 +72,7 @@ end
 % When only 1 input is given the GUI is then called
 if nargin==1
     
-    % Input EEG error check
+    %% Input EEG error check
     serror = erplab_eegscanner(EEG, 'pop_erplabShiftEventCodes',...
         0, ... % 0 = do not accept md;
         0, ... % 0 = do not accept empty dataset;
@@ -85,8 +85,16 @@ if nargin==1
         return
     end
     
+    %% Warn if previously created EVENTLIST detected
+    if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
+        warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected\n _________________________________________________________________________\n\n Running this function changes your event codes, and so your prior Eventlist will be deleted. \n\n Re-create a new ERPLAB Eventlist afterwards.\n _________________________________________________________________________\n');
+        warndlg2(warning_txt);
+    end
     
-    %     % Get previous input parameters
+    
+    
+    
+    %% Get previous input parameters
     def  = erpworkingmemory('pop_erplabShiftEventCodes');
     if isempty(def)
         def = {};
