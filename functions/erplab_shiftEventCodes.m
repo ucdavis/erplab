@@ -20,7 +20,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %                     - 'later'     - Round to later timestamp
 %                     - 'nearest'   - Round to nearest timestamp   
 %   displayFeedback   - 'summary'   - (default) Print summarized info to Command Window
-%                     - 'detailed'  - Print event table with latency differences
+%                     - 'detailed'  - Print event table with sample_num differences
 %                                     to Command Window
 %                     - 'both'      - Print both summarized & detailed info
 %                                      to Command Window
@@ -29,7 +29,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 % OUTPUT:
 %
-%    EEG         - EEGLAB EEG dataset with latency shift.
+%    EEG         - EEGLAB EEG dataset with sample_num shift.
 %
 %
 % EXAMPLE:
@@ -131,22 +131,51 @@ end
             
 
 %% Convert EEG.data structure to a Matlab table
-% in order to select the user-specified event code latency
-eventsTable            = struct2table(inEEG.event);
+% in order to select the user-specified event code sample_num
+table_events            = struct2table(inEEG.event);
 
 
-%% Save the originial `urevent` to a separate variable for later use when
-% displaying the "Detailed Feedback" table
-try
-    eventsTable.original_urevent = eventsTable.urevent;
-    eventsTable.original_latency = eventsTable.latency;
-catch
-    eventsTable.original_urevent = eventsTable.item;
-    eventsTable.original_latency = eventsTable.latency;
+%% Clean/standardize the events table
+
+% Convert variable names to standardized variable names
+if(ismember('urevent', table_events.Properties.VariableNames))
+    table_events.Properties.VariableNames{'urevent'}    = 'order_num';
 end
 
+% This is a special case when the `urevent` variable/column does not
+% exist and instead is named `item`. This occurs when the EEG dataset
+% has gone through `Create EVENTLIST`.
+if(ismember('item', table_events.Properties.VariableNames))
+    table_events.Properties.VariableNames{'item'}       = 'order_num';
+end
+
+if(ismember('latency', table_events.Properties.VariableNames))
+    table_events.Properties.VariableNames{'latency'}    = 'sample_num';
+end
+
+
+% Convert order number to numeric, if it is in a cell
+% First, replace boundary order_num (i.e. empty arrays) with NaN
+if(iscell(table_events.order_num))
+    table_events.order_num(cellfun('isempty', table_events.order_num)) = {NaN};
+    table_events.order_num = cell2mat(table_events.order_num);
+end
+
+
+%% Save the original `order_num` 
+% This is to a separate variable for later use when displaying the 
+% "Detailed Feedback" table
+table_events.original_order_num  = table_events.order_num;
+table_events.original_sample_num = table_events.sample_num;
+
+
+
+table_events_original = table_events;
+
+
+
 %% Convert event codes to a categorical variable type for selection
-eventsTable.type       = categorical(eventsTable.type);
+table_events.type       = categorical(table_events.type);
 if(ischar(eventcodes))
     eventcodes         = categorical(cellstr(eventcodes));
 else
@@ -155,135 +184,303 @@ end
 
 
 
+
+
 %% Select latencies of the user-specified events and shift them
-filter_events = ismember(eventsTable.type, eventcodes);
-vars          = {'latency'};
-eventsTable{filter_events,vars} = eventsTable{filter_events,vars} + sample_shift;
+filter_events = ismember(table_events.type, eventcodes);
+vars          = {'sample_num'};
+table_events{filter_events,vars} = table_events{filter_events,vars} + sample_shift;
 
 
 
 
 %% Create table of shifted events
-tableShiftedEvents = eventsTable(filter_events,:);
-tableShiftedEvents = sortrows(tableShiftedEvents, 'original_latency');
+tableShiftedEvents = table_events(filter_events,:);
+tableShiftedEvents = sortrows(tableShiftedEvents, 'original_sample_num');
 numEventsShifted   = height(tableShiftedEvents);
 
 
 
 %% Create table of boundary events
 codesBoundary         = {'boundary', '-99'};
-rowsBoundary          = ismember(eventsTable.type, codesBoundary);
-tableBoundary         = eventsTable(rowsBoundary, :);
+rowsBoundary          = ismember(table_events.type, codesBoundary);
+tableBoundary         = table_events(rowsBoundary, {'type', 'sample_num'});
 
 
 % Add in boundary codes to the edges of the complete dataset
 boundary_edges = {...
-    'type','latency','urevent','duration','original_urevent','original_latency';
-    'boundary',0,[],NaN,[],0;
-    'boundary',inEEG.pnts,[],NaN,[],inEEG.pnts};
+    'type'    , 'sample_num';
+    'boundary', 0;
+    'boundary', inEEG.pnts};
 tableBoundaryEdges = cell2table(boundary_edges(2:end,:));
 tableBoundaryEdges.Properties.VariableNames = boundary_edges(1,:);
 
 if(isempty(tableBoundary))
     tableBoundary = tableBoundaryEdges;
 else
-    % Sort the table of boundary events by their latency (i.e. column 2)
+    % Sort the table of boundary events by their sample_num (i.e. column 2)
     % in order to check if there exists boundary-codes at the start/end of
     % the data
     tableBoundary  = sortrows(tableBoundary, 2);
 
-    % If no boundary-code is detected at that start (i.e. latency 0), then
+    % If no boundary-code is detected at that start (i.e. sample_num 0), then
     % add in a boundary-code
-    if(tableBoundary.latency(1) ~= 0)
+    if(tableBoundary.sample_num(1) ~= 0)
         tableBoundary = [tableBoundaryEdges(1,:); tableBoundary];
     end
     
-    % If no boundary-code exists at the end (i.e. latency inEEG.pnts), then
+    % If no boundary-code exists at the end (i.e. sample_num inEEG.pnts), then
     % add in a boundary code at the end
-    if(tableBoundary.latency(end) ~= inEEG.pnts)
+    if(tableBoundary.sample_num(end) ~= inEEG.pnts)
         tableBoundary = [tableBoundary; tableBoundaryEdges(2,:)];
     end
 end
 
-tableBoundary     = sortrows(tableBoundary, 'original_latency');
+tableBoundary     = sortrows(tableBoundary, 'sample_num');
 numBoundaryEvents = height(tableBoundary);
-% display(tableBoundary);
 
 
 
 %% Delete shifted-events that cross boundary-events
 [nRows_total, ~]        = size(tableShiftedEvents);
-deleteOriginalUreventArray = {};
+deleteOriginalorder_numArray = {};
 
 for iRow_shifteventcode = 1:nRows_total
     
-    latency_original = tableShiftedEvents{iRow_shifteventcode, 'original_latency'};
-    latency_shifted  = tableShiftedEvents{iRow_shifteventcode, 'latency'};
+    sample_num_original = tableShiftedEvents{iRow_shifteventcode, 'original_sample_num'};
+    sample_num_shifted  = tableShiftedEvents{iRow_shifteventcode, 'sample_num'};
     
     
     % Find nearest boundary code in the direction of the shift
     if(sign(sample_shift) > 0)
         % positive shift => find nearest boundary code GREATER than the
-        %                   original latency
-        latency_boundary = tableBoundary{tableBoundary.latency > latency_original, 'latency'};
-        latency_boundary = latency_boundary(1);
+        %                   original sample_num
+        sample_num_boundary = tableBoundary{tableBoundary.sample_num > sample_num_original, 'sample_num'};
+        sample_num_boundary = sample_num_boundary(1);
     else
         % negative shift => find nearest boundary code LESSER than the
-        %                   original latency
-        latency_boundary = tableBoundary{tableBoundary.latency < latency_original, 'latency'};
-        latency_boundary = latency_boundary(1);
+        %                   original sample_num
+        sample_num_boundary = tableBoundary{tableBoundary.sample_num < sample_num_original, 'sample_num'};
+        sample_num_boundary = sample_num_boundary(1);
     end
     
     
     
-    if((latency_boundary > min([latency_original, latency_shifted])) && ...
-            (latency_boundary < max([latency_original, latency_shifted])) )
+    if((sample_num_boundary > min([sample_num_original, sample_num_shifted])) && ...
+            (sample_num_boundary < max([sample_num_original, sample_num_shifted])) )
         
-        % Get the UREVENT code in order to later delete them
-        deleteOriginalUrevent      = tableShiftedEvents{iRow_shifteventcode, 'original_urevent'};
-        deleteOriginalUreventArray = [deleteOriginalUreventArray; num2str(deleteOriginalUrevent{1})]; %#ok<AGROW>
+        % Get the order_num code in order to later delete them
+        deleteOriginalorder_num      = tableShiftedEvents{iRow_shifteventcode, 'original_order_num'};
+        deleteOriginalorder_numArray = [deleteOriginalorder_numArray; num2str(deleteOriginalorder_num)]; %#ok<AGROW>
         
     end
 end
 
 
-%% Ensure each `urevent` is unique for indexing
-if(iscell(tableShiftedEvents.urevent))
-    urevents = cellfun(@num2str, tableShiftedEvents.urevent, ...
+%% Ensure each `order_num` is unique for indexing
+if(iscell(tableShiftedEvents.order_num))
+    order_nums = cellfun(@num2str, tableShiftedEvents.order_num, ...
         'UniformOutput', false);
-elseif(isnumeric(tableShiftedEvents.urevent))
-    urevents = arrayfun(@num2str, tableShiftedEvents.urevent, ...
+elseif(isnumeric(tableShiftedEvents.order_num))
+    order_nums = arrayfun(@num2str, tableShiftedEvents.order_num, ...
         'UniformOutput', false);
 end
-assert(numel(unique(urevents)) == numel(urevents));
+assert(numel(unique(order_nums)) == numel(order_nums));
 
 
 % Filter out the events to delete and delete them
-if(isnumeric(eventsTable.original_urevent))
-    urevents_original = arrayfun(@num2str, eventsTable.original_urevent, ...
+if(isnumeric(table_events.original_order_num))
+    order_nums_original = arrayfun(@num2str, table_events.original_order_num, ...
         'UniformOutput', false);
-elseif(iscell(eventsTable.original_urevent))
-    urevents_original = cellfun(@num2str, eventsTable.original_urevent, ...
+elseif(iscell(table_events.original_order_num))
+    order_nums_original = cellfun(@num2str, table_events.original_order_num, ...
         'UniformOutput', false);
 end
     
 
 % Find events to delete (i.e. that crossed a boundary) and then delete them
-filter_events2delete = ismember(urevents_original, deleteOriginalUreventArray);
-eventsTable(filter_events2delete, :) = [];
+filter_events2delete = ismember(order_nums_original, deleteOriginalorder_numArray);
+table_events(filter_events2delete, :) = [];
 
 % Count the number of event-codes that were deleted
-numEventsDeleted = size(deleteOriginalUreventArray, 1);
+numEventsDeleted = size(deleteOriginalorder_numArray, 1);
+
+
+
+
+
+
+
+
+
+%% Printing Detailed Feedback
+
+if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
+
+    
+    % Extract both the input events and output events into tables
+    table_events_shifted          = table_events;
+        
+    
+    % Rename variables
+    table_events_original.Properties.VariableNames{'type'} = 'event_code';
+    table_events_shifted.Properties.VariableNames{'type'}  = 'event_code';
+
+    
+    % Delete `duration` variable (since it is unused)
+    try
+        table_events_original.duration = [];
+        table_events_shifted.duration  = [];
+    catch
+        % do nothing if `duration` does not exist
+    end
+    
+    
+    
+    %% Creating Combined tables
+    
+    % Convert `order_num` to strings (in order to `join` the tables)
+    if(isnumeric(table_events_original.original_order_num) || isnumeric(table_events_shifted.original_order_num))
+        
+        table_events_shifted.original_order_num  = arrayfun(@num2str,table_events_shifted.original_order_num,  'UniformOutput',false);
+        table_events_original.original_order_num = arrayfun(@num2str,table_events_original.original_order_num, 'UniformOutput',false);
+    
+    elseif(iscell(table_events_original.original_order_num) || iscell(table_events_shifted.original_order_num))
+    
+        table_events_shifted.original_order_num  = cellfun(@num2str,table_events_shifted.original_order_num,   'UniformOutput',false);
+        table_events_original.original_order_num = cellfun(@num2str,table_events_original.original_order_num,  'UniformOutput',false);
+    
+    end
+        
+    % Join the input/original events with the output/shifted events 
+    table_combined = innerjoin(table_events_original, table_events_shifted, ...
+        'Keys', 'original_order_num');
+    
+    
+    
+    % Convert `order_num` back to number
+    if(isnumeric(table_combined.original_order_num))
+        table_combined.original_order_num = arrayfun(@str2num, table_combined.original_order_num, 'UniformOutput', false);
+    elseif(iscell(table_combined.original_order_num))
+        table_combined.original_order_num = cellfun(@str2num, table_combined.original_order_num, 'UniformOutput', false);
+    end
+            
+    
+    %% Clean combined table
+    
+    % Delete urevents with missing values (i.e. boundary events)
+    rows2Delete = cell2mat(cellfun(@isempty, table_combined.original_order_num, 'UniformOutput', false));
+    table_combined(rows2Delete,:) = [];
+    
+    table_combined = sortrows(table_combined, 'Sample_Num_Shifted');
+    
+    
+    %% Create new columns/variables in combined table
+    
+    % Calculate the sample_num differences between the input and output
+    Sample_Num_Difference         = (  ...
+        table_combined.Sample_Num_Shifted - table_combined.Sample_Num_Original );
+    
+    % Calculate the time differences based on the sample_num differences
+    Time_Difference_ms            = Sample_Num_Difference * (1000/inEEG.srate);
+    
+    
+    table_combined = [ table_combined ...
+        table(Sample_Num_Difference) ...
+        table(Time_Difference_ms)  ];
+    
+    %% Setup combined table for printing to command window
+    % Filter & Reposition the variable columns for display
+    Display_vars = {...
+        'Event_Code_Original'   , ...
+        'original_order_num'    , ...
+        'Sample_Num_Original'   , ...
+        'Sample_Num_Shifted'    , ...
+        'Sample_Num_Difference' , ...
+        'Time_Difference_ms'    };
+    
+    Display_table = table( ...
+        table_combined{:, Display_vars{1}}, ...
+        table_combined{:, Display_vars{2}}, ...
+        table_combined{:, Display_vars{3}}, ...
+        table_combined{:, Display_vars{4}}, ...
+        table_combined{:, Display_vars{5}}, ...
+        table_combined{:, Display_vars{6}}, ...
+        'VariableNames', Display_vars);
+    
+    %% Write to File
+    [path_erplab, ~, ~] = fileparts(which('eegplugin_erplab'));
+    path_temp          = fullfile(path_erplab, 'erplab_Box');
+    
+    % If erplab's temp directory does not exist then create it
+    if ~exist(path_temp, 'dir'); mkdir(path_temp); end;
+    
+    output_filename     = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
+    output_filespec     = fullfile(path_temp, output_filename);
+    
+    writetable(Display_table, output_filespec, ...
+        'Delimiter',   ',', ...
+        'QuoteStrings', true);
+    
+    %% Display to command line    
+    fprintf('A CSV-file containing all shift information was created at <a href="matlab: open( %s )">%s </a>\n\n', output_filespec, output_filespec)
+    fprintf('For your information, here is a table of the first 10 events in your eventlist:\n');
+    display(Display_table(1:10,:));
+    
+end
+    
+
+
+%% Print Summarized Feedback
+
+if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
+    numEventCodes        = size(inEEG.event, 2);
+    
+    fprintf('\n\n\t%9d event codes shifted %+2.3f milliseconds\n', ...
+        numEventsShifted, ...
+        timeshift*1000);
+    fprintf('\t%9d total event codes\n', ...
+        numEventCodes);
+    fprintf('\t%9d boundary events were detected\n', ...
+        numBoundaryEvents);
+    fprintf('\t%9d event codes were deleted because they crossed a boundary\n\n', ...
+        numEventsDeleted);
+end
+
+
+%% Warn if previously created EVENTLIST detected
+
+if(isfield(outEEG, 'EVENTLIST') && ~isempty(outEEG.EVENTLIST))
+    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected & Deleted \n _________________________________________________________________________\n\n\tThis function changes the timing of your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n\tRemember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
+    warning(warning_txt); %#ok<SPWRN>
+    
+    % DELETE PRIOR EVENTLIST
+    outEEG.EVENTLIST = [];
+end
 
 
 
 %% Save the shifted events/latencies back into the EEGLAB EEG dataset
-eventsTable.type       = char(eventsTable.type);
+
+% Convert order_num from numeric back to cell 
+table_events.order_num = num2cell(table_events.order_num);
+
+% Replace boundary order_num (i.e. NaNs) with {[]}
+table_events.order_num(cellfun(@isnan, table_events.order_num)) = {[]};
+
+% Convert table variable names to standardized variable names
+if(ismember('order_num', table_events.Properties.VariableNames))
+    table_events.Properties.VariableNames{'order_num'}    = 'urevent';
+end
+
+if(ismember('sample_num', table_events.Properties.VariableNames))
+    table_events.Properties.VariableNames{'sample_num'}    = 'latency';
+end
+
+table_events.type       = char(table_events.type);
 outEEG                 = inEEG;
-outEEG.event           = table2struct(eventsTable)';
+outEEG.event           = table2struct(table_events)';
 outEEG                 = eeg_checkset(outEEG, 'eventconsistency', 'checkur');
-
-
 
 
 
@@ -303,160 +500,5 @@ if displayEEG
     % Run EEGPLOT
     eegplot(outEEG.data, eegplotoptions{:});   
     
-end
-
-
-
-
-
-%% Detailed Feedback
-if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
-
-    
-    % Extract both the input events and output events into tables
-    Original         = struct2table(inEEG.event);
-    Shifted          = struct2table(outEEG.event);
-        
-    
-    % Rename variables
-    
-    % This is a special case when the `urevent` variable/column does not
-    % exist and instead is named `item`. This occurs when the EEG dataset
-    % has gone through `Create EVENTLIST`.
-    try
-        Original.Properties.VariableNames{'urevent'}     = 'Event_Num_Original';
-        Shifted.Properties.VariableNames{'urevent'}      = 'Event_Num_Shifted';
-    catch
-        Original.Properties.VariableNames{'item'}        = 'Event_Num_Original';
-        Shifted.Properties.VariableNames{'item'}         = 'Event_Num_Shifted';
-    end
-    
-    Original.Properties.VariableNames{'latency'}         = 'Sample_Num';
-    Original.Properties.VariableNames{'type'}            = 'Event_Code';
-
-    Shifted.Properties.VariableNames{'latency'}          = 'Sample_Num';
-    Shifted.Properties.VariableNames{'type'}             = 'Event_Code';
-    Shifted.Properties.VariableNames{'original_urevent'} = 'Event_Num_Original';
-
-    
-    % Delete `duration` variable (since it is unused)
-    try
-        Original.duration = [];
-        Shifted.duration  = [];
-    catch
-        % do nothing if `duration` does not exist
-    end
-    
-    
-    % Convert `urevent` numbers to strings (in order to `join` the tables)
-    if(isnumeric(Original.Event_Num_Original) || isnumeric(Shifted.Event_Num_Original))
-        
-        Shifted.Event_Num_Original  = arrayfun(@num2str,Shifted.Event_Num_Original,  'UniformOutput',false);
-        Original.Event_Num_Original = arrayfun(@num2str,Original.Event_Num_Original, 'UniformOutput',false);
-    
-    elseif(iscell(Original.Event_Num_Original) || iscell(Shifted.Event_Num_Original))
-    
-        Shifted.Event_Num_Original  = cellfun(@num2str,Shifted.Event_Num_Original,   'UniformOutput',false);
-        Original.Event_Num_Original = cellfun(@num2str,Original.Event_Num_Original,  'UniformOutput',false);
-    
-    end
-        
-    % Join the input/original events with the output/shifted events 
-    Combined_table = innerjoin(Original, Shifted, ...
-        'Keys', 'Event_Num_Original');
-    
-    
-    
-    % Convert `urevent` to number
-    if(isnumeric(Combined_table.Event_Num_Original))
-        Combined_table.Event_Num_Original = arrayfun(@str2num, Combined_table.Event_Num_Original, 'UniformOutput', false);
-    elseif(iscell(Combined_table.Event_Num_Original))
-        Combined_table.Event_Num_Original = cellfun(@str2num, Combined_table.Event_Num_Original, 'UniformOutput', false);
-    end
-            
-    
-    % Delete urevents with missing values (i.e. boundary events)
-    rows2Delete = cell2mat(cellfun(@isempty, Combined_table.Event_Num_Original, 'UniformOutput', false));
-    Combined_table(rows2Delete,:) = [];
-    
-    Combined_table = sortrows(Combined_table, 'Sample_Num_Shifted');
-    
-    
-    % Calculate the latency differences between the input and output
-    Sample_Num_Difference         = (  ...
-        Combined_table.Sample_Num_Shifted - Combined_table.Sample_Num_Original );
-    
-    % Calculate the time differences based on the latency differences
-    Time_Difference_ms            = Sample_Num_Difference * (1000/inEEG.srate);
-    
-    
-    Combined_table = [ Combined_table ...
-        table(Sample_Num_Difference) ...
-        table(Time_Difference_ms)  ];
-    
-    % Filter & Reposition the variable columns for display
-    Display_vars = {...
-        'Event_Code_Original'   , ...
-        'Event_Num_Original'    , ...
-        'Sample_Num_Original'   , ...
-        'Sample_Num_Shifted'    , ...
-        'Sample_Num_Difference' , ...
-        'Time_Difference_ms'    };
-    
-    Display_table = table( ...
-        Combined_table{:, Display_vars{1}}, ...
-        Combined_table{:, Display_vars{2}}, ...
-        Combined_table{:, Display_vars{3}}, ...
-        Combined_table{:, Display_vars{4}}, ...
-        Combined_table{:, Display_vars{5}}, ...
-        Combined_table{:, Display_vars{6}}, ...
-        'VariableNames', Display_vars);
-    
-    % Write to File
-    [path_erplab, ~, ~] = fileparts(which('eegplugin_erplab'));
-    path_temp          = fullfile(path_erplab, 'erplab_Box');
-    
-    % If erplab's temp directory does not exist then create it
-    if ~exist(path_temp, 'dir'); mkdir(path_temp); end;
-    
-    output_filename     = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
-    output_filespec     = fullfile(path_temp, output_filename);
-    
-    writetable(Display_table, output_filespec, ...
-        'Delimiter',   ',', ...
-        'QuoteStrings', true);
-    
-    % Display to command line    
-    fprintf('A CSV-file containing all shift information was created at <a href="matlab: open( %s )">%s </a>\n\n', output_filespec, output_filespec)
-    fprintf('For your information, here is a table of the first 10 events in your eventlist:\n');
-    display(Display_table(1:10,:));
-    
-end
-    
-
-
-%% Summarized Feedback
-if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
-    numEventCodes        = size(inEEG.event, 2);
-    
-    fprintf('\n\n\t%9d event codes shifted %+2.3f milliseconds\n', ...
-        numEventsShifted, ...
-        timeshift*1000);
-    fprintf('\t%9d total event codes\n', ...
-        numEventCodes);
-    fprintf('\t%9d boundary events were detected\n', ...
-        numBoundaryEvents);
-    fprintf('\t%9d event codes were deleted because they crossed a boundary\n', ...
-        numEventsDeleted);
-end
-
-
-%% Warn if previously created EVENTLIST detected
-if(isfield(outEEG, 'EVENTLIST') && ~isempty(outEEG.EVENTLIST))
-    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected & Deleted \n _________________________________________________________________________\n\n This function changes the timing of your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n Remember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
-    warning(warning_txt); %#ok<SPWRN>
-    
-    % DELETE PRIOR EVENTLIST
-    outEEG.EVENTLIST = [];
 end
 

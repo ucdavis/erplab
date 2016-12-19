@@ -57,17 +57,24 @@ handles.output = []; % hObject;
 
 % Handle input parameters from ERPLABWORKINGMEMORY
 try
-    handles.eventcodes          = varargin{1}{1};
-    handles.timeshift           = varargin{1}{2};
-    handles.roundingInput       = varargin{1}{3};
-    handles.displayEEG          = varargin{1}{4};
+    nVarargin = size(varargin{1}, 2);
     
+    if(nVarargin == 1)
+        handles.eventlist_detected = varargin{1}{1};
+    else
+        handles.eventcodes          = varargin{1}{1};
+        handles.timeshift           = varargin{1}{2};
+        handles.roundingInput       = varargin{1}{3};
+        handles.displayEEG          = varargin{1}{4};
+        handles.eventlist_detected  = varargin{1}{5};
+    end
 catch
     % Default values for GUI
     handles.eventcodes          = '';
     handles.timeshift           = 0;
     handles.roundingInput       = 'earlier';
     handles.displayEEG          = false;
+    handles.eventlist_detected  = false;
 end
 
 set(handles.editboxEventCodes, ...
@@ -94,7 +101,10 @@ switch handles.roundingInput
             'SelectedObject', handles.radioBtnRoundEarlier);
 end
 
-
+% Set "Prior Eventlist Warning" text if eventlist is detected
+if(handles.eventlist_detected)
+    handles.txt_priorEventlist.Visible = 'on';
+end
 
 
 % Set Window title

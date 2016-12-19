@@ -101,7 +101,20 @@ if nargin==1
     end
     
     
-    % Call GUI
+    %% Detected if prior Eventlist exists in the EEG
+    if(isfield(EEG, 'EVENTLIST'))
+        if(~isempty(EEG.EVENTLIST))
+            eventlist_detected = true;
+        else
+            eventlist_detected = false;
+        end
+    else
+        eventlist_detected = false;
+    end
+    
+    def = [def, eventlist_detected];
+    
+    %% Call GUI
     inputstrMat = gui_erplabShiftEventCodes(def);  % GUI
     
     % Exit when CANCEL button is pressed
