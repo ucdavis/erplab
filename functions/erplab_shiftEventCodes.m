@@ -319,93 +319,53 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
 
     
     % Extract both the input events and output events into tables
-    table_events_shifted          = table_events;
+    table_events_display          = table_events;
         
     
     % Rename variables
-    table_events_original.Properties.VariableNames{'type'} = 'event_code';
-    table_events_shifted.Properties.VariableNames{'type'}  = 'event_code';
-
+    table_events_display.Properties.VariableNames{'type'} = 'event_code';
     
     % Delete `duration` variable (since it is unused)
     try
-        table_events_original.duration = [];
-        table_events_shifted.duration  = [];
+        table_events_display.duration = [];
     catch
         % do nothing if `duration` does not exist
     end
     
-    
-    
-    %% Creating Combined tables
-    
-    % Convert `order_num` to strings (in order to `join` the tables)
-    if(isnumeric(table_events_original.original_order_num) || isnumeric(table_events_shifted.original_order_num))
         
-        table_events_shifted.original_order_num  = arrayfun(@num2str,table_events_shifted.original_order_num,  'UniformOutput',false);
-        table_events_original.original_order_num = arrayfun(@num2str,table_events_original.original_order_num, 'UniformOutput',false);
-    
-    elseif(iscell(table_events_original.original_order_num) || iscell(table_events_shifted.original_order_num))
-    
-        table_events_shifted.original_order_num  = cellfun(@num2str,table_events_shifted.original_order_num,   'UniformOutput',false);
-        table_events_original.original_order_num = cellfun(@num2str,table_events_original.original_order_num,  'UniformOutput',false);
-    
-    end
-        
-    % Join the input/original events with the output/shifted events 
-    table_combined = innerjoin(table_events_original, table_events_shifted, ...
-        'Keys', 'original_order_num');
-    
-    
-    
-    % Convert `order_num` back to number
-    if(isnumeric(table_combined.original_order_num))
-        table_combined.original_order_num = arrayfun(@str2num, table_combined.original_order_num, 'UniformOutput', false);
-    elseif(iscell(table_combined.original_order_num))
-        table_combined.original_order_num = cellfun(@str2num, table_combined.original_order_num, 'UniformOutput', false);
-    end
-            
-    
-    %% Clean combined table
-    
-    % Delete urevents with missing values (i.e. boundary events)
-    rows2Delete = cell2mat(cellfun(@isempty, table_combined.original_order_num, 'UniformOutput', false));
-    table_combined(rows2Delete,:) = [];
-    
-    table_combined = sortrows(table_combined, 'Sample_Num_Shifted');
     
     
     %% Create new columns/variables in combined table
     
     % Calculate the sample_num differences between the input and output
     Sample_Num_Difference         = (  ...
-        table_combined.Sample_Num_Shifted - table_combined.Sample_Num_Original );
+        table_events_display.sample_num - table_events_display.original_sample_num );
     
     % Calculate the time differences based on the sample_num differences
     Time_Difference_ms            = Sample_Num_Difference * (1000/inEEG.srate);
     
     
-    table_combined = [ table_combined ...
+    table_events_display = [ table_events_display ...
         table(Sample_Num_Difference) ...
         table(Time_Difference_ms)  ];
     
     %% Setup combined table for printing to command window
     % Filter & Reposition the variable columns for display
     Display_vars = {...
-        'Event_Code_Original'   , ...
-        'original_order_num'    , ...
-        'Sample_Num_Original'   , ...
-        'Sample_Num_Shifted'    , ...
+        'event_code'   , ...
+        'order_num'    , ...
+        'original_sample_num'   , ...
+        'sample_num'    , ...
         'Sample_Num_Difference' , ...
         'Time_Difference_ms'    };
     
     Display_table = table( ...
-        table_combined{:, Display_vars{1}}, ...
-        table_combined{:, Display_vars{2}}, ...
-        table_combined{:, Display_vars{3}}, ...
-        table_combined{:, Display_vars{4}}, ...
-        table_combined{:, Display_vars{5}}, ...
-        table_combined{:, Display_vars{6}}, ...
+        table_events_display{:, Display_vars{1}}, ...
+        table_events_display{:, Display_vars{2}}, ...
+        table_events_display{:, Display_vars{3}}, ...
+        table_events_display{:, Display_vars{4}}, ...
+        table_events_display{:, Display_vars{5}}, ...
+        table_events_display{:, Display_vars{6}}, ...
         'VariableNames', Display_vars);
     
     %% Write to File
@@ -448,15 +408,7 @@ if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
 end
 
 
-%% Warn if previously created EVENTLIST detected
 
-if(isfield(outEEG, 'EVENTLIST') && ~isempty(outEEG.EVENTLIST))
-    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected & Deleted \n _________________________________________________________________________\n\n\tThis function changes the timing of your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n\tRemember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
-    warning(warning_txt); %#ok<SPWRN>
-    
-    % DELETE PRIOR EVENTLIST
-    outEEG.EVENTLIST = [];
-end
 
 
 
@@ -482,7 +434,15 @@ outEEG                 = inEEG;
 outEEG.event           = table2struct(table_events)';
 outEEG                 = eeg_checkset(outEEG, 'eventconsistency', 'checkur');
 
+%% Warn if previously created EVENTLIST detected
 
+if(isfield(outEEG, 'EVENTLIST') && ~isempty(outEEG.EVENTLIST))
+    warning_txt = sprintf('Previously Created ERPLAB EVENTLIST Detected & Deleted \n _________________________________________________________________________\n\n\tThis function changes the timing of your event codes, thus your prior eventlist is now obsolete and WILL BE DELETED. \n\n\tRemember to re-create a new ERPLAB EVENTLIST\n _________________________________________________________________________\n');
+    warning(warning_txt); %#ok<SPWRN>
+    
+    % DELETE PRIOR EVENTLIST
+    outEEG.EVENTLIST = [];
+end
 
 %% Display input EEG plot to user with rejection windows marked
 if displayEEG
