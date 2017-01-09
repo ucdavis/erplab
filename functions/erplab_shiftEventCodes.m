@@ -327,45 +327,41 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     
     % Delete `duration` variable (since it is unused)
     try
-        table_events_display.duration = [];
+        table_events_display.duration           = [];
+        table_events_display.order_num          = [];
+        table_events_display.original_order_num = [];
     catch
         % do nothing if `duration` does not exist
     end
+
+    % Convert and rename (shifted) sample number to time position
+    table_events_display.Properties.VariableNames{'sample_num'} = 'shifted_time_position';
+    table_events_display.shifted_time_position = table_events_display.shifted_time_position * (1000/inEEG.srate);
     
-        
+    % Convert and rename original sample number to original time position
+    table_events_display.Properties.VariableNames{'original_sample_num'} = 'original_time_position';
+    table_events_display.original_time_position = table_events_display.original_time_position * (1000/inEEG.srate);
     
-    
-    %% Create new columns/variables in combined table
-    
+            
     % Calculate the sample_num differences between the input and output
-    Sample_Num_Difference         = (  ...
-        table_events_display.sample_num - table_events_display.original_sample_num );
-    
-    % Calculate the time differences based on the sample_num differences
-    Time_Difference_ms            = Sample_Num_Difference * (1000/inEEG.srate);
-    
-    
+    time_difference_ms         = table_events_display.shifted_time_position - table_events_display.original_time_position;
+
     table_events_display = [ table_events_display ...
-        table(Sample_Num_Difference) ...
-        table(Time_Difference_ms)  ];
+        table(time_difference_ms)  ];
     
-    %% Setup combined table for printing to command window
+    %% Setup table for printing to command window
     % Filter & Reposition the variable columns for display
     Display_vars = {...
         'event_code'   , ...
-        'order_num'    , ...
-        'original_sample_num'   , ...
-        'sample_num'    , ...
-        'Sample_Num_Difference' , ...
-        'Time_Difference_ms'    };
+        'original_time_position'    , ...
+        'shifted_time_position' , ...
+        'time_difference_ms'    };
     
     Display_table = table( ...
         table_events_display{:, Display_vars{1}}, ...
         table_events_display{:, Display_vars{2}}, ...
         table_events_display{:, Display_vars{3}}, ...
         table_events_display{:, Display_vars{4}}, ...
-        table_events_display{:, Display_vars{5}}, ...
-        table_events_display{:, Display_vars{6}}, ...
         'VariableNames', Display_vars);
     
     %% Write to File
@@ -403,7 +399,7 @@ if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
         numEventCodes);
     fprintf('\t%9d boundary events were detected\n', ...
         numBoundaryEvents);
-    fprintf('\t%9d event codes were deleted because they crossed a boundary\n\n', ...
+    fprintf('\t%9d event codes that were shifted were subsequently deleted because they crossed a boundary\n\n', ...
         numEventsDeleted);
 end
 
