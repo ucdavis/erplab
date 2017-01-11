@@ -245,7 +245,7 @@ if handles.running  == 0;
         delete(handles.gui_chassis)
 end
 pause(0.2)
-web('http://www.erpinfo.org/erplab/','-browser')
+web('https://github.com/lucklab/erplab/','-browser')
 
 % -----------------------------------------------------------------------
 function pushbutton_publication_Callback(hObject, eventdata, handles)
@@ -319,7 +319,7 @@ if handles.running  == 0;
         delete(handles.gui_chassis)
 end
 pause(0.2)
-web('http://erpinfo.org/erplab/erplab-documentation/video-documentation','-browser')
+web('https://github.com/lucklab/erplab/wiki/Videos','-browser')
 
 %--------------------------------------------------------------------------
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)

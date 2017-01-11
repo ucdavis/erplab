@@ -93,7 +93,7 @@ end
 
 fprintf('Full error message: \n %s\n', message);
 message = regexprep(message,'<.*>|Error using ==>','');
-bottomline = 'If you think this is a bug, please report the error to erplab@erpinfo.org and not to the EEGLAB developers.';
+bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
 disp(bottomline)
 fprintf('%s\n', repmat('*',1,50));
 set(handles.text_message, 'String', message)

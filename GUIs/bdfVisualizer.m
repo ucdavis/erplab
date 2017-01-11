@@ -470,7 +470,7 @@ function pushbuttonBDFManualLink_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbuttonBDFManualLink (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-web('http://erpinfo.org/erplab/erplab-documentation/manual/Binlister.html','-browser');
+web('https://github.com/lucklab/erplab/wiki/Assigning-Events-to-Bins-with-BINLISTER','-browser');
 
 
 % --- Executes on button press in pushbuttonBDFTutorialLink.

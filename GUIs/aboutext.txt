@@ -9,6 +9,8 @@ axstewart@ucdavis.edu
 Center for Mind and Brain, University of California, Davis #
 
 Jason Arita
+jtkarita@ucdavis.edu
+Center for Mind and Brain, University of California, Davis #
 
 #
 Find latest on Github:
@@ -26,7 +28,6 @@ and EEGLAB Toolbox designed by Scott Makeig and Arnauld Delorme #
 at UCSD. #
 #
 Software Developer Assistants: #
-Jason Arita
 Eric Foo #
 #
 UC-Davis Testing Team: #
@@ -45,7 +46,7 @@ Srinivas Rachakonda and Kent Kiehl #
 This is not commercial software,  and bugs can happen #
 In some cases,  errors will occur leading to a message that #
 instructs you to report the error to the EEGLAB developers. #
-If this happens, please report the error to erplab@erpinfo.org #
+If this happens, please report the error to erplabtoolbox@gmail.com #
 and not to the EEGLAB developers. ERPLAB has primarily been #
 tested using EEG collected with a Biosemi ActiveTwo System, #
 along with a smaller amount of testing using EEG collected #

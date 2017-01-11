@@ -161,7 +161,7 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_epochbin
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/Epoching_Bins.html -browser
+web https://github.com/lucklab/erplab/wiki/Epoching-Bins -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_run_Callback(hObject, eventdata, handles)
