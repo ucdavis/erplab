@@ -105,7 +105,7 @@ pause(0.1)
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_binlister
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/Binlister.html -browser
+web https://github.com/lucklab/erplab/wiki/Assigning-Events-to-Bins-with-BINLISTER -browser
 
 %--------------------------------------------------------------------------
 function edit_load_BDF_Callback(hObject, eventdata, handles)

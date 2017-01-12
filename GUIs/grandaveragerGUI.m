@@ -237,7 +237,7 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_gaverager
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/Averaging_ERPsets.html -browser
+web https://github.com/lucklab/erplab/wiki/Averaging-Across-ERPSETS-(Creating-Grand-Averages) -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_GO_Callback(hObject, eventdata, handles)

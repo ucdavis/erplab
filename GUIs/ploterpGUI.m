@@ -426,7 +426,7 @@ function checkbox_toolbar_Callback(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_ploterps
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/Plot_ERP_Waveforms.html -browser
+web https://github.com/lucklab/erplab/wiki/Plotting-ERP-Waveforms -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_plot_Callback(hObject, eventdata, handles)
