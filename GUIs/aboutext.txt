@@ -7,7 +7,7 @@ Main developers for v5 and v6:
 Andrew X Stewart
 axstewart@ucdavis.edu
 Center for Mind and Brain, University of California, Davis #
-
+#
 Jason Arita
 jtkarita@ucdavis.edu
 Center for Mind and Brain, University of California, Davis #
