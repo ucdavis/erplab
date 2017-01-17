@@ -120,7 +120,7 @@ if iserpmem==0
                 % message on command window
                 fprintf('%s\n', repmat('*',1,50));
                 fprintf('"Houston, we''ve had a problem here": \n %s\n', sprintf(msgboxText));
-                bottomline = 'If you think this is a bug, please report the error to erplab@erpinfo.org and not to the EEGLAB developers.';
+                bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
                 disp(bottomline)
                 fprintf('%s\n', repmat('*',1,50));
                 
@@ -340,7 +340,7 @@ comhelpman   = 'pop_erphelp;' ;
 comhelptut   = 'pop_erphelptut;' ;
 comhelpsrp   = 'pop_erphelpscript;' ;
 comhelplist  = 'web https://lists.ucdavis.edu/sympa/arc/erplab -browser';
-comhelpvideo = 'web http://erpinfo.org/erplab/erplab-documentation/video-documentation -browser';
+comhelpvideo = 'web https://github.com/lucklab/erplab/wiki/Videos -browser';
 
 
 %% Filter ERP callbacks
@@ -568,7 +568,7 @@ uimenu( mUTI,'Label','Recover bin descriptor file from EEG ','CallBack', comEEGB
 uimenu( mUTI,'Label','Recover bin descriptor file from ERP ','CallBack', comERPBDR,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mUTI,'Label','Reset event code bytes','CallBack', comRECB,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mUTI,'Label','Save current ERPset history for scripting','CallBack', comSaveH,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-uimenu( mUTI,'Label','Find more here! (for scripting) ','CallBack','web(''http://www.erpinfo.org/erplab/erplab-documentation/utilities/view'',''-browser'');','separator','on',...
+uimenu( mUTI,'Label','Find more here! (for scripting) ','CallBack','web(''https://github.com/lucklab/erplab/wiki/Scripting-Guide'',''-browser'');','separator','on',...
         'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Simulate EEG/ERP data  (alpha version)','CallBack',comESIM,'separator','on' );
 

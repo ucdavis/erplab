@@ -217,7 +217,7 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_eegchanoperator
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/Channel_Operations.html -browser
+web https://github.com/lucklab/erplab/wiki/EEG-and-ERP-Channel-Operations -browser
 
 %--------------------------------------------------------------------------
 function pushbutton_RUN_Callback(hObject, eventdata, handles)

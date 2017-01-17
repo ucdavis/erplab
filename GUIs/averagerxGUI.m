@@ -296,7 +296,7 @@ end
 %--------------------------------------------------------------------------
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_averager
-web http://erpinfo.org/erplab/erplab-documentation/manual_4/Averaging_ERPs.html -browser
+web https://github.com/lucklab/erplab/wiki/Computing-Averaged-ERPs -browser
 
 % -------------------------------------------------------------------------
 function pushbutton_RUN_Callback(hObject, eventdata, handles)
