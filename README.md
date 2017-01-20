@@ -1,54 +1,65 @@
 
-
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users. 
 
-## ERPLAB v6.0 - Download Latest Release Version
+## ERPLAB v6.1
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/6.0/erplab6.0.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/6.1/erplab-6.1.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
   
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v6.0, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (so something like /Users/steve/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.0/eegplugin_erplab.m exists). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki).
+To install ERPLAB v6.1, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab-6.1/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
-To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial).
+To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
 
 We encourage most users to use this latest major version.
 
-----
+---
+
 ## ERPLAB compatibility
 
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
 We do recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this. The Matlab Signal Processing Toolbox is required.
 
-The old v11 of EEGLAB is *not* recommended.
+Caution: EEGLAB v11 is _not_ recommended.
 
-Find installation help [here](https://github.com/lucklab/erplab/wiki/Installation).
+Find installation help [here](http://erpinfo.org/erplab)
 
 ### ERPLAB compatibility table
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v6.0**
+**ERPLAB v6.1**
 
-**OS** | **Matlab** | **EEGLAB** | Working?
---- | --- | --- | ---
-Mac OS X 10.11.4 'El Capitan'	| Matlab R2015a |	EEGLAB v13.5.4b |	✓
-Mac OS X 10.11.4 'El Capitan' |	Matlab R2016a |	EEGLAB v13.5.4b	 | ✓ *
-Windows 7	| Matlab R2014a | EEGLAB v13.5.4b |	✓
-Windows 8.1 |	Matlab R2014a |	EEGLAB v13.5.4b	| ✓
-Ubuntu 14.04 LTS |	Matlab R2014a |	EEGLAB v13.5.4b |	✓
+| **OS** | **Matlab** | **EEGLAB** | Working? |
+| --- | --- | --- | --- |
+| Mac OS X 10.11.4 'El Capitan' | Matlab R2015a | EEGLAB v13.5.4b | ✓ |
+| Mac OS X 10.11.4 'El Capitan' | Matlab R2016a | EEGLAB v13.5.4b | ✓ * |
+| Windows 7 | Matlab R2014a | EEGLAB v13.5.4b | ✓ |
+| Windows 8.1 | Matlab R2014a | EEGLAB v13.5.4b | ✓ |
+| Ubuntu 14.04 LTS | Matlab R2014a | EEGLAB v13.5.4b | ✓ |
 
-``*`` - (but with some non-critical warnings)
+`*` - (but with some non-critical warnings)
 <br/>
 <br/>
-<br/>
-------
 
+## <br/>
+
+-----
+# ERPLAB v6.1 Release Notes
+
+## Shift Event Codes
+The new Shift Event Codes tool has been updated so that when you shift event codes beyond a continuous EEG boundary marker (e.g. -99, "boundary" event codes) then that code will be deleted 
+
+## New Github-based documentation & ERPInfo.org website
+We have fully migrated of all our ERPLAB documentation (i.e. manual, tutorial, etc) now to Github, and so have now updated the help links in ERPLAB.
+
+
+-----
 
 
 # ERPLAB v6.0 Release Notes
