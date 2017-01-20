@@ -374,9 +374,14 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     output_filename     = ['erplab-shift_event_codes-' datestr(now, 30) '.csv'];
     output_filespec     = fullfile(path_temp, output_filename);
     
-    writetable(Display_table, output_filespec, ...
-        'Delimiter',   ',', ...
-        'QuoteStrings', true);
+    try
+        writetable(Display_table, output_filespec, ...
+            'Delimiter',   ',', ...
+            'QuoteStrings', true);
+    catch
+        writetable(Display_table, output_filespec, ...
+            'Delimiter',   ',');
+    end
     
     %% Display to command line    
     fprintf('A CSV-file containing all shift information was created at <a href="matlab: open( %s )">%s </a>\n\n', output_filespec, output_filespec)
