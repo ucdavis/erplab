@@ -384,7 +384,7 @@ if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
     end
     
     %% Display to command line    
-    fprintf('A CSV-file containing all shift information was created at <a href="matlab: open( %s )">%s </a>\n\n', output_filespec, output_filespec)
+    fprintf('A CSV-file containing all shift information was created at <a href="matlab: open( ''%s'' )">%s </a>\n\n', output_filespec, output_filespec)
     fprintf('For your information, here is a table of the first 10 events in your eventlist:\n');
     display(Display_table(1:10,:));
     
