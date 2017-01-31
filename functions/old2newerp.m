@@ -94,7 +94,7 @@ if iserpstruct(ERPold)
         end
         return
 end
-fprintf('Mayor differences at ERP structure were found.\n');
+fprintf('Major differences at ERP structure were found.\n');
 if nargin==1
         try
                 versionold = ERPold.version; %old version

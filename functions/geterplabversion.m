@@ -39,26 +39,28 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function [version reldate] = geterplabversion
-version = '';
-reldate = '';
 
-p = which('eegplugin_erplab');
-p = p(1:findstr(p,'eegplugin_erplab.m')-1);
+erplab_default_values
+version = erplabver;
+reldate = erplabrel;
 
-if exist(fullfile(p,'memoryerp.erpm'), 'file')
-        try
-                v=load(fullfile(p,'memoryerp.erpm'), '-mat');
-                version = v.erplabver;
-                reldate = v.erplabrel;
-        catch
-                cv = regexp(p, 'erplab_(\d*.\d*.\d*.\d*)', 'tokens');
-                version = char(cv{:});
-        end
-else
-        cv = regexp(p, 'erplab[-_ ](\d*.\d*.\d*.\d*)', 'tokens');
-        version = char(cv{:});
-end
 
+% p = which('eegplugin_erplab');
+% p = p(1:findstr(p,'eegplugin_erplab.m')-1);
+% 
+% if exist(fullfile(p,'memoryerp.erpm'), 'file')
+%         try
+%                 v=load(fullfile(p,'memoryerp.erpm'), '-mat');
+%                 version = v.erplabver;
+%                 reldate = v.erplabrel;
+%         catch
+%                 cv = regexp(p, 'erplab_(\d*.\d*.\d*.\d*)', 'tokens');
+%                 version = char(cv{:});
+%         end
+% else
+%         cv = regexp(p, 'erplab[-_ ](\d*.\d*.\d*.\d*)', 'tokens');
+%         version = char(cv{:});
+% end
 %
 % catch
 %       msgboxText = ['geterplabversion() cannot find the erplab version number...\n'...
