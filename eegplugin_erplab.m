@@ -55,7 +55,7 @@ char_i_erplab = regexp(p, 'erplab','end');
 char_i_erplab = char_i_erplab(end);
 
 try
-    foldernum = p(char_i_erplab+1:char_i_erplab+3);
+    foldernum = p(char_i_erplab+1:char_i_erplab+5);  % Get the 5 chars after the last erplabX.Y.Z in the path
     if ~strcmp(foldernum, erplabver)
         fprintf('\nERPLAB''s folder does not show the current version number.\n')
     end
@@ -103,6 +103,19 @@ end
 %
 % ERPLAB's WORKING MEMORY
 %
+
+% Check erpmem version matches current version
+if iserpmem
+                oldmem = load(fullfile(p,'memoryerp.erpm'), '-mat');
+                memver = oldmem.erplabver;
+                if strcmp(memver,erplabver) == 0
+                    disp('Updating erpmem with current version number')
+                    mshock = oldmem.mshock;
+                    save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
+                end
+end
+
+
 if iserpmem==0
         mshock = 0;
         try

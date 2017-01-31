@@ -55,35 +55,50 @@ end
 [pspliter, dvdigits] = regexp(dataversion, '\.','match','split');
 ndd = length(dvdigits);
 
-if ndd==2 && str2num(dvdigits{1}) >= 6
-    % if after 6.0
-    dmayor       = str2num(dvdigits{1});
-    dminor       = str2num(dvdigits{2});
-    dformat      = 1;
-    dmaintenance = 0;
-    
-elseif ndd==3
-    dmayor       = str2num(dvdigits{1});
-    dminor       = 0;
-    dformat      = 0;
-    dmaintenance = str2num(dvdigits{3});
-elseif ndd==4
-    dmayor       = str2num(dvdigits{1});
-    dminor       = str2num(dvdigits{2});
-    dformat      = str2num(dvdigits{3});
-    dmaintenance = str2num(dvdigits{4});
-elseif ndd>4
-    msgboxText   =  sprintf('The version of your erpset: %s does not match with the ERPLAB''s version numbering A.B.C.D.', dataversion);
-    title = 'ERPLAB: UNKNOWN DATA VERSION';
-    errorfound(msgboxText, title)
-    serror = 1;
-    return
+if str2num(dvdigits{1}) >= 6
+    % since v6.1.1, expect 3 digits 
+    d_new_vers = 1;
 else
-    % unknow or very ooooold version, when Javier used to be shy
-    dmayor       = 0;
-    dminor       = 0;
-    dformat      = -1;
-    dmaintenance = 0;
+    % Old format fallback
+    d_new_vers = 0;
+end
+
+if d_new_vers == 1
+    % since v6.1.1
+    dformat     = 1;
+    
+    dmayor      = str2num(dvdigits{1});
+    dminor      = str2num(dvdigits{2});
+    dmaintenance= str2num(dvdigits{3});
+    
+    ndd = 4; % set here for backwards-compatibility
+end
+    
+
+if d_new_vers == 0
+    if ndd==3
+        dmayor       = str2num(dvdigits{1});
+        dminor       = 0;
+        dformat      = 0;
+        dmaintenance = str2num(dvdigits{3});
+    elseif ndd==4
+        dmayor       = str2num(dvdigits{1});
+        dminor       = str2num(dvdigits{2});
+        dformat      = str2num(dvdigits{3});
+        dmaintenance = str2num(dvdigits{4});
+    elseif ndd>4
+        msgboxText   =  sprintf('The version of your erpset: %s does not match with the ERPLAB''s version numbering A.B.C.D.', dataversion);
+        title = 'ERPLAB: UNKNOWN DATA VERSION';
+        errorfound(msgboxText, title)
+        serror = 1;
+        return
+    else
+        % unknow or very ooooold version, when Javier used to be shy
+        dmayor       = 0;
+        dminor       = 0;
+        dformat      = -1;
+        dmaintenance = 0;
+    end
 end
 
 %
@@ -95,10 +110,11 @@ if isempty(cversion); return;end
 cmayor       = str2num(cvdigits{1}); % A
 cminor       = str2num(cvdigits{2}); % B
 
+
 % For after v6, take format to be 1
 if cmayor >= 6
-    cformat      = '1'; % C
-    cmaintenance = '0'; % D
+    cformat      = 1; % C
+    cmaintenance = str2num(cvdigits{3}); % D
     
 else  % if older, get format from version
     cformat      = str2num(cvdigits{3}); % C
