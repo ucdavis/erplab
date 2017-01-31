@@ -149,6 +149,14 @@ if(ismember('item', table_events.Properties.VariableNames))
     table_events.Properties.VariableNames{'item'}       = 'order_num';
 end
 
+% Special case where 'urevent', 'item', 'order_num' fields do not exist in
+% the inEEG.event structure
+if(~ismember('order_num', table_events.Properties.VariableNames))
+    order_num    = array2table([1:size(table_events)]', ...
+        'VariableNames', {'order_num'});
+    table_events = [table_events, order_num];
+end
+
 if(ismember('latency', table_events.Properties.VariableNames))
     table_events.Properties.VariableNames{'latency'}    = 'sample_num';
 end
