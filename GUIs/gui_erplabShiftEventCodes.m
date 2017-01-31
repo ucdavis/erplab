@@ -223,7 +223,7 @@ function editboxEventCodes_Callback(hObject, eventdata, handles)
 % single string/character input
 
 % Strip any non-numeric token and replace w/ whitespace (' ')
-editString         = regexprep(get(hObject,'String'), '[\D]', ' ');
+editString         = regexprep(get(hObject,'String'), '[^0-9:]', ' ');
 handles.eventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Display corrected eventcode string back to GUI
