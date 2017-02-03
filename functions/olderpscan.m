@@ -65,15 +65,20 @@ end
 
 if d_new_vers == 1
     % since v6.1.1
-    dformat     = 1;
+    dformat     = 1; 
     
     dmayor      = str2num(dvdigits{1});
     dminor      = str2num(dvdigits{2});
-    dmaintenance= str2num(dvdigits{3});
     
-    ndd = 4; % set here for backwards-compatibility
+    if ndd==2
+        dmaintenance = 0;
+    else
+        dmaintenance= str2num(dvdigits{3});
+    end
+    
+    ndd = 4; % with 4 args set, set 4 here for backwards-compatibility
 end
-    
+
 
 if d_new_vers == 0
     if ndd==3
