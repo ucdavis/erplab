@@ -478,7 +478,7 @@ function pushbuttonBDFTutorialLink_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbuttonBDFTutorialLink (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-web('http://erpinfo.org/erplab/erplab-documentation/bdf-library/test','-browser');
+web('https://github.com/lucklab/erplab/wiki/BDF-Library','-browser');
 
 
 
