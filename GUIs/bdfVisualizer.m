@@ -544,9 +544,9 @@ eventlistTable.bini               = [];
 
 % Convert the flag variable into its binary representation and split into
 % its user-flag and artifact-flag
-mybinaryFlag                        = dec2bin(eventlistTable.flag, handles.numBits);    % Convert artifact flags & user flags to binary
-eventlistTable.artifactFlag       = mybinaryFlag(:, 1:handles.numBits/2);
-eventlistTable.userFlag           = mybinaryFlag(:, handles.numBits/2+1:end);
+mybinaryFlag                      = dec2bin(eventlistTable.flag, handles.numBits);    % Convert artifact flags & user flags to binary
+eventlistTable.artifactFlag       = mybinaryFlag(:, handles.numBits/2+1:end);
+eventlistTable.userFlag           = mybinaryFlag(:, 1:handles.numBits/2);
 
 
 % Rearrange the event list table so that the bin label is a the end
