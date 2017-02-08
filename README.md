@@ -1,17 +1,17 @@
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users.
 
-## ERPLAB v6.1.1
+## ERPLAB v6.1.2
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/6.1.1/erplab6.1.1.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/6.1.2/erplab6.1.2.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v6.1.1, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.1/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v6.1.2, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.2/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
 
@@ -33,7 +33,7 @@ Find installation help [here](http://erpinfo.org/erplab)
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v6.1.1**
+**ERPLAB v6.1.2**
 
 | **OS** | **Matlab** | **EEGLAB** | Working? |
 | --- | --- | --- | --- |
@@ -50,6 +50,10 @@ Here is a list of some confirmed-working environments for ERPLAB.
 
 ## <br/>
 
+# ERPLAB v6.1.2 Patch
+Minor bugfixes, including:
+- Fixed BDF Library url-link in BDF-Visualizer
+- Swapped artifact and user-flag display in BDF-Visualizer
 
 # ERPLAB v6.1.1 Patch
 Minor bugfixes, including:
