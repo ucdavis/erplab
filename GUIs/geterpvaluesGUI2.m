@@ -202,11 +202,10 @@ set(handles.popupmenu_samp_amp, 'Enable', 'on')
 set(handles.text_samp, 'Enable', 'on')
 set(handles.text12, 'Enable', 'on')
 set(handles.popupmenu_locpeakreplacement, 'Enable', 'on')
-set(handles.popupmenu_rise, 'Enable', 'on')
+set(handles.popupmenu_rise, 'Enable', 'off')
 set(handles.text_fa1, 'Enable', 'on')
 set(handles.text_fa2, 'Enable', 'on')
-set(handles.text_fa3, 'Enable', 'on')
-set(handles.text_fa4, 'Enable', 'on')
+
 
 
 %--------------------------------------------------------------------------
@@ -217,6 +216,9 @@ set(handles.popupmenu_fraca,'Enable','off')
 set(handles.text_punit,'Enable','off')
 set(handles.popupmenu_fracreplacement,'Enable','off')
 set(handles.text19, 'Enable', 'off')
+set(handles.text_fa3, 'Enable', 'off')
+set(handles.text_fa4, 'Enable', 'off')
+set(handles.popupmenu_fraca, 'Enable', 'off')
 
 %--------------------------------------------------------------------------
 function menufareaon(hObject, eventdata, handles)
@@ -225,6 +227,9 @@ set(handles.text_punit,'Enable','on')
 set(handles.popupmenu_fraca,'Enable','on')
 set(handles.popupmenu_fracreplacement,'Enable','on')
 set(handles.text19, 'Enable', 'on')
+set(handles.text_fa3, 'Enable', 'on')
+set(handles.text_fa4, 'Enable', 'on')
+set(handles.popupmenu_fraca, 'Enable', 'on')
 
 fracarray = 0:100;
 set(handles.popupmenu_fraca,'String', cellstr(num2str(fracarray')))
