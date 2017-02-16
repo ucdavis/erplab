@@ -168,6 +168,8 @@ set(handles.popupmenu_samp_amp, 'Backgroundcolor',[1 1 0.8])
 set(handles.popupmenu_locpeakreplacement, 'Backgroundcolor',[1 1 0.8])
 set(handles.popupmenu_fracreplacement, 'Backgroundcolor',[1 1 0.8])
 set(handles.popupmenu_precision, 'Backgroundcolor',[1 1 0.8])
+set(handles.text_fraca,'String', {''});
+set(handles.text_fa3,'String',{''});
 drawnow
 
 % UIWAIT makes geterpvaluesGUI2 wait for user response (see UIRESUME)
@@ -188,7 +190,6 @@ set(handles.popupmenu_samp_amp, 'Enable', 'off')
 set(handles.text_samp, 'Enable', 'off')
 set(handles.text12, 'Enable', 'off')
 set(handles.popupmenu_locpeakreplacement, 'Enable', 'off')
-set(handles.popupmenu_rise, 'Enable', 'off')
 set(handles.text_fa1, 'Enable', 'off')
 set(handles.text_fa2, 'Enable', 'off')
 set(handles.text_fa3, 'Enable', 'off')
@@ -202,7 +203,6 @@ set(handles.popupmenu_samp_amp, 'Enable', 'on')
 set(handles.text_samp, 'Enable', 'on')
 set(handles.text12, 'Enable', 'on')
 set(handles.popupmenu_locpeakreplacement, 'Enable', 'on')
-set(handles.popupmenu_rise, 'Enable', 'off')
 set(handles.text_fa1, 'Enable', 'on')
 set(handles.text_fa2, 'Enable', 'on')
 
@@ -217,8 +217,11 @@ set(handles.text_punit,'Enable','off')
 set(handles.popupmenu_fracreplacement,'Enable','off')
 set(handles.text19, 'Enable', 'off')
 set(handles.text_fa3, 'Enable', 'off')
+set(handles.text_fa3,'String',{''});
 set(handles.text_fa4, 'Enable', 'off')
 set(handles.popupmenu_fraca, 'Enable', 'off')
+set(handles.popupmenu_rise, 'Enable', 'off')
+set(handles.text_fraca,'String', {''});
 
 %--------------------------------------------------------------------------
 function menufareaon(hObject, eventdata, handles)
@@ -228,8 +231,10 @@ set(handles.popupmenu_fraca,'Enable','on')
 set(handles.popupmenu_fracreplacement,'Enable','on')
 set(handles.text19, 'Enable', 'on')
 set(handles.text_fa3, 'Enable', 'on')
+set(handles.text_fa3,'String',{'Measure'});
 set(handles.text_fa4, 'Enable', 'on')
 set(handles.popupmenu_fraca, 'Enable', 'on')
+set(handles.popupmenu_rise, 'Enable', 'on')
 
 fracarray = 0:100;
 set(handles.popupmenu_fraca,'String', cellstr(num2str(fracarray')))
@@ -2623,3 +2628,11 @@ function text_fa1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to text_fa1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function text_fraca_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to text_fraca (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+set(handles.text_fraca,'String', {''})
