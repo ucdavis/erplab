@@ -1,7 +1,7 @@
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users.
 
-## ERPLAB v6.1.2
+## ERPLAB v6.1.3
 
 <p align="center" >
   <a href="https://github.com/lucklab/erplab/releases/download/6.1.2/erplab6.1.2.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
@@ -11,7 +11,7 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
  </a>
 </p>
 
-To install ERPLAB v6.1.2, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing EEGLAB installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.2/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v6.1.3, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.3/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
 
@@ -49,6 +49,11 @@ Here is a list of some confirmed-working environments for ERPLAB.
 <br/>
 
 ## <br/>
+
+# ERPLAB v6.1.3 Patch
+Minor bugfixes, including:
+- Cleaned up the Measurement Viewer text and options
+- Measurement Viewer helper text now only shown when relevant
 
 # ERPLAB v6.1.2 Patch
 Minor bugfixes, including:

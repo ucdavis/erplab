@@ -2629,10 +2629,8 @@ function text_fa1_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
-
 % --- Executes during object creation, after setting all properties.
 function text_fraca_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to text_fraca (see GCBO)
+% hObject    handle to text_fa1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-set(handles.text_fraca,'String', {''})
