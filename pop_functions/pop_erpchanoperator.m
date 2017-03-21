@@ -105,6 +105,7 @@ if nargin==1
         end
         formulas = answer{1};        
         wchmsgon = answer{2};
+        keeplocs = answer{3};
         def      = {formulas, wchmsgon};
         erpworkingmemory('pop_erpchanoperator', def);
         
@@ -119,7 +120,7 @@ if nargin==1
         %
         % Somersault
         %
-        [ERP, erpcom] = pop_erpchanoperator(ERP, formulas, 'Warning', wchmsgonstr, 'Saveas', 'on','ErrorMsg', 'popup', 'History', 'gui');
+        [ERP, erpcom] = pop_erpchanoperator(ERP, formulas, 'Warning', wchmsgonstr, 'Saveas', 'on','ErrorMsg', 'popup','KeepLocations',keeplocs, 'History', 'gui');
         return        
 end
 
@@ -135,12 +136,18 @@ p.addRequired('formulas');
 p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
+p.addParamValue('KeepLocations',0, @isnumeric);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(ERP, formulas, varargin{:});
 
 datatype = checkdatatype(ERP);
 
+if p.Results.KeepLocations == 1
+    keeplocs = 1;
+else
+    keeplocs = 0;
+end
 if strcmpi(p.Results.Warning,'on')
         wchmsgon = 1;
 else
@@ -218,7 +225,7 @@ while h<=nformulas && conti
                 %
                 % subroutine
                 %
-                [ERPout, conti] = erpchanoperator(ERPin, ERPout, expr, wchmsgon);
+                [ERPout, conti] = erpchanoperator(ERPin, ERPout, expr, wchmsgon,keeplocs);
                 
                 if conti==0
                         recall = 1;

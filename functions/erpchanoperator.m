@@ -53,7 +53,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERPout conti] = erpchanoperator(ERPin, ERPout, expression, wchmsgon)
+function [ERPout conti] = erpchanoperator(ERPin, ERPout, expression, wchmsgon, keeplocs)
 conti      = 1;
 newlabel   = [];
 if nargin<1
@@ -61,7 +61,11 @@ if nargin<1
         return
 end
 if nargin<4
-        wchmsgon =1;
+        wchmsgon = 1;
+        keeplocs = 0;
+end
+if nargin == 4
+    keeplocs = 0;
 end
 
 %
@@ -377,5 +381,11 @@ if confirma
                 errorfound(sprintf(msgboxText), title);
                 conti = 0;
                 return
-        end
+        end     
 end
+
+if keeplocs == 1
+    
+    ERPout = chanlocs_matcher(ERPout,ERPin);
+end
+    

@@ -161,6 +161,8 @@ else
         error('Oops...checkbox_warning memory failed')
 end
 
+handles.locs = ERPLAB.chanlocs;
+
 %
 % Color GUI
 %
@@ -225,6 +227,8 @@ listname    = handles.listname;
 compacteditor(hObject, eventdata, handles);
 formulalist = get(handles.editor,'String');
 wchmsgon    = get(handles.chwarning,'Value');
+keeplocs    = get(handles.chkeeplocs,'Value');
+
 
 if strcmp(formulalist,'')
         msgboxText =  'You have not written any formula!';
@@ -298,7 +302,17 @@ end
 chanopGUI.emode = editormode;
 chanopGUI.hmode = get(handles.checkbox_sendfile2history,'Value');
 chanopGUI.listname  = listname;
+chanopGUI.keeplocs = keeplocs;
+chanopGUI.chanlocs = handles.locs;
+disp(chanopGUI.chanlocs)
 erpworkingmemory('chanopGUI', chanopGUI);
+
+try
+    handles.output{3} = keeplocs;
+catch
+        disp('Problem setting location preference')
+end
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -792,6 +806,7 @@ function pushbutton_removechan_Callback(hObject, eventdata, handles)
 typedata = handles.typedata;
 chan2del = deletechanGUI(typedata);
 nchan    = handles.nchan;
+keeplocs = get(handles.chkeeplocs,'Value');
 
 if ~isempty(chan2del)        
         chan2del = unique_bc2(cell2mat(chan2del));        
@@ -822,6 +837,11 @@ if ~isempty(chan2del)
         
         wchmsgon    = get(handles.chwarning,'Value');
         handles.output = {{eqtn}, wchmsgon}; % sent like a cell string (with formulas)
+        try
+            handles.output{3} = keeplocs;
+        catch
+            disp('Problem setting location preference')
+        end
         % Update handles structure
         guidata(hObject, handles);
         uiresume(handles.gui_chassis);
@@ -976,3 +996,12 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
+% --- Executes on button press in chkeeplocs.
+function chkeeplocs_Callback(hObject, eventdata, handles)
+% hObject    handle to chkeeplocs (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of chkeeplocs
