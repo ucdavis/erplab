@@ -577,5 +577,3 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
-
-
