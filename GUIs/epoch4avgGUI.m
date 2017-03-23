@@ -60,7 +60,7 @@ end
 handles.nepochperdata = nepochperdata;
 
 ardetect_list = {'ignore artifact detection','exclude marked epochs (recommended)', 'include ONLY marked epochs (use with care)'};
-catching_list = {'sequential','at random', 'odd epochs', 'even epochs', 'prime epochs'};
+catching_list = {'sequential','at random, without replacement', 'odd epochs', 'even epochs', 'prime epochs'};
 instance_list = {'first','anywhere', 'last'};
 
 set(handles.popupmenu_ardetection,'String', ardetect_list)
