@@ -17,7 +17,10 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistan
 %
 % OPTIONAL INPUT:
 %
-%   ignoreEventCodes         - array of event code numbers to ignore
+%   IgnoreUseEventcode       - array of event code numbers to use or ignore
+%   IgnoreUseType            - How to interpret the evencode list 
+%                            - 'use'    - look for time spec between these specific event codes 
+%                            - 'ignore' - look for time spec between all event codes EXCEPT for the listed eventcodes
 %   displayEEG               - true/false  - Display a plot of the EEG when finished
 %
 % OUTPUT:
@@ -76,23 +79,23 @@ if nargin<1
     return
 elseif nargin<4
     error('ERPLAB:erplab_deleteTimeSegments: needs 4 inputs.')
-elseif length(varargin) > 2                                      % only want 3 optional inputs at most
+elseif length(varargin) > 3                                     % only want 3 optional inputs at most
     error('ERPLAB:erplab_deleteTimeSegments:TooManyInputs', ...
-        'requires at most 2 optional inputs');
+        'requires at most 3 optional inputs');
 else
     disp('Working...')
 end
 
 
 %% Handle optional variables
-optargs = {[] false}; % Default optional inputs
+optargs = {[], 'ignore', false}; % Default optional inputs
 
 % Put defaults into the valuesToUse cell array,
 % and overwrite the ones specified in varargin.
 optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep their default values. If vargin is specified then it overwrites
 
 % Place optional args into variable names
-[ignoreEventCodes, eegplotGUIFeedback] = optargs{:};
+[ignoreEventCodes, ignoreUseType, eegplotGUIFeedback] = optargs{:};
 
 
 %% Convert all timing info to samples
@@ -116,14 +119,22 @@ end
 % Find set of all unique event codes
 eventcodes_all    = unique(tb_events.type);
 
-% Convert ignore event codes set to strings
+
+
+% Convert ignore/use event codes set to strings
 if(~isempty(ignoreEventCodes))
     ignoreEventCodes = textscan(num2str(ignoreEventCodes), '%s');
     ignoreEventCodes = ignoreEventCodes{1};
 end
 
-% remove ignored eventcodes from the set of all eventcodes to analyze
-analyzedEventcodes    = setdiff(eventcodes_all, ignoreEventCodes);          
+switch ignoreUseType
+    case 'use'
+        analyzedEventcodes    = ignoreEventCodes;
+    case 'ignore'     
+        % remove ignored eventcodes from the set of all eventcodes to analyze
+        analyzedEventcodes    = setdiff(eventcodes_all, ignoreEventCodes);
+end
+
 analyzedEventIndices  = ismember(tb_events.type, analyzedEventcodes);
 analyzedSamples       = round(tb_events(analyzedEventIndices, :).latency)';                   % Convert event codes to samples
 

@@ -3,19 +3,19 @@
 %
 % FORMAT
 %
-% [WinRej2 ChanRej2 ] = joinclosesegments(WinRej, chanrej, shortisisam);
+% [winrej2 ChanRej2 ] = joinclosesegments(winrej, chanrej, shortisisam);
 %
 % INPUTS:
 %
-% WinRej         - latency array. Each row is a pair of values (start end), so the array has 2 columns.
+% winrej         - latency array. Each row is a pair of values (start end), so the array has 2 columns.
 % chanrej        - marked channels array
 % shortisisam    - inter window time. (marked windows closer than this value will be joined together)
 %
 %
 % OUTPUT
 %
-% WinRej2        - latency array for the resulting marked windows
-% ChanRej2       - marked channels array belonging to WinRej2
+% winrej2        - latency array for the resulting marked windows
+% ChanRej2       - marked channels array belonging to winrej2
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -46,53 +46,53 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [WinRej2, ChanRej2 ] = joinclosesegments(WinRej, chanrej, shortisisam)
+function [winrej2, ChanRej2 ] = joinclosesegments(winrej, chanrej, shortisisam)
 
-WinRej2= []; ChanRej2 = [];
+winrej2= []; ChanRej2 = [];
 fprintf('\nWARNING: Marked segments that are closer than %g samples will be join together.\n\n', shortisisam);
 if ~isempty(chanrej)
         chanrej = uint8(chanrej);
 end
-a = WinRej(1,1);
-b = WinRej(1,2);
+a = winrej(1,1);
+b = winrej(1,2);
 m = 1;
 working = 0;
 if ~isempty(chanrej)
         chrej2 = uint8(zeros(1,size(chanrej,2)));
 end
-nwin = size(WinRej,1);
+nwin = size(winrej,1);
 for j=2:nwin
-        isi = WinRej(j,1) - WinRej(j-1,2);
+        isi = winrej(j,1) - winrej(j-1,2);
         if isi<shortisisam
-                b = WinRej(j,2);
+                b = winrej(j,2);
                 if ~isempty(chanrej)
                         chrej2 = bitor(chrej2, bitor(chanrej(j,:),chanrej(j-1,:)));
                 end
                 working = 1;
                 if j==nwin
-                        WinRej2(m,:)  = [a b];
+                        winrej2(m,:)  = [a b];
                         if ~isempty(chanrej)
                                 ChanRej2(m,:) = chrej2;
                         end
                 end
         else
                 if working==1
-                        WinRej2(m,:)  = [a b];
+                        winrej2(m,:)  = [a b];
                         if ~isempty(chanrej)
                                 ChanRej2(m,:) = chrej2;
                         end
-                        %                     a = WinRej(j,1);
+                        %                     a = winrej(j,1);
                         working = 0;
                 else
-                        WinRej2(m,:)  = [a b];
+                        winrej2(m,:)  = [a b];
                         if ~isempty(chanrej)
                                 ChanRej2(m,:) = chanrej(j-1);
                         end
-                        %                     a = WinRej(j,1);
-                        %                     b = WinRej(j,2);
+                        %                     a = winrej(j,1);
+                        %                     b = winrej(j,2);
                 end
-                a = WinRej(j,1);
-                b = WinRej(j,2);
+                a = winrej(j,1);
+                b = winrej(j,2);
                 chrej2 = uint8(zeros(1,size(chanrej,2)));
                 m = m + 1;
         end
@@ -101,4 +101,6 @@ if ~isempty(chanrej)
         ChanRej2  = double(ChanRej2);
 end
 
-WinRej2(end+1,:) = WinRej(end,:); % Save/append the last rejection window
+winrej2(end+1,:)  = winrej(end,:);   % Save/append the last rejection window
+ChanRej2(end+1,:) = chanrej(end,:);  % Save/append the last rejection window
+
