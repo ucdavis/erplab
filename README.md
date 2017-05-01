@@ -23,9 +23,9 @@ We encourage most users to use this latest major version.
 
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
-We do recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this. The Matlab Signal Processing Toolbox is required.
-
-Caution: EEGLAB v11 is _not_ recommended.
+- We recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this. 
+- The Matlab Signal Processing Toolbox is required.
+- Caution: EEGLAB v11 is _not_ recommended.
 
 Find installation help [here](http://erpinfo.org/erplab)
 
@@ -33,7 +33,7 @@ Find installation help [here](http://erpinfo.org/erplab)
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v6.1.2**
+**ERPLAB v6.1.3**
 
 | **OS** | **Matlab** | **EEGLAB** | Working? |
 | --- | --- | --- | --- |
