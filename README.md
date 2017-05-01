@@ -33,7 +33,7 @@ Find installation help [here](http://erpinfo.org/erplab)
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v6.1.2**
+**ERPLAB v6.1.3**
 
 | **OS** | **Matlab** | **EEGLAB** | Working? |
 | --- | --- | --- | --- |
