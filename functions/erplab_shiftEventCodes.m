@@ -157,6 +157,7 @@ if(~ismember('order_num', table_events.Properties.VariableNames))
     table_events = [table_events, order_num];
 end
 
+% Retname 'latency' column header title to 'sample_num' (more informative)
 if(ismember('latency', table_events.Properties.VariableNames))
     table_events.Properties.VariableNames{'latency'}    = 'sample_num';
 end
@@ -177,8 +178,6 @@ table_events.original_order_num  = table_events.order_num;
 table_events.original_sample_num = table_events.sample_num;
 
 
-
-table_events_original = table_events;
 
 
 
@@ -438,7 +437,14 @@ if(ismember('sample_num', table_events.Properties.VariableNames))
     table_events.Properties.VariableNames{'sample_num'}    = 'latency';
 end
 
-table_events.type       = char(table_events.type);
+
+% Convert event type (i.e. event code) back into original data type (from categorical)
+if(ischar(inEEG.event(1).type))
+    table_events.type  = cellstr(table_events.type);
+elseif(isnumeric(inEEG.event(1).type))
+    table_events.type  = str2double(cellstr(table_events.type));
+end
+
 outEEG                 = inEEG;
 outEEG.event           = table2struct(table_events)';
 outEEG                 = eeg_checkset(outEEG, 'eventconsistency', 'checkur');

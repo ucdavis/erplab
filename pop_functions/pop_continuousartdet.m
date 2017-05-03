@@ -31,12 +31,14 @@
 %         'firstdet'  - {'on'/'off'} mark only first artifactual channel per window
 %         'fcutoff'   - frequency cutoff for pre-filtering the data (see below)
 %         'forder'    - filter order. 1 value indicting the order (number of points) of the FIR filter to be used.
-%                       default value is 26.
+%                       Default value is 100 if run from GUI.
 %         'shortisi'  - marked segment(s) closer than this value will be joined together.
 %         'shortseg'  - remaining crap-free segment(s) shorter than this value will be rejected as well
 %         'winoffset' - change the onset/offset of the marked segment (ms). Positive value will move the segment to the
 %                       right; negative, to the left.
 %         'colorseg'  - color for marking artifactual segments.
+%         'review'    - {'on'/'off'} Display a plot of the EEG after execution. Default is 'off'
+%         
 %
 %
 % 'fcutoff' accepts the following values:
