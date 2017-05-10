@@ -1,27 +1,27 @@
-function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, varargin)
-% ERPLAB_DELETETIMESEGMENTSS Deletes data segments between 2 event codes (string or number) if the size of the segment
+function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, varargin)
+% ERPLAB_DELETETIMESEGMENTSS Deletes data segments between 2 consecutive event codes (string or number) if the size of the time segment
 % is greater than a user-specified threshold (in msec)
 %
 % FORMAT:
 %
-%   EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
+%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreEventCodes);
 %
 %
 % INPUT:
 %
 %   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
-%   maxDistanceMS            - user-specified time threshold
-%   startEventCodeBufferMS   - time buffer around first event code
-%   endEventCodeBufferMS     - time buffer around last event code
+%   timeThresholdMS          - user-specified time threshold between event codes. 
+%   startEventcodeBufferMS   - time buffer around first event code, preserves this data surrounding the first event code
+%   endEventCodeBufferMS     - time buffer around last event code, preserves this data surround the end event codes
 %
 %
 % OPTIONAL INPUT:
 %
 %   IgnoreUseEventcode       - array of event code numbers to use or ignore
 %   IgnoreUseType            - How to interpret the evencode list 
-%                            - 'use'    - look for time spec between these specific event codes 
-%                            - 'ignore' - look for time spec between all event codes EXCEPT for the listed eventcodes
-%   displayEEG               - true/false  - Display a plot of the EEG when finished
+%                              - 'use'    - (string) look for time spec between these specific event codes 
+%                              - 'ignore' - (string) look for time spec between all event codes EXCEPT for the listed eventcodes
+%   displayEEG               - (true/false)  - (boolean) Display a plot of the EEG when finished
 %
 % OUTPUT:
 %
@@ -30,10 +30,10 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, inputMaxDistan
 %
 % EXAMPLE: 
 %
-%   Delete segment of data between any two event codes when it is 
-%   longer than 3000 ms (3 secs).
+%   Delete data segments when there is greater than 3000 ms (3 secs) 
+%   in between any consecutive event codes. 
 %
-%   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);   
+%   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, [], 'ignore', true);   
 %
 %
 %
@@ -86,6 +86,9 @@ else
     disp('Working...')
 end
 
+% Throw error if empty EEG-dataset passed into input
+if(isempty(EEG.data));   error('Input EEG dataset is empty'); end
+
 
 %% Handle optional variables
 optargs = {[], 'ignore', false}; % Default optional inputs
@@ -99,9 +102,9 @@ optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep t
 
 
 %% Convert all timing info to samples
-maxDistanceSample       = round(inputMaxDistanceMS       *(EEG.srate/1000));  % ms to samples
-startPeriodBufferSample = round(inputStartPeriodBufferMS *(EEG.srate/1000));  % ms to samples
-endPeriodBufferSample   = round(inputEndPeriodBufferMS   *(EEG.srate/1000));  % ms to samples
+timeThresholdSample     = round(timeThresholdMS     *(EEG.srate/1000));  % ms to samples
+startPeriodBufferSample = round(startEventcodeBufferMS *(EEG.srate/1000));  % ms to samples
+endPeriodBufferSample   = round(endEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
 
 
 %% Set up WORKING event codes + IGNORED event codes
@@ -133,6 +136,8 @@ switch ignoreUseType
     case 'ignore'     
         % remove ignored eventcodes from the set of all eventcodes to analyze
         analyzedEventcodes    = setdiff(eventcodes_all, ignoreEventCodes);
+    otherwise
+        error('Unrecognized value for `ignoreUseType`');
 end
 
 analyzedEventIndices  = ismember(tb_events.type, analyzedEventcodes);
@@ -152,7 +157,7 @@ rejectionWindows        = zeros(length(analyzedSamples), 2); % [];
 
 %% Find large segments between time samples
 for ii=1:length(analyzedSamples)
-    if abs(analyzedSamples(ii)-lastSample)>=maxDistanceSample
+    if abs(analyzedSamples(ii)-lastSample)>=timeThresholdSample
         t1          = lastSample;
         t2          = analyzedSamples(ii);
         
