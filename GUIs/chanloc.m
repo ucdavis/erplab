@@ -27,7 +27,7 @@ function varargout = chanloc(varargin)
 
 % Edit the above text to modify the response to help chanloc
 
-% Last Modified by GUIDE v2.5 09-May-2017 11:12:01
+% Last Modified by GUIDE v2.5 16-May-2017 06:02:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -157,14 +157,14 @@ end
 
 %handles.locformat = {'channum','X','Y','Z','labels'};	
 handles.locformat = 'sph';
-
+handles.tformat = 'xyz';
 
 
 handles.nchl = nchl;
 handles.ch_n = ch_n;
 handles.ch_labels = ch_labels;
 handles.xyz = locs_in_xyz;
-handles.xyz_orig = locs_in_xyz;
+handles.nchl_orig = nchl;
 handles.EEG = EEG;
 
 
@@ -202,10 +202,29 @@ varargout{1} = handles.output;
 
 function refreshtable(hObject, handles)
 
-ch_xyz = handles.xyz;
+%disp(handles.tformat);
 
-set(handles.loc_table,'Data',ch_xyz,'ColumnName',{'X';'Y';'Z'},'RowName',handles.ch_labels );
-set(handles.loc_table,'ColumnEditable',true(1,2,3));
+if strcmp(handles.tformat,'xyz')
+    
+    for i = 1:handles.ch_n
+        ch_xyz(i,:) = [handles.nchl(i).X handles.nchl(i).Y handles.nchl(i).Z];
+    end
+    set(handles.loc_table,'Data',ch_xyz,'ColumnName',{'X';'Y';'Z'},'RowName',handles.ch_labels );
+    set(handles.loc_table,'ColumnEditable',true(1,2,3));
+end
+
+
+if strcmp(handles.tformat,'sph')
+    
+    for i = 1:handles.ch_n
+        ch_sph(i,:) = [handles.nchl(i).sph_theta handles.nchl(i).sph_phi];
+    end
+    set(handles.loc_table,'Data',ch_sph,'ColumnName',{'sph_theta';'sph_radius';' '},'RowName',handles.ch_labels );
+    set(handles.loc_table,'ColumnEditable',false);
+    set(handles.loc_table,'ColumnEditable',true(1,2));
+end
+
+
 guidata(hObject, handles);
 
 function refreshhp(hObject, handles)
@@ -262,26 +281,45 @@ function loc_table_CellEditCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get the new data from the table after an edit
-handles.xyz = get(handles.loc_table,'Data');
+tdata = get(handles.loc_table,'Data');
 
+
+
+% recreate a new channel location structure
 for i = 1:handles.ch_n
     
     nchl(i).labels = handles.ch_labels{i};
     nchl(i).type = [];
     nchl(i).theta = [];
     nchl(i).radius = [];
-    nchl(i).X = handles.xyz(i,1);
-    nchl(i).Y = handles.xyz(i,2);
-    nchl(i).Z = handles.xyz(i,3);
+    nchl(i).X = [];%handles.xyz(i,1);
+    nchl(i).Y = [];%handles.xyz(i,2);
+    nchl(i).Z = [];%handles.xyz(i,3);
     nchl(i).sph_theta = [];
     nchl(i).sph_phi = [];
     nchl(i).sph_radius = 85;
     nchl(i).urchan = i;
     nchl(i).ref = [];
+    
+    
+    if strcmp(handles.tformat,'xyz')  % in xyz
+        nchl(i).X = tdata(i,1);
+        nchl(i).Y = tdata(i,2);
+        nchl(i).Z = tdata(i,3);
+        
+    elseif strcmp(handles.tformat,'sph')  % in sph
+        nchl(i).sph_theta = tdata(i,1);
+        nchl(i).sph_phi = tdata(i,2);
+    end
+    
+    
 end
 
-
-[nchl] = pop_chanedit(nchl, 'convert','cart2topo');
+if strcmp(handles.tformat,'xyz')  % in xyz
+    [nchl] = pop_chanedit(nchl, 'convert','cart2all');
+else
+    [nchl] = pop_chanedit(nchl, 'convert','sph2all');
+end
 
 handles.nchl = nchl;
 
@@ -301,6 +339,10 @@ done_loading = 0;
 %load_cell = {[lpath lfile], 'filetype', 'xyz'};
 %EEG3 = pop_chanedit(handles.EEG,'load',load_cell);
 
+if lfile == 0
+    disp('Location load file cancelled')
+    return
+end
 
 
 lnchl = readlocs([lpath lfile],'filetype',handles.locformat);
@@ -381,6 +423,11 @@ function pushbutton_load_set_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 [lfile,lpath] = uigetfile('dataset_with_locs.set','Choose a dataset file that has channel location information');
 
+if lfile == 0
+    disp('Location load file cancelled')
+    return
+end
+
 EEG_l = pop_loadset(lfile,lpath);
 lnchl = EEG_l.chanlocs;
 
@@ -453,6 +500,13 @@ function pushbutton_save_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 [sfile,spath] = uiputfile('locations.sph','Choose a location save file name');
+
+if sfile == 0
+    disp('Save locations - file selection cancelled')
+    return
+end
+
+
 writelocs(handles.nchl,[spath sfile],'filetype',handles.locformat);
 
 
@@ -471,6 +525,7 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 
 % --- Executes on button press in pushbutton_apply.
@@ -505,7 +560,38 @@ function pushbutton_reset_Callback(hObject, eventdata, handles)
 confirm_reset = questdlg('Reset the locations in this table to the original values?');
 
 if strcmp(confirm_reset, 'Yes') == 1
-    handles.xyz = handles.xyz_orig;
+    handles.nchl = handles.nchl_orig;
     refreshtable(hObject, handles);
     loc_table_CellEditCallback(hObject, eventdata, handles);
+end
+
+
+% --- Executes on selection change in popupmenu_format.
+function popupmenu_format_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu_format (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_format contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu_format
+menu =  get(hObject,'Value');
+if menu == 1
+    handles.tformat = 'xyz';
+elseif menu == 2
+    handles.tformat = 'sph';
+end
+
+refreshtable(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu_format_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu_format (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
