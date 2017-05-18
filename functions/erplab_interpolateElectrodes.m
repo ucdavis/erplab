@@ -139,9 +139,9 @@ if isstruct(replace_elecs)
     % re-order good channels
     % ----------------------
     [~, tmp2, neworder] = intersect_bc( lab1, lab2 );
-    [~, ordertmp2] = sort(tmp2);
-    neworder = neworder(ordertmp2);
-    EEG.data = EEG.data(neworder, :, :);
+    [~, ordertmp2]      = sort(tmp2);
+    neworder            = neworder(ordertmp2);
+    EEG.data            = EEG.data(neworder, :, :);
     
     % looking at channels for ICA
     % ---------------------------

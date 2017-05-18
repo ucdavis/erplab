@@ -22,7 +22,7 @@ function varargout = gui_erplabDeleteTimeSegments(varargin)
 
 % Edit the above text to modify the response to help gui_erplabDeleteTimeSegments
 
-% Last Modified by GUIDE v2.5 10-May-2017 12:18:07
+% Last Modified by GUIDE v2.5 17-May-2017 16:23:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -75,7 +75,7 @@ end
 
 set(handles.editbox_timeThresholdMS...
     , 'String', num2str(handles.maxDistanceMS));
-set(handles.editbox_startEventCodeBufferMS ...
+set(handles.editbox_startEventcodeBufferMS ...
     , 'String', num2str(handles.startEventCodeBufferMS));
 set(handles.editbox_endEventcodeBufferMS ...
     , 'String', handles.endEventCodeBufferMS);
@@ -197,13 +197,13 @@ handles.maxDistanceMS = str2double(get(hObject,'String'));
 guidata(hObject,handles)
 
 
-function editbox_startEventCodeBufferMS_Callback(hObject, eventdata, handles)
-% hObject    handle to editbox_startEventCodeBufferMS (see GCBO)
+function editbox_startEventcodeBufferMS_Callback(hObject, eventdata, handles)
+% hObject    handle to editbox_startEventcodeBufferMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of editbox_startEventCodeBufferMS as text
-%        str2double(get(hObject,'String')) returns contents of editbox_startEventCodeBufferMS as a double
+% Hints: get(hObject,'String') returns contents of editbox_startEventcodeBufferMS as text
+%        str2double(get(hObject,'String')) returns contents of editbox_startEventcodeBufferMS as a double
 
 % returns contents of editbox_timeThresholdMS as a double
 handles.startEventCodeBufferMS = str2double(get(hObject,'String')); 
@@ -214,8 +214,8 @@ guidata(hObject,handles)
 
 
 % --- Executes during object creation, after setting all properties.
-function editbox_startEventCodeBufferMS_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editbox_startEventCodeBufferMS (see GCBO)
+function editbox_startEventcodeBufferMS_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editbox_startEventcodeBufferMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

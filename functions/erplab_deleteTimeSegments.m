@@ -4,7 +4,7 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 %
 % FORMAT:
 %
-%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreEventCodes);
+%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreEventCodes, ignoreUseType, displayEEG);
 %
 %
 % INPUT:
@@ -17,8 +17,8 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 %
 % OPTIONAL INPUT:
 %
-%   IgnoreUseEventcode       - array of event code numbers to use or ignore
-%   IgnoreUseType            - How to interpret the evencode list 
+%   ignoreUseEventcode       - array of event code numbers to use or ignore
+%   ignoreUseType            - How to interpret the evencode list 
 %                              - 'use'    - (string) look for time spec between these specific event codes 
 %                              - 'ignore' - (string) look for time spec between all event codes EXCEPT for the listed eventcodes
 %   displayEEG               - (true/false)  - (boolean) Display a plot of the EEG when finished
