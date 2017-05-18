@@ -3,7 +3,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 % FORMAT:
 %
-%    EEG = erplab_shiftEventCodes(inEEG, eventcodes, timeshift)
+%    EEG = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, rounding, displayFeedback, displayEEG)
 %
 %
 % INPUT:
@@ -16,7 +16,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 % OPTIONAL INPUT:
 %
-%   rounding          - 'earlier'   - Round to earlier timestamp
+%   rounding          - 'earlier'   - (default) Round to earlier timestamp
 %                     - 'later'     - Round to later timestamp
 %                     - 'nearest'   - Round to nearest timestamp   
 %   displayFeedback   - 'summary'   - (default) Print summarized info to Command Window
@@ -24,7 +24,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %                                     to Command Window
 %                     - 'both'      - Print both summarized & detailed info
 %                                      to Command Window
-%   displayEEG        - true/false  - Display a plot of the EEG when finished
+%   displayEEG        - true/false  - (default: false) Display a plot of the EEG when finished
 %
 %
 % OUTPUT:
