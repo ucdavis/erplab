@@ -1,38 +1,54 @@
 function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, varargin )
-% Deletes data segments between 2 event codes if the size of the segment
+% POP_ERPLABDELETETIMESEGMENTS Deletes data segments between 2 consecutive event codes (strings or numerics) if the size of the time segment
 % is greater than a user-specified threshold (in msec)
 %
-% USAGE
+% FORMAT:
 %
-% EEG = erplab_deleteTimeSegments(EEG, inputMaxDistanceMS, inputStartPeriodBufferMS, inputEndPeriodBufferMS, ignoreEventCodes);
-%
-%
-% Input:
-%
-%  EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
-%  maxDistanceMS            - user-specified time threshold
-%  startEventCodeBufferMS   - time buffer around first event code
-%  endEventCodeBufferMS     - time buffer around end event code
-%
-% Optional
-%  ignoreEventCodes         - array of event code numbers to ignore
-%  displayEEGPLOTGUI        - (true|false)
-%
-% Output:
-%
-% EEG                       - continuous EEG dataset (EEGLAB's EEG struct)
+%   EEG = pop_erplabDeleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreUseEventcodes, ignoreUseType, displayEEG);
 %
 %
-% Example: Delete segment of data between any two event codes when it is
-%          longer than 3000 ms (3 secs).
+% INPUT:
 %
-%      EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, []);
+%   EEG                      - (EEG-set) continuous EEG dataset (EEGLAB's EEG struct)
+%   timeThresholdMS          - (int) user-specified time threshold between event codes. 
+%   startEventcodeBufferMS   - (int) time buffer around start event code, preserves this data surrounding the start event code
+%   endEventcodeBufferMS     - (int) time buffer around end   event code, preserves this data surrounding the end   event code
+%
+%
+% OPTIONAL INPUT:
+%
+%   ignoreUseEventcodes      - (array) event code numbers to use or ignore. (Default: [])
+%   ignoreUseType            - (string) How to interpret the ignoreUseEventcode array. (Default: 'ignore')
+%                              - 'ignore' - (string) look for time spec between all event codes EXCEPT for the listed eventcodes
+%                              - 'use'    - (string) look for time spec between these specific event codes 
+%   displayEEG               - (true/false)  - (boolean) Display a plot of the EEG when finished. (Default: false)
+%
+% OUTPUT:
+%
+%   EEG                      - (EEG-set) continuous EEG dataset (EEGLAB's EEG struct)
+%
+%
+% EXAMPLE: 
+%
+%   Delete data segments when there is greater than 3000 ms (3 secs) 
+%   in between any consecutive event codes. Do not ignore any eventcodes. 
+%   Display EEG plot at the end
+%
+%   EEG = pop_erplabDeleteTimeSegments(EEG, ...
+%                                   'timeThresholdMS'       , 3000,     ...
+%                                   'startEventcodeBufferMS', 100,      ...
+%                                   'endEventcodeBufferMS'  , 200,      ...
+%                                   'ignoreUseEventcodes'   , [],       ...
+%                                   'ignoreUseType'         , 'ignore', ...
+%                                   'displayEEG'            , true);   
+%
+%
 %
 %
 % Requirements:
-%   -
+%   - none
 %
-% See also
+% See also ...
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -96,18 +112,20 @@ if nargin==1
         return;
     end
 
-    maxDistanceMS             = inputstrMat{1};
-    startEventCodeBufferMS    = inputstrMat{2};
-    endEventCodeBufferMS      = inputstrMat{3};
-    ignoreEventCodes          = inputstrMat{4}; 
-    displayEEG                = inputstrMat{5};
+    timeThresholdMS           = inputstrMat{1};
+    startEventcodeBufferMS    = inputstrMat{2};
+    endEventcodeBufferMS      = inputstrMat{3};
+    ignoreUseEventcodes       = inputstrMat{4};
+    ignoreUseType             = inputstrMat{5};
+    displayEEG                = inputstrMat{6};
 
     % Save the GUI inputs to memory
     erpworkingmemory('pop_erplabDeleteTimeSegments',    ...
-        { maxDistanceMS,                                ...
-          startEventCodeBufferMS,                       ...
-          endEventCodeBufferMS,                         ...
-          ignoreEventCodes,                             ...
+        { timeThresholdMS,                              ...
+          startEventcodeBufferMS,                       ...
+          endEventcodeBufferMS,                         ...
+          ignoreUseEventcodes,                          ...
+          ignoreUseType,                                ...
           displayEEG });
     
 
@@ -118,12 +136,13 @@ if nargin==1
     end
 
     %% Run the pop_ command with the user input from the GUI
-    [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments(EEG,   ...
-        'maxDistanceMS'             , maxDistanceMS,            ...
-        'startEventCodeBufferMS'    , startEventCodeBufferMS,   ...
-        'endEventCodeBufferMS'      , endEventCodeBufferMS,     ...
-        'ignoreEventCodes'          , ignoreEventCodes,         ...
-        'displayEEG'                , displayEEG,               ...
+    [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments(EEG, ...
+        'timeThresholdMS'           , timeThresholdMS,              ...
+        'startEventcodeBufferMS'    , startEventcodeBufferMS,       ...
+        'endEventcodeBufferMS'      , endEventcodeBufferMS,         ...
+        'ignoreUseEventcodes'       , ignoreUseEventcodes,          ...
+        'ignoreUseType'             , ignoreUseType,                ...
+        'displayEEG'                , displayEEG,                   ...
         'History'                   , 'gui');
     
     
@@ -135,11 +154,12 @@ end
 %
 % Input:
 %  EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
-%  maxDistanceMS            - user-specified time threshold
-%  startEventCodeBufferMS   - time buffer around first event code
-%  endEventCodeBufferMS     - time buffer around last event code
-%  ignoreEventCodes         - array of event code numbers to ignore
-%  displayEEGPLOTGUI        - (true|false)
+%  timeThresholdMS          - user-specified time threshold
+%  startEventcodeBufferMS   - time buffer around first event code
+%  endEventcodeBufferMS     - time buffer around last event code
+%  ignoreUseEventcodes      - array of event code numbers to either ignore or use
+%  ignoreUseType            - string describing how to interpret the ignoreUseEvencode array 
+%  displayEEG               - (true|false)
 
 inputParameters               = inputParser;
 inputParameters.FunctionName  = mfilename;
@@ -149,10 +169,11 @@ inputParameters.CaseSensitive = false;
 inputParameters.addRequired('EEG');
 
 % Optional named parameters (vs Positional Parameters)
-inputParameters.addParameter('maxDistanceMS'            , 0);
-inputParameters.addParameter('startEventCodeBufferMS'   , 0);
-inputParameters.addParameter('endEventCodeBufferMS'     , 0);
-inputParameters.addParameter('ignoreEventCodes'         , []);
+inputParameters.addParameter('timeThresholdMS'          , 0);
+inputParameters.addParameter('startEventcodeBufferMS'   , 0);
+inputParameters.addParameter('endEventcodeBufferMS'     , 0);
+inputParameters.addParameter('ignoreUseEventcodes'      , []);
+inputParameters.addParameter('ignoreUseType'            , 'ignore');
 inputParameters.addParameter('displayEEG'               , false);
 inputParameters.addParameter('History'                  , 'script', @ischar); % history from scripting
 
@@ -163,17 +184,24 @@ inputParameters.parse(EEG, varargin{:});
 
 
 %% Execute corresponding function
-maxDistanceMS           = inputParameters.Results.maxDistanceMS;
-startEventCodeBufferMS  = inputParameters.Results.startEventCodeBufferMS;
-endEventCodeBufferMS    = inputParameters.Results.endEventCodeBufferMS;
-ignoreEventCodes        = inputParameters.Results.ignoreEventCodes;
+timeThresholdMS         = inputParameters.Results.timeThresholdMS;
+startEventcodeBufferMS  = inputParameters.Results.startEventcodeBufferMS;
+endEventcodeBufferMS    = inputParameters.Results.endEventcodeBufferMS;
+ignoreUseEventcodes     = inputParameters.Results.ignoreUseEventcodes;
+ignoreUseType           = inputParameters.Results.ignoreUseType;
 displayEEG              = inputParameters.Results.displayEEG;
 
+
+% FORMAT:
+%
+%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreEventCodes, ignoreUseType, displayEEG);
+%
 outputEEG = erplab_deleteTimeSegments(EEG ...
-    , maxDistanceMS             ...
-    , startEventCodeBufferMS    ...
-    , endEventCodeBufferMS      ...
-    , ignoreEventCodes          ...
+    , timeThresholdMS           ...
+    , startEventcodeBufferMS    ...
+    , endEventcodeBufferMS      ...
+    , ignoreUseEventcodes       ...
+    , ignoreUseType             ...
     , displayEEG                );
 
 

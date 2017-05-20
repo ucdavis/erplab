@@ -4,23 +4,23 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 %
 % FORMAT:
 %
-%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreEventCodes, ignoreUseType, displayEEG);
+%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreUseEventcodes, ignoreUseType, displayEEG);
 %
 %
 % INPUT:
 %
 %   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
 %   timeThresholdMS          - user-specified time threshold between event codes. 
-%   startEventcodeBufferMS   - time buffer around first event code, preserves this data surrounding the first event code
-%   endEventCodeBufferMS     - time buffer around last event code, preserves this data surround the end event codes
+%   startEventcodeBufferMS   - time buffer around start event code, preserves this data surrounding the start event code
+%   endEventCodeBufferMS     - time buffer around end   event code, preserves this data surrounding the end   event code
 %
 %
 % OPTIONAL INPUT:
 %
-%   ignoreUseEventcode       - array of event code numbers to use or ignore
-%   ignoreUseType            - How to interpret the evencode list 
-%                              - 'use'    - (string) look for time spec between these specific event codes 
-%                              - 'ignore' - (string) look for time spec between all event codes EXCEPT for the listed eventcodes
+%   ignoreUseEventcodes      - array of event code numbers to use or ignore
+%   ignoreUseType            - (string) How to interpret the `ignoreUseEventcodes` array 
+%                              - 'ignore' - (default) look for time spec between all event codes EXCEPT for the listed eventcodes
+%                              - 'use'    - look for time spec between these specific event codes 
 %   displayEEG               - (true/false)  - (boolean) Display a plot of the EEG when finished
 %
 % OUTPUT:
@@ -98,7 +98,7 @@ optargs = {[], 'ignore', false}; % Default optional inputs
 optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep their default values. If vargin is specified then it overwrites
 
 % Place optional args into variable names
-[ignoreEventCodes, ignoreUseType, eegplotGUIFeedback] = optargs{:};
+[ignoreUseEventcodes, ignoreUseType, eegplotGUIFeedback] = optargs{:};
 
 
 %% Convert all timing info to samples
@@ -125,17 +125,17 @@ eventcodes_all    = unique(tb_events.type);
 
 
 % Convert ignore/use event codes set to strings
-if(~isempty(ignoreEventCodes))
-    ignoreEventCodes = textscan(num2str(ignoreEventCodes), '%s');
-    ignoreEventCodes = ignoreEventCodes{1};
+if(~isempty(ignoreUseEventcodes))
+    ignoreUseEventcodes = textscan(num2str(ignoreUseEventcodes), '%s');
+    ignoreUseEventcodes = ignoreUseEventcodes{1};
 end
 
 switch ignoreUseType
     case 'use'
-        analyzedEventcodes    = ignoreEventCodes;
+        analyzedEventcodes    = ignoreUseEventcodes;
     case 'ignore'     
         % remove ignored eventcodes from the set of all eventcodes to analyze
-        analyzedEventcodes    = setdiff(eventcodes_all, ignoreEventCodes);
+        analyzedEventcodes    = setdiff(eventcodes_all, ignoreUseEventcodes);
     otherwise
         error('Unrecognized value for `ignoreUseType`');
 end
@@ -216,7 +216,13 @@ if eegplotGUIFeedback
     end
     
     % Run EEGPLOT
-    eegplot(EEG.data, eegplotoptions{:});   
+    %        'winrej'     - [start end R G B e1 e2 e3 ...] Matrix giving data periods to mark
+    %                      for rejection, each row indicating a different period
+    %                        [start end]    = period limits (in frames from beginning of data);
+    %                        [R G B]        = specifies the marking color;
+    %                        [e1 e2 e3 ...] = a (1,nchans) logical [0|1] vector giving
+    %                           channels (1) to mark and (0) not mark for rejection.
+    eegplot(EEG.data, eegplotoptions{:});
     
     
     fprintf('\n %g rejection segments marked.\n\n', size(rejectionWindows,1));
