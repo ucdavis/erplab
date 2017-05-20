@@ -1,5 +1,5 @@
 function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
-%pop_erplabShiftEventCodes In EEG data, shift the timing of user-specified event codes.
+%POP_ERPLABSHIFTEVENTCODES In EEG data, shift the timing of user-specified event codes.
 %
 % FORMAT
 %
@@ -7,24 +7,23 @@ function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
 %
 % INPUT:
 %
-%    EEG              EEGLAB EEG dataset
-%    eventcodes       list of event codes to shift
-%    timeshift        time in sec. If timeshift is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
-%                       - If timeshift is negative, the event code time-values are shifted to the left (e.g decreasing delay).
-%                       - If timeshift is 0, the EEG's time values are not shifted.
-%    rounding         Type of rounding to use
-%                       - 'nearest'    (default) Round to the nearest integer          
-%                       - 'floor'      Round to nearest ingtowards positive infinity
-%                       - 'ceiling'    Round to nearest integer towards negative infinity
-% 
+%    inEEG            - EEGLAB EEG dataset
+%    Eventcodes       - list of event codes to shift
+%    Timeshift        - time in milliseconds. If timeshift is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
+%                       If timeshift is negative, the event code time-values are shifted to the left (e.g decreasing delay)
+%                       If timeshift is 0, the EEG's time values are not shifted 
 %
 % OPTIONAL INPUT:
 %
-%    DisplayFeedback  Type of feedback to display at Command window
-%                        - 'summary'   (default) Print summarized info to Command Window
-%                        - 'detailed'  Print event table with latency differences
-%                        - 'both'      Print both summarized & detailed info
-%    DisplayEEG        - true/false  - Display a plot of the EEG when finished
+%   Rounding          - 'earlier'   - (default) Round to earlier timestamp
+%                     - 'later'     - Round to later timestamp
+%                     - 'nearest'   - Round to nearest timestamp   
+%   DisplayFeedback   - 'summary'   - (default) Print summarized info to Command Window
+%                     - 'detailed'  - Print event table with sample_num differences
+%                                     to Command Window
+%                     - 'both'      - Print both summarized & detailed info
+%                                      to Command Window
+%   DisplayEEG        - true/false  - (default: false) Display a plot of the EEG when finished
 %
 %
 % OUTPUT:
@@ -36,8 +35,13 @@ function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
 %
 %     eventcodes = {'22', '19'};
 %     timeshift  = 0.015;
-%     rounding   = 'floor';
-%     outputEEG  = erplab_shiftEventCodes(inputEEG, eventcodes, timeshift, rounding);
+%     rounding   = 'earlier';
+%     outputEEG  = pop_erplabShiftEventCodes(inEEG, ...
+%                                            'Eventcodes'     , eventcodes, ...
+%                                            'Timeshift'      , timeshift,  ...
+%                                            'Rounding'       , rounding,   ...
+%                                            'RisplayFeedback', 'both',     ...
+%                                            'RisplayEEG'     , true);
 %     
 %
 % Requirements:
@@ -128,10 +132,11 @@ if nargin==1
     timeshift           = inputstrMat{2};
     rounding            = inputstrMat{3};
     displayEEG          = inputstrMat{4};
+    displayFeedback     = inputstrMat{5};
    
     % Save GUI input to working memory
     erpworkingmemory('pop_erplabShiftEventCodes', ...
-        {eventcodes, timeshift, rounding, displayEEG});
+        {eventcodes, timeshift, rounding, displayEEG, displayFeedback});
     
     
     %% New output EEG name w/ setname suffix
@@ -143,11 +148,11 @@ if nargin==1
     
     %% Run pop_ command again with the inputs from the GUI
     [EEG, commandHistory] = pop_erplabShiftEventCodes(EEG, ...
-        'Eventcodes'     , eventcodes,  ...
-        'Timeshift'      , timeshift,   ...
-        'Rounding'       , rounding,    ...
-        'DisplayEEG'     , displayEEG,  ...
-        'DisplayFeedback', 'both',     ...
+        'Eventcodes'     , eventcodes,      ...
+        'Timeshift'      , timeshift,       ...
+        'Rounding'       , rounding,        ...
+        'DisplayEEG'     , displayEEG,      ...
+        'DisplayFeedback', displayFeedback, ...
         'History'        , 'gui');
     
     
@@ -165,6 +170,7 @@ inputParameters.CaseSensitive = false;
 
 % Required parameters
 inputParameters.addRequired('EEG');
+
 % Optional named parameters (vs Positional Parameters)
 inputParameters.addParameter('Eventcodes'         , []);
 inputParameters.addParameter('Timeshift'          , 0);
