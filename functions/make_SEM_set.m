@@ -41,8 +41,8 @@
 % You should have received a copy of the GNU General Public License along
 % with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function ERP = make_SEM_set(ERP)
-
+function [ERP, ERPCOM] = make_SEM_set(ERP)
+ERPCOM = '';
 
 % check input dataset
 if isfield(ERP,'binerror') == 0

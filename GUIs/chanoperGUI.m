@@ -823,7 +823,7 @@ if ~isempty(chan2del)
                 return
         end
         if nnz(isnan(chan2del))>0  || nnz(isinf(chan2del))>0
-                msgboxText = ['What are you smokin dude???\n'...
+                msgboxText = ['Channel problem\n'...
                         'You are specifying freaky non-existing channels!'];
                 title = 'ERPLAB: chanoperGUI  remove channels';
                 errorfound(sprintf(msgboxText), title);
