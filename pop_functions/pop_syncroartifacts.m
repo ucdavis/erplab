@@ -11,11 +11,10 @@ function [EEG, com]= pop_syncroartifacts(EEG, varargin)
 % INPUTS   :
 %
 % EEG           - epoched dataset
-% direction     - 1= erplab to eeglab synchro
-%                 2= eeglab to erplab synchro
-%                 3= both
-%                 0= none
-%
+% 'Direction'     'erplab2eeglab' - erplab to eeglab synchro
+%                 'eeglab2erplab' - eeglab to erplab synchro
+%                 'bidirectional' - (default) both
+%                 
 % OUTPUTS
 %
 % EEG           - updated epoched dataset
@@ -37,7 +36,7 @@ function [EEG, com]= pop_syncroartifacts(EEG, varargin)
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
