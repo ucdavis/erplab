@@ -614,6 +614,7 @@ if ismember_bc2(option2do,[2 3 6 7]) % current data
                 % Do not overwrite EEG.event.type
                 % Do nothing
             otherwise
+                warning('UpdateEEG: Unrecognized input parameter. Executing pop-window to ask for input');
                 EEG = pop_overwritevent(EEG);
         end
 
