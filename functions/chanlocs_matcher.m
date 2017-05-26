@@ -21,10 +21,14 @@ if nargin==1
 end
 
 
-newN = numel(ERP.chanlocs);
+newN = ERP.nchan;
 oldN = numel(ERPold.chanlocs);
 
-
+if newN ~= numel(ERP.chanlocs)
+    disp('Channel number and label number mismatch?? Can''t match locations')
+    return
+end
+    
 
 for i=1:newN
     new_labels{i} = ERP.chanlocs(i).labels;
@@ -49,6 +53,11 @@ end
 % iterate thru new once, try match, fill in a new array
 for i=1:newN
     
+    % Rewrite the label as it was before
+    %   this means non-matching chans still have their labels there
+    ERP.chanlocs(i).labels = new_labels{i};
+    
+    % Search for a label match
     match_here = strcmp(new_labels{i},old_labels);
     % this new_label matches the Mth old label, from position index
     

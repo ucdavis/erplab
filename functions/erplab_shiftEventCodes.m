@@ -284,7 +284,7 @@ for iRow_shifteventcode = 1:nRows_total
 end
 
 
-%% Ensure each `order_num` is unique for indexing
+%% Extract the order numbers
 if(iscell(tableShiftedEvents.order_num))
     order_nums = cellfun(@num2str, tableShiftedEvents.order_num, ...
         'UniformOutput', false);
@@ -292,7 +292,8 @@ elseif(isnumeric(tableShiftedEvents.order_num))
     order_nums = arrayfun(@num2str, tableShiftedEvents.order_num, ...
         'UniformOutput', false);
 end
-assert(numel(unique(order_nums)) == numel(order_nums));
+
+% assert(numel(unique(order_nums)) == numel(order_nums)); % Ensure each order number is unique for indexing
 
 
 % Filter out the events to delete and delete them
