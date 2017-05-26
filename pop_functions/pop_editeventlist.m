@@ -23,9 +23,15 @@
 %                              'Workspace'      - send to Matlab workspace,
 %                              'Workspace&Text' - send to Workspace and text file,
 %                              'Workspace&EEG'  - send to workspace and EEG,
-%                              'All'- send to all of them.
-%    'UpdateEEG'             - 'on' if you wish to update current EEG dataset
-%    'Warning'               - 'on'- Warn if eventlist will be overwritten. 'off'- Don't warn if eventlist will be overwritten.
+%                              'All'            - send to all of them.
+%    'UpdateEEG'             - Update current EEG by overwriting EEG.event.type using information from EEG.EVENTLIST.eventinfo
+%                              'on'/'askUser'   - Prompt user for name of field to overwrite EEG.event.type)
+%                              'off'            - (Default) Do not update current EEG dataset
+%                              'code'           - copy EEG.EVENTLIST.eventinfo.code      field values into EEG.event.type
+%                              'codelabel'      - copy EEG.EVENTLIST.eventinfo.codelabel field values into EEG.event.type
+%                              'binlabel'       - copy EEG.EVENTLIST.eventinfo.binlabel  field values into EEG.event.type
+%    'Warning'               - 'on'             - Warn if eventlist will be overwritten.
+%                              'off'            - Don't warn if eventlist will be overwritten.
 %    'AlphanumericCleaning'  - Delete alphabetic character(s) from alphanumeric event codes (if any). 'on'/'off'
 %
 %
@@ -123,7 +129,7 @@ if nargin==1
         % where to send the update/modified EVENTLIST
         switch option2do
                 case 0
-                        msgboxText = 'Where should I send the update EVENTLIST???\n Pick an option.';
+                        msgboxText = 'Where should I send the update EVENTLIST?\n Pick an option.';
                         title = 'ERPLAB: Error';
                         errorfound(sprintf(msgboxText), title);
                         return
@@ -145,7 +151,7 @@ if nargin==1
         
         % Update EEG.event field?
         if updateEEG==1
-                strupdevent = 'on';
+                strupdevent = 'askUser';
         else
                 strupdevent = 'off';
         end
@@ -181,16 +187,16 @@ p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('EEG');
 % option(s)
-p.addParamValue('List', '', @ischar);
-p.addParamValue('ExportEL', 'none', @ischar);
-p.addParamValue('SendEL2', 'EEG', @ischar);
-p.addParamValue('BoundaryString', 'boundary', @iscell);
-p.addParamValue('BoundaryNumeric', -99, @iscell);
-p.addParamValue('UpdateEEG', 'off', @ischar);
-p.addParamValue('Warning', 'off', @ischar);
-p.addParamValue('AlphanumericCleaning', 'off', @ischar);
-p.addParamValue('History', 'script', @ischar); % history from scripting
-%p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
+p.addParameter('List'                , ''        , @ischar);
+p.addParameter('ExportEL'            , 'none'    , @ischar);
+p.addParameter('SendEL2'             , 'EEG'     , @ischar);
+p.addParameter('BoundaryString'      , 'boundary', @iscell);
+p.addParameter('BoundaryNumeric'     , -99       , @iscell);
+p.addParameter('UpdateEEG'           , 'off'     , @ischar);
+p.addParameter('Warning'             , 'off'     , @ischar);
+p.addParameter('AlphanumericCleaning', 'off'     , @ischar);
+p.addParameter('History'             , 'script'  , @ischar); % history from scripting
+%p.addParameter('Saveas', 'off', @ischar); % 'on', 'off'
 
 p.parse(EEG, varargin{:});
 
@@ -223,16 +229,24 @@ elseif strcmpi(p.Results.SendEL2, 'Text')
 else
         error('invalid argument for "SendEL2"');
 end
+
+
 if strcmpi(p.Results.Warning, 'on')
         rwwarn = 1;
 else
         rwwarn = 0;  % no warning about previous EVENTLIST struct
 end
-if strcmpi(p.Results.UpdateEEG, 'on')
-        updateEEG = 1;
-else
-        updateEEG = 0;  % no warning about previous EVENTLIST struct
-end
+
+
+
+updateEEG = p.Results.UpdateEEG;
+% if strcmpi(p.Results.UpdateEEG, 'on')
+%         updateEEG = 1;
+% else
+%         updateEEG = 0;  % no warning about previous EVENTLIST struct
+% end
+
+
 %if strcmpi(p.Results.Saveas, 'on') && ismember_bc2(option2do,[2 3 6 7]) % current data
 %      issave = 1;
 %else
@@ -377,7 +391,6 @@ if isfield(EEG, 'EVENTLIST')    % from EEG.EVENTLIST
                 EVENTLIST.trialsperbin = [];
         end
 else % from EEG.event
-        EVENTLIST = [];
         fprintf('\nCreating an EVENTINFO by the first time...\n');
         
         %
@@ -587,10 +600,25 @@ end
 if ismember_bc2(option2do,[2 3 6 7]) % current data
         EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
         EEG = creabinlabel(EEG);
-        if updateEEG
+        
+        % Whether to overwrite the EEG.event.type field with info 
+        % from EEG.EVENTLIST.eventinfo
+        switch updateEEG
+            case {'code', 'codelabel', 'binlabel'}
+                % Overwrite EEG.event.type with the specified field in UPDATEEEG
+                EEG = pop_overwritevent(EEG, updateEEG);
+            case {'on', 'askUser'}
+                % Overwrite EEG.event.type and prompt/ask user which field to update from
+                EEG = pop_overwritevent(EEG);
+            case {'off'}
+                % Do not overwrite EEG.event.type
+                % Do nothing
+            otherwise
                 EEG = pop_overwritevent(EEG);
         end
-        [EEG, serror] = sorteegeventfields(EEG);
+
+        
+        [EEG, ~] = sorteegeventfields(EEG);
         EEG = eeg_checkset(EEG, 'eventconsistency');
         fprintf('\n #: New EVENTLIST structure was attached to the EEG strucure.\n\n');
 end
