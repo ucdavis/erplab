@@ -101,8 +101,22 @@ handles = painterplab(handles);
 handles = setfonterplab(handles);
 handles.datatype = datatype;
 
+% Set GUI baseline to a default of zero for non-ERP-like data
+[datatype, datatype2] = checkdatatype(ERP);
+if strcmpi(datatype2,ERP) == 1
+    radiobutton_BLC_no_Callback(hObject, eventdata, handles)
+end
+
+
+
+
+
 % Update handles structure
 guidata(hObject, handles);
+
+
+
+
 
 %
 % Set all objects
@@ -785,7 +799,7 @@ end
 %--------------------------------------------------------------------------
 function plotset = getplotset(hObject, eventdata, handles)
 ERP      = handles.ERP;
-datatype = handles.datatype;
+[datatype datatype2] = checkdatatype(ERP);
 
 if strcmpi(datatype, 'ERP')
         kktime = 1000;
@@ -879,7 +893,8 @@ if ~isempty(timeticks)
                 end
         end
 end
-if strcmpi(datatype, 'ERP')
+
+if strcmpi(datatype, 'ERP')  
         if get(handles.radiobutton_BLC_no, 'Value')
                 blcorr = 'no';
         end
@@ -968,7 +983,7 @@ if strcmpi(datatype, 'ERP')
                         blcorr = num2str(cmpbasel);
                 end
         end
-else % FFT
+else % For non-ERP secondary datatypes (power, SEM), set no baseline default
         blcorr = 'no';
 end
 

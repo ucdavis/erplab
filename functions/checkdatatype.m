@@ -9,7 +9,8 @@
 % ERP structure
 %
 % OUTPUT:
-% datatype      -  A string specifying the datatype
+% datatype      -  A string specifying the main datatype
+% datatype2     -  A string specifying the secondary datatype
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Andrew X Stewart
@@ -39,18 +40,20 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function datatype = checkdatatype(ERP)
-
+function [datatype, datatype2] = checkdatatype(ERP)
+datatype2 = '';
 
 
 if isfield(ERP,'datatype')
     if strcmpi(ERP.datatype(end-2:end),'FFT')     % power-like FFT, EFFT or TFFT
         datatype = ERP.datatype;  %
+        datatype2 = ERP.datatype; 
         
-    elseif strcmpi(ERP.datatype, 'ERP') || strcmpi(ERP.datatype, 'CSD')
+    elseif strcmpi(ERP.datatype, 'ERP') || strcmpi(ERP.datatype, 'CSD') || strcmpi(ERP.datatype, 'SEM')
         datatype = 'ERP';                % ERP-like ERP or CSD
-        
+        datatype2 = ERP.datatype;
     else
+        disp('Checkdatatype reports unrecognized ERP.datatype');
         datatype = 'ERP';                 % if unknown, try treating like ERP for now
     end
 else

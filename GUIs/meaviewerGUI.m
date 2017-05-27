@@ -133,8 +133,16 @@ catch
         fracmearep = [];
         intfactor  = 1;
 end
+datatype2 = '';
 if isfield(ALLERP(setArray(1)), 'datatype')
         datatype = ALLERP(setArray(1)).datatype;
+        
+        if strcmpi(datatype,'SEM')
+            % here, treat SEM data like ERP data
+            datatype = 'ERP';
+            datatype2 = 'SEM';
+        end
+        
 else
         datatype = 'ERP';
 end
@@ -302,10 +310,13 @@ if strcmpi(datatype, 'ERP')
         xlim  = [min(times) max(times)];
         ylim  = [-20 20];
         enablepolabutt = 'on';
-else
+else 
         xlim  = [0 30];
         ylim  = [0 15];
         enablepolabutt = 'off';
+end
+if strcmpi(datatype2, 'SEM')
+    ylim  = [-1 20];
 end
 
 set(handles.edit_ylim, 'String', num2str(ylim))

@@ -72,6 +72,7 @@ end
 
 ERP.datatype = 'SEM';
 ERP.bindata = ERP.binerror;
+ERP.binerror = [];
 
 
 % Write the history with a SEM note

@@ -468,7 +468,7 @@ if min(binArray)<1
         end
 end
 
-datatype = checkdatatype(ERP);
+[datatype datatype2] = checkdatatype(ERP);
 
 if strcmpi(datatype, 'ERP')
     kktime = 1000;
@@ -486,6 +486,10 @@ qFontSizeChan  = p.Results.FontSizeChan;
 qFontSizeLeg   = p.Results.FontSizeLeg;
 qFontSizeTicks = p.Results.FontSizeTicks;
 qaxsize  = p.Results.Axsize;
+
+
+
+
 
 if isempty(qxscale)
         qxscale = [round(ERP.xmin*kktime) round(ERP.xmax*kktime)];

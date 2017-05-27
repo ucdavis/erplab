@@ -561,7 +561,7 @@ mDTF = uimenu( submenu,'Label','Datatype Transformations','tag','Data Transforma
 uimenu( mDTF,'Label','Compute Evoked Power Spectrum from current averaged ERP data','CallBack', comEPSerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from EEG set data','CallBack',comEEG2CSD,'separator','on' );
 uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from averaged ERP data','CallBack',comERP2CSD,'separator','off' );
-uimenu( mDTF,'Label','Move Standard Error of Mean (SEM) data to primary data (for SEM data in Measurement Tool)','CallBack',comERP2SEM,'separator','on' );
+uimenu( mDTF,'Label','Move Standard Error of Mean (SEM) to be primary data','CallBack',comERP2SEM,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
 
 
