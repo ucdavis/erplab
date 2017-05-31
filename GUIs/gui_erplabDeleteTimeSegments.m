@@ -57,30 +57,32 @@ handles.output = []; % hObject;
 
 % Handle input parameters from ERPLABWORKINGMEMORY
 try
-    handles.maxDistanceMS               = varargin{1}{1};
-    handles.startEventCodeBufferMS      = varargin{1}{2};
-    handles.endEventCodeBufferMS        = varargin{1}{3};
-    handles.ignoreEventCodes            = varargin{1}{4};
-    handles.displayEEG                  = varargin{1}{5};
+    handles.timeThresholdMS             = varargin{1}{1};
+    handles.startEventcodeBufferMS      = varargin{1}{2};
+    handles.endEventcodeBufferMS        = varargin{1}{3};
+    handles.ignoreUseEventcodes         = varargin{1}{4};
+    handles.ignoreUseType               = varargin{1}{5};
+    handles.displayEEG                  = varargin{1}{6};
     
 catch
     % Default values for GUI
-    handles.maxDistanceMS               = 0;
-    handles.startEventCodeBufferMS      = 0;
-    handles.endEventCodeBufferMS        = 0;
-    handles.ignoreEventCodes            = [];
+    handles.timeThresholdMS             = 0;
+    handles.startEventcodeBufferMS      = 0;
+    handles.endEventcodeBufferMS        = 0;
+    handles.ignoreUseEventcodes         = [];
+    handles.ignoreUseType               = 'ignore';
     handles.displayEEG                  = false;
 end
 
 
 set(handles.editbox_timeThresholdMS...
-    , 'String', num2str(handles.maxDistanceMS));
+    , 'String', num2str(handles.timeThresholdMS));
 set(handles.editbox_startEventcodeBufferMS ...
-    , 'String', num2str(handles.startEventCodeBufferMS));
+    , 'String', num2str(handles.startEventcodeBufferMS));
 set(handles.editbox_endEventcodeBufferMS ...
-    , 'String', handles.endEventCodeBufferMS);
+    , 'String', handles.endEventcodeBufferMS);
 set(handles.editbox_ignoreEventCodes, ...
-    'String', num2str(handles.ignoreEventCodes));
+    'String', num2str(handles.ignoreUseEventcodes));
 set(handles.checkbox_displayEEG, ...
     'Value', handles.displayEEG);
 
@@ -137,10 +139,11 @@ display('Deleting time segments...');
 
 % Save the input variables to output
 handles.output = {                      ...
-    handles.maxDistanceMS,              ...
-    handles.startEventCodeBufferMS,     ...
-    handles.endEventCodeBufferMS,       ...
-    handles.ignoreEventCodes,           ...
+    handles.timeThresholdMS,            ...
+    handles.startEventcodeBufferMS,     ...
+    handles.endEventcodeBufferMS,       ...
+    handles.ignoreUseEventcodes,        ...
+    handles.ignoreUseType,              ...
     handles.displayEEG           }; 
 
 % Update handles structure
@@ -191,7 +194,7 @@ function editbox_timeThresholdMS_Callback(hObject, eventdata, handles)
 % single string/character input
 
 % returns contents of editbox_timeThresholdMS as a double
-handles.maxDistanceMS = str2double(get(hObject,'String')); 
+handles.timeThresholdMS = str2double(get(hObject,'String')); 
 
 % Save the new replace channels value
 guidata(hObject,handles)
@@ -206,7 +209,7 @@ function editbox_startEventcodeBufferMS_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of editbox_startEventcodeBufferMS as a double
 
 % returns contents of editbox_timeThresholdMS as a double
-handles.startEventCodeBufferMS = str2double(get(hObject,'String')); 
+handles.startEventcodeBufferMS = str2double(get(hObject,'String')); 
 
 % Save the new value
 guidata(hObject,handles)
@@ -236,7 +239,7 @@ function editbox_endEventcodeBufferMS_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of editbox_endEventcodeBufferMS as a double
 
 % returns contents of editbox_endeventcodebufferms as a double
-handles.endEventCodeBufferMS = str2double(get(hObject,'String')); 
+handles.endEventcodeBufferMS = str2double(get(hObject,'String')); 
 
 % Save the new value
 guidata(hObject,handles)
@@ -264,7 +267,7 @@ function editbox_ignoreEventCodes_Callback(hObject, eventdata, handles)
 
 % Strip any non-numeric token and replace w/ whitespace (' ')
 editString               = regexprep(get(hObject,'String'), '[\D]', ' ');
-handles.ignoreEventCodes = str2num(editString);  %#ok<ST2NM>
+handles.ignoreUseEventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Display corrected eventcode string back to GUI
 set(handles.editbox_ignoreEventCodes, 'String', editString);

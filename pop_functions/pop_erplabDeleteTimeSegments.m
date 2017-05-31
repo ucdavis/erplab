@@ -102,7 +102,7 @@ if nargin==1
         
 
     %% Call GUI: gui_erplabDeleteTimeSegments to get the input parameters
-    inputstrMat = gui_erplabDeleteTimeSegments(def);  % GUI
+    inputstrMat = c(def);  % GUI
     
     
     % Exit when CANCEL button is pressed
