@@ -157,11 +157,11 @@ plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
 
-assignin('base','ERP',ERP);
-assignin('base','ALLERP', ALLERP);
-assignin('base','ALLERPCOM', ALLERPCOM);
+assignin('base','ERP'       , ERP);
+assignin('base','ALLERP'    , ALLERP);
+assignin('base','ALLERPCOM' , ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
-assignin('base','plotset', plotset);
+assignin('base','plotset'   , plotset);
 
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
@@ -215,10 +215,10 @@ menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
 %
 % ARTIFACT DETECTION FOR CONTINUOUS DATA callback
 %
-comTrim   = [trystrs.no_check '[EEG, LASTCOM]   = pop_eegtrim(EEG);' catchstrs.new_and_hist ];
-comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.store_and_hist ];
-comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG);'              catchstrs.new_and_hist];
-comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
+comTrim                  = [trystrs.no_check '[EEG, LASTCOM] = pop_eegtrim(EEG);'                      catchstrs.new_and_hist ];
+comREJCON                = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);'             catchstrs.new_and_hist ];
+comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG);'        catchstrs.new_and_hist];
+comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'     catchstrs.new_and_hist];
 comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
 
 
@@ -226,11 +226,11 @@ comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpo
 %
 % EVENTLIST callback
 %
-comCLF1    = [trystrs.no_check '[EEG, LASTCOM] = pop_creabasiceventlist(EEG);' catchstrs.new_and_hist ];
-comSMMRZ   = [trystrs.no_check '[EEG, LASTCOM] = pop_squeezevents(EEG);' catchstrs.add_to_hist ];
-comSLFeeg  = [trystrs.no_check '[EEG, LASTCOM] = pop_exporteegeventlist(EEG);' catchstrs.add_to_hist ];
-comRLFeeg  = [trystrs.no_check '[EEG, LASTCOM] = pop_importeegeventlist(EEG);' catchstrs.new_and_hist];
-comEXRTeeg = [trystrs.no_check '[EEG, values LASTCOM] = pop_rt2text(EEG);' catchstrs.add_to_hist];
+comCLF1    = [trystrs.no_check '[EEG, LASTCOM] = pop_creabasiceventlist(EEG);'  catchstrs.new_and_hist ];
+comSMMRZ   = [trystrs.no_check '[EEG, LASTCOM] = pop_squeezevents(EEG);'        catchstrs.add_to_hist ];
+comSLFeeg  = [trystrs.no_check '[EEG, LASTCOM] = pop_exporteegeventlist(EEG);'  catchstrs.add_to_hist ];
+comRLFeeg  = [trystrs.no_check '[EEG, LASTCOM] = pop_importeegeventlist(EEG);'  catchstrs.new_and_hist];
+comEXRTeeg = [trystrs.no_check '[EEG, values LASTCOM] = pop_rt2text(EEG);'      catchstrs.add_to_hist];
 comEXRTerp = ['[ERP, values ERPCOM] = pop_rt2text(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
 %
@@ -436,9 +436,11 @@ uimenu( ELmenu,'Label','Summarize current EEG event codes (output at command win
 mRTs = uimenu( ELmenu,'Label','Export reaction times to text','tag','ReactionTime','ForegroundColor', [0.6 0 0],'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:on'); % Reaction Times
 uimenu( mRTs,'Label','From EEG ','CallBack', comEXRTeeg,'userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off'); % Reaction Times
 uimenu( mRTs,'Label','From ERP ','CallBack', comEXRTerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on'); % Reaction Times
+
 % EVENTLIST for ERP submenu
 uimenu( ELmenu,'Label','Import ERP EVENTLIST from text file ','CallBack',comRLFerp,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( ELmenu,'Label','Export ERP EVENTLIST to text file ','CallBack',comSLFerp,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+
 % Binlister
 uimenu( submenu,'Label','Assign bins (BINLISTER)','CallBack', comCBL,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 if(verLessThan('matlab', '8.2'))
@@ -449,8 +451,19 @@ else
 end
 
 uimenu( submenu,'Label','Transfer eventinfo to EEG.event (optional)','CallBack',comMEL,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
+
 % bepoching
 uimenu( submenu,'Label','Extract bin-based epochs','CallBack',comEB,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
+% Epoched data - Selective Electrode Interpolation 
+uimenu( submenu,                                        ...
+    'Label'   , 'Selective Electrode Interpolation - Epoched Data',        ...
+    'CallBack', comInterpolateElectrodes,         ...     
+    'userdata', [ ...
+                'startup:off;'      ...
+                'continuous:off;'    ...
+                'epoch:on;'        ...
+                'study:off;'        ...
+                'erpset:off'        ]);
 
 
 %% EEG CHANNEL OPERATIONS
