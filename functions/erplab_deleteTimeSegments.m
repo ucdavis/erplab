@@ -1,6 +1,6 @@
 function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, varargin)
-% ERPLAB_DELETETIMESEGMENTSS Deletes data segments between 2 consecutive event codes (string or number) if the size of the time segment
-% is greater than a user-specified threshold (in msec)
+% ERPLAB_DELETETIMESEGMENTSS Deletes data segments between if the length of time between any 2 consecutive event codes (string or number) 
+% is greater than a user-specified threshold (msec)
 %
 % FORMAT:
 %
@@ -17,21 +17,22 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 %
 % OPTIONAL INPUT:
 %
-%   ignoreUseEventcodes      - array of event code numbers to use or ignore
-%   ignoreUseType            - (string) How to interpret the `ignoreUseEventcodes` array 
+%   ignoreUseEventcodes      - (array) event code numbers to use or ignore (Default: [])
+%   ignoreUseType            - (string) How to interpret the `ignoreUseEventcodes` array (Default: 'ignore')
 %                              - 'ignore' - (default) look for time spec between all event codes EXCEPT for the listed eventcodes
 %                              - 'use'    - look for time spec between these specific event codes 
 %   displayEEG               - (true/false)  - (boolean) Display a plot of the EEG when finished
 %
 % OUTPUT:
 %
-%   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
+%   EEG                      - (EEG-struct) continuous EEG dataset (EEGLAB's EEG struct)
 %
 %
 % EXAMPLE: 
 %
 %   Delete data segments when there is greater than 3000 ms (3 secs) 
-%   in between any consecutive event codes. 
+%   in between any consecutive event codes. Do not ignore any eventcodes. 
+%   Display EEG plot at the end
 %
 %   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, [], 'ignore', true);   
 %
@@ -130,7 +131,7 @@ if(~isempty(ignoreUseEventcodes))
     ignoreUseEventcodes = ignoreUseEventcodes{1};
 end
 
-switch ignoreUseType
+switch lower(ignoreUseType)
     case 'use'
         analyzedEventcodes    = ignoreUseEventcodes;
     case 'ignore'     

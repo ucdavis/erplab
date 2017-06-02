@@ -337,6 +337,12 @@ function popupIgnoreUseOption_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+contents              = cellstr(get(hObject,'String'));  % Returns popupIgnoreUseOption contents as cell array
+handles.ignoreUseType = contents{get(hObject,'Value')};  % Returns selected item from popupIgnoreUseOption
+
+% Save the new value
+guidata(hObject,handles);
+
 % Hints: contents = cellstr(get(hObject,'String')) returns popupIgnoreUseOption contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupIgnoreUseOption
 
