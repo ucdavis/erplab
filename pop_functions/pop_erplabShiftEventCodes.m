@@ -40,8 +40,8 @@ function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
 %                                            'Eventcodes'     , eventcodes, ...
 %                                            'Timeshift'      , timeshift,  ...
 %                                            'Rounding'       , rounding,   ...
-%                                            'RisplayFeedback', 'both',     ...
-%                                            'RisplayEEG'     , true);
+%                                            'DisplayFeedback', 'both',     ...
+%                                            'DisplayEEG'     , true);
 %     
 %
 % Requirements:
@@ -132,7 +132,7 @@ if nargin==1
     timeshift           = inputstrMat{2};
     rounding            = inputstrMat{3};
     displayEEG          = inputstrMat{4};
-    displayFeedback     = inputstrMat{5};
+    displayFeedback     = 'both';
    
     % Save GUI input to working memory
     erpworkingmemory('pop_erplabShiftEventCodes', ...
