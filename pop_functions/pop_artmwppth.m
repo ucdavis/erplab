@@ -208,7 +208,7 @@ winpnts  = floor(winms*fs/1000);
 stepnts  = floor(stepms*fs/1000);
 
 if stepnts<1
-        error('ERPLAB says: error at pop_artmwppth(). The minimun step value should be equal to the sampling period (1/fs msec).')
+        error('ERPLAB says: error at pop_artmwppth(). The minimum step value should be equal to the sampling period (1/fs msec).')
 end
 [p1, p2, checkw] = window2sample(EEG, testwindow, fs);
 if checkw==1
