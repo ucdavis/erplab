@@ -24,7 +24,6 @@ We encourage most users to use this latest major version.
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
 - We recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this.
-
 - The Matlab Signal Processing Toolbox is required
   - Entering in the command `ver` in the Command Window will produce a list of installed toolboxes. Check this list to see whether the Signal Processing Toolbox is installed
 - Caution: EEGLAB v11 is _not_ recommended.
