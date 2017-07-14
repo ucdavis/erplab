@@ -139,8 +139,18 @@ if nargin==1  % GUI
                 if ~isempty(ALLERP)
                         if isnumeric(def{2}) % JavierLC 11-17-11
                                 [uu, mm] = unique_bc2(def{2}, 'first');
-                                def{2}   = [def{2}(sort(mm))];
-                                def{2}   = def{2}(def{2}<=length(ALLERP));
+                                erpset_list_sorted   = [def{2}(sort(mm))];
+                                %def{2}   = def{2}(def{2}<=length(ALLERP));
+                                % non-empty check, axs jul17
+                                erpset_list = erpset_list_sorted(erpset_list_sorted<=length(ALLERP));
+                                if isempty(erpset_list)
+                                     % if nothing in list, just go with current
+                                     def{2} = cerpi;
+                                else
+                                    % use JLC's sorting, iff not empty
+                                    def{2} = erpset_list;
+                                end
+                                
                         end
                 end
         end
