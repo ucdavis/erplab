@@ -153,17 +153,15 @@ guidata(hObject, handles);
 drawnow
 
 %
-% Quack
+% Quack / beep
 %
 if isempty(defquack) || defquack==1
-        try
-                %[s,fs] = wavread('quack8000.wav');
-                [s,fs] = audioread('quack8000.wav');
-                sound(s,fs);
-        catch
-                set(handles.checkbox_quack, 'Value', 0)
-                set(handles.checkbox_quack, 'Enable', 'off')                
-        end
+    
+    % quick 3 beeps, rather than loading the quack
+    for bp = 1:3
+        beep
+        pause(0.08)
+    end
 end
 
 % UIWAIT makes errorGUI wait for user response (see UIRESUME)
@@ -209,13 +207,10 @@ if get(hObject, 'Value')
     %
     % Quack
     %
-    try
-        %[s,fs] = wavread('quack8000.wav');
-        [s,fs] = audioread('quack8000.wav');
-        sound(s,fs);
-    catch
-        set(handles.checkbox_quack, 'Value', 0)
-        set(handles.checkbox_quack, 'Enable', 'off')
+     % quick 3 beeps, rather than loading the quack
+    for bp = 1:3
+        beep
+        pause(0.08)
     end
 end
 
