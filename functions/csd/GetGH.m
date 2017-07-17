@@ -82,6 +82,18 @@ for i = 1:nElec; for j = 1:nElec;        % ... and compute all cosine distances
   EF(i,j) = 1 - ( ( (X(i) - X(j))^2 + ...
     (Y(i) - Y(j))^2 + (Z(i) - Z(j))^2 ) / 2 );
 end; end;
+
+% axs edit, via Johnathan Folstein, rescaling if outside range -1:1
+if max(EF(:)) > 1
+    EF = EF ./ max(EF(:));
+    disp('Warning - EF is outside -1:1. Rescaling to fix.');
+end
+if min(EF(:)) < -1
+    EF = EF ./ -min(EF(:));
+    disp('Warning - EF is outside -1:1. Rescaling to fix.');
+end
+
+
 if nargin < 2
    m = 4;                                % set m constant default
 end

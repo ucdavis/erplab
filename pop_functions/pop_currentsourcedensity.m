@@ -154,25 +154,41 @@ if isERP
     EEG = rmfield(EEG,'nbchan');
     EEG = orderfields(EEG);
     
+    disp('CSD complete')
+    
 else
     
     % For EEG data -> CSD
     csd_data = zeros(size(EEG.data));
     
     if numel(EEG.epoch) == 0
+        % Continuous, (non-epoched) data
         len_epoch_dim = 1;
+        
+        progress_str = ['Running CSD on continuous data. Might take a few mins. Please wait...'];
+        disp(progress_str)
+        
+        csd_data(:,:) = current_source_density(EEG.data(:,:),csd_G, csd_H,csd_param(2),csd_param(3));
+        
     else
+        
         len_epoch_dim = numel(EEG.epoch);
+        
+        for i = 1:len_epoch_dim
+            progress_str = ['Running CSD on epoch ' num2str(i) ' of ' num2str(len_epoch_dim)];
+            disp(progress_str)
+            csd_data(:,:,i) = current_source_density(EEG.data(:,:,i),csd_G, csd_H,csd_param(2),csd_param(3));
+        end
+        
+        
     end
     
-    for i = 1:len_epoch_dim
-        csd_data(:,:,i) = current_source_density(EEG.data(:,:,i),csd_G, csd_H,csd_param(2),csd_param(3));
-    end
+    disp('CSD complete')
     
 end
 
 
-% Write the history with a SEM note
+% Write the history with a datatype note
 EEG = erphistory(EEG,[],'% converted dataset to Current Source Density datatype',1);
 EEG.datatype = 'CSD';
 
