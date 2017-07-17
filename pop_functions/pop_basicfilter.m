@@ -43,7 +43,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -193,31 +193,31 @@ filco   = p.Results.Cutoff;
 
 if strcmpi(filtp, 'lowpass')
         if length(filco)~=1
-                error('ERPLAB says: For lowpass filter,  ONE cutoff value is requiered.')
+                error('ERPLAB says: For lowpass filter,  ONE cutoff value is required.')
         end
         locutoff    = 0; % for high pass filter
         hicutoff    = filco; % for low pass filter
 elseif strcmpi(filtp, 'highpass')
         if length(filco)~=1
-                error('ERPLAB says: For highpass filter,  ONE cutoff value is requiered.')
+                error('ERPLAB says: For highpass filter,  ONE cutoff value is required.')
         end
         locutoff    = filco; % for high pass filter
         hicutoff    = 0; % for low pass filter
 elseif strcmpi(filtp, 'bandpass')
         if length(filco)~=2
-                error('ERPLAB says: For bandpass filter,  TWO cutoff values are requiered.')
+                error('ERPLAB says: For bandpass filter,  TWO cutoff values are required.')
         end
         locutoff    = filco(1); % for high pass filter
         hicutoff    = filco(2); % for low pass filter
 elseif strcmpi(filtp, 'simplenotch')
         if length(filco)~=2
-                error('ERPLAB says: For simple notch filter,  TWO cutoff values are requiered.')
+                error('ERPLAB says: For simple notch filter,  TWO cutoff values are required.')
         end
         locutoff    = filco(1); % for high pass filter
         hicutoff    = filco(2); % for low pass filter
 elseif strcmpi(filtp, 'PMnotch')
         if length(filco)~=1
-                error('ERPLAB says: For Parks-McClellan notch (PMnotch) filter,  ONE cutoff value is requiered.')
+                error('ERPLAB says: For Parks-McClellan notch (PMnotch) filter,  ONE cutoff value is required.')
         end
         locutoff    = filco; % for high pass filter
         hicutoff    = filco; % for low pass filter
