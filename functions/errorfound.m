@@ -96,10 +96,10 @@ figdir  = fullfile(p,'images');
 % Get image indices
 %
 figdir1 = dir(figdir);
-ferrorn = regexp({figdir1.name}, 'logoerplaberror\d*.tif','match', 'ignorecase');
-fnames  = cellstr(char([ferrorn{:}]));  
+%ferrorn = regexp({figdir1.name}, 'logoerplaberror\d*.tif','match', 'ignorecase');
+%fnames  = cellstr(char([ferrorn{:}]));
 %for i=1:7; fnames{i} = sprintf('logoerplaberror%g.jpg',i);end
-        [IconData, IconCMap] = imread('logoerplaberror1.tif');
+[IconData, IconCMap] = imread('logoerplaberror1.tif');
 
 
 button = errorGUI(message, title, IconData, IconCMap, bkgrncolor, frgrncolor, showfig);

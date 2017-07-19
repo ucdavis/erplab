@@ -89,7 +89,7 @@ if max(EF(:)) > 1
     disp('Warning - EF is outside -1:1. Rescaling to fix.');
 end
 if min(EF(:)) < -1
-    EF = EF ./ -min(EF(:));
+    EF = EF ./ abs(min(EF(:)));
     disp('Warning - EF is outside -1:1. Rescaling to fix.');
 end
 

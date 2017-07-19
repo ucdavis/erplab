@@ -1,17 +1,17 @@
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users.
 
-## ERPLAB v6.1.3
+## ERPLAB v6.1.4
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/6.1.3/erplab6.1.3.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/6.1.4/erplab6.1.4.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v6.1.3, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.3/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v6.1.4, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.4/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](http://erpinfo.org/erplab/erplab-documentation).
 
@@ -23,7 +23,7 @@ We encourage most users to use this latest major version.
 
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
-- We recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this. 
+- We recommend a 64 bit OS, 64 bit Matlab, and at least 4 GB RAM. Most modern computers meet this.
 - The Matlab Signal Processing Toolbox is required
   - Entering in the command `ver` in the Command Window will produce a list of installed toolboxes. Check this list to see whether the Signal Processing Toolbox is installed
 - Caution: EEGLAB v11 is _not_ recommended.
@@ -34,7 +34,7 @@ Find installation help [here](http://erpinfo.org/erplab)
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v6.1.3**
+**ERPLAB v6.1.4**
 
 | **OS** | **Matlab** | **EEGLAB** | Working? |
 | --- | --- | --- | --- |
@@ -51,17 +51,27 @@ Here is a list of some confirmed-working environments for ERPLAB.
 
 ## <br/>
 
-# ERPLAB v6.1.3 Patch
+# ERPLAB v6.1.4
+Some additions and minor bugfixes, including:
+- Removing channels can now avoid deleting all channel location information
+- More channel location tools
+- Measurement Window GUI now fits on a smaller screen
+- Improvements in 'Preprocess Continuous EEG' options
+- Fixed a bug where the number of loaded erpsets would be mistakenly taken to be zero
+- Improved Current-Source-Density compatibility
+- Replaced the error 'Quack' noise with a beep, and replaced some error pictures.
+
+# ERPLAB v6.1.3
 Minor bugfixes, including:
 - Cleaned up the Measurement Viewer text and options
 - Measurement Viewer helper text now only shown when relevant
 
-# ERPLAB v6.1.2 Patch
+# ERPLAB v6.1.2
 Minor bugfixes, including:
 - Fixed BDF Library url-link in BDF-Visualizer
 - Swapped artifact and user-flag display in BDF-Visualizer
 
-# ERPLAB v6.1.1 Patch
+# ERPLAB v6.1.1
 Minor bugfixes, including:
 - Shift Event Codes GUI fix - now doesn't crash on launch.
 - Adopted [Major].[Minor].[Patch] version numbers, this being v6.1.1, with backward-compatible file loading. Note - from v6.0, we no longer indicate the file type usage in the version number, and this is now always taken to be 1.

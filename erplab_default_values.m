@@ -1,5 +1,5 @@
-erplabver = '6.1.3';                  % current erplab version
-erplabrel = '16-Feb-2017';             % DOB
+erplabver = '6.1.4';                  % current erplab version
+erplabrel = '18-Jul-2017';             % DOB
 %ColorB = [170 180 195]/255;          % old background color (until version 3)
 %ColorB = [0.9216 0.8353 0.6078];     % background color for version 4
 %ColorB = [0.7020 0.7647 0.8392];     % background color since version 4.0.0.3
@@ -13,9 +13,9 @@ fontunitsGUI = 'pixels';
 set(0,'Units','pixels')
 thisscreen = get(0, 'ScreenSize');
 if thisscreen(4)>=1440
-    fontsizeGUI = 12; % high-res (Retina-type) display
+    fontsizeGUI = 12; % high resolution display (eg Retina)
 elseif thisscreen(4)==1440
-    fontsizeGUI = 11; % iMac-type display
+    fontsizeGUI = 11; % medium-high resolution display (eg recent 27" iMacs)
 else
     fontsizeGUI = 8.2;
 end
