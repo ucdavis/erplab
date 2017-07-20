@@ -353,9 +353,9 @@ comEXPPDF    = ['[ERP, ERPCOM] = pop_exporterplabfigure(ERP);' '[ERP, ALLERPCOM]
 comhelpman   = 'pop_erphelp;' ;
 comhelptut   = 'pop_erphelptut;' ;
 comhelpsrp   = 'pop_erphelpscript;' ;
-comhelplist  = 'web https://lists.ucdavis.edu/sympa/arc/erplab -browser';
+comhelplist  = 'web https://github.com/lucklab/erplab/wiki/ERPLAB-email-list -browser';
 comhelpvideo = 'web https://github.com/lucklab/erplab/wiki/Videos -browser';
-
+comfaq       = 'web https://github.com/lucklab/erplab/wiki/Troubleshooting-and-Frequently-Asked-Questions -browser';
 
 %% Filter ERP callbacks
 %
@@ -617,6 +617,7 @@ uimenu( mhelp,'Label','About ERPLAB','CallBack','abouterplabGUI','userdata','sta
 uimenu( mhelp,'Label','ERPLAB Tutorial','CallBack', comhelptut,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Manual','CallBack', comhelpman, 'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Scripting','CallBack', comhelpsrp,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','ERPLAB FAQ','Callback',comfaq,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB video tutorials','CallBack', comhelpvideo,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','Send question/feedback to the ERPLAB email list','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB mailing list archive (may need to register)','CallBack', comhelplist,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
