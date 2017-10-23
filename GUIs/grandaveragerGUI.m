@@ -340,7 +340,7 @@ if get(handles.radiobutton_erpset, 'Value')
                 return
         end
         if min(erpset)<1 || max(erpset)>handles.actualnset
-                msgboxText =  'Unexisting erpset index(es)';
+                msgboxText =  'Nonexistent erpset index(es)';
                 title = 'ERPLAB: grandaveragerGUI() -> wrong input';
                 errorfound(msgboxText, title);
                 return

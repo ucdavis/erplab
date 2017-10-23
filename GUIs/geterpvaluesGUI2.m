@@ -377,13 +377,13 @@ else
                 return
         end
         if ~isempty(binArraystr) && max(str2num(binArraystr))>length(listb)
-                msgboxText = 'You have specified unexisting bin(s)';
+                msgboxText = 'That bin index doesn''t exist.';
                 title = 'ERPLAB: geterpvaluesGUI() -> missing input';
                 errorfound(msgboxText, title);
                 return
         end
         if ~isempty(chanArraystr) && max(str2num(chanArraystr))>length(listch)
-                msgboxText = 'You have specified unexisting channel(s)';
+                msgboxText = 'You have specified nonexistent channel(s)';
                 title = 'ERPLAB: geterpvaluesGUI() -> missing input';
                 errorfound(msgboxText, title);
                 return
@@ -1385,13 +1385,13 @@ indxbin  = str2num(get(handles.edit_bins, 'String'));
 indxchan = str2num(get(handles.edit_channels, 'String'));
 
 if max(indxbin)>nbin
-        msgboxText = 'You have specified unexisting bin(s)';
-        chkerp     = 7; % unexisting bin(s)
+        msgboxText = 'You have specified nonexistent bin(s)';
+        chkerp     = 7; % nonexistent bin(s)
         return
 end
 if max(indxchan)>nchan
-        msgboxText = 'You have specified unexisting channel(s)';
-        chkerp     = 8; % unexisting channel(s)
+        msgboxText = 'You have specified nonexistent channel(s)';
+        chkerp     = 8; % nonexistent channel(s)
         return
 end
 

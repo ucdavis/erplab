@@ -83,7 +83,7 @@ else
                         ERPcal.nbin = 0;
                 else
                         if erpinput<1 || erpinput>length(ALLERP)
-                                msgboxText =  'You have specified an unexisting ERPset.\n';
+                                msgboxText =  'You have specified a nonexistent ERPset.\n';
                                 title = 'ERPLAB: calibration ERPset';
                                 errorfound(sprintf(msgboxText), title);
                                 ERPcal = [];
@@ -161,7 +161,7 @@ if get(hObject, 'Value')
                 return
         end
         if calbin<1 || calbin>ERPcal.nbin
-                msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+                msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
                 title = 'ERPLAB: calibration bin';
                 errorfound(sprintf(msgboxText), title);
                 return
@@ -195,7 +195,7 @@ if get(hObject, 'Value')
                 return
         end
         if indx<1 || indx>length(ALLERP)
-                msgboxText =  'You have specified an unexisting ERPset.\n';
+                msgboxText =  'You have specified a nonexistent ERPset.\n';
                 title = 'ERPLAB: calibration ERPset';
                 errorfound(sprintf(msgboxText), title);
                 return
@@ -213,7 +213,7 @@ if get(hObject, 'Value')
                 return
         end
         if calbin<1 || calbin>ERPcal.nbin
-                msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+                msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
                 title = 'ERPLAB: calibration bin';
                 errorfound(sprintf(msgboxText), title);
                 return
@@ -262,7 +262,7 @@ if get(hObject, 'Value')
                 return
         end
         if calbin<1 || calbin>ERPcal.nbin
-                msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+                msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
                 title = 'ERPLAB: calibration bin';
                 errorfound(sprintf(msgboxText), title);
                 return
@@ -303,7 +303,7 @@ if length(calbin)~=1
         return
 end
 if calbin<1 || calbin>ERPcal.nbin
-        msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+        msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
         title = 'ERPLAB: calibration bin';
         errorfound(sprintf(msgboxText), title);
         return
@@ -348,7 +348,7 @@ if length(indx)~=1
         return
 end
 if indx<1 || indx>length(ALLERP)
-        msgboxText =  'You have specified an unexisting ERPset.\n';
+        msgboxText =  'You have specified a nonexistent ERPset.\n';
         title = 'ERPLAB: calibration ERPset';
         errorfound(sprintf(msgboxText), title);
         return
@@ -368,7 +368,7 @@ if length(calbin)~=1
         return
 end
 if calbin<1 || calbin>ERPcal.nbin
-        msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+        msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
         title = 'ERPLAB: calibration bin';
         errorfound(sprintf(msgboxText), title);
         return
@@ -467,7 +467,7 @@ if ~isempty(calbin)
         end
         ERPcal    = handles.ERPcal;
         if calbin<1 || calbin>ERPcal.nbin
-                msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+                msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
                 title = 'ERPLAB: calibration bin';
                 errorfound(sprintf(msgboxText), title);
                 return
@@ -504,7 +504,7 @@ if length(calbin)~=1
         return
 end
 if calbin<1 || calbin>ERPcal.nbin
-        msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+        msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
         title = 'ERPLAB: calibration bin';
         errorfound(sprintf(msgboxText), title);
         return
@@ -592,7 +592,7 @@ if length(calbin)~=1
         return
 end
 if calbin<1 || calbin>ERPcal.nbin
-        msgboxText =  'You have specified an unexisting bin.\nUse the browser for assistance.';
+        msgboxText =  'You have specified a nonexistent bin.\nUse the browser for assistance.';
         title = 'ERPLAB: calibration bin';
         errorfound(sprintf(msgboxText), title);
         return

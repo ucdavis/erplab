@@ -270,7 +270,7 @@ errorcusca     = 0;
 
 if  ~isempty(latencyArray) && ~isempty(binArray)
         if max(binArray)>nbin
-                msgboxText =  'Error: You have specified unexisting bins.';
+                msgboxText =  'Error: You have specified nonexistent bins.';
                 title = 'ERPLAB: scalplotGUI() error:';
                 errorfound(msgboxText, title);
                 return

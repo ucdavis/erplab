@@ -41,8 +41,8 @@
 % You should have received a copy of the GNU General Public License along
 % with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP, ERPCOM] = make_SEM_set(ERP)
-ERPCOM = '';
+function ERP = make_SEM_set(ERP,savefile, gui)
+
 
 % check input dataset
 if isfield(ERP,'binerror') == 0
@@ -52,6 +52,7 @@ if isfield(ERP,'binerror') == 0
     return
 end
 
+
 if numel(ERP.binerror) ~= numel(ERP.bindata)
     msgboxText =  'This ERPSET is missing SEM data. Please run the ERP averager again with SEM option ticked';
     title      = 'ERPLAB: SEM data problems?';
@@ -60,24 +61,34 @@ if numel(ERP.binerror) ~= numel(ERP.bindata)
 end
 
 if strcmp(ERP.datatype,'SEM') == 1
-     msgboxText =  'This ERPSET already contains SEM data in data?';
+    msgboxText =  'This ERPSET already contains SEM data in data?';
     title      = 'ERPLAB: SEM data problems?';
     errorfound(msgboxText, title);
     return
 end
 
+if exist('gui','var') == 0
+    gui = 'erplab';
+end
 
-
+if exist('savefile','var') == 0
+    savefile = 1;
+end
 
 
 ERP.datatype = 'SEM';
 ERP.bindata = ERP.binerror;
-ERP.binerror = [];
-
 
 % Write the history with a SEM note
 ERP = erphistory(ERP,[],'% converted dataset to Standard Error of Mean datatype',1);
 ERP = erphistory(ERP,[],'ERP = make_SEM_set(ERP)',1);
 ERP = orderfields(ERP);
 
-pop_savemyerp(ERP,'erpname',['SEM_data_' ERP.erpname],'gui','erplab')
+
+if savefile == 1
+    
+    fname = [ERP.filename '_SEM_data.erp'];
+    
+    
+    pop_savemyerp(ERP,'erpname',[ERP.erpname '_SEM_data'],'filename',fname,'gui',gui)
+end

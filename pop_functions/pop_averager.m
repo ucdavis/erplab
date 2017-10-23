@@ -912,7 +912,7 @@ ERP.EVENTLIST         = ALLEVENTLIST;
 [ERP, serror]         = sorterpstruct(ERP);
 
 if serror
-    error('ERPLAB says: pop_averager() Your datasets are not compatibles')
+    error('ERPLAB says: pop_averager() Your datasets are not compatible')
 end
 
 %

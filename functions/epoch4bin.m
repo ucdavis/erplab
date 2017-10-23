@@ -88,7 +88,7 @@ if min(binArray)<1
       return
 end
 if max(binArray)>nbinori
-      msgboxText =  'You have specified an unexisting bin index.';
+      msgboxText =  'That bin index doesn''t exist.';
       title = 'ERPLAB: Error at epoch4bin()';
       errorfound(sprintf(msgboxText), title);
       return

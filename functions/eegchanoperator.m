@@ -280,7 +280,7 @@ if isempty(materase)
                         conti = 0;
                   end
             else
-                  msgboxText = 'You cannot interpolate an unexisting channel!';
+                  msgboxText = 'You cannot interpolate a nonexistent channel!';
                   title = 'ERPLAB: eegchanoperator() interpolation error:';
                   errorfound(msgboxText, title);
                   conti = 0;
