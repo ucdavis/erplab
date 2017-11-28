@@ -41,12 +41,14 @@
 % You should have received a copy of the GNU General Public License along
 % with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function ERP = make_SEM_set(ERP,savefile, gui)
+function [ERP, ERPCOM] = make_SEM_set(ERP,savefile, gui)
+
+% https://github.com/lucklab/erplab/wiki/Datatype-Transformations
 
 
 % check input dataset
 if isfield(ERP,'binerror') == 0
-    msgboxText =  'This ERPSET is missing SEM data. Please run the ERP averager again with SEM option ticked';
+    msgboxText =  'This ERPSET is missing SEM data. Please run the ERP averager again with SEM option ticked.';
     title      = 'ERPLAB: SEM data problems?';
     errorfound(msgboxText, title);
     return
@@ -80,6 +82,8 @@ ERP.datatype = 'SEM';
 ERP.bindata = ERP.binerror;
 
 % Write the history with a SEM note
+ERPCOM = '% converted dataset to Standard Error of Mean datatype';
+
 ERP = erphistory(ERP,[],'% converted dataset to Standard Error of Mean datatype',1);
 ERP = erphistory(ERP,[],'ERP = make_SEM_set(ERP)',1);
 ERP = orderfields(ERP);

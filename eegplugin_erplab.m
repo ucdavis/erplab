@@ -292,7 +292,7 @@ comEP2CON  = [trystrs.no_check '[EEG, LASTCOM] = pop_epoch2continuous(EEG);' cat
 comBlab2eve  = [trystrs.no_check '[EEG, LASTCOM] = pop_binlabel2type(EEG);' catchstrs.new_and_hist];
 comEEG2CSD     = [trystrs.no_check '[EEG, LASTCOM] = pop_currentsourcedensity(EEG);' catchstrs.new_and_hist];
 comERP2CSD     = [trystrs.no_check '[ERP, LASTCOM] = pop_currentsourcedensity(ERP);' catchstrs.add_to_hist];
-comERP2SEM     = [trystrs.no_check '[ERP, ERPCOM] = make_SEM_set(ERP);' catchstrs.add_to_hist];
+comERP2SEM     = [trystrs.no_check '[ERP, ERPCOM] = make_SEM_set(ERP,1,''erplab'');' catchstrs.add_to_hist];
 
 
 %% FILTER EEG callbacks
@@ -318,6 +318,7 @@ comBOP       = ['[ERP, ERPCOM] = pop_binoperator(ERP);' '[ERP, ALLERPCOM] = erph
 comCHOP2     = ['[ERP, ERPCOM] = pop_erpchanoperator(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comPLOT      = ['[ERP, ERPCOM] = pop_ploterps(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSCALP     = ['[ERP, ERPCOM] = pop_scalplot(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comCHLOCTABLE= ['[ERP] = chanloc(ERP);'];
 comCHLOC     = ['[ERP, ERPCOM] = pop_erpchanedit(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCHLOCEEGLAB = ['[ERP ERPCOM] = pop_getChanInfoFromEeglab(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSAVE      = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''save'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -517,7 +518,8 @@ mERPLOT = uimenu( submenu,'Label','Plot ERP','tag','ERPlot','separator','on','us
 uimenu( mERPLOT,'Label','Plot ERP waveforms ','CallBack', comPLOT,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP scalp maps ','CallBack', comSCALP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Print plotted figure(s) to a file','CallBack', comEXPPDF,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-uimenu( mERPLOT,'Label','Load ERP channel location file','CallBack', comCHLOC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( mERPLOT,'Label','Edit ERP channel location table','CallBack', comCHLOCTABLE,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( mERPLOT,'Label','Load ERP channel location file','CallBack', comCHLOC,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Load ERP channel location info using EEGLAB','CallBack', comCHLOCEEGLAB,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Clear ERP channel location info ','CallBack', comCERPch,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Close all ERPLAB figures ','CallBack','clerpf','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
