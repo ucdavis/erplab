@@ -3,19 +3,19 @@
 %
 % FORMAT
 %
-% [WinRej2 ChanRej2 ] = joinclosesegments(WinRej, chanrej, shortisisam);
+% [winRej2 chanRej2 ] = joinclosesegments(winRej, chanrej, shortisisam);
 %
 % INPUTS:
 %
-% WinRej         - latency array. Each row is a pair of values (start end), so the array has 2 columns.
+% winRej         - latency array. Each row is a pair of values (start end), so the array has 2 columns.
 % chanrej        - marked channels array
 % shortisisam    - inter window time. (marked windows closer than this value will be joined together)
 %
 %
 % OUTPUT
 %
-% WinRej2        - latency array for the resulting marked windows
-% ChanRej2       - marked channels array belonging to WinRej2
+% winRej2        - latency array for the resulting marked windows
+% chanRej2       - marked channels array belonging to winRej2
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -46,59 +46,65 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [WinRej2, ChanRej2 ] = joinclosesegments(WinRej, chanrej, shortisisam)
+function [winRej2, chanRej2 ] = joinclosesegments(winRej, chanrej, shortisisam)
 
-WinRej2= []; ChanRej2 = [];
+winRej2= []; chanRej2 = [];
 fprintf('\nWARNING: Marked segments that are closer than %g samples will be join together.\n\n', shortisisam);
 if ~isempty(chanrej)
         chanrej = uint8(chanrej);
 end
-a = WinRej(1,1);
-b = WinRej(1,2);
+a = winRej(1,1);
+b = winRej(1,2);
 m = 1;
 working = 0;
 if ~isempty(chanrej)
         chrej2 = uint8(zeros(1,size(chanrej,2)));
 end
-nwin = size(WinRej,1);
+nwin = size(winRej,1);
 for j=2:nwin
-        isi = WinRej(j,1) - WinRej(j-1,2);
+        isi = winRej(j,1) - winRej(j-1,2);
         if isi<shortisisam
-                b = WinRej(j,2);
+                b = winRej(j,2);
                 if ~isempty(chanrej)
                         chrej2 = bitor(chrej2, bitor(chanrej(j,:),chanrej(j-1,:)));
                 end
                 working = 1;
                 if j==nwin
-                        WinRej2(m,:)  = [a b];
+                        winRej2(m,:)  = [a b];
                         if ~isempty(chanrej)
-                                ChanRej2(m,:) = chrej2;
+                                chanRej2(m,:) = chrej2;
                         end
                 end
         else
                 if working==1
-                        WinRej2(m,:)  = [a b];
+                        winRej2(m,:)  = [a b];
                         if ~isempty(chanrej)
-                                ChanRej2(m,:) = chrej2;
+                                chanRej2(m,:) = chrej2;
                         end
-                        %                     a = WinRej(j,1);
+                        %                     a = winRej(j,1);
                         working = 0;
                 else
-                        WinRej2(m,:)  = [a b];
+                        winRej2(m,:)  = [a b];
                         if ~isempty(chanrej)
-                                ChanRej2(m,:) = chanrej(j-1);
+                                chanRej2(m,:) = chanrej(j-1);
                         end
-                        %                     a = WinRej(j,1);
-                        %                     b = WinRej(j,2);
+                        %                     a = winRej(j,1);
+                        %                     b = winRej(j,2);
                 end
-                a = WinRej(j,1);
-                b = WinRej(j,2);
+                a = winRej(j,1);
+                b = winRej(j,2);
                 chrej2 = uint8(zeros(1,size(chanrej,2)));
                 m = m + 1;
         end
 end
 if ~isempty(chanrej)
-        ChanRej2  = double(ChanRej2);
+        chanRej2  = double(chanRej2);
 end
 
-WinRej2(end+1,:) = WinRej(end,:); % Save/append the last rejection window
+if(~isempty(winRej))
+    winRej2(end+1,:)  = winRej(end,:);   % Save/append the last rejection window
+end
+
+if(~isempty(chanrej))
+    chanRej2(end+1,:) = chanrej(end,:);  % Save/append the last rejection window
+end

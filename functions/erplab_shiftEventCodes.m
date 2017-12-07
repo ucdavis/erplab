@@ -3,7 +3,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 % FORMAT:
 %
-%    EEG = erplab_shiftEventCodes(inEEG, eventcodes, timeshift)
+%    EEG = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, rounding, displayFeedback, displayEEG)
 %
 %
 % INPUT:
@@ -16,7 +16,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 % OPTIONAL INPUT:
 %
-%   rounding          - 'earlier'   - Round to earlier timestamp
+%   rounding          - 'earlier'   - (default) Round to earlier timestamp
 %                     - 'later'     - Round to later timestamp
 %                     - 'nearest'   - Round to nearest timestamp   
 %   displayFeedback   - 'summary'   - (default) Print summarized info to Command Window
@@ -24,7 +24,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %                                     to Command Window
 %                     - 'both'      - Print both summarized & detailed info
 %                                      to Command Window
-%   displayEEG        - true/false  - Display a plot of the EEG when finished
+%   displayEEG        - true/false  - (default: false) Display a plot of the EEG when finished
 %
 %
 % OUTPUT:
@@ -34,9 +34,9 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 %
 % EXAMPLE:
 %
-%    eventcodes = {22, 19};
-%    timeshift  = 0.015;
-%    rounding   = 'later'
+%    eventcodes = {22, 19};   % Shift numeric event codes 22 & 19
+%    timeshift  = 0.015;      % Shift event codes by 15-milliseconds
+%    rounding   = 'later'     % Round result shift event codes to later timestamp 
 %    outEEG     = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, rounding);
 %
 %
@@ -157,6 +157,7 @@ if(~ismember('order_num', table_events.Properties.VariableNames))
     table_events = [table_events, order_num];
 end
 
+% Retname 'latency' column header title to 'sample_num' (more informative)
 if(ismember('latency', table_events.Properties.VariableNames))
     table_events.Properties.VariableNames{'latency'}    = 'sample_num';
 end
@@ -177,8 +178,6 @@ table_events.original_order_num  = table_events.order_num;
 table_events.original_sample_num = table_events.sample_num;
 
 
-
-table_events_original = table_events;
 
 
 
@@ -285,7 +284,7 @@ for iRow_shifteventcode = 1:nRows_total
 end
 
 
-%% Ensure each `order_num` is unique for indexing
+%% Extract the order numbers
 if(iscell(tableShiftedEvents.order_num))
     order_nums = cellfun(@num2str, tableShiftedEvents.order_num, ...
         'UniformOutput', false);
@@ -293,7 +292,8 @@ elseif(isnumeric(tableShiftedEvents.order_num))
     order_nums = arrayfun(@num2str, tableShiftedEvents.order_num, ...
         'UniformOutput', false);
 end
-assert(numel(unique(order_nums)) == numel(order_nums));
+
+% assert(numel(unique(order_nums)) == numel(order_nums)); % Ensure each order number is unique for indexing
 
 
 % Filter out the events to delete and delete them
@@ -438,7 +438,14 @@ if(ismember('sample_num', table_events.Properties.VariableNames))
     table_events.Properties.VariableNames{'sample_num'}    = 'latency';
 end
 
-table_events.type       = char(table_events.type);
+
+% Convert event type (i.e. event code) back into original data type (from categorical)
+if(ischar(inEEG.event(1).type))
+    table_events.type  = cellstr(table_events.type);
+elseif(isnumeric(inEEG.event(1).type))
+    table_events.type  = str2double(cellstr(table_events.type));
+end
+
 outEEG                 = inEEG;
 outEEG.event           = table2struct(table_events)';
 outEEG                 = eeg_checkset(outEEG, 'eventconsistency', 'checkur');

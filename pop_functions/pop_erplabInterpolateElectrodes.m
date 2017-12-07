@@ -32,11 +32,18 @@ function [outputEEG, commandHistory] = pop_erplabInterpolateElectrodes( EEG, var
 %
 % EXAMPLE: Interpolate electrodes 1,2,3,4,5 while ignoring electrodes 6,7,8,9,10, 11 via spherical interpolation
 %
-%     replace_elecs  = [1 2 3 4 5];
-%     ignore_elecs   = [6 7 8 9 10 11];
-%     method         = 'spherical';
-%     outputEEG      = pop_erplabInterpolateElectrodes(EEG, replace_elecs, ignore_elecs, method);
-%     
+%     replace_elecs    = [1 2 3 4 5];
+%     ignore_elecs     = [6 7 8 9 10 11];
+%     method           = 'spherical';
+%     diplay_eeg       = true;
+%     cmdline_feedback = 'summary';
+%
+%     outputEEG      = pop_erplabInterpolateElectrodes(EEG, ...
+%                                                      'replaceChannels'    , replace_elecs,  ...
+%                                                      'ignoreChannels'     , ignore_elecs,   ...
+%                                                      'interpolationMethod', method,         ...
+%                                                      'displayEEG'         , diplay_eeg,     ...
+%                                                      'DisplayFeedback'    , cmdline_feedback)
 %
 % Requirements:
 %   - EEG_CHECKSET (eeglab function)
@@ -76,7 +83,7 @@ if nargin==1
         serror = erplab_eegscanner(EEG, 'pop_erplabInterpolateElectrodes',...
             0, ... % 0 = do not accept md;
             0, ... % 0 = do not accept empty dataset;
-            0, ... % 0 = do not accept epoched EEG;
+            2, ... % 0 = do not care epoched EEG;
             0, ... % 0 = do not accept if no event codes
             2);    % 2 = do not care if there exists an ERPLAB EVENTLIST struct
         
@@ -128,7 +135,7 @@ if nargin==1
         'ignoreChannels'     , ignoreChannels,      ...
         'interpolationMethod', interpolationMethod, ...
         'displayEEG'         , displayEEG,               ...
-        'History'            , 'gui');
+        'history'            , 'gui');
     
     return;
     
@@ -149,9 +156,9 @@ inputParameters.addRequired('EEG');
 inputParameters.addParameter('replaceChannels'     , []);
 inputParameters.addParameter('ignoreChannels'      , []);
 inputParameters.addParameter('interpolationMethod' , 'spherical');
-inputParameters.addParameter('DisplayFeedback'     , 'summary'); % old parameter for BoundaryString
+inputParameters.addParameter('displayFeedback'     , 'summary'); % old parameter for BoundaryString
 inputParameters.addParameter('displayEEG'          , false);
-inputParameters.addParameter('History'             , 'script', @ischar); % history from scripting
+inputParameters.addParameter('history'             , 'script', @ischar); % history from scripting
 
 inputParameters.parse(EEG, varargin{:});
 
@@ -186,7 +193,7 @@ outputEEG = erplab_interpolateElectrodes(EEG ...
 %
 
 commandHistory  = ''; %#ok<*NASGU>
-skipfields      = {'EEG', 'DisplayFeedback', 'History'};
+skipfields      = {'EEG', 'displayFeedback', 'history'};
 fn              = fieldnames(inputParameters.Results);
 commandHistory         = sprintf( '%s  = pop_erplabInterpolateElectrodes( %s ', inputname(1), inputname(1));
 for q=1:length(fn)
@@ -217,6 +224,7 @@ for q=1:length(fn)
                     %        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
                     %        fnformat = '{%s}';
                     %else
+                    if islogical(fn2res); fn2res = double(fn2res); end;
                     fn2resstr = vect2colon(fn2res, 'Sort','on');
                     fnformat = '%s';
                     %end
@@ -229,7 +237,7 @@ end
 commandHistory = sprintf( '%s );', commandHistory);
 
 % get history from script. EEG
-switch inputParameters.Results.History
+switch inputParameters.Results.history
     case 'gui' % from GUI
         commandHistory = sprintf('%s %% GUI: %s', commandHistory, datestr(now));
         %fprintf('%%Equivalent command:\n%s\n\n', commandHistory);

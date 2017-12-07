@@ -22,7 +22,7 @@ function varargout = gui_erplabDeleteTimeSegments(varargin)
 
 % Edit the above text to modify the response to help gui_erplabDeleteTimeSegments
 
-% Last Modified by GUIDE v2.5 24-Sep-2016 20:53:06
+% Last Modified by GUIDE v2.5 17-May-2017 16:23:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -57,30 +57,32 @@ handles.output = []; % hObject;
 
 % Handle input parameters from ERPLABWORKINGMEMORY
 try
-    handles.maxDistanceMS               = varargin{1}{1};
-    handles.startEventCodeBufferMS      = varargin{1}{2};
-    handles.endEventCodeBufferMS        = varargin{1}{3};
-    handles.ignoreEventCodes            = varargin{1}{4};
-    handles.displayEEG                  = varargin{1}{5};
+    handles.timeThresholdMS             = varargin{1}{1};
+    handles.startEventcodeBufferMS      = varargin{1}{2};
+    handles.endEventcodeBufferMS        = varargin{1}{3};
+    handles.ignoreUseEventcodes         = varargin{1}{4};
+    handles.ignoreUseType               = varargin{1}{5};
+    handles.displayEEG                  = varargin{1}{6};
     
 catch
     % Default values for GUI
-    handles.maxDistanceMS               = 0;
-    handles.startEventCodeBufferMS      = 0;
-    handles.endEventCodeBufferMS        = 0;
-    handles.ignoreEventCodes            = [];
+    handles.timeThresholdMS             = 0;
+    handles.startEventcodeBufferMS      = 0;
+    handles.endEventcodeBufferMS        = 0;
+    handles.ignoreUseEventcodes         = [];
+    handles.ignoreUseType               = 'ignore';
     handles.displayEEG                  = false;
 end
 
 
-set(handles.editbox_maxDistanceMS...
-    , 'String', num2str(handles.maxDistanceMS));
-set(handles.editbox_startEventCodeBufferMS ...
-    , 'String', num2str(handles.startEventCodeBufferMS));
-set(handles.editbox_endEventCodeBufferMS ...
-    , 'String', handles.endEventCodeBufferMS);
+set(handles.editbox_timeThresholdMS...
+    , 'String', num2str(handles.timeThresholdMS));
+set(handles.editbox_startEventcodeBufferMS ...
+    , 'String', num2str(handles.startEventcodeBufferMS));
+set(handles.editbox_endEventcodeBufferMS ...
+    , 'String', handles.endEventcodeBufferMS);
 set(handles.editbox_ignoreEventCodes, ...
-    'String', num2str(handles.ignoreEventCodes));
+    'String', num2str(handles.ignoreUseEventcodes));
 set(handles.checkbox_displayEEG, ...
     'Value', handles.displayEEG);
 
@@ -137,10 +139,11 @@ display('Deleting time segments...');
 
 % Save the input variables to output
 handles.output = {                      ...
-    handles.maxDistanceMS,              ...
-    handles.startEventCodeBufferMS,     ...
-    handles.endEventCodeBufferMS,       ...
-    handles.ignoreEventCodes,           ...
+    handles.timeThresholdMS,            ...
+    handles.startEventcodeBufferMS,     ...
+    handles.endEventcodeBufferMS,       ...
+    handles.ignoreUseEventcodes,        ...
+    handles.ignoreUseType,              ...
     handles.displayEEG           }; 
 
 % Update handles structure
@@ -179,34 +182,34 @@ guidata(handles.gui_chassis, handles);
 
 
 
-function editbox_maxDistanceMS_Callback(hObject, eventdata, handles)
-% hObject    handle to editbox_maxDistanceMS (see GCBO)
+function editbox_timeThresholdMS_Callback(hObject, eventdata, handles)
+% hObject    handle to editbox_timeThresholdMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of editbox_maxDistanceMS as text
-%        str2double(get(hObject,'String')) returns contents of editbox_maxDistanceMS as a double
+% Hints: get(hObject,'String') returns contents of editbox_timeThresholdMS as text
+%        str2double(get(hObject,'String')) returns contents of editbox_timeThresholdMS as a double
 
 % Use `str2num` (vs `str2double`) to handle both string arrray input and
 % single string/character input
 
-% returns contents of editbox_maxDistanceMS as a double
-handles.maxDistanceMS = str2double(get(hObject,'String')); 
+% returns contents of editbox_timeThresholdMS as a double
+handles.timeThresholdMS = str2double(get(hObject,'String')); 
 
 % Save the new replace channels value
 guidata(hObject,handles)
 
 
-function editbox_startEventCodeBufferMS_Callback(hObject, eventdata, handles)
-% hObject    handle to editbox_startEventCodeBufferMS (see GCBO)
+function editbox_startEventcodeBufferMS_Callback(hObject, eventdata, handles)
+% hObject    handle to editbox_startEventcodeBufferMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of editbox_startEventCodeBufferMS as text
-%        str2double(get(hObject,'String')) returns contents of editbox_startEventCodeBufferMS as a double
+% Hints: get(hObject,'String') returns contents of editbox_startEventcodeBufferMS as text
+%        str2double(get(hObject,'String')) returns contents of editbox_startEventcodeBufferMS as a double
 
-% returns contents of editbox_maxDistanceMS as a double
-handles.startEventCodeBufferMS = str2double(get(hObject,'String')); 
+% returns contents of editbox_timeThresholdMS as a double
+handles.startEventcodeBufferMS = str2double(get(hObject,'String')); 
 
 % Save the new value
 guidata(hObject,handles)
@@ -214,8 +217,8 @@ guidata(hObject,handles)
 
 
 % --- Executes during object creation, after setting all properties.
-function editbox_startEventCodeBufferMS_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editbox_startEventCodeBufferMS (see GCBO)
+function editbox_startEventcodeBufferMS_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editbox_startEventcodeBufferMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -227,24 +230,24 @@ end
 
 
 
-function editbox_endEventCodeBufferMS_Callback(hObject, eventdata, handles)
-% hObject    handle to editbox_endEventCodeBufferMS (see GCBO)
+function editbox_endEventcodeBufferMS_Callback(hObject, eventdata, handles)
+% hObject    handle to editbox_endEventcodeBufferMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of editbox_endEventCodeBufferMS as text
-%        str2double(get(hObject,'String')) returns contents of editbox_endEventCodeBufferMS as a double
+% Hints: get(hObject,'String') returns contents of editbox_endEventcodeBufferMS as text
+%        str2double(get(hObject,'String')) returns contents of editbox_endEventcodeBufferMS as a double
 
-% returns contents of editbox_EndEventCodeBufferMS as a double
-handles.endEventCodeBufferMS = str2double(get(hObject,'String')); 
+% returns contents of editbox_endeventcodebufferms as a double
+handles.endEventcodeBufferMS = str2double(get(hObject,'String')); 
 
 % Save the new value
 guidata(hObject,handles)
 
 
 % --- Executes during object creation, after setting all properties.
-function editbox_endEventCodeBufferMS_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to editbox_endEventCodeBufferMS (see GCBO)
+function editbox_endEventcodeBufferMS_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editbox_endEventcodeBufferMS (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -264,7 +267,7 @@ function editbox_ignoreEventCodes_Callback(hObject, eventdata, handles)
 
 % Strip any non-numeric token and replace w/ whitespace (' ')
 editString               = regexprep(get(hObject,'String'), '[\D]', ' ');
-handles.ignoreEventCodes = str2num(editString);  %#ok<ST2NM>
+handles.ignoreUseEventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Display corrected eventcode string back to GUI
 set(handles.editbox_ignoreEventCodes, 'String', editString);
@@ -293,7 +296,7 @@ function checkbox_displayEEG_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_displayEEG
-% returns contents of editbox_EndEventCodeBufferMS as a double
+% returns contents of editbox_endeventcodebufferms as a double
 handles.displayEEG = get(hObject,'Value'); 
 
 % Save the new value
@@ -326,3 +329,32 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 
 web('https://github.com/lucklab/erplab/wiki/Continuous-EEG-Preprocessing#delete-time-segments',...
     '-browser');
+
+
+% --- Executes on selection change in popupIgnoreUseOption.
+function popupIgnoreUseOption_Callback(hObject, eventdata, handles)
+% hObject    handle to popupIgnoreUseOption (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+contents              = cellstr(get(hObject,'String'));  % Returns popupIgnoreUseOption contents as cell array
+handles.ignoreUseType = contents{get(hObject,'Value')};  % Returns selected item from popupIgnoreUseOption
+
+% Save the new value
+guidata(hObject,handles);
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupIgnoreUseOption contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupIgnoreUseOption
+
+
+% --- Executes during object creation, after setting all properties.
+function popupIgnoreUseOption_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupIgnoreUseOption (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

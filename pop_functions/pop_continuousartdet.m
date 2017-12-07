@@ -23,7 +23,7 @@
 %
 % The available parameters are as follows:
 %
-%         'ampth'     - Thresolds (2 values). E.g. [-100 200]. In case one value is specified it will be taken as
+%         'ampth'     - Thresholds (2 values). E.g. [-100 200]. In case one value is specified it will be taken as
 %                       symmetric thresholds. E.g 150 means [-150 150]
 %         'winms'     - moving window width in msec (default 2000 ms)
 %         'stepms'    - moving window step (default 1000 ms)
@@ -31,12 +31,14 @@
 %         'firstdet'  - {'on'/'off'} mark only first artifactual channel per window
 %         'fcutoff'   - frequency cutoff for pre-filtering the data (see below)
 %         'forder'    - filter order. 1 value indicting the order (number of points) of the FIR filter to be used.
-%                       default value is 26.
+%                       Default value is 100 if run from GUI.
 %         'shortisi'  - marked segment(s) closer than this value will be joined together.
 %         'shortseg'  - remaining crap-free segment(s) shorter than this value will be rejected as well
 %         'winoffset' - change the onset/offset of the marked segment (ms). Positive value will move the segment to the
 %                       right; negative, to the left.
 %         'colorseg'  - color for marking artifactual segments.
+%         'review'    - {'on'/'off'} Display a plot of the EEG after execution. Default is 'off'
+%         
 %
 %
 % 'fcutoff' accepts the following values:
@@ -191,7 +193,8 @@ if nargin==1
     %                 return
     %         end
     if isica(EEG)
-        msgboxText = ['This tool is thought to improve ICA performance by removing c.r.a.p. '...
+        msgboxText = ...
+            ['This tool is thought to improve ICA performance by removing c.r.a.p. '...
             '(commonly recorded artifact potentials) in an early stage\n\n'...
             'However, your dataset is already ICA-ed\n\n'...
             'Applying this tool will wipe out all ICA information\n\n'...
@@ -231,28 +234,35 @@ if nargin==1
         end
     end
     
-    forder    = 100; % fixed order when GUI is used
-    firstdet  = answer{8};
+    forder          = 100; % fixed order when GUI is used
+    firstdet        = answer{8};
     if firstdet==1
         fdet = 'on';
     else
         fdet = 'off';
     end
-    shortisi  = answer{9};
-    shortseg  = answer{10};
-    winoffset = answer{11};
-    memoryCARTGUI = erpworkingmemory('continuousartifactGUI');
-    colorseg  = memoryCARTGUI.colorseg;
-    %colorseg  = answer{12};
-    EEG.setname = [EEG.setname '_car'];
+    shortisi        = answer{9};
+    shortseg        = answer{10};
+    winoffset       = answer{11};
+    memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
+    colorseg        = memoryCARTGUI.colorseg;
     
     %
     % Somersault
     %
-    [EEG, com] = pop_continuousartdet(EEG, 'chanArray', chanArray, 'ampth', ampth,...
-        'winms', winms, 'stepms', stepms, 'firstdet', fdet, 'fcutoff', fcutoff,...
-        'forder', forder, 'shortisi', shortisi, 'shortseg', shortseg,...
-        'winoffset', winoffset, 'colorseg', colorseg, 'History', 'gui');
+    [EEG, com] = pop_continuousartdet(EEG ...
+        , 'chanArray'   , chanArray    ...
+        , 'ampth'       , ampth        ...
+        , 'winms'       , winms        ...
+        , 'stepms'      , stepms       ...
+        , 'firstdet'    , fdet         ...
+        , 'fcutoff'     , fcutoff      ...
+        , 'forder'      , forder       ...
+        , 'shortisi'    , shortisi     ...
+        , 'shortseg'    , shortseg     ...
+        , 'winoffset'   , winoffset    ...
+        , 'colorseg'    , colorseg     ...
+        , 'History'     , 'gui'        );
     pause(0.1)
     return
 end
@@ -260,28 +270,36 @@ end
 %
 % Parsing inputs
 %
-p = inputParser;
+p               = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('EEG');
+
 % option(s)
-p.addParamValue('ampth', [-150 150],@isnumeric);
-p.addParamValue('winms', 1000, @isnumeric);
-p.addParamValue('stepms', 500, @isnumeric);
-p.addParamValue('chanArray', 1:EEG.nbchan, @isnumeric);
-p.addParamValue('firstdet', 'on', @ischar); % 'on' means mark only first artifactual channel per window
-p.addParamValue('fcutoff', []);
-p.addParamValue('forder', [], @isnumeric);
-p.addParamValue('shortisi', [], @isnumeric);
-p.addParamValue('shortseg', [], @isnumeric);
-p.addParamValue('winoffset', [], @isnumeric);
-p.addParamValue('colorseg', [1.0000    0.9765    0.5294], @isnumeric);
-p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParameter('numChanThreshold', 1             , @isnumeric);
+p.addParameter('threshType'      , 'peak-to-peak', @ischar);
+p.addParameter('review'          , 'off'         , @ischar);
+p.addParameter('ampth'           , [-150 150]    , @isnumeric);
+p.addParameter('winms'           , 1000          , @isnumeric);
+p.addParameter('stepms'          , 500           , @isnumeric);
+p.addParameter('chanArray'       , 1:EEG.nbchan  , @isnumeric);
+p.addParameter('firstdet'        , 'on'          , @ischar);                     % 'on' means mark only first artifactual channel per window
+p.addParameter('fcutoff'         , []            , @isnumeric);
+p.addParameter('forder'          , []            , @isnumeric);
+p.addParameter('shortisi'        , []            , @isnumeric);
+p.addParameter('shortseg'        , []            , @isnumeric);
+p.addParameter('winoffset'       , []            , @isnumeric);
+p.addParameter('History'         , 'script'      , @ischar);                           % history from scripting
+p.addParameter('colorseg'        , [1.0000 ...
+                                    0.9765 ...
+                                    0.5294]      , @isnumeric);
 
 p.parse(EEG, varargin{:});
 
+
+% ERROR CHECK EEG
 if length(EEG)>1
-    msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+    msgboxText =  'This function does not work with multiple datasets';
     error(msgboxText)
 end
 if ~isempty(EEG.epoch)
@@ -293,6 +311,7 @@ if isempty(EEG.data)
     error(msgboxText);
 end
 
+threshType= p.Results.threshType;
 ampth     = p.Results.ampth;
 winms     = p.Results.winms;
 stepms    = p.Results.stepms;
@@ -303,20 +322,23 @@ if strcmpi(p.Results.firstdet, 'on') || strcmpi(p.Results.firstdet, 'yes')
 else
     firstdet = 0;
 end
-if strcmpi(p.Results.History,'implicit')
-    shist = 3; % implicit
-elseif strcmpi(p.Results.History,'script')
-    shist = 2; % script
-elseif strcmpi(p.Results.History,'gui')
-    shist = 1; % gui
-else
-    shist = 0; % off
+
+switch(p.Results.History)
+    case 'implicit'
+        shist = 3; % implicit
+    case'script'
+        shist = 2; % script
+    case 'gui'
+        shist = 1; % gui
+    otherwise
+        shist = 0; % off
 end
+
 fcutoff   = p.Results.fcutoff;
 forder    = p.Results.forder;
-shortisi  = p.Results.shortisi; % shortest isi in ms
-shortseg  = p.Results.shortseg; % shortest segment in ms
-winoffset = p.Results.winoffset; % shortest segment in ms
+shortisi  = p.Results.shortisi;                                                 % shortest isi in ms
+shortseg  = p.Results.shortseg;                                                 % shortest segment in ms
+winoffset = p.Results.winoffset;                                                % shortest segment in ms
 colorseg  = p.Results.colorseg;
 
 if numel(ampth)~=1 && numel(ampth)~=2
@@ -334,7 +356,7 @@ if ischar(fcutoff)
     %
     % Removing
     if strcmpi(fcutoff,'rdc') || strcmpi(fcutoff,'rmean')
-        fcutoff = [0 0];           % remove mean
+        fcutoff = [0 0];             % remove mean
     elseif strcmpi(fcutoff,'rdelta') % remove delta
         fcutoff = [4 0.1];
     elseif strcmpi(fcutoff,'rtheta') % remove theta
@@ -390,15 +412,14 @@ end
 %
 % subroutine
 %
-[WinRej, chanrej] = basicrap(EEG, chanArray, ampth, winms, stepms, firstdet, fcutoff, forder); %, filter, forder)
-shortisisam  = floor(shortisi*EEG.srate/1000);  % to samples
-shortsegsam  = floor(shortseg*EEG.srate/1000);  % to samples
-winoffsetsam = floor(winoffset*EEG.srate/1000); % to samples
+[WinRej, chanrej] = basicrap(EEG, chanArray, ampth, winms, stepms, firstdet, fcutoff, forder, threshType, p.Results.numChanThreshold); %, filter, forder)
+shortisisam       = floor(shortisi  * EEG.srate/1000);  % to samples
+shortsegsam       = floor(shortseg  * EEG.srate/1000);  % to samples
+winoffsetsam      = floor(winoffset * EEG.srate/1000);  % to samples
 
 if isempty(WinRej)
     fprintf('\nCriterion was not found. No rejection was performed.\n');
 else
-    %colorseg = [1.0000    0.9765    0.5294];
     if ~isempty(shortisisam)
         [WinRej, chanrej ] = joinclosesegments(WinRej, chanrej, shortisisam);
     end
@@ -408,16 +429,41 @@ else
     if ~isempty(winoffsetsam)
         [WinRej, chanrej ] = movesegments(WinRej, chanrej, winoffsetsam, EEG.pnts);
     end
-    
-    colormatrej = repmat(colorseg, size(WinRej,1),1);
-    matrixrej = [WinRej colormatrej chanrej];
-    assignin('base', 'WinRej', WinRej)
+    %     assignin('base', 'WinRej', WinRej)
     fprintf('\n %g segments were marked.\n\n', size(WinRej,1));
+
+     
     
-    commrej = sprintf('%s = eeg_eegrej( %s, WinRej);', inputname(1), inputname(1));
-    % call figure
-    eegplot(EEG.data, 'winrej', matrixrej, 'srate', EEG.srate,'butlabel','REJECT','command', commrej,'events', EEG.event,'winlength', 50);
+    %% Added in option for skipping EEGPLOT GUI when scripting
+    if(    strcmp(p.Results.History, 'gui') || strcmp(p.Results.review, 'on') )
+        
+        colormatrej = repmat(colorseg, size(WinRej,1),1);
+        matrixrej   = [WinRej colormatrej chanrej];
+        %         commrej     = sprintf('%s = eeg_eegrej(%s, WinRej)', inputname(1), inputname(1));
+        eegplot(EEG.data ...
+            , 'winrej'      , matrixrej     ...
+            , 'srate'       , EEG.srate     ...
+            ... %             , 'butlabel'    , 'REJECT'      ...
+            ... %             , 'command'     , commrej       ...
+            , 'events'      , EEG.event     ...
+            , 'winlength'   , 10            ...
+            , 'spacing'     , 100           ); % call EEGPLOT GUI
+
+        
+        EEG = eeg_eegrej(EEG, WinRej);
+        
+    elseif(strcmp(p.Results.History, 'script'))   % from script
+        
+        EEG = eeg_eegrej(EEG, WinRej);   % automatically reject found data-segments
+        
+    else       % off or none
+        
+    end
+    % ----------------------------------------
     
+    
+    %%    
+    EEG.setname     = [EEG.setname '_car'];
     EEG = eeg_checkset( EEG );
     if length(EEG.event)>=1
         if EEG.event(end).latency>EEG.pnts

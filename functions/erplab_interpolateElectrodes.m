@@ -1,6 +1,6 @@
 % erplab_interpolateElectrodes() - interpolate data channels
 %
-% Usage: EEG = erplab_interpolateElectrodes(ORIEEG, replace_elecs, ignore_elecs, method)
+% Usage: EEG = erplab_interpolateElectrodes(inputEEG, replace_elecs, ignore_elecs, method)
 %
 % Inputs:
 %     EEG           - EEGLAB dataset
@@ -38,7 +38,7 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-function EEG = erplab_interpolateElectrodes(ORIEEG, replace_elecs, ignore_elecs, method, varargin)
+function EEG = erplab_interpolateElectrodes(inputEEG, replace_elecs, ignore_elecs, method, varargin)
 
 %% Error check input variables
 if nargin < 2
@@ -48,7 +48,7 @@ end;
 
 
 % Error check: channel structure exists
-tmplocs = ORIEEG.chanlocs;
+tmplocs = inputEEG.chanlocs;
 if isempty(tmplocs) || isempty([tmplocs.X])
     error(sprintf('Missing Channel Locations:\n\nChannel locations are needed to interpolate. Add channel locations through EEGLAB > Edit > Channel locations')); %#ok<*SPERR>
 end
@@ -65,14 +65,14 @@ if ~isempty(overlap_elec)
 end
 
 % Error check: When the user inputs electrodes not found in the input EEG dataset
-missing_replace_elecss = setdiff(replace_elecs, [ORIEEG.chanlocs.urchan]);
+missing_replace_elecss = setdiff(replace_elecs, [inputEEG.chanlocs.urchan]);
 if(~isempty(missing_replace_elecss))
     error(sprintf('Missing Replace Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t\t%s', ...
         num2str(missing_replace_elecss)));
 end
 
 % Warning check: Missing ignored electrodes in EEG dataset
-missing_ignore_elecs = setdiff(ignore_elecs, [ORIEEG.chanlocs.urchan]);
+missing_ignore_elecs = setdiff(ignore_elecs, [inputEEG.chanlocs.urchan]);
 if(~isempty(missing_ignore_elecs))
     warning(sprintf('Missing Ignored Electrodes:\n\nThe following electrodes entered as input were missing from the EEG dataset:\n\t%s', ...
         num2str(missing_ignore_elecs))); %#ok<SPWRN>
@@ -80,7 +80,7 @@ end
 
 
 %%
-EEG = ORIEEG;
+EEG = inputEEG;
 
 % If no method specified: Spherical interpolate default
 if nargin < 4
@@ -139,9 +139,9 @@ if isstruct(replace_elecs)
     % re-order good channels
     % ----------------------
     [~, tmp2, neworder] = intersect_bc( lab1, lab2 );
-    [~, ordertmp2] = sort(tmp2);
-    neworder = neworder(ordertmp2);
-    EEG.data = EEG.data(neworder, :, :);
+    [~, ordertmp2]      = sort(tmp2);
+    neworder            = neworder(ordertmp2);
+    EEG.data            = EEG.data(neworder, :, :);
     
     % looking at channels for ICA
     % ---------------------------
