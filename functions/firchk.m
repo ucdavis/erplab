@@ -21,7 +21,15 @@ function [n,msg1,msg2] = firchk(n,Fend,a,exception)
 %   Copyright 1988-2004 The MathWorks, Inc.
 %   $Revision: 1.7.4.5 $  $Date: 2007/12/14 15:15:06 $
 
-error(nargchk(3,4,nargin,'struct'));
+
+matlab_v = version('-release');
+matlab_v = str2double(matlab_v(1:4));
+
+if matlab_v > 2012
+    narginchk(3,4)
+else
+    error(nargchk(3,4,nargin,'struct'))
+end
 
 if nargin == 3,
     exception = false;

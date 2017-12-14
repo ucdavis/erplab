@@ -29,8 +29,17 @@
 % Davis, CA, March, 2011
 function [cvalue, cindex, cdiff] = closest(data, target)
 
-error(nargchk(1,2,nargin))
-error(nargoutchk(0,3,nargout))
+matlab_v = version('-release');
+matlab_v = str2double(matlab_v(1:4));
+
+if matlab_v > 2012
+    narginchk(1,2)
+    nargoutchk(0,3)
+else
+    error(nargchk(1,2,nargin))
+    error(nargoutchk(0,3,nargout))
+end
+
 if nargin<2; target = [];end
 ntarget = length(target);
 [cvalue, cindex, cdiff]   = deal(zeros(1, ntarget));

@@ -3,7 +3,17 @@
 %
 
 function [out] = findcell(cellarray, cellval)
-error(nargchk(2,2,nargin));
+
+matlab_v = version('-release');
+matlab_v = str2double(matlab_v(1:4));
+
+if matlab_v > 2012
+    narginchk(2,2)
+else
+    error(nargchk(2,2,nargin));
+end
+
+
 if ~iscell(cellarray)
         error('Requires cell array as inputs.');
 end

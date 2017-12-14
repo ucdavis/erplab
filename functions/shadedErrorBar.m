@@ -50,7 +50,14 @@ function varargout=shadedErrorBar(x,y,errBar,lineProps,transparent)
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
 % Error checking    
-error(nargchk(3,5,nargin))
+matlab_v = version('-release');
+matlab_v = str2double(matlab_v(1:4));
+
+if matlab_v > 2012
+    narginchk(3,5)
+else
+    error(nargchk(3,5,nargin))
+end
 
 
 %Process y using function handles if needed to make the error bar

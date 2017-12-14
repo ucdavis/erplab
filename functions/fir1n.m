@@ -59,7 +59,14 @@ function [b,a,N] = fir1n(N,Wn,varargin)
 %     [1] "Programs for Digital Signal Processing", IEEE Press
 %         John Wiley & Sons, 1979, pg. 5.2-1.
 
-error(nargchk(2,6,nargin,'struct'));
+matlab_v = version('-release');
+matlab_v = str2double(matlab_v(1:4));
+
+if matlab_v > 2012
+    narginchk(2,6)
+else
+    error(nargchk(2,6,nargin))
+end
 
 if nargin > 2 && strcmpi(varargin{end}, 'h')
     varargin(end) = [];

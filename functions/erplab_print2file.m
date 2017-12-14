@@ -25,7 +25,14 @@
 function erplab_print2file(FileName, fformat, handle, dpi)
 
 % Verify correct number of arguments
-error(nargchk(0,4,nargin));
+matlab_v = version('-release');
+matlab_v = str2double(matlab_v(1:4));
+
+if matlab_v > 2012
+    narginchk(0,4)
+else
+    error(nargchk(0,4,nargin))
+end
 
 % If no handle is provided, use the current figure as default
 if nargin<1
