@@ -3,7 +3,7 @@ Copyright Regents of the University of California, 2008-2017 #
 #
 Designed by Steve Luck and Javier Lopez-Calderon #
 #
-Main developers for v5 and v6:
+Main developers since v5:
 Andrew X Stewart
 axstewart@ucdavis.edu
 Center for Mind and Brain, University of California, Davis #
@@ -52,12 +52,12 @@ tested using EEG collected with a Biosemi ActiveTwo System, #
 along with a smaller amount of testing using EEG collected #
 with Neuroscan and EGI systems. Consequently, you should be #
 particularly careful when using this version of ERPLAB with #
-data collected with systems other than the Biosemi ActiveTwo. # 
+data collected with systems other than the Biosemi ActiveTwo. #
 #
 #
 This program is free software: you can redistribute it and/or #
 modify it under the terms of the GNU General Public License #
-as published by the Free Software Foundation, either version # 
+as published by the Free Software Foundation, either version #
 3 of the License, or at your option) any later version. #
 #
 This program is distributed in the hope that it will be useful, #
@@ -84,4 +84,4 @@ License long with this program.  If not, see #
 Davis, California #
 a great place to live, work, and study #
 #
-#2007-2016
+#2007-2017
