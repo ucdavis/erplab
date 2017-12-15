@@ -13,7 +13,7 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
  </a>
 </p>
 
-To install ERPLAB v6.1.4, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `~/Documents/MATLAB/eeglab13_6_4b/plugins/erplab6.1.4/`). [Additional installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v7.0.0, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab13_6_4b/plugins/erplab7.0.0/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run **eeglab** as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
 
