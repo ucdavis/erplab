@@ -93,8 +93,9 @@ end
 %
 du = unique_bc2(datax);
 if length(du)<=round(length(datax)*0.1) % unique values are less than 10% of total sample values
-      errorcode = 6;
-      return
+    disp('Data might be flat-lined here. Empty bin?');
+    errorcode = 6;
+    %return
 end
 if strcmpi(p.Results.Multipeak,'on') || strcmpi(p.Results.Multipeak,'yes')
       multi = 1;
