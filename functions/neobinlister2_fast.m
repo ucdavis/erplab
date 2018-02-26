@@ -1,5 +1,13 @@
 %  neobinlister2_fast
 %  
+%  Additional functionality for events with time restriction
+%  Events codes with time restriction can be specified in a way that they
+%  are not preceded by certain event codes. E.g. one wants to have the
+%  codes 21 and 23 within 200 to 2500 ms of the time-locking event, but
+%  there should not be an even of type 22 or 24 before. This would be
+%  specified in binlister formula with:
+%       {t<200-2500>~22;~24;21;23}
+%
 %  This function mimics the behavior of ERPLAB's neobinlister2.
 %  Events are checked for whether they are in the right order, and for
 %  events that have time specification, it is checked whether they
@@ -145,7 +153,9 @@ if nwrongbins == 0
         % BDF Decoder.
         % Converts BIN Descriptor into numeric parameters (struct).
         %
-        [BIN, isparsenum] = bdf2struct(BIN);
+        [BIN, isparsenum] = bdf2struct(BIN, 1);
+        % 1 -> allowMixedSign = true; allows separate event codes within
+        % one {} to have different signs (~ or not ~).
         
         if isparsenum==0
                 % parsing was not approved
@@ -323,6 +333,7 @@ for iLogitem = TLitemNumIdx
         
         % check to which bin, or multiple bins, this item belongs
         belongsToBins = [];
+        
         for jBin = 1:nbin
             binok = checkBINfnc(iLogitem, itemCodes, itemTimes, BIN(jBin));
             if binok
@@ -416,68 +427,183 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
     % Actually twice almost exactly the same code, once for 'pre' and once
     % for 'post'.
     while ip > 0 && prehi > 0
-        % whats the "event sign"?
-        % (if more than one element, both usually the same)
-        if numel(unique(B.prehome(prehi).eventsign)) ~= 1, error('Unexpected case!'); end
-        thisPreSign = all(B.prehome(prehi).eventsign); % all 'eventsign' supposed to be the same
         
-        % So, is time relevant?
-        currentTimeWindowPos = unique(B.prehome(prehi).timecode, 'rows');
-        currentTimeWindow = sort(-1 * currentTimeWindowPos);
-        % replace upper limit by 'preTimeLimit', to ensure that sequences
-        % of prehome expressions occur in the order in which they are
-        % specified.
-        currentTimeWindow(2) = min([preTimeLimit, currentTimeWindow(2)]);
-        
-        if size(currentTimeWindow, 1) ~= 1 % is not a row vector
-            % 'timecode' are not unique across all 'eventcodes'
-            % of the current 'prehome'. that's unexpected!
-            error('''timecode'' not unique across ''eventcodes'' of current ''prehome'' - how come?');
-        end
-        if all(unique(B.prehome(prehi).timecode, 'rows') >= 0) % time is relevant
-            % use B.prehome.timecode, since currentTimeWindow has been
-            % ajusted and might be negative although relevant!
-            % get index to all events in the time window
-            currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
-                (itemTimes - iLogitemTime) <= currentTimeWindow(2);
-            currentCodes = itemCodes(currentIdx);
-            currentTimesAbs = itemTimes(currentIdx);
-            currentTimesRel = currentTimesAbs - iLogitemTime;
-            if thisPreSign % = 1
-                % there has to be an event of current prehome code
-                if any(ismember(currentCodes, B.prehome(prehi).eventcode))
-                    % all good
-                    % set a new time limit: the lowest time of all the
-                    % occuring prehome events
-                    preTimeLimit = min(currentTimesRel(ismember(currentCodes, B.prehome(prehi).eventcode)));
-                    % can go to next prehome
-                    prehi = prehi - 1;
-                else
-                    % condition violated
-                    return
+        % check if all eventsign are the same, ...
+        %   if they are not we do something else (see below)
+        if numel(unique(B.prehome(prehi).eventsign)) == 1
+            % all 'eventsign' the same
+            thisPreSign = all(B.prehome(prehi).eventsign);
+            
+            % So, is time relevant?
+            % Assuming that time window specification for prehome events is
+            % also positive (and not negative as could be expected, since these
+            % events are supposed to occure before the time-locking event).
+            currentTimeWindowPos = unique(B.prehome(prehi).timecode, 'rows');
+            if size(currentTimeWindowPos, 1) ~= 1 % is not a row vector
+                % 'timecode' are not unique across all 'eventcodes'
+                % of the current 'prehome'. that's unexpected!
+                error('''timecode'' not unique across ''eventcodes'' of current ''prehome'' - how come?');
+            end
+            % make the time window negative to correspond to actual time of the
+            % events
+            currentTimeWindowNeg = sort(-1 * currentTimeWindowPos);
+            % Depending on whether the current event has to be present/absent
+            if thisPreSign % present
+                currentTimeWindowPresent = currentTimeWindowNeg;
+                % replace upper limit by 'preTimeLimit', to ensure that sequences
+                % of prehome expressions occur in the order in which they are
+                % specified
+                currentTimeWindowPresent(2) = min([preTimeLimit, currentTimeWindowNeg(2)]);
+                currentTimeWindow = currentTimeWindowPresent;
+            else
+                % for events required to be absent, keep the whole time window
+                currentTimeWindow = currentTimeWindowNeg;
+            end
+            
+            if all(unique(B.prehome(prehi).timecode, 'rows') >= 0) % time is relevant
+                % use B.prehome.timecode, since currentTimeWindow has
+                % been ajusted and might be negative although relevant!
+                % get index to all events in the time window
+                currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
+                    (itemTimes - iLogitemTime) <= currentTimeWindow(2);
+                currentCodes = itemCodes(currentIdx);
+                currentTimesAbs = itemTimes(currentIdx);
+                currentTimesRel = currentTimesAbs - iLogitemTime;
+                if thisPreSign % = 1
+                    % there has to be an event of current prehome code
+                    if any(ismember(currentCodes, B.prehome(prehi).eventcode))
+                        % all good
+                        % set a new time limit: the greatest time of all the
+                        % occuring prehome events, i.e. closest to time-lock
+                        % event
+                        preTimeLimit = max(currentTimesRel(ismember(currentCodes, B.prehome(prehi).eventcode)));
+                        % can go to next prehome
+                        prehi = prehi - 1;
+                        % but keep current item index 'pi'
+                    else
+                        % condition violated
+                        return
+                    end
+                else % thisPreSign == 0, the prehome event codes must not be there
+                    if any(ismember(currentCodes, B.prehome(prehi).eventcode))
+                        return
+                    else
+                        % they are not there
+                        % can go to next prehome
+                        prehi = prehi - 1;
+                        % but, keep the current time limit! if the time limit
+                        % was adjusted here to the maximum of the not-occurring
+                        % events (because of sign == 0!), it would be too
+                        % restrictive for the next time critical event!
+                    end
                 end
-            else % thisPreSign == 0, the prehome event codes must not be there
-                if any(ismember(currentCodes, B.prehome(prehi).eventcode))
+            else % time is _not_ relevant
+                % is current event an event code we are looking for?
+                if any(ismember(itemCodes(ip), B.prehome(prehi).eventcode))
+                    % YES
+                    % (if-statement could probably also be without 'ismember',
+                    %  because itemCodes can only contain one element, right?)
+                    prehi = prehi - 1; % also go to next prehome event
+                    ip = ip - 1; % and go to next event/item
+                else % NO
                     return
-                else
-                    % they are not there
-                    % can go to next prehome
-                    prehi = prehi - 1;
-                    % but, keep the current time limit! if the time limit
-                    % was adjusted here to the maximum of the not-occurring
-                    % events (because of sign == 0!), it would be too
-                    % restrictive for the next time critical event!
                 end
             end
-        else % time is _not_ relevant
-            % is current event an event code we are looking for?
-            if any(ismember(itemCodes(ip), B.prehome(prehi).eventcode))
-                % YES
-                % (if-statement could probably also be without 'ismember',
-                %  because itemCodes can only contain one element, right?)
-                prehi = prehi - 1; % also go to next prehome event
-                ip = ip - 1; % and go to next event/item
-            else % NO
+        
+            
+        else % not all eventsign the same
+            % So, we ensure that there occurs no event of negated type (~)
+            % before the required one (without ~)
+            
+            if size(B.prehome(prehi).timecode, 1) ~= 1 % is not a row vector
+                % 'timecode' are not unique across all 'eventcodes'
+                % of the current 'prehome'. that's unexpected!
+                error('''timecode'' not unique across ''eventcodes'' of current ''prehome'' - how come?');
+            end
+            
+            % index to the events
+            eventProhibitedIdx = B.prehome(prehi).eventsign == 0;
+            eventRequiredIdx = B.prehome(prehi).eventsign == 1;
+            
+            % in this case here, there has to be a time specification,
+            % otherwise this specific feature of e.g. {~21;22} is obsolete.
+            if all(unique(B.prehome(prehi).timecode, 'rows') >= 0) % time is relevant
+                % Is there a required event code within the specified time
+                % window?
+                currentTimeWindowPos = unique(double(B.prehome(prehi).timecode), 'rows');
+                if size(currentTimeWindowPos, 1) ~= 1 % is not a row vector
+                    % 'timecode' are not unique across all 'eventcodes'
+                    % of the current 'prehome'. that's unexpected!
+                    error('''timecode'' not unique across ''eventcodes'' of current ''prehome'' - how come?');
+                end
+                % make the time window negative to correspond to actual time of the
+                % events (assuming that time specification before
+                % time-locking event also follows the pattern of "<t1-t2>"
+                % with t1 < t2.
+                currentTimeWindowNeg = sort(-1 * currentTimeWindowPos);
+                % the current event has to be present, so replace upper
+                % limit by 'preTimeLimit', to ensure that sequences of
+                % prehome expressions occur in the order in which they are
+                % specified
+                currentTimeWindow = [currentTimeWindowNeg(1), min([preTimeLimit, currentTimeWindowNeg(2)])];
+            else
+                error('There has to be a time specification when required and prohibited event codes are being mixed within one binlister {}-term!');
+            end
+            % get indices to events in current time window
+            currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
+                         (itemTimes - iLogitemTime) <= currentTimeWindow(2);
+            
+            % the required codes have to occur in the current time window
+            currentRequiredIdx = currentIdx & ismember(itemCodes, B.prehome(prehi).eventcode(eventRequiredIdx));
+            currentProhibitedIdx = currentIdx & ismember(itemCodes, B.prehome(prehi).eventcode(eventProhibitedIdx));
+            currentCodesRequired = itemCodes(currentRequiredIdx);
+            currentCodesProhibited = itemCodes(currentProhibitedIdx);
+            
+            % at least one required code has to be present
+            if ~isempty(currentCodesRequired)
+                % ensure that there is no prohibited event code before the
+                % first of the occuring required ones
+                currentTimesRequiredRel = itemTimes(currentRequiredIdx) - iLogitemTime; % time relativ to time-lock item (Logitem)
+                currentTimesRequiredRelLimit = max(currentTimesRequiredRel);
+                
+                if ~isempty(currentCodesProhibited)
+                    currentTimesProhibitedRel = itemTimes(currentProhibitedIdx) - iLogitemTime;
+                    % all prohibited event codes have to be outside the
+                    % _unadjusted_ time window
+                    if all(currentTimesProhibitedRel < currentTimesRequiredRelLimit | ...
+                           currentTimesProhibitedRel > currentTimeWindowNeg(2)) % Keep in mind: we r in 'prehome'!
+                        % all good
+                        % set a new time limit: the greatest time of all the
+                        % occuring prehome events, i.e. closest to time-lock
+                        % event, which corresponds to the limit for
+                        % prohibited codes
+                        preTimeLimit = currentTimesRequiredRelLimit;
+                        % can go to next prehome
+                        prehi = prehi - 1;
+                        % but keep current item index 'pi'
+                    else
+                        % condition violated:
+                        % there was a prohibited event code before
+                        % (direction towards more negative time values!)
+                        % the required one that is closest to time zero
+                        % within the specified time window.
+                        return
+                    end
+                else
+                    % all good
+                    % there is no prohibited event code in the current time
+                    % window anyway
+                    % set a new time limit: the greatest time of all the
+                    % occuring prehome events, i.e. closest to time-lock
+                    % event, which corresponds to the limit for
+                    % prohibited codes
+                    preTimeLimit = currentTimesRequiredRelLimit;
+                    % can go to next prehome
+                    prehi = prehi - 1;
+                    % but keep current item index 'pi'
+                end
+            else
+                % condition violated
                 return
             end
         end
@@ -493,58 +619,151 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
     posthi = 1;
     postTimeLimit = 1;
     while ip <= numel(itemCodes) && posthi <= numel(B.posthome)
-        % What sign does next event have?
-        % (if more than one element, both usually the same)
-        if numel(unique(B.posthome(posthi).eventsign)) ~= 1, error('Unexpected case!'); end
-        thisPostSign = all(B.posthome(posthi).eventsign);
-        % So, is time relevant?
-        currentTimeWindow = unique(B.posthome(posthi).timecode, 'rows');
-        currentTimeWindow(1) = max([currentTimeWindow(1), postTimeLimit]);
-        if size(currentTimeWindow, 1) ~= 1 % is not a row vector
-            % 'timecode' are not unique across all 'eventcodes'
-            % of the current 'posthome'. that's unexpected!
-            error('''timecode'' not unique across ''eventcodes'' of current ''posthome'' - home come?');
-        end
-        if all(unique(B.posthome(posthi).timecode, 'rows') >= 0) % time is relevant
-            % get index to all events in the time window
-            currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
-                (itemTimes - iLogitemTime) <= currentTimeWindow(2);
-            currentCodes = itemCodes(currentIdx);
-            currentTimesAbs = itemTimes(currentIdx);
-            currentTimesRel = currentTimesAbs - iLogitemTime;
-            if thisPostSign % = 1
-                % there has to be an event of current posthome code
-                if any(ismember(currentCodes, B.posthome(posthi).eventcode))
-                    % set a new time limit: the largest time of all the
-                    % occuring prehome events
-                    postTimeLimit = max(currentTimesRel(ismember(currentCodes, B.posthome(posthi).eventcode)));
-                    % all good, can go to next posthome
-                    posthi = posthi + 1;
-                else
-                    % condition violated
-                    return
+        
+        % Do all events in current 'posthome' have the same sign?
+        if numel(unique(B.posthome(posthi).eventsign)) == 1
+            % yes
+            % What sign is it?
+            thisPostSign = all(B.posthome(posthi).eventsign);
+            
+            % So, is time relevant?
+            currentTimeWindow = unique(B.posthome(posthi).timecode, 'rows');
+            if size(currentTimeWindow, 1) ~= 1 % is not a row vector
+                % 'timecode' are not unique across all 'eventcodes'
+                % of the current 'posthome'. that's unexpected!
+                error('''timecode'' not unique across ''eventcodes'' of current ''posthome'' - how come?');
+            end
+            if thisPostSign
+                % for events required to be present, adjust time window which
+                % implies that order of events is taken into account
+                currentTimeWindow(1) = max([currentTimeWindow(1), postTimeLimit]);
+            else
+                % otherwise, for events required to be absent, keep the whole
+                % time window.
+            end
+            
+            if all(unique(B.posthome(posthi).timecode, 'rows') >= 0) % time is relevant
+                % get index to all events in the time window
+                currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindow(1) & ...
+                    (itemTimes - iLogitemTime) <= currentTimeWindow(2);
+                currentCodes = itemCodes(currentIdx);
+                currentTimesAbs = itemTimes(currentIdx);
+                currentTimesRel = currentTimesAbs - iLogitemTime;
+                if thisPostSign
+                    % there has to be an event of current posthome code
+                    if any(ismember(currentCodes, B.posthome(posthi).eventcode))
+                        % set a new time limit: the minimum time of all the
+                        % occuring prehome events, i.e. closest to time-locking
+                        % event
+                        postTimeLimit = min(currentTimesRel(ismember(currentCodes, B.posthome(posthi).eventcode)));
+                        % all good, can go to next posthome
+                        posthi = posthi + 1;
+                    else
+                        % condition violated
+                        return
+                    end
+                else % thisPostSign == 0, the posthome event codes must not be there
+                    if any(ismember(currentCodes, B.posthome(posthi).eventcode))
+                        return
+                    else
+                        % they are _not_ there, so can go to next posthome
+                        posthi = posthi + 1;
+                        % but, keep the current time limit! if the time limit
+                        % was adjusted here to the maximum of the not-occurring
+                        % events (because of sign == 0!), it would be too
+                        % restrictive for the next time critical event!
+                    end
                 end
-            else % thisPostSign == 0, the posthome event codes must not be there
-                if any(ismember(currentCodes, B.posthome(posthi).eventcode))
+            else % time is _not_ relevant
+                % is current event an event code we are looking for?
+                if any(ismember(itemCodes(ip), B.posthome(posthi).eventcode))
+                    % YES
+                    % (if-statement could probably also be without 'ismember',
+                    %  because itemCodes can only contain one element, right?)
+                    posthi = posthi + 1; % also go to next posthome event
+                    ip = ip + 1; % and go to next event/item
+                else % NO
                     return
-                else
-                    % they are _not_ there, so can go to next posthome
-                    posthi = posthi + 1;
-                    % but, keep the current time limit! if the time limit
-                    % was adjusted here to the maximum of the not-occurring
-                    % events (because of sign == 0!), it would be too
-                    % restrictive for the next time critical event!
                 end
             end
-        else % time is _not_ relevant
-            % is current event an event code we are looking for?
-            if any(ismember(itemCodes(ip), B.posthome(posthi).eventcode))
-                % YES
-                % (if-statement could probably also be without 'ismember',
-                %  because itemCodes can only contain one element, right?)
-                posthi = posthi + 1; % also go to next posthome event
-                ip = ip + 1; % and go to next event/item
-            else % NO
+            
+        
+        else % not all eventsign the same
+            % So, we ensure that there occurs no event of negated type (~)
+            % before the required one (without ~)
+            
+            currentTimeWindowOrig = unique(B.posthome(posthi).timecode, 'rows');
+            if size(currentTimeWindowOrig, 1) ~= 1 % is not a row vector
+                % 'timecode' are not unique across all 'eventcodes'
+                % of the current 'posthome'. that's unexpected!
+                error('''timecode'' not unique across ''eventcodes'' of current ''posthome'' - how come?');
+            end
+            % There has to be a time specification,
+            % otherwise this specific feature of e.g. {~21;22} is obsolete.
+            if ~all(currentTimeWindowOrig >= 0) % time is relevant
+                error('There has to be a time specification when required and prohibited event codes are being mixed within one binlister {}-term!');
+            end
+            
+            % adjust time window to take order of events with time limit
+            % into account
+            currentTimeWindowAdj = [max([currentTimeWindowOrig(1), postTimeLimit]), currentTimeWindowOrig(2)];
+            
+            % get indices to events in current time window
+            currentIdx = (itemTimes - iLogitemTime) >= currentTimeWindowAdj(1) & ...
+                (itemTimes - iLogitemTime) <= currentTimeWindowAdj(2);
+            
+            % index to required and prohibited the events within BIN
+            eventProhibitedIdx = B.posthome(posthi).eventsign == 0;
+            eventRequiredIdx = B.posthome(posthi).eventsign == 1;
+            
+            % the required codes have to occur in the current time window
+            currentRequiredIdx = currentIdx & ismember(itemCodes, B.posthome(posthi).eventcode(eventRequiredIdx));
+            currentProhibitedIdx = currentIdx & ismember(itemCodes, B.posthome(posthi).eventcode(eventProhibitedIdx));
+            currentCodesRequired = itemCodes(currentRequiredIdx);
+            currentCodesProhibited = itemCodes(currentProhibitedIdx);
+            
+            % at least one required code has to be present
+            if ~isempty(currentCodesRequired)
+                % ensure that there is no prohibited event code before the
+                % first of the occuring required ones
+                currentTimesRequiredRel = itemTimes(currentRequiredIdx) - iLogitemTime; % time relativ to time-lock item (Logitem)
+                % in contrast to prehome section before, here we need MIN:
+                currentTimesRequiredRelLimit = min(currentTimesRequiredRel);
+                
+                if ~isempty(currentCodesProhibited)
+                    currentTimesProhibitedRel = itemTimes(currentProhibitedIdx) - iLogitemTime;
+                    % all prohibited event codes have to be outside the
+                    % _unadjusted_ time window
+                    if all(currentTimesProhibitedRel < currentTimeWindowOrig(1) | ...
+                           currentTimesProhibitedRel > currentTimesRequiredRelLimit) % Keep in mind: we r in 'posthome'!
+                        % all good
+                        % set a new time limit: the smallest time of all the
+                        % occuring posthome events, i.e. closest to time-lock
+                        % event, which corresponds to the limit for
+                        % required codes
+                        postTimeLimit = currentTimesRequiredRelLimit;
+                        % can go to next posthome
+                        posthi = posthi + 1;
+                        % but keep current item index 'pi'
+                    else
+                        % condition violated:
+                        % there was a prohibited event code before
+                        % (direction towards more negative time values!)
+                        % the required one that is closest to time zero
+                        % within the specified time window.
+                        return
+                    end
+                else
+                    % all good
+                    % there is no prohibited event code in the current time
+                    % window anyway
+                    postTimeLimit = currentTimesRequiredRelLimit;
+                    % can go to next posthome
+                    posthi = posthi + 1;
+                    % but keep current item index 'pi'
+                end
+            else
+                % condition violated
                 return
             end
         end
@@ -555,9 +774,7 @@ function binok = checkBINfnc(iLogitem, itemCodes, itemTimes, B)
         postok = true;
     end
     
-    if preok && postok
-        binok = true;
-    end
+    binok = preok && postok;
 
 % FUNCTION END
 

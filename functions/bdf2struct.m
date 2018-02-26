@@ -27,7 +27,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright ? 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -45,7 +45,14 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [BIN, isparsednumerically] = bdf2struct(BIN)
+function [BIN, isparsednumerically] = bdf2struct(BIN, allowMixedSigns)
+
+% allowMixedSigns ... allows the event codes within one '{}' to have
+%                     different signs
+
+if nargin < 2 || isempty(allowMixedSigns)
+    allowMixedSigns = false;
+end
 
 if nargin < 1
         help bdf2struct
@@ -558,9 +565,11 @@ for iBin = 1:nBin       % Bin's loop
                                 nWishedCodes  = nnz(storeSign); % number of nonzero elements in storeSign (nWishedCodes).
                                 nDifferentSign = length(storeSign)-nWishedCodes;
                                 
-                                if nDifferentSign ~= length(storeSign) && nDifferentSign ~= 0
+                                if ~allowMixedSigns
+                                    if nDifferentSign ~= length(storeSign) && nDifferentSign ~= 0
                                         storeSign = storeSign*0;
-                                end                                
+                                    end
+                                end
                                 if istimedetected
                                         t1now  = storeTime(1,1);
                                         t2now  = storeTime(1,2);
