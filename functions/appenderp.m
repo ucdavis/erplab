@@ -88,6 +88,25 @@ if ischar(prefixes)
                 end
         end
 end
+
+% Validation of sets to append
+% We don't want to try to combine binerror info if some is missing
+keep_binerror = 0;
+binerror_works_here = zeros(1,nerp);
+for i=1:nerp
+    data_dims = size(ALLERP(indx(i)).bindata);
+    error_dims = size(ALLERP(indx(i)).binerror);
+    if isequal(data_dims,error_dims)
+        binerror_works_here(i) = 1;
+    end
+end
+if any(binerror_works_here == 0)
+    keep_binerror = 0;
+else
+    keep_binerror = 1;
+end
+
+
 for i=1:nerp      
       workfiles = [workfiles ALLERP(indx(i)).workfiles];
       subject   = [subject ALLERP(indx(i)).subject];
@@ -120,7 +139,10 @@ for i=1:nerp
             end
             
             bindata  = cat(3, bindata, ALLERP(indx(i)).bindata);
-            binerror = cat(3, binerror, ALLERP(indx(i)).binerror);
+            
+            if keep_binerror
+                binerror = cat(3, binerror, ALLERP(indx(i)).binerror);
+            end
       end
       
       nbin     = nbin +  ALLERP(indx(i)).nbin;
@@ -138,6 +160,12 @@ for i=1:nerp
             bindescr  = [bindescr newdescr];
       end
 end
+
+if keep_binerror == 0
+    binerror = [];
+    disp('Error data in appended datasets not consistent. ERP.binerror will be empty');
+end
+
 
 ERP.erpname    = erpname;
 ERP.filename   = filename;
