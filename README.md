@@ -42,10 +42,14 @@ Here is a list of some confirmed-working environments for ERPLAB.
 | --- | --- | --- | --- |
 | Mac OS X 10.11.5 'El Capitan' | Matlab R2015a | EEGLAB v13.5.4b | ✓ |
 | MacOS 10.12 'Sierra' | Matlab R2016a | EEGLAB v13.5.4b | ✓  |
+| Mac OS 10.13.5 'High Sierra' | Matlab R2015a | EEGLAB v14.1.2 | ✓ |
+| Mac OS 10.13.5 'High Sierra' | Matlab R2018a | EEGLAB v14.1.2 | ✓ (with Matlab update) |
 | Windows 7 | Matlab R2014a | EEGLAB v13.5.4b | ✓ |
 | Windows 8.1 | Matlab R2014a | EEGLAB v13.5.4b | ✓ |
 | Windows 10 | Matlab R2015a | EEGLAB v13.5.4b | ✓ |
 | Ubuntu 14.04 LTS | Matlab R2014a | EEGLAB v13.5.4b | ✓ |
+
+* - For Matlab R2018a, the [Matlab Update 3 fixes a crucial Matlab bug](https://www.mathworks.com/downloads/web_downloads/download_update?release=R2018a&s_tid=ebrg_R2018a_2_1757132&s_tid=mwa_osa_a).
 
 <br/>
 <br/>
