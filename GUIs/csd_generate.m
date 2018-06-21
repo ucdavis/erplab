@@ -121,7 +121,8 @@ if isa(handles.mcont,'double') ~= 1 || isnan(handles.mcont)
     handles.mcont = 4;
 end
 
-
+% beep
+% disp('X was not a Y');
 
 handles.output = [handles.mcont handles.smoothl handles.headrad handles.csdsave];
 
@@ -163,9 +164,18 @@ function mcont_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of mcont as text
 %        str2double(get(hObject,'String')) returns contents of mcont as a double
 mcont = str2double(get(hObject,'String'));
-% Save the new  value
-handles.mcont = mcont;
-guidata(hObject,handles)
+
+% We don't want to return the new value if the input was not a double
+if isnan(mcont)
+    beep
+    disp('Please ensure that the input was a number.');
+    set(hObject,'String','4');
+else
+    % input seems valid
+    % Save the new  value
+    handles.mcont = mcont;
+    guidata(hObject,handles)
+end
 
 
 
@@ -197,9 +207,19 @@ function lambdabox_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of lambdabox as text
 %        str2double(get(hObject,'String')) returns contents of lambdabox as a double
 smoothl = str2double(get(hObject,'String'));
-% Save the new  value
-handles.smoothl = smoothl;
-guidata(hObject,handles)
+
+% We don't want to save the new value if the input was not a double
+if isnan(smoothl)
+    beep
+    disp('Please ensure that the input was a number.');
+    set(hObject,'String','0.00001');
+else
+    % input seems valid
+    % Save the new  value
+    handles.smoothl = smoothl;
+    guidata(hObject,handles)
+end
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -224,9 +244,18 @@ function headradbox_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of headradbox as text
 %        str2double(get(hObject,'String')) returns contents of headradbox as a double
 headrad = str2double(get(hObject,'String'));
-% Save the new  value
-handles.headrad = headrad;
-guidata(hObject,handles)
+
+% We don't want to return the new value if the input was not a double
+if isnan(headrad)
+    beep
+    disp('Please ensure that the input was a number.');
+    set(hObject,'String','10');
+else
+    % input seems valid
+    % Save the new  value
+    handles.headrad = headrad;
+    guidata(hObject,handles)
+end
 
 
 % --- Executes during object creation, after setting all properties.
