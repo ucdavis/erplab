@@ -124,8 +124,35 @@ fnyq  = fs/2;
 nchan = length(chanArray);
 if isempty(EEG.epoch)  % continuous data
     sizeeg = EEG.pnts;
-    L      = fs*5 ;  %5 seconds of signal
-    nwindows = round(sizeeg/L);
+    L      = fs*5 ;  %number of datapoints in 5 seconds of signal
+    
+    % Determine correct number of windows and window times (in datapoint idx)
+    max_nwindows = round(sizeeg/L) * 2; % maximum possible number of windows
+    t_start = zeros(max_nwindows,1);
+    t_end = zeros(max_nwindows,1);
+    t_good = zeros(max_nwindows,1); % track if this time period is inside range
+    Lm = round(L/2); % window move size, in dp. L/2 for 50% overlap of windows
+    
+    for win_times = 1:max_nwindows
+        t_start(win_times) = 1 + (win_times-1)*Lm;
+        t_end(win_times) = t_start(win_times) + L;
+        
+        if t_end(win_times) <= EEG.pnts
+            t_good(win_times) = 1;
+        end
+    end
+    
+    nwindows = sum(t_good);
+    
+    if nwindows == 0    % if none were good by that count, just do all we can
+        disp('Short time period for FFT.')
+        t_start(1) = 1;
+        t_end(1) = sizeeg;
+        nwindows = 1;
+    end
+    
+    
+    
     if isempty(np)
         NFFT   = 2^nextpow2(L);
     else
@@ -136,11 +163,9 @@ if isempty(EEG.epoch)  % continuous data
     for k=1:nchan
         a = 1; b = L; i = 1;
         while i<=nwindows && b<=sizeeg
-            y = detrend(EEG.data(chanArray(k),a:b));
+            y = detrend(EEG.data(chanArray(k),t_start(i):t_end(i)));
             Y = fft(y,NFFT)/L;
             ffterp(i,:,k) = 2*abs(Y(1:NFFT/2));
-            a = b - round(L/2); % 50% overlap
-            b = b + round(L/2); % 50% overlap
             i = i+1;
         end
     end
