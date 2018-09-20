@@ -35,7 +35,7 @@ function [ outEEG ] = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, varar
 % EXAMPLE:
 %
 %    eventcodes = {22, 19};   % Shift numeric event codes 22 & 19
-%    timeshift  = 0.015;      % Shift event codes by 15-milliseconds
+%    timeshift  = 15;      % Shift event codes by 15-milliseconds
 %    rounding   = 'later'     % Round result shift event codes to later timestamp 
 %    outEEG     = erplab_shiftEventCodes(inEEG, eventcodes, timeshift, rounding);
 %
