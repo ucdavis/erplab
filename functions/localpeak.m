@@ -287,7 +287,7 @@ if strcmpi(p.Results.Measure,'fraclat') % fractional latency assessment
             % Start at peak, move stepwise, check each point
             while in_range==1 && found==0
                 
-                if curr_idx == 0 || k > nsamples   % break if zero, or above number of total matching points
+                if curr_idx == 0 || curr_idx > nsamples   % break if zero, or above number of total matching points
                     break
                 else
                     curr_value = datax(curr_idx);
