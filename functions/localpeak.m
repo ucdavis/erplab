@@ -261,6 +261,9 @@ if strcmpi(p.Results.Measure,'fraclat') % fractional latency assessment
             
             target_value = vlocalpf*frac;
             
+            % Get a list of matching datapoint idxs that meet the critera
+            % of being above / below critera, and in range
+            
             if peakpol==1   % for postive polarity peak
                 [aaa, match_dpi] = find(datax<(target_value));   % Get all dp indx above the target value
                 
@@ -284,6 +287,7 @@ if strcmpi(p.Results.Measure,'fraclat') % fractional latency assessment
             found = 0;
             k=1;
             
+            % Find the matching one that is closest to the local peak
             % Start at peak, move stepwise, check each point
             while in_range==1 && found==0
                 

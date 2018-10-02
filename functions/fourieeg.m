@@ -51,12 +51,13 @@
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
+% Modified: axs, Sept 2019
 % Author: Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2009
-
+%
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
@@ -78,7 +79,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function varargout = fourieeg(EEG, chanArray, binArray, f1, f2, np, latwindow, includelege)
+function varargout = fourieeg(EEG, chanArray, binArray, f1, f2, np, latwindow, includelege, drop_near_boundaries,cont_window_size_s, log_plot)
 if nargin < 1
     help fourieeg
     if nargout == 1
@@ -90,6 +91,9 @@ if nargin < 1
         return
     end
     return
+end
+if nargin<9
+    drop_near_boundaries = 1; % 1 means do not include windows with boundaries in FFT
 end
 if nargin<8
     includelege = 1; % 1 means include leyend, 0 means do not...
@@ -118,20 +122,40 @@ if isempty(EEG(1).data)
     errorfound(msgboxText, title_msg);
     return
 end
+if exist('log_plot','var') == 0
+log_plot = 0;
+end
 disp('Working...')
 fs    = EEG.srate;
 fnyq  = fs/2;
 nchan = length(chanArray);
 if isempty(EEG.epoch)  % continuous data
     sizeeg = EEG.pnts;
-    L      = fs*5 ;  %number of datapoints in 5 seconds of signal
+    if exist('cont_window_size_s','var') == 0
+        default_window_size = 5; % seconds
+    else
+        default_window_size = cont_window_size_s;
+    end
+    
+    L      = fs*default_window_size ;  %number of datapoints in 1 window-size stretch of signal
     
     % Determine correct number of windows and window times (in datapoint idx)
     max_nwindows = round(sizeeg/L) * 2; % maximum possible number of windows
     t_start = zeros(max_nwindows,1);
     t_end = zeros(max_nwindows,1);
     t_good = zeros(max_nwindows,1); % track if this time period is inside range
+    t_bound = zeros(max_nwindows,1); % write 1s here to track boundaries in range
     Lm = round(L/2); % window move size, in dp. L/2 for 50% overlap of windows
+    boundary_win_dropped = 0;
+    
+    % check that window times are valid, and don't contain a boundary
+    bound_chk = 0;
+    if drop_near_boundaries
+        [boundary_times, num_boundaries] = find_boundary_times(EEG);
+        if num_boundaries >= 1  % if no boundaries, don't bother checking
+            bound_chk = 1;
+        end
+    end
     
     for win_times = 1:max_nwindows
         t_start(win_times) = 1 + (win_times-1)*Lm;
@@ -140,12 +164,27 @@ if isempty(EEG.epoch)  % continuous data
         if t_end(win_times) <= EEG.pnts
             t_good(win_times) = 1;
         end
+        
+        if bound_chk
+            bounds_after_start = boundary_times >= t_start(win_times);
+            bounds_befow_end = boundary_times <= t_end(win_times);
+            bound_here = bounds_after_start & bounds_befow_end;
+            
+            if any(bound_here)
+                t_bound(win_times) = 1;
+                t_good(win_times) = 0;
+                boundary_win_dropped = boundary_win_dropped + 1;
+            end
+        end
+        
+        
     end
     
     nwindows = sum(t_good);
+    where_good = find(t_good);
     
     if nwindows == 0    % if none were good by that count, just do all we can
-        disp('Short time period for FFT.')
+        disp('No valid FFT windows of that size? Trying defaults')
         t_start(1) = 1;
         t_end(1) = sizeeg;
         nwindows = 1;
@@ -163,12 +202,14 @@ if isempty(EEG.epoch)  % continuous data
     for k=1:nchan
         a = 1; b = L; i = 1;
         while i<=nwindows && b<=sizeeg
-            y = detrend(EEG.data(chanArray(k),t_start(i):t_end(i)));
+            y = detrend(EEG.data(chanArray(k),t_start(where_good(i)):t_end(where_good(i))));
             Y = fft(y,NFFT)/L;
             ffterp(i,:,k) = 2*abs(Y(1:NFFT/2));
             i = i+1;
         end
     end
+    fft_report1 = ['Running FFT on continuous EEG on ' num2str(nwindows) ' window chunks, of ' num2str(default_window_size) ' seconds (' num2str(L) ' datapoints) each. Windows dropped due to boundary events: ' num2str(boundary_win_dropped)];
+    disp(fft_report1)
     msgn = 'whole';
 else   % epoched data
     indxtimewin = ismember_bc2(EEG.times, EEG.times(EEG.times>=latwindow(1) & EEG.times<=latwindow(2)));
@@ -245,7 +286,7 @@ else
         'NumberTitle','on', 'Tag','Plotting Spectrum',...
         'Color',[1 1 1]);
     plot(fout,yout)
-    axis([min(fout)  max(fout)  min(yout)*0.9 max(yout)*1.1])
+    axis([min(fout)  max(fout)  min(yout)*0.9 max(yout)*1.1])  
     
     if includelege
         if isfield(EEG.chanlocs,'labels')
@@ -261,5 +302,10 @@ else
     end
     title('Single-Sided Amplitude Spectrum of y(t)')
     xlabel('Frequency (Hz)')
-    ylabel('|Y(f)|')
+    ylabel('Amplitude - absolute single-sided (original units)')
+    
+    if log_plot == 1
+        set(gca,'YScale','log')
+    end
+        
 end
