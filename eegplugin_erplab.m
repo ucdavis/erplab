@@ -75,6 +75,7 @@ else
 end
 egv = regexp(eeg_getversion,'^(\d+)\.+','tokens','ignorecase');
 eegversion = str2num(char(egv{:}));
+check_matlab_version;
 if eegversion==11
         if iserpmem==1
                 warning('ERPLAB:Warning', 'ERPLAB is not compatible with EEGLAB 11. Please try either a newer or an older version of EEGLAB.')
