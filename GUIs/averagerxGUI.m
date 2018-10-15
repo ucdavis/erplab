@@ -243,10 +243,16 @@ tooltip2  = '<html><i>The ERP waveform is transformed via fast-Fourier transform
 
 tooltip3  = ['<html><i>Windowing functions act on raw data to reduce the effects of the<br>leakage that occurs during an FFT of the data. Leakage amounts to<br>'...
     'spectral information from an FFT showing up at the wrong frequencies.'];
+tooltip_SEM  = ['<html><i>Take the SEM of the epochs, save in ERP.binerror<br>'...
+    'This can be plotted as shaded area around the ERP'];
+tooltip_SME  = ['<html><i>Calulate the SME of the epochs, save in ERP.DataQuality<br>'...
+    'This can give an indication of the noise in the recording'];
 
 set(handles.edit_tip_totalpower, 'tooltip',tooltip1);
 set(handles.edit_tip_evokedpower, 'tooltip',tooltip2);
 set(handles.edit_tip_hamming, 'tooltip',tooltip3);
+set(handles.edit_tip_SEM, 'tooltip',tooltip_SEM);
+set(handles.edit_tip_SME, 'tooltip',tooltip_SME);
 
 %
 % Name & version
@@ -1335,3 +1341,22 @@ else
     % The GUI is no longer waiting, just close it
     delete(handles.gui_chassis);
 end
+
+
+
+% --- Executes on button press in checkbox_SME.
+function checkbox_SME_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_SME (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_SME
+
+
+% --- Executes on button press in pushbutton_DQ_adv.
+function pushbutton_DQ_adv_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_DQ_adv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a = avg_data_quality;
+
