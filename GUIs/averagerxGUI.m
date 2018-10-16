@@ -667,6 +667,18 @@ end
 function checkbox_SEM_Callback(hObject, eventdata, handles)
 
 % -------------------------------------------------------------------------
+function checkbox_SME_Callback(hObject, eventdata, handles)
+
+% -------------------------------------------------------------------------
+function pushbutton_DQ_adv_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_DQ_adv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+a = avg_data_quality;
+disp(a)
+disp(a.times)
+
+% -------------------------------------------------------------------------
 function checkbox_include_indices_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
     set(handles.checkbox_includeALL,'Value',0)
@@ -1341,22 +1353,3 @@ else
     % The GUI is no longer waiting, just close it
     delete(handles.gui_chassis);
 end
-
-
-
-% --- Executes on button press in checkbox_SME.
-function checkbox_SME_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_SME (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_SME
-
-
-% --- Executes on button press in pushbutton_DQ_adv.
-function pushbutton_DQ_adv_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton_DQ_adv (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-a = avg_data_quality;
-
