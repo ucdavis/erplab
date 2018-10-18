@@ -22,7 +22,7 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 23-Aug-2018 18:02:24
+% Last Modified by GUIDE v2.5 18-Oct-2018 06:52:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,12 +96,16 @@ pause(0.1)
 delete(handles.avg_dq);
 pause(0.1)
 
-% --- Executes on button press in calculate.
-function calculate_Callback(hObject, eventdata, handles)
-% hObject    handle to calculate (see GCBO)
+% --- Executes on button press in pushbutton_cancel.
+function pushbutton_cancel_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+disp('User canceled Advanced Data Quality options.');
+handles.output = [];
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.avg_dq);
 
 
 % --- Executes on button press in save.
