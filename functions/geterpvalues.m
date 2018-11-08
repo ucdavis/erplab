@@ -191,7 +191,7 @@ LATENCY = struct([]);
 timeor  = ERP.times; % original time vector
 mintime = ERP.xmin*1000;
 maxtime = ERP.xmax*1000;
-mintime_round_ms = round(mintime,0);
+%mintime_round_ms = round(mintime,0);
 p1      = timeor(1);
 p2      = timeor(end);
 if intfactor~=1
@@ -305,7 +305,7 @@ try
                                         
                                         % gets values
                                         [A, Lx, il] =  areaerp(dataux, fs, latsamp, aoption, coi);
-                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime_round_ms;   % integratin limits
+                                        worklate{b,ch} = sample2ms((il-1),fs,0) + mintime;   % integratin limits
                                         VALUES(b,ch)   = A;
                                 elseif strcmpi(moption,'nintegz')
                                         
@@ -317,7 +317,7 @@ try
                                         
                                         % gets values
                                         [A, Lx, il]  =  areaerp(dataux, fs,latsamp, 'auto', coi);
-                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime_round_ms;   % integratin limits
+                                        worklate{b,ch} = sample2ms((il-1),fs,0) + mintime;   % integratin limits
                                         VALUES(b,ch)  = A;
                                 elseif strcmpi(moption,'instabl')
                                         
@@ -428,7 +428,7 @@ try
                                         
                                         % gets values
                                         [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, 'total', coi);
-                                        VALUES(b,ch) = sample2ms((L-1),fs) + mintime_round_ms; % 50 % area latency (temporary)
+                                        VALUES(b,ch) = sample2ms((L-1),fs,0) + mintime; % 50 % area latency (temporary)
                                 elseif strcmpi(moption,'fareatlat') || strcmpi(moption,'fninteglat') ||  strcmpi(moption,'fareaplat') || strcmpi(moption,'fareanlat')
                                         
                                         %
@@ -453,7 +453,7 @@ try
                                         
                                         % gets values
                                         [aaaxxx, L]  =  areaerp(dataux, fs,latsamp, aoption, coi, frac, fracmearep);
-                                        VALUES(b,ch) = sample2ms((L-1),fs) + mintime_round_ms; % frac area latency
+                                        VALUES(b,ch) = sample2ms((L-1),fs,0) + mintime; % frac area latency
                                 elseif strcmpi(moption,'fpeaklat')
                                         
                                         %
@@ -513,7 +513,7 @@ try
                                         
                                         % gets values
                                         [A, L, il]     =  areaerp(dataux, fs,latsamp, aoption, coi);
-                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime_round_ms; % integration limits
+                                        worklate{b,ch} = sample2ms((il-1),fs,0) + mintime; % integration limits
                                         VALUES(b,ch)   = A;
                                 elseif strcmpi(moption,'errorbl') % for Rick Addante
                                         
@@ -556,7 +556,7 @@ try
                                         
                                         % gets values
                                         [A, Lx, il]    =  areaerp(dataux, fs,latsamp, 'auto', coi);
-                                        worklate{b,ch} = sample2ms((il-1),fs) + mintime_round_ms; % integratin limits
+                                        worklate{b,ch} = sample2ms((il-1),fs,0) + mintime; % integratin limits
                                         VALUES(b,ch)   = A;
                                 end
                         end
