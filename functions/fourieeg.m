@@ -305,7 +305,8 @@ else
     ylabel('Amplitude - absolute single-sided (original units)')
     
     if log_plot == 1
-        set(gca,'YScale','log')
+        set(gca,'XScale','log')
+        set(gca,'XTick',[1 10 60 100])
     end
         
 end
