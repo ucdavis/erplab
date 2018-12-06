@@ -3,42 +3,56 @@
 %
 % FORMAT
 %
-% varargout = fourieeg(EEG, chanArray, f1, f2, np, latwindow)
+% varargout = fourieeg(EEG, chanArray, f1, f2, n_freq_bins, latwindow)
 %
 % INPUTS
 %
 %   EEG          - continuous or epoched dataset
 %   chanArray    - channel to be processed
-%   f1           - lower frequency limit
-%   f2           - upper frequency limit
-%   np           - number of points for FFT
+%   f1           - lower frequency limit (Hz)
+%   f2           - upper frequency limit (Hz)
+%   n_freq_bins  - the desired number of frequency bins in the computed FFT
+%                      This is in the computed FFT, then clipped down to
+%                      desired range.
 %   latwindow    - time window of interest, in msec, for epoched data.
+%   includelege  - 1 to include a legend in the figure. Default on.
+%  drop_near_boundaries - Option flag to not include data near boundaries.
+%                   Default on.
+%  cont_window_size_s - Desired size of window to examine window in seconds
+%           for continuous FFT. Default 5 seconds.
+%   plot_type    -  Set as 0 for no figure plotted, 1 for log-plot, and
+%                   2 for non-log
+%   
 %
 %
 % OUTPUT:
 %
-%   captured     - flag. 1 means data has a flatline or blocking behavior.
+%   fft_out     - Squared module of computed FFT
+%   freq_bins   - The labels of the frequency bins, in Hz.
+%   n_freq_bins_out - The number of these frequeny bins.
+%   freq_bin_width  - The width of each of these frequency bins, in Hz.
 %
 %
 % EXAMPLE
 %
-% [ym f] = fourieeg(EEG,chanArray,f1,f2) returns the squared module, ym, of the FFT output
+% [fft_out freq_bins] = fourieeg(EEG,chanArray,f1,f2) returns the squared module, fft_out, of the FFT output
 % of your dataset, evaluated at channel chanArray, between the frequencies f1 and f2 (in Hz).
-% f contains the frequency range.
+% freq_bins contains the labels of the frequency bins, in Hz.
 %
-% [ym f] = fourieeg(EEG,chanArray,f1) returns the squared module of the FFT output
+% [fft_out freq_bins] = fourieeg(EEG,chanArray,f1) returns the squared module of the FFT output
 % of your dataset, evaluated at channel chanArray, between the frequencies f1 (in
-% Hz) and fs/2 (fnyquist).f contains the frequency range.
+% Hz) and fs/2 (fnyquist). freq_bins contains the labels of the frequency bins, in Hz.
 %
-% [ym f] = fourieeg(EEG,chanArray) returns the squared module of the FFT output
+% [fft_out freq_bins] = fourieeg(EEG,chanArray) returns the squared module of the FFT output
 % of your dataset, evaluated at channel chanArray, between ~0 hz and fs/2
-% (fnyquist). f contains the frequency range.
+% (fnyquist). freq_bins contains the labels of the frequency bins, in Hz.
 %
-% [ym f] = fourieeg(EEG) returns the squared module of the FFT output
+% [fft_out freq_bins n_freq_bins_out] = fourieeg(EEG) returns the squared module of the FFT output
 % of your dataset, evaluated at channel 1, between the frequencies f1 (in
-% Hz) and fs/2 (fnyquist). f contains the frequency range.
+% Hz) and fs/2 (fnyquist). freq_bins contains the labels of the frequency
+% bins, in Hz. n_freq_bins_out contains the number of these bins.
 %
-% ym = fourieeg(EEG...) returns only the squared module of the FFT output
+% fft_out = fourieeg(EEG...) returns only the squared module of the FFT output
 % of your dataset.
 %
 % ... = fourieeg(EEG,chanArray,f1,f2,np, latwindow).
@@ -79,7 +93,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function varargout = fourieeg(EEG, chanArray, binArray, f1, f2, np, latwindow, includelege, drop_near_boundaries,cont_window_size_s, log_plot)
+function varargout = fourieeg(EEG, chanArray, binArray, f1, f2, n_freq_bins, latwindow, includelege, drop_near_boundaries,cont_window_size_s, plot_type)
 if nargin < 1
     help fourieeg
     if nargout == 1
@@ -102,7 +116,7 @@ if nargin<7
     latwindow = [EEG.xmin EEG.xmax]*1000; % msec
 end
 if nargin<6
-    np = [];
+    n_freq_bins = [];
 end
 if nargin<5
     f2 = EEG.srate/2;
@@ -123,7 +137,7 @@ if isempty(EEG(1).data)
     return
 end
 if exist('log_plot','var') == 0
-log_plot = 0;
+plot_type = 1;
 end
 disp('Working...')
 fs    = EEG.srate;
@@ -192,10 +206,10 @@ if isempty(EEG.epoch)  % continuous data
     
     
     
-    if isempty(np)
+    if isempty(n_freq_bins)
         NFFT   = 2^nextpow2(L);
     else
-        NFFT = 2*np;
+        NFFT = 2*n_freq_bins;
     end
     f      = fnyq*linspace(0,1,NFFT/2);
     ffterp = zeros(nwindows, NFFT/2, nchan);
@@ -216,10 +230,10 @@ else   % epoched data
     datax  = EEG.data(:,indxtimewin,:);
     L      = length(datax); %EEG.pnts;
     ntrial = EEG.trials;
-    if isempty(np)
+    if isempty(n_freq_bins)
         NFFT   = 2^nextpow2(L);
     else
-        NFFT = 2*np;
+        NFFT = 2*n_freq_bins;
     end
     f = fnyq*linspace(0,1,NFFT/2);
     ffterp = zeros(ntrial, NFFT/2, nchan);
@@ -272,15 +286,26 @@ if f2sam>NFFT/2
 end
 fout = f(f1sam:f2sam);
 yout = avgfft(1,f1sam:f2sam);
+
+
 if nargout ==1
     varargout{1} = yout;
 elseif nargout == 2
     varargout{1} = yout;
     varargout{2} = fout;
-else
-    %
-    % Plot single-sided amplitude spectrum.
-    %
+elseif nargout == 3
+    varargout{1} = yout;
+    varargout{2} = fout;
+    varargout{3} = numel(fout);
+elseif nargout == 4
+    varargout{1} = yout;
+    varargout{2} = fout;
+    varargout{3} = numel(fout);
+    varargout{4} = fout(2)-fout(1);
+    
+end
+
+if plot_type % if non-zero, run
     fname = EEG.setname;
     h = figure('Name',['<< ' fname ' >>  ERPLAB Amplitude Spectrum'],...
         'NumberTitle','on', 'Tag','Plotting Spectrum',...
@@ -304,9 +329,17 @@ else
     xlabel('Frequency (Hz)')
     ylabel('Amplitude - absolute single-sided (original units)')
     
-    if log_plot == 1
+    if plot_type == 1
         set(gca,'XScale','log')
         set(gca,'XTick',[1 10 60 100])
+        if f1 == 0
+            xstart = 0.1
+        else
+            xstart = f1;
+        end
+        xlim = [xstart f2];
+        xlabel('Frequency (Hz) - log scale')
+        
     end
         
 end
