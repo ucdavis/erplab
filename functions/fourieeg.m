@@ -131,7 +131,7 @@ if nargin<2
     chanArray = 1;
 end
 if isempty(EEG(1).data)
-    msgboxText =  'fourieeg() error: cannot filter an empty dataset';
+    msgboxText =  'fourieeg() error: cannot examine an empty dataset';
     title_msg  = 'ERPLAB: fourieeg():';
     errorfound(msgboxText, title_msg);
     return
