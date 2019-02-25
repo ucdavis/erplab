@@ -13,11 +13,12 @@
 %      * EEG      - continuous or epoched dataset from EEGLAB
 %        chans    - a vector of desired channels. By default, all
 %                   channels. Channels averaged together for fft.
-%        smooth_fac - A number indicating S, where the outputted amplitude
-%                   spectra will be smoothed to N/S.
-%                   May introduce 'ringing'. Default: 1 - no smoothing.
+%        smooth_fac - Default: 0 - no smoothing.
+%                   When above zero, this is the number of points either
+%                   side of each sample point to average together,
+%                   creating a downsampled / smoothed FFT.
 %        window_len - a number setting the desired window length for the
-%                   FFT, in seconds. Default of 5 s.
+%                   FFT, in seconds. Default of 5, indicating 5 seconds.
 %        drop_boundaries - Binary flag, 1 means do not include data from
 %                   windows that include boundary events. Default on.
 %        first_x_percent - a number, 1-100, indicating what percentage of
@@ -84,13 +85,18 @@ if exist('bins','var') == 0
     if isfield(EEG,'EVENTLIST') == 0
         bins = 0;
     else
-        bins = EEG.EVENTLIST.nbin;
+        if isempty(EEG.EVENTLIST) == 0
+            bins = EEG.EVENTLIST.nbin;
+        else
+            bins = 0;
+        end
+        
     end
 end
 if exist('smooth_factor','var') == 0
-    smooth_factor = 1;
+    smooth_factor = 0;
 elseif isempty(smooth_factor)
-    smooth_factor = 1;
+    smooth_factor = 0;
 end
 if exist('window_len','var') == 0
     window_len = 5; % 5 second default window length for fft
@@ -231,9 +237,17 @@ end
 
 %
 % Downsample
-if smooth_factor > 1
-    f = downsample(f,smooth_factor);
-    avgfft = decimate(avgfft,smooth_factor);
+if smooth_factor >= 1
+    
+    n_pts_ds_avg = 1 + 2*round(smooth_factor); % downsample, averaging smooth_factor points above and below each point
+    f_ds = downsample(f,n_pts_ds_avg);
+    fft_ds = zeros(1,numel(f_ds));
+    for i = 1:numel(f_ds)-smooth_factor
+        fft_ds(1,i) = mean(avgfft(1,n_pts_ds_avg*i-smooth_factor:n_pts_ds_avg*i+smooth_factor));
+    end
+   
+    avgfft = fft_ds;
+    f = f_ds;
 end
 
 
