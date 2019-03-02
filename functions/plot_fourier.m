@@ -11,8 +11,10 @@
 %                     amplitudes
 %      * freq_labels - The labels of the frequency bins, in Hz.
 %                   Numeric. 
-%        bottom_freq - Exclude frequencies below this from the plot
-%        top_freq    - Exlude frequencies above this from the plot
+%        bottom_freq - The lower point of the displayed freqency axis.
+%                      Default of 1 (Hz).
+%        top_freq    - The top point of the displayed freqency axis.
+%                      Default of 90 (Hz).
 %        logplot     - A flag specifying log-plot settings.
 %                       0 - no log, 1 - log-x
 %        title_str   - A string with a custom title
@@ -58,7 +60,6 @@ catch ME
     return
 end
 
-n_labels = numel(freq_labels);
 [n_chans, n_fft_pts] = size(fft_in);
 
 % check other input, populate
@@ -78,28 +79,16 @@ elseif isempty(units_str)
     units_str = 'Amplitude (original units)';
 end
 if exist('bottom_freq','var') == 0
-    bottom_freq = 0;
+    bottom_freq = 1;
 elseif isempty(bottom_freq)
-    bottom_freq = 0;
+    bottom_freq = 1;
 end
 if exist('top_freq','var') == 0
-    top_freq = freq_labels(end);
+    top_freq = 90;
+elseif isempty(top_freq)
+    top_freq = 90;
 end
 
-% clip to desired frequency range
-needs_clipped = 0;
-if any(freq_labels<bottom_freq) || any(freq_labels>top_freq)
-    needs_clipped = 1;
-end
-
-if needs_clipped
-    [above_bottom_m, above_bottom_idx] = find(freq_labels>=bottom_freq);
-    [below_top_m, below_top_idx] = find(freq_labels<=top_freq);
-    good_idx = intersect(above_bottom_idx,below_top_idx);
-    
-    freq_labels = freq_labels(good_idx);
-    fft_in = fft_in(:,good_idx);
-end
 
 
 n_labels = numel(freq_labels);
@@ -107,11 +96,13 @@ n_labels = numel(freq_labels);
 % plot figure
 figure
 % clip the data to go up to the max number of labels
-plot(freq_labels,fft_in(1:n_labels))
+plot(freq_labels,fft_in)
 
 if logplot == 1
     set(gca,'XScale','log')
     set(gca,'XTick',[1 10 60 100])
+    xlims_here = [bottom_freq top_freq];
+    set(gca, 'XLim',xlims_here);
 end
 
 title(title_str)
