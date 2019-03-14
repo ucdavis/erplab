@@ -58,7 +58,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP, EVENTLIST, countbiORI, countbinINV, countbinOK, countflags, workfiles] = averager(EEG, artcrite, stderror, excbound, dcompu, nfft, apodization)
+function [ERP, EVENTLIST, countbiORI, countbinINV, countbinOK, countflags, workfiles, epoch_list] = averager(EEG, artcrite, stderror, excbound, dcompu, nfft, apodization)
 if nargin<1
     help averager
     return
@@ -156,6 +156,10 @@ end
 % Bin's fusion routine
 %
 binArray =1:nbin;  % always average all bins.
+
+for i = 1:nbin
+    epoch_list(i).good_bep_indx = [];
+end
 
 for i = 1:nepoch
     %
@@ -328,6 +332,9 @@ for i = 1:nepoch
                 %fprintf('epoch = %g\n', i);
                 %fprintf('bin   = %g\n',binslot);
                 countbinOK(1,binslot) = countbinOK(1,binslot) + 1;  % counter number epoch per bin
+                for j=1:numel(binslot)
+                    epoch_list(binslot(j)).good_bep_indx = [epoch_list(binslot(j)).good_bep_indx; bouncebin(j)];
+                end
             end
         else
             error(['ERPLAB says: averager.m cannot recognize bin '  num2str(numbin) '. Invalid number of Bin at epoch: ' num2str(i)]);
@@ -376,6 +383,8 @@ for k=1:nbin
         end
     end
 end
+
+
 if dcompu==3 % EFFT
     data4fft = zeros(nchan, nfft, nbin);
     for k=1:nbin

@@ -68,6 +68,7 @@ if ~isempty(EEG.epoch) % epoched
         ERP.EVENTLIST    = EEG.EVENTLIST;
         ERP.version      = geterplabversion;
         ERP.splinefile   = EEG.splinefile;
+        ERP.dataquality.type = 'empty'; ERP.dataquality.times = []; ERP.dataquality.data = [];
         [ERP, serror]    = sorterpstruct(ERP);
 else  % continuous
         ERP.erpname      = [];
@@ -98,6 +99,7 @@ else  % continuous
         ERP.EVENTLIST    = [];
         ERP.version      = geterplabversion;
         ERP.splinefile   = '';
+        ERP.dataquality.type = 'empty'; ERP.dataquality.times = []; ERP.dataquality.data = [];
         [ERP, serror]    = sorterpstruct(ERP);
 end
 

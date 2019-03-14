@@ -105,7 +105,7 @@ if nargin==1
     % read values in memory for this function
     def  = erpworkingmemory('pop_averager');
     if isempty(def)
-        def = {1 1 1 1 1 0 0 []};
+        def = {1 1 1 1 1 0 0 [] 1 []};
     end
     
     % epochs per dataset
@@ -165,8 +165,12 @@ if nargin==1
     wintype  = answer{7}; % taper data with window: 0:no; 1:yes
     wintfunc = answer{8}; % taper function and (sub)window
     
+    % Write the analytic Standardized Measurment Error info
+    aSME_flag = answer{9};
+    aSME_DQ_struct.times = answer{10};
+    
     % store setting in memory
-    def(1:8)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc};
+    def(1:10)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc,aSME_flag,aSME_DQ_struct};
     erpworkingmemory('pop_averager', def);
     
     if stderror==1
@@ -190,7 +194,8 @@ if nargin==1
     %
     if compu2do>0 % compu2do--> 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
         [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
-            'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'implicit');
+            'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
+            'aSME',aSME_flag,'aSME_DQ_struct',aSME_DQ_struct,'History', 'implicit');
         
         ALLERP     = evalin('base', 'ALLERP');
         CURRENTERP = evalin('base', 'CURRENTERP');
@@ -242,7 +247,8 @@ if nargin==1
         displayEquiComERP(erpcom);
     else % compu2do--> 0:ERP;
         [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
-            'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr, 'History', 'GUI');
+            'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
+            'aSME',aSME_flag,'aSME_DQ_struct',aSME_DQ_struct,'History', 'GUI');
     end
     pause(0.1)
     return
@@ -272,6 +278,10 @@ p.addParamValue('Saveas', 'off', @ischar);          % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar);         % 'on', 'off'
 p.addParamValue('ExcludeBoundary', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar);      % history from scripting
+p.addParamValue('aSME',1,@isnumeric);  % flag where 1 indicated include aSME
+default_aSME_DQ_struct.type = 'aSME';
+default_aSME_DQ_struct.times = [1:3;-100,0,100;0,100,200]';
+p.addParamValue(aSME_DQ_struct,default_aSME_DQ_struct,@isstruct);
 
 p.parse(ALLEEG, varargin{:});
 
@@ -363,6 +373,14 @@ else
 end
 
 nfft = p.Results.NFFT;
+
+aSME_flag = p.Results.aSME;
+if aSME_flag
+    aSME_DQ_struct.type = 'aSME';
+    aSME_DQ_struct.times = p.Results.aSME_DQ_struct.times;
+    aSME_DQ_struct.data = [];
+end
+
 
 if ismember_bc2({p.Results.SEM}, {'on','yes'})
     stderror    = 1;
@@ -726,6 +744,9 @@ if nset>1
         %
         [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(ALLEEG(setindex(j)), artif, stderror, excbound, dcompu, nfft, apodization);
         
+        if aSME_flag
+            warning('Cannnot generate aSME on multiple EEG sets at a time. Please run Averager with 1 EEGset');
+        end
         %
         % Checks criteria for bad subject (dataset)
         %
@@ -864,7 +885,11 @@ else
     %
     % Get individual average
     %
-    [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(ALLEEG(setindex(1)), artif, stderror, excbound, dcompu, nfft, apodization);
+    [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(ALLEEG(setindex(1)), artif, stderror, excbound, dcompu, nfft, apodization);
+    
+    if aSME_flag
+        aSME_DQ_struct.data = sme_analytic(ALLEEG(setindex(1)),epoch_list,aSME_DQ_struct.times);
+    end
     
     %
     % Checks criteria for bad subject (dataset)
@@ -911,6 +936,10 @@ ERP.ntrials.arflags   = tempflagcount(:,9:16);       % show only the less signif
 ERP.EVENTLIST         = ALLEVENTLIST;
 [ERP, serror]         = sorterpstruct(ERP);
 
+if aSME_flag
+    ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
+end
+
 if serror
     error('ERPLAB says: pop_averager() Your datasets are not compatible')
 end
@@ -918,7 +947,7 @@ end
 %
 % History
 %
-skipfields = {'ALLEEG', 'Saveas','Warning','History'};
+skipfields = {'ALLEEG', 'Saveas','Warning','History','aSME_DQ_struct'};
 if dcompu == 1 % ERP
     skipfields = [skipfields 'Compute'];
 end
