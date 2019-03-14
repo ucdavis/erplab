@@ -281,7 +281,7 @@ p.addParamValue('History', 'script', @ischar);      % history from scripting
 p.addParamValue('aSME',1,@isnumeric);  % flag where 1 indicated include aSME
 default_aSME_DQ_struct.type = 'aSME';
 default_aSME_DQ_struct.times = [1:3;-100,0,100;0,100,200]';
-p.addParamValue(aSME_DQ_struct,default_aSME_DQ_struct,@isstruct);
+p.addParamValue('aSME_DQ_struct',default_aSME_DQ_struct,@isstruct);
 
 p.parse(ALLEEG, varargin{:});
 
@@ -937,6 +937,7 @@ ERP.EVENTLIST         = ALLEVENTLIST;
 [ERP, serror]         = sorterpstruct(ERP);
 
 if aSME_flag
+    aSME_DQ_struct.type = 'aSME';
     ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
 end
 
