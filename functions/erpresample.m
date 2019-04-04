@@ -40,6 +40,7 @@ for k=1:nchan
 end
 ERP.bindata  = xbindata;
 ERP.binerror = [];
+ERP = clear_dq(ERP);
 ERP.srate    = ERP.srate*N/D;
 ERP.erpname  = [ERP.erpname '_resampled'];
 ERP.pnts     = size(ERP.bindata,2);

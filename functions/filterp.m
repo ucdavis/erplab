@@ -153,6 +153,7 @@ end
 %
 % Make zero the standard deviation for filtered channels (temporary solution)
 %
+ERP = clear_dq(ERP);
 if isfield(ERP, 'binerror')
         if ~isempty(ERP.binerror)
                 
