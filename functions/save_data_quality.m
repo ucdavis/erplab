@@ -13,6 +13,8 @@
 %         Default of ERP.filepath
 %    format - String of 'mat', 'xls', or 'xlsx', specifying the requsted
 %         format for the new save files. Default of 'mat'.
+%    dq_subfield - which entry of the dq substructure to write.
+%         default of 1
 function save_data_quality(ERP, filename, format, dq_subfield)
 
 % Check input

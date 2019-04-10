@@ -29,4 +29,6 @@ for i=1:dq_n
     
 end
 
+disp('Data quality measures cleared - dataset transformation rendered these measures no longer valid')
+
 ERP.dataquality = dq;

@@ -189,6 +189,12 @@ else
         end
 end
 
+% Data Quality options setup
+handles.dq = 1; % set default on for now, could be on iff datasets dq valid
+handles.dq_option = 1;
+
+
+
 %
 % Name & version
 %
@@ -327,6 +333,15 @@ else
       jkfilename = '';
 end
 
+
+% Data quality output set
+if handles.dq
+    dq_out = handles.dq_option;
+else
+    dq_out = 0;
+end
+
+
 %
 % ERPsets
 %
@@ -345,7 +360,7 @@ if get(handles.radiobutton_erpset, 'Value')
                 errorfound(msgboxText, title);
                 return
         else
-                handles.output = {0, erpset, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename};
+                handles.output = {0, erpset, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename, dq_out};
         end
 else
         erpset = cellstr(get(handles.listbox_erpnames, 'String'));
@@ -400,8 +415,12 @@ else
                         return
                 end
         end        
-        handles.output = {1, listname, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename};
+        handles.output = {1, listname, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename, dq_out};
 end
+
+
+
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -780,4 +799,52 @@ if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
 else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
+end
+
+
+% --- Executes on button press in checkbox_DQ.
+function checkbox_DQ_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_DQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_DQ
+dq_on = get(hObject,'Value');
+
+if dq_on
+    set(handles.popupmenu_DQ, 'Enable', 'on');
+else
+    set(handles.popupmenu_DQ, 'Enable', 'off');
+end
+
+handles.dq = dq_on;
+guidata(hObject, handles);
+
+
+% --- Executes on selection change in popupmenu_DQ.
+function popupmenu_DQ_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu_DQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_DQ contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu_DQ
+% dq_all_options = cellstr(get(hObject,'String'));
+% dq_combine_option = dq_all_options{get(hObject,'Value')};
+% disp(dq_combine_option)
+
+handles.dq_option = get(hObject,'Value');
+guidata(hObject, handles);
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu_DQ_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu_DQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end
