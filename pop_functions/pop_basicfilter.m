@@ -105,6 +105,11 @@ if nargin==1
                 def{4} = def{4}(ismember_bc2(def{4},1:nchan));
         end
         
+        % set boundary default if empty
+        if isempty(def{8})
+            def{8} = 'boundary';
+        end
+        
         %
         % Opens a GUI
         %

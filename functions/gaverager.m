@@ -327,6 +327,8 @@ else % classic
                 ERP.binerror  = sqrt(sumERP2.*(1/nfile) - ERP.bindata.^2) ; % ERP stderror
         end
 end
+
+
 if ~isempty(ERP.binerror)
         if nnz(ERP.binerror>0)==0
                 fprintf('\n*******************************************************\n');
