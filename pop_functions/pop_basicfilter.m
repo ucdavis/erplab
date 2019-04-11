@@ -19,7 +19,12 @@
 %     'Cutoff'      - lower cutoff (high-pass) pass and higher cuttof (low-pass) in the format [lower higher]
 %     'Order'       - length of the filter in points {default 3*fix(srate/locutoff)}
 %     'RemoveDC'    - remove mean value (DC offset) before filtering. 'on'/'off'
-%     'Boundary'    - specify boundary event code. e.g 'boundary'
+%     'Boundary'    - data is split in to segments, each of which are
+%                     filtered separately. If this field is empty, data filtered as one. If
+%                     this specified an event code (like 'boundary') then segments before
+%                     and after any of these event codes are filtered seperately. Recommend
+%                     using 'boundary'.
+%
 %
 %
 % OUTPUTS  :
