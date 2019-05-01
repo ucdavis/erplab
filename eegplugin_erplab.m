@@ -295,6 +295,11 @@ comEEG2CSD     = [trystrs.no_check '[EEG, LASTCOM] = pop_currentsourcedensity(EE
 comERP2CSD     = [trystrs.no_check '[ERP, LASTCOM] = pop_currentsourcedensity(ERP);' catchstrs.add_to_hist];
 comERP2SEM     = [trystrs.no_check '[ERP, ERPCOM] = make_SEM_set(ERP,1,''erplab'');' catchstrs.add_to_hist];
 
+%% Data Quality callbacks
+comDQQsave = ['save_data_quality(ERP)'];
+comDQQprint = ['ERP.dataquality.type'];
+comDQQinfo = ['erpset_summary;'];
+
 
 %% FILTER EEG callbacks
 %
@@ -567,7 +572,13 @@ uimenu( mDTF,'Label','Compute Current Source Density (CSD) data from averaged ER
 uimenu( mDTF,'Label','Move Standard Error of Mean (SEM) to be primary data','CallBack',comERP2SEM,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
 
-
+%% Data Quality submenu
+%
+mDQQ = uimenu(submenu,'Label','Data Quality options','tag','Data Quality','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mDQQ,'Label','Save Data Quality measures to file','Callback',comDQQsave,'separator','off' );
+uimenu( mDQQ,'Label','Print Data Quality measures to Command Window','Callback',comDQQprint,'separator','off' );
+uimenu( mDQQ,'Label','Show Data Quality measures contained in each loaded ERPSET','Callback',comDQQinfo,'separator','off' );
+%uimenu( mDQQ,'Label','Move Standard Error of Mean (SEM) to be primary data','CallBack',comERP2SEM,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
 
 %% UTILITIES submenus

@@ -20,7 +20,7 @@ function save_data_quality(ERP, filename, format, dq_subfield)
 % Check input
 try
     assert(isfield(ERP,'dataquality'))
-    assert(isempty(ERP.dataquality.data)==0)
+    assert(isempty(ERP.dataquality(1).data)==0)
 catch
     warning('Problem saving ERP data quality. Missing info?')
     return
@@ -32,24 +32,46 @@ if exist('format','var') == 0 || isempty(format)
     format = 'mat';
 end
 
+
+
+
+if exist('dq_subfield','var') == 0 || isempty(dq_subfield)
+    dq_measures = numel(ERP.dataquality);
+    if dq_measures == 1
+        dq_subfield = 1;
+    else
+        for i=1:dq_measures
+        dq_names{i} = ERP.dataquality(i).type;
+        end
+        [s,v] = listdlg('Name','Which DQ','PromptString','Pick measure to write:','SelectionMode','single','ListString',dq_names);
+        if s>0
+            dq_subfield = s;
+        else
+            disp('User cancelled Data Quality write')
+            return
+        end
+    end
+end
+
+if exist('filename','var') == 0 || isempty(filename)
+    % if path missing, prompt from user
+    format_options = {'*.mat;*.xls';'Matlab file (*.mat)';'Excel Spreadsheet (.xls)'};
+    pick_str = 'Save Data Quality to file. Pick path:';
+    [picked_file, picked_path] = uiputfile(format_options,pick_str);
+    filename = [picked_path picked_file];
+    %filename = [ERP.filepath filesep ERP.erpname '_dataquality.' format];
+    [fpath, fname, ext] = fileparts(filename);
+    format = ext(isstrprop(ext,'alpha')); % with picked file, set format to letters of chosen type
+    
+end
+
 spreadsheet_like_formats = {'xls','xlsx'};
 if ismember(format, spreadsheet_like_formats)
     write_spreadsheet = 1;
 end
 
-
-if exist('dq_subfield','var') == 0 || isempty(dq_subfield)
-    dq_subfield = 1;
-end
-
-if exist('filename','var') == 0 || isempty(filename)
-    
-    filename = [ERP.filepath filesep ERP.erpname '_dataquality.' format];
-end
-
-
-
 [fpath, fname, ext] = fileparts(filename);
+
 
 % check path exists, not overwrite
 if isempty(fpath)

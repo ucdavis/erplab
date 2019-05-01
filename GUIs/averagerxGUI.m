@@ -1370,3 +1370,15 @@ handles.dq_times = a.times;
 % Update handles structure
 guidata(hObject, handles);
 
+
+
+% --- Executes on button press in checkbox_RMS.
+function checkbox_RMS_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_RMS (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_RMS
+rms_on = get(hObject,'Value');
+disp(rms_on)
+
