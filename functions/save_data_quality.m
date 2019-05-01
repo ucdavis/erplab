@@ -22,7 +22,9 @@ try
     assert(isfield(ERP,'dataquality'))
     assert(isempty(ERP.dataquality(1).data)==0)
 catch
+    
     warning('Problem saving ERP data quality. Missing info?')
+    beep
     return
 end
 
@@ -41,7 +43,7 @@ if exist('dq_subfield','var') == 0 || isempty(dq_subfield)
         dq_subfield = 1;
     else
         for i=1:dq_measures
-        dq_names{i} = ERP.dataquality(i).type;
+            dq_names{i} = ERP.dataquality(i).type;
         end
         [s,v] = listdlg('Name','Which DQ','PromptString','Pick measure to write:','SelectionMode','single','ListString',dq_names);
         if s>0
@@ -65,10 +67,7 @@ if exist('filename','var') == 0 || isempty(filename)
     
 end
 
-spreadsheet_like_formats = {'xls','xlsx'};
-if ismember(format, spreadsheet_like_formats)
-    write_spreadsheet = 1;
-end
+
 
 [fpath, fname, ext] = fileparts(filename);
 
@@ -91,15 +90,15 @@ catch
     return
 end
 
+write_spreadsheet = 0;
+spreadsheet_like_formats = {'xls','xlsx'};
+if ismember(format, spreadsheet_like_formats)
+    write_spreadsheet = 1;
+end
 
 % write section
 
-if strcmpi(format,'mat')
-    dataquality = ERP.dataquality(dq_subfield);
-    save(filename,'dataquality')
-    
-    
-elseif write_spreadsheet
+if write_spreadsheet
     % set up data to write to spreadsheet
     dq = ERP.dataquality(dq_subfield);
     dq_fields = fieldnames(ERP.dataquality(dq_subfield));
@@ -120,22 +119,55 @@ elseif write_spreadsheet
     
     writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false);
     
-    if any(strcmpi(dq_fields,'times'))
-        time_name = {'Time_window_ranges'};
-        xls_times = table(dq.times,'VariableNames',time_name);
-        writetable(xls_times,filename,'Sheet',1,'Range','A10','WriteVariableNames',true);
-        writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false); % write again to sort col widths
-    end
+   
     
     for i = 1:dq_datasize(3)
         xls_d = table(dq.data(:,:,i));
         writetable(xls_d,filename,'Sheet',1+i,'Range','A1','WriteVariableNames',false);
     end
     
+    % Write a list of labels for rows, cols, sheets
+    maxlen = max(size(dq.data));
+    Rows = cell(maxlen,1);
+    Cols = cell(maxlen,1);
+    Sheets = cell(maxlen,1);
     
+    try
+        for i=1:ERP.nchan
+            Rows{i} = ERP.chanlocs(i).labels;
+        end
+        for i=1:length(dq.times)
+            Cols{i} = [num2str(dq.times(i,2)) ' : ' num2str(dq.times(i,3))];
+        end
+        for b=1:size(dq.data,3)
+            Sheets{b} = ['Bin ' num2str(b) ' on Sheet ' num2str(b+1)];
+        end
+        
+    catch
+        disp('Problem with DQ labels?');
+    end
+    
+    label_T = table(Rows,Cols,Sheets);
+    writetable(label_T,filename,'Sheet',1,'Range','A10','WriteVariableNames',true)
+    
+    line_start = ['A' num2str(10+3+maxlen)];
+    
+     if any(strcmpi(dq_fields,'times'))
+        time_name = {'Time_window_ranges'};
+        xls_times = table(dq.times,'VariableNames',time_name);
+        writetable(xls_times,filename,'Sheet',1,'Range',line_start,'WriteVariableNames',true);
+        %writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false); % write again to sort col widths
+    end
+    
+else
+    % assume Matlab format
+    dataquality = ERP.dataquality(dq_subfield);
+    save(filename,'dataquality')
+   
 end
 
-
+conf_str = ['Successfully wrote file ' filename];
+disp(conf_str);
 
 
 
