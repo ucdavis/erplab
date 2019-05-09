@@ -119,12 +119,8 @@ if write_spreadsheet
     
     writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false);
     
-   
     
-    for i = 1:dq_datasize(3)
-        xls_d = table(dq.data(:,:,i));
-        writetable(xls_d,filename,'Sheet',1+i,'Range','A1','WriteVariableNames',false);
-    end
+    
     
     % Write a list of labels for rows, cols, sheets
     maxlen = max(size(dq.data));
@@ -152,18 +148,28 @@ if write_spreadsheet
     
     line_start = ['A' num2str(10+3+maxlen)];
     
-     if any(strcmpi(dq_fields,'times'))
+    if any(strcmpi(dq_fields,'times'))
         time_name = {'Time_window_ranges'};
         xls_times = table(dq.times,'VariableNames',time_name);
         writetable(xls_times,filename,'Sheet',1,'Range',line_start,'WriteVariableNames',true);
         %writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false); % write again to sort col widths
     end
     
+    % Bin-like data written to subsequent sheets
+    Elec = Rows;
+    for i = 1:dq_datasize(3)
+        label_sheet = table({['Bin ' num2str(i) ' ' dq.type]});
+        writetable(label_sheet,filename,'Sheet',i+1,'Range','A1','WriteVariableNames',false);  % writecell is introduced in R2019a, so another hacky Table here
+        Submeasure = dq.data(:,:,i);
+        xls_d = table(Elec,Submeasure);
+        writetable(xls_d,filename,'Sheet',1+i,'Range','A2','WriteVariableNames',true);  % write data
+    end
+    
 else
     % assume Matlab format
     dataquality = ERP.dataquality(dq_subfield);
     save(filename,'dataquality')
-   
+    
 end
 
 conf_str = ['Successfully wrote file ' filename];

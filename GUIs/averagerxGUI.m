@@ -166,8 +166,8 @@ if vd==1
 else
     set(handles.pushbutton_epochAssistant,'Enable', 'off')
 end
-set(handles.checkbox_SEM, 'Value', stderror); % compute standard error
-set(handles.checkbox_exclude_boundary, 'Value', excbound); % exclude epochs having "boundary" events (or -99)
+%set(handles.checkbox_SEM, 'Value', stderror); % compute standard error
+%set(handles.checkbox_exclude_boundary, 'Value', excbound); % exclude epochs having "boundary" events (or -99)
 
 
 % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
@@ -251,8 +251,7 @@ tooltip_SME  = ['<html><i>Calulate the SME of the epochs, save in ERP.DataQualit
 set(handles.edit_tip_totalpower, 'tooltip',tooltip1);
 set(handles.edit_tip_evokedpower, 'tooltip',tooltip2);
 set(handles.edit_tip_hamming, 'tooltip',tooltip3);
-set(handles.edit_tip_SEM, 'tooltip',tooltip_SEM);
-set(handles.edit_tip_SME, 'tooltip',tooltip_SME);
+
 
 dq_times_def = [1:6;-100:100:400;0:100:500]';
 handles.dq_times = dq_times_def;
@@ -1366,7 +1365,11 @@ function pushbutton_DQ_adv_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 a = avg_data_quality;
-handles.dq_times = a.times;
+if isempty(a)
+    disp('User cancelled custom DQ window')
+else
+    handles.dq_times = a.times;
+end
 % Update handles structure
 guidata(hObject, handles);
 
@@ -1382,3 +1385,32 @@ function checkbox_RMS_Callback(hObject, eventdata, handles)
 rms_on = get(hObject,'Value');
 disp(rms_on)
 
+
+
+% --- Executes on button press in radiobuttonDQ1.
+function radiobuttonDQ1_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobuttonDQ1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobuttonDQ1
+set(handles.pushbutton_DQ_adv,'Enable','off');
+
+% --- Executes on button press in radiobuttonDQ2.
+function radiobuttonDQ2_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobuttonDQ2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobuttonDQ2
+set(handles.pushbutton_DQ_adv,'Enable','on');
+
+
+% --- Executes on button press in radiobuttonDQ3.
+function radiobuttonDQ3_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobuttonDQ3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobuttonDQ3
+set(handles.pushbutton_DQ_adv,'Enable','off');

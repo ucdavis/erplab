@@ -28,7 +28,7 @@
 function currvers = eegplugin_erplab(fig, trystrs, catchstrs)
 
 erplab_default_values % script
-currvers  = ['erplab_' erplabver];
+currvers  = ['erplab' erplabver];
 
 if nargin < 3
         error('eegplugin_erplab requires 3 arguments');

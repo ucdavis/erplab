@@ -22,7 +22,7 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 15-Dec-2018 09:55:07
+% Last Modified by GUIDE v2.5 09-May-2019 07:55:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,13 +96,23 @@ pause(0.1)
 delete(handles.avg_dq);
 pause(0.1)
 
-% --- Executes on button press in calculate.
-function calculate_Callback(hObject, eventdata, handles)
-% hObject    handle to calculate (see GCBO)
+% --- Executes on button press in cancel.
+function cancel_Callback(hObject, eventdata, handles)
+% hObject    handle to cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
+if isequal(get(handles.avg_dq, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = '';
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.avg_dq);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.avg_dq);
+end
 
 % --- Executes on button press in save.
 function save_Callback(hObject, eventdata, handles)
@@ -284,3 +294,86 @@ function text_time_range_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to text_time_range (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes on button press in checkbox_baseline_noise.
+function checkbox_baseline_noise_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_baseline_noise (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_baseline_noise
+inc_baseline = get(hObject,'Value');
+if inc_baseline
+    set(handles.baseline_start,'Enable','on');
+    set(handles.baseline_end,'Enable','on');
+    set(handles.checkbox_baseline_subtract,'Enable','on');
+else
+    set(handles.baseline_start,'Enable','off');
+    set(handles.baseline_end,'Enable','off');
+    set(handles.checkbox_baseline_subtract,'Enable','off');
+end
+
+
+% --- Executes on button press in checkbox_SEM.
+function checkbox_SEM_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_SEM (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_SEM
+
+
+
+function baseline_start_Callback(hObject, eventdata, handles)
+% hObject    handle to baseline_start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of baseline_start as text
+%        str2double(get(hObject,'String')) returns contents of baseline_start as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function baseline_start_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to baseline_start (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function baseline_end_Callback(hObject, eventdata, handles)
+% hObject    handle to baseline_end (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of baseline_end as text
+%        str2double(get(hObject,'String')) returns contents of baseline_end as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function baseline_end_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to baseline_end (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in checkbox_baseline_subtract.
+function checkbox_baseline_subtract_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_baseline_subtract (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_baseline_subtract
