@@ -166,6 +166,7 @@ assignin('base','plotset', plotset);
 
 % ALLERP should be created with EEGLAB Globals in eeg_globals.m
 global ALLERP
+ALLERP = [];
 
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
@@ -210,6 +211,7 @@ set(gcf,'position', [posmainfig(1:2) posmainfig(3)*wfactor1 posmainfig(4)]);
 set(hframe,'position', [posframe(1:2) posframe(3)*wfactor2 posframe(4)]);
 
 menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
+
 
 
 %% ****************************************************************************************************
@@ -335,7 +337,7 @@ comSAVEas    = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''saveas'');' 
 comDUPLI     = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''erplab'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSendemail = ['[ALLERP, ERPCOM]     = pop_senderpbymail(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSaveH     = ['[ERP, ERPCOM] = pop_saveERPhistory(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
-comSetemail  = 'setemailGUI;';
+%comSetemail  = 'setemailGUI;';
 
 %% export ERP
 comEXPAVG    = ['[ERP, ERPCOM] = pop_erp2asc(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -458,7 +460,7 @@ else
     uimenu( submenu,'Label','BDF Visualizer','CallBack',comBV,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
 end
 
-uimenu( submenu,'Label','Transfer eventinfo to EEG.event (optional)','CallBack',comMEL,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
+uimenu( ELmenu,'Label','Transfer eventinfo to EEG.event (optional)','CallBack',comMEL,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 % bepoching
 uimenu( submenu,'Label','Extract bin-based epochs','CallBack',comEB,'separator','on','userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 
@@ -551,7 +553,6 @@ uimenu( submenu,'Label','Clear ERPset(s)','CallBack',comDELERP,'userdata','start
 uimenu( submenu,'Label','Save current ERPset','CallBack',comSAVE,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( submenu,'Label','Save current ERPset as '   ,'CallBack', comSAVEas,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( submenu,'Label','Duplicate or rename current ERPset '   ,'CallBack', comDUPLI,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-uimenu( submenu,'Label','Send ERPset by e-mail '   ,'CallBack', comSendemail,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
 
 %% MEASUREMENT TOOL
@@ -577,7 +578,7 @@ uimenu( mDTF,'Label','Move Standard Error of Mean (SEM) to be primary data','Cal
 
 %% Data Quality submenu
 %
-mDQQ = uimenu(submenu,'Label','Data Quality options','tag','Data Quality','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+mDQQ = uimenu(submenu,'Label','Data Quality options','tag','Data Quality','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mDQQ,'Label','Save Data Quality measures to file','Callback',comDQQsave,'separator','off' );
 uimenu( mDQQ,'Label','Print Data Quality measures to Command Window','Callback',comDQQprint,'separator','off' );
 uimenu( mDQQ,'Label','Show Data Quality measures contained in each loaded ERPSET','Callback',comDQQinfo,'separator','off' );
@@ -586,7 +587,7 @@ uimenu( mDQQ,'Label','Show Data Quality measures contained in each loaded ERPSET
 
 %% UTILITIES submenus
 %
-mUTI = uimenu( submenu,'Label','Utilities','tag','Utilities','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+mUTI = uimenu( submenu,'Label','Utilities','tag','Utilities','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Trim continuous data','CallBack', comTrim, 'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mUTI,'Label','Convert an epoched dataset into a continuous one','CallBack', comEP2CON, 'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
 uimenu( mUTI,'Label','Recover event codes from Bin Labels (recommended)','CallBack', comBlab2eve,'userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
@@ -608,10 +609,10 @@ uimenu( mUTI,'Label','Simulate EEG/ERP data  (alpha version)','CallBack',comESIM
 
 %% Settings submenus
 %
-mSETT = uimenu( submenu,'Label','Settings','tag','Settings','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+mSETT = uimenu( submenu,'Label','Settings','tag','Settings','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Set font size for ERPLAB''s GUIs','CallBack', comFS,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Edit ERPLAB''s completion statement','CallBack','msg2endGUI','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mSETT,'Label','Set e-mail account'   ,'CallBack', comSetemail,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+
 uimenu( mSETT,'Label','ERPLAB Background Color ','CallBack',comBCOL,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','ERPLAB Foreground Color ','CallBack', comFCOL,'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mSETT,'Label','Error window Background Color ','CallBack',comBerrCOL,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
@@ -629,7 +630,7 @@ uimenu( mMEM,'Label','Load a previous working memory file','CallBack',comLoadWM,
 
 %% SUPPORT
 %
-mhelp = uimenu( submenu,'Label','Help','tag','erphelp','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+mhelp = uimenu( submenu,'Label','Help','tag','erphelp','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','About ERPLAB','CallBack','abouterplabGUI','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Tutorial','CallBack', comhelptut,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB Manual','CallBack', comhelpman, 'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
@@ -638,7 +639,9 @@ uimenu( mhelp,'Label','ERPLAB FAQ','Callback',comfaq,'userdata','startup:on;cont
 uimenu( mhelp,'Label','ERPLAB video tutorials','CallBack', comhelpvideo,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','Send question/feedback to the ERPLAB email list','CallBack','web(''mailto:erplab@ucdavis.edu?subject=feedback'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','ERPLAB mailing list archive (may need to register)','CallBack', comhelplist,'separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mhelp,'Label','Email ERPLAB team','CallBack','web(''mailto:erplabtoolbox@gmail.com?subject=contact&body=Dear%20ERPLAB%20team,'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+%uimenu( mhelp,'Label','Email ERPLAB team','CallBack','web(''mailto:erplabtoolbox@gmail.com?subject=contact&body=Dear%20ERPLAB%20team,'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+%uimenu( mhelp,'Label','Set email account'   ,'CallBack', comSetemail,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mhelp,'Label','Send ERPset by e-mail '   ,'CallBack', comSendemail,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mhelp,'Label','Download latest ERPLAB','CallBack','web(''https://github.com/lucklab/erplab/releases'', ''-browser'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mhelp,'Label','Submit an issue report on the ERPLAB GitHub page','CallBack','web(''https://github.com/lucklab/erplab/issues'', ''-browser'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 

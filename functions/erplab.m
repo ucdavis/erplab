@@ -84,7 +84,7 @@ switch lower(dosomething)
                         if CURRENTERP<=nerp
                                 option = 1;
                         end
-                        ALLERP(CURRENTERP) = ERP;
+                        %ALLERP(CURRENTERP) = ERP;
                         assignin('base','ALLERP', ALLERP);  % save to workspace
                         assignin('base','CURRENTERP', CURRENTERP);  % save to workspace
                 end
@@ -98,5 +98,5 @@ switch lower(dosomething)
         case 'restriction'
                 erpworkingmemory('freedom', 0);
         otherwise
-                disp('No entiendo...')
+                disp('erplab argument not recognized.')
 end
