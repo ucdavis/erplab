@@ -151,7 +151,7 @@ end
 % ERPLAB's VARIABLES TO WORKSPACE
 %
 ERP              = [];  % Start ERP Structure on workspace
-ALLERP           = [];  % Start ALLERP Structure on workspace
+%ALLERP           = [];    %Start ALLERP Structure on workspace
 ALLERPCOM        = [];
 CURRENTERP       = 0;
 plotset.ptime    = [];
@@ -159,10 +159,13 @@ plotset.pscalp   = [];
 plotset.pfrequ   = [];
 
 assignin('base','ERP',ERP);
-assignin('base','ALLERP', ALLERP);
+%assignin('base','ALLERP', ALLERP);
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','plotset', plotset);
+
+% ALLERP should be created with EEGLAB Globals in eeg_globals.m
+global ALLERP
 
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
