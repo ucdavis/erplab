@@ -3,13 +3,13 @@
 % axs May 2019
 %
 % Format:
-%  ERP = dq_baseline(ERP);
-%    or ERP = dq_baseline(ERP,start_time, end_time, subtract_mean_flag)
+%  baseline_measure = dq_baseline(ERP);
+%    or baseline_measure = dq_baseline(ERP,start_time, end_time, subtract_mean_flag)
 %
 % INPUT:      * - mandatory
 %  * ERP  - an ERP structure
 %    
-function [baseline_measure] = dq_baseline(ERP, start_ms, end_ms, subtract_mean_flag)
+function [dq_struct, baseline_measure] = dq_baseline(ERP, start_ms, end_ms, subtract_mean_flag)
 
 % Check input
 try
@@ -59,14 +59,25 @@ baseline_data = ERP.bindata(:,start_dp:end_dp,:);
 
 
 if subtract_mean_flag
-bl_sd = std(baseline_data,0,2);
+    % Measure Standard Deviation, which removes mean
+baseline_measure = std(baseline_data,0,2);
 
 else
-   %% rms
+   % use rms, not removing mean
+   baseline_measure = rms(baseline_data,2);
 end
 
 % quick plot of baseline sd
-%imagesc(squeeze(bl_sd))
+%imagesc(squeeze(baseline_measure))
 
-baseline_measure = bl_sd;
+
+% Prepare dq_struct
+if subtract_mean_flag
+dq_struct.type = 'Baseline Measure - SD';
+else
+    dq_struct.type = 'Baseline Measure - RMS';
+end
+
+dq_struct.times = [1 start_ms end_ms];
+dq_struct.data = baseline_measure;
 

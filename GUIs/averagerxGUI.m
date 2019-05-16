@@ -586,8 +586,14 @@ else
 end
 
 % DQ output
-SME_flag   = get(handles.checkbox_SME, 'Value');
+DQ_flag   = max(get(handles.radiobuttonDQ1, 'Value'),get(handles.radiobuttonDQ2, 'Value'));
 dq_times = handles.dq_times;
+
+if DQ_flag
+    stderror = 1;
+else
+    stderror = 0;
+end
 
 if isempty(dataset)
     msgboxText =  'You should enter at least one dataset!';
@@ -596,8 +602,7 @@ if isempty(dataset)
     return
 else
     wavg = 1; %get(handles.checkbox_wavg,'Value'); % always weighted now...
-    stderror = get(handles.checkbox_SEM, 'Value');
-    handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,SME_flag,dq_times};
+    handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,dq_times};
     
     % Update handles structure
     guidata(hObject, handles);
