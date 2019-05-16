@@ -255,6 +255,8 @@ set(handles.edit_tip_hamming, 'tooltip',tooltip3);
 
 dq_times_def = [1:6;-100:100:400;0:100:500]';
 handles.dq_times = dq_times_def;
+handles.DQ_spec = [];
+
 %
 % Name & version
 %
@@ -585,14 +587,32 @@ else
     return
 end
 
+% DQ defaults
+DQ_defaults(1).type = 'Baseline Measure - SD';
+DQ_defaults(1).times = [];
+DQ_defaults(2).type = 'Point-wise SEM';
+DQ_defaults(2).times = [];
+DQ_defaults(3).type = 'aSME';
+DQ_defaults(3).times = [1:6;-100:100:400;0:100:500]';
+
 % DQ output
 DQ_flag   = max(get(handles.radiobuttonDQ1, 'Value'),get(handles.radiobuttonDQ2, 'Value'));
-dq_times = handles.dq_times;
+
+use_defaults = get(handles.radiobuttonDQ1, 'Value');
 
 if DQ_flag
     stderror = 1;
+    
+    if use_defaults || isempty(handles.DQ_spec)
+        DQ_spec = DQ_defaults;
+    else
+        DQ_spec = handles.DQ_spec;
+    end
+    
+    
 else
     stderror = 0;
+    DQ_spec = [];
 end
 
 if isempty(dataset)
@@ -602,7 +622,7 @@ if isempty(dataset)
     return
 else
     wavg = 1; %get(handles.checkbox_wavg,'Value'); % always weighted now...
-    handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,dq_times};
+    handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,DQ_spec};
     
     % Update handles structure
     guidata(hObject, handles);
@@ -1369,11 +1389,13 @@ function pushbutton_DQ_adv_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_DQ_adv (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-a = avg_data_quality;
-if isempty(a)
+DQ_spec = avg_data_quality;
+
+if isempty(DQ_spec)
     disp('User cancelled custom DQ window')
+    handles.DQ_spec = [];
 else
-    handles.dq_times = a.times;
+    handles.DQ_spec = DQ_spec;
 end
 % Update handles structure
 guidata(hObject, handles);

@@ -167,10 +167,11 @@ if nargin==1
     
     % Write the analytic Standardized Measurment Error info
     DQ_flag = answer{9};
-    aSME_DQ_struct.times = answer{10};
+    DQ_spec = answer{10};
+    
     
     % store setting in memory
-    def(1:10)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc,DQ_flag,aSME_DQ_struct};
+    def(1:10)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc,DQ_flag,DQ_spec};
     erpworkingmemory('pop_averager', def);
     
     if stderror==1
@@ -248,7 +249,7 @@ if nargin==1
     else % compu2do--> 0:ERP;
         [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
             'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
-            'aSME',DQ_flag,'aSME_DQ_struct',aSME_DQ_struct,'History', 'GUI');
+            'DQ_flag',DQ_flag,'DQ_spec',DQ_spec,'History', 'GUI');
     end
     pause(0.1)
     return
@@ -278,10 +279,15 @@ p.addParamValue('Saveas', 'off', @ischar);          % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar);         % 'on', 'off'
 p.addParamValue('ExcludeBoundary', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar);      % history from scripting
-p.addParamValue('aSME',1,@isnumeric);  % flag where 1 indicated include aSME
-default_aSME_DQ_struct.type = 'aSME';
-default_aSME_DQ_struct.times = [1:3;-100,0,100;0,100,200]';
-p.addParamValue('aSME_DQ_struct',default_aSME_DQ_struct,@isstruct);
+p.addParamValue('DQ_flag',1,@isnumeric);  % flag where 1 indicated include aSME
+% DQ defaults
+DQ_defaults(1).type = 'Baseline Measure - SD';
+DQ_defaults(1).times = [];
+DQ_defaults(2).type = 'Point-wise SEM';
+DQ_defaults(2).times = [];
+DQ_defaults(3).type = 'aSME';
+DQ_defaults(3).times = [1:6;-100:100:400;0:100:500]';
+p.addParamValue('DQ_spec',DQ_defaults);
 
 p.parse(ALLEEG, varargin{:});
 
@@ -374,11 +380,9 @@ end
 
 nfft = p.Results.NFFT;
 
-DQ_flag = p.Results.aSME;
+DQ_flag = p.Results.DQ_flag;
 if DQ_flag
-    aSME_DQ_struct.type = 'aSME';
-    aSME_DQ_struct.times = p.Results.aSME_DQ_struct.times;
-    aSME_DQ_struct.data = [];
+    DQ_spec = p.Results.DQ_spec;
 end
 
 
@@ -889,7 +893,17 @@ else
     [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(ALLEEG(setindex(1)), artif, stderror, excbound, dcompu, nfft, apodization);
     
     if DQ_flag
-        aSME_DQ_struct.data = sme_analytic(ALLEEG(setindex(1)),epoch_list,aSME_DQ_struct.times);
+        DQ_n = struct2cell(DQ_spec);
+        DQ_n = squeeze(DQ_n(1,:,:));
+        
+        where_aSME = strcmpi(DQ_n,'aSME');
+        if any(where_aSME)
+            aSME_indx = find(where_aSME);
+            aSME_DQ_struct.times = DQ_spec(aSME_indx).times;
+            aSME_DQ_struct.type = DQ_spec(aSME_indx).type;
+            aSME_DQ_struct.data = sme_analytic(ALLEEG(setindex(1)),epoch_list,aSME_DQ_struct.times);
+        end
+        
     end
     
     %
@@ -937,9 +951,53 @@ ERP.ntrials.arflags   = tempflagcount(:,9:16);       % show only the less signif
 ERP.EVENTLIST         = ALLEVENTLIST;
 [ERP, serror]         = sorterpstruct(ERP);
 
+% With ERPset formed, write the DQ data
 if DQ_flag
-    aSME_DQ_struct.type = 'aSME';
-    ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
+    
+    DQ_n = struct2cell(DQ_spec);
+    DQ_n = squeeze(DQ_n(1,:,:));
+    
+    % Baseline Measures
+    where_base_sd = strcmpi(DQ_n,'Baseline Measure - SD');
+    if any(where_base_sd)
+        base_sd_indx = find(where_base_sd);
+        DQ_spec(where_base_sd).times
+        if isempty(DQ_spec(base_sd_indx).times)
+            base_dq = dq_baseline(ERP,[],[],1);
+        else
+            base_dq = dq_baseline(ERP,DQ_spec(where_base_sd).times(2),DQ_spec(where_base_sd).times(3),1);
+        end
+
+        ERP = add_dq_measure(ERP,base_dq);
+    end
+    
+    where_base_rms = strcmpi(DQ_n,'Baseline Measure - RMS');
+    if any(where_base_rms)
+        base_rms_indx = find(where_base_rms);
+        if isempty(DQ_spec(base_rms_indx).times)
+            base_dq = dq_baseline(ERP,[],[],0);
+        else
+            base_dq = dq_baseline(ERP,DQ_spec(where_base_rms).times(2),DQ_spec(where_base_rms).times(3),2);
+        end
+        
+        ERP = add_dq_measure(ERP,base_dq);
+    end
+    
+    where_SEM = strcmpi(DQ_n,'Point-wise SEM');
+    if any(where_SEM)
+        SEM_indx = find(where_SEM);
+        SEM_dq.type = DQ_spec(SEM_indx).type;
+        SEM_dq.times = []; SEM_dq.data = [];
+        ERP = add_dq_measure(ERP,SEM_dq);
+    end
+    
+    
+    where_aSME = strcmpi(DQ_n,'aSME');
+    if any(where_aSME)
+        aSME_DQ_struct.type = 'aSME';
+        ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
+    end
+    
 end
 
 if serror
@@ -949,7 +1007,7 @@ end
 %
 % History
 %
-skipfields = {'ALLEEG', 'Saveas','Warning','History','aSME_DQ_struct'};
+skipfields = {'ALLEEG', 'Saveas','Warning','History','DQ_spec'};
 if dcompu == 1 % ERP
     skipfields = [skipfields 'Compute'];
 end
@@ -990,6 +1048,10 @@ for q=1:length(fn)
                         end
                     end
                     fnformat = '{%s}';
+                elseif isnumeric(fn2res)
+                    fn2resstr = num2str(fn2res); fnformat = '%s';
+                elseif isstruct(fn2res)
+                    fn2resstr = 'DQ_spec_structure'; fnformat = '%s';
                 else
                     fn2resstr = vect2colon(fn2res, 'Sort','on');
                     fnformat = '%s';

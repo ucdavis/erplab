@@ -22,16 +22,16 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 09-May-2019 07:55:34
+% Last Modified by GUIDE v2.5 16-May-2019 03:47:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @avg_data_quality_OpeningFcn, ...
-                   'gui_OutputFcn',  @avg_data_quality_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @avg_data_quality_OpeningFcn, ...
+    'gui_OutputFcn',  @avg_data_quality_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -104,14 +104,14 @@ function cancel_Callback(hObject, eventdata, handles)
 
 
 if isequal(get(handles.avg_dq, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = '';
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.avg_dq);
+    %The GUI is still in UIWAIT, us UIRESUME
+    handles.output = '';
+    %Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.avg_dq);
 else
-        % The GUI is no longer waiting, just close it
-        delete(handles.avg_dq);
+    % The GUI is no longer waiting, just close it
+    delete(handles.avg_dq);
 end
 
 % --- Executes on button press in save.
@@ -127,9 +127,55 @@ if handles.paraSME == 1
     type = 'SME';
 end
 
-DQout.num_tests = num_tests;
-DQout(1).type = type;
-DQout(1).times = handles.Tout;
+baseline_on = get(handles.checkbox_baseline_noise,'Value');
+sem_on = get(handles.checkbox_SEM,'Value');
+asme_on = get(handles.checkbox1_paraSME,'Value');
+
+
+num_tests = baseline_on + sem_on + asme_on;
+
+
+
+% Make DQout
+DQout = [];
+dq_slot = 0;
+if baseline_on
+    dq_slot = dq_slot + 1;
+    
+    basel_sd = get(handles.radiobutton_basel_sd,'Value');
+    if basel_sd
+        DQout(dq_slot).type = 'Baseline Measure - SD';
+    else
+        DQout(dq_slot).type = 'Baseline Measure - RMS';
+    end
+    
+    default_t = get(handles.checkbox_basel_default_times,'Value');
+    if default_t
+        DQout(dq_slot).times = [];
+    else
+        custom_t = [1 str2double(get(handles.baseline_start,'String')) str2double(get(handles.baseline_end,'String'))];
+        DQout(dq_slot).times = custom_t;
+    end
+end
+
+if sem_on
+    dq_slot = dq_slot + 1;
+    DQout(dq_slot).type = 'Point-wise SEM';
+end
+
+
+
+if asme_on
+    dq_slot = dq_slot + 1;
+    
+    DQout(dq_slot).type = 'aSME';
+    DQout(dq_slot).times = handles.Tout;
+end
+
+
+
+
+%DQout.num_tests = num_tests;
 
 handles.output = DQout;
 
@@ -192,14 +238,14 @@ function avg_dq_CloseRequestFcn(hObject, eventdata, handles)
 
 
 if isequal(get(handles.avg_dq, 'waitstatus'), 'waiting')
-        %The GUI is still in UIWAIT, us UIRESUME
-        handles.output = '';
-        %Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.avg_dq);
+    %The GUI is still in UIWAIT, us UIRESUME
+    handles.output = '';
+    %Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.avg_dq);
 else
-        % The GUI is no longer waiting, just close it
-        delete(handles.avg_dq);
+    % The GUI is no longer waiting, just close it
+    delete(handles.avg_dq);
 end
 % Hint: delete(hObject) closes the figure
 %delete(hObject);
@@ -254,9 +300,9 @@ else
     new_Tout = handles.Tout(1:new_rows,:);
     handles.Tout = new_Tout;
     
-%     row_drop_txt = ['The number of rows was ' num2str(curr_rows) '. Now dropping to ' num2str(new_rows)];
-% disp(row_drop_txt)
-set(handles.SME_table,'Data',new_Tout)
+    %     row_drop_txt = ['The number of rows was ' num2str(curr_rows) '. Now dropping to ' num2str(new_rows)];
+    % disp(row_drop_txt)
+    set(handles.SME_table,'Data',new_Tout)
     
 end
 
@@ -273,17 +319,17 @@ function SME_row_plus_Callback(hObject, eventdata, handles)
 curr_rows = size(handles.Tout,1);
 
 
-    new_rows = curr_rows + 1;
-    
-    new_Tout = zeros(new_rows,size(handles.Tout,2));
-    
-    new_Tout(1:curr_rows,:) = handles.Tout(1:curr_rows,:);
-    handles.Tout = new_Tout;
-    
+new_rows = curr_rows + 1;
+
+new_Tout = zeros(new_rows,size(handles.Tout,2));
+
+new_Tout(1:curr_rows,:) = handles.Tout(1:curr_rows,:);
+handles.Tout = new_Tout;
+
 %     row_drop_txt = ['The number of rows was ' num2str(curr_rows) '. Now increasing to ' num2str(new_rows)];
 % disp(row_drop_txt)
 set(handles.SME_table,'Data',new_Tout)
-    
+
 
 
 guidata(hObject, handles);
@@ -304,15 +350,7 @@ function checkbox_baseline_noise_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_baseline_noise
 inc_baseline = get(hObject,'Value');
-if inc_baseline
-    set(handles.baseline_start,'Enable','on');
-    set(handles.baseline_end,'Enable','on');
-    set(handles.checkbox_baseline_subtract,'Enable','on');
-else
-    set(handles.baseline_start,'Enable','off');
-    set(handles.baseline_end,'Enable','off');
-    set(handles.checkbox_baseline_subtract,'Enable','off');
-end
+
 
 
 % --- Executes on button press in checkbox_SEM.
@@ -377,3 +415,57 @@ function checkbox_baseline_subtract_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_baseline_subtract
+
+
+% --- Executes on button press in radiobutton_basel_sd.
+function radiobutton_basel_sd_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_basel_sd (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_basel_sd
+basel_sd = get(hObject,'Value');
+
+if basel_sd
+    set(handles.radiobutton_basel_rms,'Value',0);
+end
+
+
+
+% --- Executes on button press in radiobutton_basel_rms.
+function radiobutton_basel_rms_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_basel_rms (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_basel_rms
+basel_rms = get(hObject,'Value');
+
+if basel_rms
+    set(handles.radiobutton_basel_sd,'Value',0);
+end
+
+
+% --- Executes on button press in checkbox_basel_default_times.
+function checkbox_basel_default_times_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_basel_default_times (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_basel_default_times
+default_times = get(hObject,'Value');
+
+if default_times
+    set(handles.baseline_start,'Enable','off');
+    set(handles.baseline_end,'Enable','off');
+    set(handles.text_basel1,'Enable','off');
+    set(handles.text_basel2,'Enable','off');
+    set(handles.text_basel3,'Enable','off');
+    
+else
+    set(handles.baseline_start,'Enable','on');
+    set(handles.baseline_end,'Enable','on');
+    set(handles.text_basel1,'Enable','on');
+    set(handles.text_basel2,'Enable','on');
+    set(handles.text_basel3,'Enable','on');
+end
