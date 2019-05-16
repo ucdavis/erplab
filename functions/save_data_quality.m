@@ -149,7 +149,7 @@ if write_spreadsheet
     line_start = ['A' num2str(10+3+maxlen)];
     
     if any(strcmpi(dq_fields,'times'))
-        time_name = {'Time_window_ranges'};
+        time_name = {'Submeasure_Time_window_ranges'};
         xls_times = table(dq.times,'VariableNames',time_name);
         writetable(xls_times,filename,'Sheet',1,'Range',line_start,'WriteVariableNames',true);
         %writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false); % write again to sort col widths

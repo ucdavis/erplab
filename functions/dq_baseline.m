@@ -9,7 +9,7 @@
 % INPUT:      * - mandatory
 %  * ERP  - an ERP structure
 %    
-function [baseline_SD] = dq_baseline(ERP, start_ms, end_ms, subtract_mean_flag)
+function [baseline_measure] = dq_baseline(ERP, start_ms, end_ms, subtract_mean_flag)
 
 % Check input
 try
@@ -58,17 +58,15 @@ baseline_data = ERP.bindata(:,start_dp:end_dp,:);
 
 
 
-
+if subtract_mean_flag
 bl_sd = std(baseline_data,0,2);
 
-if subtract_mean_flag
-    bl_means = mean(baseline_data,2);
-    bl_sd = bl_sd - bl_means;
+else
+   %% rms
 end
 
 % quick plot of baseline sd
 %imagesc(squeeze(bl_sd))
 
-baseline_SD = bl_sd;
-
+baseline_measure = bl_sd;
 
