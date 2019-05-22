@@ -56,7 +56,7 @@ end
 ndd = length(dvdigits);
 
 if str2num(dvdigits{1}) >= 6
-    % since v6.1.1, expect 3 digits 
+    % since v6.1.1, expect 3 digits
     d_new_vers = 1;
 else
     % Old format fallback
@@ -65,7 +65,7 @@ end
 
 if d_new_vers == 1
     % since v6.1.1
-    dformat     = 1; 
+    dformat     = 1;
     
     dmayor      = str2num(dvdigits{1});
     dminor      = str2num(dvdigits{2});
@@ -119,7 +119,11 @@ cminor       = str2num(cvdigits{2}); % B
 % For after v6, take format to be 1
 if cmayor >= 6
     cformat      = 1; % C
-    cmaintenance = str2num(cvdigits{3}); % D
+    if numel(cvdigits) == 2
+        cmaintenance = 0;
+    else
+        cmaintenance = str2num(cvdigits{3}); % D
+    end
     
 else  % if older, get format from version
     cformat      = str2num(cvdigits{3}); % C

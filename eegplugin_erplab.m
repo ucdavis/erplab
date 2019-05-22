@@ -49,14 +49,14 @@ addpath(genpath(p))
 
 %
 % CHECK VERSION NUMBER & FOLDER NAME
-%
-% Grab the end of the path, like '6.0'
-char_i_erplab = regexp(p, 'erplab','end'); 
-char_i_erplab = char_i_erplab(end);
-
+% Grab the end of the path, like '7.0'
 try
-    foldernum = p(char_i_erplab+1:char_i_erplab+5);  % Get the 5 chars after the last erplabX.Y.Z in the path
-    if ~strcmp(foldernum, erplabver)
+    where_erplab_exp = '(ERPLAB)|(erplab)';
+    char_i_erplab = regexp(p, where_erplab_exp,'end');
+    char_i_erplab = char_i_erplab(end);
+    foldernum = p(char_i_erplab+1:end-1);  % Grab the chars after the last erplabX.Y.Z in the path
+    ver_match = ismember(foldernum,erplabver);
+    if any(ver_match==0)  % if there is any mismatch
         fprintf('\nERPLAB''s folder does not show the current version number.\n')
     end
     
