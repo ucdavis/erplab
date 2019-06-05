@@ -243,15 +243,14 @@ tooltip2  = '<html><i>The ERP waveform is transformed via fast-Fourier transform
 
 tooltip3  = ['<html><i>Windowing functions act on raw data to reduce the effects of the<br>leakage that occurs during an FFT of the data. Leakage amounts to<br>'...
     'spectral information from an FFT showing up at the wrong frequencies.'];
-tooltip_SEM  = ['<html><i>Take the SEM of the epochs, save in ERP.binerror<br>'...
-    'This can be plotted as shaded area around the ERP'];
-tooltip_SME  = ['<html><i>Calulate the SME of the epochs, save in ERP.DataQuality<br>'...
-    'This can give an indication of the noise in the recording'];
+tooltip_DQ  = ['<html><i>Data Quality measures will be scored for the data going in to the ERP<br>'...
+    'Recommended default time and measure parameters can be used, or custom times and measures specified<br>'...
+    'results stored in ERP.dataquality(1:n)'];
 
 set(handles.edit_tip_totalpower, 'tooltip',tooltip1);
 set(handles.edit_tip_evokedpower, 'tooltip',tooltip2);
 set(handles.edit_tip_hamming, 'tooltip',tooltip3);
-
+set(handles.edit_tip_DQ, 'tooltip',tooltip_DQ);
 
 dq_times_def = [1:6;-100:100:400;0:100:500]';
 handles.dq_times = dq_times_def;
@@ -1389,13 +1388,16 @@ function pushbutton_DQ_adv_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_DQ_adv (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-DQ_spec = avg_data_quality;
 
-if isempty(DQ_spec)
+old_DQ_spec = handles.DQ_spec;
+
+custom_DQ_spec = avg_data_quality(old_DQ_spec,handles.timelimits);
+
+if isempty(custom_DQ_spec)
     disp('User cancelled custom DQ window')
-    handles.DQ_spec = [];
+    %handles.DQ_spec = [];
 else
-    handles.DQ_spec = DQ_spec;
+    handles.DQ_spec = custom_DQ_spec;
 end
 % Update handles structure
 guidata(hObject, handles);

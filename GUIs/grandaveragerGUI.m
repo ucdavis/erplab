@@ -812,9 +812,11 @@ function checkbox_DQ_Callback(hObject, eventdata, handles)
 dq_on = get(hObject,'Value');
 
 if dq_on
-    set(handles.popupmenu_DQ, 'Enable', 'on');
+    set(handles.togglebutton_DQ_defaults, 'Enable', 'on');
+    set(handles.togglebutton_DQ_custom, 'Enable', 'on');
 else
-    set(handles.popupmenu_DQ, 'Enable', 'off');
+    set(handles.togglebutton_DQ_defaults, 'Enable', 'off');
+    set(handles.togglebutton_DQ_custom, 'Enable', 'off');
 end
 
 handles.dq = dq_on;
@@ -847,4 +849,46 @@ function popupmenu_DQ_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in togglebutton_DQ_defaults.
+function togglebutton_DQ_defaults_Callback(hObject, eventdata, handles)
+% hObject    handle to togglebutton_DQ_defaults (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of togglebutton_DQ_defaults
+
+defaults_on = get(hObject,'Value');
+
+if defaults_on
+    set(handles.togglebutton_DQ_custom, 'Value', 0);
+else
+    % was already on. reset to on.
+    beep
+    pause(0.1)
+    set(handles.togglebutton_DQ_defaults, 'Value', 1);
+end
+
+
+% --- Executes on button press in togglebutton_DQ_custom.
+function togglebutton_DQ_custom_Callback(hObject, eventdata, handles)
+% hObject    handle to togglebutton_DQ_custom (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of togglebutton_DQ_custom
+
+
+custom_on = get(hObject,'Value');
+
+if custom_on
+    custom_spec = grandaverager_DQ;
+    set(handles.togglebutton_DQ_defaults, 'Value', 0);
+else
+    % was already on. reset to on.
+    beep
+    pause(0.1)
+    set(handles.togglebutton_DQ_custom, 'Value', 1);
 end

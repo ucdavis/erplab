@@ -22,7 +22,7 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 16-May-2019 03:47:15
+% Last Modified by GUIDE v2.5 23-May-2019 09:57:33
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,6 +54,11 @@ function avg_data_quality_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 disp('Awaiting Data Quality settings...');
+
+% Parse input
+handles.DQ_spec = varargin{1};
+handles.timelimits = varargin{2};
+
 
 % Choose default command line output for avg_data_quality
 
@@ -215,7 +220,8 @@ function checkbox1_paraSME_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox1_paraSME
 SME_here = get(hObject,'Value');
-disp(SME_here);
+%disp(SME_here);
+
 if SME_here
     set(handles.SME_table,'Enable','on');
 else
@@ -458,14 +464,38 @@ default_times = get(hObject,'Value');
 if default_times
     set(handles.baseline_start,'Enable','off');
     set(handles.baseline_end,'Enable','off');
-    set(handles.text_basel1,'Enable','off');
+    %set(handles.radiobutton_basel_custom_times,'Enable','off');
     set(handles.text_basel2,'Enable','off');
     set(handles.text_basel3,'Enable','off');
     
 else
     set(handles.baseline_start,'Enable','on');
     set(handles.baseline_end,'Enable','on');
-    set(handles.text_basel1,'Enable','on');
+    %set(handles.radiobutton_basel_custom_times,'Enable','on');
     set(handles.text_basel2,'Enable','on');
     set(handles.text_basel3,'Enable','on');
+end
+
+
+% --- Executes on button press in radiobutton_basel_custom_times.
+function radiobutton_basel_custom_times_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_basel_custom_times (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_basel_custom_times
+custom_times = get(hObject,'Value');
+
+if custom_times
+    set(handles.baseline_start,'Enable','on');
+    set(handles.baseline_end,'Enable','on');
+    %set(handles.radiobutton_basel_custom_times,'Enable','on');
+    set(handles.text_basel2,'Enable','on');
+    set(handles.text_basel3,'Enable','on');
+else
+    set(handles.baseline_start,'Enable','off');
+    set(handles.baseline_end,'Enable','off');
+    %set(handles.radiobutton_basel_custom_times,'Enable','off');
+    set(handles.text_basel2,'Enable','off');
+    set(handles.text_basel3,'Enable','off');  
 end

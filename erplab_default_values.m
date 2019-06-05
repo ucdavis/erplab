@@ -14,8 +14,6 @@ set(0,'Units','pixels')
 thisscreen = get(0, 'ScreenSize');
 if thisscreen(4)>=1440
     fontsizeGUI = 12; % high resolution display (eg Retina)
-elseif thisscreen(4)==1440
-    fontsizeGUI = 11; % medium-high resolution display (eg recent 27" iMacs)
 else
-    fontsizeGUI = 8.2;
+    fontsizeGUI = 11;
 end
