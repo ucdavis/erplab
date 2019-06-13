@@ -57,7 +57,7 @@ end
 
 if exist('filename','var') == 0 || isempty(filename)
     % if path missing, prompt from user
-    format_options = {'*.mat;*.xls';'Matlab file (*.mat)';'Excel Spreadsheet (.xls)'};
+    format_options = {'*.xls' ; '*.mat'};
     pick_str = 'Save Data Quality to file. Pick path:';
     [picked_file, picked_path] = uiputfile(format_options,pick_str);
     filename = [picked_path picked_file];
