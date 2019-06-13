@@ -22,7 +22,7 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 23-May-2019 09:57:33
+% Last Modified by GUIDE v2.5 13-Jun-2019 09:50:06
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,6 +59,8 @@ disp('Awaiting Data Quality settings...');
 handles.DQ_spec = varargin{1};
 handles.timelimits = varargin{2};
 
+temp_DQ_spec = make_DQ_spec(handles.timelimits);
+sme_tw = temp_DQ_spec(3).times;
 
 % Choose default command line output for avg_data_quality
 
@@ -68,9 +70,12 @@ handles.num_tests = 1;
 
 handles.paraSME = 1;
 handles.tdata = handles.SME_table.Data;
+handles.SME_table.Data = sme_tw;
 
-handles.Tout = handles.tdata;
+handles.Tout = sme_tw;
 disp(handles.Tout);
+
+handles.sel_row = size(handles.Tout,1); % set to max on load
 
 % Update handles structure
 guidata(hObject, handles);
@@ -297,18 +302,26 @@ function SME_row_minus_Callback(hObject, eventdata, handles)
 
 curr_rows = size(handles.Tout,1);
 
+row_del = handles.sel_row;
+disp(row_del)
+
 if curr_rows <= 1
     beep
     disp('Already at 1 rows')
 else
     new_rows = curr_rows - 1;
     
-    new_Tout = handles.Tout(1:new_rows,:);
+    new_Tout = handles.Tout;
+    new_Tout(row_del,:) = []; % pop the selected row out
     handles.Tout = new_Tout;
     
     %     row_drop_txt = ['The number of rows was ' num2str(curr_rows) '. Now dropping to ' num2str(new_rows)];
     % disp(row_drop_txt)
     set(handles.SME_table,'Data',new_Tout)
+    pause(0.3)
+    handles.sel_row = new_rows;
+        
+    % 
     
 end
 
@@ -499,3 +512,22 @@ else
     set(handles.text_basel2,'Enable','off');
     set(handles.text_basel3,'Enable','off');  
 end
+
+
+% --- Executes when selected cell(s) is changed in SME_table.
+function SME_table_CellSelectionCallback(hObject, eventdata, handles)
+% hObject    handle to SME_table (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) currently selecteds
+% handles    structure with handles and user data (see GUIDATA)
+
+%disp(eventdata)
+% if the selected cell info exists, save it to handles
+if numel(eventdata.Indices)
+    row_here = eventdata.Indices(1);
+    handles.sel_row = row_here;
+    disp(row_here)
+    guidata(hObject, handles);
+end
+
+

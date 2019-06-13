@@ -96,7 +96,7 @@ catch
     nepochperdata = [];
 end
 try
-    timelimits = round(varargin{4}*1000); % in ms
+    timelimits = varargin{4}; % in ms
 catch
     timelimits = [0 0];
 end
@@ -587,12 +587,8 @@ else
 end
 
 % DQ defaults
-DQ_defaults(1).type = 'Baseline Measure - SD';
-DQ_defaults(1).times = [];
-DQ_defaults(2).type = 'Point-wise SEM';
-DQ_defaults(2).times = [];
-DQ_defaults(3).type = 'aSME';
-DQ_defaults(3).times = [1:6;-100:100:400;0:100:500]';
+DQ_defaults = make_DQ_spec(handles.timelimits);
+DQ_defaults(1).comments{1} = 'Defaults';
 
 % DQ output
 DQ_flag   = max(get(handles.radiobuttonDQ1, 'Value'),get(handles.radiobuttonDQ2, 'Value'));
@@ -1397,8 +1393,10 @@ if isempty(custom_DQ_spec)
     disp('User cancelled custom DQ window')
     %handles.DQ_spec = [];
 else
+    % The DQ Custom window ran successfully, so write the new DQ spec
     handles.DQ_spec = custom_DQ_spec;
 end
+
 % Update handles structure
 guidata(hObject, handles);
 

@@ -302,7 +302,7 @@ comERP2SEM     = [trystrs.no_check '[ERP, ERPCOM] = make_SEM_set(ERP,1,''erplab'
 
 %% Data Quality callbacks
 comDQQsave = ['save_data_quality(ERP)'];
-comDQQprint = ['ERP.dataquality.type'];
+comDQQprint = ['print_data_quality(ERP)'];
 comDQQinfo = ['erpset_summary;'];
 
 

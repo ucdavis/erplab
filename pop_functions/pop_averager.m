@@ -113,12 +113,12 @@ if nargin==1
     for k=1:length(ALLEEG)
         if isempty(ALLEEG(k).data)
             nepochperdata(k) = 0; % JLC.08/20/13
-            timelimits = [0 0];
         else
             nepochperdata(k) = ALLEEG(k).trials;
-            timelimits = [ALLEEG(k).xmin ALLEEG(k).xmax];
         end
     end
+    
+    timelimits = 1000 * [ALLEEG(currdata).xmin ALLEEG(currdata).xmax]; % ms
     
     %
     % Averager GUI
@@ -196,7 +196,7 @@ if nargin==1
     if compu2do>0 % compu2do--> 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
         [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
             'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
-            'aSME',DQ_flag,'aSME_DQ_struct',aSME_DQ_struct,'History', 'implicit');
+            'DQ_flag',DQ_flag,'DQ_spec',DQ_spec,'History', 'implicit');
         
         ALLERP     = evalin('base', 'ALLERP');
         CURRENTERP = evalin('base', 'CURRENTERP');
@@ -281,12 +281,8 @@ p.addParamValue('ExcludeBoundary', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar);      % history from scripting
 p.addParamValue('DQ_flag',1,@isnumeric);  % flag where 1 indicated include aSME
 % DQ defaults
-DQ_defaults(1).type = 'Baseline Measure - SD';
-DQ_defaults(1).times = [];
-DQ_defaults(2).type = 'Point-wise SEM';
-DQ_defaults(2).times = [];
-DQ_defaults(3).type = 'aSME';
-DQ_defaults(3).times = [1:6;-100:100:400;0:100:500]';
+DQ_defaults = make_DQ_spec();
+DQ_defaults(1).comments{1} = 'defaults';
 p.addParamValue('DQ_spec',DQ_defaults);
 
 p.parse(ALLEEG, varargin{:});
@@ -383,6 +379,12 @@ nfft = p.Results.NFFT;
 DQ_flag = p.Results.DQ_flag;
 if DQ_flag
     DQ_spec = p.Results.DQ_spec;
+    if isfield(DQ_spec(1),'comments') && numel(DQ_spec(1).comments) >= 1
+        if strcmpi(DQ_spec(1).comments{1},'defaults')
+        timelim_here = 1000 * [ALLEEG(setindex(1)).xmin ALLEEG(setindex(1)).xmax]; % ms
+        DQ_spec = make_DQ_spec(timelim_here);  % applies default time ranges specifically to chosen EEGset 
+        end
+    end
 end
 
 
