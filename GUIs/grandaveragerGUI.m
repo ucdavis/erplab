@@ -810,13 +810,18 @@ function checkbox_DQ_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_DQ
 dq_on = get(hObject,'Value');
+dq_custom = get(handles.togglebutton_DQ_custom, 'Value');
 
 if dq_on
     set(handles.togglebutton_DQ_defaults, 'Enable', 'on');
     set(handles.togglebutton_DQ_custom, 'Enable', 'on');
+    if dq_custom
+        set(handles.pushbutton_set_custom_DQ, 'Enable','on');
+    end
 else
     set(handles.togglebutton_DQ_defaults, 'Enable', 'off');
     set(handles.togglebutton_DQ_custom, 'Enable', 'off');
+    set(handles.pushbutton_set_custom_DQ, 'Enable','off');
 end
 
 handles.dq = dq_on;
@@ -864,6 +869,7 @@ defaults_on = get(hObject,'Value');
 
 if defaults_on
     set(handles.togglebutton_DQ_custom, 'Value', 0);
+    set(handles.pushbutton_set_custom_DQ, 'Enable','off');
 else
     % was already on. reset to on.
     beep
@@ -884,11 +890,21 @@ function togglebutton_DQ_custom_Callback(hObject, eventdata, handles)
 custom_on = get(hObject,'Value');
 
 if custom_on
-    custom_spec = grandaverager_DQ;
     set(handles.togglebutton_DQ_defaults, 'Value', 0);
+    set(handles.pushbutton_set_custom_DQ, 'Enable','on');
 else
     % was already on. reset to on.
     beep
     pause(0.1)
     set(handles.togglebutton_DQ_custom, 'Value', 1);
 end
+
+
+% --- Executes on button press in pushbutton_set_custom_DQ.
+function pushbutton_set_custom_DQ_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_set_custom_DQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.custom_spec = grandaverager_DQ;
+guidata(hObject, handles);
