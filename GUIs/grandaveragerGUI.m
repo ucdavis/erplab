@@ -891,7 +891,7 @@ custom_on = get(hObject,'Value');
 
 if custom_on
     set(handles.togglebutton_DQ_defaults, 'Value', 0);
-    set(handles.pushbutton_set_custom_DQ, 'Enable','on');
+    %set(handles.pushbutton_set_custom_DQ, 'Enable','on');
 else
     % was already on. reset to on.
     beep
