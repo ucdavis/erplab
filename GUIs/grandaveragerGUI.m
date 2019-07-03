@@ -582,7 +582,7 @@ handles.figure1 = []
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume()
+uiresume(handles.gui_chassis);
 
 %--------------------------------------------------------------------------
 function button_loadlist_Callback(hObject, eventdata, handles, optionx)
