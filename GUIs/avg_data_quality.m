@@ -22,7 +22,7 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 13-Jun-2019 09:50:06
+% Last Modified by GUIDE v2.5 02-Jul-2019 16:02:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -529,5 +529,3 @@ if numel(eventdata.Indices)
     disp(row_here)
     guidata(hObject, handles);
 end
-
-

@@ -22,7 +22,7 @@ function varargout = grandaverager_DQ(varargin)
 
 % Edit the above text to modify the response to help grandaverager_DQ
 
-% Last Modified by GUIDE v2.5 23-May-2019 13:00:14
+% Last Modified by GUIDE v2.5 02-Jul-2019 16:09:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,11 +53,11 @@ function grandaverager_DQ_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to grandaverager_DQ (see VARARGIN)
 
 % Choose default command line output for grandaverager_DQ
-handles.output = hObject;
+handles.output = [];
 
 %set(handles.gui_chassis,'Name', 'Grand Averager - Custom DQ Measure Combo')
 
-
+%helpbutton;
 
 % Sort DQ in
 
@@ -243,3 +243,51 @@ else
     set(handles.togglebutton_remove,'Value',0)
 end
     
+
+
+% --- Executes on button press in pushbutton_apply.
+function pushbutton_apply_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_apply (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.output = get(handles.listbox_custom,'String');
+disp(handles.output)
+
+if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+    %The GUI is still in UIWAIT, us UIRESUME
+    %Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.figure1);
+else
+    % The GUI is no longer waiting, just close it
+    delete(handles.figure1);
+end
+
+
+% --- Executes on button press in pushbutton_help.
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% doc pop_gaverager
+web('https://github.com/lucklab/erplab/wiki/', '-browser');
+
+
+% --- Executes on button press in pushbutton_cancel.
+function pushbutton_cancel_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_cancel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+    %The GUI is still in UIWAIT, us UIRESUME
+    handles.output = '';
+    %Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.figure1);
+else
+    % The GUI is no longer waiting, just close it
+    delete(handles.figure1);
+end

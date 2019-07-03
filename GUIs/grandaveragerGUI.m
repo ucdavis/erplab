@@ -578,10 +578,11 @@ function checkbox_EXCNULLBIN_Callback(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
 
+handles.figure1 = []
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.gui_chassis);
+uiresume()
 
 %--------------------------------------------------------------------------
 function button_loadlist_Callback(hObject, eventdata, handles, optionx)
@@ -869,7 +870,7 @@ defaults_on = get(hObject,'Value');
 
 if defaults_on
     set(handles.togglebutton_DQ_custom, 'Value', 0);
-    set(handles.pushbutton_set_custom_DQ, 'Enable','off');
+    set(handles.pushbutton_set_custom_DQ, 'Enable','on');
 else
     % was already on. reset to on.
     beep
