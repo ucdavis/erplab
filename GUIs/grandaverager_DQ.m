@@ -22,7 +22,7 @@ function varargout = grandaverager_DQ(varargin)
 
 % Edit the above text to modify the response to help grandaverager_DQ
 
-% Last Modified by GUIDE v2.5 02-Jul-2019 16:09:54
+% Last Modified by GUIDE v2.5 01-Aug-2019 05:05:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,6 +60,9 @@ handles.output = [];
 %helpbutton;
 
 % Sort DQ in
+% Parse input
+handles.ERPs_in = varargin{1};
+
 
 % DQ out
 handles.n_custom = 0;
@@ -67,12 +70,46 @@ handles.custom_DQ_list = [];
 str0 = '';
 set(handles.listbox_custom,'String',str0)
 
+handles.combo.measures = [];
+handles.combo.methods = [];
+
+
+% Set up ALLERP -> DQ measure option list
+ERPs = handles.ERPs_in;
+if isfield(ERPs,'dataquality') == 0
+    ERPs = []; % clear if not valid dataquality ERP sets
+end
+
+% Make DQ measure list from those in ALLERP / ERPs provided
+if isempty(ERPs)
+    
+    % leave basic list as is
+    
+else
+    
+    % make a list of possible DQ measures present
+    big_measure_list = {};
+    nbm = 0;
+    n_sets = numel(ERPs);
+    for ds = 1:n_sets
+        n_dq_here = numel(ERPs(ds).dataquality);
+        for dqm = 1:n_dq_here
+            nbm = nbm +1;
+            big_measure_list{nbm} = ERPs(ds).dataquality(dqm).type;
+        end
+    end
+    
+    measure_list = unique(big_measure_list);
+    
+    handles.listbox_existing_DQ.String = measure_list;
+end
+
 
 % Update handles structure
 guidata(hObject, handles);
 
 % UIWAIT makes grandaverager_DQ wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.GAvDQ);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -83,7 +120,24 @@ function varargout = grandaverager_DQ_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+pause(0.1)
+% Update handles structure
+guidata(hObject, handles);
+
+% make output struct
+combo_out.measures = handles.combo.measures;
+combo_out.methods = handles.combo.methods;
+combo_out.measure_names = cellstr(get(handles.listbox_existing_DQ,'String'));
+combo_out.method_names = cellstr(get(handles.listbox_combine_method,'String'));
+combo_out.str = handles.output;
+
+% Get default command line output from handles structure
+varargout{1} = combo_out;
+% The figure can be deleted now
+pause(0.1)
+delete(handles.GAvDQ);
+pause(0.1)
+
 
 
 % --- Executes on selection change in listbox_existing_DQ.
@@ -109,6 +163,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+
+
 % --- Executes on selection change in listbox_combine_method.
 function listbox_combine_method_Callback(hObject, eventdata, handles)
 % hObject    handle to listbox_combine_method (see GCBO)
@@ -130,6 +186,8 @@ function listbox_combine_method_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
 
 
 % --- Executes on button press in togglebutton_add.
@@ -173,6 +231,11 @@ if add_this
     new_list = old_list;
     set(handles.listbox_custom,'String',new_list);
     
+    % Keep track of what measures and methods were chosen
+    handles.combo.measures(n) = measure_n;
+    handles.combo.methods(n) = comb_n;
+    
+    % Pause for a beat, reset this button to 0
     pause(0.1);
     set(handles.togglebutton_add,'Value',0)
 else
@@ -252,17 +315,14 @@ function pushbutton_apply_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 handles.output = get(handles.listbox_custom,'String');
+%handles.output = 2;
 disp(handles.output)
 
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
-    %The GUI is still in UIWAIT, us UIRESUME
-    %Update handles structure
-    guidata(hObject, handles);
-    uiresume(handles.figure1);
-else
-    % The GUI is no longer waiting, just close it
-    delete(handles.figure1);
-end
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.GAvDQ);
+
+
 
 
 % --- Executes on button press in pushbutton_help.
@@ -281,13 +341,31 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-if isequal(get(handles.figure1, 'waitstatus'), 'waiting')
+if isequal(get(handles.GAvDQ, 'waitstatus'), 'waiting')
     %The GUI is still in UIWAIT, us UIRESUME
     handles.output = '';
     %Update handles structure
     guidata(hObject, handles);
-    uiresume(handles.figure1);
+    uiresume(handles.GAvDQ);
 else
     % The GUI is no longer waiting, just close it
-    delete(handles.figure1);
+    delete(handles.GAvDQ);
+end
+
+
+% --- Executes when user attempts to close GAvDQ.
+function GAvDQ_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to GAvDQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if isequal(get(handles.GAvDQ, 'waitstatus'), 'waiting')
+    %The GUI is still in UIWAIT, us UIRESUME
+    handles.output = '';
+    %Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.GAvDQ);
+else
+    % The GUI is no longer waiting, just close it
+    delete(handles.GAvDQ);
 end

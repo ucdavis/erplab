@@ -907,5 +907,7 @@ function pushbutton_set_custom_DQ_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles.custom_spec = grandaverager_DQ;
+global ALLERP
+
+handles.custom_spec = grandaverager_DQ(ALLERP);
 guidata(hObject, handles);
