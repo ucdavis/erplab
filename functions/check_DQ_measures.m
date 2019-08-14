@@ -1,6 +1,11 @@
 % Checks ERPSETs for DQ measure coverage
 % cautions if desired is not availible
 % axs July 2019
+%
+% INPUT
+%   ALLERP - Structure of ERP sets
+%   desired_DQ_measures - cell array of strings, text name of desired
+%   measures
 function DQ_ok = check_DQ_measures(ALLERP, desired_DQ_measures)
 
 % Check and populate missing args
@@ -25,7 +30,7 @@ n_desired_dqm = numel(desired_DQ_measures);
 for ds = 1:n_sets
     n_dq_here = numel(ALLERP(ds).dataquality);
     for dqm = 1:n_dq_here
-        DQ_here{ds,dqm} = ALLERP(ds).dataquality.type;
+        DQ_here{ds,dqm} = ALLERP(ds).dataquality(dqm).type;
     end
 end
 

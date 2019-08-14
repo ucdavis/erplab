@@ -285,26 +285,58 @@ function togglebutton_remove_Callback(hObject, eventdata, handles)
 remove1 = get(hObject,'Value');
 
 if remove1
-    
-    measure_n = get(handles.listbox_custom,'Value');
-    measure_cell = cellstr(get(handles.listbox_custom,'String'));
-    
-    measure_cell(measure_n) = [];
-    
-    if isempty(measure_cell)
-        measure_cell{1} = '';
-    end
-    
-    set(handles.listbox_custom,'String',measure_cell);
-    
-    disp_txt = ['Custom entry ' num2str(measure_n) ' removed'];
+    handles.combo.measures = [];
+    handles.combo.methods = [];
+    handles.n_custom = 0;
+    set(handles.listbox_custom,'String','');
+    set(handles.listbox_custom,'Value',1);
     pause(0.1);
-    set(handles.togglebutton_remove,'Value',0)
 else
-     % already down   
+     %already down   
     pause(0.1);
     set(handles.togglebutton_remove,'Value',0)
+    return
 end
+
+guidata(hObject, handles);
+
+
+
+
+% if remove1
+%     
+%     measure_n = get(handles.listbox_custom,'Value');
+%     measure_cell = cellstr(get(handles.listbox_custom,'String'));
+%     
+%     measure_cell(measure_n) = [];
+%     
+%     if isempty(measure_cell)
+%         measure_cell{1} = '';
+%     end
+%     
+%     set(handles.listbox_custom,'String',measure_cell);
+%     
+%     disp_txt = ['Custom entry ' num2str(measure_n) ' removed'];
+%     pause(0.1);
+%     set(handles.togglebutton_remove,'Value',0)
+%     
+%     handles.n_custom = handles.n_custom - 1;
+%     if handles.n_custom < 0
+%         handles.n_custom = 0;
+%     end
+%     handles.combo.measures(measure_n) = [];
+%     handles.combo.methods(measure_n) = [];
+%     
+% else
+%      % already down   
+%     pause(0.1);
+%     set(handles.togglebutton_remove,'Value',0)
+%     return
+% end
+
+%set(hObject,'Value',1); % set to the first?
+    % Update handles structure
+%guidata(hObject, handles);
     
 
 
@@ -316,12 +348,26 @@ function pushbutton_apply_Callback(hObject, eventdata, handles)
 
 handles.output = get(handles.listbox_custom,'String');
 %handles.output = 2;
-disp(handles.output)
+%disp(handles.output);
 
-% Update handles structure
+measure_names_all = cellstr(get(handles.listbox_existing_DQ,'String'));
+measure_names_here = measure_names_all(handles.combo.measures);
+
+% Check requested measure in target ERP sets
+DQ_measure_match = check_DQ_measures(handles.ERPs_in,measure_names_here);
+
+
+if DQ_measure_match
+    % Update handles structure
 guidata(hObject, handles);
-uiresume(handles.GAvDQ);
+uiresume(handles.GAvDQ); % exit
 
+else
+    % DQ mismatch
+    beep
+    errordlg('Not all requested measures are present in all ERPsets to be averaged. Please check requested measures and ERPsets.')
+    pause(0.1)
+end
 
 
 
