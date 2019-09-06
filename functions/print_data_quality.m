@@ -3,10 +3,10 @@
 function print_data_quality(ERP,dq_subfield)
 
 % Check and populate missing args
-if exist('measure_indx','var') == 0 || isempty(dq_subfield)
+if exist('ERP','var') == 0 || isempty(ERP)
     ERP = evalin('base','ERP');
 end
-if exist('measure_indx','var') == 0 || isempty(dq_subfield)
+if exist('dq_subfield','var') == 0 || isempty(dq_subfield)
     dq_measures = numel(ERP.dataquality);
     if dq_measures == 1
         dq_subfield = 1;

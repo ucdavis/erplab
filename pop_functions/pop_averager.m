@@ -998,6 +998,7 @@ if DQ_flag
     if any(where_aSME)
         aSME_DQ_struct.type = 'aSME';
         ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
+        dq_summary(ERP,'aSME')
     end
     
 end

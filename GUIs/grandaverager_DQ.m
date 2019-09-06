@@ -354,8 +354,13 @@ measure_names_all = cellstr(get(handles.listbox_existing_DQ,'String'));
 measure_names_here = measure_names_all(handles.combo.measures);
 
 % Check requested measure in target ERP sets
-DQ_measure_match = check_DQ_measures(handles.ERPs_in,measure_names_here);
+n_sets = numel(handles.ERPs_in);
 
+if n_sets > 0
+DQ_measure_match = check_DQ_measures(handles.ERPs_in,measure_names_here);
+else
+    DQ_measure_match = 1;
+end
 
 if DQ_measure_match
     % Update handles structure
