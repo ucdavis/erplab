@@ -17,6 +17,8 @@ function [boundary_times, num_boundaries] = find_boundary_times(EEG)
 
 % make array to keep track of boundaries
 evT = struct2table(EEG.event);
+boundary_times = 0;
+num_boundaries = 0;
 
 % Boundaries can be indicated with -99 or 'boundary'
 % let's presume that the variable type of EEG.event.type reveals which
@@ -35,9 +37,11 @@ end
 num_boundaries = sum(bound_evs);
 where_bound = find(bound_evs==1);
 
-boundary_times = zeros(num_boundaries,1);
-if num_boundaries >= 1  % when there is at least one boundary
-    for i=1:num_boundaries
-        boundary_times(i) = evT.latency(where_bound(i));
+if num_boundaries > 0
+    boundary_times = zeros(num_boundaries,1);
+    if num_boundaries >= 1  % when there is at least one boundary
+        for i=1:num_boundaries
+            boundary_times(i) = evT.latency(where_bound(i));
+        end
     end
 end
