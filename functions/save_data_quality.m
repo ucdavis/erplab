@@ -160,7 +160,8 @@ if write_spreadsheet
     for i = 1:dq_datasize(3)
         label_sheet = table({['Bin ' num2str(i) ' ' dq.type]});
         writetable(label_sheet,filename,'Sheet',i+1,'Range','A1','WriteVariableNames',false);  % writecell is introduced in R2019a, so another hacky Table here
-        Submeasure = dq.data(:,:,i);
+        Submeasure = nan(maxlen); % square matrix of NaNs at maxlen for table to rectangular with labels. NaNs are not written to Excel file.
+        Submeasure(1:ERP.nchan,1:size(dq.data,2)) = dq.data(:,:,i);
         xls_d = table(Elec,Submeasure);
         writetable(xls_d,filename,'Sheet',1+i,'Range','A2','WriteVariableNames',true);  % write data
     end
