@@ -10,6 +10,10 @@ if exist('dq_window_times','var') == 0
     dq_window_times = [];
 end
 
+% if there are 3 cols to win_times, use last 2
+if size(dq_window_times,2) == 3
+    dq_window_times = dq_window_times(:,2:3);
+end
 
 n_bins = length(epoch_list);
 n_elec = sizes(1);
@@ -22,8 +26,8 @@ if isempty(dq_window_times)
     win_times_ends = EEG.times(end);
 else
     n_windows = size(dq_window_times,1);
-    win_times_starts = dq_window_times(:,2);
-    win_times_ends = dq_window_times(:,3);
+    win_times_starts = dq_window_times(:,1);
+    win_times_ends = dq_window_times(:,2);
 end
 
 % Convert times from ms to datapoint idx
