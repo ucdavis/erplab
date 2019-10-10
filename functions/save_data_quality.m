@@ -133,7 +133,7 @@ if write_spreadsheet
             Rows{i} = ERP.chanlocs(i).labels;
         end
         for i=1:length(dq.times)
-            Cols{i} = [num2str(dq.times(i,2)) ' : ' num2str(dq.times(i,3))];
+            Cols{i} = [num2str(dq.times(i,1)) ' : ' num2str(dq.times(i,2))];
         end
         for b=1:size(dq.data,3)
             Sheets{b} = ['Bin ' num2str(b) ' on Sheet ' num2str(b+1)];
@@ -148,9 +148,9 @@ if write_spreadsheet
     
     line_start = ['A' num2str(10+3+maxlen)];
     
-    if any(strcmpi(dq_fields,'times'))
+    if any(strcmpi(dq_fields,'time_window_labels'))
         time_name = {'Submeasure_Time_window_ranges'};
-        xls_times = table(dq.times,'VariableNames',time_name);
+        xls_times = table(dq.time_window_labels','VariableNames',time_name);
         writetable(xls_times,filename,'Sheet',1,'Range',line_start,'WriteVariableNames',true);
         %writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false); % write again to sort col widths
     end
@@ -158,12 +158,19 @@ if write_spreadsheet
     % Bin-like data written to subsequent sheets
     Elec = Rows;
     for i = 1:dq_datasize(3)
-        label_sheet = table({['Bin ' num2str(i) ' ' dq.type]});
-        writetable(label_sheet,filename,'Sheet',i+1,'Range','A1','WriteVariableNames',false);  % writecell is introduced in R2019a, so another hacky Table here
+        sheet_label = ['Bin ' num2str(i)];
+        
+        for j = 1:length(dq.times)
+            sheet_label = [sheet_label, dq.time_window_labels(j) ];
+        end
+        
+        
+        sheet_label_T = table(sheet_label);
+        writetable(sheet_label_T,filename,'Sheet',i+1,'Range','A1','WriteVariableNames',false);  % writecell is introduced in R2019a, so another hacky Table here
         Submeasure = nan(maxlen); % square matrix of NaNs at maxlen for table to rectangular with labels. NaNs are not written to Excel file.
         Submeasure(1:ERP.nchan,1:size(dq.data,2)) = dq.data(:,:,i);
         xls_d = table(Elec,Submeasure);
-        writetable(xls_d,filename,'Sheet',1+i,'Range','A2','WriteVariableNames',true);  % write data
+        writetable(xls_d,filename,'Sheet',1+i,'Range','A2','WriteVariableNames',false);  % write data
     end
     
 else

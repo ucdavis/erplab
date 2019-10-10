@@ -54,9 +54,18 @@ end
 if exist('DQ_spec_struct','var') == 0 || isempty(DQ_spec_struct)
     DQ_spec_struct.type = 'empty';
     DQ_spec_struct.times = [];
+    DQ_spec_struct.time_window_labels = {};
     DQ_spec_struct.data = [];
+    DQ_spec_struct.comments = [];
 end
 
+if isfield(DQ_spec_struct,'time_window_labels') == 0
+    DQ_spec_struct.time_window_labels = [];
+end
+
+if isfield(DQ_spec_struct,'comments') == 0
+    DQ_spec_struct.comments = [];
+end
 
 % Check about overwriting DataQuality
 if isfield(ERP,'dataquality')
@@ -89,7 +98,11 @@ end
 
 next_slot = existing_dq_measures + 1;
 
-ERP.dataquality(next_slot) = DQ_spec_struct;
+ERP.dataquality(next_slot).type = DQ_spec_struct.type;
+ERP.dataquality(next_slot).times = DQ_spec_struct.times;
+ERP.dataquality(next_slot).time_window_labels = DQ_spec_struct.time_window_labels;
+ERP.dataquality(next_slot).data = DQ_spec_struct.data;
+ERP.dataquality(next_slot).comments = DQ_spec_struct.comments;
 
 [ERP, serror] = sorterpstruct(ERP);
 

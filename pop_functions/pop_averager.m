@@ -904,8 +904,7 @@ else
         where_aSME = strcmpi(DQ_n,'aSME');
         if any(where_aSME)
             aSME_indx = find(where_aSME);
-            aSME_DQ_struct.times = DQ_spec(aSME_indx).times;
-            aSME_DQ_struct.type = DQ_spec(aSME_indx).type;
+            aSME_DQ_struct = DQ_spec(aSME_indx);
             aSME_DQ_struct.data = sme_analytic(ALLEEG(setindex(1)),epoch_list,aSME_DQ_struct.times);
         end
         

@@ -1,8 +1,8 @@
 % Write data quality out to Matlab Command Window
 % axs June 2019, ERPLAB
-function print_data_quality(ERP,dq_subfield)
+function dataquality_measure = print_data_quality(ERP,dq_subfield)
 
-% Check and populate missing args
+%% Check and populate missing args
 if exist('ERP','var') == 0 || isempty(ERP)
     ERP = evalin('base','ERP');
 end
@@ -31,10 +31,23 @@ if strcmpi('Point-wise SEM', ERP.dataquality(dq_subfield).type)
 end
 
 
+%% Prepare data with labels
+try
+times = ERP.dataquality(dq_subfield).times
+for b = 1:ERP.nbin
+    bin_txt = [ERP.dataquality(dq_subfield).type ' Bin ' num2str(b) ':']
+    
+    dq_bin_data_elecXtw = ERP.dataquality(dq_subfield).data(:,:,1)
+end
 
+catch
 % To CW
 disp(dataquality_measure)
+end
+
+
 out_txt = ['Data Quality measure ' ERP.dataquality(dq_subfield).type ' written to dataquality_measure variable. Size: ' num2str(size(dataquality_measure))];
 disp(out_txt)
+dataquality_measure = ERP.dataquality(dq_subfield).data;
 
 
