@@ -1023,7 +1023,9 @@ skipfields = {'ALLEEG', 'Saveas','Warning','History'};
 if dcompu == 1 % ERP
     skipfields = [skipfields 'Compute'];
 end
-if isfield(p.Results.DQ_spec(1),'comments') && numel(p.Results.DQ_spec(1).comments) >= 1
+if isfield(p.Results,'DQ_spec') == 0 || isempty(p.Results.DQ_spec)
+    skipfields = [skipfields 'DQ_spec'];  % skip DQ spec in History if it was absent
+elseif isfield(p.Results.DQ_spec(1),'comments') && numel(p.Results.DQ_spec(1).comments) >= 1
         if strcmpi(p.Results.DQ_spec(1).comments{1},'defaults')
             skipfields = [skipfields 'DQ_spec'];  % skip DQ spec in History if default was used
         end
@@ -1119,6 +1121,7 @@ end
 %
 % Completion statement
 %
+dq_summary(ERP,'aSME')
 msg2end
 return
 

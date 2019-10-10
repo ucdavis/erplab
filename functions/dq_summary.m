@@ -18,7 +18,11 @@ end
 
 dq_measure_n = numel(ERP.dataquality);
 if dq_measure_n == 1
+    if isequal(ERP.dataquality(1).type,'empty')
+        disp('No Data Quality measures here')
+    else
     dq_subfield = 1;
+    end
 else
     for i=1:dq_measure_n
         dq_names{i} = ERP.dataquality(i).type;
