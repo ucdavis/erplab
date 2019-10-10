@@ -54,11 +54,11 @@ max_here = max(dq_data(:));
 str_info = ['Data Quality measure of <a href="https://github.com/lucklab/erplab/wiki">' dq_names{dq_subfield} '</a>'];
 disp(str_info)
 
-str_median = ['Median value of ' num2str(dq_data(median_loc_i)) ' at elec ' ERP.chanlocs(med_elec).labels ', and time-window ' num2str(ERP.dataquality(dq_subfield).times(med_tw,2)) ':' num2str(ERP.dataquality(dq_subfield).times(med_tw,3)) 'ms, on bin ' num2str(med_bin) ', ' ERP.bindescr{med_bin}];
+str_median = ['Median value of ' num2str(dq_data(median_loc_i)) ' at elec ' ERP.chanlocs(med_elec).labels ', and time-window ' num2str(ERP.dataquality(dq_subfield).times(med_tw,1)) ':' num2str(ERP.dataquality(dq_subfield).times(med_tw,2)) 'ms, on bin ' num2str(med_bin) ', ' ERP.bindescr{med_bin}];
 disp(str_median)
-str_min = ['Min value of    ' num2str(min_here) ' at elec ' ERP.chanlocs(min_elec).labels ', and time-window ' num2str(ERP.dataquality(dq_subfield).times(min_tw,2)) ':' num2str(ERP.dataquality(dq_subfield).times(med_tw,3)) 'ms, on bin ' num2str(min_bin) ', ' ERP.bindescr{min_bin}];
+str_min = ['Min value of    ' num2str(min_here) ' at elec ' ERP.chanlocs(min_elec).labels ', and time-window ' num2str(ERP.dataquality(dq_subfield).times(min_tw,1)) ':' num2str(ERP.dataquality(dq_subfield).times(med_tw,2)) 'ms, on bin ' num2str(min_bin) ', ' ERP.bindescr{min_bin}];
 disp(str_min)
-str_max = ['Max value of    ' num2str(max_here) ' at elec ' ERP.chanlocs(max_elec).labels ', and time-window  ' num2str(ERP.dataquality(dq_subfield).times(max_tw,2)) ':' num2str(ERP.dataquality(dq_subfield).times(max_tw,3)) 'ms, on bin ' num2str(max_bin) ', ' ERP.bindescr{max_bin}];
+str_max = ['Max value of    ' num2str(max_here) ' at elec ' ERP.chanlocs(max_elec).labels ', and time-window  ' num2str(ERP.dataquality(dq_subfield).times(max_tw,1)) ':' num2str(ERP.dataquality(dq_subfield).times(max_tw,2)) 'ms, on bin ' num2str(max_bin) ', ' ERP.bindescr{max_bin}];
 disp(str_max)
 
 catch

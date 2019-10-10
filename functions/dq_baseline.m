@@ -8,13 +8,13 @@
 %
 % INPUT:      * - mandatory
 %  * ERP  - an ERP structure
-%    
+%
 function [dq_struct, baseline_measure] = dq_baseline(ERP, start_ms, end_ms, subtract_mean_flag)
 
 % Check input
 try
     assert(isfield(ERP,'bindata'))
-catch  
+catch
     warning('Making Data Quality baseline measures requires an ERPSET')
     beep
     return
@@ -50,8 +50,8 @@ start_dp = start_dp(1); % if it's a tie, take the first element
 end_dp = find(abs(ERP.times-end_ms)==min(abs(ERP.times-end_ms)));
 end_dp = end_dp(1);
 
-% 
-    
+%
+
 b_sd_1 =   std(ERP.bindata(1,start_dp:end_dp,1));
 
 baseline_data = ERP.bindata(:,start_dp:end_dp,:);
@@ -60,11 +60,11 @@ baseline_data = ERP.bindata(:,start_dp:end_dp,:);
 
 if subtract_mean_flag
     % Measure Standard Deviation, which removes mean
-baseline_measure = std(baseline_data,0,2);
-
+    baseline_measure = std(baseline_data,0,2);
+    
 else
-   % use rms, not removing mean
-   baseline_measure = rms(baseline_data,2);
+    % use rms, not removing mean
+    baseline_measure = rms(baseline_data,2);
 end
 
 % quick plot of baseline sd
@@ -73,11 +73,11 @@ end
 
 % Prepare dq_struct
 if subtract_mean_flag
-dq_struct.type = 'Baseline Measure - SD';
+    dq_struct.type = 'Baseline Measure - SD';
 else
     dq_struct.type = 'Baseline Measure - RMS';
 end
 
-dq_struct.times = [1 start_ms end_ms];
+dq_struct.times = [start_ms end_ms];
 dq_struct.data = baseline_measure;
 

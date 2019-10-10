@@ -463,6 +463,7 @@ elseif nset>1 && wavg
     fprintf('********************************************************************\n\n')
 end
 cversion = geterplabversion;
+
 noconti = 0; %
 for i=1:nset
     if isempty(ALLEEG(setindex(i)).data) % JLC.08/20/13
@@ -491,8 +492,10 @@ for i=1:nset
         errorfound(msgboxText, title);
         return
     end
-    if ~strcmp(ALLEEG(setindex(i)).EVENTLIST.version, cversion) && iswarn==1
-        question = ['WARNING: Dataset %g was created from a different ERPLAB version.\n'...
+    version_here = ALLEEG(setindex(i)).EVENTLIST.version(1:3);
+    versions_match = isequal(version_here,cversion(1:3));
+    if ~versions_match && iswarn==1
+        question = ['It seems Dataset %g was created from another ERPLAB version.\n'...
             'ERPLAB will try to make it compatible with the current version.\n\n'...
             'Do you want to continue?'];
         title    = ['ERPLAB: erp_loaderp() for version: ' ALLEEG(setindex(i)).EVENTLIST.version] ;
@@ -505,7 +508,7 @@ for i=1:nset
     elseif ~strcmp(ALLEEG(setindex(i)).EVENTLIST.version, cversion) && iswarn==0
         fprintf('\n\nWARNING:\n')
         fprintf('ERPLAB: pop_averager() detected version %s\n', ALLEEG(setindex(i)).EVENTLIST.version);
-        fprintf('Dataset #%g was created from an older ERPLAB version\n\n', setindex(i));
+        fprintf('Dataset #%g was created from another ERPLAB version\n\n', setindex(i));
     end
 end
 if noconti
@@ -963,11 +966,18 @@ if DQ_flag
     where_base_sd = strcmpi(DQ_n,'Baseline Measure - SD');
     if any(where_base_sd)
         base_sd_indx = find(where_base_sd);
-        DQ_spec(where_base_sd).times
+        base_times = DQ_spec(where_base_sd).times;
+        
         if isempty(DQ_spec(base_sd_indx).times)
             base_dq = dq_baseline(ERP,[],[],1);
+        elseif size(base_times,2) == 3
+            base_start_t = DQ_spec(where_base_sd).times(2);
+            base_end_t = DQ_spec(where_base_sd).times(3);
+            base_dq = dq_baseline(ERP,base_start_t,base_end_t,1);
         else
-            base_dq = dq_baseline(ERP,DQ_spec(where_base_sd).times(2),DQ_spec(where_base_sd).times(3),1);
+            base_start_t = DQ_spec(where_base_sd).times(1);
+            base_end_t = DQ_spec(where_base_sd).times(2);
+            base_dq = dq_baseline(ERP,base_start_t,base_end_t,1);
         end
 
         ERP = add_dq_measure(ERP,base_dq);
