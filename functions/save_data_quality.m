@@ -96,6 +96,20 @@ if ismember(format, spreadsheet_like_formats)
     write_spreadsheet = 1;
 end
 
+% Try dummy XLS write
+if write_spreadsheet
+    try
+        blank_cell = {''};
+        blank_T = table(blank_cell);
+        writetable(blank_T, filename);
+    catch
+        beep
+        warning('Excel XLS write server unavailible on this computer?');
+        disp('We suggest exporting to a Matlab *.mat file instead.');
+        return
+    end
+end
+
 % write section
 
 if write_spreadsheet
