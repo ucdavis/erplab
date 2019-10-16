@@ -301,8 +301,9 @@ comERP2CSD     = [trystrs.no_check '[ERP, LASTCOM] = pop_currentsourcedensity(ER
 comERP2SEM     = [trystrs.no_check '[ERP, ERPCOM] = make_SEM_set(ERP,1,''erplab'');' catchstrs.add_to_hist];
 
 %% Data Quality callbacks
-comDQQsummarize = ['dq_summary(ERP)'];
-comDQQsave = ['save_data_quality(ERP)'];
+comDQQtable = ['DQ_Table_GUI(ERP);'];
+comDQQsummarize = ['dq_summary(ERP);'];
+comDQQsave = ['save_data_quality(ERP);'];
 comDQQprint = ['dataquality_measure = print_data_quality(ERP);'];
 comDQQinfo = ['erpset_summary;'];
 
@@ -580,6 +581,7 @@ uimenu( mDTF,'Label','Move Standard Error of Mean (SEM) to be primary data','Cal
 %% Data Quality submenu
 %
 mDQQ = uimenu(submenu,'Label','Data Quality options','tag','Data Quality','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+uimenu( mDQQ,'Label','Show Data Quality measures in table','Callback',comDQQtable,'separator','off' );
 uimenu( mDQQ,'Label','Summarize Data Quality (min, median, max)','Callback',comDQQsummarize,'separator','off' );
 uimenu( mDQQ,'Label','Save Data Quality measures to file','Callback',comDQQsave,'separator','off' );
 uimenu( mDQQ,'Label','Print Data Quality measures to Command Window','Callback',comDQQprint,'separator','off' );
