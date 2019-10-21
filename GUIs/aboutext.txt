@@ -1,16 +1,13 @@
-Copyright Regents of the University of California, 2008-2017 #
+Copyright Regents of the University of California, 2008-2019 #
 #
 #
-Designed by Steve Luck and Javier Lopez-Calderon #
+Designed by Steve Luck, Javier Lopez-Calderon, and Andrew X Stewart #
 #
-Main developers since v5:
-Andrew X Stewart
-axstewart@ucdavis.edu
+Main developers since v5: #
+Andrew X Stewart #
+axstewart@ucdavis.edu #
 Center for Mind and Brain, University of California, Davis #
 #
-Jason Arita
-jtkarita@ucdavis.edu
-Center for Mind and Brain, University of California, Davis #
 
 #
 Find latest on Github:
@@ -29,6 +26,7 @@ at UCSD. #
 #
 Software Developer Assistants: #
 Eric Foo #
+Jason Arita #
 #
 UC-Davis Testing Team: #
 Carly Leonard, Johanna Kreither, Emily Kappenman, Risa Sawaki , #
@@ -84,4 +82,3 @@ License long with this program.  If not, see #
 Davis, California #
 a great place to live, work, and study #
 #
-#2007-2017
