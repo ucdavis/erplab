@@ -193,8 +193,15 @@ end
 handles.dq = 1; % set default on for now, could be on iff datasets dq valid
 handles.dq_option = 1;
 
+% set up DQ grand averager combo default spec
+GAv_combo_defaults.measures = [1, 2, 3]; % Use first 3 DQ measures
+GAv_combo_defaults.methods = [2, 2, 2]; % Use the 2nd combo method, Root-Mean Square, for each
+GAv_combo_defaults.measure_names = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
+GAv_combo_defaults.method_names = {'Pool ERPSETs, GrandAvg mean','Pool ERPSETs, GrandAvg RMS'};
+GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
 
-
+handles.GAv_combo_defaults = GAv_combo_defaults;
+handles.custom_spec = GAv_combo_defaults;
 %
 % Name & version
 %
@@ -341,6 +348,15 @@ else
     dq_out = 0;
 end
 
+custom_here = handles.togglebutton_DQ_custom.Value;
+if handles.dq == 1 && custom_here == 1
+    dq_out = 2;
+    dq_spec_out = handles.custom_spec;
+else
+    dq_spec_out = handles.GAv_combo_defaults;
+end
+    
+
 
 %
 % ERPsets
@@ -360,7 +376,7 @@ if get(handles.radiobutton_erpset, 'Value')
                 errorfound(msgboxText, title);
                 return
         else
-                handles.output = {0, erpset, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename, dq_out};
+                handles.output = {0, erpset, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename, dq_out, dq_spec_out};
         end
 else
         erpset = cellstr(get(handles.listbox_erpnames, 'String'));
@@ -415,7 +431,7 @@ else
                         return
                 end
         end        
-        handles.output = {1, listname, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename, dq_out};
+        handles.output = {1, listname, artcrite, wavg, excnullbin, stderror, jk, jkerpname, jkfilename, dq_out, dq_spec_out};
 end
 
 
@@ -908,6 +924,21 @@ function pushbutton_set_custom_DQ_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 global ALLERP
+% or only selected ERPsets idxs?
+if handles.radiobutton_erpset.Value
+    try
+       erps_desired =  str2num(char(get(handles.edit_erpset, 'String')));
+       ALLERP_tmp = ALLERP(erps_desired);
+    catch
+        ALLERP_tmp = ALLERP;
+    end
+    
+else
+    ALLERP_tmp = ALLERP;
+end
+    
 
-handles.custom_spec = grandaverager_DQ(ALLERP);
+
+
+handles.custom_spec = grandaverager_DQ(ALLERP_tmp);
 guidata(hObject, handles);

@@ -124,7 +124,8 @@ if nargin==1  % GUI
                 jk         = answer{7}; % 0;1
                 jkerpname  = answer{8}; % erpname for JK grand averages
                 jkfilename = answer{9}; % filename for JK grand averages
-                dq_option  = answer(10); % data quality combine option. 0 - off, 1 - on.
+                dq_option  = answer{10}; % data quality combine option. 0 - off, 1 - on/default, 2 - on/custom
+                dq_spec    = answer{11}; % data quality custom combine options
                 
                 if optioni==1 % from files
                         filelist    = erpset;
