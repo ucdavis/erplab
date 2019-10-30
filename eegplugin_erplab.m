@@ -584,8 +584,7 @@ mDQQ = uimenu(submenu,'Label','Data Quality options','tag','Data Quality','separ
 uimenu( mDQQ,'Label','Show Data Quality measures in table','Callback',comDQQtable,'separator','off' );
 uimenu( mDQQ,'Label','Summarize Data Quality (min, median, max)','Callback',comDQQsummarize,'separator','off' );
 uimenu( mDQQ,'Label','Save Data Quality measures to file','Callback',comDQQsave,'separator','off' );
-uimenu( mDQQ,'Label','Print Data Quality measures to Command Window','Callback',comDQQprint,'separator','off' );
-uimenu( mDQQ,'Label','Show Data Quality measures contained in each loaded ERPSET','Callback',comDQQinfo,'separator','off' );
+uimenu( mDQQ,'Label','Show which Data Quality measures are in each loaded ERPSET','Callback',comDQQinfo,'separator','off' );
 %uimenu( mDQQ,'Label','Move Standard Error of Mean (SEM) to be primary data','CallBack',comERP2SEM,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
 

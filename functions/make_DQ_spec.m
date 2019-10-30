@@ -51,7 +51,7 @@ end
 
 
 % make labels
-root_str = 'aSME time window from ';
+root_str = 'aSME at ';
 for i = 1:numel(tw_starts)
     tw_labels{i} = [root_str num2str(tw_starts(i)) ' to ' num2str(tw_ends(i)) ];
 end

@@ -53,10 +53,22 @@ function DQ_Table_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to DQ_Table_GUI (see VARARGIN)
 
 % Choose default command line output for DQ_Table_GUI
-handles.output = hObject;
+handles.output = [];
 
 % check input ERPset DQ
 ERP = varargin{1};
+
+try
+    assert(exist('ERP','var')==1)
+    assert(isempty(ERP)==0)
+    assert(isfield(ERP,'dataquality'))
+    assert(strcmp(ERP.dataquality(1).type,'empty')==0)
+catch
+    beep
+    warning('Data Quality not present in current ERPset?')
+    delete(hObject);
+    return
+end
 
 % Update GUI with ERPSET info
 ERPSET_title_str = ['ERPSET - ' ERP.erpname];
@@ -124,7 +136,7 @@ function varargout = DQ_Table_GUI_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+varargout{1} = [];
 
 
 % --- Executes during object creation, after setting all properties.

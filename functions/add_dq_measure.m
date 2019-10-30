@@ -14,6 +14,8 @@ if isfield(ERP,'dataquality') == 0
     ERP.dataquality(1).type = 'empty';
     ERP.dataquality(1).times = [];
     ERP.dataquality(1).data = [];
+    ERP.dataquality(1).time_window_labels = {};
+    ERP.dataquality(1).comments = [];
 end
 
 % with no DQ_struct specified, populate with empty
@@ -21,6 +23,8 @@ if exist('DQ_struct','var') == 0 || isempty(DQ_struct)
     DQ_struct.type = 'empty';
     DQ_struct.times = [];
     DQ_struct.data = [];
+    DQ_struct.time_window_labels = {};
+    DQ_struct.comments = [];
 end
 
 if exist('name','var') == 0 || isempty(name)

@@ -74,108 +74,109 @@ function [ERP, erpcom] = pop_gaverager(ALLERP, varargin)
 erpcom = '';
 ERP    = preloadERP;
 if nargin<1
-        help pop_gaverager
-        return
+    help pop_gaverager
+    return
 end
 if nargin==1  % GUI
-        if ~iscell(ALLERP) && ~ischar(ALLERP)
-                if isstruct(ALLERP)
-                        iserp = iserpstruct(ALLERP(1));
-                        if ~iserp
-                                ALLERP = [];
-                        end
-                        actualnset = length(ALLERP);
-                else
-                        ALLERP = [];
-                        actualnset = 0;
-                end
-                
-                def  = erpworkingmemory('pop_gaverager');
-                if isempty(def)
-                        def = { actualnset 0 '' 100 0 1 1};
-                else
-                        def{1}=actualnset;
-                end
-                if isnumeric(def{3}) && ~isempty(ALLERP)
-                        if max(def{3})>length(ALLERP)
-                                def{3} = def{3}(def{3}<=length(ALLERP));
-                        end
-                        if isempty(def{3})
-                                def{3} = 1;
-                        end
-                end
-                
-                %
-                % Open Grand Average GUI
-                %
-                answer = grandaveragerGUI(def);
-                
-                if isempty(answer)
-                        disp('User selected Cancel')
-                        return
-                end
-                
-                optioni    = answer{1}; %1 means from a filelist, 0 means from erpsets menu
-                erpset     = answer{2};
-                artcrite   = answer{3}; % max percentage of rej to be included in the gaverage
-                wavg       = answer{4}; % 0;1
-                excnullbin = answer{5}; % 0;1
-                stderror   = answer{6}; % 0;1
-                jk         = answer{7}; % 0;1
-                jkerpname  = answer{8}; % erpname for JK grand averages
-                jkfilename = answer{9}; % filename for JK grand averages
-                dq_option  = answer{10}; % data quality combine option. 0 - off, 1 - on/default, 2 - on/custom
-                dq_spec    = answer{11}; % data quality custom combine options
-                
-                if optioni==1 % from files
-                        filelist    = erpset;
-                        disp(['pop_gaverager(): For file-List, user selected ', filelist])
-                        ALLERP = {ALLERP, filelist}; % truco
-                else % from erpsets menu
-                        %erpset  = erpset;
-                end
-                
-                def = {actualnset, optioni, erpset, artcrite, wavg, excnullbin, stderror};
-                erpworkingmemory('pop_gaverager', def);
-                if stderror==1
-                        stdsstr = 'on';
-                else
-                        stdsstr = 'off';
-                end
-                if excnullbin==1
-                        excnullbinstr = 'on'; % exclude null bins.
-                else
-                        excnullbinstr = 'off';
-                end
-                if wavg==1
-                        wavgstr = 'on';
-                else
-                        wavgstr = 'off';
-                end
-                if jk==1
-                        %
-                        % Jackknife
-                        %
-                        [ALLERP, erpcom]  = pop_jkgaverager(ALLERP, 'Erpsets', erpset, 'Criterion', artcrite,...
-                                'SEM', stdsstr, 'Weighted', wavgstr, 'Erpname', jkerpname, 'Filename', jkfilename,...
-                                'Warning', wavgstr);
-                        
-                        assignin('base','ALLERP', ALLERP);  % save to workspace
-                        updatemenuerp(ALLERP); % add a new erpset to the erpset menu
-                else
-                        %
-                        % Somersault
-                        %
-                        %[ERP erpcom]  = pop_gaverager(ALLERP, 'Erpsets', erpset, 'Loadlist', filelist,'Criterion', artcrite,...
-                        %        'SEM', stdsstr, 'Weighted', wavgstr, 'Saveas', 'on');
-                        [ERP, erpcom]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
-                                'ExcludeNullBin', excnullbinstr,'Weighted', wavgstr, 'Saveas', 'on', 'Warning', wavgstr, 'History', 'gui');
-                end
-                pause(0.1)
-                return
+    if ~iscell(ALLERP) && ~ischar(ALLERP)
+        if isstruct(ALLERP)
+            iserp = iserpstruct(ALLERP(1));
+            if ~iserp
+                ALLERP = [];
+            end
+            actualnset = length(ALLERP);
         else
-                fprintf('pop_gaverager() was called using a single (non-struct) input argument.\n\n');
+            ALLERP = [];
+            actualnset = 0;
         end
+        
+        def  = erpworkingmemory('pop_gaverager');
+        if isempty(def)
+            def = { actualnset 0 '' 100 0 1 1};
+        else
+            def{1}=actualnset;
+        end
+        if isnumeric(def{3}) && ~isempty(ALLERP)
+            if max(def{3})>length(ALLERP)
+                def{3} = def{3}(def{3}<=length(ALLERP));
+            end
+            if isempty(def{3})
+                def{3} = 1;
+            end
+        end
+        
+        %
+        % Open Grand Average GUI
+        %
+        answer = grandaveragerGUI(def);
+        
+        if isempty(answer)
+            disp('User selected Cancel')
+            return
+        end
+        
+        optioni    = answer{1}; %1 means from a filelist, 0 means from erpsets menu
+        erpset     = answer{2};
+        artcrite   = answer{3}; % max percentage of rej to be included in the gaverage
+        wavg       = answer{4}; % 0;1
+        excnullbin = answer{5}; % 0;1
+        stderror   = answer{6}; % 0;1
+        jk         = answer{7}; % 0;1
+        jkerpname  = answer{8}; % erpname for JK grand averages
+        jkfilename = answer{9}; % filename for JK grand averages
+        dq_option  = answer{10}; % data quality combine option. 0 - off, 1 - on/default, 2 - on/custom
+        dq_spec    = answer{11}; % data quality custom combine options
+        
+        if optioni==1 % from files
+            filelist    = erpset;
+            disp(['pop_gaverager(): For file-List, user selected ', filelist])
+            ALLERP = {ALLERP, filelist}; % truco
+        else % from erpsets menu
+            %erpset  = erpset;
+        end
+        
+        def = {actualnset, optioni, erpset, artcrite, wavg, excnullbin, stderror};
+        erpworkingmemory('pop_gaverager', def);
+        if stderror==1
+            stdsstr = 'on';
+        else
+            stdsstr = 'off';
+        end
+        if excnullbin==1
+            excnullbinstr = 'on'; % exclude null bins.
+        else
+            excnullbinstr = 'off';
+        end
+        if wavg==1
+            wavgstr = 'on';
+        else
+            wavgstr = 'off';
+        end
+        if jk==1
+            %
+            % Jackknife
+            %
+            [ALLERP, erpcom]  = pop_jkgaverager(ALLERP, 'Erpsets', erpset, 'Criterion', artcrite,...
+                'SEM', stdsstr, 'Weighted', wavgstr, 'Erpname', jkerpname, 'Filename', jkfilename,...
+                'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr);
+            
+            assignin('base','ALLERP', ALLERP);  % save to workspace
+            updatemenuerp(ALLERP); % add a new erpset to the erpset menu
+        else
+            %
+            % Somersault
+            %
+            %[ERP erpcom]  = pop_gaverager(ALLERP, 'Erpsets', erpset, 'Loadlist', filelist,'Criterion', artcrite,...
+            %        'SEM', stdsstr, 'Weighted', wavgstr, 'Saveas', 'on');
+            [ERP, erpcom]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
+                'ExcludeNullBin', excnullbinstr,'Weighted', wavgstr, 'Saveas', 'on',...
+                'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr, 'History', 'gui');
+        end
+        pause(0.1)
+        return
+    else
+        fprintf('pop_gaverager() was called using a single (non-struct) input argument.\n\n');
+    end
 end
 
 %
@@ -195,111 +196,138 @@ p.addParamValue('ExcludeNullBin', 'on', @ischar); % exclude any null bin from th
 p.addParamValue('Saveas', 'off', @ischar);     % 'on', 'off'
 p.addParamValue('Warning', 'off', @ischar);    % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('DQ_flag',1,@isnumeric); % data quality combine option. 0 - off, 1 - on/default, 2 - on/custom
+
+% Set up default struct for GAv DQ combo methods
+GAv_combo_defaults.measures = [1, 2, 3]; % Use first 3 DQ measures
+GAv_combo_defaults.methods = [2, 2, 2]; % Use the 2nd combo method, Root-Mean Square, for each
+GAv_combo_defaults.measure_names = {'Baseline Measure - SD';'Point-wise SEM'; 'aSME'};
+GAv_combo_defaults.method_names = {'Pool ERPSETs, GrandAvg mean','Pool ERPSETs, GrandAvg RMS'};
+GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
+
+p.addParamValue('DQ_spec',GAv_combo_defaults);
 
 p.parse(ALLERP, varargin{:});
 
+% Arrange input for gaverager, and check sets seem valid
 erpset = p.Results.Erpsets;
 
 if isempty(erpset)
-        erpset = p.Results.ERPindex;
+    erpset = p.Results.ERPindex;
 end
 cond1 = iserpstruct(ALLERP);
 if isempty(erpset) && cond1
-        error('ERPLAB says: "Erpsets" parameter was not specified.')
+    error('ERPLAB says: "Erpsets" parameter was not specified.')
 end
 cond2 = isnumeric(erpset);
 lista = '';
 if cond1 && cond2     % either from GUI or script, when ALLERP exist and erpset indices were specified
-        nfile   = length(erpset);
-        optioni = 0;  % from erpset menu or ALLERP struct
+    nfile   = length(erpset);
+    optioni = 0;  % from erpset menu or ALLERP struct
 else
-        optioni  = 1; % from file
-        filelist = '';
-        if iscell(ALLERP)             % from the GUI, when ALLERP exist and user picks a list up as well
-                filelist = ALLERP{2};
-                ALLERP   = ALLERP{1};
-        elseif ischar(ALLERP)         % from script, when user picks a list.
-                filelist = ALLERP;
-        else
-                error('ERPLAB says: "Erpsets" parameter is not valid.')
+    optioni  = 1; % from file
+    filelist = '';
+    if iscell(ALLERP)             % from the GUI, when ALLERP exist and user picks a list up as well
+        filelist = ALLERP{2};
+        ALLERP   = ALLERP{1};
+    elseif ischar(ALLERP)         % from script, when user picks a list.
+        filelist = ALLERP;
+    else
+        error('ERPLAB says: "Erpsets" parameter is not valid.')
+    end
+    if ~iscell(filelist) && ~isempty(filelist)
+        if exist(filelist, 'file')~=2
+            error('ERPLAB:error', 'ERPLAB says: File %s does not exist.', filelist)
         end
-        if ~iscell(filelist) && ~isempty(filelist)               
-                if exist(filelist, 'file')~=2
-                        error('ERPLAB:error', 'ERPLAB says: File %s does not exist.', filelist)
-                end               
-                disp(['For file-List, user selected ', filelist])
-                
-                %
-                % open file containing the erp list
-                %
-                fid_list = fopen( filelist );
-                formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
-                lista    = formcell{:};
-                lista    = strtrim(lista); % this fixes the bag described by Darren Tanner and Katherine Stavropoulos
-                nfile    = length(lista);
-                fclose(fid_list);
-        else
-                error('ERPLAB says: error at pop_appenderp(). Unrecognizable input ')
-        end
+        disp(['For file-List, user selected ', filelist])
+        
+        %
+        % open file containing the erp list
+        %
+        fid_list = fopen( filelist );
+        formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
+        lista    = formcell{:};
+        lista    = strtrim(lista); % this fixes the bag described by Darren Tanner and Katherine Stavropoulos
+        nfile    = length(lista);
+        fclose(fid_list);
+    else
+        error('ERPLAB says: error at pop_appenderp(). Unrecognizable input ')
+    end
 end
 
 %filelist    = p.Results.Loadlist;
 artcrite    = p.Results.Criterion;
 
 if ismember_bc2({p.Results.SEM}, {'on','yes'})
-        stderror = 1;
+    stderror = 1;
 else
-        stderror = 0;
+    stderror = 0;
 end
 if ismember_bc2({p.Results.ExcludeNullBin}, {'on','yes'})
-        exclunullbin = 1;
+    exclunullbin = 1;
 else
-        exclunullbin = 0;
+    exclunullbin = 0;
 end
 if ismember_bc2({p.Results.Weighted}, {'on','yes'})
-        wavg = 1;
+    wavg = 1;
 else
-        wavg = 0;
+    wavg = 0;
 end
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
-        issaveas = 1;
+    issaveas = 1;
 else
-        issaveas = 0;
+    issaveas = 0;
 end
 if ismember_bc2({p.Results.Warning}, {'on','yes'})
-        warn = 1;
+    warn = 1;
 else
-        warn = 0;
+    warn = 0;
 end
 if iserpstruct(ALLERP);
-        if isempty(erpset) && isempty(filelist)
-                error('ERPLAB:pop_gaverager', '\nERPLAB says: Erpsets is empty')
-        end
+    if isempty(erpset) && isempty(filelist)
+        error('ERPLAB:pop_gaverager', '\nERPLAB says: Erpsets is empty')
+    end
 else
-        if isempty(filelist)
-                error('ERPLAB:pop_gaverager', '\nERPLAB says: Loadlist is empty (ALLERP is empty as well...)\n')
-        end
+    if isempty(filelist)
+        error('ERPLAB:pop_gaverager', '\nERPLAB says: Loadlist is empty (ALLERP is empty as well...)\n')
+    end
 end
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
+
+
+% check DQ - are all requested
+DQ_flag = p.Results.DQ_flag;
+if DQ_flag
+    DQ_spec = p.Results.DQ_spec;
+    DQ_ok = check_DQ_measures(ALLERP(erpset),DQ_spec.measure_names(DQ_spec.measures));
+    if DQ_ok==0
+        warning('Issue with Grand Averager DQ specification?')
+    end
+else
+    DQ_spec = [];
+end
+
+
+
 
 %
 % subroutine
 %
 ERPaux = ERP;
-[ERP, serror, msgboxText ] = gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn);
+[ERP, serror, msgboxText ] = gaverager(ALLERP, lista, optioni, erpset, nfile, wavg, stderror, artcrite, exclunullbin, warn, DQ_spec);
 
 if serror>0
-        title = 'ERPLAB: gaverager() Error';
-        errorfound(msgboxText, title);
-        return
+    title = 'ERPLAB: gaverager() Error';
+    errorfound(msgboxText, title);
+    return
 end
 
 % ! Verificar que cada archivo en lista{j} exista
@@ -312,76 +340,82 @@ msg2end
 
 skipfields = {'ALLERP', 'Saveas', 'Warning','History'};
 if isstruct(ALLERP) && optioni~=1 % from files
-        DATIN =  inputname(1);
+    DATIN =  inputname(1);
 else
-        %DATIN = ['''' ALLERP ''''];
-        DATIN = sprintf('''%s''', filelist);
-        skipfields = [skipfields, 'Erpsets'];
+    %DATIN = ['''' ALLERP ''''];
+    DATIN = sprintf('''%s''', filelist);
+    skipfields = [skipfields, 'Erpsets'];
+end
+if isfield(p.Results,'DQ_spec') == 0 || isempty(p.Results.DQ_spec)
+    skipfields = [skipfields 'DQ_spec'];  % skip DQ spec in History if it was absent
 end
 fn     = fieldnames(p.Results);
 erpcom = sprintf( 'ERP = pop_gaverager( %s ', DATIN);
 for q=1:length(fn)
-        fn2com = fn{q};
-        if ~ismember_bc2(fn2com, skipfields)
-                fn2res = p.Results.(fn2com);
-                if ~isempty(fn2res)
-                        if ischar(fn2res)
-                                if ~strcmpi(fn2res,'off')
-                                        erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
-                                end
-                        else
-                                if iscell(fn2res)
-                                        if ischar([fn2res{:}])
-                                                fn2resstr = sprintf('''%s'' ', fn2res{:});
-                                        else
-                                                fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
-                                        end
-                                        fnformat = '{%s}';
-                                else
-                                        fn2resstr = vect2colon(fn2res, 'Sort','on');
-                                        fnformat = '%s';
-                                end
-                                if strcmpi(fn2com,'Criterion')
-                                        if p.Results.Criterion<100
-                                                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
-                                        end
-                                else
-                                        erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
-                                end
-                        end
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
                 end
+            elseif isnumeric(fn2res)
+                fn2resstr = num2str(fn2res); fnformat = '%s';
+            elseif isstruct(fn2res)
+                fn2resstr = 'DQ_spec_structure'; fnformat = '%s';
+            elseif iscell(fn2res)
+                if ischar([fn2res{:}])
+                    fn2resstr = sprintf('''%s'' ', fn2res{:});
+                else
+                    fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                end
+                fnformat = '{%s}';
+            else
+                fn2resstr = vect2colon(fn2res, 'Sort','on');
+                fnformat = '%s';
+            end
+            if strcmpi(fn2com,'Criterion')
+                if p.Results.Criterion<100
+                    erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                end
+            else
+                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+            end
         end
+    end
 end
+
 erpcom = sprintf( '%s );', erpcom);
 
 %
 % Save ERPset
 %
 if issaveas
-        [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
-        if issave>0
-                if issave==2
-                        erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
-                        msgwrng = '*** Your ERPset was saved on your hard drive.***';
-                else
-                        msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
-                end
+    [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'implicit');
+    if issave>0
+        if issave==2
+            erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+            msgwrng = '*** Your ERPset was saved on your hard drive.***';
         else
-                msgwrng = 'ERPLAB Warning: Your changes were not saved';
-                ERP = ERPaux;
+            msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
         end
-        try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+    else
+        msgwrng = 'ERPLAB Warning: Your changes were not saved';
+        ERP = ERPaux;
+    end
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end
 % get history from script. ERP
 switch shist
-        case 1 % from GUI
-                displayEquiComERP(erpcom);
-        case 2 % from script
-                ERP = erphistory(ERP, [], erpcom, 1);
-        case 3
-                % implicit
-        otherwise %off or none
-                erpcom = '';
-                return
+    case 1 % from GUI
+        displayEquiComERP(erpcom);
+    case 2 % from script
+        ERP = erphistory(ERP, [], erpcom, 1);
+    case 3
+        % implicit
+    otherwise %off or none
+        erpcom = '';
+        return
 end
 return
