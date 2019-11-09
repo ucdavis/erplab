@@ -672,7 +672,7 @@ end
 set(handles.popupmenu_measurement, 'String', measurearray);
 %set(handles.popupmenu_videospeed, 'String', {'0.1X','0.25X','0.5X', '0.75X','1X', '2X'});
 %set(handles.popupmenu_videospeed, 'Value', 5); % 1X
-set(handles.popupmenu_colormap,'String', 'jet|hsv|hot|cool|gray')
+set(handles.popupmenu_colormap,'String', 'jet|hsv|hot|cool|gray|viridis')
 set(handles.popupmenu_mapstyle,'String', 'map|contour|both|fill|blank')
 
 % 'map'      -> plot colored map only
@@ -711,7 +711,7 @@ if isempty(plotset.pscalp)
         Legelec3D     = 'off';
         Legcolorbar   = 0; % no color bar by default
         Legismaxim    = 0; % no maximize figure by default
-        Legcolormap   = 1; % jet color map
+        Legcolormap   = 6; % Default color map indx on first load
 else
         binArraystr = vect2colon(plotset.pscalp.binArray,'Delimiter','off', 'Repeat', 'off');
         latvals = plotset.pscalp.latencyArray;
@@ -747,7 +747,7 @@ else
         Legelec3D     = plegend.elec3D;
         Legcolorbar   = plegend.colorbar;
         Legismaxim    = plegend.maximize;
-        Legcolormap   = plegend.colormap; % jet color map
+        Legcolormap   = plegend.colormap; % working mem loaded color map
 end
 
 % % %

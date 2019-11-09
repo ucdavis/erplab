@@ -325,18 +325,20 @@ if nargin==1
         
         %'jet|hsv|hot|cool|gray'
         switch clrmap
-                case 1
-                        cmap = 'jet';
-                case 2
-                        cmap = 'hsv';
-                case 3
-                        cmap = 'hot';
-                case 4
-                        cmap = 'cool';
-                case 5
-                        cmap = 'gray';
-                otherwise
-                        cmap = 'jet';
+            case 1
+                cmap = 'jet';
+            case 2
+                cmap = 'hsv';
+            case 3
+                cmap = 'hot';
+            case 4
+                cmap = 'cool';
+            case 5
+                cmap = 'gray';
+            case 6
+                cmap = 'viridis';
+            otherwise
+                cmap = 'jet';
         end
         if ismoviex==0
                 ismoviexx = 'off';
@@ -394,7 +396,7 @@ p.addParamValue('Value', 'insta', @ischar);
 p.addParamValue('Blc', 'none');
 p.addParamValue('Maplimit', 'maxmin');
 p.addParamValue('Colorbar', 'on', @ischar);
-p.addParamValue('Colormap', 'jet', @ischar);
+p.addParamValue('Colormap', 'viridis', @ischar);
 p.addParamValue('FontSize', 10, @isnumeric);
 p.addParamValue('FontName', 'Courier New', @ischar);
 p.addParamValue('Animated', 'off', @ischar);
@@ -658,23 +660,33 @@ else
 end
 set(hsig,'Color', [1 1 1])
 % set(hsig, 'Renderer', 'painters');
-if ischar(cmap)  % 'jet|hsv|hot|cool|gray'
-        switch lower(cmap)
-                case 'jet'
-                        clrmap = jet;
-                case 'hsv'
-                        clrmap = hsv;
-                case 'hot'
-                        clrmap = hot;
-                case 'cool'
-                        clrmap = cool;
-                case 'gray'
-                        clrmap = gray;
-                otherwise
-                        clrmap = jet;
-        end
+if ischar(cmap)  % 'jet|hsv|hot|cool|gray|viridis'
+    switch lower(cmap)
+        case 'viridis'
+            viridis_in_path = exist('viridis','file');
+            if viridis_in_path
+                clrmap = viridis;
+            else
+                disp('Colormap ''viridis'' not in Matlab path. Please ensure installed. Using ''jet'' instead.')
+                clrmap = jet;
+            end
+            
+        case 'jet'
+            clrmap = jet;
+        case 'hsv'
+            clrmap = hsv;
+        case 'hot'
+            clrmap = hot;
+        case 'cool'
+            clrmap = cool;
+        case 'gray'
+            clrmap = gray;
+        otherwise
+            disp('Requested colormap not recognised. Using ''jet'' instead.')
+            clrmap = jet;
+    end
 else
-        clrmap = cmap; % cmap is an m-by-3 matrix of real numbers between 0.0 and 1.0.
+    clrmap = cmap; % cmap is an m-by-3 matrix of real numbers between 0.0 and 1.0.
 end
 if ischar(maplimit)
         clrbarcustom = 0; %

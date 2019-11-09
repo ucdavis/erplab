@@ -387,7 +387,7 @@ if dq_flag == 1
                 assert(numel(where_dqm_indx) == 1);
             catch
                 dq_error = 1;
-                error('Problem combining Data Quality measures in Grand Avg?')
+                error('Problem combining Data Quality measures in Grand Avg. Do these sets have matching DQ measures and time-windows?')
             end
             
             if s==1
