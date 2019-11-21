@@ -51,11 +51,13 @@ sets_complete = all(in_this_set,2)==1;
 
 if all(in_this_set(:))
     DQ_ok = 1;
+    write_out = 0;
 else
     DQ_ok = 0;
+    write_out = 1;
 end
 
-write_out = 1;
+
 if write_out
     str{1} = ['There are ' num2str(n_sets) ' sets'];
     str{2} = ['There are ' num2str(n_desired_dqm) ' desired DQ measures'];

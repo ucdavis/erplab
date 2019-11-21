@@ -175,7 +175,7 @@ if write_spreadsheet
     for i = 1:dq_datasize(3)
         sheet_label = ['Bin ' num2str(i)];
         
-        for j = 1:length(dq.times)
+        for j = 1:size(dq.times,1)
             sheet_label = [sheet_label, dq.time_window_labels(j) ];
         end
         

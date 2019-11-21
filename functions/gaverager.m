@@ -364,6 +364,10 @@ if dq_flag == 1
         measure_num = DQ_spec.measures(dqm);
         dq_measure_here = DQ_spec.measure_names{measure_num};
         
+        if isfield(DQ_spec,'method_names') == 0
+            DQ_spec.method_names = {'mean averaged';'RMS averaged'};
+        end
+        
         if isfield(DQ_spec,'str')
             dq.type = DQ_spec.str{dqm};
         else

@@ -307,7 +307,11 @@ end
 DQ_flag = p.Results.DQ_flag;
 if DQ_flag
     DQ_spec = p.Results.DQ_spec;
+    try
     DQ_ok = check_DQ_measures(ALLERP(erpset),DQ_spec.measure_names(DQ_spec.measures));
+    catch
+        DQ_ok = 0;
+    end
     if DQ_ok==0
         warning('Issue with Grand Averager DQ specification?')
     end

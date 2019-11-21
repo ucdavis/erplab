@@ -495,15 +495,17 @@ for i=1:nset
     version_here = ALLEEG(setindex(i)).EVENTLIST.version(1:3);
     versions_match = isequal(version_here,cversion(1:3));
     if ~versions_match && iswarn==1
-        question = ['It seems Dataset %g was created from another ERPLAB version.\n'...
-            'ERPLAB will try to make it compatible with the current version.\n\n'...
-            'Do you want to continue?'];
-        title    = ['ERPLAB: erp_loaderp() for version: ' ALLEEG(setindex(i)).EVENTLIST.version] ;
-        button = askquest(sprintf(question, setindex(i)), title);
         
-        if ~strcmpi(button,'yes')
-            disp('User selected Cancel')
-            return
+        if str2num(version_here) < 7
+            question = ['It seems Dataset %g was created from another ERPLAB version.\n'...
+                'ERPLAB will try to make it compatible with the current version. Do you want to continue?'];
+            title    = ['ERPLAB dataset is old version ' ALLEEG(setindex(i)).EVENTLIST.version] ;
+            button = askquest(sprintf(question, setindex(i)), title);
+            
+            if ~strcmpi(button,'yes')
+                disp('User selected Cancel')
+                return
+            end
         end
     elseif ~strcmp(ALLEEG(setindex(i)).EVENTLIST.version, cversion) && iswarn==0
         fprintf('\n\nWARNING:\n')
