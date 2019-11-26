@@ -62,8 +62,14 @@ if exist('filename','var') == 0 || isempty(filename)
     pick_str = 'Save Data Quality to file. Pick path:';
     [picked_file, picked_path] = uiputfile(format_options,pick_str);
     filename = [picked_path picked_file];
+    if isequal(picked_path,0)
+        disp('File path selected is not valid. Cancelling file write.')
+        return
+    end
     %filename = [ERP.filepath filesep ERP.erpname '_dataquality.' format];
     [fpath, fname, ext] = fileparts(filename);
+    
+    
     format = ext(isstrprop(ext,'alpha')); % with picked file, set format to letters of chosen type
     
 end

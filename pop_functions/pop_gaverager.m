@@ -342,6 +342,8 @@ end
 %
 msg2end
 
+% Construct the History string
+% load with the appropriate input args
 skipfields = {'ALLERP', 'Saveas', 'Warning','History'};
 if isstruct(ALLERP) && optioni~=1 % from files
     DATIN =  inputname(1);
@@ -359,11 +361,25 @@ for q=1:length(fn)
     fn2com = fn{q};
     if ~ismember_bc2(fn2com, skipfields)
         fn2res = p.Results.(fn2com);
-        if ~isempty(fn2res)
-            if ischar(fn2res)
-                if ~strcmpi(fn2res,'off')
-                    erpcom = sprintf( '%s, ''%s'', ''%s''', erpcom, fn2com, fn2res);
+        % Examine the variable type for the argument used, load that in to
+        % the History string appropriately
+        arg_value_here = fn2res;
+        if isempty(arg_value_here)
+            write_this_one = 0;
+        else
+            if ischar(arg_value_here)
+                if strcmpi(fn2res,'off')
+                    write_this_one = 0;
                 end
+            else
+                write_this_one = 1;
+            end
+        end
+        
+        if write_this_one  % if an argument value is not empty
+            
+            if ischar(fn2res)
+                fnformat = '%s'; fn2resstr = fn2res;
             elseif isnumeric(fn2res)
                 fn2resstr = num2str(fn2res); fnformat = '%s';
             elseif isstruct(fn2res)
@@ -379,6 +395,7 @@ for q=1:length(fn)
                 fn2resstr = vect2colon(fn2res, 'Sort','on');
                 fnformat = '%s';
             end
+            
             if strcmpi(fn2com,'Criterion')
                 if p.Results.Criterion<100
                     erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
