@@ -55,8 +55,9 @@
 % The value for the parameter 'Measure' can be either of the following:
 %
 % 'instabl'     - finds the relative-to-baseline instantaneous value at the specified latency.
-% 'peakbl'      - finds the relative-to-baseline peak (or valley) value between two latencies.
 % 'meanbl'      - calculates the relative-to-baseline mean amplitude value between two latencies.
+% 'peakampbl'   - finds the relative-to-baseline peak (or valley) value between two latencies.
+% 'peaklatbl'   - finds the time at which the relative-to-baseline peak (or valley) value between two latencies occurs.
 % 'area'        - calculates the area under the curve value between two latencies.
 % 'areaz'       - calculates the area under the curve value. Lower and upper
 %                 limit of integration area automatically found with a user

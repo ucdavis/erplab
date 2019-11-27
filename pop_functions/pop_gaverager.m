@@ -396,6 +396,7 @@ for q=1:length(fn)
                 fnformat = '%s';
             end
             
+            
             if strcmpi(fn2com,'Criterion')
                 if p.Results.Criterion<100
                     erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
