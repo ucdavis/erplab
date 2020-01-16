@@ -22,7 +22,7 @@ function varargout = gui_remove_response_mistakes(varargin)
 
 % Edit the above text to modify the response to help gui_remove_response_mistakes
 
-% Last Modified by GUIDE v2.5 13-Jan-2020 13:59:24
+% Last Modified by GUIDE v2.5 14-Jan-2020 17:17:36
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -86,15 +86,19 @@ end
 all_ev_unique = unique(all_ev);
 all_ev_unique(isnan(all_ev_unique)) = [];
 
+handles.all_ev_unique = all_ev_unique;
+
 handles.uitable_events.Data = all_ev_unique';
 
-
+handles.stim_codes = [];
+handles.resp_codes = [];
+handles.output = [handles.stim_codes,handles.resp_codes];
 
 % Update handles structure
 guidata(hObject, handles);
 
 % UIWAIT makes gui_remove_response_mistakes wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.remove_response_mistake_GUI);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -105,7 +109,20 @@ function varargout = gui_remove_response_mistakes_OutputFcn(hObject, eventdata, 
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+if isfield(handles,'stim_codes')
+    % default output on 'Apply'
+    varargout{1} = handles.stim_codes;
+    varargout{2} = handles.resp_codes;
+    
+    delete(handles.remove_response_mistake_GUI);
+else
+    % forced closed already, no handles left
+    varargout{1} = [];
+    varargout{2} = [];
+ 
+end
+
+
 
 
 
@@ -116,6 +133,30 @@ function edit_stim_codes_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_stim_codes as text
 %        str2double(get(hObject,'String')) returns contents of edit_stim_codes as a double
+
+% on the user entering a string, we want to sanitize it, and save the list
+% of numbers as a vector
+str_here = get(hObject,'String');
+regex_target = ',';
+
+split_str = regexp(str_here,regex_target,'split');
+%disp(split_str)
+
+stim_codes_entered = str2double(split_str);
+
+% are these valid?
+stim_codes_match = ismember(stim_codes_entered,handles.all_ev_unique);
+
+if any(stim_codes_match) == 0
+    beep
+    warning('Please check stim codes -- some not found in this EEG set')
+end
+
+handles.stim_codes = stim_codes_entered;
+% Update handles structure
+guidata(hObject, handles);
+
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -140,6 +181,26 @@ function edit_resp_codes_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit_resp_codes as text
 %        str2double(get(hObject,'String')) returns contents of edit_resp_codes as a double
 
+str_here = get(hObject,'String');
+regex_target = ',';
+
+split_str = regexp(str_here,regex_target,'split');
+%disp(split_str)
+
+resp_codes_entered = str2double(split_str);
+
+% are these valid?
+resp_codes_match = ismember(resp_codes_entered,handles.all_ev_unique);
+
+if any(resp_codes_match) == 0
+    beep
+    warning('Please check resp codes -- some not found in this EEG set')
+end
+
+handles.resp_codes = resp_codes_entered;
+% Update handles structure
+guidata(hObject, handles);
+
 
 % --- Executes during object creation, after setting all properties.
 function edit_resp_codes_CreateFcn(hObject, eventdata, handles)
@@ -152,3 +213,55 @@ function edit_resp_codes_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton_cancel.
+function pushbutton_cancel_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_cancel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.stim_codes = [];
+handles.resp_codes = [];
+handles.output = [handles.stim_codes,handles.resp_codes];
+
+uiresume(handles.remove_response_mistake_GUI);
+% Hint: delete(hObject) closes the figure
+delete(hObject);
+
+
+
+% --- Executes on button press in pushbutton_help.
+function pushbutton_help_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_help (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+web https://github.com/lucklab/erplab/wiki/ -browser
+
+
+% --- Executes on button press in pushbutton_apply.
+function pushbutton_apply_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_apply (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Update handles structure
+guidata(hObject, handles);
+
+uiresume(handles.remove_response_mistake_GUI);
+%delete(handles.remove_response_mistake_GUI);
+
+
+% --- Executes when user attempts to close remove_response_mistake_GUI.
+function remove_response_mistake_GUI_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to remove_response_mistake_GUI (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.stim_codes = [];
+handles.resp_codes = [];
+handles.output = [handles.stim_codes,handles.resp_codes];
+
+uiresume(handles.remove_response_mistake_GUI);
+% Hint: delete(hObject) closes the figure
+delete(hObject);
+delete(handles.remove_response_mistake_GUI);
