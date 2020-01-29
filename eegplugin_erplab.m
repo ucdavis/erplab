@@ -222,7 +222,7 @@ menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
 % ARTIFACT DETECTION FOR CONTINUOUS DATA callback
 %
 comTrim   = [trystrs.no_check '[EEG, LASTCOM]   = pop_eegtrim(EEG);' catchstrs.new_and_hist ];
-comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.new_and_hist ];
+comREJCON = [trystrs.no_check '[EEG, LASTCOM] = pop_continuousartdet(EEG);' catchstrs.new_and_hist];
 comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG);'              catchstrs.new_and_hist];
 comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
 comRemoveResponseMistakes = [trystrs.no_check '[ALLEEG,EEG,LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,CURRENTSET);' catchstrs.new_and_hist];
