@@ -303,12 +303,25 @@ else
 end
 
 
-% check DQ - are all requested
+% check DQ - are all requested measures present?
 DQ_flag = p.Results.DQ_flag;
+% If loading from text file list, load the ERPs back in to Temp-ALLERP
+if optioni==1   % if from text file
+    for s = 1:nfile
+        %fprintf('Loading %s...\n', lista{s});
+        ERPTX = load(lista{s}, '-mat');
+        TALLERP(s) = ERPTX.ERP;
+    end
+end
 if DQ_flag
     DQ_spec = p.Results.DQ_spec;
     try
-    DQ_ok = check_DQ_measures(ALLERP(erpset),DQ_spec.measure_names(DQ_spec.measures));
+        if optioni==0   % if not loaded from text file list
+            DQ_ok = check_DQ_measures(ALLERP(erpset),DQ_spec.measure_names(DQ_spec.measures));
+        else
+            DQ_ok = check_DQ_measures(TALLERP,DQ_spec.measure_names(DQ_spec.measures));
+        end
+        
     catch
         DQ_ok = 0;
     end

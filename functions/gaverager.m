@@ -357,6 +357,14 @@ if dq_flag == 0
     ERP.dataquality = [];
     ERP.dataquality.type = 'empty'; ERP.dataquality.times = []; ERP.dataquality.data = []; ERP.dataquality.time_window_labels = {}; ERP.dataquality.comments = [];
 end
+% If loading from text file list, load the ERPs back in to Temp-ALLERP
+if optioni==1   % if from text file
+    for s = 1:nfile
+        fprintf('Loading %s...\n', lista{s});
+        ERPTX = load(lista{s}, '-mat');
+        TALLERP(s) = ERPTX.ERP;
+    end
+end
 if dq_flag == 1
     dq_error = 0;
     for dqm = 1:numel(DQ_spec.measures)  % loop thru the desired measure in DQ_spec to be combined
@@ -377,7 +385,11 @@ if dq_flag == 1
         
         for s = 1:nfile
             types_here  = [];
-            ERPT = ALLERP(erpset(s));
+            if optioni==1 % if from text file, load ERPT from TALLERP
+                ERPT  = TALLERP(s);
+            else   % if from ALLERP, get it from there
+                ERPT = ALLERP(erpset(s));
+            end
             for dqm_sub = 1:numel(ERPT.dataquality)
                 types_here{dqm_sub} = ERPT.dataquality(dqm_sub).type;
             end
