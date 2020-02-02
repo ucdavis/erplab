@@ -35,7 +35,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -89,7 +89,7 @@ try
                 % transpose and write to disk
                 %
                 strbindescr = ERP.bindescr{binArray(ibin)};
-                strbindescr = regexprep(strbindescr,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters
+                strbindescr = regexprep(strbindescr,'\\|\/|\*|\#|\$|\@|\:','_'); % replace forbidden characters
                 binfilename = [ prefname2 '_'  strbindescr  ext ]; % ...and add ext
                 fid = fopen(binfilename, 'w');
                 
