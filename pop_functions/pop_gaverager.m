@@ -327,6 +327,7 @@ if DQ_flag
     end
     if DQ_ok==0
         warning('Issue with Grand Averager DQ specification?')
+        DQ_spec = [];
     end
 else
     DQ_spec = [];
