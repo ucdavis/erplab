@@ -306,11 +306,18 @@ end
 % check DQ - are all requested measures present?
 DQ_flag = p.Results.DQ_flag;
 % If loading from text file list, load the ERPs back in to Temp-ALLERP
-if optioni==1   % if from text file
-    for s = 1:nfile
-        %fprintf('Loading %s...\n', lista{s});
-        ERPTX = load(lista{s}, '-mat');
-        TALLERP(s) = ERPTX.ERP;
+if optioni==1  && DQ_flag % if from text file
+    try % try loading, report if error, and drop dq
+        for s = 1:nfile
+            %fprintf('Loading %s...\n', lista{s});
+            
+            ERPTX = load(lista{s}, '-mat');
+            TALLERP(s) = ERPTX.ERP;
+            
+        end
+    catch
+        warning('Dataquality measures not found in all these ERPsets. Setting DQ_flag = 0');
+        DQ_flag = 0;
     end
 end
 if DQ_flag

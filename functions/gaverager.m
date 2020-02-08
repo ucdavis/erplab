@@ -358,7 +358,7 @@ if dq_flag == 0
     ERP.dataquality.type = 'empty'; ERP.dataquality.times = []; ERP.dataquality.data = []; ERP.dataquality.time_window_labels = {}; ERP.dataquality.comments = [];
 end
 % If loading from text file list, load the ERPs back in to Temp-ALLERP
-if optioni==1   % if from text file
+if optioni==1 && dq_flag == 1  % if from text file
     for s = 1:nfile
         fprintf('Loading %s...\n', lista{s});
         ERPTX = load(lista{s}, '-mat');
