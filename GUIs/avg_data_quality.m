@@ -254,7 +254,7 @@ end
 
 function pushbutton_help_Callback(hObject, eventdata, handles)
 % doc pop_averager
-web https://github.com/lucklab/erplab/wiki/Computing-Averaged-ERPs -browser
+web('https://github.com/lucklab/erplab/wiki/Computing-Averaged-ERPs#data-quality-measures', '-browser');
 
 
 % --- Executes when user attempts to close avg_dq.

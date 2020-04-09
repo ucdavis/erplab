@@ -382,7 +382,7 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % doc pop_gaverager
-web('https://github.com/lucklab/erplab/wiki/', '-browser');
+web('https://github.com/lucklab/erplab/wiki/Averaging-Across-ERPSETS-(Creating-Grand-Averages)#grand-average-data-quality', '-browser');
 
 
 % --- Executes on button press in pushbutton_cancel.
