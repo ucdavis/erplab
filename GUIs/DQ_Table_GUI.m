@@ -27,11 +27,11 @@ function varargout = DQ_Table_GUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @DQ_Table_GUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @DQ_Table_GUI_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @DQ_Table_GUI_OpeningFcn, ...
+    'gui_OutputFcn',  @DQ_Table_GUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -84,9 +84,20 @@ handles.popupmenu_DQ_type.Value = n_dq;
 
 [n_elec, n_tw, n_bin] = size(ERP.dataquality(n_dq).data);
 
-for i=1:n_bin
-    bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+n_bin_names = numel(ERP.bindescr);
+if n_bin_names == n_bin
+    
+    for i=1:n_bin
+        bin_names{i} = ['BIN ' num2str(i) ' - ' ERP.bindescr{i}];
+    end
+else
+    % if not every bin has a bin description, leave then off
+    for i=1:n_bin
+        bin_names{i} = ['BIN ' num2str(i)];
+    end
 end
+
+
 handles.popupmenu_bin.String = bin_names;
 
 % handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
@@ -97,7 +108,7 @@ table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
 handles.dq_table.Data = table_data;
 
 % electrode labels from ERPset, iff present and number matches
-if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec   
+if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
     for i=1:n_elec
         elec_labels{i} = ERP.chanlocs(i).labels;
     end
@@ -129,7 +140,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = DQ_Table_GUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = DQ_Table_GUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB

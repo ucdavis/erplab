@@ -2,7 +2,7 @@
 %
 % FORMAT:
 %
-% [ERP EVENTLIST countbiORI countbinINV countbinOK countflags workfiles] = averager(EEG, artcrite, stderror)
+% [ERP EVENTLIST countbiORI countbinINV countbinOK countflags workfiles, epoch_list] = averager(EEG, artcrite, stderror)
 %
 % Inputs:
 %
@@ -25,6 +25,7 @@
 % countbinOK      - number of good epochs per bin
 % countflags      - flag counter
 % workfiles       - cell array containing the averaged bin-epoched dataset setnames
+% epoch_list      - a structure with the list of epochs going in to each bin. For each bin X, epoch_list(X).good_bep_indx has the bepoch index that contribute to that bin.
 %
 %
 % See also pop_averager pop_appenderp

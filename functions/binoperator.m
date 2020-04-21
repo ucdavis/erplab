@@ -640,7 +640,7 @@ else
                                                 ERPout.chanlocs(s).labels = LABEL{s};
                                         end
                                 else
-                                    disp('aqui')
+                                    %disp('aqui')
                                         ERPout.chanlocs = ERPin.chanlocs;
                                 end
                                 
