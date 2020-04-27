@@ -304,7 +304,7 @@ p.addParamValue('Neighborhood', 0, @isnumeric);
 p.addParamValue('Peakreplace', 'NaN');
 p.addParamValue('Fracreplace', 'NaN');
 p.addParamValue('Warning', 'off', @ischar);
-p.addParamValue('Filename', 'tempofile.txt', @ischar); %output file
+p.addParamValue('Filename', 'tempofile.no_save', @ischar); %output file
 p.addParamValue('Append', 'off', @ischar);      %
 p.addParamValue('Afraction', 0.5, @isnumeric);  %
 p.addParamValue('FileFormat', 'long', @ischar); %output format
@@ -913,9 +913,12 @@ if viewmea==1
                 return
         end
 end
-if send2ws==0 && viewmea==0
-        disp(['An output file with your measuring work was create at <a href="matlab: open(''' fname ''')">' fname '</a>'])
+
+
+if send_to_file
+    disp(['An output file with your measuring work was create at <a href="matlab: open(''' fname ''')">' fname '</a>'])
 end
+
 
 %
 % Completion statement

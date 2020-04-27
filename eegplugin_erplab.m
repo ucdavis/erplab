@@ -1,16 +1,16 @@
-% Author: Javier Lopez-Calderon & Steven Luck
+% Author: Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2007-2010
+% 2007-2020
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright � 2007 The Regents of the University of California
+% Copyright 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
-% javlopez@ucdavis.edu, sjluck@ucdavis.edu
+% erplabtoolbox@gmail.com, sjluck@ucdavis.edu
 %
 % This program is free software: you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by

@@ -19,7 +19,7 @@ for i=1:dq_n
     end
     
     
-    dq(i).valid = 0;
+    %dq(i).valid = 0;
     
     if isfield(dq(i),'comments') == 0
         dq(i).comments = 'Measure cleared - dataset transformation rendered the data no longer valid;';
@@ -29,6 +29,6 @@ for i=1:dq_n
     
 end
 
-disp('Data quality measures cleared - dataset transformation rendered these measures no longer valid')
+disp('Data quality measures cleared - dataset transformation rendered these measures stale')
 
 ERP.dataquality = dq;
