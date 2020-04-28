@@ -3,10 +3,12 @@
 % FORMAT   :
 %
 % EEG = epoch2continuous(EEG);
+%   or EEG2 = pop_epoch2continuous(EEG,'Warning','off');
 %
 % INPUTS   :
 %
 % EEG          	- epoched EEG dataset
+% Warning       - String specifying popup warning status. 'on' for on.
 %
 % OUTPUTS
 %
