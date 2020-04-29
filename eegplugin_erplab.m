@@ -480,7 +480,7 @@ uimenu( submenu,'Label','EEG Channel operations','CallBack',comCHOP,'separator',
 
 %% FREQUENCY TOOLS & FILTERS EEG/ERP submenus
 %
-mFI = uimenu( submenu,'Label','Filter & Frequency Tools','separator','on','userdata','startup:off;continuous:on;epoch:on;study:on;erpset:on');
+mFI = uimenu( submenu,'Label','Filter & Frequency Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mFI,'Label','Filters for EEG data ','CallBack',comBFCD,'userdata','startup:off;continuous:on;epoch:on;study:on;erpset:off');
 uimenu( mFI,'Label','Plot amplitude spectrum for EEG data ','CallBack', comPAS,'userdata','startup:off;continuous:on;epoch:on;study:off;erpset:off');
 uimenu( mFI,'Label','Filters for ERP data ','CallBack',comFil,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
