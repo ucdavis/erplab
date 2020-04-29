@@ -58,15 +58,17 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 
 With ERPLAB v8.0, we include new tools for [assessing measures of Data Quality Metrics in EEG ERP data](https://github.com/lucklab/erplab/wiki/ERPLAB-Data-Quality-Metrics).
 
-- The ERP Averager will calculate these Data Quality Metrics by default
-- A new submenu in the ERPLAB menu ('Data Quality options') allows access from the EEGLAB-ERPLAB GUI.
-- A new table interface to show all the data quality information from an ERP set with `DQ_Table_GUI(ERP)` or through the above GUI menu option.
-- These data quality metrics can be summarized on the Command Window, saved to Mat structure or exported to Excel, or plotted in the above interactive table.
-- The data quality information and metadata is stored in a new structure, ERP.dataquality
-
+- Data Quality Metrics
+   - The ERP Averager will calculate these Data Quality Metrics by default
+   - A new submenu in the ERPLAB menu ('Data Quality options') allows access from the EEGLAB-ERPLAB GUI.
+   - A new table interface to show all the data quality information from an ERP set with `DQ_Table_GUI(ERP)` or through the above GUI menu option.
+   - These data quality metrics can be summarized on the Command Window, saved to Mat structure or exported to Excel, or plotted in the above interactive table.
+   - The data quality information and metadata is stored in a new structure, ERP.dataquality
+<br/>
 
 - New options for calculating, viewing, and saving, frequency spectra, in the `compute_fourier(EEG)` [function](https://github.com/lucklab/erplab/wiki/Generate-Frequency-Spectra)
 
+<br/>
 
 - Various [bugfixes](https://github.com/lucklab/erplab/commits/master)
 
