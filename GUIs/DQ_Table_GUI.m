@@ -169,7 +169,25 @@ function popupmenu_DQ_type_Callback(hObject, eventdata, handles)
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
 selected_bin = handles.popupmenu_bin.Value;
 
-table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+% Check data exists, plot
+if isempty(handles.ERP.dataquality(selected_DQ_type).data)
+    
+    % if pointwise SEM, use ERP.binerror
+    if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM') && isempty(handles.ERP.binerror) == 0
+        table_data = handles.ERP.binerror(:,:,selected_bin);
+    else
+        
+        % Data empty here.
+        table_data = nan(1);
+        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+    end
+    
+else
+    % data is present and correct
+    table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+end
+
+
 handles.dq_table.Data = table_data;
 
 % Time-window labels
@@ -181,6 +199,8 @@ if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ER
     tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
 elseif isempty(ERP.dataquality(selected_DQ_type).times)
     tw_labels = [];
+elseif n_tw == 0  % some data problem, no tw here
+    tw_labels{1} = 'No data here - measure cleared?';
 else
     for i=1:n_tw
         tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
@@ -214,7 +234,25 @@ function popupmenu_bin_Callback(hObject, eventdata, handles)
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
 selected_bin = handles.popupmenu_bin.Value;
 
-table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+% Check data exists, plot
+if isempty(handles.ERP.dataquality(selected_DQ_type).data)
+    
+    % if pointwise SEM, use ERP.binerror
+    if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM') && isempty(handles.ERP.binerror) == 0
+        table_data = handles.ERP.binerror(:,:,selected_bin);
+    else
+        
+        % Data empty here.
+        table_data = nan(1);
+        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
+    end
+    
+else
+    % data is present and correct
+    table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
+end
+
+
 handles.dq_table.Data = table_data;
 
 
@@ -253,6 +291,8 @@ if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ER
     tw_labels = ERP.dataquality(selected_DQ_type).time_window_labels;
 elseif isempty(ERP.dataquality(selected_DQ_type).times)
     tw_labels = [];
+elseif n_tw == 0  % some data problem, no tw here
+    tw_labels{1} = 'No data here - measure cleared?';
 else
     for i=1:n_tw
         tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
