@@ -112,8 +112,9 @@ if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
     for i=1:n_elec
         elec_labels{i} = ERP.chanlocs(i).labels;
     end
-else
-    for i=1:n_elec
+else 
+
+    for i=1:ERP.nchan
         elec_labels{i} = i;
     end
 end
@@ -128,6 +129,9 @@ else
     for i=1:n_tw
         tw_labels{i} = [num2str(ERP.dataquality(selected_DQ_type).times(i,1)) ' : ' num2str(ERP.dataquality(selected_DQ_type).times(i,2))];
     end
+end
+if n_tw == 0
+    tw_labels = 'No data here. Perhaps it was cleared?';
 end
 handles.dq_table.ColumnName = tw_labels;
 
