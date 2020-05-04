@@ -84,6 +84,12 @@ handles.popupmenu_DQ_type.Value = n_dq;
 
 [n_elec, n_tw, n_bin] = size(ERP.dataquality(n_dq).data);
 
+if n_elec == 0
+    % if the dq data is of zero size, then the 3rd dim may be mis-sized.
+    % So set to default of ERP.nbin instead.
+    n_bin = ERP.nbin;
+end
+
 n_bin_names = numel(ERP.bindescr);
 if n_bin_names == n_bin
     
