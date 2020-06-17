@@ -266,26 +266,13 @@ function editbox_ignoreEventCodes_Callback(hObject, eventdata, handles)
 
 ec = get(hObject,'String');
 
-if contains(ec,':')
-    where_col = strfind(ec,':');
-    if numel(where_col)>1
-        beep
-        error('Ranges like 1:3 need only 1 colon');
-        where_col=where_col(1);
-    end
-    part1 = ec(1:where_col-1);
-    part2 = ec(where_col+1:end);
-    
-    pause(0.1) % skip a beat to allow elegant redrawing of range to field
-    ec = str2double(part1) : str2double(part2);
-    ec = num2str(ec);
-end
-    
+ec = colonrange2num(ec);
+
 % Strip any non-numeric token and replace w/ whitespace (' ')
 editString               = regexprep(ec, '[\D]', ' ');
 
 
-handles.ignoreUseEventcodes = str2num(editString);  %#ok<ST2NM>
+handles.ignoreUseEventcodes = str2num(editString)  %#ok<ST2NM>
 
 % Display corrected eventcode string back to GUI
 set(handles.editbox_ignoreEventCodes, 'String', editString);
