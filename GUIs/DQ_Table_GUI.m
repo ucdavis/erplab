@@ -22,7 +22,7 @@ function varargout = DQ_Table_GUI(varargin)
 
 % Edit the above text to modify the response to pushbutton_help DQ_Table_GUI
 
-% Last Modified by GUIDE v2.5 15-Oct-2019 17:13:28
+% Last Modified by GUIDE v2.5 05-Aug-2020 04:05:17
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -112,6 +112,7 @@ selected_bin = handles.popupmenu_bin.Value;
 
 table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
 handles.dq_table.Data = table_data;
+handles.orig_data = table_data;
 
 % electrode labels from ERPset, iff present and number matches
 if isfield(ERP.chanlocs,'labels') && numel(ERP.chanlocs) == n_elec
@@ -145,6 +146,7 @@ handles.dq_table.ColumnName = tw_labels;
 desired_fontsize = erpworkingmemory('fontsizeGUI');
 handles.dq_table.FontSize = desired_fontsize;
 
+handles.heatmap_on = 0;
 
 % Update handles structure
 handles.ERP = ERP;
@@ -204,6 +206,7 @@ end
 
 
 handles.dq_table.Data = table_data;
+handles.orig_data = table_data;
 
 % Time-window labels
 clear tw_labels
@@ -222,6 +225,13 @@ else
     end
 end
 handles.dq_table.ColumnName = tw_labels;
+
+if handles.heatmap_on
+    redraw_heatmap(hObject, eventdata, handles);
+end
+% Update handles structure
+guidata(hObject, handles);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -269,6 +279,14 @@ end
 
 
 handles.dq_table.Data = table_data;
+handles.orig_data = table_data;
+
+if handles.heatmap_on
+    redraw_heatmap(hObject, eventdata, handles);
+end
+
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -296,6 +314,7 @@ selected_bin = handles.popupmenu_bin.Value;
 
 table_data = handles.ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
 handles.dq_table.Data = table_data;
+handles.orig_data = table_data;
 
 % Time-window labels
 clear tw_labels
@@ -315,6 +334,14 @@ else
 end
 handles.dq_table.ColumnName = tw_labels;
 
+if handles.heatmap_on
+    redraw_heatmap(hObject, eventdata, handles);
+end
+
+
+ % Update handles structure
+ guidata(hObject, handles);
+
 
 % --- Executes on button press in pushbutton_xls.
 function pushbutton_xls_Callback(hObject, eventdata, handles)
@@ -324,6 +351,7 @@ function pushbutton_xls_Callback(hObject, eventdata, handles)
 empty_filename = [];
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
 save_data_quality(handles.ERP,empty_filename,'xls',selected_DQ_type)
+
 
 
 % --- Executes on button press in pushbutton_mat.
@@ -361,3 +389,64 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 % Hint: delete(hObject) closes the figure
 delete(hObject);
+
+
+% --- Executes on button press in checkbox_heatmap.
+function checkbox_heatmap_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_heatmap (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_heatmap
+heatmap_on = get(hObject,'Value');
+
+if heatmap_on == 1
+    handles.heatmap_on = 1;
+    redraw_heatmap(hObject, eventdata, handles);
+    
+else
+    handles.heatmap_on = 0;
+    clear_heatmap(hObject, eventdata, handles);
+    
+end
+% Update handles structure
+guidata(hObject, handles);
+    
+
+function redraw_heatmap(hObject, eventdata, handles)
+
+color_map = viridis;
+data = handles.dq_table.Data;
+
+data_min = min(data(:));
+range_val = max(data(:)) - data_min;
+range_colormap = size(color_map,1); % as in, 256 shades?
+val_increase_per_shade = range_val / range_colormap;
+
+% Use this @ anonymous function to make HTML tag in box in loop below
+colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
+
+
+for cell = 1:numel(data)
+    data_here = data(cell);
+    shades_up_here = round((data_here - data_min) / val_increase_per_shade);
+    if shades_up_here < 1
+        shades_up_here = 1;
+    end
+    if shades_up_here > range_colormap
+        shades_up_here = range_colormap;
+    end
+    RGB_here = color_map(shades_up_here,:);
+    hex_color_here = ['#' dec2hex(round(255*RGB_here(1)),2) dec2hex(round(255*RGB_here(2)),2) dec2hex(round(255*RGB_here(3)),2)];
+    data2{cell} = colergen(hex_color_here,num2str(data_here));
+end
+
+data2 = reshape(data2,size(data));
+
+handles.dq_table.Data = data2;
+
+
+
+function clear_heatmap(hObject, eventdata, handles)
+handles.dq_table.Data = handles.orig_data;
+
