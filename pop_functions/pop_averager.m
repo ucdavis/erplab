@@ -104,9 +104,16 @@ if nargin==1
     
     % read values in memory for this function
     def  = erpworkingmemory('pop_averager');
-    if isempty(def)
-        def = {1 1 1 1 1 0 0 [] 1 []};
+    % def{1} - dataset indx, def{2} - artcrit, def{3} - wavg, def{4} - stderror, def{5} - exclude boundaries,
+    % def{6} - ERP type, def{7} - wintaper type, def{8} - wintaper function,
+    % def{9} - data quality flag, def{10} - DQ_spec_structure
+    
+    if isempty(def) || numel(def)~=10
+        % Should not be empty, and have exactly 10 elements. Else, fallback to:
+        def = {1 1 1 1 1 0 0 [] 1 []}; 
+        
     end
+    
     
     % epochs per dataset
     nepochperdata = zeros(1, length(ALLEEG));

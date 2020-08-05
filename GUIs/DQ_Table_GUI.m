@@ -141,6 +141,11 @@ if n_tw == 0
 end
 handles.dq_table.ColumnName = tw_labels;
 
+% Set font size of DQ Table
+desired_fontsize = erpworkingmemory('fontsizeGUI');
+handles.dq_table.FontSize = desired_fontsize;
+
+
 % Update handles structure
 handles.ERP = ERP;
 guidata(hObject, handles);

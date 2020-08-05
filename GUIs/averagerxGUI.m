@@ -85,7 +85,7 @@ catch
     artcrite = 1;
     %wavg     = 1;
     stderror = 1;
-    excbound = 0;
+    excbound = 1;
     compu2do = 0; % 0:ERP; 1:ERP+TPS; 2:ERP+EPS; 3:ERP+BOTH
     wintype  = 0; % taper data with window: 0=no taper
     wintfunc = [];
