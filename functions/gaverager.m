@@ -317,7 +317,9 @@ if wavg || exclunullbin % weighted or exclude null bins
                 if nnz(insqrt<0)>0
                     ERP.binerror(:,:,bb) = zeros(nch,npnts,1);
                 else
-                    ERP.binerror(:,:,bb) = (1/naccepted(bb))*sqrt(insqrt);
+                    %ERP.binerror(:,:,bb) = (1/naccepted(bb))*sqrt(insqrt);
+                    sample_SD_rearrange = sqrt((sumERP2(:,:,bb) - nfile*ERP.bindata(:,:,bb).^2)/(nfile-1)); % get ERP's standard deviation
+                    ERP.binerror(:,:,bb)  = sample_SD_rearrange./sqrt(nfile) ; % ERP stderror
                 end
             end
         else
@@ -331,7 +333,15 @@ else % classic
     ERP.bindata = sumERP./nfile; % get ERP!  --> general sum is divided by the number of files (erpsets)
     if stderror
         fprintf('\nEstimating standard error of the mean...\n');
-        ERP.binerror  = sqrt(sumERP2.*(1/nfile) - ERP.bindata.^2) ; % ERP stderror
+        
+        % Let's calculate the Grand Average SEM is a more clear way
+        % We already have the sum_datapoints_square in sumERP2
+        % So let's rearrange the sample Standard Deviation equation to:
+        for k=1:pre_nbin
+            
+            sample_SD_rearrange = sqrt((sumERP2(:,:,k) - nfile*ERP.bindata(:,:,k).^2)/(nfile-1)); % get ERP's standard deviation
+            ERP.binerror(:,:,k)  = sample_SD_rearrange./sqrt(nfile) ; % ERP stderror
+        end
     end
 end
 

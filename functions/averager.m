@@ -371,8 +371,26 @@ for k=1:nbin
         % Standard deviation/error
         %
         if stderror
-            ERP.binerror(:,:,k) = sqrt((1/(N-1))*sumERP2(:,:,k) - ERP.bindata(:,:,k).^2)./sqrt(N); % get ERP's standard error
+            %ERP.binerror(:,:,k) = sqrt((1/(N-1))*sumERP2(:,:,k) - ERP.bindata(:,:,k).^2)./sqrt(N); % get ERP's standard error
             %ERP.binerror(:,:,k) = sqrt((1/(N-1))*sumERP2(:,:,k) - ERP.bindata(:,:,k).^2); % get ERP's standard deviation
+            
+            % Let's compute ERP Standard Error in a more transparent way -
+            % axs, Nov 2020
+            % The number of valid bins is the N here
+            % The ERP mean at each electrode and datapoint for bin k is in ERP.bindata(:,:,k)
+            %
+            % The Standard Error is sample SD / squareroot(N)
+            % or SE = SD / sqrt(N)
+            %
+            % The sample Standard Deviation is
+            % squareroot(1/(N-1)*sum_of_all(datapoints-mean)^2)
+            %
+            % Since we already have the sum_of_all(datapoints)^2 in sumERP2
+            % Let's rearrange SD as:
+            sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-1)); % get ERP's standard deviation
+            
+            % The Standard Error of the Mean is then:
+            ERP.binerror(:,:,k) = sample_SD_rearrange./sqrt(N); % get ERP's standard error
         end
         if ~iscell(artcrite)
             prejectedT = (countbiORI(1,k) - countbinOK(1,k))*100/countbiORI(1,k);  %19 sept 2008
