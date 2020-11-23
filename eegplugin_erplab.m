@@ -390,7 +390,7 @@ comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(
 % Create ERPLAB menu
 %
 submenu = uimenu( menuERPLAB,'Label','ERPLAB','separator','on','tag','ERPLAB','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-set(submenu,'position', 6); % thanks Arno!
+% set(submenu,'position', 8); % thanks Arno! % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
 
 erpverMenu = uimenu( submenu,                              ...
     'Label'    , [' *** ERPLAB v' erplabver ' ***'],               ...
@@ -658,7 +658,7 @@ uimenu( mhelp,'Label','Submit an issue report on the ERPLAB GitHub page','CallBa
 %% CREATE ERPset MAIN MENU
 %
 erpmenu = uimenu( menuERPLAB,'Label','ERPsets','separator','on','tag','erpsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-set(erpmenu,'position', 7);
+%set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
 set(erpmenu,'enable','off');
 
 
