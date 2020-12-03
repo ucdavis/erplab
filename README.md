@@ -1,17 +1,17 @@
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users.
 
-## ERPLAB v8.01
+## ERPLAB v8.10
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/8.01/erplab8.01.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/8.10/erplab8.10.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v8.01, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v8.10, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
 
@@ -23,13 +23,10 @@ We encourage most users to use this latest major version.
 
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
-
 - The Matlab Signal Processing Toolbox is required
-  - Entering in the command `ver` in the Command Window will produce a list of installed toolboxes. Check this list to see whether the Signal Processing Toolbox is installed
 - [EEGLAB v12 or later](https://sccn.ucsd.edu/eeglab/download.php) is recommended.
 
 Find [more ERPLAB installation help here](http://erpinfo.org/erplab).
-
 
 
 ### ERPLAB compatibility table
@@ -55,9 +52,27 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 
 
 ## Release Notes
+### ERPLAB v8.10 Release Notes
+Now includes:
+Matlab R2020a compatible - minor EEGLAB menu display bug fixed
+
+Standard Error bug fixed.
+
+Warns if old standard error is used.
+
+Default SEM transparency on ERP plots is 0.7, rather than 0
+
+The Advanced EventList GUI is now viewable on more screens.
+
+We warn and offer help if Signal Processing Toolbox is missing.
+
+### ERPLAB v8.02 Release Notes
+ERPLAB v8.02 adds a colormap to help visualize the Data Quality Table info
+
+### ERPLAB v8.01 Release Notes
 ERPLAB v8.01 adds binorgEEG functions to v8.0
 
-## ERPLAB v8.0 Release Notes
+### ERPLAB v8.0 Release Notes
 
 With ERPLAB v8.0, we include new tools for [assessing measures of Data Quality Metrics in EEG ERP data](https://github.com/lucklab/erplab/wiki/ERPLAB-Data-Quality-Metrics).
 
