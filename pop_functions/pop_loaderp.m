@@ -180,6 +180,7 @@ conti     = 1; % continue?  1=yes; 0=no
 %     ovatmenu = 0;
 % end
 
+file_ERPLAB_versions = nan(nfile,1);
 %
 % load ERPsets(s)
 %
@@ -215,8 +216,11 @@ for i=1:nfile
         % Check (and fix) ERP structure (basic)
         %
         checking = checkERP(ERP);
+        file_ERPLAB_versions(nfile) = str2double(ERP.version);
         
         try
+                
+                
                 if checking
                         if i==1 && isempty(ALLERP);
                                 ALLERP = buildERPstruct([]);
@@ -318,6 +322,12 @@ else
         %             updatemenuerp(ALLERP);
         %       end
 end
+% Show warning if loading old (pre v8.1) ERPs with old SE
+if any(file_ERPLAB_versions<8.1)
+    % if any of the attempted loaded ERPsets is version <8.1
+    warn_old_SE_pre81(shist)
+end
+
 % get history from script. ERP
 switch shist
         case 1 % from GUI

@@ -1289,7 +1289,7 @@ if strcmpi(datatype, 'ERP')
                 %meap          = 1;
                 pstyle         = 3; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
                 errorstd       = 0; % pointer for std factor
-                stdalpha       = 0; % transparency for plotting standard error
+                stdalpha       = 0.7; % transparency for plotting standard error
                 pbox           = squareplot(chanArray, hObject, eventdata, handles);
                 %counterbinwin  = 1;
                 counterwin     = [1 1];

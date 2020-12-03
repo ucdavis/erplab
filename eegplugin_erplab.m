@@ -211,6 +211,7 @@ set(gcf,'position', [posmainfig(1:2) posmainfig(3)*wfactor1 posmainfig(4)]);
 set(hframe,'position', [posframe(1:2) posframe(3)*wfactor2 posframe(4)]);
 
 menuERPLAB = findobj(fig,'tag','EEGLAB');   % At EEGLAB Main Menu
+SignalProcessingToolboxCheck;
 
 
 

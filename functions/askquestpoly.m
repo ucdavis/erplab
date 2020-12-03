@@ -34,8 +34,9 @@ else
         disp(question)
 end
 TXCOLOR = [1 0.9 0.3];
+chill_color = [0.79 0.79 0.68];
 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-set(0,'DefaultUicontrolBackgroundColor', TXCOLOR)
+set(0,'DefaultUicontrolBackgroundColor', chill_color)
 if ~iscell(buttonscell)
         error('ERPLAB says:  error at askquestpoly(). Buttons name must be entered as cellstrings')
 end
