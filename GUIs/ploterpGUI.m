@@ -90,6 +90,8 @@ handles.indxlistb  = [];
 handles.nchan      = nchan;
 handles.nbin       = nbin;
 
+handles.stdalpha = 0.7;
+
 %
 % Color GUI
 %
@@ -424,6 +426,7 @@ if get(hObject,'Value')
                 set(handles.checkbox_stdev,'Value', 1)
                 set(handles.popupmenu_std_factor,'Enable','on')
                 set(handles.popupmenu_transpa,'Enable','on')
+                set(handles.popupmenu_transpa,'Value', round(handles.stdalpha*10)+1)
                 valf = get(handles.popupmenu_std_factor,'Value');
                 if valf==1
                         set(handles.popupmenu_std_factor,'Value',2)
@@ -1398,7 +1401,7 @@ else
                 %meap          = 1;
                 pstyle         = 1; % 1 =matlab style 1; 2 =matlab style 2; 3= classic; 4= topographic
                 errorstd       = 0; % pointer for std factor
-                stdalpha       = 0; % transparency for plotting standard error
+                stdalpha       = 0.7; % transparency for plotting standard error
                 pbox           = squareplot(chanArray, hObject, eventdata, handles);
                 %counterbinwin  = 1;
                 counterwin     = [1 1];
