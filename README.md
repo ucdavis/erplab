@@ -25,6 +25,7 @@ We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EE
 
 - The Matlab Signal Processing Toolbox is required
 - [EEGLAB v12 or later](https://sccn.ucsd.edu/eeglab/download.php) is recommended.
+- A screen resolution with height of more than 720 pixels is recommend.
 
 Find [more ERPLAB installation help here](http://erpinfo.org/erplab).
 
