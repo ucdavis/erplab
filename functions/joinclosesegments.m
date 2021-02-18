@@ -86,7 +86,8 @@ for j=2:nwin
                 else
                         winRej2(m,:)  = [a b];
                         if ~isempty(chanrej)
-                                chanRej2(m,:) = chanrej(j-1);
+                                %chanRej2(m,:) = chanrej(j-1); 
+                                chanRej2(m,:) = chanrej(j-1,:); %ams fix
                         end
                         %                     a = winRej(j,1);
                         %                     b = winRej(j,2);
