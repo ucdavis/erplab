@@ -221,7 +221,7 @@ elseif nargout==2 || nargout==3
                         plow  = a;
                         phigh = b;
                         
-                        while plow < phigh
+                        while plow <= phigh
                                 pmid = round((plow + phigh) / 2);
                                 Ax   = single(Ts*trapz(data(a:pmid)));
                                 

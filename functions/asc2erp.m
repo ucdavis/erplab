@@ -88,16 +88,40 @@ for i=1:nfile
             if timex==1
                   speriod = mode(abs(diff(time)));
                   if timeunit==1E-3
-                        fs = round(1/(speriod/1000));
+                        %fs = round(1/(speriod/1000));
+                         fs = (1/(speriod/1000));%ams adds rounding
+                         if fs < 10
+                             fs = round(fs,2); %two digits 
+                         elseif fs >= 10 && fs <= 100
+                             fs = round(fs,1);
+                         elseif fs > 100
+                             fs = round(fs);
+                         end
                   else
-                        fs = round(1/speriod);
+                        %fs = round(1/speriod);
+                        fs = (1/speriod);%ams
+                        if fs < 10
+                             fs = round(fs,2); %two digits 
+                        elseif fs >= 10 && fs <= 100
+                             fs = round(fs,1);
+                        elseif fs > 100
+                             fs = round(fs);
+                        end    
                   end
             else
                   xmin  = xlim(1); %in msec
                   xmax  = xlim(2); %in msec
                   time  = single(linspace(xmin,xmax,pnts)); % in msec
                   speriod = mode(abs(diff(time)));
-                  fs = round(1/(speriod/1000));
+                  %fs = round(1/(speriod/1000));
+                  fs = (1/(speriod/1000));%ams adds rounding
+                  if fs < 10
+                      fs = round(fs,2); %two digits
+                  elseif fs >= 10 && fs <= 100
+                      fs = round(fs,1);
+                  elseif fs > 100
+                      fs = round(fs);
+                  end
                   timeunit = 1E-3; % in msec
             end
       elseif (~isempty(fs) && isempty(xlim)) % only sample freq 
@@ -108,10 +132,26 @@ for i=1:nfile
             if timex==1
                   speriod = mode(abs(diff(time)));
                   if timeunit==1E-3
-                        fs = round(1/(speriod/1000));
+                        %fs = round(1/(speriod/1000));
+                        fs = (1/(speriod/1000));%ams adds rounding
+                         if fs < 10
+                             fs = round(fs,2); %two digits 
+                         elseif fs >= 10 && fs <= 100
+                             fs = round(fs,1);
+                         elseif fs > 100
+                             fs = round(fs);
+                         end
                         %xlim  = [min(time) max(time)]/1000; % to sec
                   else
-                        fs = round(1/speriod);
+                        %fs = round(1/speriod);
+                        fs = (1/speriod);%ams adds rounding
+                         if fs < 10
+                             fs = round(fs,2); %two digits 
+                         elseif fs >= 10 && fs <= 100
+                             fs = round(fs,1);
+                         elseif fs > 100
+                             fs = round(fs);
+                         end
                         %xlim  = [min(time) max(time)]; % in sec
                   end
             else
@@ -121,9 +161,25 @@ for i=1:nfile
             if timex==1
                   est_speriod = mode(abs(diff(time)));
                   if timeunit==1E-3
-                        est_fs = round(1/(est_speriod/1000));
+                        %est_fs = round(1/(est_speriod/1000));
+                        est_fs = (1/(est_speriod/1000)); %ams adds rounding
+                        if est_fs < 10
+                             est_fs = round(est_fs,2); %two digits 
+                        elseif est_fs >= 10 && est_fs <= 100
+                             est_fs = round(est_fs,1);
+                        elseif est_fs > 100
+                             est_fs = round(est_fs);
+                        end
                   else
-                        est_fs = round(1/est_speriod);
+                        %est_fs = round(1/est_speriod);
+                        est_fs = (1/est_speriod);
+                        if est_fs < 10
+                             est_fs = round(est_fs,2); %two digits 
+                        elseif est_fs >= 10 && est_fs <= 100
+                             est_fs = round(est_fs,1);
+                        elseif est_fs > 100
+                             est_fs = round(est_fs);
+                        end
                   end
                   
                   srdiff = abs((fs-est_fs)/est_fs);
