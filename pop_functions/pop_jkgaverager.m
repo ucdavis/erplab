@@ -21,7 +21,8 @@
 % 'Erpname'         - name for being use at ERPset menu
 % 'Filename         - file name for being saved at hard drive.
 % 'Warning'         - Warning 'on' or 'off'
-%
+% 'DQ_Flag'         - Data Quality options 'on' or 'off'
+% 'DQ_Spec'         - Structure array of Data Quality specifications.
 %
 % OUTPUTS  :
 %
@@ -89,6 +90,8 @@ p.addParamValue('SEM', 'off', @ischar);
 p.addParamValue('Erpname', '', @ischar);
 p.addParamValue('Filename', '', @ischar);
 p.addParamValue('Warning', 'off', @ischar);
+p.addParamValue('DQ_spec', []); %ams added
+p.addParamValue('DQ_flag', 1, @isnumeric); %ams added
 
 p.parse(ALLERP, varargin{:});
 
@@ -215,7 +218,8 @@ for k=0:nfile
         end
 end
 
-skipfields = {'ALLERP', 'Saveas', 'Warning','History'};
+skipfields = {'ALLERP', 'DQ_spec', 'Saveas', 'Warning','History'}; %ams added dq_spec
+%not yet optimized for DQ_spec to output in erpcom -ams
 if isstruct(ALLERP) && optioni~=1 % from files
         DATIN =  inputname(1);
 else

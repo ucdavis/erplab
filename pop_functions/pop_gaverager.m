@@ -19,6 +19,8 @@
 % 'ExcludeNullBin'  - Exclude any null bin from non-weighted averaging (Bin that has zero "epochs" when averaged)
 % 'Warning'         - Warning 'on' or 'off'
 % 'Criterion'       - Max allowed mean artifact detection proportion
+% 'DQ_Flag'         - Data Quality options 'on' or 'off'
+% 'DQ_Spec'         - Structure array of Data Quality specifications.
 %
 % OUTPUTS  :
 %
@@ -423,7 +425,11 @@ for q=1:length(fn)
                     erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
                 end
             else
-                erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                if strcmpi(fn2com,'Erpsets') %ams fixed for Erpsets str
+                    erpcom = sprintf( ['%s, ''%s'', [', fnformat,']'], erpcom, fn2com, fn2resstr);
+                else
+                    erpcom = sprintf( ['%s, ''%s'', ' fnformat], erpcom, fn2com, fn2resstr);
+                end
             end
         end
     end
