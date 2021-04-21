@@ -68,6 +68,7 @@ if nargin == 4
     keeplocs = 0;
 end
 
+
 %
 % Delete chans?
 %
@@ -81,6 +82,11 @@ if ~isempty(tokdelchan)
         chdelop    = regexprep(chdelop,',',' ');
         rewroteop  = ['ERPout = delerpchan(ERPin, [' chdelop '])'];        
         eval([rewroteop ';'])
+        
+        if keeplocs == 1
+            
+            ERPout = chanlocs_matcher(ERPout,ERPin);
+        end
         return
 end
 
@@ -105,7 +111,12 @@ if ~isempty(tokreref)
               exclchanstr = vect2colon(exclchan);
               rewroteop   = ['ERPout = chreref(ERPin, ''' formref ''','  exclchanstr ' )'];
         end        
-        eval([rewroteop ';'])
+        eval([rewroteop ';']);
+        
+        if keeplocs == 1
+            
+            ERPout = chanlocs_matcher(ERPout,ERPin);
+        end
         return
 end
 % add a dot for .*, ./ and .^ operations
@@ -387,5 +398,7 @@ end
 if keeplocs == 1
     
     ERPout = chanlocs_matcher(ERPout,ERPin);
+end
+
 end
     
