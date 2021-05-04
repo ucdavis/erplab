@@ -884,7 +884,8 @@ end
 function edit_channels_Callback(hObject, eventdata, handles)
 channnums =  str2num(get(handles.edit_channels,'String'));
 if ~isempty(channnums)
-        channnums  = unique_bc2(channnums);
+        %channnums  = unique_bc2(channnums);
+        channnums = unique(channnums, 'stable'); %keep selected electrode order the same 
         listch     = handles.listch;
         indxlistch = channnums;
         indxlistch = indxlistch(indxlistch<=length(listch));

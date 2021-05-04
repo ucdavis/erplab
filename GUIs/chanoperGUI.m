@@ -126,6 +126,7 @@ chanopGUI = erpworkingmemory('chanopGUI');
 if isempty(chanopGUI)
         set(handles.button_recursive,'Value', 1); % default is Modify existing ERPset (recursive updating)
         set(handles.button_savelist, 'Enable','off')
+        set(handles.chkeeplocs,'Value', 1) %default is Preserve Channel locations
         
         %
         % File List
@@ -145,6 +146,11 @@ else
                 set(handles.checkbox_sendfile2history,'Value', 0);
         else
                 set(handles.checkbox_sendfile2history,'Value', 1);
+        end
+        if chanopGUI.keeplocs ==1 
+            set(handles.chkeeplocs,'Value',1);
+        else
+            set(handles.chkeeplocs,'Value',0);
         end
         listname = chanopGUI.listname;
         set(handles.edit_filelist,'String', listname );
@@ -1005,3 +1011,10 @@ function chkeeplocs_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of chkeeplocs
+
+
+% --- Executes during object creation, after setting all properties.
+function chwarning_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to chwarning (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

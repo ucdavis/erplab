@@ -157,9 +157,11 @@ if ncall==1
                         end
                 end  
                 binline = sprintf(binline);
-                fprintf(fid_values,  '%s\t', binline); 
+                %fprintf(fid_values,  '%s\t', binline); 
+                fprintf(fid_values,  '%s', binline); 
                 if isempty(mlabel)
                     frmt = [ '%' num2str(round(lenerpn/2)) 's\n'];
+                    
                     fprintf(fid_values, frmt, 'ERPset');
                 else
                     frmt = [ '%' num2str(round((length(mlabel))/2)) 's\t%' num2str(round(lenerpn/2)) 's\n'];

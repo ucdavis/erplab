@@ -13,7 +13,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-function ERP = chanlocs_matcher(ERP, ERPold)
+function ERP = chanlocs_matcherEEG(ERP, ERPold)
 
 if nargin==1
     disp('Need new ERP and old ERP for chanlocs');
@@ -21,7 +21,7 @@ if nargin==1
 end
 
 
-newN = ERP.nchan;
+newN = ERP.nbchan;
 oldN = numel(ERPold.chanlocs);
 
 if newN ~= numel(ERP.chanlocs)

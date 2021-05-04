@@ -125,14 +125,23 @@ if nargin==1
                 wchmsgonstr = 'on';
         else
                 wchmsgonstr = 'off';
+                
         end
         
         EEG.setname = [EEG.setname '_chop'];
         
+        keepchlocs = answer{3}; 
+        
+        if keepchlocs ==1
+            keepchlocstr = 'on';
+        else
+            keepchlocstr= 'off';
+        end
+        
         %
         % Somersault
         %
-        [EEG, com] = pop_eegchanoperator(EEG, formulas, 'Warning', wchmsgonstr, 'Saveas', 'on','ErrorMsg', 'popup', 'History', 'gui');
+        [EEG, com] = pop_eegchanoperator(EEG, formulas, 'Warning', wchmsgonstr, 'Saveas', 'on','ErrorMsg', 'popup', 'History', 'gui', 'KeepChLoc', keepchlocstr);
         return
 end
 % else
@@ -155,8 +164,15 @@ p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('ErrorMsg', 'cw', @ischar); % cw = command window
 p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('KeepChLoc', 'on', @ischar); %'on','off'
 
 p.parse(EEG, formulas, varargin{:});
+
+if strcmpi(p.Results.KeepChLoc,'on')
+    KeepLocs = 1;
+else
+    KeepLocs = 0;
+end
 
 if strcmpi(p.Results.Warning,'on')
         wchmsgon = 1;
@@ -262,6 +278,11 @@ elseif recall && ~issaveas
         title = sprintf('ERPLAB: %s() error:', mfilename);
         errorfound(msgboxText, title);
         return
+end
+
+%keep chanlocs?
+if KeepLocs == 1
+    EEGout = chanlocs_matcherEEG(EEGout,EEGin);
 end
 
 EEG = EEGout;
