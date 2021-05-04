@@ -4,14 +4,14 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 ## ERPLAB v8.20
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/8.10/erplab8.10.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/8.20/erplab8.20.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v8.10, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v8.20, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
 
@@ -53,19 +53,22 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 
 
 ## Release Notes
-### ERPLAB v8.10 Release Notes
+### ERPLAB v8.20 Release Notes
 Now includes:
-Matlab R2020a compatible - minor EEGLAB menu display bug fixed
 
-Standard Error bug fixed.
+Fixed bug in continuous data artifact rejection when user wants to join segments of EEG that are close together
 
-Warns if old standard error is used.
+Fixed universal text import to ERPset files for data with low samples (rounding error fix).
 
-Default SEM transparency on ERP plots is 0.7, rather than 0
+Fractional area latency measurement bug fixed.
 
-The Advanced EventList GUI is now viewable on more screens.
+Updated statistical jackknifing routine to pass data quality options parameter. Updated for ERPlab v8.X+.
 
-We warn and offer help if Signal Processing Toolbox is missing.
+Fixed current source density transformation GUI.
+
+Fixed bug that prevented preservation of electrode channel location information in EEG and ERP Channel Operations (and respective GUIs).
+
+Fixed order of electrode channel output to user's specifications (columns of exported measurement file), and fixed column offset bug of ERPset name in exported measurement files.
 
 ### ERPLAB v8.02 Release Notes
 ERPLAB v8.02 adds a colormap to help visualize the Data Quality Table info
