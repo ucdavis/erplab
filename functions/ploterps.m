@@ -260,15 +260,29 @@ end
 %  Fit Yaxis AUTO-SCALE
 %
 if yauto
-        yaxlim(1:2) = erpAutoYLim(ERP, binArray, chanArray, xaxlim);
-        plotset = evalin('base', 'plotset');
-        if strcmpi(datatype, 'ERP')
+        if strcmpi(blcorr, 'no') || strcmpi(blcorr, 'none')
+            yaxlim(1:2) = erpAutoYLim(ERP, binArray, chanArray, xaxlim);
+            plotset = evalin('base', 'plotset');
+            if strcmpi(datatype, 'ERP')
                 plotset.ptime.yscale = yaxlim;
-        else
+            else
                 plotset.pfrequ.yscale = yaxlim;
+            end
+            assignin('base','plotset', plotset);
+        else %% ams added autofit for baseline corrected y-scale
+            yaxlim(1:2) = erpAutoYLim(ERP, binArray, chanArray, xaxlim,dataaux);
+            plotset = evalin('base', 'plotset');
+            if strcmpi(datatype, 'ERP')
+                plotset.ptime.yscale = yaxlim;
+            else
+                plotset.pfrequ.yscale = yaxlim;
+            end
+            assignin('base','plotset', plotset);
+            
         end
-        assignin('base','plotset', plotset);
+        
 end
+
 
 %
 % Mean Global Field Power

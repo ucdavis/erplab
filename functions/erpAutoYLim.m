@@ -25,13 +25,18 @@
 % Davis, CA
 % 2013
 
-function [yylim, serror] = erpAutoYLim(ERP, binArray, chanArray, xxlim)
+function [yylim, serror] = erpAutoYLim(ERP, binArray, chanArray, xxlim,blcorrdata)
+%ams updated blcorrdata
 serror = 0;
 if nargin<1
         error('erpAutoYLim needs 1 input argument at least.')
 end
 
 datatype = checkdatatype(ERP);
+
+if nargin<5
+    blcorrdata = 'no';
+end
 
 
 if nargin<4
@@ -105,9 +110,17 @@ try
         [p1, p2, checkw] = window2sample(ERP, aux_xxlim(1:2) , fs, 'relaxed');
         %disp('end')
         
-        datresh = reshape(ERP.bindata(chanArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nchan);
-        yymax   = max(datresh);
-        yymin   = min(datresh);
+
+        if strcmpi(blcorrdata,'no')
+            datresh = reshape(ERP.bindata(chanArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nchan);
+            yymax   = max(datresh);
+            yymin   = min(datresh);
+        else
+            datresh = reshape(blcorrdata(chanArray,p1:p2,binArray), 1, (p2-p1+1)*nbin*nchan);
+            yymax   = max(datresh);
+            yymin   = min(datresh);
+        end
+            
         if abs(yymax)<1 && abs(yymin)<1
             yylim(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
         else

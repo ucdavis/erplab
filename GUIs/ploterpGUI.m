@@ -296,6 +296,11 @@ if get(hObject, 'Value')
         ERP = handles.ERP;
         kktime = handles.kktime;
         set(handles.edit_custom, 'String', sprintf('%.1f  %g',ceil(ERP.xmin*kktime), 0))
+        
+        %adjust yscale for prestim 
+        
+        
+        
 else
         set(hObject, 'Value', 1)
 end
@@ -902,7 +907,7 @@ if strcmpi(datatype, 'ERP')
                 blcorr = 'no';
         end
         if get(handles.radiobutton_BLC_pre, 'Value')
-                blcorr = 'pre';
+                blcorr = 'pre';   
         end
         if get(handles.radiobutton_BLC_post, 'Value')
                 blcorr = 'post';
@@ -1706,6 +1711,39 @@ else
         set(handles.edit_custom, 'Enable', 'off')
 end
 
+
+if get(handles.radiobutton_BLC_pre, 'Value')
+    %AMS: default BLC is "pre"
+    %find y scales for pre-stim baselined data
+    
+    nbin = length(binArray);
+    nch  = length(chanArray);
+    fs   = ERP.srate;
+    
+    indxtimelock = find(ERP.times==0) ;   % zero-time locked
+    aa = 1;
+    
+    % Read data
+    dataaux = ERP.bindata;
+    kk=1;
+    for i=1:nch
+        for j=1:nbin
+            baseline(kk) = mean(ERP.bindata(chanArray(i),aa:indxtimelock,binArray(j)));  % baseline mean
+            dataaux(chanArray(i),:,binArray(j)) = ERP.bindata(chanArray(i),:,binArray(j)) - baseline(kk);
+            kk = kk + 1;
+        end
+    end
+    
+    ERP_blc.bindata = dataaux;
+    
+    [ytarr, miny, maxy] = default_amp_ticks(ERP_blc, binArray);
+    ytickarray = str2num(char(ytarr));
+    yyscale = [miny maxy ytickarray];
+    
+    clearvars dataaux ERP_blc;
+end
+
+
 %
 % X scale & ticks
 %
@@ -2399,3 +2437,13 @@ else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
 end
+
+
+% --- Executes on key press with focus on pushbutton_plot and none of its controls.
+function pushbutton_plot_KeyPressFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton_plot (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
+%	Key: name of the key that was pressed, in lower case
+%	Character: character interpretation of the key(s) that was pressed
+%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+% handles    structure with handles and user data (see GUIDATA)

@@ -75,4 +75,10 @@ elseif ~isempty(a2) && isempty(b1)
 else
         b2 = [];
 end
+
+%ams: round to more sensible numbers
+sensible_ones = [-100:0.5:100];
+b1 = closest(sensible_ones,b1); 
+b2 = closest(sensible_ones,b2); 
+
 def = {vect2colon([b2 0 b1],'Delimiter','off')};
