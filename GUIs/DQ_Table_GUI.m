@@ -22,10 +22,10 @@ function varargout = DQ_Table_GUI(varargin)
 
 % Edit the above text to modify the response to pushbutton_help DQ_Table_GUI
 
-% Last Modified by GUIDE v2.5 05-Aug-2020 04:05:17
+% Last Modified by GUIDE v2.5 18-May-2021 15:50:12
 
 % Begin initialization code - DO NOT EDIT
-gui_Singleton = 1;
+gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
     'gui_OpeningFcn', @DQ_Table_GUI_OpeningFcn, ...
@@ -57,6 +57,8 @@ handles.output = [];
 
 % check input ERPset DQ
 ERP = varargin{1};
+ALLERP = varargin{2};
+current_ERP = varargin{3};
 
 try
     assert(exist('ERP','var')==1)
@@ -71,13 +73,27 @@ catch
 end
 
 % Update GUI with ERPSET info
+
 ERPSET_title_str = ['ERPSET - ' ERP.erpname];
 handles.text_ERPSET_title.String = ERPSET_title_str;
+
+%AMS: Multiple ERPset options 
+n_erp = numel(ALLERP); 
+
+for i = 1:n_erp
+    erp_names{i} = ALLERP(i).erpname; 
+end
+
+
+
+handles.newerpwin.String = erp_names; 
+handles.newerpwin.Value = current_ERP; 
 
 n_dq = numel(ERP.dataquality);
 for i=1:n_dq
     type_names{i} = ERP.dataquality(i).type;
 end
+
 handles.popupmenu_DQ_type.String = type_names;
 handles.popupmenu_DQ_type.Value = n_dq;
 
@@ -148,8 +164,22 @@ handles.dq_table.FontSize = desired_fontsize;
 
 handles.heatmap_on = 0;
 
+% print_data = {};
+% 
+% for i = 1:length(tw_labels)
+%     for j = 1:n_elec
+%         
+%         print_data{
+%        
+%         
+%     end
+% end    
+
+
+
 % Update handles structure
 handles.ERP = ERP;
+handles.ALLERP = ALLERP; 
 guidata(hObject, handles);
 
 % UIWAIT makes DQ_Table_GUI wait for user response (see UIRESUME)
@@ -449,4 +479,108 @@ handles.dq_table.Data = data2;
 
 function clear_heatmap(hObject, eventdata, handles)
 handles.dq_table.Data = handles.orig_data;
+
+
+% --- Executes when entered data in editable cell(s) in dq_table.
+function dq_table_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to dq_table (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on selection change in newerpwin.
+function newerpwin_Callback(hObject, eventdata, handles)
+% hObject    handle to newerpwin (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns newerpwin contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from newerpwin
+
+
+% --- Executes during object creation, after setting all properties.
+function newerpwin_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to newerpwin (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton_selERP.
+function pushbutton_selERP_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_selERP (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+selected_erpset = handles.newerpwin.Value;
+sel_ERP = handles.ALLERP(selected_erpset); 
+DQ_Table_GUI(sel_ERP, handles.ALLERP, selected_erpset);  
+
+
+% --- Executes on button press in checkbox_outliers.
+function checkbox_outliers_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_outliers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_outliers
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_heatmap
+outliers_on = get(hObject,'Value');
+
+if outliers_on == 1
+    handles.outliers_on = 1;
+    redraw_outliers(hObject, eventdata, handles);
+    
+else
+    handles.heatmap_on = 0;
+    clear_outliers(hObject, eventdata, handles);
+    
+end
+% Update handles structure
+guidata(hObject, handles);
+
+function redraw_outliers(hObject, eventdata, handles) 
+    
+data = handles.dq_table.Data;
+
+%compute outliers as X standard deviations from mean across channels
+
+
+
+data_min = min(data(:));
+range_val = max(data(:)) - data_min;
+range_colormap = size(color_map,1); % as in, 256 shades?
+val_increase_per_shade = range_val / range_colormap;
+
+% Use this @ anonymous function to make HTML tag in box in loop below
+colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
+
+
+for cell = 1:numel(data)
+    data_here = data(cell);
+    shades_up_here = round((data_here - data_min) / val_increase_per_shade);
+    if shades_up_here < 1
+        shades_up_here = 1;
+    end
+    if shades_up_here > range_colormap
+        shades_up_here = range_colormap;
+    end
+    RGB_here = color_map(shades_up_here,:);
+    hex_color_here = ['#' dec2hex(round(255*RGB_here(1)),2) dec2hex(round(255*RGB_here(2)),2) dec2hex(round(255*RGB_here(3)),2)];
+    data2{cell} = colergen(hex_color_here,num2str(data_here));
+end
+
+data2 = reshape(data2,size(data));
+
+
 

@@ -303,7 +303,7 @@ comERP2CSD     = [trystrs.no_check '[ERP, LASTCOM] = pop_currentsourcedensity(ER
 comERP2SEM     = [trystrs.no_check '[ERP, ERPCOM] = make_SEM_set(ERP,1,''erplab'');' catchstrs.add_to_hist];
 
 %% Data Quality callbacks
-comDQQtable = ['DQ_Table_GUI(ERP);'];
+comDQQtable = ['DQ_Table_GUI(ERP,ALLERP,CURRENTERP);'];
 comDQQsummarize = ['dq_summary(ERP);'];
 comDQQsave = ['save_data_quality(ERP);'];
 comDQQprint = ['dataquality_measure = print_data_quality(ERP);'];
