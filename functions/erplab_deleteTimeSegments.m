@@ -80,9 +80,9 @@ if nargin<1
     return
 elseif nargin<4
     error('ERPLAB:erplab_deleteTimeSegments: needs 4 inputs.')
-elseif length(varargin) > 3                                     % only want 3 optional inputs at most
+elseif length(varargin) > 4                                     % only want 4 optional inputs at most
     error('ERPLAB:erplab_deleteTimeSegments:TooManyInputs', ...
-        'requires at most 3 optional inputs');
+        'requires at most 4 optional inputs');
 else
     disp('Working...')
 end
@@ -99,13 +99,18 @@ optargs = {[], 'ignore', false}; % Default optional inputs
 optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep their default values. If vargin is specified then it overwrites
 
 % Place optional args into variable names
-[ignoreUseEventcodes, ignoreUseType, eegplotGUIFeedback] = optargs{:};
+[ignoreUseEventcodes, ignoreUseType, ignoreBoundaryEvent, eegplotGUIFeedback] = optargs{:};
 
 
-%% Convert all timing info to samples
+%% Convert all timing info to samples & Switch timeperiods 
+%(startbuffer = before event code; endbuffer =after event code);
+%AMS
+
 timeThresholdSample     = round(timeThresholdMS     *(EEG.srate/1000));  % ms to samples
-startPeriodBufferSample = round(startEventcodeBufferMS *(EEG.srate/1000));  % ms to samples
-endPeriodBufferSample   = round(endEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
+%startPeriodBufferSample = round(startEventcodeBufferMS *(EEG.srate/1000));  % ms to samples
+startPeriodBufferSample = round(endEventcodeBufferMS  *(EEG.srate/1000));  % ms to samples
+%endPeriodBufferSample   = round(endEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
+endPeriodBufferSample   = round(startEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
 
 
 %% Set up WORKING event codes + IGNORED event codes
@@ -139,6 +144,11 @@ switch lower(ignoreUseType)
         analyzedEventcodes    = setdiff(eventcodes_all, ignoreUseEventcodes);
     otherwise
         error('Unrecognized value for `ignoreUseType`');
+end
+
+%ams: add ignoreboundary event
+if ignoreBoundaryEvent == 1
+    analyzedEventcodes = setdiff(analyzedEventcodes, 'boundary'); 
 end
 
 analyzedEventIndices  = ismember(tb_events.type, analyzedEventcodes);

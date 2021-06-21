@@ -557,7 +557,7 @@ uimenu( mEXERP,'Label','Import ERP from text (universal) ','CallBack', comIMPERP
 
 %% LOAD & SAVE ERPset(s)
 %
-uimenu( submenu,'Label','Load existing ERPset','CallBack',comLDERP,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( submenu,'Label','Load existing ERPset(s)','CallBack',comLDERP,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu( submenu,'Label','Clear ERPset(s)','CallBack',comDELERP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( submenu,'Label','Save current ERPset','CallBack',comSAVE,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( submenu,'Label','Save current ERPset as '   ,'CallBack', comSAVEas,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');

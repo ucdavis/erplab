@@ -181,7 +181,7 @@ if repEL
                 EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
                 EEG = pop_overwritevent(EEG, 'code');
                 EEG.EVENTLIST    = [];
-                [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, [filename '_new_' num2str((datenum(datestr(now))*1e10)) '.txt'], 1);
+                [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, [filename '_new_' num2str((datenum(datestr(now))*1e10)) '.txt'], 0);
                 EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
                 
                 disp('EVENTLIST was added to the current EEG structure')

@@ -135,11 +135,12 @@ if nargin==1
     end
 
     timeThresholdMS           = inputstrMat{1};
-    startEventcodeBufferMS    = inputstrMat{2};
+    startEventcodeBufferMS    = inputstrMat{2}; 
     endEventcodeBufferMS      = inputstrMat{3};
     ignoreUseEventcodes       = inputstrMat{4};
     ignoreUseType             = inputstrMat{5};
     displayEEG                = inputstrMat{6};
+    ignoreBoundary            = inputstrMat{7}; 
 
     % Save the GUI inputs to memory
     erpworkingmemory('pop_erplabDeleteTimeSegments',    ...
@@ -148,7 +149,8 @@ if nargin==1
           endEventcodeBufferMS,                         ...
           ignoreUseEventcodes,                          ...
           ignoreUseType,                                ...
-          displayEEG });
+          displayEEG,                                   ...
+          ignoreBoundary});
     
 
     %% New output EEG setname w/ suffix
@@ -165,6 +167,7 @@ if nargin==1
         'ignoreUseEventcodes'       , ignoreUseEventcodes,          ...
         'ignoreUseType'             , ignoreUseType,                ...
         'displayEEG'                , displayEEG,                   ...
+        'ignoreBoundary'            , ignoreBoundary,               ...
         'History'                   , 'gui');
     
     
@@ -197,6 +200,7 @@ inputParameters.addParameter('endEventcodeBufferMS'     , 0);
 inputParameters.addParameter('ignoreUseEventcodes'      , []);
 inputParameters.addParameter('ignoreUseType'            , 'ignore');
 inputParameters.addParameter('displayEEG'               , false);
+inputParameters.addParameter('ignoreBoundary'           , false); 
 inputParameters.addParameter('History'                  , 'script', @ischar); % history from scripting
 
 inputParameters.parse(EEG, varargin{:});
@@ -212,6 +216,7 @@ endEventcodeBufferMS    = inputParameters.Results.endEventcodeBufferMS;
 ignoreUseEventcodes     = inputParameters.Results.ignoreUseEventcodes;
 ignoreUseType           = inputParameters.Results.ignoreUseType;
 displayEEG              = inputParameters.Results.displayEEG;
+ignoreBoundary          = inputParameters.Results.ignoreBoundary; 
 
 
 % FORMAT:
@@ -224,17 +229,8 @@ outputEEG = erplab_deleteTimeSegments(EEG ...
     , endEventcodeBufferMS      ...
     , ignoreUseEventcodes       ...
     , ignoreUseType             ...
+    , ignoreBoundary            ...
     , displayEEG                );
-
-
-
-
-
-
-
-
-
-
 
 
 %% Generate equivalent history command

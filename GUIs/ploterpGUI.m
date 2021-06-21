@@ -1002,6 +1002,7 @@ yyscale = str2num(get(handles.edit_yscale, 'String')); % YL
 
 if yautoticks
         yticks = str2num(char(default_amp_ticks(ERP, binArray, yyscale)));
+        yticks = unique(yticks); 
 else
         yticks = handles.yticks;
 end
