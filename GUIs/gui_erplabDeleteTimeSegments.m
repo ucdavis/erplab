@@ -22,7 +22,7 @@ function varargout = gui_erplabDeleteTimeSegments(varargin)
 
 % Edit the above text to modify the response to help gui_erplabDeleteTimeSegments
 
-% Last Modified by GUIDE v2.5 17-May-2017 16:23:16
+% Last Modified by GUIDE v2.5 16-Jun-2021 12:34:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,6 +63,7 @@ try
     handles.ignoreUseEventcodes         = varargin{1}{4};
     handles.ignoreUseType               = varargin{1}{5};
     handles.displayEEG                  = varargin{1}{6};
+    handles.ignoreBoundary              = varargin{1}{7}; 
     
 catch
     % Default values for GUI
@@ -72,6 +73,7 @@ catch
     handles.ignoreUseEventcodes         = [];
     handles.ignoreUseType               = 'ignore';
     handles.displayEEG                  = false;
+    handles.ignoreBoundary              = false;
 end
 
 
@@ -85,6 +87,8 @@ set(handles.editbox_ignoreEventCodes, ...
     'String', num2str(handles.ignoreUseEventcodes));
 set(handles.checkbox_displayEEG, ...
     'Value', handles.displayEEG);
+set(handles.checkbox_ignoreBE, ...
+    'Value', handles.ignoreBoundary); 
 
 
 
@@ -144,7 +148,8 @@ handles.output = {                      ...
     handles.endEventcodeBufferMS,       ...
     handles.ignoreUseEventcodes,        ...
     handles.ignoreUseType,              ...
-    handles.displayEEG           }; 
+    handles.displayEEG,                 ...           
+    handles.ignoreBoundary}; 
 
 % Update handles structure
 guidata(hObject, handles);
@@ -363,3 +368,14 @@ function popupIgnoreUseOption_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in checkbox_ignoreBE.
+function checkbox_ignoreBE_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_ignoreBE (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.ignoreBoundary = get(hObject,'Value'); 
+guidata(hObject,handles);
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_ignoreBE
