@@ -1004,7 +1004,7 @@ if yautoticks
         yticks = str2num(char(default_amp_ticks(ERP, binArray, yyscale)));
         yticks = unique(yticks); 
 else
-        yticks = handles.yticks;
+        yticks = unique(handles.yticks);
 end
 if size(yyscale,1)~=1 || size(yyscale,2)~=2
         if strcmpi(datatype, 'ERP')
