@@ -4,7 +4,7 @@
 %
 % FORMAT   :
 %
-% [EEGout conti] = eegchanoperator(EEGin, EEGout, expression, warningme)
+% [EEGout conti] = eegchanoperator(EEGin, EEGout, expression, warningme, errormsgtype)
 %
 %
 % INPUTS   :
@@ -13,6 +13,8 @@
 % EEGout          - output dataset (for recursiveness...)
 % expression      - expression for new channel
 % warningme       - display warnings. 1 yes; 0 no
+% errormsgtype    - 1-use popup on error messages, 0-error in red at
+%                   command window
 %
 %
 % OUTPUTS  :
@@ -56,7 +58,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [EEGout, conti] = eegchanoperator(EEGin, EEGout, expression, warningme)
+function [EEGout, conti] = eegchanoperator(EEGin, EEGout, expression, warningme, errormsgtype)
 
 if nargin<1
       help eegchanoperator
@@ -64,6 +66,7 @@ if nargin<1
 end
 if nargin<4
       warningme=0;
+      errormsgtype = 1; %default to popup
 end
 conti = 1; newlabel = [];
 
@@ -211,9 +214,14 @@ if isempty(materase)
       nindices  = size(tok,2);
       
       if nindices==0
-            msgboxText= 'Channel indices were not found.';
+            msgboxText= '\nChannel indices were not found.\n';
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(msgboxText, title);
+            %errorfound(msgboxText, title);
+            if errormsgtype == 1
+                errorfound(sprintf(msgboxText), title);
+            else
+                cprintf('red',msgboxText);
+            end
             conti = 0;
             return
       end
@@ -242,10 +250,15 @@ if isempty(materase)
       nonexistingchanpos = find([realchanpos(2:end)]==0);
       
       if ~isempty(nonexistingchanpos)
-            msgboxText =  ['Channel(s) [%s] does not exist!\n'...
-                           'Only use channels from the list on the right'];
+            msgboxText =  ['\nChannel(s) [%s] does not exist!\n'...
+                           'Only use channels from the list on the right \n'];
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(sprintf(msgboxText, num2str(chanpos(nonexistingchanpos+1))), title);
+            %errorfound(sprintf(msgboxText, num2str(chanpos(nonexistingchanpos+1))), title);
+            if errormsgtype == 1
+                errorfound(sprintf(msgboxText, num2str(chanpos(nonexistingchanpos+1))), title);
+            else
+                cprintf('red',msgboxText);
+            end
             conti = 0; % No more bin processing...
             return
       end
@@ -274,15 +287,25 @@ if isempty(materase)
                               end
                         end
                   else
-                        msgboxText = 'Channel location info was not found!';
+                        msgboxText = '\nChannel location info was not found!\n';
                         title = 'ERPLAB: eegchanoperator() interpolation error:';
-                        errorfound(msgboxText, title);
+                        %errorfound(msgboxText, title);
+                        if errormsgtype == 1
+                            errorfound(sprintf(msgboxText), title);
+                        else
+                            cprintf('red',msgboxText);
+                        end
                         conti = 0;
                   end
             else
-                  msgboxText = 'You cannot interpolate a nonexistent channel!';
+                  msgboxText = '\nYou cannot interpolate a nonexistent channel!\n';
                   title = 'ERPLAB: eegchanoperator() interpolation error:';
-                  errorfound(msgboxText, title);
+                  %errorfound(msgboxText, title);
+                  if errormsgtype == 1
+                      errorfound(sprintf(msgboxText), title);
+                  else
+                      cprintf('red',msgboxText);
+                  end
                   conti = 0;
             end
             return
@@ -294,16 +317,26 @@ else
       [nchanerase] = regexpi(expression, 'nch[an]*', 'match');
       
       if ~isempty(nchanerase)
-            msgboxText=  'You cannot delete a channel using "nchan" sintax';
+            msgboxText=  '\nYou cannot delete a channel using "nchan" sintax\n';
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(msgboxText, title);
+            %errorfound(msgboxText, title);
+            if errormsgtype == 1
+                errorfound(sprintf(msgboxText), title);
+            else
+                cprintf('red',msgboxText);
+            end
             conti = 0;
             return
       end
       if ischinterpol % (?)
-            msgboxText =  'Sorry. Channel interoplation is not yet available for this mode.';
+            msgboxText =  '\nSorry. Channel interoplation is not yet available for this mode.\n';
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(msgboxText, title);
+            %errorfound(msgboxText, title);
+            if errormsgtype == 1
+                errorfound(sprintf(msgboxText), title);
+            else
+                cprintf('red',msgboxText); 
+            end
             conti = 0;
             return
       end      
@@ -325,9 +358,14 @@ else
             [tf, realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:EEGin.nbchan); %#ok<AGROW>
             
             if ~tf(tk)
-                  msgboxText=  ['Channel ' num2str(chanpos(tk)) ' does not  exist yet!'];
+                  msgboxText=  ['\nChannel ' num2str(chanpos(tk)) ' does not  exist yet! \n'];
                   title = 'ERPLAB: eegchanoperator() error:';
-                  errorfound(msgboxText, title)
+                  %errorfound(msgboxText, title)
+                  if errormsgtype == 1
+                      errorfound(sprintf(msgboxText), title);
+                  else
+                      cprintf('red',msgboxText);
+                  end
                   conti = 0;
                   return
             end
@@ -405,11 +443,16 @@ elseif (~tf(1) && newchan(1)>=1 && newchan(1) <= lastslot+1)
       confirma = 1;  % Everything is ok!
       realchanpos(1) = lastslot+1;
 else
-      msgboxText =  ['Error: Channel ' num2str(newchan) ' is out of order!\n\n'...
+      msgboxText =  ['\nError: Channel ' num2str(newchan) ' is out of order!\n\n'...
                      '"chan#" equations must be define in ascending order.\n\n'...
-                     '"nchan#" equations must be define in ascending order, from 1 to the highest channel.'];
+                     '"nchan#" equations must be define in ascending order, from 1 to the highest channel. \n'];
       title = 'ERPLAB: eegchanoperator:';
-      errorfound(sprintf(msgboxText), title);
+      %errorfound(sprintf(msgboxText), title);
+      if errormsgtype == 1
+          errorfound(sprintf(msgboxText), title);
+      else
+          cprintf('red',msgboxText);
+      end
       conti = 0; % No more bin processing...
       return
 end
@@ -448,10 +491,16 @@ if confirma
             end
       catch            
             serr = lasterror;
-            msgboxText =  ['Please, check your formula: \n\n'...
-                          expression '\n' serr.message ];
+            msgboxText =  ['\nPlease, check your formula: \n\n'...
+                          expression '\n' serr.message '\n'];
             title = 'ERPLAB: eegchanoperator() error:';
-            errorfound(sprintf(msgboxText), title);
+            
+            if errormsgtype == 1
+                errorfound(sprintf(msgboxText), title);
+            else
+                cprintf('red',msgboxText); 
+            end
+            
             conti = 0;
             return
       end

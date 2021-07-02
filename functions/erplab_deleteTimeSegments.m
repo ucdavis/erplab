@@ -1,18 +1,18 @@
-function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, varargin)
+function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdMS, beforeEventcodeBufferMS, afterEventcodeBufferMS, varargin)
 % ERPLAB_DELETETIMESEGMENTSS Deletes data segments between if the length of time between any 2 consecutive event codes (string or number) 
 % is greater than a user-specified threshold (msec)
 %
 % FORMAT:
 %
-%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreUseEventcodes, ignoreUseType, displayEEG);
+%   EEG = erplab_deleteTimeSegments(EEG, timeThresholdMS, beforeEventcodeBufferMS, afterEventcodeBufferMS, ignoreUseEventcodes, ignoreUseType, ignoreBoundary, displayEEG);
 %
 %
 % INPUT:
 %
 %   EEG                      - continuous EEG dataset (EEGLAB's EEG struct)
 %   timeThresholdMS          - user-specified time threshold between event codes. 
-%   startEventcodeBufferMS   - time buffer around start event code, preserves this data surrounding the start event code
-%   endEventCodeBufferMS     - time buffer around end   event code, preserves this data surrounding the end   event code
+%   beforeEventcodeBufferMS  - time buffer before event code in a block of trials, preserves this data before the event code
+%   afterEventCodeBufferMS   - time buffer after event code in a block of trials, preserves this data after the event code
 %
 %
 % OPTIONAL INPUT:
@@ -20,7 +20,10 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 %   ignoreUseEventcodes      - (array) event code numbers to use or ignore (Default: [])
 %   ignoreUseType            - (string) How to interpret the `ignoreUseEventcodes` array (Default: 'ignore')
 %                              - 'ignore' - (default) look for time spec between all event codes EXCEPT for the listed eventcodes
-%                              - 'use'    - look for time spec between these specific event codes 
+%                              - 'use'    - look for time spec between these specific event codes
+%   ignoreBoundary           - (0/1) If true (1), adds boundary events
+%                               to list of event codes to ignore.
+%                               (Default: 0)
 %   displayEEG               - (true/false)  - (boolean) Display a plot of the EEG when finished
 %
 % OUTPUT:
@@ -34,7 +37,7 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 %   in between any consecutive event codes. Do not ignore any eventcodes. 
 %   Display EEG plot at the end
 %
-%   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, [], 'ignore', true);   
+%   EEG = erplab_deleteTimeSegments(EEG, 3000, 100, 200, [], 'ignore',0,true);   
 %
 %
 %
@@ -51,6 +54,9 @@ function [EEG, rejectionWindows] = erplab_deleteTimeSegments(EEG, timeThresholdM
 % University of California, Davis,
 % Davis, CA
 % 2009
+% 
+% Updated:
+% Aaron Matthew Simmons, 2021
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -92,7 +98,7 @@ if(isempty(EEG.data));   error('Input EEG dataset is empty'); end
 
 
 %% Handle optional variables
-optargs = {[], 'ignore', false}; % Default optional inputs
+optargs = {[], 'ignore', 0, false}; % Default optional inputs
 
 % Put defaults into the valuesToUse cell array,
 % and overwrite the ones specified in varargin.
@@ -108,9 +114,9 @@ optargs(1:length(varargin)) = varargin;     % if vargin is empty, optargs keep t
 
 timeThresholdSample     = round(timeThresholdMS     *(EEG.srate/1000));  % ms to samples
 %startPeriodBufferSample = round(startEventcodeBufferMS *(EEG.srate/1000));  % ms to samples
-startPeriodBufferSample = round(endEventcodeBufferMS  *(EEG.srate/1000));  % ms to samples
+startPeriodBufferSample = round(afterEventcodeBufferMS  *(EEG.srate/1000));  % ms to samples
 %endPeriodBufferSample   = round(endEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
-endPeriodBufferSample   = round(startEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
+endPeriodBufferSample   = round(beforeEventcodeBufferMS   *(EEG.srate/1000));  % ms to samples
 
 
 %% Set up WORKING event codes + IGNORED event codes

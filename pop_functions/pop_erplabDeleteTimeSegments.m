@@ -4,20 +4,28 @@ function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, vararg
 %
 % FORMAT:
 %
-%   EEG = pop_erplabDeleteTimeSegments(EEG, timeThresholdMS, startEventcodeBufferMS, endEventcodeBufferMS, ignoreUseEventcodes, ignoreUseType, displayEEG);
+%   EEG = pop_erplabDeleteTimeSegments(EEG, 'timeThresholdMS', TIME_in_ms, 'beforeEventcodeBufferMS', TIME_in_ms, 'afterEventcodeBufferMS', TIME_in_ms);
 %
 %
 % INPUT:
 %
 %   EEG                      - (EEG-set) continuous EEG dataset (EEGLAB's EEG struct)
 %   timeThresholdMS          - (int) user-specified time threshold between event codes. 
-%   startEventcodeBufferMS   - (int) time buffer around start event code, preserves this data surrounding the start event code
-%   endEventcodeBufferMS     - (int) time buffer around end   event code, preserves this data surrounding the end   event code
+%   beforeEventcodeBufferMS   - (int) time buffer before an event code in a block of trials, preserves this data before an event code
+%   afterEventcodeBufferMS     - (int) time buffer after an event code in a block of trials, preserves this data after an event code
 %
+%
+%   *Update (7/1/21): old key-pair input names (startEventcodeBufferMS &
+%   endEventcodeBufferMS) will continue to work but a Warning message will
+%   appear to requst use of new key-pair input names
+%   (beforeEventcodeBufferMS & endEventcodeBufferMS, respectively). 
 %
 % OPTIONAL INPUT:
 %
 %   ignoreUseEventcodes      - (array) event code numbers to use or ignore. (Default: [])
+%   ignoreBoundary           - (0/1) If true (1), adds boundary events
+%                               to list of event codes to ignore.
+%                               (Default: 0)
 %   ignoreUseType            - (string) How to interpret the ignoreUseEventcode array. (Default: 'ignore')
 %                              - 'ignore' - (string) look for time spec between all event codes EXCEPT for the listed eventcodes
 %                              - 'use'    - (string) look for time spec between these specific event codes 
@@ -36,11 +44,12 @@ function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, vararg
 %
 %   EEG = pop_erplabDeleteTimeSegments(EEG, ...
 %                                   'timeThresholdMS'       , 3000,     ...
-%                                   'startEventcodeBufferMS', 100,      ...
-%                                   'endEventcodeBufferMS'  , 200,      ...
+%                                   'beforeEventcodeBufferMS', 100,      ...
+%                                   'afterEventcodeBufferMS'  , 200,      ...
 %                                   'ignoreUseEventcodes'   , [],       ...
 %                                   'ignoreUseType'         , 'ignore', ...
-%                                   'displayEEG'            , true);   
+%                                   'ignoreBoundary', 0, ...
+%                                   'displayEEG', true);   
 %
 %
 %
@@ -57,6 +66,9 @@ function [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments( EEG, vararg
 % University of California, Davis,
 % Davis, CA
 % 2009
+%
+% Updated:
+% Aaron Matthew Simmons, UCD,2021
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -135,8 +147,8 @@ if nargin==1
     end
 
     timeThresholdMS           = inputstrMat{1};
-    startEventcodeBufferMS    = inputstrMat{2}; 
-    endEventcodeBufferMS      = inputstrMat{3};
+    beforeEventcodeBufferMS   = inputstrMat{2}; 
+    afterEventcodeBufferMS    = inputstrMat{3};
     ignoreUseEventcodes       = inputstrMat{4};
     ignoreUseType             = inputstrMat{5};
     displayEEG                = inputstrMat{6};
@@ -145,8 +157,8 @@ if nargin==1
     % Save the GUI inputs to memory
     erpworkingmemory('pop_erplabDeleteTimeSegments',    ...
         { timeThresholdMS,                              ...
-          startEventcodeBufferMS,                       ...
-          endEventcodeBufferMS,                         ...
+          beforeEventcodeBufferMS,                       ...
+          afterEventcodeBufferMS,                         ...
           ignoreUseEventcodes,                          ...
           ignoreUseType,                                ...
           displayEEG,                                   ...
@@ -162,8 +174,8 @@ if nargin==1
     %% Run the pop_ command with the user input from the GUI
     [outputEEG, commandHistory] = pop_erplabDeleteTimeSegments(EEG, ...
         'timeThresholdMS'           , timeThresholdMS,              ...
-        'startEventcodeBufferMS'    , startEventcodeBufferMS,       ...
-        'endEventcodeBufferMS'      , endEventcodeBufferMS,         ...
+        'beforeEventcodeBufferMS'   , beforeEventcodeBufferMS,       ...
+        'afterEventcodeBufferMS'    , afterEventcodeBufferMS,         ...
         'ignoreUseEventcodes'       , ignoreUseEventcodes,          ...
         'ignoreUseType'             , ignoreUseType,                ...
         'displayEEG'                , displayEEG,                   ...
@@ -189,30 +201,42 @@ end
 inputParameters               = inputParser;
 inputParameters.FunctionName  = mfilename;
 inputParameters.CaseSensitive = false;
-
+inputParameters.KeepUnmatched = true; 
 % Required parameters
 inputParameters.addRequired('EEG');
 
 % Optional named parameters (vs Positional Parameters)
+
+
 inputParameters.addParameter('timeThresholdMS'          , 0);
-inputParameters.addParameter('startEventcodeBufferMS'   , 0);
-inputParameters.addParameter('endEventcodeBufferMS'     , 0);
+inputParameters.addParameter('beforeEventcodeBufferMS'   , 0);
+inputParameters.addParameter('afterEventcodeBufferMS'     , 0);
+% inputParameters.addParameter('startEventcodeBufferMS', 0);
+% inputParameters.addParameter('endEventcodeBufferMS', 0);
 inputParameters.addParameter('ignoreUseEventcodes'      , []);
 inputParameters.addParameter('ignoreUseType'            , 'ignore');
 inputParameters.addParameter('displayEEG'               , false);
-inputParameters.addParameter('ignoreBoundary'           , false); 
+inputParameters.addParameter('ignoreBoundary'           , false);
 inputParameters.addParameter('History'                  , 'script', @ischar); % history from scripting
+
 
 inputParameters.parse(EEG, varargin{:});
 
 
-
-
-
 %% Execute corresponding function
 timeThresholdMS         = inputParameters.Results.timeThresholdMS;
-startEventcodeBufferMS  = inputParameters.Results.startEventcodeBufferMS;
-endEventcodeBufferMS    = inputParameters.Results.endEventcodeBufferMS;
+
+% Keeps inputs backwards compatible(<v8.24) when previous inputs called
+% ("start/end"EventcodeBufferMS) -AMS
+if ~isempty(fieldnames(inputParameters.Unmatched))
+    beforeEventcodeBufferMS = inputParameters.Unmatched.startEventcodeBufferMS;
+    afterEventcodeBufferMS = inputParameters.Unmatched.endEventcodeBufferMS; 
+    warning('ERPLAB:Warning', 'Please use update input argument names (beforeEventcodeBufferMS & afterEventcodeBufferMS will work but are outdated)'); 
+    
+else
+    beforeEventcodeBufferMS  = inputParameters.Results.beforeEventcodeBufferMS;
+    afterEventcodeBufferMS    = inputParameters.Results.afterEventcodeBufferMS;
+end
 ignoreUseEventcodes     = inputParameters.Results.ignoreUseEventcodes;
 ignoreUseType           = inputParameters.Results.ignoreUseType;
 displayEEG              = inputParameters.Results.displayEEG;
@@ -225,8 +249,8 @@ ignoreBoundary          = inputParameters.Results.ignoreBoundary;
 %
 outputEEG = erplab_deleteTimeSegments(EEG ...
     , timeThresholdMS           ...
-    , startEventcodeBufferMS    ...
-    , endEventcodeBufferMS      ...
+    , beforeEventcodeBufferMS    ...
+    , afterEventcodeBufferMS      ...
     , ignoreUseEventcodes       ...
     , ignoreUseType             ...
     , ignoreBoundary            ...

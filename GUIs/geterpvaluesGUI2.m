@@ -168,8 +168,8 @@ set(handles.popupmenu_samp_amp, 'Backgroundcolor',[1 1 0.8])
 set(handles.popupmenu_locpeakreplacement, 'Backgroundcolor',[1 1 0.8])
 set(handles.popupmenu_fracreplacement, 'Backgroundcolor',[1 1 0.8])
 set(handles.popupmenu_precision, 'Backgroundcolor',[1 1 0.8])
-set(handles.text_fraca,'String', {''});
-set(handles.text_fa3,'String',{''});
+%set(handles.text_fraca,'String', {''});
+%set(handles.text_fa3,'String',{''});
 drawnow
 
 % UIWAIT makes geterpvaluesGUI2 wait for user response (see UIRESUME)
@@ -1823,12 +1823,16 @@ switch currentm
         case 1 % 'Instantaneous amplitude'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use one ' meawordx 'y)']);
                 set(handles.popupmenu_areatype,'Enable','off')
         case {2,6} % mean, area, integral between fixed latencies
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 if currentm==6
@@ -1839,6 +1843,8 @@ switch currentm
         case {3,4} % 'Peak amplitude', 'Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 set(handles.popupmenu_areatype,'Enable','off')
@@ -1846,6 +1852,8 @@ switch currentm
         case 5 % 'Fractional Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Peak')
@@ -1853,6 +1861,9 @@ switch currentm
         case {7} % area, integral automatic limits
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', '--------')
+                set(handles.popupmenu_rise, 'Value', 1)
+                set(handles.popupmenu_rise, 'Enable', 'off')
                 set(handles.text_punit,'String','% of area') 
                 set(handles.text_tip_inputlat, 'String',['(use one "seed" ' meawordx 'y)']);
                 if currentm==7
@@ -1863,7 +1874,10 @@ switch currentm
         case 8 % 'Fractional Area latency'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
-                %punit_str = get(handles.text_punit, 'String'); 
+                %punit_str = get(handles.text_punit, 'String');
+                set(handles.popupmenu_rise, 'String', '--------')
+                set(handles.popupmenu_rise, 'Value', 1)
+                set(handles.popupmenu_rise, 'Enable', 'off')
                 set(handles.text_punit,'String','% of area') 
                 set(handles.text_tip_inputlat, 'String',['(use two ' meawordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Area')
@@ -2196,12 +2210,16 @@ switch indxmea
         case 1     % 'Instantaneous amplitude'
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.popupmenu_areatype,'Enable','off')
                 set(handles.text_tip_inputlat, 'String',['(use one ' mwordx 'y)']);
         case {2,6} % mean, area, integral between fixed latencies
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
                 if indxmea==6
@@ -2213,21 +2231,25 @@ switch indxmea
         case {3,4} % 'Peak amplitude', 'Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
-                set(handles.popupmenu_pol_amp,'value',2-polpeak)
+                set(handles.popupmenu_pol_amp,'Value',2-polpeak)
                 %set(handles.popupmenu_samp_amp,'value',sampeak+1);
                 set(handles.popupmenu_locpeakreplacement,'value',2-locpeakrep);
                 set(handles.popupmenu_areatype,'Enable','off')
         case 5     % 'Fractional Peak latency'
                 menupeakon(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
+                set(handles.popupmenu_rise, 'String', {'(pre-peak) onset','(post-peak) offset'})
+                set(handles.popupmenu_rise, 'Value', 1)
                 fracpos = round(frac*100)+1;
                 set(handles.popupmenu_fraca,'Value', fracpos)
                 set(handles.text_punit,'String','% of peak')
                 set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
                 set(handles.text_fraca,'String', 'Fractional Peak')
-                set(handles.popupmenu_pol_amp,'value',2-polpeak)
+                set(handles.popupmenu_pol_amp,'Value',2-polpeak)
                 %set(handles.popupmenu_samp_amp,'value',sampeak+1);
                 set(handles.popupmenu_locpeakreplacement,'value',2-locpeakrep);
                 %set(handles.popupmenu_fracreplacement,'value',2-fracmearep);
@@ -2235,7 +2257,9 @@ switch indxmea
         case 7     % area and integral with auto limits
                 menupeakoff(hObject, eventdata, handles)
                 menufareaoff(hObject, eventdata, handles)
-                set(handles.text_punit,'String','% of area')
+                set(handles.popupmenu_rise, 'String', '--------')
+                set(handles.popupmenu_rise, 'Value', 1)
+                set(handles.popupmenu_rise, 'Enable', 'off')
                 set(handles.text_tip_inputlat, 'String',['(use one "seed" ' mwordx 'y)']);
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_areatype,'Value',areatype)
@@ -2244,9 +2268,13 @@ switch indxmea
                 menupeakoff(hObject, eventdata, handles)
                 menufareaon(hObject, eventdata, handles)
                 fracpos = round(frac*100)+1;
+                set(handles.popupmenu_rise, 'String', '--------')
+                set(handles.popupmenu_rise, 'Value', 1)
+                set(handles.popupmenu_rise, 'Enable', 'off')
                 set(handles.text_punit,'String','% of area') 
                 set(handles.popupmenu_fraca,'Value', fracpos)
                 set(handles.text_tip_inputlat, 'String',['(use two ' mwordx 'ies)']);
+                set(handles.text_fa3,'Enable', 'on')
                 set(handles.text_fraca,'String', 'Fractional Area')
                 set(handles.popupmenu_areatype,'Enable','on')
                 set(handles.popupmenu_areatype,'Value',areatype)
