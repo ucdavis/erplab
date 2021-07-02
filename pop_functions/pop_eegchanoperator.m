@@ -3,7 +3,7 @@
 %
 % FORMAT   :
 %
-% EEG = pop_eegchanoperator( EEG, formulas, 'Warning', 'off', 'Saveas', 'off', 'ErrorMsg', 'popup', 'History', 'gui', 'KeepChLoc', 'on');
+% EEG = pop_eegchanoperator( EEG, formulas);
 %
 %
 %
