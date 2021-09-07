@@ -337,8 +337,11 @@ function pushbutton_help_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-web('https://github.com/lucklab/erplab/wiki/Continuous-EEG-Preprocessing#delete-time-segments',...
+%web('https://github.com/lucklab/erplab/wiki/Continuous-EEG-Preprocessing#delete-time-segments',...
+%    '-browser');
+web('https://github.com/lucklab/erplab/wiki/Preprocessing-Continuous-EEG-Data#delete-time-segments',...
     '-browser');
+
 
 
 % --- Executes on selection change in popupIgnoreUseOption.

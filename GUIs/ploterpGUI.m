@@ -1163,6 +1163,14 @@ yyscale = [yyscale yticks];
 posgui  = get(handles.gui_chassis,'Position');
 posfig  = [];
 
+
+%if user previously selected to input custom scales
+if ~get(handles.radiobutton_yauto, 'Value')
+    custom_yscale = {yyscale}; %first 2 cells dedicated to this in erpworkingmemory
+    erpworkingmemory('pop_ploterpGUI', custom_yscale); 
+end
+
+
 %
 % Set read values in plotset
 %
@@ -1767,6 +1775,14 @@ handles.timeticks = timeticks;
 %
 %  Y scale
 %
+
+%if user previously selected to input custom scales
+if ~get(handles.radiobutton_yauto, 'Value')
+    yyscale = erpworkingmemory('pop_ploterpGUI'); 
+    yyscale = cell2mat(yyscale);
+end
+
+
 yscalestr1 = sprintf('%.4f %.4f', yyscale(1), yyscale(2));
 if length(yyscale)>2
         yticks = yyscale(3:end);
@@ -1834,6 +1850,13 @@ if get(handles.radiobutton_yauto, 'Value')
         set(handles.edit_yscale, 'BackgroundColor', BackERPLABcolor)
         set(handles.edit_yscale, 'Enable', 'inactive')
 end
+
+% %if user previously selected to input custom scales
+% if ~get(handles.radiobutton_yauto, 'Value')
+%     
+%     
+% end
+
 
 set(handles.popupmenu_font_channel, 'Value', fschan)
 set(handles.popupmenu_font_legend, 'Value', fslege)

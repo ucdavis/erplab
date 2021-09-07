@@ -337,9 +337,27 @@ end
 handles.dq_table.Data = table_data;
 handles.orig_data = table_data;
 
-if handles.heatmap_on
+
+%if user switches bin and both heatmap & outliers on,
+%use shortcircuit to clear outliers and redraw heatmap only
+if handles.heatmap_on %|| handles.outliers_on 
+    clear_outliers(hObject, eventdata, handles);
     redraw_heatmap(hObject, eventdata, handles);
+    %turn outliers off 
+    handles.outliers = 0;
+    set(handles.checkbox_outliers,'Value',0); 
+    
 end
+
+%if only outliers on, then clear heatmap and redraw outliers
+if handles.outliers_on 
+   clear_heatmap(hObject, eventdata, handles);
+   handles.heatmap_on = 0; 
+   
+   redraw_outliers(hObject, eventdata, handles);
+   set(handles.checkbox_outliers,'Value',1); 
+end
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -457,12 +475,22 @@ function checkbox_heatmap_Callback(hObject, eventdata, handles)
 heatmap_on = get(hObject,'Value');
 
 if heatmap_on == 1
-    handles.heatmap_on = 1;
+       
+    %if heatmap_on, then outliers not possible so clear outliers
+    clear_outliers(hObject, eventdata, handles);
+    handles.outliers_on = 0; 
+    set(handles.checkbox_outliers, 'Value', 0); 
+      
     redraw_heatmap(hObject, eventdata, handles);
-    
-else
-    handles.heatmap_on = 0;
+    handles.heatmap_on = 1;
+else  
     clear_heatmap(hObject, eventdata, handles);
+    handles.heatmap_on = 0;
+    
+    %if outliers is on, then keep outliers active
+    if handles.outliers_on == 1
+        redraw_outliers(hOBject, eventdata,handles);     
+    end
     
 end
 % Update handles structure
@@ -568,19 +596,78 @@ set(handles.chbutton,'Enable','On');
 
 
 if outliers_on == 1
-    handles.outliers_on = 1;
-    redraw_outliers(hObject, eventdata, handles);
     
+    %if heatmap is currently on, stop it and turn its states off
+    %before applying outliers fxn
     
-else
-    handles.heatmap_on = 0;
-    set(handles.stdwindow,'Enable','Off');
-    set(handles.chwindow,'Enable','Off');
-    set(handles.chbutton,'Enable','Off'); 
-    clear_outliers(hObject, eventdata, handles);
+    if handles.heatmap_on == 1
+        clear_heatmap(hObject, eventdata, handles);
+        handles.heatmap_on = 0; 
+        set(handles.checkbox_heatmap, 'Value', 0); 
+        
+        handles.outliers_on = 1;
+        redraw_outliers(hObject, eventdata, handles);
+        
+    else
+        handles.outliers_on = 1;
+        redraw_outliers(hObject, eventdata, handles);
+        
+        
+    end
     
+else %but if outliers is off, and heatmap is wanted, you can do it
+    
+    if handles.heatmap_on ==1
+        
+        clear_outliers(hObject, eventdata, handles);
+        redraw_heatmap(hObject, eventdata, handles);
+        handles.outliers_on == 0; 
+        
+    else
+        clear_outliers(hObject, eventdata, handles);
+        handles.outliers_on == 0; 
+        
+    end
     
 end
+
+
+% %if heatmap is currently on, stop it and turn its states off
+% %before applying outliers fxn
+% if handles.heatmap_on == 1
+%     
+%     clear_heatmap(hObject, eventdata, handles);
+%     handles.heatmap_on = 0; 
+%     set(handles.checkbox_heatmap, 'Value', 0); 
+%     
+%     if outliers_on == 1
+%         handles.outliers_on = 1;
+%         redraw_outliers(hObject, eventdata, handles);
+%     else
+%         
+%         set(handles.stdwindow,'Enable','Off');
+%         set(handles.chwindow,'Enable','Off');
+%         set(handles.chbutton,'Enable','Off'); 
+%         clear_outliers(hObject, eventdata, handles);
+%         handles.outliers_on = 0; 
+%    
+%     end
+%     
+% else
+%     
+%      if outliers_on == 1
+%         handles.outliers_on = 1;
+%         redraw_outliers(hObject, eventdata, handles);
+%      else     
+%         set(handles.stdwindow,'Enable','Off');
+%         set(handles.chwindow,'Enable','Off');
+%         set(handles.chbutton,'Enable','Off'); 
+%         clear_outliers(hObject, eventdata, handles);
+%         handles.outliers_on = 0; 
+%    
+%      end 
+%     
+% end
 % Update handles structure
 guidata(hObject, handles);
 
