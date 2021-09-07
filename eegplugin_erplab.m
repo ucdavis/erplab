@@ -272,6 +272,7 @@ comAR7     = [trystrs.no_check '[EEG, LASTCOM] = pop_artderiv(EEG);' catchstrs.n
 comAR8     = [trystrs.no_check '[EEG, LASTCOM] = pop_artflatline(EEG);' catchstrs.new_and_hist];  % Blocking & flat line
 comRSTAR   = [trystrs.no_check '[EEG, LASTCOM] = pop_resetrej(EEG);' catchstrs.new_and_hist];  % Rate of change
 comARSinc1 = [trystrs.no_check '[EEG, LASTCOM] = pop_syncroartifacts(EEG);' catchstrs.new_and_hist];
+comAR9     = [trystrs.no_check '[EEG, LASTCOM] = pop_artinterp(EEG);', catchstrs.new_and_hist]; %Interploation on AD epochs
 
 %
 % ERP and EEG (epoched) summary for ARTIFACT DETECTION callback
@@ -504,6 +505,7 @@ uimenu( mAR,'Label','Rate of change -time derivative- (alpha version)','CallBack
 uimenu( mAR,'Label','Blocking & flat line','CallBack', comAR8,'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Clear artifact detection marks on EEG ','CallBack', comRSTAR,'separator','on','ForegroundColor', [0.6 0 0],'userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 uimenu( mAR,'Label','Synchronize artifact info in EEG and EVENTLIST ','CallBack', comARSinc1,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
+uimenu( mAR,'Label','Post Artifact Detection Epoch Interpolation ','CallBack', comAR9,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
 
 
 %% ARTIFACT DETECTION summaries submenus
