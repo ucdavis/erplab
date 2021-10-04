@@ -1,6 +1,6 @@
 % Make ERP averages based on bootstrapped (sampled-with-replacement)
 % subsets of trials.
-% axs July 17
+% axs July 17 - updated Aug 2021
 %
 % INPUT
 % Expects EEG as an already-processed bin-epoched EEGset with an attached
@@ -47,7 +47,7 @@ end
 if artifacts_excluded_flag == 1
     allowed_artifact_flags = 0;
 else
-    allowed_artifact_flags = 0:8;
+    allowed_artifact_flags = 0:256;
 end
 
 % Set up the trial indices
@@ -91,8 +91,14 @@ if boundary_number
 end
 boundary_names = {'-99','boundary'};
 
+
+% Find the eventlist entries that correspond to a bin epoch
+[el_where_binepoch] = find(el.bini>=0);
+
+% Go thru the bin-epochs, save a list of epochs and data that will go in to
+% the Bootstraps
 for bepoch = 1:nbeps
-    bep_mdata = EEG.EVENTLIST.eventinfo(bepoch);
+    bep_mdata = EEG.EVENTLIST.eventinfo(el_where_binepoch(bepoch));
     
     any_boundaries_here = ismember(bep_mdata.binlabel,boundary_names);
     
