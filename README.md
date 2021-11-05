@@ -53,7 +53,7 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 
 
 ## Release Notes
-### ERPLAB v8.20 Release Notes
+### ERPLAB v8.30 Release Notes
 Now includes:
 
 The ability to operate multiple Data Quality windows (See "Data Quality" introduced in v8.20). 
