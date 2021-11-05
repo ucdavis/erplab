@@ -1,17 +1,17 @@
 
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users.
 
-## ERPLAB v8.20
+## ERPLAB v8.30
 
 <p align="center" >
-  <a href="https://github.com/lucklab/erplab/releases/download/8.20/erplab8.20.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/lucklab/erplab/releases/download/8.30/erplab8.30.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
  </a>
 </p>
 
-To install ERPLAB v8.20, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v8.30, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
 
@@ -34,7 +34,7 @@ Find [more ERPLAB installation help here](http://erpinfo.org/erplab).
 
 Here is a list of some confirmed-working environments for ERPLAB.
 
-**ERPLAB v8.0 works with...**
+**ERPLAB v8.0+ works with...**
 | **OS** | **Matlab** | **EEGLAB** | Working? |
 | --- | --- | --- | --- |
 | Mac OS 10.13.5 'High Sierra' | Matlab R2015a | EEGLAB v14.1.2 | ✓ |
@@ -56,19 +56,19 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 ### ERPLAB v8.20 Release Notes
 Now includes:
 
-Fixed bug in continuous data artifact rejection when user wants to join segments of EEG that are close together
+The ability to operate multiple Data Quality windows (See "Data Quality" introduced in v8.20). 
 
-Fixed universal text import to ERPset files for data with low samples (rounding error fix).
+Data quality windows have newly added features (e.g. outliers in each channel and time window). 
 
-Fractional area latency measurement bug fixed.
+Updated "Delete Time Segments" pre-processing tool to include the option to ignore boundary events. 
 
-Updated statistical jackknifing routine to pass data quality options parameter. Updated for ERPlab v8.X+.
+Post-Artifact Detection Epoch Interpolation feature. See [here](https://github.com/lucklab/erplab/wiki/Artifact-Detection-in-Epoched-Data#ERPLAB-Post-Artifact-Detection-Epoch-Interpolation).
 
-Fixed current source density transformation GUI.
+Standard Measurement Error (SME) bootstrapping functions updated for use in custom scripts. 
+-More information about the SME can be found [here ](https://github.com/lucklab/erplab/wiki/ERPLAB-Data-Quality-Metrics).
 
-Fixed bug that prevented preservation of electrode channel location information in EEG and ERP Channel Operations (and respective GUIs).
+Various bug fixes with ERP plotting and measurements. 
 
-Fixed order of electrode channel output to user's specifications (columns of exported measurement file), and fixed column offset bug of ERPset name in exported measurement files.
 
 ### ERPLAB v8.02 Release Notes
 ERPLAB v8.02 adds a colormap to help visualize the Data Quality Table info
