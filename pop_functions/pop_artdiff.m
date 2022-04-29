@@ -13,6 +13,9 @@
 %        'Twindow' 	- time period (in ms) to apply this tool (start end). Example [-200 800]
 %        'Threshold'    - sample-to-sample threshold (in uV)
 %        'Channel' 	- channel(s) to search artifacts.
+%        'LowPass' - Apply low pass filter at provided half-amplitude
+%                           cutoff (FIR @ 26 filter order). 
+%                           Default: -1/Do Not Apply
 %        'Flag'         - flag value between 1 to 8 to be marked when an artifact is found.(1 value)
 %        'Review'       - open a popup window for scrolling marked epochs.
 %
@@ -72,7 +75,7 @@ if nargin==1
         end
         prompt = {'Test period (start end) [ms]','Sample-to-Sample Voltage Threshold [uV]:', 'Channel(s)'};
         dlg_title = 'Sample-to-Sample Threshold';
-        defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] 30 [1:EEG(1).nbchan] 0};
+        defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] 30 [1:EEG(1).nbchan] 30 0 0};
         def = erpworkingmemory('pop_artdiff');
         
         if isempty(def)
@@ -106,7 +109,9 @@ if nargin==1
         testwindow = answer{1};
         ampth      = answer{2};
         chanArray  = unique_bc2(answer{3}); % avoids repeated channels
-        flag       = answer{4};
+        lpfilt     = answer{4};
+        lpopt      = answer{5};
+        flag       = answer{6};
         viewer     = answer{end};
         
         if viewer
@@ -120,7 +125,7 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
-        erpworkingmemory('pop_artdiff', {answer{1} answer{2} answer{3} answer{4}});
+        erpworkingmemory('pop_artdiff', {answer{1} answer{2} answer{3} answer{4} answer{5} answer{6}});
         if length(EEG)==1
                 EEG.setname = [EEG.setname '_ar']; %suggest a new name
         end
@@ -128,7 +133,7 @@ if nargin==1
         % Somersault
         %
         [EEG, com] = pop_artdiff(EEG, 'Twindow', testwindow, 'Threshold', ampth,...
-                'Channel', chanArray, 'Flag', flag, 'Review', viewstr, 'History', 'gui');
+                'Channel', chanArray, 'LowPass', lpfilt, 'Flag', flag, 'Review', viewstr, 'History', 'gui');
         return
 end
 
@@ -145,6 +150,7 @@ t2 = single(EEG(1).xmax*1000);
 p.addParamValue('Twindow', [t1 t2], @isnumeric);
 p.addParamValue('Threshold', 100, @isnumeric);
 p.addParamValue('Channel', 1:EEG(1).nbchan, @isnumeric);
+p.addParamValue('LowPass', -1, @isnumeric); 
 p.addParamValue('Flag', 1, @isnumeric);
 p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
 p.addParamValue('History', 'script', @ischar); % history from scripting
@@ -154,6 +160,7 @@ p.parse(EEG, varargin{:});
 testwindow =  p.Results.Twindow;
 ampth      =  p.Results.Threshold;
 chanArray  =  p.Results.Channel; % avoids repeated channels
+lpval      =  p.Results.LowPass; 
 flag       =  p.Results.Flag;
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
@@ -221,10 +228,22 @@ else
                 isRT = 0;
         end
 end
+
+%option to apply low-pass prior to artifact detection
+if lpval > 1
+    %if user elects to low pass data prior to AD, create EEG_lowfilt copy
+    EEG_lowfilt = basicfilter(EEG, chanArray ,0, lpval, 26, 1, 0,[]);
+    
+end
+
 for ch=1:nch
         fprintf('%g ',chanArray(ch));
         for i=1:ntrial;
-                diffEEG = diff(EEG.data(chanArray(ch), p1:p2 ,i));
+                if lpval > 1
+                    diffEEG = diff(EEG_lowfilt.data(chanArray(ch), p1:p2 ,i));
+                else
+                    diffEEG = diff(EEG.data(chanArray(ch), p1:p2 ,i));
+                end
                 diffpeak = max(abs(diffEEG));
                 if diffpeak>ampth
                         interARcounter(i) = 1;      % internal counter, for statistics

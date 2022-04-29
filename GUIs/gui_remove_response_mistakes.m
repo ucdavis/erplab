@@ -22,7 +22,7 @@ function varargout = gui_remove_response_mistakes(varargin)
 
 % Edit the above text to modify the response to help gui_remove_response_mistakes
 
-% Last Modified by GUIDE v2.5 14-Jan-2020 17:17:36
+% Last Modified by GUIDE v2.5 28-Apr-2022 15:23:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -93,6 +93,7 @@ handles.uitable_events.Data = all_ev_unique';
 handles.stim_codes = [];
 handles.resp_codes = [];
 handles.output = [handles.stim_codes,handles.resp_codes];
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -265,3 +266,10 @@ uiresume(handles.remove_response_mistake_GUI);
 % Hint: delete(hObject) closes the figure
 delete(hObject);
 delete(handles.remove_response_mistake_GUI);
+
+
+% --- Executes during object creation, after setting all properties.
+function text2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to text2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

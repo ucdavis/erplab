@@ -8,7 +8,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -100,6 +100,9 @@ try
 catch
     timelimits = [0 0];
 end
+
+% Is averager or DQ Table on a pre-AVG?
+handles.DQpreavg = def{11}; 
 
 %
 % Number of current epochs per dataset
@@ -252,9 +255,25 @@ set(handles.edit_tip_evokedpower, 'tooltip',tooltip2);
 set(handles.edit_tip_hamming, 'tooltip',tooltip3);
 set(handles.edit_tip_DQ, 'tooltip',tooltip_DQ);
 
-dq_times_def = [1:6;-100:100:400;0:100:500]';
-handles.dq_times = dq_times_def;
-handles.DQ_spec = [];
+saved_DQ_struct = def{10};
+
+
+if isempty(saved_DQ_struct)
+    dq_times_def = [1:6;-100:100:400;0:100:500]';
+    handles.dq_times = dq_times_def;
+    handles.DQ_spec = [];
+else
+    time_info = saved_DQ_struct(3).times; 
+    num_times = size(time_info,1); 
+    num_times = 1:num_times;
+    handles.dq_times = [num_times' time_info]; 
+    handles.DQ_spec = saved_DQ_struct; 
+    
+end
+
+%did user specify custom wins? 
+handles.DQ_custom_wins = def{12}; 
+
 
 %
 % Name & version
@@ -610,6 +629,9 @@ else
     DQ_spec = [];
 end
 
+DQ_preavg = handles.DQpreavg ;
+DQ_customWins = handles.DQ_custom_wins;
+
 if isempty(dataset)
     msgboxText =  'You should enter at least one dataset!';
     title = 'ERPLAB: averager GUI empty input';
@@ -617,7 +639,7 @@ if isempty(dataset)
     return
 else
     wavg = 1; %get(handles.checkbox_wavg,'Value'); % always weighted now...
-    handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,DQ_spec};
+    handles.output = {dataset, artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,DQ_spec,DQ_preavg,DQ_customWins};
     
     % Update handles structure
     guidata(hObject, handles);
@@ -1441,3 +1463,10 @@ function radiobuttonDQ3_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of radiobuttonDQ3
 set(handles.pushbutton_DQ_adv,'Enable','off');
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_tip_DQ_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_tip_DQ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called

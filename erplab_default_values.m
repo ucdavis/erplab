@@ -1,5 +1,5 @@
-erplabver = '8.30';                  % current erplab version
-erplabrel = '07-Sept-2021';             % DOB
+erplabver = '9.00';                  % current erplab version
+erplabrel = '26-April-2022';             % DOB
 erplabdeveloper = 'Simmons&Zhang'; 
 %ColorB = [170 180 195]/255;          % old background color (until version 3)
 %ColorB = [0.9216 0.8353 0.6078];     % background color for version 4

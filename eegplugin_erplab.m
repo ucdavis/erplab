@@ -310,7 +310,7 @@ comDQQsummarize = ['dq_summary(ERP);'];
 comDQQsave = ['save_data_quality(ERP);'];
 comDQQprint = ['dataquality_measure = print_data_quality(ERP);'];
 comDQQinfo = ['erpset_summary;'];
-
+comDQQpreavg = ['pop_DQ_preavg(ALLEEG)']; 
 
 %% FILTER EEG callbacks
 %
@@ -517,6 +517,9 @@ uimenu( mSAR,'Label','Summarize EEG artifacts in a table','CallBack', comARSUMM2
 uimenu( mSAR,'Label','Summarize EEG artifacts in a graphic','CallBack', comARSUMM,'ForegroundColor', [0 0 0.6],'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
 uimenu( mSAR,'Label','Summarize ERP artifacts in a table ','CallBack', comARSUMerp1,'ForegroundColor', [0 0 0.6],'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 
+%% DATA QUALITY aSME (Pre-Average Viewer)
+uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'CallBack', comDQQpreavg,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+
 
 %% AVERAGE ERP
 %
@@ -589,11 +592,11 @@ uimenu( mDTF,'Label','Move Standard Error of Mean (SEM) to be primary data','Cal
 
 
 %% Data Quality submenu
-%
-mDQQ = uimenu(submenu,'Label','Data Quality options','tag','Data Quality','separator','off','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
-uimenu( mDQQ,'Label','Show Data Quality measures in table','Callback',comDQQtable,'separator','off' );
-uimenu( mDQQ,'Label','Summarize Data Quality (min, median, max)','Callback',comDQQsummarize,'separator','off' );
-uimenu( mDQQ,'Label','Save Data Quality measures to file','Callback',comDQQsave,'separator','off' );
+mDQQ = uimenu(submenu,'Label','Data Quality viewing (ERPs only)','tag','Data Quality','separator','off','userdata','startup:off;continuous:off;epoch:off;study:on;erpset:on');
+uimenu( mDQQ,'Label','Show Data Quality measures in table','Callback',comDQQtable,'separator','off');
+uimenu( mDQQ,'Label','Summarize Data Quality (min, median, max)','Callback',comDQQsummarize,'separator','off');
+uimenu( mDQQ,'Label','Save Data Quality measures to file','Callback',comDQQsave,'separator','off');
+
 uimenu( mDQQ,'Label','Show which Data Quality measures are in each loaded ERPSET','Callback',comDQQinfo,'separator','off' );
 %uimenu( mDQQ,'Label','Move Standard Error of Mean (SEM) to be primary data','CallBack',comERP2SEM,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 

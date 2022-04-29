@@ -22,7 +22,7 @@ function varargout = DQ_Table_GUI(varargin)
 
 % Edit the above text to modify the response to pushbutton_help DQ_Table_GUI
 
-% Last Modified by GUIDE v2.5 21-May-2021 17:59:38
+% Last Modified by GUIDE v2.5 26-Apr-2022 15:34:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -64,7 +64,7 @@ guiwin_num = varargin{4};
 %GUI positions (for multiple DQ tables)
 
 if guiwin_num ~= 1
-    offset_GUI = 15 * randi([1 10],1); %offset by
+    offset_GUI = 25 * randi([1 10],1); %offset by
     % %set(hObject, 'Units', 'normalized');
     figureposition = get(handles.figure1, 'Position');
     set(hObject, 'Position', ...
@@ -90,8 +90,28 @@ end
 % Update GUI with ERPSET info
 n_erp = numel(ALLERP); 
 
-for i = 1:n_erp
-    erp_names{i} = ALLERP(i).erpname; 
+if n_erp == 0
+    %for the case of showing aSME preavg
+    erp_names = ERP.erpname; 
+    handles.text_ERPSET_title.String = 'Selected EEG Dataset:';
+    handles.text_ERPSET_title.FontSize = 12;
+    handles.text11.Visible = 0; 
+    handles.newerpwin.Visible = 0;
+    handles.pushbutton_selERP.Visible = 0;
+    handles.active_erpset.Style = 'text'; 
+    if numel(erp_names) > 15
+        handles.active_erpset.FontSize = 12.0;
+        set(handles.active_erpset,'FontUnits', 'normalized');  
+    end
+    %update handles
+    guidata(hObject, handles);
+    
+else
+    
+    for i = 1:n_erp
+        erp_names{i} = ALLERP(i).erpname;
+    end
+    
 end
 
 %ERPSET_title_str = ['ERPSET - ' erp_names(current_ERP)];
@@ -157,6 +177,7 @@ else
     end
 end
 handles.dq_table.RowName = elec_labels;
+handles.orig_RowName = elec_labels; 
 
 % Time-window labels
 if isfield(ERP.dataquality(selected_DQ_type),'time_window_labels') && isempty(ERP.dataquality(selected_DQ_type).time_window_labels) == 0  && handles.checkbox_text_labels.Value == 1
@@ -195,17 +216,28 @@ handles.listch     = listch;
 
 chanArray = 1:ERP.nchan; %default 
 handles.indxlistch = chanArray; %default
+handles.orig_indxlistch = chanArray; 
 set(handles.chwindow, 'String', vect2colon(chanArray, 'Delimiter', 'off'));
 
 
 % Set outliers text window off
 set(handles.stdwindow,'Enable','Off'); 
 set(handles.chwindow,'Enable','Off');
-set(handles.chbutton,'Enable','Off'); 
+set(handles.chbutton,'Enable','Off');
+
+%set outliers value in handles off initially
+handles.outliers_on = 0; 
 
 % Update handles structure
 handles.ERP = ERP;
-handles.ALLERP = ALLERP; 
+
+if n_erp == 0
+    %case of aSME preavg
+    handles.ALLERP = ERP;
+else
+    handles.ALLERP = ALLERP;
+end
+
 guidata(hObject, handles);
 
 % UIWAIT makes DQ_Table_GUI wait for user response (see UIRESUME)
@@ -281,6 +313,7 @@ else
     end
 end
 handles.dq_table.ColumnName = tw_labels;
+
 
 if handles.heatmap_on
     redraw_heatmap(hObject, eventdata, handles);
@@ -589,13 +622,27 @@ function checkbox_outliers_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of checkbox_outliers
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_heatmap
-outliers_on = get(hObject,'Value');
-set(handles.stdwindow,'Enable','On'); 
-set(handles.chwindow,'Enable','On');
-set(handles.chbutton,'Enable','On'); 
+outliers_on = get(hObject,'Value'); % this is not the same as handles.outliers_on
 
+if outliers_on == 1 
+    set(handles.stdwindow,'Enable','On');
+    set(handles.chwindow,'Enable','On');
+    set(handles.chbutton,'Enable','On');
+else 
+    set(handles.stdwindow,'Enable','Off');
+    set(handles.chwindow,'Enable','Off');
+    set(handles.chbutton,'Enable','Off');
+end
 
+%updated the handles object for outliers to be in sync with hObject
 if outliers_on == 1
+    handles.outliers_on = 1;
+else
+    handles.outliers_on = 0; 
+end
+
+
+if handles.outliers_on == 1
     
     %if heatmap is currently on, stop it and turn its states off
     %before applying outliers fxn
@@ -605,11 +652,13 @@ if outliers_on == 1
         handles.heatmap_on = 0; 
         set(handles.checkbox_heatmap, 'Value', 0); 
         
-        handles.outliers_on = 1;
+        %handles.outliers_on = 1;
         redraw_outliers(hObject, eventdata, handles);
         
     else
-        handles.outliers_on = 1;
+        %handles.outliers_on = 1;
+        clear_outliers(hObject, eventdata, handles); 
+        %guidata(hObject, handles);
         redraw_outliers(hObject, eventdata, handles);
         
         
@@ -617,17 +666,20 @@ if outliers_on == 1
     
 else %but if outliers is off, and heatmap is wanted, you can do it
     
-    if handles.heatmap_on ==1
-        
-        clear_outliers(hObject, eventdata, handles);
-        redraw_heatmap(hObject, eventdata, handles);
-        handles.outliers_on == 0; 
-        
-    else
-        clear_outliers(hObject, eventdata, handles);
-        handles.outliers_on == 0; 
-        
-    end
+%     if handles.heatmap_on ==1
+%         
+%         clear_outliers(hObject, eventdata, handles);
+%         redraw_heatmap(hObject, eventdata, handles);
+%         handles.outliers_on = 0; 
+%         
+%     else
+%         clear_outliers(hObject, eventdata, handles);
+%         handles.outliers_on = 0; 
+%         
+%     end
+    
+    %also, redraw initial data/channels without outliers 
+    clear_outliers(hObject, eventdata, handles)
     
 end
 
@@ -672,7 +724,7 @@ end
 guidata(hObject, handles);
 
 function redraw_outliers(hObject, eventdata, handles) 
-    
+handles = guidata(hObject); %get the most updated handles struct 
 data = handles.dq_table.Data;
 
 if iscell(data) 
@@ -724,8 +776,21 @@ end
 data2= reshape(data2,size(data));
 handles.dq_table.Data = data2;
 
-function clear_outliers(h0object, eventdata, handles)
+function clear_outliers(hObject, eventdata, handles)
+%handles = guidata(hObject);
 handles.dq_table.Data = handles.orig_data;
+handles.dq_table.RowName = handles.orig_RowName;
+handles.indxlistch = handles.orig_indxlistch; 
+
+
+% Re-Prepare List of current Channels
+chanArray = handles.orig_indxlistch; %default 
+%handles.indxlistch = chanArray; %default
+set(handles.chwindow, 'String', vect2colon(chanArray, 'Delimiter', 'off'));
+ % Update handles structure
+guidata(hObject, handles);
+
+
 
 
 
@@ -769,6 +834,62 @@ function chwindow_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of chwindow as text
 %        str2double(get(hObject,'String')) returns contents of chwindow as a double
 
+ch = get(hObject,'string'); 
+nch = length(handles.listch);
+
+ch_val = eval(ch); 
+
+if ~isempty(ch)
+    
+%     testch = regexpi(ch,':') ; 
+%     
+%     if isempty(testch)
+%         
+%         try 
+%             ch_val = eval(ch); 
+%             handles.listch(ch_val); %attempt to index 
+%             
+%         catch
+%             msgboxText =  'Invalid channel input: please enter channels as integers, with a space between each number, or ch1:chN array syntax';
+%             title = 'ERPLAB: channel GUI input';
+%             errorfound(msgboxText, title);
+%             
+%         end
+%     else
+%         ch_val = eval(ch); 
+%         
+%     end
+%    
+
+    tf = checkchannels(ch_val, nch, 1); 
+    
+    if tf
+        return
+    end
+
+    
+%     if length(ch_val) > length(handles.orig_indxlistch)
+%         msgboxText =  'Exceeded Number of Available Channels';
+%         title = 'ERPLAB: channel GUI input';
+%         errorfound(msgboxText, title);
+%         return
+%     end
+%     
+    set(handles.chwindow, 'String', vect2colon(ch_val, 'Delimiter', 'off'));
+    handles.indxlistch = ch_val;
+    % Update handles structure
+    guidata(hObject, handles);
+    redraw_outliers(hObject, eventdata, handles);
+    guidata(hObject, handles);
+
+else
+    msgboxText =  'Not valid channel';
+    title = 'ERPLAB: channel GUI input';
+    errorfound(msgboxText, title);
+    return
+end
+  
+
 
 % --- Executes during object creation, after setting all properties.
 function chwindow_CreateFcn(hObject, eventdata, handles)
@@ -791,9 +912,9 @@ function chbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to chbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-listch = handles.listch;
-indxlistch = handles.indxlistch;
-indxlistch = indxlistch(indxlistch<=length(listch));
+listch = handles.listch; %true channels list as labels
+indxlistch = handles.indxlistch; %true array of channel indexs 
+indxlistch = indxlistch(indxlistch<=length(listch)); % true array of channel index if less than expected labels
 titlename = 'Select Channel(s)';
 if get(hObject, 'Value')
         if ~isempty(listch)
@@ -805,6 +926,7 @@ if get(hObject, 'Value')
                         guidata(hObject, handles);
                         redraw_outliers(hObject, eventdata, handles);
                         guidata(hObject, handles);
+
        
                 else
                         disp('User selected Cancel')
@@ -987,4 +1109,61 @@ function active_erpset_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+%--------------------------------------------------------------------------
+function tf = checkchannels(chx, nchan, showmsg)
+
+if nargin<3
+        showmsg = 1;
+end
+tf = 0; % no problem by default
+
+if ~mod(chx, 1) == 0
+    if showmsg
+        msgboxText =  'Invalid channel indexing.';
+        title = 'ERPLAB: basicfilterGUI() error:';
+        errorfound(msgboxText, title);
+    end
+    tf = 1; %
+    
+end
+
+if isempty(chx)
+        if showmsg
+                msgboxText =  'Invalid channel indexing.';
+                title = 'ERPLAB: basicfilterGUI() error:';
+                errorfound(msgboxText, title);
+        end
+        tf = 1; %
+        return
+end
+if ~isempty(find(chx>nchan))
+        if showmsg
+                msgboxText =  ['You only have %g channels,\n'...
+                        'so you cannot specify indices greater than this.'];
+                title = 'ERPLAB: basicfilterGUI() error:';
+                errorfound(sprintf(msgboxText, nchan), title);
+        end
+        tf = 1; %
+        return
+end
+if ~isempty(find(chx<1))
+        if showmsg
+                msgboxText =  'You cannot use zero or a negative number as a channel indexing';
+                title = 'ERPLAB: basicfilterGUI() error:';
+                errorfound(msgboxText, title);
+        end
+        tf = 1; %
+        return
+end
+if length(chx)>length(unique_bc2(chx))
+        if showmsg
+                msgboxText =  ['Repeated channels are not allowed.\n'...
+                        'Therefore, ERPLAB will get rid of them.'];
+                title = 'ERPLAB: basicfilterGUI() error:';
+                errorfound(sprintf(msgboxText), title, [1 1 0], [0 0 0], 0)
+        end
+        tf = 0; %
+        return
 end

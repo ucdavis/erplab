@@ -22,7 +22,7 @@ function varargout = avg_data_quality(varargin)
 
 % Edit the above text to modify the response to help avg_data_quality
 
-% Last Modified by GUIDE v2.5 02-Jul-2019 16:02:53
+% Last Modified by GUIDE v2.5 21-Apr-2022 18:04:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,11 +59,24 @@ disp('Awaiting Data Quality settings...');
 handles.DQ_spec = varargin{1};
 handles.timelimits = varargin{2};
 
-temp_DQ_spec = make_DQ_spec(handles.timelimits);
-sme_tw_labels = temp_DQ_spec(3).time_window_labels;
+if isempty(varargin{1})
 
-sme_tw = num2cell(temp_DQ_spec(3).times);
-sme_tw2 = [sme_tw_labels' sme_tw];
+    temp_DQ_spec = make_DQ_spec(handles.timelimits);
+    sme_tw_labels = temp_DQ_spec(3).time_window_labels;
+    sme_tw = num2cell(temp_DQ_spec(3).times);
+    sme_tw2 = [sme_tw_labels' sme_tw];
+
+else
+    preAvg_info = varargin{1}; 
+    preAvg_labels = preAvg_info(3).time_window_labels';
+    preAvg_info_times = num2cell(preAvg_info(3).times);
+    try 
+        sme_tw2= [preAvg_labels' preAvg_info_times]; 
+    catch
+        sme_tw2= [preAvg_labels preAvg_info_times]; 
+    end
+    
+end
 
 % Choose default command line output for avg_data_quality
 
@@ -556,3 +569,24 @@ if numel(eventdata.Indices)
     end
     guidata(hObject, handles);
 end
+
+
+
+
+% --- Executes on button press in restbutton.
+function restbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to restbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% get default timewindows
+temp_DQ_spec = make_DQ_spec(handles.timelimits);
+sme_tw_labels = temp_DQ_spec(3).time_window_labels;
+sme_tw = num2cell(temp_DQ_spec(3).times);
+sme_tw2 = [sme_tw_labels' sme_tw];
+
+handles.Tout = sme_tw2; 
+set(handles.SME_table, 'Data', sme_tw2); 
+pause(0.3)
+
+
+guidata(hObject, handles);

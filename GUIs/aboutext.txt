@@ -1,14 +1,21 @@
 Copyright Regents of the University of California, 2008-2019 #
 #
 #
-Designed by Steve Luck, Javier Lopez-Calderon, and Andrew X Stewart #
+Designed by Steve Luck, Javier Lopez-Calderon, Andrew X Stewart, and Aaron M Simmons #
 #
 Main developers since v5: #
 Andrew X Stewart #
 axstewart@ucdavis.edu #
 Center for Mind and Brain, University of California, Davis #
 #
-
+#
+Main developers since v9: #
+Aaron Matthew Simmons #
+amsimmons@ucdavis.edu #
+Guanghui Zhang #
+ghzhang@ucdavis.edu #
+Center for Mind and Brain, University of California, Davis #
+#
 #
 Find latest on Github:
 https://github.com/lucklab/erplab

@@ -15,9 +15,10 @@ function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
 %
 % OPTIONAL INPUT:
 %
-%   Rounding          - 'earlier'   - (default) Round to earlier timestamp
-%                     - 'later'     - Round to later timestamp
-%                     - 'nearest'   - Round to nearest timestamp   
+%   Rounding          - 'earlier'   - (default) Round to earlier
+%                                       timestamp/timesample
+%                     - 'later'     - Round to later timestamp/timesample
+%                     - 'nearest'   - Round to nearest timestamp/timesample   
 %   DisplayFeedback   - 'summary'   - (default) Print summarized info to Command Window
 %                     - 'detailed'  - Print event table with sample_num differences
 %                                     to Command Window

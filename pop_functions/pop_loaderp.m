@@ -343,6 +343,8 @@ switch shist
                 return
 end
 
+
+
 %
 % Completion statement
 %

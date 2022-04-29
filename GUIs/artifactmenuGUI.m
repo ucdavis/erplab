@@ -1,7 +1,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -96,6 +96,7 @@ end
 
 flagx = def{end};
 
+
 if flagx>1
         set(handles.(['flag_' num2str(flagx)]),'value', 1);
         handles.flg(flagx) = 1;
@@ -124,6 +125,37 @@ handles.listch     = listch;
 handles.indxlistch = def{lprompt}; % channel array
 
 %
+% Prepare low pass half-amp cutoff value 
+%
+handles.lowp = def{end -2}; 
+lpval = def{end - 2};
+%if user did not use filter previously, keep default text value as 30hz
+if lpval < 1
+    lpval = 30;
+end
+
+handles.optlow = def{end-1};
+optcheck = def{end-1};
+
+if optcheck == 0
+    set(handles.prefilt_cb, 'Value', 0); % default: OFF
+    set(handles.edit6, 'String',num2str(lpval));
+    set(handles.edit6, 'Enable', 'off');
+else
+    set(handles.prefilt_cb, 'Value', 1); 
+    set(handles.edit6, 'String',num2str(lpval));
+    set(handles.edit6, 'Enable', 'on');
+    
+end
+
+% if steplike artifacts, put "usually not necessary note"
+if strcmpi(dlg_title, 'Step Function')
+        set(handles.(['prefilt_step']),'Visible','on');        
+    
+end
+
+
+%
 % Paint GUI
 %
 handles = painterplab(handles);
@@ -132,6 +164,7 @@ handles = painterplab(handles);
 % Set font size
 %
 handles = setfonterplab(handles);
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -397,6 +430,20 @@ for i=2:8
         end;
 end
 
+
+
+%prefilter option (always before viewer)
+if get(handles.prefilt_cb, 'Value')
+    outputv{end+1} = str2num(get(handles.edit6, 'String')); 
+    outputv{end+1} = get(handles.prefilt_cb, 'Value');
+else
+    outputv{end+1} = -1; %no filtering applied
+    outputv{end+1} = 0; %do not check prefilt option
+end
+
+
+
+
 outputv{end+1} = [1 flagout]; % flag 1 is set by default (always) 
 outputv{end+1} = viewer;      % open viewer
 handles.output = outputv;
@@ -451,4 +498,43 @@ if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
 else
         % The GUI is no longer waiting, just close it
         delete(handles.gui_chassis);
+end
+
+
+% --- Executes on button press in prefilt_cb.
+function prefilt_cb_Callback(hObject, eventdata, handles)
+% hObject    handle to prefilt_cb (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of prefilt_cb
+
+if get(hObject,'Value')
+    set(handles.edit6, 'Enable', 'on')
+    
+else
+    set(handles.edit6, 'Enable', 'off')
+end
+    
+
+
+function edit6_Callback(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit6 as text
+%        str2double(get(hObject,'String')) returns contents of edit6 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end

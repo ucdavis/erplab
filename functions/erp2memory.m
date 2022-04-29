@@ -74,4 +74,40 @@ else
       ERP
 end
 
+% %% check DQ options of erpset & make changes to ERPlab menu 
+% 
+% erplabmenu = findobj('tag', 'ERPLAB'); 
+% %W_MAIN = findobj('tag', 'EEGLAB');
+% allmenus = findobj( erplabmenu, 'type', 'uimenu');
+% allstrs  = get(allmenus, 'Label');
+
+option1 = findobj('Label', 'Show Data Quality measures in table');
+option2 = findobj('Label', 'Summarize Data Quality (min, median, max)'); 
+option3 = findobj('Label', 'Save Data Quality measures to file'); 
+
+if isfield(ERP,'dataquality') & ~strcmp(ERP.dataquality(1).type,'empty')
+    %if there is dataquality measures, make DQ menu options available 
+    set(option1, 'enable', 'on');
+    set(option2, 'enable', 'on');
+    set(option3, 'enable', 'on'); 
+   
+else
+    set(option1, 'enable', 'off');
+    set(option2, 'enable', 'off');
+    set(option3, 'enable', 'off');     
+    
+end
+
+% 
+% 
+% if any(strcmp(menustatus, 'erp_dataset'))    
+%     eval('indmatchvar = cellfun(@(x)(~isempty(findstr(num2str(x), ''erpset:on''))), allstrs);');  
+%     set(allmenus(indmatchvar), 'enable', 'on');
+% end
+
+% mainerplab = findobj(W_MAIN, 'tag', submenu); 
+% erpmenu = findobj('erpmenu','type', 'uimenu'); 
+
+end
+
 

@@ -104,14 +104,31 @@ if nargin==1
     
     % read values in memory for this function
     def  = erpworkingmemory('pop_averager');
+    try
+        def_dq = erpworkingmemory('pop_DQ_preavg'); 
+    catch
+        def_dq = [];
+    end
+    
+ 
+        
+       
+        
     % def{1} - dataset indx, def{2} - artcrit, def{3} - wavg, def{4} - stderror, def{5} - exclude boundaries,
     % def{6} - ERP type, def{7} - wintaper type, def{8} - wintaper function,
     % def{9} - data quality flag, def{10} - DQ_spec_structure
+    % def{11} - DQ pre-avg flag, def{12} = DQ_custom_wins
     
-    if isempty(def) || numel(def)~=10
-        % Should not be empty, and have exactly 10 elements. Else, fallback to:
-        def = {1 1 1 1 1 0 0 [] 1 []}; 
+    if isempty(def) || numel(def)~=12
+        % Should not be empty, and have exactly 12 elements. Else, fallback to:
+        def = {1 1 1 1 1 0 0 [] 1 [] 0 0}; 
         
+    end
+    
+    
+    if ~isempty(def_dq)
+        %if user created windows with pre-avg, load here
+        def{10} = def_dq{10};
     end
     
     
@@ -175,10 +192,12 @@ if nargin==1
     % Write the analytic Standardized Measurment Error info
     DQ_flag = answer{9};
     DQ_spec = answer{10};
+    DQ_preavg_txt = answer{11};
+    DQcustom_wins = answer{12};
     
     
     % store setting in memory
-    def(1:10)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc,DQ_flag,DQ_spec};
+    def(1:12)    = {setindex, artcrite, 1, stderror, excbound, compu2do, wintype, wintfunc,DQ_flag,DQ_spec,DQ_preavg_txt,DQcustom_wins};
     erpworkingmemory('pop_averager', def);
     
     if stderror==1
@@ -256,7 +275,8 @@ if nargin==1
     else % compu2do--> 0:ERP;
         [ERP, erpcom]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
             'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
-            'DQ_flag',DQ_flag,'DQ_spec',DQ_spec,'History', 'GUI');
+            'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
+            'History', 'GUI');
     end
     pause(0.1)
     return
@@ -287,6 +307,8 @@ p.addParamValue('Warning', 'off', @ischar);         % 'on', 'off'
 p.addParamValue('ExcludeBoundary', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar);      % history from scripting
 p.addParamValue('DQ_flag',1,@isnumeric);  % flag where 1 indicated include aSME
+p.addParamValue('DQ_preavg_txt',0,@isnumeric);  % flag where 1 indicated include aSME
+p.addParamValue('DQ_custom_wins',0,@isnumeric); %flag where 1 indicated previous custom wins
 % DQ defaults
 DQ_defaults = make_DQ_spec();
 DQ_defaults(1).comments{1} = 'defaults';
@@ -296,6 +318,7 @@ p.parse(ALLEEG, varargin{:});
 
 setindex = p.Results.DSindex;
 artc     = p.Results.Criterion;
+
 
 if ~isempty(p.Results.Stdev)
     question= 'The standard deviation (Stdev) is no longer supported.\nHence, ERPLAB uses the standard error of the mean (SEM) instead';
@@ -393,6 +416,8 @@ if DQ_flag
         end
     end
 end
+
+DQpre = p.Results.DQ_preavg_txt; 
 
 
 if ismember_bc2({p.Results.SEM}, {'on','yes'})
@@ -850,7 +875,12 @@ else
     %
     % Single Dataset
     %
-    fprintf('\nAveraging  a unique dataset #%g...\n', setindex(1));
+    if DQpre == 0 
+        fprintf('\nAveraging  a unique dataset #%g...\n', setindex(1));
+        avgText = 1;
+    else
+        avgText = 0;
+    end
     
     if ~iscell(artcrite) && ~ischar(artcrite)
         if artcrite~=0
@@ -904,7 +934,7 @@ else
     %
     % Get individual average
     %
-    [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(ALLEEG(setindex(1)), artif, stderror, excbound, dcompu, nfft, apodization);
+    [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(ALLEEG(setindex(1)), artif, stderror, excbound, dcompu, nfft, apodization, avgText);
     
     if DQ_flag
         DQ_n = struct2cell(DQ_spec);
@@ -948,7 +978,9 @@ ERP.erpname   = [];
 ERP.workfiles = workfnameArray;
 
 if wavg % weighted average. It was forced to be 1 by Steve...
-    fprintf('\n *** %g datasets were averaged. ***\n\n', nset);
+    if DQpre == 0
+        fprintf('\n *** %g datasets were averaged. ***\n\n', nset);
+    end 
 else
     % frozen...
     fprintf('\n *** %g datasets were averaged (arithmetic mean). ***\n\n', nset);
@@ -1130,7 +1162,9 @@ end
 %
 % Completion statement
 %
-dq_summary(ERP,'aSME')
+if ~any(where_aSME)
+    dq_summary(ERP,'aSME')
+end
 msg2end
 return
 

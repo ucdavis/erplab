@@ -15,6 +15,9 @@
 %        'Windowsize'   - total moving window width in ms. So each window's width (2) is a half of this value.
 %        'Windowstep'   - moving window step in ms.
 %        'Channel' 	- channel(s) to search artifacts.
+%        'LowPass' - Apply low pass filter at provided half-amplitude
+%                           cutoff (FIR @ 26 filter order). 
+%                           Default: -1/Do Not Apply
 %        'Flag'         - flag value between 1 to 8 to be marked when an artifact is found.(1 value)
 %        'Review'       - open a popup window for scrolling marked epochs.
 %
@@ -75,7 +78,7 @@ if nargin==1
         prompt = {'Test period (start end) [ms]', 'Voltage Threshold [uV]', 'Moving Windows Full Width [ms]',...
                 'Window Step (ms)','Channel(s)'};
         dlg_title = 'Step Function';
-        defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] 100 200 50 [1:EEG(1).nbchan] 0};
+        defx = {[EEG(1).xmin*1000 EEG(1).xmax*1000] 100 200 50 [1:EEG(1).nbchan] 30 0 0};
         def = erpworkingmemory('pop_artstep');
         
         if isempty(def)
@@ -112,7 +115,9 @@ if nargin==1
         winms      =  answer{3};
         stepms     =  answer{4};
         chanArray  =  unique_bc2(answer{5}); % avoids repeted channels
-        flag       =  answer{6};
+        lpfilt     =  answer{6};
+        lpopt      =  answer{7};
+        flag       =  answer{8};
         viewer     =  answer{end};
         
         if viewer
@@ -126,7 +131,7 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
-        erpworkingmemory('pop_artstep', {answer{1} answer{2} answer{3} answer{4} answer{5} answer{6}});
+        erpworkingmemory('pop_artstep', {answer{1} answer{2} answer{3} answer{4} answer{5} answer{6} answer{7} answer{8}});
         if length(EEG)==1
                 EEG.setname = [EEG.setname '_ar']; %suggest a new name
         end
@@ -135,7 +140,7 @@ if nargin==1
         % Somersault
         %
         [EEG, com] = pop_artstep(EEG, 'Twindow', testwindow, 'Threshold', ampth, 'Windowsize',winms,...
-                'Windowstep', stepms, 'Channel', chanArray, 'Flag', flag, 'Review', viewstr, 'History', 'gui');
+                'Windowstep', stepms, 'Channel', chanArray, 'LowPass', lpfilt, 'Flag', flag, 'Review', viewstr, 'History', 'gui');
         return
 end
 
@@ -154,6 +159,7 @@ p.addParamValue('Threshold', 100, @isnumeric);
 p.addParamValue('Windowsize', 1000, @isnumeric);
 p.addParamValue('Windowstep', 500, @isnumeric);
 p.addParamValue('Channel', 1:EEG(1).nbchan, @isnumeric);
+p.addParamValue('LowPass', -1, @isnumeric); 
 p.addParamValue('Flag', 1, @isnumeric);
 p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
 p.addParamValue('History', 'script', @ischar); % history from scripting
@@ -165,6 +171,7 @@ ampth      =  p.Results.Threshold;
 winms      =  p.Results.Windowsize;
 stepms     =  p.Results.Windowstep;
 chanArray  =  p.Results.Channel; % avoids repeated channels
+lpval      =  p.Results.LowPass; 
 flag       =  p.Results.Flag;
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
@@ -247,12 +254,25 @@ else
                 isRT = 0;
         end
 end
+
+%option to apply low-pass prior to artifact detection
+if lpval > 1
+    %if user elects to low pass data prior to AD, create EEG_lowfilt copy
+    EEG_lowfilt = basicfilter(EEG, chanArray ,0, lpval, 26, 1, 0,[]);
+    
+end
+
 for ch=1:nch
         fprintf('%g ',chanArray(ch));
         for i=1:ntrial;
                 for j=p1:stepnts:p2-(winpnts-1)
-                        w1  = EEG.data(chanArray(ch), j:j+round(winpnts/2)-1,i);
-                        w2  = EEG.data(chanArray(ch), j+round(winpnts/2):j+winpnts-1 ,i);
+                        if lpval > 1
+                            w1  = EEG_lowfilt.data(chanArray(ch), j:j+round(winpnts/2)-1,i);
+                            w2  = EEG_lowfilt.data(chanArray(ch), j+round(winpnts/2):j+winpnts-1 ,i);
+                        else
+                            w1  = EEG.data(chanArray(ch), j:j+round(winpnts/2)-1,i);
+                            w2  = EEG.data(chanArray(ch), j+round(winpnts/2):j+winpnts-1 ,i);
+                        end
                         vs = abs(mean(w1)-mean(w2));
                         if vs>ampth
                                 interARcounter(i) = 1;      % internal counter, for statistics

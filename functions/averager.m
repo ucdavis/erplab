@@ -59,11 +59,16 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [ERP, EVENTLIST, countbiORI, countbinINV, countbinOK, countflags, workfiles, epoch_list] = averager(EEG, artcrite, stderror, excbound, dcompu, nfft, apodization)
+function [ERP, EVENTLIST, countbiORI, countbinINV, countbinOK, countflags, workfiles, epoch_list] = averager(EEG, artcrite, stderror, excbound, dcompu, nfft, apodization, avgText)
 if nargin<1
     help averager
     return
 end
+
+if nargin<8
+    avgText = 1; 
+end
+
 if nargin<7
     apodization = []; % aply hamming window to data before FFT--> []:no
 end
@@ -82,7 +87,10 @@ end
 
 % check for time-lock latency
 EEG    = checkeegzerolat(EEG);
-disp('Averaging data...please wait.')
+
+if avgText ==1
+    disp('Averaging data...please wait.')
+end
 
 % build ERP strucure (keeping some of the EEGLAB's EEG structure fields)
 ERP    = buildERPstruct(EEG);
