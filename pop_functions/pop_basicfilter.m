@@ -24,6 +24,10 @@
 %                     this specified an event code (like 'boundary') then segments before
 %                     and after any of these event codes are filtered seperately. Recommend
 %                     using 'boundary'.
+%       'History'    - ('gui'/'script') Option on how to view equivalent script command:
+%                           'gui': writes equivalent script command to command window, 
+%                           'script': logs into EEG.history only
+%                           (Default: 'gui')
 %
 %
 %

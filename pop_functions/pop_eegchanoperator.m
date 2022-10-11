@@ -366,7 +366,7 @@ switch shist
                 %fprintf('%%Equivalent command:\n%s\n\n', com);
                 displayEquiComERP(com);
         case 2 % from script
-               % EEG = erphistory(EEG, [], com, 1);
+                EEG = erphistory(EEG, [], com, 1);
         case 3
                 % implicit
         otherwise %off or none

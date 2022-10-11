@@ -1,7 +1,7 @@
 % Make ERP averages based on bootstrapped (sampled-with-replacement)
 % subsets of trials.
 % axs July 17 - updated Aug 2021
-%
+% ams Oct 10 - updated Oct 2022 (works for epochs in multiple bins)
 % INPUT
 % Expects EEG as an already-processed bin-epoched EEGset with an attached
 % eventlist.
@@ -70,9 +70,16 @@ N_valid_epochs = zeros(1,nbin); % This will hold number of valid epochs for each
 % First, grab list of bin counts from eventlist
 el = struct2table(EEG.EVENTLIST.eventinfo);
 bin_list = el.bini;
+if ~iscell(bin_list(1))
+    bin_list = num2cell(el.bini); 
+end
+
 for bin = 1:nbin
-    bin_where(bin) = {ismember(bin_list,bin)};
-    bin_count(bin) = sum(ismember(bin_list,bin));
+    %bin_where(bin) = {ismember(bin_list,bin)};
+    %bin_count(bin) = sum(ismember(bin_list,bin));
+    
+    bin_where(bin) = {cellfun(@(x) sum(ismember(x,bin)), bin_list)};
+    bin_count(bin) = sum(cellfun(@(x) sum(ismember(x,bin)), bin_list));
     
     % prealloc bindatastruct(bin)(elec , times , eps)
     ep_data = zeros(nelec,ntimes,bin_count(bin));
@@ -93,30 +100,39 @@ boundary_names = {'-99','boundary'};
 
 
 % Find the eventlist entries that correspond to a bin epoch
-[el_where_binepoch] = find(el.bini>=0);
+bin_list2 = el.bini;
+if ~iscell(bin_list2(1))
+    bin_list2 = num2cell(el.bini); 
+end
+
+%[el_where_binepoch] = find(el.bini>=0); %obtain indexes
+[el_where_binepoch] = cellfun(@(x) any(x >= 0),bin_list2); %find(el.bini>=0);
+[el_where_binepoch2] = find(el_where_binepoch>0); 
 
 % Go thru the bin-epochs, save a list of epochs and data that will go in to
 % the Bootstraps
 for bepoch = 1:nbeps
-    bep_mdata = EEG.EVENTLIST.eventinfo(el_where_binepoch(bepoch));
+    bep_mdata = EEG.EVENTLIST.eventinfo(el_where_binepoch2(bepoch));
     
     any_boundaries_here = ismember(bep_mdata.binlabel,boundary_names);
+    any_boundaries_here2 = ismember(bep_mdata.codelabel,boundary_names); 
     
     % find the time-locking event in this bepoch
-    if numel(bep_mdata.bini) == 1
-        tl_ev_here = 1;
-    else
-        tl_ev_here = find(EEG.epoch(bep_mdata.bepoch).eventlatency == 0);
-    end
+    % all epochs are already time-locked to TLE
+%     if numel(bep_mdata.bini) == 1
+%         tl_ev_here = 1;
+%     else
+%         tl_ev_here = find(cell2mat(EEG.epoch(bep_mdata.bepoch).eventlatency) == 0);
+%     end
     
     % grab the bin-epoch info from the time-locked event only
-    bep_tl = bep_mdata(tl_ev_here);
-    
+    %bep_tl = bep_mdata(tl_ev_here);
+    bep_tl = bep_mdata; 
     
     if ismember(bep_tl.bini, valid_bin_ids)
         if bep_tl.enable == 1
             if ismember(bep_tl.flag,allowed_artifact_flags)  % check artifact flags, exclude iff nessc.
-                if any_boundaries_here == 0
+                if any_boundaries_here == 0 & any_boundaries_here2 ==0 
                     
                     
                     b = bep_tl.bini;
@@ -125,8 +141,11 @@ for bepoch = 1:nbeps
                     % get the data from event.epoch - NOT the eventlist bepoch
                     ep_data = EEG.data(:,:,bep_tl.bepoch);
                     
-                    bindatastruct(b).ep_list = [bindatastruct(b).ep_list bep_tl.bepoch];
-                    bindatastruct(b).ep_data(1:nelec,1:ntimes,N_valid_epochs(b)) = ep_data;
+                    for b_ind = 1:numel(b) 
+                        bindatastruct(b(b_ind)).ep_list = [bindatastruct(b(b_ind)).ep_list bep_tl.bepoch];
+                        bindatastruct(b(b_ind)).ep_data(1:nelec,1:ntimes,N_valid_epochs(b(b_ind))) = ep_data;
+                    end
+                    
                 end
             end
         end
