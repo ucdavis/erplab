@@ -1,6 +1,7 @@
 % Data Quality specification snippet to populate default values
 % and verify times are in range
 % axs June 2019, ERPLAB
+% ams Dec 2022, ERPLAB update: incl'd smaller window for short epoch(<100ms)
 function DQ_spec_out = make_DQ_spec(timelimits_ms)
 
 
@@ -46,7 +47,35 @@ if tw_ends(end) > max(timelimits_ms)
     tw_ends(end) = [];
 end
 
+% for tw less than 100ms 
+if isempty(tw_starts) & isempty(tw_ends) 
+    win_size = 2;  %considers typical auditory brainstem responses (ABRs) (eg, 25ms epochs)
+                   %thanks Dr. Kelsey Mankel! 
+    if (min(timelimits_ms) < 0) && (max(timelimits_ms) > 0)
+        % if crossing zero, grow 0:-win_size:min and 0:win_size:max
+        
+        tw_neg = sort([0:-win_size:timelimits_ms(1)]);
+        tw_pos = [0:win_size:timelimits_ms(2)];
+        
+        % concatenate
+        tw_starts = unique([tw_neg tw_pos]);
+        tw_ends = tw_starts + win_size;
+        
+    else
+        % else, grow min:win_size:term
+        
+        tw_starts = min(timelimits_ms):win_size:max(timelimits_ms);
+        tw_ends = tw_starts + win_size;
+    end
+    
+    % remove time-windows out of range
+    if tw_ends(end) > max(timelimits_ms)
+        tw_starts(end) = [];
+        tw_ends(end) = [];
+    end
 
+    
+end
 
 
 
