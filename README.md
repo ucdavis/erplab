@@ -19,12 +19,12 @@ We encourage most users to use this latest major version.
 
 
 ---
-## ERPLAB compatibility
+## Compatibility and Required Toolboxes
 
 We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EEGLAB versions.
 
-- The [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html) is required
-- [EEGLAB v2021 or later](https://sccn.ucsd.edu/eeglab/download.php) is recommended.
+- The [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html) is required.
+- [EEGLAB v2021 or later](https://sccn.ucsd.edu/eeglab/download.php) is almost always necessary.
 
 Find [more ERPLAB installation help here](http://erpinfo.org/erplab).
 
