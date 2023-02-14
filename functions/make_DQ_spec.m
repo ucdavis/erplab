@@ -85,6 +85,11 @@ for i = 1:numel(tw_starts)
     tw_labels{i} = [root_str num2str(tw_starts(i)) ' to ' num2str(tw_ends(i)) ];
 end
 
+root_str = 'aSD Across Trials at ';
+for i = 1:numel(tw_starts)
+    tw_labels_sd{i} = [root_str num2str(tw_starts(i)) ' to ' num2str(tw_ends(i)) ];
+end
+
 tw = [tw_starts; tw_ends]';
 
 % Build spec with these times
@@ -96,6 +101,12 @@ DQ_defaults(3).type = 'aSME';
 DQ_defaults(3).times = tw;
 DQ_defaults(3).time_window_labels = tw_labels;
 DQ_defaults(3).comments = [];
+
+%add SD across trials (01/05/22)
+DQ_defaults(4).type = 'SD Across Trials';
+DQ_defaults(4).times = tw;
+DQ_defaults(4).time_window_labels = tw_labels_sd;
+DQ_defaults(4).comments=[]; 
 
 
 DQ_spec_out = DQ_defaults;

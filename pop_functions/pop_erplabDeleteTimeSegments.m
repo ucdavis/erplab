@@ -131,7 +131,9 @@ if nargin==1
     
     % Get previous input parameters
     def  = erpworkingmemory('pop_erplabDeleteTimeSegments');
-    if isempty(def); def = {}; end % if no parameters, clear DEF var
+    if isempty(def) 
+        def = {[7000], [3000], [3000], [], ['ignore'], 0, 0}; 
+    end % if no working memory, use defaults
     
         
 

@@ -257,22 +257,66 @@ set(handles.edit_tip_DQ, 'tooltip',tooltip_DQ);
 
 saved_DQ_struct = def{10};
 
-
 if isempty(saved_DQ_struct)
     dq_times_def = [1:6;-100:100:400;0:100:500]';
     handles.dq_times = dq_times_def;
     handles.DQ_spec = [];
 else
-    time_info = saved_DQ_struct(3).times; 
-    num_times = size(time_info,1); 
-    num_times = 1:num_times;
-    handles.dq_times = [num_times' time_info]; 
     handles.DQ_spec = saved_DQ_struct; 
-    
 end
 
+
+
+% if isempty(saved_DQ_struct)
+%     dq_times_def = [1:6;-100:100:400;0:100:500]';
+%     handles.dq_times = dq_times_def;
+%     handles.DQ_spec = [];
+% else
+%     %search DQ "times" struct
+%     nDQ = length(saved_DQ_struct);
+%     times_ind = zeros(1, nDQ);
+%     for ti = 1:nDQ
+%         
+%         if ~isempty(saved_DQ_struct(ti).times)
+%             times_ind(ti) = 1;
+%         end
+%         
+%     end
+%     
+%     if ~any(times_ind) % no valid times (e.g. only point-wise SEM)
+%         handles.dq_times = [];
+%         handles.DQ_spec = saved_DQ_struct;
+%         
+%     else 
+%         try % only one time-window metric
+%             time_info = num2cell(saved_DQ_struct.times);
+%             
+%         catch %find usable index
+%             use_row = find(times_ind == 1); 
+%             time_info = num2cell(saved_DQ_struct(use_row(1)).times); 
+%         end
+%         %time_info = saved_DQ_struct(3).times;
+%         num_times = size(time_info,1);
+%         num_times = 1:num_times;
+%         handles.dq_times = [num_times' time_info];
+%         handles.DQ_spec = saved_DQ_struct;
+%     end
+%     
+% end
+
 %did user specify custom wins? 
-handles.DQ_custom_wins = def{12}; 
+customWins = def{12}; 
+
+if customWins 
+    set(handles.radiobuttonDQ2,'Value',1);
+    set(handles.pushbutton_DQ_adv,'Enable','on');
+else
+    set(handles.radiobuttonDQ1,'Value',1);
+    set(handles.pushbutton_DQ_adv,'Enable','off');
+end
+handles.DQ_custom_wins = customWins; 
+
+
 
 
 %
@@ -619,8 +663,10 @@ if DQ_flag
     
     if use_defaults || isempty(handles.DQ_spec)
         DQ_spec = DQ_defaults;
+        handles.DQ_custom_wins = 0;
     else
         DQ_spec = handles.DQ_spec;
+        handles.DQ_custom_wins = 1; 
     end
     
     

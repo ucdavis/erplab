@@ -1,6 +1,7 @@
 % write data quality substructure to file
 % part of the ERPLAB Toolbox
 % axs Apr 2019
+% ams Jan 2023 (updated with SD across Trials)
 %
 % Format:
 %  save_data_quality(ERP, 'dq.mat')
@@ -15,6 +16,8 @@
 %         format for the new save files. Default of 'mat'.
 %    dq_subfield - which entry of the dq substructure to write.
 %         default of 1
+%
+%
 function save_data_quality(ERP, filename, format, dq_subfield)
 
 % Check input
@@ -58,7 +61,7 @@ end
 if exist('filename','var') == 0 || isempty(filename)
     % if path missing, prompt from user
     %format_options = {'*.xls' ; '*.mat'};
-    format_options = {['*.' format];'*.xls';'*.mat'};
+    format_options = {['*.' format];'*.xlsx';'*.mat'};
     pick_str = 'Save Data Quality to file. Pick path:';
     [picked_file, picked_path] = uiputfile(format_options,pick_str);
     filename = [picked_path picked_file];
@@ -123,7 +126,24 @@ if write_spreadsheet
     % set up data to write to spreadsheet
     dq = ERP.dataquality(dq_subfield);
     dq_fields = fieldnames(ERP.dataquality(dq_subfield));
-    dq_datasize = size(ERP.dataquality(dq_subfield).data);
+%     if dq_subfield == 4
+%         if sdcorrection == 0
+%             dq_datasize = size(ERP.dataquality(dq_subfield).data.SD_bias);
+%         else
+%             dq_datasize = size(ERP.dataquality(dq_subfield).data.SD_unbias);
+%         end
+%     else
+%          dq_datasize = size(ERP.dataquality(dq_subfield).data);
+%     end
+    
+    if strcmp(dq.type, 'Point-wise SEM (Corrected)') | strcmp(dq.type, 'Point-wise SEM')
+        dq_datasize = size(ERP.binerror)
+        dq.data = ERP.binerror;
+        dq.times = [repmat(1:dq_datasize(2),[2,1])]';
+        dq.time_window_labels = cellstr([repmat('Timepoint ',[dq_datasize(2),1]) num2str(dq.times(:,1))])';
+    else
+        dq_datasize = size(ERP.dataquality(dq_subfield).data);
+    end
     dq_size_str = '';
     for i=1:numel(dq_datasize)
         dq_size_str = [dq_size_str ' ' num2str(dq_datasize(i))];
@@ -144,6 +164,11 @@ if write_spreadsheet
     
     
     % Write a list of labels for rows, cols, sheets
+%     if dq_subfield == 4
+%         maxlen = max(size(dq.data.SD_bias));
+%     else    
+%         maxlen = max(size(dq.data));
+%     end
     maxlen = max(size(dq.data));
     Rows = cell(maxlen,1);
     Cols = cell(maxlen,1);
@@ -156,9 +181,16 @@ if write_spreadsheet
         for i=1:length(dq.times)
             Cols{i} = [num2str(dq.times(i,1)) ' : ' num2str(dq.times(i,2))];
         end
-        for b=1:size(dq.data,3)
-            Sheets{b} = ['Bin ' num2str(b) ' on Sheet ' num2str(b+1)];
-        end
+        
+%         if dq_subfield == 4
+%             for b=1:size(dq.data.SD_bias,3) 
+%                 Sheets{b} = ['Bin ' num2str(b) ' on Sheet ' num2str(b+1)];
+%             end
+%         else
+         for b=1:size(dq.data,3)
+             Sheets{b} = ['Bin ' num2str(b) ' on Sheet ' num2str(b+1)];
+         end
+     
         
     catch
         disp('Problem with DQ labels?');
@@ -175,7 +207,7 @@ if write_spreadsheet
         writetable(xls_times,filename,'Sheet',1,'Range',line_start,'WriteVariableNames',true);
         %writetable(xls_info_T,filename,'Sheet',1,'Range','A1','WriteVariableNames',false); % write again to sort col widths
     end
-    
+%     
     % Bin-like data written to subsequent sheets
     Elec = Rows;
     for i = 1:dq_datasize(3)
@@ -189,6 +221,15 @@ if write_spreadsheet
         sheet_label_T = table(sheet_label);
         writetable(sheet_label_T,filename,'Sheet',i+1,'Range','A1','WriteVariableNames',false);  % writecell is introduced in R2019a, so another hacky Table here
         Submeasure = nan(maxlen); % square matrix of NaNs at maxlen for table to rectangular with labels. NaNs are not written to Excel file.
+%         if dq_subfield == 4
+%             if sdcorrection == 0
+%                 Submeasure(1:ERP.nchan,1:size(dq.data.SD_bias,2)) = dq.data.SD_bias(:,:,i);
+%             else
+%                 Submeasure(1:ERP.nchan,1:size(dq.data.SD_unbias,2)) = dq.data.SD_unbias(:,:,i);
+%             end        
+%         else
+%             Submeasure(1:ERP.nchan,1:size(dq.data,2)) = dq.data(:,:,i);
+%         end
         Submeasure(1:ERP.nchan,1:size(dq.data,2)) = dq.data(:,:,i);
         xls_d = table(Elec,Submeasure);
         writetable(xls_d,filename,'Sheet',1+i,'Range','A2','WriteVariableNames',false);  % write data

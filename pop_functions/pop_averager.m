@@ -102,15 +102,21 @@ if nargin==1
         return
     end
     
-    % read values in memory for this function
-    def  = erpworkingmemory('pop_averager');
+    % read values in memory for this function    
     try
-        def_dq = erpworkingmemory('pop_DQ_preavg'); 
+        def  = erpworkingmemory('pop_averager');
+        
     catch
-        def_dq = [];
+        def_dq = erpworkingmemory('pop_DQ_preavg'); 
     end
     
- 
+%     def  = erpworkingmemory('pop_averager');
+%     try
+%         def_dq = erpworkingmemory('pop_DQ_preavg'); 
+%     catch
+%         def_dq = [];
+%     end
+%     
         
        
         
@@ -126,10 +132,10 @@ if nargin==1
     end
     
     
-    if ~isempty(def_dq)
-        %if user created windows with pre-avg, load here
-        def{10} = def_dq{10};
-    end
+%     if ~isempty(def) %% FIX THIS?
+%         %if user created windows with pre-avg, load here
+%         def{10} = def_dq{10};
+%     end
     
     
     % epochs per dataset
@@ -928,6 +934,23 @@ else
         artif = artcrite(1, :); % just in case...(till cell)
     end
     
+    % consider corrected SEM (if DQ metric chosen)
+    
+    if DQ_flag
+        DQ_n = struct2cell(DQ_spec);
+        DQ_n = squeeze(DQ_n(1,:,:)); 
+    
+        where_pSEM = strcmpi(DQ_n, 'Point-wise SEM (Corrected)'); 
+        
+        if any(where_pSEM)
+            stderror = 2; % for corrected point-wise SEM calculation
+            
+        end
+        
+    
+    end
+    
+    
     %
     % subroutine
     %
@@ -941,10 +964,48 @@ else
         DQ_n = squeeze(DQ_n(1,:,:));
         
         where_aSME = strcmpi(DQ_n,'aSME');
-        if any(where_aSME)
+        where_aSME_corr = strcmpi(DQ_n,'aSME (Corrected)'); 
+        
+        if any(where_aSME) | any(where_aSME_corr)
             aSME_indx = find(where_aSME);
+            
+            if ~any(aSME_indx) 
+                aSME_indx = find(where_aSME_corr);
+            end
+  
             aSME_DQ_struct = DQ_spec(aSME_indx);
-            aSME_DQ_struct.data = sme_analytic(ALLEEG(setindex(1)),epoch_list,aSME_DQ_struct.times);
+            [aSME_DQ_struct.data] = sme_analytic(ALLEEG(setindex(1)),epoch_list,aSME_DQ_struct.times);
+             
+            %choose correct data
+            if any(where_aSME)
+                aSME_DQ_struct.data = aSME_DQ_struct.data.SME; 
+            else
+                aSME_DQ_struct.data = aSME_DQ_struct.data.SME_corr; 
+            end
+        
+        end
+        
+        where_SDacrTrials = strcmpi(DQ_n,'aSD');
+        where_SDacrTrials_corr = strcmpi(DQ_n, 'aSD (Corrected)'); 
+        if any(where_SDacrTrials) | any(where_SDacrTrials_corr)
+            SDacrT_ind = find(where_SDacrTrials);
+            
+            if ~any(SDacrT_ind)
+                SDacrT_ind = find(where_SDacrTrials_corr);
+            end
+            
+            aSDacrT_dq = DQ_spec(SDacrT_ind); 
+            [aSDacrT_dq.data] = dq_sdacrosstrials(ALLEEG(setindex(1)),epoch_list,aSDacrT_dq.times); %use same times as aSME
+%           %  ERP = add_dq_measure(ERP,base_dq);
+            %choose correct data
+            if any(where_SDacrTrials)
+                aSDacrT_dq.data = aSDacrT_dq.data.SD_bias; 
+            else
+                aSDacrT_dq.data = aSDacrT_dq.data.SD_unbias; 
+            end    
+
+%             
+%         end
         end
         
     end
@@ -1023,17 +1084,41 @@ if DQ_flag
         ERP = add_dq_measure(ERP,base_dq);
     end
     
+    where_base_sd_corr = strcmpi(DQ_n,'Baseline Measure - SD (Corrected)');
+    
+    if any(where_base_sd_corr)
+        base_sdcorr_indx = find(where_base_sd_corr); 
+        base_times = DQ_spec(where_base_sd_corr).times;
+        
+        if isempty(DQ_spec(base_sdcorr_indx).times)
+            base_dq = dq_baseline(ERP,[],[],2);
+        elseif size(base_times,2) == 3
+            base_start_t = DQ_spec(where_base_sd_corr).times(2);
+            base_end_t = DQ_spec(where_base_sd_corr).times(3);
+            base_dq = dq_baseline(ERP,base_start_t,base_end_t,2);
+        else
+            base_start_t = DQ_spec(where_base_sd_corr).times(1);
+            base_end_t = DQ_spec(where_base_sd_corr).times(2);
+            base_dq = dq_baseline(ERP,base_start_t,base_end_t,2);
+        end
+
+        ERP = add_dq_measure(ERP,base_dq);
+       
+    end
+    
     where_base_rms = strcmpi(DQ_n,'Baseline Measure - RMS');
     if any(where_base_rms)
         base_rms_indx = find(where_base_rms);
         if isempty(DQ_spec(base_rms_indx).times)
             base_dq = dq_baseline(ERP,[],[],0);
         else
-            base_dq = dq_baseline(ERP,DQ_spec(where_base_rms).times(2),DQ_spec(where_base_rms).times(3),2);
+            base_dq = dq_baseline(ERP,DQ_spec(where_base_rms).times(2),DQ_spec(where_base_rms).times(3),0);
         end
         
         ERP = add_dq_measure(ERP,base_dq);
     end
+    
+    
     
     where_SEM = strcmpi(DQ_n,'Point-wise SEM');
     if any(where_SEM)
@@ -1043,12 +1128,44 @@ if DQ_flag
         ERP = add_dq_measure(ERP,SEM_dq);
     end
     
+    where_SEM_corr = strcmpi(DQ_n,'Point-wise SEM (Corrected)');
+    if any(where_SEM_corr)
+        SEM_indx = find(where_SEM_corr);
+        SEM_dq.type = DQ_spec(SEM_indx).type;
+        SEM_dq.times = []; SEM_dq.data = [];
+        ERP = add_dq_measure(ERP,SEM_dq);
+    end
+      
     
     where_aSME = strcmpi(DQ_n,'aSME');
+    where_aSME_Corr = strcmpi(DQ_n,'aSME (Corrected)');
     if any(where_aSME)
+
         aSME_DQ_struct.type = 'aSME';
         ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
         dq_summary(ERP,'aSME')
+        
+    elseif any(where_aSME_Corr)
+        aSME_DQ_struct.type = 'aSME (Corrected)';
+        ERP = make_data_quality_ERP(ERP,aSME_DQ_struct,1);
+        dq_summary(ERP,'aSME (Corrected)');
+        
+    end
+    
+    
+    
+    where_SDacrTrials = strcmpi(DQ_n,'aSD');
+    where_SDacrTrials_Corr = strcmpi(DQ_n,'aSD (Corrected)');
+    
+    if any(where_SDacrTrials)
+        aSDacrT_dq.type = 'aSD';
+        ERP = make_data_quality_ERP(ERP,aSDacrT_dq,1);
+        %dq_summary(ERP,'aSME')
+        
+    elseif any(where_SDacrTrials_Corr)
+        aSDacrT_dq.type = 'aSD (Corrected)';
+        ERP = make_data_quality_ERP(ERP,aSDacrT_dq,1);
+    
     end
     
 end
@@ -1162,9 +1279,9 @@ end
 %
 % Completion statement
 %
-if ~any(where_aSME)
-    dq_summary(ERP,'aSME')
-end
+% if ~any(where_aSME)
+%     dq_summary(ERP,'aSME')
+% end
 msg2end
 return
 

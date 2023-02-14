@@ -1,7 +1,6 @@
 % Analytic SME meanamp calc snippet
-% axs Dec 2018
-% ams Jan 2023, includes corrected SME
-function [outdata] = sme_analytic(EEG, epoch_list, dq_window_times)
+% ams Jan 2023
+function [outdata] = dq_sdacrosstrials(EEG, epoch_list, dq_window_times)
 
 sizes = size(EEG.data);
 
@@ -43,32 +42,29 @@ for b = 1:n_bins
     n_beps_per_bin(b) = numel(epoch_list(b).good_bep_indx);
 end
 
-SME_out = zeros(n_elec,n_windows,n_bins);
-SME_unbias_out = zeros(n_elec,n_windows,n_bins); 
+SD_out = zeros(n_elec,n_windows,n_bins);
+SD_unbias_out = zeros(n_elec,n_windows,n_bins); 
 
 
 for b = 1:n_bins        % for each bin
-    for t = 1:n_windows % and each SME time window
+    for t = 1:n_windows % and each SD time window
     
     data_here = EEG.data(1:n_elec,win_dps_starts(t):win_dps_ends(t),epoch_list(b).good_bep_indx);
     window_mean = squeeze(mean(data_here,2));
     
-    %SD (N-1)
-    SME_sd = std(window_mean,0,2); 
-    %SME_bias = std(window_mean,0,2) / sqrt(n_beps_per_bin(b));
-    SME_bias = SME_sd / sqrt(n_beps_per_bin(b)); 
-    SME_out(1:n_elec,t,b) = SME_bias;
+    %N-1 SD
+    SD_bias = std(window_mean,0,2);
+    SD_out(1:n_elec,t,b) = SD_bias;
     
-    %Unbiased SD (Gurland & Tripathi)
+    %Unbiased SD
     nTimes = size(window_mean,2); 
-    SME_unbias = (((SME_sd * sqrt((nTimes-1)))/ sqrt((nTimes-(3/2)+(1/(8*(nTimes-1)))))) / sqrt(n_beps_per_bin(b)));
-    SME_unbias_out(1:n_elec,t,b) = SME_unbias; 
-    
+    SD_unbias = ((SD_bias * sqrt((nTimes-1)))/ sqrt((nTimes-(3/2)+(1/(8*(nTimes-1))))));
+    SD_unbias_out(1:n_elec,t,b) = SD_unbias; 
     
     end
 end
-%combine SME structs
-outdata = struct();
-outdata.SME = SME_out;
-outdata.SME_corr = SME_unbias_out;
 
+%combine SD structs
+outdata = struct();
+outdata.SD_bias = SD_out;
+outdata.SD_unbias = SD_unbias_out;
