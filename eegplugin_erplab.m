@@ -3,7 +3,7 @@
 % University of California, Davis,
 % Davis, CA
 % 2007-2020
-% Version 8.30
+% Version 9.10
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -153,22 +153,29 @@ end
 %
 ERP              = [];  % Start ERP Structure on workspace
 %ALLERP           = [];    %Start ALLERP Structure on workspace
+ALLBEST          = []; 
 ALLERPCOM        = [];
 CURRENTERP       = 0;
+BEST             = []; %Start BEST structure on workspace
+CURRENTBEST      = 0; 
 plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
+MVPA             = []; 
 
 assignin('base','ERP',ERP);
 %assignin('base','ALLERP', ALLERP);
+assignin('base','ALLBEST', ALLBEST); 
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
+assignin('base','CURRENTBEST', CURRENTBEST);
+assignin('base','BEST',BEST); 
 assignin('base','plotset', plotset);
+assignin('base','MVPA', MVPA); 
 
 % ALLERP should be created with EEGLAB Globals in eeg_globals.m
-global ALLERP
-ALLERP = [];
-
+%global ALLERP ALLBEST
+%ALLERP = [];
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
 %
@@ -229,6 +236,7 @@ comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEv
 comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
 comRemoveResponseMistakes = [trystrs.no_check '[ALLEEG,EEG,LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,CURRENTSET);' catchstrs.new_and_hist];
 comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
+comDFT     = [trystrs.no_check '[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);' catchstrs.add_to_hist];
 
 
 
@@ -250,7 +258,7 @@ comMEL    = [trystrs.no_check '[EEG, LASTCOM] = pop_overwritevent(EEG);' catchst
 
 %
 % BIN-BASED EPOCHING callback
-%
+%f
 comEB     = [trystrs.no_check '[EEG, LASTCOM] = pop_epochbin(EEG);' catchstrs.new_and_hist];
 comBV     = 'bdfVisualizer;';
 
@@ -312,14 +320,24 @@ comDQQprint = ['dataquality_measure = print_data_quality(ERP);'];
 comDQQinfo = ['erpset_summary;'];
 comDQQpreavg = ['pop_DQ_preavg(ALLEEG)']; 
 
+
+%% MVPA callbacks
+comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
+comSpatDecode = ['[MVPA] = pop_decoding('''');']; 
+comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
+comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');']; 
+
+
+
 %% FILTER EEG callbacks
 %
 comBFCD    = [trystrs.no_check '[EEG, LASTCOM] = pop_basicfilter(EEG);' catchstrs.new_and_hist];
 comPAS     = [trystrs.no_check '[EEG, LASTCOM] = pop_fourieeg(EEG);' catchstrs.add_to_hist];
 comESIM    = [trystrs.no_check '[EEG, LASTCOM] = pop_EEGsimulate(EEG);' catchstrs.new_and_hist];
 comTK1     = [trystrs.no_check '[EEG, LASTCOM] = pop_polydetrend(EEG);' catchstrs.new_and_hist ];
-comTK2     = [trystrs.no_check '[EEG, LASTCOM] = pop_eeglindetrend(EEG);' catchstrs.new_and_hist ];
+comTK2     = [trystrs.no_check '[EEG, LASTCOM] = pop_eeglindetrend(EEG);' catchstrs.new_and_hist];
 comTK3     = '[ERP, ERPCOM]  = pop_erplindetrend(ERP); [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);';
+
 
 
 %% ERP processing callbacks
@@ -446,6 +464,12 @@ uimenu( preProcMenu,                                        ...
     'Label'   , 'Selective Electrode Interpolation',        ...
     'CallBack', comInterpolateElectrodes,         ...     
     'userdata', preProcFunctions_userdata);
+%Continuous Spectral EEG Data Quality
+uimenu( preProcMenu, ...
+    'Label', 'Spectral Data Quality (continuous EEG)', ...
+    'CallBack', comDFT, ...
+    'userdata', preProcFunctions_userdata); 
+
 
 
 %% EVENTLIST for EEG menu and submenu
@@ -493,7 +517,6 @@ uimenu( mFI,'Label','EEG Linear detrend ','CallBack',comTK2,'separator','on','us
 uimenu( mFI,'Label','ERP Linear detrend ','CallBack',comTK3,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mFI,'Label','EEG Polynomial detrend (continuous) (alpha version)','CallBack', comTK1,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:on;erpset:off');
 
-
 %% ARTIFACT DETECTION FOR EPOCHED DATA submenus
 %
 mAR = uimenu( submenu,'Label','Artifact detection in epoched data','tag','ART','separator','on','userdata','startup:off;continuous:off;epoch:on;study:on;erpset:off');
@@ -519,6 +542,20 @@ uimenu( mSAR,'Label','Summarize ERP artifacts in a table ','CallBack', comARSUMe
 
 %% DATA QUALITY aSME (Pre-Average Viewer)
 uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'CallBack', comDQQpreavg,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
+
+
+%% BIN-EPOCHED Data (BEST sets) 
+uimenu(submenu,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
+uimenu(submenu,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
+uimenu(submenu,'Label','Load BEST','CallBack',comLoadBEST,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+
+
+%% Multivariate Pattern Analysis
+MVPAmenu = uimenu( submenu,'Label','MVPA','separator','on','tag','MVPAset','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
+% BESTmenu = uimenu(MVPAmenu,'Label','Currently loaded BESTsets','tag','LoadedBEST','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
+uimenu(MVPAmenu,'Label','ERP Decoding','separator','on','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off'); 
+set(MVPAmenu, 'enable','off'); 
+
 
 
 %% AVERAGE ERP
@@ -662,10 +699,23 @@ uimenu( mhelp,'Label','Download latest ERPLAB','CallBack','web(''https://github.
 uimenu( mhelp,'Label','Submit an issue report on the ERPLAB GitHub page','CallBack','web(''https://github.com/lucklab/erplab/issues'', ''-browser'');','separator','on','userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 
 
+
 %% CREATE ERPset MAIN MENU
 %
 erpmenu = uimenu( menuERPLAB,'Label','ERPsets','separator','on','tag','erpsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 %set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
 set(erpmenu,'enable','off');
+
+%% Create BEST Main Menu 
+
+bestmenu = uimenu( menuERPLAB,'Label','BESTsets','separator','on','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+%set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
+set(bestmenu,'enable','off');
+
+
+
+%% Create MVPA MAIN MENU
+% % 
+
 
 

@@ -58,13 +58,20 @@ baseline_data = ERP.bindata(:,start_dp:end_dp,:);
 
 
 
-if subtract_mean_flag
+if subtract_mean_flag == 1
     % Measure Standard Deviation, which removes mean
     baseline_measure = std(baseline_data,0,2);
     
-else
+elseif subtract_mean_flag == 0 
     % use rms, not removing mean
     baseline_measure = rms(baseline_data,2);
+    
+elseif subtract_mean_flag == 2
+    %Corrected SD
+    nTimes = size(baseline_data,2);
+    baseline_measure_biased = std(baseline_data,0,2);
+    baseline_measure =  ((baseline_measure_biased * sqrt((nTimes-1)))/ sqrt((nTimes-(3/2)+(1/(8*(nTimes-1))))));
+    
 end
 
 % quick plot of baseline sd
@@ -72,10 +79,12 @@ end
 
 
 % Prepare dq_struct
-if subtract_mean_flag
+if subtract_mean_flag == 1
     dq_struct.type = 'Baseline Measure - SD';
-else
+elseif subtract_mean_flag == 0 
     dq_struct.type = 'Baseline Measure - RMS';
+elseif subtract_mean_flag == 2
+    dq_struct.type = 'Baseline Measure - SD (Corrected)';
 end
 
 dq_struct.times = [start_ms end_ms];

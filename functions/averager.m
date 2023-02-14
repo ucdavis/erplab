@@ -86,7 +86,7 @@ if nargin<3
 end
 
 % check for time-lock latency
-EEG    = checkeegzerolat(EEG);
+EEG  = checkeegzerolat(EEG, 'AvgText', avgText);
 
 if avgText ==1
     disp('Averaging data...please wait.')
@@ -129,7 +129,7 @@ sfields1 = regexpi(F, '\w*E$', 'match');
 sfields2 = [sfields1{:}];
 fields4reject  = regexprep(sfields2,'E','');
 
-if stderror
+if stderror > 0
     ERP.binerror = zeros(nchan, xpnts, nbin); % bins standard error
     sumERP2 = zeros(nchan, xpnts, nbin);   % sum of squares: Sum(xi^2)
 end
@@ -334,7 +334,7 @@ for i = 1:nepoch
                 %
                 % Sum of squares for standard error
                 %
-                if stderror
+                if stderror > 0
                     %sumERP2(:,:,binslot) = sumERP2(:,:,binslot) + EEG.data(:,:,bouncebin).^2; % sum of squares: Sum(xi^2)
                     sumERP2(:,:,binslot) = sumERP2(:,:,binslot) + data2sum.^2; % sum of squares: Sum(xi^2)
                 end
@@ -353,18 +353,21 @@ for i = 1:nepoch
     end
 end
 if ~iscell(artcrite)
-    TotalOri = sum(countbiORI,2);
-    TotalOK  = sum(countbinOK,2);
-    TotalINV = sum(countbinINV,2);
-    pREJ     = (TotalOri-TotalOK)*100/TotalOri;  % Total trials rejected percentage
-    pINV     = TotalINV*100/TotalOri;            % Total trials invalid in percentage
     
-    fprintf('\n----------------------------------------------------------------------------------------\n');
-    fprintf('The dataset %s has a %.1f %% of rejected trials\n', EEG.setname, pREJ);
-    fprintf('The dataset %s has a %.1f %% of invalid trials\n\n', EEG.setname, pINV);
-    fprintf('TOTAL:\n');
-    fprintf('The dataset %s has a %.1f %% of  discarded trials\n\n', EEG.setname, pINV + pREJ);
-    fprintf('Summary per bin:\n');
+    if avgText == 1
+        TotalOri = sum(countbiORI,2);
+        TotalOK  = sum(countbinOK,2);
+        TotalINV = sum(countbinINV,2);
+        pREJ     = (TotalOri-TotalOK)*100/TotalOri;  % Total trials rejected percentage
+        pINV     = TotalINV*100/TotalOri;            % Total trials invalid in percentage
+        
+        fprintf('\n----------------------------------------------------------------------------------------\n');
+        fprintf('The dataset %s has a %.1f %% of rejected trials\n', EEG.setname, pREJ);
+        fprintf('The dataset %s has a %.1f %% of invalid trials\n\n', EEG.setname, pINV);
+        fprintf('TOTAL:\n');
+        fprintf('The dataset %s has a %.1f %% of  discarded trials\n\n', EEG.setname, pINV + pREJ);
+        fprintf('Summary per bin:\n');
+    end
 end
 
 %
@@ -378,7 +381,7 @@ for k=1:nbin
         %
         % Standard deviation/error
         %
-        if stderror
+        if stderror > 0
             %ERP.binerror(:,:,k) = sqrt((1/(N-1))*sumERP2(:,:,k) - ERP.bindata(:,:,k).^2)./sqrt(N); % get ERP's standard error
             %ERP.binerror(:,:,k) = sqrt((1/(N-1))*sumERP2(:,:,k) - ERP.bindata(:,:,k).^2); % get ERP's standard deviation
             
@@ -395,18 +398,26 @@ for k=1:nbin
             %
             % Since we already have the sum_of_all(datapoints)^2 in sumERP2
             % Let's rearrange SD as:
-            sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-1)); % get ERP's standard deviation
-            
+            if stderror == 1
+                sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-1)); % get ERP's standard deviation
+            elseif stderror == 2 %corrected point-wise SEM
+                sample_SD_rearrange = sqrt((sumERP2(:,:,k) - N*ERP.bindata(:,:,k).^2)/(N-(3/2)+(1/(8*(N-1))))); 
+            end
+                
             % The Standard Error of the Mean is then:
             ERP.binerror(:,:,k) = sample_SD_rearrange./sqrt(N); % get ERP's standard error
         end
         if ~iscell(artcrite)
-            prejectedT = (countbiORI(1,k) - countbinOK(1,k))*100/countbiORI(1,k);  %19 sept 2008
-            pinvalidT  = countbinINV(1,k)*100/countbiORI(1,k);                     %19 sept 2008
-            fprintf('Bin %g was created with a %.1f %% of rejected trials\n', k, prejectedT);
-            fprintf('Bin %g was created with a %.1f %% of invalid trials\n', k, pinvalidT);
+            if avgText == 1
+                prejectedT = (countbiORI(1,k) - countbinOK(1,k))*100/countbiORI(1,k);  %19 sept 2008
+                pinvalidT  = countbinINV(1,k)*100/countbiORI(1,k);                     %19 sept 2008
+                fprintf('Bin %g was created with a %.1f %% of rejected trials\n', k, prejectedT);
+                fprintf('Bin %g was created with a %.1f %% of invalid trials\n', k, pinvalidT);
+            end
         else
-            fprintf('Bin %g was customly created from %g epochs specified by you.\n', k, N);
+            if avgText == 1
+                fprintf('Bin %g was customly created from %g epochs specified by you.\n', k, N);
+            end
         end
     end
 end

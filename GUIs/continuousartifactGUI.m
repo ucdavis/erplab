@@ -78,7 +78,7 @@ if isempty(memoryCARTGUI)
     prompt     = {'Threshold (1 or 2 values)', 'Moving Windows Width (ms)',...
         'Window Step (ms)','Channel(s)', 'Frequency cutoffs (Hz)', 'lowest freq', 'highest freq'};
     dlg_title  =  'Input threshold';
-    def        = {200 500 250 [1:nchan] [] [] [] 0 0 0 0};
+    def        = {500 500 250 [1:nchan] [] [] [] 0 0 0 0};
     defx       = def  ;
     colorseg   = [1.0000    0.9765    0.5294]; % default
 else
