@@ -1,6 +1,6 @@
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users.
 
-## ERPLAB v9.00
+## ERPLAB v9.10
 
 <p align="center" >
   <a href="https://github.com/lucklab/erplab/releases/download/9.00/ERPLAB9.00.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
@@ -11,7 +11,7 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 </p>
 
 
-To install ERPLAB v9.00, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v9.10, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
 
@@ -53,6 +53,15 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 <br/>
 
 ## Release Notes
+
+### ERPLAB v9.10 Release Notes
+Now includes: 
+Updated Data Quality (DQ) metrics specifications on averaged ERP waveforms, including a new metric: SD across trials. 
+
+A new DQ metric for continuous EEG: [Spectral Data Quality (continuous EEG)](https://github.com/lucklab/erplab/wiki/Spectral-Data-Quality-(continuous-eeg))
+
+Various bug fixes concerning bootstrapped SMEs, filtering, and EEG channel operations. 
+
 ### ERPLAB v9.00 Release Notes
 Note: ERPLAB v9.00 is the recommended version for use with best practices in ERP data processing and analyses as outlined in Dr. Steven J Luck's new Applied Event-Related Potential Data Analysis e-book [here](https://socialsci.libretexts.org/Bookshelves/Psychology/Book%3A_Applied_Event-Related_Potential_Data_Analysis_(Luck)).
 
