@@ -272,9 +272,15 @@ if isempty(oldDQ)
     handles.dq_times = dq_times_def;
     handles.DQ_spec = [];
 else
-    dq_times_def = oldDQ(3).times; 
-    handles.dq_times = dq_times_def; 
-    handles.DQ_spec = oldDQ; 
+    try
+        dq_times_def = oldDQ(3).times;
+        handles.dq_times = dq_times_def;
+        handles.DQ_spec = oldDQ;
+    catch
+       dq_times_def = [1:6;-100:100:400;0:100:500]';
+        handles.dq_times = dq_times_def;
+        handles.DQ_spec = oldDQ;
+    end
 end
 
 % Is averager or DQ Table on a pre-AVG?
