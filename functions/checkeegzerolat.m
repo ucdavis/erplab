@@ -42,7 +42,24 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function EEG = checkeegzerolat(EEG)
+function EEG = checkeegzerolat(EEG, varargin)
+
+%
+% Parsing inputs
+%
+
+p = inputParser;
+p.FunctionName = mfilename; 
+p.CaseSensitive = false;
+p.addRequired('EEG'); 
+%options
+p.addParamValue('AvgText', 1, @isnumeric); 
+p.parse(EEG, varargin{:}); 
+
+% Show text? 
+avgText = p.Results.AvgText; 
+
+
 if ~iseegstruct(EEG)
       fprintf('\nWARNING: checkeegzerolat() only works with EEG structure. This call was ignored.\n')
       return
@@ -71,11 +88,14 @@ EEG.xmax  = max(EEG.times)/1000;
 EEG.srate = round(EEG.srate);
 EEG       = eeg_checkset( EEG );
 
-if EEG.times(1)~=auxtimes(1)
-      msg = ['\nWarning: zero time-locked stimulus latency values were not found.\n'...
-      'Therefore, ERPLAB adjusted latency values at EEG.epoch.eventlatency, EEG.times, EEG.xmin,and EEG.xmax.\n\n'];
-      fprintf(msg);
-      fprintf('Time range is now [%.3f  %.3f] sec.\n', EEG.xmin, EEG.xmax )
-else
-      fprintf('Zero latencies OK.\n')
+
+if avgText == 1
+    if EEG.times(1)~=auxtimes(1)
+        msg = ['\nWarning: zero time-locked stimulus latency values were not found.\n'...
+            'Therefore, ERPLAB adjusted latency values at EEG.epoch.eventlatency, EEG.times, EEG.xmin,and EEG.xmax.\n\n'];
+        fprintf(msg);
+        fprintf('Time range is now [%.3f  %.3f] sec.\n', EEG.xmin, EEG.xmax )
+    else
+        fprintf('Zero latencies OK.\n')
+    end
 end
