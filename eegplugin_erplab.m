@@ -322,10 +322,10 @@ comDQQpreavg = ['pop_DQ_preavg(ALLEEG)'];
 
 
 %% MVPA callbacks
-%comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
-%comSpatDecode = ['[MVPA] = pop_decoding('''');']; 
-%comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
-%comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');']; 
+comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
+comSpatDecode = ['[MVPA] = pop_decoding('''');']; 
+comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
+comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');']; 
 
 
 
@@ -545,16 +545,16 @@ uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'Call
 
 
 %% BIN-EPOCHED Data (BEST sets) 
-%uimenu(submenu,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
-%uimenu(submenu,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
-%uimenu(submenu,'Label','Load BEST','CallBack',comLoadBEST,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+uimenu(submenu,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
+uimenu(submenu,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
+uimenu(submenu,'Label','Load BEST','CallBack',comLoadBEST,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
 
 
 %% Multivariate Pattern Analysis
-%MVPAmenu = uimenu( submenu,'Label','MVPA','separator','on','tag','MVPAset','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
-% BESTmenu = uimenu(MVPAmenu,'Label','Currently loaded BESTsets','tag','LoadedBEST','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
-%uimenu(MVPAmenu,'Label','ERP Decoding','separator','on','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off'); 
-%set(MVPAmenu, 'enable','off'); 
+MVPAmenu = uimenu( submenu,'Label','MVPA','separator','on','tag','MVPAset','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
+BESTmenu = uimenu(MVPAmenu,'Label','Currently loaded BESTsets','tag','LoadedBEST','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
+uimenu(MVPAmenu,'Label','ERP Decoding','separator','on','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off'); 
+set(MVPAmenu, 'enable','off'); 
 
 
 
@@ -708,9 +708,9 @@ set(erpmenu,'enable','off');
 
 %% Create BEST Main Menu 
 
-%bestmenu = uimenu( menuERPLAB,'Label','BESTsets','separator','on','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-%set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
-%set(bestmenu,'enable','off');
+bestmenu = uimenu( menuERPLAB,'Label','BESTsets','separator','on','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
+set(bestmenu,'enable','off');
 
 
 
