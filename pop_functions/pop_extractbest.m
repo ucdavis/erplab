@@ -12,7 +12,7 @@
 
 %
 %        'DSindex' 	   - dataset index when dataset are contained within the ALLEEG structure.
-%                          For single bin-epoched dataset using EEG structure this value must be equal to 1 or
+%                          For a single bin-epoched dataset using EEG structure this value must be equal to 1 or
 %                          left unspecified.
 %        'Bins'        -    Bin index array as indicated in binlister file. Example: [1:4]
 %        'ApplyFS'     -  If bandpass filtering, must be 1. Default = 0
@@ -195,19 +195,15 @@ p.addParamValue('Bins', [], @isnumeric);
 p.addParamValue('ApplyBP', 0, @isnumeric);
 p.addParamValue('Bandpass', [], @isnumeric);
 p.addParamValue('Saveas', 'off', @ischar); 
-% p.addParamValue('Filename', [], @ischar); 
-% p.addParamValue('Filepath', [], @ischar); 
+
 
 p.parse(ALLEEG, varargin{:}); 
 
 setindex = p.Results.DSindex; 
 bin_ind = p.Results.Bins;
-% fschange_on = p.Results.ApplyFS; 
-% fs_newsteps = p.Results.SampleRate;
 bandpass_on = p.Results.ApplyBP; 
 bandpass_freq = p.Results.Bandpass; 
-% filenamex = p.Results.Filename; 
-% filepathx = p.Results.Filepath; 
+
 
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
     issaveas  = 1;
@@ -217,26 +213,16 @@ end
 
 %main EEG struct
 EEG2 = ALLEEG(setindex);
-fs_original = EEG2.srate; % need original FS (for alpha transformation)
+fs_original = EEG2.srate; % need original FS (for frequency transformation)
 
 
 if bandpass_on == 1
-    %delete(gcp); 
-    %parpool; 
-    %apply transform before any downsampling
-    % low-pass filtering
-    
-    
-    
-    %filtData = nan(nTrials,nElectrodes,nTimes);
     nElectrodes = EEG2.nbchan;
     
     for c = 1:nElectrodes
         EEG2.data(c,:,:) =abs(hilbert(eegfilt(squeeze(EEG2.data(c,:,:)),fs_original,bandpass_freq(1,1),bandpass_freq(1,2))')').^2;   %Instantaneous power
     end
-    
-    
-    
+
 end
 
 
@@ -332,7 +318,7 @@ if issaveas
 end
 
 
-% %Save function
+% %Save function (DEFUNCT)
 % 
 % if isempty(filenamex) 
 %     currFilename = EEG2.filename;

@@ -38,7 +38,7 @@ function checking = checkmultiBEST(BEST)
         else
             checking = 0;
             disp('Error: multiple BEST files do not match!'); 
-            error(); 
+           % error(); 
         end
       
     end

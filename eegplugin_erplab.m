@@ -323,7 +323,7 @@ comDQQpreavg = ['pop_DQ_preavg(ALLEEG)'];
 
 %% MVPA callbacks
 comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
-comSpatDecode = ['[MVPA] = pop_decoding('''');']; 
+comSpatDecode = ['[MVPA, ALLMVPA] = pop_decoding(ALLBEST);']; 
 comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
 comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');']; 
 
@@ -552,7 +552,7 @@ uimenu(submenu,'Label','Load BEST','CallBack',comLoadBEST,'userdata','startup:on
 
 %% Multivariate Pattern Analysis
 MVPAmenu = uimenu( submenu,'Label','MVPA','separator','on','tag','MVPAset','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
-BESTmenu = uimenu(MVPAmenu,'Label','Currently loaded BESTsets','tag','LoadedBEST','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
+%BESTmenu = uimenu(MVPAmenu,'Label','Currently loaded BESTsets','tag','LoadedBEST','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
 uimenu(MVPAmenu,'Label','ERP Decoding','separator','on','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off'); 
 set(MVPAmenu, 'enable','off'); 
 
