@@ -180,45 +180,26 @@ for s = 1:nSubs %decoding is performed within each subject independently
         %% shuffling, binning, & averaging
         for bin = 1:nBins 
             
-            if equalT == 1 %equal trials across bins 
-                % find bin with fewest trial
-                minCnt = min(nPerBin);
-                
-                % max # of trials such that # of trials for each bin ...
-                % can be equated within each block 
-                nPerBinBlock = floor(minCnt/nBlocks); 
-                
-                %Obtain index within each shuffled bin
-                shuffBin = randperm((nPerBinBlock*nBlocks))';
-                
-                %Preallocate arrays               
-                blocks = nan(size(shuffBin));
-                shuffBlocks = nan(size(shuffBin));
-                
-                %arrage block order within bins
-                x = repmat((1:nBlocks)',nPerBinBlock,1);
-                shuffBlocks(shuffBin) = x;
-                
-                
-            else 
-                % We will use as many possible trials per
-                % bin having accounted already for artifacts
-                
-                %Drop excess trials
-                nPerBinBlock = floor(nPerBin/nBlocks); %array for nPerBin
-                
-                %Obtain index within each shuffled bin
-                shuffBin = randperm((nPerBinBlock(bin))*nBlocks)';
-                
-                %Preallocate arrays
-                
-                blocks = nan(size(shuffBin));
-                shuffBlocks = nan(size(shuffBin));
-                
-                %arrage block order within bins
-                x = repmat((1:nBlocks)',nPerBinBlock(bin),1);
-                shuffBlocks(shuffBin) = x;
-            end
+
+            % We will use as many possible trials per
+            % bin having accounted already for artifacts
+            % Controlled by specifying equalize_trials in pop_decoding
+            
+            %Drop excess trials
+            nPerBinBlock = floor(nPerBin/nBlocks); %array for nPerBin
+            
+            %Obtain index within each shuffled bin
+            shuffBin = randperm((nPerBinBlock(bin))*nBlocks)';
+            
+            %Preallocate arrays
+            
+            blocks = nan(size(shuffBin));
+            shuffBlocks = nan(size(shuffBin));
+            
+            %arrage block order within bins
+            x = repmat((1:nBlocks)',nPerBinBlock(bin),1);
+            shuffBlocks(shuffBin) = x;
+
             
             %unshuffled block assignment
             blocks(shuffBin) = shuffBlocks;

@@ -114,20 +114,21 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 3 100 1 [] [] [] 2 0};
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 [] 0};
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
-        %def3 = output filename (def = filename.mvpa in pwd)
-        %def4 = nCrossBlocks (def = 3)
-        %def5 = nIter (def = 100)
-        %def6 = DataTimes (1:all, 2: pre, 3: post, 4:custom) (Def = 1/all)
-        %def7 = times (full array of epoch times) 
-        %def8 = time_sample(logical index of epoch)
-        %def9 = relevantChans
-        %def10 = nPerBinBlock 
-        %   (0: don't equalize/ 1:equalize across bins/ 2: eqalize across
+        %def3 = chanArray
+        %def4 = nIter (def = 100)
+        %def5 = nCrossBlocks (def = 3)
+        %def6 = epochTimes (1:all, 2: pre, 3: post, 4:custom) (Def = 1/all)
+        %def7 = decodeTimes ([start,end]; def = []); 
+        %def8 = decode_every_Npoint (1 = every point)
+        %def9 = Equalize Trials (0: don't equalize/ 1:equalize across bins/ 2: eqalize across
         %   bins & best (def))
-        %def11  = parComute (def: 0)
+        %def10 = output filename (def = filename.mvpa in pwd)
+        %def11 = parCompute (def = 0) 
+       
+
     else
         %if working memory is NOT empty (?) 
         
@@ -235,21 +236,22 @@ if nargin == 1 %GUI
     %parse arguments
     ALLBEST = decoding_res{1}; 
     indexBEST = decoding_res{2};
-    fname = decoding_res{3}; 
-    nBins = decoding_res{4};
-    nIter = decoding_res{5};
-    nCrossBlocks = decoding_res{6};
-    DataTimes = decoding_res{7};
-    times = decoding_res{8};
-    decoding_times = decoding_res{9};
-    relevantChans = decoding_res{10};
-    nPerBinBlock = decoding_res{11};
-    ParCompute = decoding_res{12}; 
+    relevantChans = decoding_res{3};
+    nIter = decoding_res{4};
+    nCrossBlocks = decoding_res{5};
+    epoch_times = decoding_res{6};
+    decodeTimes = decoding_res{7};
+    decode_every_Npoint = decoding_res{8};
+    equalize_trials = decoding_res{9};
+    fname = decoding_res{10}; 
+    ParCompute = decoding_res{11}; 
     
-   [MVPA] = pop_decoding(ALLBEST,'BESTindex',indexBEST, 'file_out', fname, ... 
-       'nIter',nIter,'nCrossblocks',nCrossBlocks, 'nDatatimes', DataTimes, ...
-   'SampleTimes',times,'DecodingTimes',decoding_times, 'Chans', relevantChans, ...
-   'nPerBinBlock', nPerBinBlock,'ParCompute',ParCompute); 
+   
+    
+   [MVPA] = pop_decoding(ALLBEST,'BESTindex',indexBEST, 'chanArray', relevantChans, ...
+       'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
+   'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
+   'equalTrials', equalize_trials,'fileout_name', fname, 'ParCompute',ParCompute); 
   
 
 
@@ -264,25 +266,179 @@ p.CaseSensitive = false;
 p.addRequired('ALLBEST');
 
 % option(s)
-p.addParamValue('BESTindex', 1); % erpset index or input file
-p.addParamValue('file_out', []); % output file name 
+p.addParamValue('BESTindex', [],@isnumeric); % erpset index or input file
+p.addParamValue('chanArray',[], @isnumeric); %array of channel indicies (def: all channels)
 %p.addParamValue('nBins',0); %total number of bins/decoding labels/decoding levels
-p.addParamValue('nIter',100); % total number of decoding iterations (def: 100 iters)
-p.addParamValue('nCrossblocks',3); % total number of crossblock validations (def: 3 crossblocks)
-p.addParamValue('nDatatimes',[]); %struct with fields pre(start),post(end) epoch times (def: entire epoch)
-p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
-p.addParamValue('DecodingTimes',[]); %logical index array of selected epoch times for decoding (def: all times)
-p.addParamValue('Chans', []); %array of channel indicies (def: all channels)
-p.addParamValue('nPerBinBlock', []); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
-p.addParamValue('ParCompute',0); %attempt parallization across CPU cores (def: false) 
+p.addParamValue('nIter',100, @isnumeric); % total number of decoding iterations (def: 100 iters)
+p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock validations (def: 3 crossblocks)
+%p.addParamValue('nDatatimes',[]); %struct with fields pre(start),post(end) epoch times (def: entire epoch)
+%p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
+p.addParamValue('decodeTimes',[],@isnumeric); %[start end] must include 0 ms 
+p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
+p.addParamValue('equalizeTrials', [], @isnumeric); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
+p.addParamValue('filename_out', 'tempofile.nosave',@ischar); % output file name
+p.addParamValue('ParCompute',0, @isnumeric); %attempt parallization across CPU cores (def: false) 
 
 % Parsing
-p.parse(ALLBEST, varargin{:}); 
+p.parse(ALLBEST, varargin{:});
+idx_bestset = p.Results.BESTindex;
+chanArray = p.Results.chanArray;
+nIter = p.Results.nIter;
+nCrossblocks = p.Results.nCrossblocks;
+decodeTimes = p.Results.decodeTimes; 
+Decode_every_Npoint = p.Results.Decode_every_Npoint; 
+equalize_trials = p.Results.equalizeTrials;
+fname = p.Results.filename_out; 
+ParCompute = p.Results.ParCompute; 
 
 
-   
+
+%% Check ALLBEST
+checking = checkmultiBEST(ALLBEST);
+
+if ~checking
+    disp('Sorry, your BEST files do not agree with each other in terms of bins and channels')
+    return
+end
+
+%% choose BESTsets
+%if empty, choose the entire ALLBEST struct
+%else
+if ~isempty(idx_bestset)  
+    ALLBEST = ALLBEST(idx_bestset) ; 
+end
+
+%create/update the times field in each BESTset 
+
+% use the specificed [start,end] epoch variable (which need to be
+% specified)
+% test requirement that 0 time-sample point must be included! 
+
+if Decode_every_Npoint < 1
+    msgText = 'Must specify a positive value > 1 for decoding every Nth point'
+    title = 'ERPLAB: Wrong Value for Decoding every Nth point'
+    errorfound(msgText,title); 
+    return  
+end
+
+original_times = ALLBEST(1).times; %take first BESTset as standard
+if isempty(decodeTimes)
+    decodeTimes = [ALLBEST(1).xmin*1000 ALLBEST(1).xmax*1000]; 
     
-    [MVPA] = erp_decoding(ALLBEST,filepath,nBins,nIter,nCrossBlocks,DataTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 
+end
+
+start_epoch = decodeTimes(1); %ms 
+end_epoch = decodeTimes(2);%ms  
+
+
+%check valid times and round to nearest time
+[startms,ind_start,latdiffms(1)] = closest(original_times,start_epoch); 
+[endms,ind_end,latdiffms(2)] = closest(original_times,end_epoch); 
+
+
+fs = ALLBEST(1).srate; 
+tm_zero = find(original_times== 0); %always include tm point = 0ms
+tm_zero_to_begin= (tm_zero:-Decode_every_Npoint:ind_start);
+tm_zero_to_end = (tm_zero:Decode_every_Npoint:ind_end);
+decoding_times_index = sort(unique_bc2([tm_zero_to_begin tm_zero_to_end]));
+
+if ms2sample(latdiffms(1),fs)~=0 %JLC.10/16/2013
+    latency(1) = start_epoch;
+    fprintf('\n%s\n', repmat('*',1,60));
+    fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', latency(1), original_times(decoding_times_index(1)));
+    fprintf('WARNING: This adjustment was necessary due to sampling \n'); 
+    fprintf('%s\n\n', repmat('*',1,60));
+    
+    start_epoch = original_times(decoding_times_index(1)); 
+    
+
+end
+
+
+if ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
+    latency(2) = end_epoch;
+    fprintf('\n%s\n', repmat('*',1,60));
+    fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', latency(2), original_times(decoding_times_index(end)));
+    fprintf('WARNING: This adjustment was necessary due to sampling \n'); 
+    fprintf('%s\n\n', repmat('*',1,60));
+    end_epoch = original_times(decoding_times_index(end)); 
+      
+end
+
+%check if 0ms/TLE is included 
+if 0>= start_epoch && 0 <= end_epoch
+    %disp('0 is inside the range'); 
+    fprintf('\n%s\n', repmat('*',1,60));
+    fprintf('0 ms is included within Lower latency limit of %.3f and Upper latency limit of %.3f ms \n', start_epoch, end_epoch);
+    fprintf('%s\n\n', repmat('*',1,60));
+    
+else
+    %disp('0 is outside of the range');
+    fprintf('\n%s\n', repmat('*',1,60));
+    fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', start_epoch, original_times(decoding_times_index(1)));
+    fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', end_epoch, original_times(decoding_times_index(end)));
+    fprintf('WARNING: This adjustment was necessary: 0ms is always included.  \n'); 
+    fprintf('%s\n\n', repmat('*',1,60));
+end
+
+
+decodeTimes = [original_times(decoding_times_index(1)) original_times(decoding_times_index(end))]; 
+%decode_index = decoding_times_index; 
+ntimes = numel(decoding_times_index); 
+
+
+
+% update ALLBEST.times & ALLBEST.binwisedata, ALLBEST.pnts, 
+
+k = numel(ALLBEST);
+bins = numel(ALLBEST(1).binwise_data);
+for b = 1:k
+    ALLBEST(b).xmin = decodeTimes(1)/1000;
+    ALLBEST(b).xmax = decodeTimes(2)/1000;
+    ALLBEST(b).pnts = ntimes;
+    ALLBEST(b).times = original_times(decoding_times_index);
+    for i = 1:bins
+        ALLBEST(b).binwise_data(i).data = ALLBEST(b).binwise_data(i).data(:,decoding_times_index,:);
+    end
+end
+
+% reset the trial counts according to nperbinblock/Equalize Trials
+nbins = ALLBEST.nbin; 
+nsubs = numel(ALLBEST); 
+
+if equalize_trials == 2 % equalize across best files 
+    
+    trials_acr_best = [ALLBEST(:).n_trials_per_bin]; 
+    minCnt = min(trials_acr_best); 
+   %nPerBinBlock = floor(minCnt/nCrossblocks); 
+   
+   for s = 1:nsubs
+       for tr = 1:nbins
+           ALLBEST(s).n_trials_per_bin(tr) = minCnt;
+       end
+   end
+    
+   
+elseif equalize_trials == 1 %equalize bins within best files
+    
+    for s = 1:nsubs
+        trials_acr_sub = ALLBEST(s).n_trials_per_bin
+        minCnt = min(trials_acr_sub);
+        
+        for tr = 1:nbins
+            ALLBEST(s).n_trials_per_bin(tr) = minCnt;
+        end
+        
+     end
+else
+    % don't equalize, use as many trials within bins
+    
+end
+
+
+%% delete any unnecessary paramters like nPerBinBlock (due to simplification in pop_decoding
+    
+[MVPA] = erp_decoding(ALLBEST,filepath,nBins,nIter,nCrossBlocks,DataTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 
     
     %erp_decoding(ALLBEST,filepath,nBins,nIter,nCrossBlocks,DataTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 
     
