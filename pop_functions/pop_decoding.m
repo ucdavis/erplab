@@ -102,8 +102,8 @@ if nargin == 1 %GUI
     cbesti = evalin('base','CURRENTBEST'); %current BEST index
     
     %working memory
-    %def = erpworkingmemory('pop_decoding');
-    def = []; %for now, def always empty, always default to "load from hard drive". 
+    def = erpworkingmemory('pop_decoding');
+    %def = []; %for now, def always empty, always default to "load from hard drive". 
     if isempty(def)
         if isempty(ALLBEST)
             inp1 = 1; %from hard drive
@@ -114,23 +114,45 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 [] 0};
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 2 1 [] 0};
+        %def1 = ALLBEST previously? ???? 
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
         %def3 = chanArray
         %def4 = nIter (def = 100)
         %def5 = nCrossBlocks (def = 3)
         %def6 = epochTimes (1:all, 2: pre, 3: post, 4:custom) (Def = 1/all)
-        %def7 = decodeTimes ([start,end]; def = []); 
+        %def7 = decodeTimes ([start,end]; def = []); % IN MS!
         %def8 = decode_every_Npoint (1 = every point)
         %def9 = Equalize Trials (0: don't equalize/ 1:equalize across bins/ 2: eqalize across
         %   bins & best (def))
-        %def10 = output filename (def = filename.mvpa in pwd)
-        %def11 = parCompute (def = 0) 
+        %def10 = classifer (1: SVM / 2: Crossnobis - def: SVM)
+        %def11 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
+        %def12 = DecodingAcross (1:Individual Time points / 2: Time-window
+        %       average - Def: Individual Time Points)
+        %def13 = output filename (def = filename.mvpa in pwd)
+        %def14 = parCompute (def = 0) 
        
 
     else
-        %if working memory is NOT empty (?) 
+        %if working memory is NOT empty 
+        if ~isempty(ALLBEST)
+            if isnumeric(def{2})
+                [uu,mm] = unique_bc2(def{2},'first'); 
+                bestset_list_sorted = [def{2}(sort(mm))];
+                bestset_list = bestset_list_sorted(bestset_list_sorted <= length(ALLBEST));
+                if isempty(bestset_list)
+                    def{2} = cbesti; %if nothing in list, just go with current
+                else
+                    def{2} = bestset_list;
+                end
+            
+
+            
+            
+            end
+        end
+        
         
         
     end
@@ -234,24 +256,37 @@ if nargin == 1 %GUI
     
     
     %parse arguments
-    ALLBEST = decoding_res{1}; 
-    indexBEST = decoding_res{2};
-    relevantChans = decoding_res{3};
-    nIter = decoding_res{4};
-    nCrossBlocks = decoding_res{5};
-    epoch_times = decoding_res{6};
-    decodeTimes = decoding_res{7};
-    decode_every_Npoint = decoding_res{8};
-    equalize_trials = decoding_res{9};
-    fname = decoding_res{10}; 
-    ParCompute = decoding_res{11}; 
+    %ALLBEST = decoding_res{1}; 
+    inp1 = decoding_res{2}; 
+    indexBEST = decoding_res{3};
+    relevantChans = decoding_res{4};
+    nIter = decoding_res{5};
+    nCrossBlocks = decoding_res{6};
+    epoch_times = decoding_res{7};
+    decodeTimes = decoding_res{8}; %in s
+    decode_every_Npoint = decoding_res{9};
+    equalizeTrials = decoding_res{10};
+    selected_classifier = decoding_res{11};
+    SVMcoding = decoding_res{12};
+    decodingAcross = decoding_res{13};
+    fname = decoding_res{14}; 
+    ParCompute = decoding_res{15}; 
     
+    %save in working memory
+    
+    def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
+        decodeTimes, decode_every_Npoint, equalizeTrials, fname, ...
+        selected_classifier, SVMcoding, decodingAcross, ParCompute}; 
+    erpworkingmemory('pop_decoding',def); 
+    
+    %for input into sommersault, change decodeTimes to ms
+    decodeTimes = decodeTimes* 1000; 
    
     
-   [MVPA] = pop_decoding(ALLBEST,'BESTindex',indexBEST, 'chanArray', relevantChans, ...
+   [MVPA] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
-   'equalTrials', equalize_trials,'fileout_name', fname, 'ParCompute',ParCompute); 
+   'equalizeTrials', equalizeTrials,'filename_out', fname, 'ParCompute',ParCompute); 
   
 
 
@@ -273,10 +308,10 @@ p.addParamValue('nIter',100, @isnumeric); % total number of decoding iterations 
 p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock validations (def: 3 crossblocks)
 %p.addParamValue('nDatatimes',[]); %struct with fields pre(start),post(end) epoch times (def: entire epoch)
 %p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
-p.addParamValue('decodeTimes',[],@isnumeric); %[start end] must include 0 ms 
+p.addParamValue('decodeTimes',[],@isnumeric); %[start end](in ms)
 p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
-p.addParamValue('equalizeTrials', [], @isnumeric); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
-p.addParamValue('filename_out', 'tempofile.nosave',@ischar); % output file name
+p.addParamValue('equalizeTrials', 2, @isnumeric); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
+p.addParamValue('filename_out', 'tempofile.nosave'); % output file name
 p.addParamValue('ParCompute',0, @isnumeric); %attempt parallization across CPU cores (def: false) 
 
 % Parsing
@@ -323,7 +358,8 @@ end
 
 original_times = ALLBEST(1).times; %take first BESTset as standard
 if isempty(decodeTimes)
-    decodeTimes = [ALLBEST(1).xmin*1000 ALLBEST(1).xmax*1000]; 
+    
+    decodeTimes = [ALLBEST(1).xmin*1000 ALLBEST(1).xmax*1000]; %convert s to ms
     
 end
 
@@ -403,6 +439,7 @@ for b = 1:k
 end
 
 % reset the trial counts according to nperbinblock/Equalize Trials
+% if equalize_trials = 0 explicitly, we don't equalize.  
 nbins = ALLBEST.nbin; 
 nsubs = numel(ALLBEST); 
 
@@ -422,7 +459,7 @@ if equalize_trials == 2 % equalize across best files
 elseif equalize_trials == 1 %equalize bins within best files
     
     for s = 1:nsubs
-        trials_acr_sub = ALLBEST(s).n_trials_per_bin
+        trials_acr_sub = ALLBEST(s).n_trials_per_bin;
         minCnt = min(trials_acr_sub);
         
         for tr = 1:nbins
@@ -430,9 +467,7 @@ elseif equalize_trials == 1 %equalize bins within best files
         end
         
      end
-else
-    % don't equalize, use as many trials within bins
-    
+
 end
 
 
