@@ -363,6 +363,28 @@ if isempty(decodeTimes)
     
 end
 
+fs = ALLBEST(1).srate; 
+[xp1, xp2, checkw] = window2sample(ALLBEST(1), decodeTimes(1:2) , fs, 'relaxed');
+
+if checkw==1
+    msgboxText =  'Time window cannot be larger than epoch.';
+    title = 'ERPLAB';
+    errorfound(msgboxText, title);
+    app.EpochRange.Value = 'Input Custom Range';
+    %set(handles.radiobutton_yauto, 'Value',0)
+    %drawnow
+    return
+elseif checkw==2
+    msgboxText =  'Too narrow time window (are the start and end times reversed?)';
+    title = 'ERPLAB';
+    errorfound(msgboxText, title);
+    app.EpochRange.Value = 'Input Custom Range';
+    %set(handles.radiobutton_yauto, 'Value',0)
+    %drawnow
+    return
+end
+
+
 start_epoch = decodeTimes(1); %ms 
 end_epoch = decodeTimes(2);%ms  
 
@@ -372,11 +394,18 @@ end_epoch = decodeTimes(2);%ms
 [endms,ind_end,latdiffms(2)] = closest(original_times,end_epoch); 
 
 
-fs = ALLBEST(1).srate; 
+
 tm_zero = find(original_times== 0); %always include tm point = 0ms
 tm_zero_to_begin= (tm_zero:-Decode_every_Npoint:ind_start);
 tm_zero_to_end = (tm_zero:Decode_every_Npoint:ind_end);
 decoding_times_index = sort(unique_bc2([tm_zero_to_begin tm_zero_to_end]));
+
+[~,decode_begin] = closest(decoding_times_index,ind_start);
+[~,decode_end] = closest(decoding_times_index,ind_end);
+
+%update to user defined times (but also includes 0ms in
+%sampling)
+decoding_times_index = decoding_times_index(decode_begin:decode_end);
 
 if ms2sample(latdiffms(1),fs)~=0 %JLC.10/16/2013
     latency(1) = start_epoch;
@@ -390,7 +419,6 @@ if ms2sample(latdiffms(1),fs)~=0 %JLC.10/16/2013
 
 end
 
-
 if ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
     latency(2) = end_epoch;
     fprintf('\n%s\n', repmat('*',1,60));
@@ -401,24 +429,35 @@ if ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
       
 end
 
-%check if 0ms/TLE is included 
-if 0>= start_epoch && 0 <= end_epoch
-    %disp('0 is inside the range'); 
-    fprintf('\n%s\n', repmat('*',1,60));
-    fprintf('0 ms is included within Lower latency limit of %.3f and Upper latency limit of %.3f ms \n', start_epoch, end_epoch);
-    fprintf('%s\n\n', repmat('*',1,60));
-    
-else
-    %disp('0 is outside of the range');
-    fprintf('\n%s\n', repmat('*',1,60));
+if (start_epoch ~= original_times(decoding_times_index(1))) | ...
+        (end_epoch ~= original_times(decoding_times_index(end)))
+     fprintf('\n%s\n', repmat('*',1,60));
     fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', start_epoch, original_times(decoding_times_index(1)));
     fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', end_epoch, original_times(decoding_times_index(end)));
-    fprintf('WARNING: This adjustment was necessary: 0ms is always included.  \n'); 
+    fprintf('WARNING: This adjustment was necessary due to sampling.  \n'); 
     fprintf('%s\n\n', repmat('*',1,60));
 end
+%     
+% 
+% %check if 0ms/TLE is included 
+% if 0>= start_epoch && 0 <= end_epoch
+%     %disp('0 is inside the range'); 
+%     fprintf('\n%s\n', repmat('*',1,60));
+%     fprintf('0 ms is included within Lower latency limit of %.3f and Upper latency limit of %.3f ms \n', start_epoch, end_epoch);
+%     fprintf('%s\n\n', repmat('*',1,60));
+%     
+% else
+%     %disp('0 is outside of the range');
+%     fprintf('\n%s\n', repmat('*',1,60));
+%     fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', start_epoch, original_times(decoding_times_index(1)));
+%     fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', end_epoch, original_times(decoding_times_index(end)));
+%     fprintf('WARNING: This adjustment was necessary due sampling and/or 0ms is always included.  \n'); 
+%     fprintf('%s\n\n', repmat('*',1,60));
+% end
 
 
-decodeTimes = [original_times(decoding_times_index(1)) original_times(decoding_times_index(end))]; 
+decodeTimes = [original_times(decoding_times_index(1)) original_times(decoding_times_index(end))];
+
 %decode_index = decoding_times_index; 
 ntimes = numel(decoding_times_index); 
 
