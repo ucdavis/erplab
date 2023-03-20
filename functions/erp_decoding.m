@@ -1,4 +1,4 @@
-% This is beta version for Decoding Toolbox
+ % This is beta version for Decoding Toolbox
 % pipeline that utilizes a nested bin-epoched data structure.
 % Refer to OSF: https://osf.io/29wre/
 
@@ -12,7 +12,7 @@
 %Edited by Aaron Simmons (UC Davis)
 %Original Author: Gi-Yeul Bae (Arizona State University)
 
-function [MVPA] = erp_decoding(ALLBEST, filepath, nBins, nIter, nCrossBlocks, DataTimes, times, decoding_times, relevantChans, trials,ParCompute)
+function [MVPA] = erp_decoding(ALLBEST, filepath, nIter, nCrossBlocks, DataTimes, times, decoding_times, relevantChans, trials,ParCompute)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
@@ -51,14 +51,14 @@ nSubs = length(ALLBEST); % # files = # subjects
 %% Parameters to set
 % Main structure is svmECOC. The output file is composed of svmECOC struct
 
-svmECOC.nBins = nBins; % # of stimulus bins
+svmECOC.nBins = ALLBEST(1).nbin; % # of stimulus bins
 
 svmECOC.nIter = nIter; % # of iterations
 
 svmECOC.nBlocks = nCrossBlocks; % # of blocks for cross-validation
 
-svmECOC.dataTime.pre = DataTimes.pre; % Set epoch start (from imported data)
-svmECOC.dataTime.post = DataTimes.post; % Set epoch end (from imported data)
+svmECOC.dataTime.pre = DataTimes(1); % Set epoch start (from imported data)
+svmECOC.dataTime.post = DataTimes(2); % Set epoch end (from imported data)
 
 svmECOC.time = times; % time points of interest in the analysis
 % the time-points of interest is a resampling of preprocessed data

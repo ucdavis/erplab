@@ -57,17 +57,17 @@ end
 if isempty(ColorF)
         ColorF = [0 0 0];
 end
-ColorB2 = [0.7020 0.7647 0.8692]
+ColorB2 = [0.6020 0.6647 0.7392];
 filedsn = fieldnames(app);
 
 % GUI's objects' color background
 for kk=1:length(filedsn)
-    mstr = regexpi(filedsn{kk},'^figure|^axes1|^nbin|^edit|^listbox|^EEG|^ERP|togglebutton_summary|^pushbutton|totline|indxline|ERP_figure|Scalp_figure|counterchanwin|counterbinwin','match');
+    mstr = regexpi(filedsn{kk},'^figure|^axes1|^nbin|^edit|^listbox|^EEG|^ERP|togglebutton_summary|^pushbutton|totline|indxline|ERP_figure|Scalp_figure|counterchanwin|counterbinwin|Label_BG1|Label_BG2','match');
     if isempty(mstr)
         try
             num = app.(filedsn{kk});
             numType = num.Type;
-            if (~strcmpi(numType,'uinumericeditfield') & ~strcmpi(numType,'uieditfield'))
+            if (~strcmpi(numType,'uinumericeditfield') & ~strcmpi(numType,'uieditfield') & ~strcmpi(numType,'uibutton'))
                 if ~iscell(num) && ~isstruct(num)
                     if num~=1
                         try
