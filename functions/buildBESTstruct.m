@@ -1,6 +1,6 @@
 function [BEST] = buildBESTstruct(EEG)
 
-BEST = []; %empty MVPA
+BEST = []; %empty BEST
 
 if nargin <1
     BEST = []; 

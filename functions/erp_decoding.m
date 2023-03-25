@@ -12,7 +12,7 @@
 %Edited by Aaron Simmons (UC Davis)
 %Original Author: Gi-Yeul Bae (Arizona State University)
 
-function [MVPA] = erp_decoding(ALLBEST, filepath, nIter, nCrossBlocks, DataTimes, times, decoding_times, relevantChans, trials,ParCompute)
+function [MVPA, ALLMVPA] = erp_decoding(ALLBEST, filepath, nIter, nCrossBlocks, DataTimes,relevantChans,SVMcoding,equalT,ParCompute,method)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
@@ -37,111 +37,47 @@ end
 %% Subject List: 
 nSubs = length(ALLBEST); % # files = # subjects
 
-%% Subject Filename(s)
-
-% % Load Subject Datafiles 
-% dataLocation = pwd; % set directory of data set (default: pwd)
-% fName = ['_targonly_2022_be_AR']; % subject filename (subject # appended at end)
-
-% Save Decoding results
-% saveLocation = [dataLocation '/RESULTS/']; % set save directory of data set (default: pwd)
-% savName = ['/RESULTS_TargOnly_2022_']; 
-
-
-%% Parameters to set
-% Main structure is svmECOC. The output file is composed of svmECOC struct
-
-svmECOC.nBins = ALLBEST(1).nbin; % # of stimulus bins
-
-svmECOC.nIter = nIter; % # of iterations
-
-svmECOC.nBlocks = nCrossBlocks; % # of blocks for cross-validation
-
-svmECOC.dataTime.pre = DataTimes(1); % Set epoch start (from imported data)
-svmECOC.dataTime.post = DataTimes(2); % Set epoch end (from imported data)
-
-svmECOC.time = times; % time points of interest in the analysis
-% the time-points of interest is a resampling of preprocessed data
-% the time steps (20ms) here change the data to 1 data point per 20ms
-
-% Timepoints/sampling rate of preprocessed/loaded data
-svmECOC.window = 4; % 1 data point per 4 ms in the preprocessed data
-svmECOC.Fs = 250; % samplring rate of in the preprocessed data for filtering
-
-% Equalalize trials across bins? 
-equalT = 1; % equal trials acr bin = 1; use as many trials within bin = 0
-
-% The electrode channel list is mapped 1:1 with respect to your 
-% electrode channel configuration (e.g., channel 1 is FP1 in our EEG cap)
-% Check if the label for each electrode corresponds to the electrode
-% labeling of your own EEG system
-ReleventChan = relevantChans; %electrodes
-% here, we removed external EOG electrodes & mastoid ref, for 27 electrodes
-
-svmECOC.nElectrodes = length(ReleventChan); % # of electrode included in the analysis
-
-
-% for brevity in analysis
-nBins = svmECOC.nBins;
-
-ogWin = svmECOC.window;
-
-nIter = svmECOC.nIter;
-
-nBlocks = svmECOC.nBlocks;
-
-dataTime = svmECOC.dataTime;
-
-times = svmECOC.time;
-
-tois = decoding_times; 
-
-nPerBinBlock = trials; 
-
-nElectrodes = svmECOC.nElectrodes;
-
-nSamps = length(svmECOC.time);
-
-
 %% Step 9: Loop through participants
 for s = 1:nSubs %decoding is performed within each subject independently
-    sn = ALLBEST(s).filename;
+    
+    %% Parameters to set per subject 
+    % Main structure is mvpa.
+    
+    %load subject BESTset & build mvpa dataset
+    BEST = ALLBEST(s);   
+    mvpa = buildMVPAstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,SVMcoding,method); 
+    
+    % The electrode channel list is mapped 1:1 with respect to your
+    % electrode channel configuration (e.g., channel 1 is FP1 in our EEG cap)
+    % Check if the label for each electrode corresponds to the electrode
+    % labeling of your own EEG system
+    ReleventChan = relevantChans; %electrodes
+    
+    
+    % for brevity in analysis
+    nBins =         mvpa.header.nClasses;
+    nIter =         mvpa.header.nIter;
+    nBlocks =       mvpa.header.nCrossfolds;
+    nElectrodes =   length(mvpa.header.electrodes); 
+    nSamps =        length(mvpa.times);
+    sn =            BEST.bestname;
     
     
     %progress output to command window
     fprintf('*** Currently Decoding Subject:\t%s ***\n ',sn);
     
-    %% Parameters to set per subject 
-    currentSub = num2str(sn);
-    loadThis = strcat(filepath,'/',sn);
-    
-    % where to save decoding output file name. 
-    % File (.mat) will contain decoding results.
-    [pathstr, finame, ext] = fileparts(sn); 
-    OutputfName = strcat(filepath,finame,'.mvpa');
-    
-    
     %% Data Loading/preallocation per subject 
-    % loads bin_organized data
-    load(loadThis,'-mat'); 
-    
+
     % grab EEG data from bin-list organized data 
     eegs = BEST.binwise_data;
     nPerBin = BEST.n_trials_per_bin;
     
-    % set up time points
-    % we create index of timpoint of interests from original data
-    %tois = ismember(dataTime.pre:ogWin:dataTime.post,svmECOC.time); 
-    
-    % # of trials
-    % svmECOC.nTrials = (sum(nPerBin)); 
-    
     % Preallocate Matrices
-    svm_predict = nan(nIter,nSamps,nBlocks,nBins); % a matrix to save prediction from SVM
-    tst_target = nan(nIter,nSamps,nBlocks,nBins);  % a matrix to save true target values
+    svm_predict = nan(nIter,nBlocks, nSamps,nBins); % a matrix to save prediction from SVM
+    tst_target = nan(nIter,nBlocks,nSamps,nBins);  % a matrix to save true target values
     
     % create svmECOC.block structure to save block assignments
-    svmECOC.blocks=struct();
+   % mvpa.blocks=struct();
     
     if nBins ~= max(size(eegs))
         error('Error. nBins dne # of bins in dataset!');
@@ -207,7 +143,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
             % save block assignment
             blockID = ['iter' num2str(iter) 'bin' num2str(bin)];
            
-            svmECOC.blocks.(blockID) = blocks; % block assignment
+            mvpa.header.blockassignment.(blockID) = blocks; % block assignment
+            mvpa.header.n_trials_per_erp(bin) = nPerBinBlock(bin); 
             
             
             %create ERP average and place into blockDat_filtData struct          
@@ -221,7 +158,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
             %% Step 1: computing ERPs based on random subset of trials for each block 
             for bl = 1:nBlocks
                 
-                blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,tois,blocks==bl),3));
+                blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,:,blocks==bl),3));
                 
                 labels(bCnt) = bin; %used for arranging classification obj.
                 
@@ -239,11 +176,11 @@ for s = 1:nSubs %decoding is performed within each subject independently
         parfor (t = 1:nSamps,ParWorkers)
             
             % grab data for timepoint t
-            toi = ismember(times,times(t)-svmECOC.window/2:times(t)+svmECOC.window/2);
+            %toi = ismember(times,times(t)-svmECOC.window/2:times(t)+svmECOC.window/2);
             
             % average across time window of interest
             % here, you can parse nBin*nBlock across all channels (ERP spatial dist) 
-            dataAtTimeT = squeeze(mean(blockDat_filtData(:,:,toi),3));
+            dataAtTimeT = squeeze(mean(blockDat_filtData(:,:,t),3));
             
             %% Step 6: Cross-validation for-loop 
             for i=1:nBlocks % loop through blocks, holding each out as the test set
@@ -258,14 +195,19 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 
                 tstD = dataAtTimeT(blockNum==i,:);    % test data
                 
-                %% Step 3: Training 
-                mdl = fitcecoc(trnD,trnl, 'Coding','onevsall','Learners','SVM' );   %train support vector mahcine
+                %% Step 3: Training
+                if SVMcoding == 2
+                    mdl = fitcecoc(trnD,trnl, 'Coding','onevsall','Learners','SVM' );   %train support vector mahcine
+                elseif SVMcoding == 1
+                    mdl = fitcecoc(trnD,trnl, 'Coding','onevsone','Learners','SVM' );   %train support vector mahcine
+                end
+                
                 %% Step 5: Testing
                 LabelPredicted = predict(mdl, tstD);       % predict classes for new data
                 
-                svm_predict(iter,t,i,:) = LabelPredicted;  % save predicted labels
+                svm_predict(iter,i,t,:) = LabelPredicted;  % save predicted labels
                 
-                tst_target(iter,t,i,:) = tstl;             % save true target labels
+                tst_target(iter,i,t,:) = tstl;             % save true target labels
                 
                 
             end % end of block: Step 6: cross-validation
@@ -277,11 +219,34 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     toc % stop timing the iteration loop
     
-    %output decoding results in main svmECOC structure
-    svmECOC.targets = tst_target;
-    svmECOC.modelPredict = svm_predict;    
-    svmECOC.nBlocks = nBlocks;
+    mvpa = rawscoreSVM(mvpa, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
+    mvpa = averageSVM(mvpa, SVMcoding); 
+    %mvpa = avgconfusionSVM(mvpa,tst_target_svm_predict,SVMcoding); 
     
-    save(OutputfName,'svmECOC','-v7.3');
+    
+    %create the MVPA output 
+    %output decoding results in main svmECOC structure
+    
+
+    
+    
+%     mvpa.targets = tst_target;
+%     mvpa.modelPredict = svm_predict;    
+   % mvpa.nBlocks = nBlocks;
+   
+    
+    %function outputs single/all MVPA
+    save(filepath{s},'mvpa','-v7.3');
+    
+    %probably a better way
+    if nSubs == 1
+        MVPA = mvpa;
+        ALLMVPA = mvpa;
+    else
+        MVPA = mvpa; 
+        ALLMVPA(s) = mvpa; 
+    end
+    
+    
     
 end % end of subject loop: Step 9: Decoding for each participant 

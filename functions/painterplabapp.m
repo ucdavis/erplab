@@ -67,7 +67,7 @@ for kk=1:length(filedsn)
         try
             num = app.(filedsn{kk});
             numType = num.Type;
-            if (~strcmpi(numType,'uinumericeditfield') & ~strcmpi(numType,'uieditfield') & ~strcmpi(numType,'uibutton'))
+            if (~strcmpi(numType,'uinumericeditfield') && ~strcmpi(numType,'uieditfield') && ~strcmpi(numType,'uibutton') && ~strcmpi(numType,'uitable'))
                 if ~iscell(num) && ~isstruct(num)
                     if num~=1
                         try

@@ -8,7 +8,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -26,14 +26,14 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function varargout = meaviewerGUI(varargin)
+function varargout = mvpaviewerGUI(varargin)
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
         'gui_Singleton',  gui_Singleton, ...
-        'gui_OpeningFcn', @meaviewerGUI_OpeningFcn, ...
-        'gui_OutputFcn',  @meaviewerGUI_OutputFcn, ...
+        'gui_OpeningFcn', @mvpaviewerGUI_OpeningFcn, ...
+        'gui_OutputFcn',  @mvpaviewerGUI_OutputFcn, ...
         'gui_LayoutFcn',  [] , ...
         'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -47,13 +47,13 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-% --- Executes just before meaviewerGUI is made visible.
-function meaviewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before mvpaviewerGUI is made visible.
+function mvpaviewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
-% Choose default command line output for meaviewerGUI
+% Choose default command line output for mvpaviewerGUI
 handles.output = [];
-defx   = erpworkingmemory('pop_geterpvalues');
+%defx   = erpworkingmemory('pop_geterpvalues');
 % try
 %         cerpi = evalin('base', 'CURRENTERP'); % current erp index
 % catch
@@ -61,157 +61,113 @@ defx   = erpworkingmemory('pop_geterpvalues');
 % end
 % handles.cerpi = cerpi;
 try
-        ALLERP = varargin{1};
+        ALLMVPA = varargin{1};
+        setArray = 1:length(ALLMVPA);
 catch
-        ALLERP          = buildERPstruct;
-        ALLERP.times    = -200:800;
-        ALLERP.xmin     = -0.2;
-        ALLERP.xmax     = 0.8;
-        ALLERP.nchan    = 1;
-        ALLERP.pnts     = length(ALLERP.times);
-        ALLERP.nbin     = 1;
-        ALLERP.bindata  = zeros(1, ALLERP.pnts, 1);
-        ALLERP.srate    = 1000;
-        ALLERP.bindescr = {'empty'};
-        ALLERP.chanlocs.labels = 'empty';
+        ALLMVPA          = buildERPstruct;
+        ALLMVPA.times    = -200:800;
+        ALLMVPA.xmin     = -0.2;
+        ALLMVPA.xmax     = 0.8;
+        ALLMVPA.nchan    = 1;
+        ALLMVPA.pnts     = length(ALLMVPA.times);
+        ALLMVPA.nbin     = 1;
+        ALLMVPA.bindata  = zeros(1, ALLMVPA.pnts, 1);
+        ALLMVPA.srate    = 1000;
+        ALLMVPA.bindescr = {'empty'};
+        ALLMVPA.chanlocs.labels = 'empty';
 end
 % if strcmpi(datatype, 'ERP')
 %     meaword = 'latenc';
 % else
 %     meaword = 'frequenc';
 % end
-if isempty(defx)
-        if isempty(ALLERP)
-                inp1   = 1; %from hard drive
-                erpset = [];
-        else
-                inp1   = 0; %from erpset menu
-                erpset = 1:length(ALLERP);
-        end
-        defx = {inp1 erpset '' 0 1 1 'instabl' 1 3 'pre' 0 1 5 0 0.5 0 0 0 '' 0 1};
-end
-try
-        def         = varargin{2};
-        AMP         = def{1};
-        Lat         = def{2};
-        binArray    = def{3};
-        chanArray   = def{4};
-        setArray    = def{5};
-        latency     = def{6};
-        moreoptions = def{7};
+% if isempty(defx)
+%         if isempty(ALLMVPA)
+%                 inp1   = 1; %from hard drive
+%                 erpset = [];
+%         else
+%                 inp1   = 0; %from erpset menu
+%                 erpset = 1:length(ALLMVPA);
+%         end
+%         defx = {inp1 erpset '' 0 1 1 'instabl' 1 3 'pre' 0 1 5 0 0.5 0 0 0 '' 0 1};
+% end
+% try
+%         def         = varargin{2};
+%         AMP         = def{1};
+%         Lat         = def{2};
+%         binArray    = def{3};
+%         chanArray   = def{4};
+%         setArray    = def{5};
+%         latency     = def{6};
+%         moreoptions = def{7};
+%         
+%         blc        = moreoptions{1};
+%         moption    = moreoptions{2};
+%         tittle     = moreoptions{3};
+%         dig        = moreoptions{4};
+%         coi        = moreoptions{5};
+%         polpeak    = moreoptions{6};
+%         sampeak    = moreoptions{7};
+%         locpeakrep = moreoptions{8};
+%         frac       = moreoptions{9};
+%         fracmearep = moreoptions{10};
+%         intfactor  = moreoptions{11};
+% catch
+%         latency    = defx{4};
+%         moption    = defx{7};
+%         
+%         AMP        = [];
+%         Lat        = {{[-200 800]}};
+%         binArray   = 1:ALLMVPA(1).nbin;
+%         chanArray  = 1:ALLMVPA(1).nchan;
+%         setArray   = 1:length(ALLMVPA);
+%         %latency    = 0;
+%         blc        = 'pre';
+%         %moption    = 'instabl';
+%         tittle     = 'nada';
+%         dig        = 3;
+%         coi        = [];
+%         polpeak    = [];
+%         sampeak    = [];
+%         locpeakrep = [];
+%         frac       = [];
+%         fracmearep = [];
+%         intfactor  = 1;
+% end
+%datatype2 = '';
+if isfield(ALLMVPA(1).header, 'DecodingMethod')
+        datatype = ALLMVPA(1).header.DecodingMethod;
         
-        blc        = moreoptions{1};
-        moption    = moreoptions{2};
-        tittle     = moreoptions{3};
-        dig        = moreoptions{4};
-        coi        = moreoptions{5};
-        polpeak    = moreoptions{6};
-        sampeak    = moreoptions{7};
-        locpeakrep = moreoptions{8};
-        frac       = moreoptions{9};
-        fracmearep = moreoptions{10};
-        intfactor  = moreoptions{11};
-catch
-        latency    = defx{4};
-        moption    = defx{7};
-        
-        AMP        = [];
-        Lat        = {{[-200 800]}};
-        binArray   = 1:ALLERP(1).nbin;
-        chanArray  = 1:ALLERP(1).nchan;
-        setArray   = 1:length(ALLERP);
-        %latency    = 0;
-        blc        = 'pre';
-        %moption    = 'instabl';
-        tittle     = 'nada';
-        dig        = 3;
-        coi        = [];
-        polpeak    = [];
-        sampeak    = [];
-        locpeakrep = [];
-        frac       = [];
-        fracmearep = [];
-        intfactor  = 1;
-end
-datatype2 = '';
-if isfield(ALLERP(setArray(1)), 'datatype')
-        datatype = ALLERP(setArray(1)).datatype;
-        
-        if strcmpi(datatype,'SEM')
+        if strcmpi(datatype,'SVM')
             % here, treat SEM data like ERP data
-            datatype = 'ERP';
-            datatype2 = 'SEM';
+            datatype = 'SVM';
+           % datatype2 = 'SEM';
         end
         
 else
-        datatype = 'ERP';
+        datatype = 'SVM';
 end
-if ~isempty(moption) && strcmpi(moption, 'instabl')
-        if strcmpi(datatype, 'ERP')
-                set(handles.checkbox_dmouse, 'String', 'Adjust measurement time by clicking with the mouse on the desired latency.')
-        else
-                set(handles.checkbox_dmouse, 'String', 'Adjust measurement frequency by clicking with the mouse on the desired frequency.')
-        end
-else
-        set(handles.checkbox_dmouse, 'String', 'Adjust measurement window with the mouse by click, hold, drag and release')
-end
+
+set(handles.checkbox_dmouse, 'String', 'Adjust measurement window with the mouse by click, hold, drag and release')
+
 if strcmpi(datatype, 'ERP')
-        measurearray = {'Instantaneous amplitude',...
-                'Mean amplitude between two fixed latencies',...
-                'Peak amplitude',...
-                'Peak latency',...
-                'Fractional Peak latency',...
-                'Numerical integration/Area between two fixed latencies',...
-                'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-                'Fractional Area latency'};
+        measurearray = {'Average Decoding Accuracy'};
 else
-        blc        = 'none';
-        measurearray = {'Instantaneous power',...
-                'Mean power between two fixed frequencies',...
-                'Peak power',...
-                'Peak frequency',...
-                'Fractional Peak frequency',...
-                'Numerical integration/Area between two fixed frequencies',...
-                '---'...
-                'Fractional Area frequency'};
+        %blc        = 'none';
+        measurearray = {'Average Decoding Accuracy'};
 end
 
 handles.measurearray = measurearray;
 
-meacodes    =      {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
-        'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
-        'fareaplat','fninteglat','fareanlat', 'ninteg','nintegz' };
+meacodes    =      {'avgdecodingacc' };
 
 handles.meacodes    = meacodes;
 
-set(handles.text_measurementv, 'String', measurearray);
+%set(handles.text_measurementv, 'String', measurearray);
 
-[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
+%[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
 
-if ismember_bc2(indxmeaX,[6 7 8 16])
-        meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
-elseif ismember_bc2(indxmeaX,[9 10 11 17])
-        if strcmpi(datatype, 'ERP')
-                meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-        else
-                meamenu = 1; % 'Instantaneous amplitude',...
-        end
-elseif ismember_bc2(indxmeaX,[12 13 14 15])
-        meamenu = 8; %  'Fractional Area latency'
-elseif ismember_bc2(indxmeaX,1)
-        meamenu = 1; % 'Instantaneous amplitude',...
-elseif ismember_bc2(indxmeaX,2)
-        meamenu = 2; % 'mean amp
-elseif ismember_bc2(indxmeaX,3)
-        meamenu = 3; % 'peak amp',...
-elseif ismember_bc2(indxmeaX,4)
-        meamenu = 4; % 'peak lat',...
-elseif ismember_bc2(indxmeaX,5)
-        meamenu = 5; % 'Fractional Peak latency',..',...
-else
-        meamenu = 1; % 'Instantaneous amplitude',...
-end
-
+meamenu = 1; % 'Average Decoding Accuracy',...
 set(handles.text_measurementv, 'String', measurearray{meamenu});
 % set(handles.text_measurementv, 'Value', meamenu);
 % set(handles.text_measurementv, 'Enable', 'inactive');
@@ -230,36 +186,36 @@ if isempty(mwm)
         mwm = 0;
 end
 
-handles.defx       = defx;
+%handles.defx       = defx;
 handles.cwm        = cwm;
 handles.cvl        = cvl;
-handles.ALLERP     = ALLERP;
-handles.binArray   = binArray;
-handles.chanArray  = chanArray;
+handles.ALLMVPA     = ALLMVPA;
+%handles.binArray   = binArray;
+%handles.chanArray  = chanArray;
 handles.setArray   = setArray;
-handles.ich        = 1;
-handles.ibin       = 1;
+%handles.ich        = 1;
+%handles.ibin       = 1;
 handles.iset       = 1;
-handles.orilatency = latency;
-handles.blc        = blc;
-handles.moption    = moption;
+%handles.orilatency = latency;
+%handles.blc        = blc;
+%handles.moption    = moption;
 handles.tittle     = tittle;
-handles.dig        = dig;
-handles.coi        = coi;
-handles.polpeak    = polpeak;
-handles.sampeak    = sampeak;
-handles.locpeakrep = locpeakrep;
-handles.frac       = frac;
-handles.fracmearep = fracmearep;
-handles.intfactor  = intfactor;
+handles.dig        = 3;
+handles.coi        = [];
+handles.polpeak    = [];
+handles.sampeak    = [];
+handles.locpeakrep = [];
+handles.frac       = [];
+handles.fracmearep = [];
+handles.intfactor  = 1;
 handles.x1         = -1.75;
 handles.x2         = 1.75;
 
 %
 % create random x-values for scatter plot
 %
-xscatt = rand(1,numel(AMP))*2.5-1.25;
-handles.xscatt = xscatt;
+% xscatt = rand(1,numel(AMP))*2.5-1.25;
+% handles.xscatt = xscatt;
 indxsetstr     = {''};
 % end
 handles.indxsetstr = indxsetstr;
@@ -300,13 +256,13 @@ handles.fitnormd  = fitnormd;
 % Name & version
 %
 version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   VIEWER FOR MEASUREMENTS GUI']); %, 'toolbar','figure')
+set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   VIEWER FOR MVPA GUI']); %, 'toolbar','figure')
 
 ibin  = 1;
 ich   = 1;
 iset  = 1;
-times = ALLERP(setArray(1)).times;
-if strcmpi(datatype, 'ERP')
+times = ALLMVPA(1).times;
+if strcmpi(datatype, 'SVM')
         xlim  = [min(times) max(times)];
         ylim  = [-20 20];
         enablepolabutt = 'on';
@@ -315,42 +271,42 @@ else
         ylim  = [0 15];
         enablepolabutt = 'off';
 end
-if strcmpi(datatype2, 'SEM')
-    ylim  = [-1 20];
-end
+% if strcmpi(datatype2, 'SEM')
+%     ylim  = [-1 20];
+% end
 
 set(handles.edit_ylim, 'String', num2str(ylim))
 set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)))
-set(handles.edit_bin, 'String', num2str(ibin))
-set(handles.edit_channel, 'String', num2str(ich))
+%set(handles.edit_bin, 'String', num2str(ibin))
+%set(handles.edit_channel, 'String', num2str(ich))
 set(handles.edit_file, 'String', num2str(iset))
 frdm = erpworkingmemory('freedom');
 if isempty(frdm);frdm=0;end
 if frdm==0 %JLC
-        set(handles.edit_bin, 'Enable', 'inactive')
-        set(handles.edit_channel, 'Enable', 'inactive')
-        set(handles.edit_file, 'Enable', 'inactive')
+        %set(handles.edit_bin, 'Enable', 'inactive')
+       % set(handles.edit_channel, 'Enable', 'inactive')
+       % set(handles.edit_file, 'Enable', 'inactive')
 end
 handles.frdm = frdm;
 word = 'positive';
 set(handles.togglebutton_y_axis_polarity, 'String', sprintf('<HTML><center><b>%s</b> is up', word));
 set(handles.togglebutton_y_axis_polarity, 'Enable', enablepolabutt);
 handles.ydir = 'normal';
-set(handles.checkbox_butterflybin,'Value', 0)
-set(handles.checkbox_butterflychan,'Value', 0)
+%set(handles.checkbox_butterflybin,'Value', 0)
+%set(handles.checkbox_butterflychan,'Value', 0)
 set(handles.checkbox_butterflyset,'Value', 0)
-if length(binArray)==1
-        set(handles.checkbox_butterflybin, 'Enable', 'off')
-        if frdm; set(handles.edit_bin, 'Enable', 'off');end
-        set(handles.pushbutton_right_bin, 'Enable', 'off')
-        set(handles.pushbutton_left_bin, 'Enable', 'off')
-end
-if length(chanArray)==1
-        set(handles.checkbox_butterflychan, 'Enable', 'off')
-        if frdm; set(handles.edit_channel, 'Enable', 'off');end
-        set(handles.pushbutton_right_channel, 'Enable', 'off')
-        set(handles.pushbutton_left_channel, 'Enable', 'off')
-end
+% if length(binArray)==1
+%         set(handles.checkbox_butterflybin, 'Enable', 'off')
+%         if frdm; set(handles.edit_bin, 'Enable', 'off');end
+%         set(handles.pushbutton_right_bin, 'Enable', 'off')
+%         set(handles.pushbutton_left_bin, 'Enable', 'off')
+% end
+% if length(chanArray)==1
+%         set(handles.checkbox_butterflychan, 'Enable', 'off')
+%         if frdm; set(handles.edit_channel, 'Enable', 'off');end
+%         set(handles.pushbutton_right_channel, 'Enable', 'off')
+%         set(handles.pushbutton_left_channel, 'Enable', 'off')
+% end
 if length(setArray)==1
         set(handles.checkbox_butterflyset, 'Enable', 'off')
         if frdm; set(handles.edit_file, 'Enable', 'off');end
@@ -376,34 +332,34 @@ handles = setfonterplab(handles);
 %
 % Drag
 %
-set(handles.checkbox_dmouse,'Value', 0)
-set(handles.radiobutton_histo,'Value', 0)
-set(handles.radiobutton_histo,'Enable', 'off')
-set(handles.pushbutton_histosetting,'Enable', 'off')
-set(handles.radiobutton_scatter,'Value', 0)
-set(handles.radiobutton_scatter,'Enable', 'off')
-set(handles.checkbox_fileindx,'Value', 0)
-set(handles.checkbox_fileindx,'Enable', 'off')
-set(handles.checkbox_scatterlabels, 'Value',0)
-set(handles.checkbox_scatterlabels, 'Enable', 'off')
-set(handles.pushbutton_narrow, 'Enable', 'off')
-set(handles.pushbutton_wide, 'Enable', 'off')
-set(handles.checkbox_3sigma, 'Value',0)
-set(handles.checkbox_3sigma, 'Enable', 'off')
-% set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
-set(handles.gui_chassis,'DoubleBuffer','on')
+% set(handles.checkbox_dmouse,'Value', 0)
+% set(handles.radiobutton_histo,'Value', 0)
+% set(handles.radiobutton_histo,'Enable', 'off')
+% set(handles.pushbutton_histosetting,'Enable', 'off')
+% set(handles.radiobutton_scatter,'Value', 0)
+% set(handles.radiobutton_scatter,'Enable', 'off')
+% set(handles.checkbox_fileindx,'Value', 0)
+% set(handles.checkbox_fileindx,'Enable', 'off')
+% set(handles.checkbox_scatterlabels, 'Value',0)
+% set(handles.checkbox_scatterlabels, 'Enable', 'off')
+% set(handles.pushbutton_narrow, 'Enable', 'off')
+% set(handles.pushbutton_wide, 'Enable', 'off')
+% set(handles.checkbox_3sigma, 'Value',0)
+% set(handles.checkbox_3sigma, 'Enable', 'off')
+% % set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
+% set(handles.gui_chassis,'DoubleBuffer','on')
 
-if isempty(AMP)
-        [ AMP, Lat, latency ] = getnewvals(hObject, handles, latency);
-        handles.AMP        = AMP;
-        handles.Lat        = Lat;
-        handles.latency    = latency;
-else
-        handles.AMP        = AMP;
-        handles.Lat        = Lat;
-        handles.latency    = latency;
-        
-end
+% if isempty(AMP)
+%         [ AMP, Lat, latency ] = getnewvals(hObject, handles, latency);
+%         handles.AMP        = AMP;
+%         handles.Lat        = Lat;
+%         handles.latency    = latency;
+% else
+%         handles.AMP        = AMP;
+%         handles.Lat        = Lat;
+%         handles.latency    = latency;
+%         
+% end
 % Update handles structure
 guidata(hObject, handles);
 
@@ -412,11 +368,11 @@ guidata(hObject, handles);
 %
 mplotdata(hObject, handles, ibin, ich, iset, xlim, ylim, tittle)
 
-% UIWAIT makes meaviewerGUI wait for user response (see UIRESUME)
+% UIWAIT makes mvpaviewerGUI wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
 
 % --- Outputs from this function are returned to the command line.
-function varargout = meaviewerGUI_OutputFcn(hObject, eventdata, handles)
+function varargout = mvpaviewerGUI_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
@@ -1143,44 +1099,44 @@ end
 ich    = handles.ich;
 ibin   = handles.ibin;
 iset   = handles.iset;
-mplotdata(hObject, handles, ibin, ich, iset, xlim, ylim, tittle)
+mplotdata(hObject, handles, iset, xlim, ylim, tittle)
 
 % PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 % PPPPPPPPPPPPPPPPPPPPPPPPPPP   PLOT  PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
 % PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-function mplotdata(hObject, handles, ibin, ich, iset, xlim, ylim, tittle)
+function mplotdata(hObject, handles, iset, xlim, ylim, tittle)
 % nhisto    = 10; % temporary
 ydir      = handles.ydir;
-binArray  = handles.binArray;
-chanArray = handles.chanArray;
+%binArray  = handles.binArray;
+%chanArray = handles.chanArray;
 setArray  = handles.setArray;
 
-binput   = [];
-chinput  = [];
+%binput   = [];
+%chinput  = [];
 setinput = [];
 
-if get(handles.checkbox_butterflybin, 'Value')
-        jbin = binArray;
-else
-        binput = str2num(get(handles.edit_bin, 'String'));
-        
-        if length(binput)>1
-                jbin = binput;
-        else
-                jbin = binArray(ibin)  ;
-        end
-end
-if get(handles.checkbox_butterflychan, 'Value')
-        jchannel = chanArray;
-else
-        chinput = str2num(get(handles.edit_channel, 'String'));
-        
-        if length(chinput)>1
-                jchannel = chinput;
-        else
-                jchannel = chanArray(ich);
-        end
-end
+% if get(handles.checkbox_butterflybin, 'Value')
+%         jbin = binArray;
+% else
+%         binput = str2num(get(handles.edit_bin, 'String'));
+%         
+%         if length(binput)>1
+%                 jbin = binput;
+%         else
+%                 jbin = binArray(ibin)  ;
+%         end
+% end
+% if get(handles.checkbox_butterflychan, 'Value')
+%         jchannel = chanArray;
+% else
+%         chinput = str2num(get(handles.edit_channel, 'String'));
+%         
+%         if length(chinput)>1
+%                 jchannel = chinput;
+%         else
+%                 jchannel = chanArray(ich);
+%         end
+% end
 if get(handles.checkbox_butterflyset, 'Value')
         jseta      = setArray;
 else
@@ -1193,13 +1149,13 @@ else
         end
 end
 
-nvalue = length(jbin)*length(jchannel)*length(jseta);
-
-if nvalue>1
-        set(handles.uipanel_distplots, 'Title', sprintf('Distribution Plots (N=%g)', nvalue));
-else
-        set(handles.uipanel_distplots, 'Title', 'Distribution Plots');
-end
+% nvalue = length(jbin)*length(jchannel)*length(jseta);
+% 
+% if nvalue>1
+%         set(handles.uipanel_distplots, 'Title', sprintf('Distribution Plots (N=%g)', nvalue));
+% else
+%         set(handles.uipanel_distplots, 'Title', 'Distribution Plots');
+% end
 
 ALLERP    = handles.ALLERP;
 AMP       = handles.AMP;
@@ -1561,7 +1517,7 @@ else
         checknan(handles, val)
 end
 hold off
-%drawnow
+drawnow
 
 nbinput   = length(binput);
 nchinput  = length(chinput);

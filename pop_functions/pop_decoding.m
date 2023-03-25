@@ -114,8 +114,8 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 2 [] 0};
-        %def1 = ALLBEST previously? ???? 
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 2 [] [] 0};
+      
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
         %def3 = chanArray
@@ -129,7 +129,8 @@ if nargin == 1 %GUI
         %def10 = classifer (1: SVM / 2: Crossnobis - def: SVM)
         %def11 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
         %def12 = output filename (def = filename.mvpa in pwd)
-        %def13 = parCompute (def = 0) 
+        %def13 = output path (def = cd); 
+        %def14 = parCompute (def = 0) 
        
 
     else
@@ -254,7 +255,7 @@ if nargin == 1 %GUI
     
     
     %parse arguments
-    %ALLBEST = decoding_res{1}; 
+    ALLBEST = decoding_res{1}; 
     inp1 = decoding_res{2}; 
     indexBEST = decoding_res{3};
     relevantChans = decoding_res{4};
@@ -264,29 +265,32 @@ if nargin == 1 %GUI
     decodeTimes = decoding_res{8}; %in s
     decode_every_Npoint = decoding_res{9};
     equalizeTrials = decoding_res{10};
-    selected_classifier = decoding_res{11};
+    selected_method = decoding_res{11};
     SVMcoding = decoding_res{12};
-    %decodingAcross = decoding_res{13};
-    fname = decoding_res{13}; 
-    ParCompute = decoding_res{14}; 
+    file_out = decoding_res{13};
+    path_out = decoding_res{14}; 
+    ParCompute = decoding_res{15}; 
     
     %save in working memory
     
     def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
-        decodeTimes, decode_every_Npoint, equalizeTrials, fname, ...
-        selected_classifier, SVMcoding, ParCompute}; 
+        decodeTimes, decode_every_Npoint, equalizeTrials, ...
+        selected_method, SVMcoding, file_out, path_out, ParCompute}; 
     erpworkingmemory('pop_decoding',def); 
     
     %for input into sommersault, change decodeTimes to ms
     decodeTimes = decodeTimes* 1000; 
    
     
-   [MVPA] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
+   [MVPA, ALLMVPA] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
-   'equalizeTrials', equalizeTrials, 'classifer', selected_classifier, ...
-   'SVMcoding',SVMcoding, 'filename_out',fname, 'ParCompute',ParCompute); 
-  
+   'equalizeTrials', equalizeTrials, 'method', selected_method, ...
+   'SVMcoding',SVMcoding, 'filename_out',file_out, 'path_out', path_out, 'ParCompute',ParCompute); 
+
+    pause(0.1);
+    return
+
 
 
 end
@@ -310,9 +314,10 @@ p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock vali
 p.addParamValue('decodeTimes',[],@isnumeric); %[start end](in ms)
 p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
 p.addParamValue('equalizeTrials', 2, @isnumeric); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
-p.addParamValue('classifier',1,@isnumeric); %classifer (1:SVM/2:Crossnobis);
+p.addParamValue('method',1,@isnumeric); %method (1:SVM/2:Crossnobis);
 p.addParamValue('SVMcoding',2,@isnumeric)% SVMcoding(1:oneVsone/2:oneVsall); 
 p.addParamValue('filename_out', 'tempofile.nosave'); % output file name
+p.addParamValue('path_out','tempofile.nosave'); 
 p.addParamValue('ParCompute',0, @isnumeric); %attempt parallization across CPU cores (def: false) 
 
 % Parsing
@@ -324,9 +329,10 @@ nCrossblocks = p.Results.nCrossblocks;
 decodeTimes = p.Results.decodeTimes; 
 Decode_every_Npoint = p.Results.Decode_every_Npoint; 
 equalize_trials = p.Results.equalizeTrials;
-classifer = p.Results.classifier; 
+method = p.Results.method; 
 SVMcoding = p.Results.SVMcoding;
-fname = p.Results.filename_out; 
+filename_out = p.Results.filename_out; 
+pathname_out = p.Results.path_out; 
 ParCompute = p.Results.ParCompute; 
 
 
@@ -473,8 +479,17 @@ bins = numel(ALLBEST(1).binwise_data);
 for b = 1:k
     ALLBEST(b).xmin = decodeTimes(1)/1000;
     ALLBEST(b).xmax = decodeTimes(2)/1000;
+    npnts_old = ALLBEST(b).pnts; 
     ALLBEST(b).pnts = ntimes;
     ALLBEST(b).times = original_times(decoding_times_index);
+    
+    %update fs
+    fs = ALLBEST(b).srate;
+    samps = 1/fs; 
+    epochtime = (samps*npnts_old) *1000;% ms
+    new_fs = (ntimes/epochtime) *1000; 
+    ALLBEST(b).srate = new_fs; 
+    
     for i = 1:bins
         ALLBEST(b).binwise_data(i).data = ALLBEST(b).binwise_data(i).data(:,decoding_times_index,:);
     end
@@ -527,17 +542,34 @@ end
 % fname = p.Results.filename_out; 
 % ParCompute = p.Results.ParCompute; 
 
-
-[MVPA] = erp_decoding(ALLBEST,filepath,nIter,nCrossBlocks,decodeTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 
+%filesaving 
+if isempty(pathname_out)
+    pathname_out = cd; 
+else
+    pathname_out = pathname_out{1}; 
+end
+%combine filename and paths
+for i = 1:length(filename_out) 
     
+    if isunix
+        filepath{i} = strcat(pathname_out,'/',filename_out{i});
+    else
+        filepath{i}=  strcat(pathname_out,'\',filename_out{i}); 
+    end
+    
+end
+
+if method == 1 %SVM
+    [MVPA, ALLMVPA] = erp_decoding(ALLBEST,filepath,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParCompute,method);
+end
+
+return
     %erp_decoding(ALLBEST,filepath,nBins,nIter,nCrossBlocks,DataTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 
     
 
 
 
 
-
-end
 
 
 %% defunct method of loading in BESTsets        
