@@ -13,20 +13,20 @@ if SVMcoding == 2
     %save predictions
     mvpa.raw_predictions = predictions ; 
     
-    mvpa.raw_accuracy_1vAll = struct();
-    
-    ind = 1; 
-    for tp = 1:Ntp
-        for run = 1:runs
-            mvpa.raw_accuracy_1vAll(ind).TimePoint = tp;
-            mvpa.raw_accuracy_1vAll(ind).Run = run;
-            for b = 1:nBins
-                mvpa.raw_accuracy_1vAll(ind).(strcat('Class_',num2str(b))) =  ...
-                    predictions(tp,run,b); 
-            end
-            ind = ind + 1;
-        end
-    end
+%     mvpa.raw_accuracy_1vAll = struct();
+%     
+%     ind = 1; 
+%     for tp = 1:Ntp
+%         for run = 1:runs
+%             mvpa.raw_accuracy_1vAll(ind).TimePoint = tp;
+%             mvpa.raw_accuracy_1vAll(ind).Run = run;
+%             for b = 1:nBins
+%                 mvpa.raw_accuracy_1vAll(ind).(strcat('Class_',num2str(b))) =  ...
+%                     predictions(tp,run,b); 
+%             end
+%             ind = ind + 1;
+%         end
+%     end
     
 
 elseif SVMcoding == 1

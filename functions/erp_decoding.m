@@ -220,7 +220,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     toc % stop timing the iteration loop
     
     mvpa = rawscoreSVM(mvpa, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
-    mvpa = averageSVM(mvpa, SVMcoding); 
+    mvpa = averageSVM(mvpa, SVMcoding,1); %average accuracy across runs
     %mvpa = avgconfusionSVM(mvpa,tst_target_svm_predict,SVMcoding); 
     
     

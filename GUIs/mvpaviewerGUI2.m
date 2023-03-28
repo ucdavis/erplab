@@ -22,7 +22,7 @@ function varargout = mvpaviewerGUI2(varargin)
 
 % Edit the above text to modify the response to help mvpaviewerGUI2
 
-% Last Modified by GUIDE v2.5 21-Mar-2023 18:00:16
+% Last Modified by GUIDE v2.5 27-Mar-2023 16:58:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -162,6 +162,9 @@ handles.measurearray = measurearray;
 meacodes    =      {'avgdecodingacc' };
 
 handles.meacodes    = meacodes;
+
+handles.chance = 0; 
+
 
 %set(handles.text_measurementv, 'String', measurearray);
 
@@ -326,6 +329,19 @@ handles.datatype = datatype;
 %         handles.latency    = latency;
 %         
 % end
+
+
+%
+% Color GUI
+%
+handles = painterplab(handles);
+
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -355,6 +371,9 @@ else
                 jseta      = setArray(iset);
         end
 end
+fntsz = get(handles.edit_report, 'FontSize');
+set(handles.edit_report, 'FontSize', fntsz*1.5)
+set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
 
 ALLMVPA = handles.ALLMVPA; 
 times = ALLMVPA(iset).times;
@@ -381,86 +400,92 @@ axes(handles.axes1);
 % set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
 %drawnow
 % tic
+for seta = jseta 
+    
+    AverageAccuracy = ALLMVPA(seta).average_accuracy_1vAll; 
 
-%calculate decoding accuracy per subject
+    %plot
+    plot(timex,AverageAccuracy, 'LineWidth',1,'Color',[0 0.1 0.5]);
+    hold on
+    
+    if handles.chance == 1
+        chancelvl = ALLMVPA(seta).header.nChance; 
+        line([timex(1),timex(end)],[chancelvl,chancelvl]); %chance line
+    end
 
-% Nsub = length(setArray);
-% Nblock = ALLMVPA(iset).header.nCrossfolds;
-% Nitr = ALLMVPA(iset).header.nIter; 
-% Ntp = length(times); 
-% Nclasses = ALLMVPA(iset).header.nClasses;
-% chancelvl = 1/Nclasses; 
-% 
-% AverageAccuracy = nan(Nsub,Ntp); 
-% 
-% 
-% for seta = jseta
-%     
-%     DecodingAccuracy = nan(Ntp,Nblock,Nitr);
-%     % We will compute decoding accuracy per subject in DecodingAccuracy,
-%     % enter DecodingAccuracy into AverageAccuray, then overwrite next subj.
-%     
-%     %% load SVM_ECOC output files
-% %     readThis =strcat(fileLocation,filesep,fName,num2str(subList(sub)),'.mat');
-% %     load(readThis)
-%      
-%     % Obtain predictions from SVM-ECOC model
-%     svmPrediction = squeeze(ALLMVPA(seta).modelPredict);
-%     tstTargets = squeeze(ALLMVPA(seta).targets);
-% 
-%     
-%     %% Step 5: Compute decoding accuracy of each decoding trial
-%     for block = 1:Nblock
-%         for itr = 1:Nitr
-%             for tp = 1:Ntp  
-% 
-%                 prediction = squeeze(svmPrediction(itr,tp,block,:)); % this is predictions from models
-%                 TrueAnswer = squeeze(tstTargets(itr,tp,block,:)); % this is predictions from models
-%                 Err = TrueAnswer - prediction; %compute error. No error = 0
-%                 ACC = mean(Err==0); %Correct hit = 0 (avg propotion of vector of 1s and 0s)
-%                 DecodingAccuracy(tp,block,itr) = ACC; % average decoding accuracy at tp & block
-% 
-%             end
-%         end
-%     end
-%       
-%      % Average across block and iterations
-%      grandAvg = squeeze(mean(mean(DecodingAccuracy,2),3));
-%     
-%      % Perform temporal smoothing (5 point moving avg) 
-%      smoothed = nan(1,Ntp);
-%      for tAvg = 1:Ntp
-%          if tAvg ==1
-%            smoothed(tAvg) = mean(grandAvg((tAvg):(tAvg+2)));
-%          elseif tAvg ==2
-%            smoothed(tAvg) = mean(grandAvg((tAvg-1):(tAvg+2)));
-%          elseif tAvg == (Ntp-1)
-%            smoothed(tAvg) = mean(grandAvg((tAvg-2):(tAvg+1)));
-%          elseif tAvg == Ntp
-%            smoothed(tAvg) = mean(grandAvg((tAvg-2):(tAvg)));
-%          else
-%            smoothed(tAvg) = mean(grandAvg((tAvg-2):(tAvg+2)));  
-%          end
-% 
-%      end
-%      
-%      % Save smoothe data
-%      AverageAccuracy(seta,:) =smoothed; % average across iteration and block
-%     
-% end
-
-if Nsub == 1 
-    plot(timex,AverageAccuracy, 'LineWidth',1,'Color',[0 0.1 0.5]); 
-else
-    plot(timex,AverageAccuracy(seta), 'LineWidth',1,'Color',[0 0.1 0.5]); 
+ 
+    
 end
-hold on
+
+
+
+hold off
+
+set(handles.edit_report, 'String', '');
+set(handles.edit_report, 'FontSize', fntsz);
+
+nsetinput = length(setinput);
+if ~get(handles.checkbox_butterflyset, 'Value') && nsetinput<=1
+        set(handles.edit_file, 'String', num2str(jseta))
+        handles.iset = iset;
+        % Update handles structure
+        guidata(hObject, handles);
+end
+
+setlabelx = '';
+if get(handles.checkbox_butterflyset, 'Value')
+        if length(setArray)>10
+                var1 = vect2colon(setArray, 'Delimiter', 'off');
+        else
+                var1 = num2str(setArray);
+        end
+elseif nsetinput>0
+        if nsetinput>10
+                var1 = vect2colon(jseta, 'Delimiter', 'off');
+        else
+                var1 = num2str(jseta);
+                if nsetinput==1
+                        setlabelx = sprintf('(%s)', ALLMVPA(jseta).header.subjectID);
+                        chancelabelx = ALLMVPA(jseta).header.nChance;
+                        foldlabelx = ALLMVPA(jseta).header.nCrossfolds; 
+                        methodlabelx = ALLMVPA(jseta).header.DecodingMethod; 
+                end
+                
+        end
+else
+        var1 = ALLERP(seta).mvpaname;
+end
+
+
+
+
+
+% if  ~get(handles.checkbox_butterflybin, 'Value') && ~get(handles.checkbox_butterflychan, 'Value') && ~get(handles.checkbox_butterflyset, 'Value') &&...
+%                 nsetinput<=1 &&  nbinput<=1 && nchinput<=1
+%         % none checked
+%         strfrmt = ['File   : %s %s\nBin    : %s %s\nChannel: %s %s\nMeasu  : %s\nWindow : %s\nLate   : %s\nValue  : %.' num2str(dig) 'f\n'];
+%         values2print = {var1, setlabelx, var2, binlabelx, var3,  chanlabelx, tittle, sprintf('%.2f\t', latency), sprintf('%.2f\t', truelat), val};
+% else
+
+if ~get(handles.checkbox_butterflyset,'Value')
+    strfrmt = ['File   : %s %s\nChance level: %.4f \nCrossfold Validation: %i \nDecoding Method: %s '];
+    values2print = {var1, setlabelx, chancelabelx, foldlabelx, methodlabelx};
+else
+    strfrmt = ['File   : %s %s'];
+    values2print = {var1, setlabelx};
+end
+
+repo = sprintf(strfrmt, values2print{:});
+% if ~isempty(nanindxfile) && length(jseta)>1
+%         repo = sprintf('%sNaN values found at files: %s', repo, num2str(nanindxfile));
+% end
+set(handles.edit_report, 'String', repo)
 
 %axis([xlim ylim]); 
 
 
 % hold off 
-% drawnow
+drawnow
 
 nsetinput = length(setinput); 
 
@@ -479,6 +504,10 @@ function varargout = mvpaviewerGUI2_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+
+% The figure can be deleted now
+delete(handles.gui_chassis);
+pause(0.1)
 
 
 
@@ -509,6 +538,23 @@ function pushbutton_left_file_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_left_file (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+% tittle = handles.tittle;
+% ich    = handles.ich;
+% ibin   = handles.ibin;
+iset   = handles.iset;
+iset   = iset-1;
+
+if iset<1
+        return; %iset = 1;
+end
+handles.iset = iset;
+
+% Update handles structure
+guidata(hObject, handles);
+
+%ylim = str2num(get(handles.edit_ylim, 'String' ));
+%xlim = str2num(get(handles.edit_xlim, 'String' ));
+mplotdata(hObject, handles,iset, xlim, ylim)
 
 
 % --- Executes on button press in pushbutton_right_file.
@@ -516,6 +562,24 @@ function pushbutton_right_file_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_right_file (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+%tittle = handles.tittle;
+setArray = handles.setArray;
+% ich    = handles.ich;
+% ibin   = handles.ibin;
+iset   = handles.iset;
+iset   = iset+1;
+
+if iset>length(setArray)
+        return; %iset = length(setArray);
+end
+handles.iset      = iset;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% ylim = str2num(get(handles.edit_ylim, 'String' ));
+% xlim = str2num(get(handles.edit_xlim, 'String' ));
+mplotdata(hObject, handles,iset,xlim,ylim)
 
 
 % --- Executes on button press in checkbox_butterflyset.
@@ -523,5 +587,82 @@ function checkbox_butterflyset_Callback(hObject, eventdata, handles)
 % hObject    handle to checkbox_butterflyset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+setArray = handles.setArray;
+if get(hObject, 'Value')
+        set(handles.edit_file, 'String', vect2colon(setArray, 'Delimiter', 'off'))
+        set(handles.edit_file, 'Enable', 'off');
+        set(handles.pushbutton_right_file, 'Enable', 'off')
+        set(handles.pushbutton_left_file, 'Enable', 'off')
+
+else
+        set(handles.edit_file, 'Enable', 'on');
+        setinput  = str2num(get(handles.edit_file, 'String'));
+        if length(setinput)>1 
+                setinput = setinput(1);
+                [xxx, iset] = closest(setArray, setinput);
+                handles.iset=iset;
+                set(handles.edit_file, 'String', num2str(setinput))
+        end
+        if length(setinput)<=1
+                set(handles.pushbutton_right_file, 'Enable', 'on')
+                set(handles.pushbutton_left_file, 'Enable', 'on')
+        else
+                set(handles.pushbutton_right_file, 'Enable', 'off')
+                set(handles.pushbutton_left_file, 'Enable', 'off')
+        end
+end
+
+% tittle = handles.tittle;
+% ylim   = str2num(get(handles.edit_ylim, 'String' ));
+% xlim   = str2num(get(handles.edit_xlim, 'String' ));
+% 
+% if isempty(xlim) || isempty(ylim)
+%         return
+% end
+
+% ich    = handles.ich;
+% ibin   = handles.ibin;
+iset   = handles.iset;
+
+mplotdata(hObject, handles,iset)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_butterflyset
+
+
+
+function edit_report_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_report (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_report as text
+%        str2double(get(hObject,'String')) returns contents of edit_report as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_report_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_report (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in checkbox_chance.
+function checkbox_chance_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_chance (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+iset   = handles.iset;
+if get(hObject,'Value') 
+    handles.chance = 1; 
+else
+    handles.chance = 0;
+end
+mplotdata(hObject, handles,iset)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_chance
