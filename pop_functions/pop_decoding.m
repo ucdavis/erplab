@@ -545,16 +545,23 @@ end
 %filesaving 
 if isempty(pathname_out)
     pathname_out = cd; 
-else
-    pathname_out = pathname_out{1}; 
+% else
+%     pathname_out = pathname_out; 
 end
 %combine filename and paths
-for i = 1:length(filename_out) 
-    
-    if isunix
-        filepath{i} = strcat(pathname_out,'/',filename_out{i});
+for i = 1:k %k = numel(BEST)
+    if k == 1
+        if isunix
+            filepath = strcat(pathname_out,'/',filename_out);
+        else
+            filepath =  strcat(pathname_out,'\',filename_out);
+        end    
     else
-        filepath{i}=  strcat(pathname_out,'\',filename_out{i}); 
+        if isunix
+            filepath{i} = strcat(pathname_out,'/',filename_out{i});
+        else
+            filepath{i}=  strcat(pathname_out,'\',filename_out{i});
+        end
     end
     
 end
