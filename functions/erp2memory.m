@@ -39,23 +39,23 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 function erp2memory(ERP, indx)
-
+global observe_ERPDAT;
 erpm    = findobj('tag', 'linerp');
 nerpset = length(erpm);
-for s=1:nerpset      
-      if s == nerpset-indx+1 % bottom-up to top-down counting
-            set(erpm(s), 'checked', 'on' );
-            menutitle   = ['<Html><b>Erpset '...
-                  num2str(nerpset-s+1) ': ' ERP.erpname '</b>'];
-            set( erpm(s), 'Label', menutitle);
-      else
-            set(erpm(s), 'checked', 'off' );
-            currname = get(erpm(s),'Label');
-            menutitle = regexprep(currname,'<b>|</b>','', 'ignorecase');
-            menutitle = regexprep(menutitle, '\s+', ' ');
-            menutitle = regexprep(menutitle,'Erpset \d+',['Erpset ' num2str(nerpset-s+1)], 'ignorecase');
-            set( erpm(s), 'Label', menutitle);
-      end
+for s=1:nerpset
+    if s == nerpset-indx+1 % bottom-up to top-down counting
+        set(erpm(s), 'checked', 'on' );
+        menutitle   = ['<Html><b>Erpset '...
+            num2str(nerpset-s+1) ': ' ERP.erpname '</b>'];
+        set( erpm(s), 'Label', menutitle);
+    else
+        set(erpm(s), 'checked', 'off' );
+        currname = get(erpm(s),'Label');
+        menutitle = regexprep(currname,'<b>|</b>','', 'ignorecase');
+        menutitle = regexprep(menutitle, '\s+', ' ');
+        menutitle = regexprep(menutitle,'Erpset \d+',['Erpset ' num2str(nerpset-s+1)], 'ignorecase');
+        set( erpm(s), 'Label', menutitle);
+    end
 end
 CURRENTERP = indx;
 assignin('base','CURRENTERP', CURRENTERP);  % save to workspace
@@ -64,49 +64,64 @@ assignin('base','ERP', ERP);  % save to workspace
 % check ploterps GUI
 perpgui    = findobj('Tag', 'ploterp_fig');
 if ~isempty(perpgui)
-      close(perpgui)
-      pause(0.1)
-      pop_ploterps(ERP);
+    close(perpgui)
+    pause(0.1)
+    pop_ploterps(ERP);
 else
-      fprintf('\n------------------------------------------------------\n');
-      fprintf('ERPSET #%g is ACTIVE\n', indx);
-      fprintf('------------------------------------------------------\n');
-      ERP
+    fprintf('\n------------------------------------------------------\n');
+    fprintf('ERPSET #%g is ACTIVE\n', indx);
+    fprintf('------------------------------------------------------\n');
+    ERP
+    
+    %%changed by GZ Mar 2023
+    
+    CURRENTERP = indx;
+    ALLERP = observe_ERPDAT.ALLERP;
+    if ~isempty(ALLERP)
+        if isempty(CURRENTERP) || CURRENTERP<=0 || CURRENTERP> length(ALLERP)
+            CURRENTERP= length(ALLERP);
+        end
+        observe_ERPDAT.CURRENTERP = CURRENTERP;
+        observe_ERPDAT.ERP = ALLERP(CURRENTERP);
+        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+    end
+    
+    
 end
 
-% %% check DQ options of erpset & make changes to ERPlab menu 
-% 
-% erplabmenu = findobj('tag', 'ERPLAB'); 
+% %% check DQ options of erpset & make changes to ERPlab menu
+%
+% erplabmenu = findobj('tag', 'ERPLAB');
 % %W_MAIN = findobj('tag', 'EEGLAB');
 % allmenus = findobj( erplabmenu, 'type', 'uimenu');
 % allstrs  = get(allmenus, 'Label');
 
 option1 = findobj('Label', 'Show Data Quality measures in table');
-option2 = findobj('Label', 'Summarize Data Quality (min, median, max)'); 
-option3 = findobj('Label', 'Save Data Quality measures to file'); 
+option2 = findobj('Label', 'Summarize Data Quality (min, median, max)');
+option3 = findobj('Label', 'Save Data Quality measures to file');
 
 if isfield(ERP,'dataquality') & ~strcmp(ERP.dataquality(1).type,'empty')
-    %if there is dataquality measures, make DQ menu options available 
+    %if there is dataquality measures, make DQ menu options available
     set(option1, 'enable', 'on');
     set(option2, 'enable', 'on');
-    set(option3, 'enable', 'on'); 
-   
+    set(option3, 'enable', 'on');
+    
 else
     set(option1, 'enable', 'off');
     set(option2, 'enable', 'off');
-    set(option3, 'enable', 'off');     
+    set(option3, 'enable', 'off');
     
 end
 
-% 
-% 
-% if any(strcmp(menustatus, 'erp_dataset'))    
-%     eval('indmatchvar = cellfun(@(x)(~isempty(findstr(num2str(x), ''erpset:on''))), allstrs);');  
+%
+%
+% if any(strcmp(menustatus, 'erp_dataset'))
+%     eval('indmatchvar = cellfun(@(x)(~isempty(findstr(num2str(x), ''erpset:on''))), allstrs);');
 %     set(allmenus(indmatchvar), 'enable', 'on');
 % end
 
-% mainerplab = findobj(W_MAIN, 'tag', submenu); 
-% erpmenu = findobj('erpmenu','type', 'uimenu'); 
+% mainerplab = findobj(W_MAIN, 'tag', submenu);
+% erpmenu = findobj('erpmenu','type', 'uimenu');
 
 end
 
