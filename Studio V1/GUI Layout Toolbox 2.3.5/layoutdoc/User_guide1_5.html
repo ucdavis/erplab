@@ -1,0 +1,105 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>Why use layouts?</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="User_guide.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>User_guide</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="User_guide1_4.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="User_guide2.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>1.5: Why use layouts?&nbsp;<a href="User_guide1.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+            <p>MATLAB ships with a GUI design tool called <a href="matlab:doc GUIDE"><code class="FUNCTION">GUIDE</code></a>. This
+        doesn't use layouts, but forces users to manually position each element. This approach
+    is a much faster way to build simple user-interfaces, so why would you want to
+use layouts?</p>
+            <p>The over-riding reason for using layouts or layout managers is
+            to gain control of the resizing behaviour of the interface without
+            having to write a complex "ResizeFcn". If you simply position user-interface elements
+            directly (either using <a href="matlab:doc GUIDE"><code class="FUNCTION">GUIDE</code></a> or programmatically), you
+            have two choices about what happens when the window resizes:
+            </p>
+                <h3>For example:</h3>
+                        <para><b>1. The user-interface components scale with the window (normalised units)</b><br/>We didn't really want the buttons to grow but everything resizes in proportion.</para>
+                        <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">f = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Position', 200*ones(1,4) );
+<a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', f, ...
+    'Units', 'Normalized', ...
+    'OuterPosition', [0.02 0.2 0.96 0.8] );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', f, ...
+    'Units', 'Normalized', ...
+    'Position', [0.02 0.02 0.46 0.16], ...
+    'String', 'Button 1' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', f, ...
+    'Units', 'Normalized', ...
+    'Position', [0.52 0.02 0.46 0.16], ...
+    'String', 'Button 2' );</font></pre>
+                        <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/why_normalized1.png"/>.<img src="Images/why_normalized2.png"/></center></font></p>
+                    
+                        <para><b>2. The user-interface components stay fixed and the window resize creates empty space (pixel units)</b><br/>Although the buttons don't now grow, neither does the axes, which looks very odd.</para>
+                        <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">f = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Position', 200*ones(1,4) );
+<a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', f, ...
+    'Units', 'Pixels', ...
+    'OuterPosition', [10 35 190 175] );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', f, ...
+    'Units', 'Pixels', ...
+    'Position', [5 5 90 25], ...
+    'String', 'Button 1' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', f, ...
+    'Units', 'Pixels', ...
+    'Position', [105 5 90 25], ...
+    'String', 'Button 2' );</font></pre>
+                        <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/why_fixed1.png"/>.<img src="Images/why_fixed2.png"/></center></font></p>
+                    
+                <p>Neither of these alternatives is particularly useful for a serious
+                user-interface. Typically there are user-interface components that should
+                be fixed size: icons, buttons, selectors etc; and others that should resize
+                with the window: graphs, images, prose text etc. To achieve this one needs
+                to be able to specify which interface components should be fixed size and
+                which variable. Over the last two decades, layouts have been shown to be
+            the method of choice for achieving this.</p>
+                <h3>For example:</h3>
+                        <para>Using layouts, some user-interface components scale with the window, others stay fixed</para>
+                        <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">f = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Position', 200*ones(1,4) );
+vbox = <a href="uix.VBox.html"><code class="FUNCTION">uix.VBox</code></a>( 'Parent', f );
+axes( 'Parent', vbox );
+hbox = <a href="uix.HButtonBox.html"><code class="FUNCTION">uix.HButtonBox</code></a>( 'Parent', vbox, 'Padding', 5 );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', hbox, ...
+    'String', 'Button 1' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', hbox, ...
+    'String', 'Button 2' );
+set( vbox, 'Heights', [-1 35] )</font></pre>
+                        <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/why_layout1.png"/>.<img src="Images/why_layout2.png"/></center></font></p>
+                    
+        
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide1_4.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide1_4.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Layout hierarchies</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide2.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Positioning axes</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide2.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+
+            
