@@ -54,8 +54,15 @@ elseif overw == 0 || overw == -1
     if overw == 0 %add a new bestset to the bestset menu
         indexbest = nbestset + 1; 
     else %delete bestset from menu
-        
-        %%% %%%%% %%% NEED TO DO
+            menux = findobj(0, 'tag', 'bestsets');
+            h = get(menux);
+            delete(h.Children);
+            indexbest = 1;
+            if maxindexbest==0
+                  assignin('base','CURRENTBEST', 0);  % save to workspace
+                  set(BESTmenu, 'enable', 'off');
+                  return
+            end
     end
     
     while indexbest <= maxindexbest 

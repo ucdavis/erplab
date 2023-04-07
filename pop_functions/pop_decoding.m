@@ -249,10 +249,14 @@ if nargin == 1 %GUI
     %app = feval('decodingGUI', ALLBEST, filename, filepath, cbesti); %cludgy way
     app = feval('decodingGUI', ALLBEST, def, cbesti); %cludgy way
     waitfor(app,'FinishButton',1);
-    decoding_res = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding 
-    app.delete; %delete app from view
-    pause(0.5); %wait for app to leave
-    
+    try
+        decoding_res = app.output; %NO you don't want to output BEST, you want to output the parameters to run decoding
+        app.delete; %delete app from view
+        pause(0.5); %wait for app to leave
+    catch
+        disp('User selected Cancel')
+        return
+    end
     
     %parse arguments
     ALLBEST = decoding_res{1}; 

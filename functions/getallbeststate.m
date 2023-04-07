@@ -1,12 +1,12 @@
-% PURPOSE: gets current pointer for ALLERP structure and its size
+% PURPOSE: gets current pointer for ALLBEST structure and its size
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
-% Author: Javier Lopez-Calderon
+% Author: Aaron Simmons
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2023
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %

@@ -325,7 +325,8 @@ comDQQpreavg = ['pop_DQ_preavg(ALLEEG)'];
 comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
 comSpatDecode = ['[MVPA, ALLMVPA] = pop_decoding(ALLBEST);']; 
 comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
-comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');']; 
+comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');'];
+comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
 
 
 
@@ -544,11 +545,12 @@ uimenu( mSAR,'Label','Summarize ERP artifacts in a table ','CallBack', comARSUMe
 uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'CallBack', comDQQpreavg,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:off');
 
 
-%% BIN-EPOCHED Data (BEST sets) 
+%% BIN-EPOCHED Data (BEST sets)
+uimenu(submenu,'Label','BESTsets Menu','separator','on','foregroundcolor','#0072BD','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on')
 uimenu(submenu,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
+uimenu(submenu,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+uimenu(submenu,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu(submenu,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
-uimenu(submenu,'Label','Load BEST','CallBack',comLoadBEST,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
-
 
 %% Multivariate Pattern Analysis
 MVPAmenu = uimenu( submenu,'Label','MVPA','separator','on','tag','MVPAset','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
@@ -708,9 +710,9 @@ set(erpmenu,'enable','off');
 
 %% Create BEST Main Menu 
 
-bestmenu = uimenu( menuERPLAB,'Label','BESTsets','separator','on','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
-set(bestmenu,'enable','off');
+% bestmenu = uimenu( menuERPLAB,'Label','BESTsets','separator','on','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+% set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
+% set(bestmenu,'enable','off');
 
 
 
