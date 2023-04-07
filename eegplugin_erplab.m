@@ -38,6 +38,7 @@ erplab_default_values % script
 currvers  = ['erplab' erplabver];
 
 erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+%global needed for ERPLAB viewer
 global observe_ERPDAT;
 observe_ERPDAT = o_ERPDAT;
 observe_ERPDAT.Two_GUI = 0;
@@ -47,6 +48,7 @@ observe_ERPDAT.ERP = [];
 observe_ERPDAT.Count_ERP = 0;
 observe_ERPDAT.Count_currentERP = 0;
 observe_ERPDAT.Process_messg = 0;%%change end
+
 
 
 
