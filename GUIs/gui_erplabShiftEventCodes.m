@@ -71,6 +71,10 @@ catch
     handles.displayEEG          = false;
 end
 
+if iscell(handles.eventcodes)
+    handles.eventcodes = strjoin(handles.eventcodes);
+end
+
 set(handles.editboxEventCodes, ...
     'String', num2str(handles.eventcodes));
 set(handles.editboxTimeshift,  ...
@@ -156,6 +160,14 @@ function pushbutton_shiftEvents_Callback(hObject, eventdata, handles) %#ok<*DEFN
 display('Shifting events...');
 
 % editboxEventCodes_Callback(hObject, eventdata, handles)
+%in 2023, accept both non-numeric and numeric ecodes
+if iscell(handles.eventcodes)
+    editString = split(handles.eventcodes);
+    editString = editString(~cellfun('isempty',editString));
+    handles.eventcodes = (editString);
+end
+    
+%handles.eventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Save the input variables to output
 handles.output = {        ...
@@ -223,11 +235,16 @@ function editboxEventCodes_Callback(hObject, eventdata, handles)
 % single string/character input
 
 % Strip any non-numeric token and replace w/ whitespace (' ')
-editString         = regexprep(get(hObject,'String'), '[^0-9:]', ' ');
-handles.eventcodes = str2num(editString);  %#ok<ST2NM>
+%editString         = regexprep(get(hObject,'String'), '[^0-9:]', ' ');
+
+%in 2023, accept both non-numeric and numeric ecodes 
+editString = split(get(hObject,'String'));
+editString = editString(~cellfun('isempty',editString)); 
+%handles.eventcodes = str2num(editString);  %#ok<ST2NM>
+handles.eventcodes = (editString);
 
 % Display corrected eventcode string back to GUI
-set(handles.editboxEventCodes, 'String', editString);
+set(handles.editboxEventCodes, 'String', strjoin(editString));
 
 % Save the new replace channels value
 guidata(hObject,handles)

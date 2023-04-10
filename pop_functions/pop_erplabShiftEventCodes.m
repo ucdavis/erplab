@@ -8,7 +8,13 @@ function [EEG, commandHistory] = pop_erplabShiftEventCodes( EEG, varargin )
 % INPUT:
 %
 %    inEEG            - EEGLAB EEG dataset
-%    Eventcodes       - list of event codes to shift
+%    Eventcodes       - list of event codes to shift 
+%                           - If ANY event codes are string, this input
+%                           MUST be a cell array, which each event code as
+%                           an element in the cell array for example:
+%                           ({'S155','F21',32,34}) 
+%                           - If event codes are all numeric, this input can be
+%                           a cell array of numbers or a matrix array. 
 %    Timeshift        - time in milliseconds. If timeshift is positive, the EEG event code time-values are shifted to the right (e.g. increasing delay).
 %                       If timeshift is negative, the event code time-values are shifted to the left (e.g decreasing delay)
 %                       If timeshift is 0, the EEG's time values are not shifted 
@@ -174,6 +180,7 @@ inputParameters.addRequired('EEG');
 
 % Optional named parameters (vs Positional Parameters)
 inputParameters.addParameter('Eventcodes'         , []);
+%inputParameters.addParameter('Eventcodes');
 inputParameters.addParameter('Timeshift'          , 0);
 inputParameters.addParameter('Rounding'           , 'earlier');
 inputParameters.addParameter('DisplayEEG'         , false);
@@ -182,11 +189,16 @@ inputParameters.addParameter('History'            , 'script', @ischar); % histor
 
 inputParameters.parse(EEG, varargin{:});
 
+%change everything to a cell array. AMS2023
+ecodes = inputParameters.Results.Eventcodes;
+if ~iscell(ecodes)
+   ecodes = num2cell(ecodes) ; 
+end
 
 
 % Execute: Shift specified event codes
 EEG = erplab_shiftEventCodes(EEG,       ...
-    inputParameters.Results.Eventcodes, ...
+    ecodes,                             ...
     inputParameters.Results.Timeshift,  ...
     inputParameters.Results.Rounding,   ...
     inputParameters.Results.DisplayFeedback, ...
