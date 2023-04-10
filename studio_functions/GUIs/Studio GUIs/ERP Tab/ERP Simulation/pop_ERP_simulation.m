@@ -584,47 +584,63 @@ elseif qBasFunLabel==3
     Desiredsignal(latsamp(1):latsamp(2)) = qBasPeakAmp;
 end
 
+%%----------------------Noise----------------------------------------------
+SimulationSeed = erpworkingmemory('SimulationSeed');
+try
+    SimulationSeed_Type = SimulationSeed.Type;
+    SimulationSeed_seed=SimulationSeed.Seed;
+catch
+    SimulationSeed_Type = 'twister';
+    SimulationSeed_seed = 1;
+end
+%phase for sin noise
+SimulationPhase = erpworkingmemory('SimulationPhase');
+if isempty(SimulationPhase) ||  ~isnumeric(SimulationPhase)
+    SimulationPhase = 0;
+end
+if numel(SimulationPhase)~=1
+    SimulationPhase = SimulationPhase(1);
+end
+if SimulationPhase<0 || SimulationPhase>0.9
+    SimulationPhase = 0;
+end
+
+if qNewnoiseFlag==1
+    %%reset the phase
+    phasechan = [0:0.05:0.9];
+    phase_final = randperm(length(phasechan),1);
+    SimulationPhase = phasechan(phase_final);
+    
+    %%reset the seed
+    SimulationSeed_Type = 'philox';
+    SimulationSeed_seed = SimulationSeed_seed+1;
+end
 
 %%sin Noise
 X =  Times/1000;
-if qNewnoiseFlag==0
-    rng(1);
-    phasechan = [0:0.05:0.9];
-    phase_final = randperm(length(phasechan),1);
-    rng(1);
-else
-    phasechan = [0:0.05:0.9];
-    phase_final = randperm(length(phasechan),1);
-end
-Desirednosizesin = qSinoiseAmp*sin(2*qSinoiseFre*pi*X+2*pi*phasechan(phase_final));
+Desirednosizesin = qSinoiseAmp*sin(2*qSinoiseFre*pi*X+2*pi*SimulationPhase);
 
 %%white noise
-if qNewnoiseFlag==0
-    rng(1);
-    Desirednosizewhite =  randn(1,numel(Times));%%white noise
-    rng(1);
-else
-    Desirednosizewhite =  randn(1,numel(Times));%%white noise
+try
+    rng(SimulationSeed_seed,SimulationSeed_Type);
+catch
+    rng(1,'twister');
 end
+Desirednosizewhite =  randn(1,numel(Times));%%white noise
 if max(abs(Desirednosizewhite(:)))~=0
     Desirednosizewhite = qWhiteAmp*Desirednosizewhite./max(abs(Desirednosizewhite(:)));
 end
 
 %%pink noise
-if qNewnoiseFlag==0
-    rng(1);
-    try
-        Desirednosizepink = pinknoise(numel(Times));
-    catch
-        Desirednosizepink = f_pinknoise(numel(Times));
-    end
-    rng(1);
-else
-    try
-        Desirednosizepink = pinknoise(numel(Times));
-    catch
-        Desirednosizepink = f_pinknoise(numel(Times));
-    end
+try
+    rng(SimulationSeed_seed,SimulationSeed_Type);
+catch
+    rng(1,'twister');
+end
+try
+    Desirednosizepink = pinknoise(numel(Times));
+catch
+    Desirednosizepink = f_pinknoise(numel(Times));
 end
 Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
 if max(abs(Desirednosizepink(:)))~=0

@@ -1467,7 +1467,7 @@ countPlot = 0;
 for Numofrows = 1:Numrows
     for Numofcolumns = 1:Numcolumns
         plotdatalabel = qGridposArray(Numofrows,Numofcolumns);
-     
+        
         try
             labelcbe = qplotArrayStr{plotdatalabel};
         catch
@@ -1478,12 +1478,12 @@ for Numofrows = 1:Numrows
         catch
             plotbindata = [];
         end
-     
+        
         
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             
             countPlot =countPlot +1;
-       
+            
             if qPolarityWave
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else
@@ -1500,7 +1500,7 @@ for Numofrows = 1:Numrows
             else
                 yunitsypos = 0.95*abs(qYticks(1));
             end
-        
+            
             data4plot = reshape(data4plot,numel(timeRangedef),NumOverlay);
             for Numofoverlay = 1:NumOverlay
                 [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
@@ -1510,7 +1510,7 @@ for Numofrows = 1:Numrows
                 else
                     [~,XtimerangetrasfALL,~] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numcolumns,PosIndexsALL,StepX,fs);
                 end
-               
+                
                 aerror = isnan(squeeze(bindataerror(plotdatalabel,:,Numofoverlay,1)));
                 [Xerror,yerro] = find(aerror==0);
                 
@@ -1717,7 +1717,9 @@ for Numofrows = 1:Numrows
             %%-----------------minor X---------------
             %             timewindow_bin = Xtimerange(2)-Xtimerange(1);
             %             xlimrightedge = timewindow_bin*(numel(Xtimerange)*Numcolumns+StepXP*(Numcolumns-1)-1);
-            set(hbig,'xlim',[Xtimerange(1),Xtimerangetrasf(end)]);
+            if  Xtimerange(1)< Xtimerangetrasf(end)
+                set(hbig,'xlim',[Xtimerange(1),Xtimerangetrasf(end)]);
+            end
             if qMinorTicksX(1)
                 set(hbig,'XMinorTick','on');
                 if isxaxislabel==2

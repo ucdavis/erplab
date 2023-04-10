@@ -57,7 +57,7 @@ catch
     %%ampwhite, pinkop,amppink,sinop,sinamp,sinfre,random number generator
 end
 if isempty(def)
-    def  = {1,1,100,50,1,-200,799,1,1000,0,1,0,1,0,1,10};
+    def  = {1,1,100,50,1,-200,799,1,1000,0,1,0,1,0,1,10,0};
 end
 
 try
@@ -219,6 +219,7 @@ else
     set(handles.edit_square_peak_amp,'Enable','off');
     set(handles.edit_square_onset,'Enable','off');
     set(handles.edit_square_offset,'Enable','off');
+    
 end
 
 %%set for epoch
@@ -421,12 +422,15 @@ else
     handles.pushbutton_bin.Enable = 'off';
 end
 
-newNoiseFlag = 0;
-try
-    newNoiseFlag = def{17};
-catch
-end
-handles.checkbox_newnoise.Value = newNoiseFlag;
+
+%%seeds for white and pink noise
+rng(1,'twister');
+SimulationSeed = rng;
+erpworkingmemory('SimulationSeed',SimulationSeed);
+%phase for sin noise
+SimulationPhase = 0;
+erpworkingmemory('SimulationPhase',SimulationPhase);
+
 
 plotsimulationwave(hObject, eventdata, handles);
 
@@ -444,6 +448,7 @@ handles = painterplabstudio(handles);
 % %
 handles = setfonterplabestudio(handles);
 
+handles.checkbox_newnoise.BackgroundColor = [1 1 1];
 % Update handles structure
 guidata(hObject, handles);
 
@@ -1418,7 +1423,7 @@ ERP = [];
 ERPArray = [];
 ChannelArray = [];
 binArray = [];
-NoiseupdateFlag = handles.checkbox_newnoise.Value;
+% NoiseupdateFlag = handles.checkbox_newnoise.Value;
 
 if MatchFlag==1 && ~isempty(ALLERP)
     %%check ERPset
@@ -1654,13 +1659,6 @@ if handles.radiobutton_exgaus.Value ==1
         return;
     end
     
-    %     if Tau>0 && Meanamp<=0
-    %         msgboxText =  ' "mean" of Ex-Gaussian function should be a positive numeric!';
-    %         handles.text_message.String = msgboxText;
-    %         handles.text_message.ForegroundColor = 'k';
-    %         handles.text_message.FontSize = 12;
-    %         return;
-    %     end
     
     SD = str2num(handles.edit_exgau_sd.String);
     if isempty(SD) || numel(SD)~=1
@@ -1763,6 +1761,26 @@ end
 
 
 %%---------------------------Noise signal----------------------------------
+SimulationSeed = erpworkingmemory('SimulationSeed');
+try
+    SimulationSeed_Type = SimulationSeed.Type;
+    SimulationSeed_seed=SimulationSeed.Seed;
+catch
+    SimulationSeed_Type = 'twister';
+    SimulationSeed_seed = 1;
+end
+%phase for sin noise
+SimulationPhase = erpworkingmemory('SimulationPhase');
+if isempty(SimulationPhase) ||  ~isnumeric(SimulationPhase)
+    SimulationPhase = 0;
+end
+if numel(SimulationPhase)~=1
+    SimulationPhase = SimulationPhase(1);
+end
+if SimulationPhase<0 || SimulationPhase>0.9
+    SimulationPhase = 0;
+end
+
 if handles.radiobutton_siniose.Value
     PeakAmp =   str2num(handles.edit_siniose_amp.String);
     if isempty(PeakAmp) || numel(PeakAmp)~=1
@@ -1781,16 +1799,8 @@ if handles.radiobutton_siniose.Value
         return;
     end
     X =  Times/1000;
-    if NoiseupdateFlag==0
-        rng(1);
-        phasechan = [0:0.1:0.9];
-        phase_final = randperm(length(phasechan),1);
-        rng(1);
-    else
-        phasechan = [0:0.1:0.9];
-        phase_final = randperm(length(phasechan),1);
-    end
-    Desirednosizesin = PeakAmp*sin(2*FreHz*pi*(X)+2*pi*phasechan(phase_final));
+    
+    Desirednosizesin = PeakAmp*sin(2*FreHz*pi*(X)+2*pi*SimulationPhase);
 end
 
 
@@ -1803,13 +1813,12 @@ if handles.radiobutton_whitenoise.Value==1
         handles.text_message.FontSize = 12;
         return;
     end
-    if NoiseupdateFlag==0
-        rng(1);
-        Desirednosizewhite =  randn(1,numel(Times));%%white noise
-        rng(1);
-    else
-        Desirednosizewhite =  randn(1,numel(Times));%%white noise
+    try
+        rng(SimulationSeed_seed,SimulationSeed_Type);
+    catch
+        rng(1,'twister');
     end
+    Desirednosizewhite =  randn(1,numel(Times));%%white noise
     
     Desirednosizewhite = PeakAmp*Desirednosizewhite./max(abs(Desirednosizewhite(:)));
 end
@@ -1823,21 +1832,17 @@ if handles.radiobutton_pink_niose.Value==1
         handles.text_message.FontSize = 12;
         return;
     end
-    if NoiseupdateFlag==0
-        rng(1);
-        try
-            Desirednosizepink = pinknoise(numel(Times));
-        catch
-            Desirednosizepink = f_pinknoise(numel(Times));
-        end
-        rng(1);
-    else
-        try
-            Desirednosizepink = pinknoise(numel(Times));
-        catch
-            Desirednosizepink = f_pinknoise(numel(Times));
-        end
+    try
+        rng(SimulationSeed_seed,SimulationSeed_Type);
+    catch
+        rng(1,'twister');
     end
+    try
+        Desirednosizepink = pinknoise(numel(Times));
+    catch
+        Desirednosizepink = f_pinknoise(numel(Times));
+    end
+    
     Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
     Desirednosizepink = PeakAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));
 end
@@ -2400,5 +2405,23 @@ plotsimulationwave(hObject, eventdata, handles);
 
 % --- Executes on button press in checkbox_newnoise.
 function checkbox_newnoise_Callback(hObject, eventdata, handles)
+
+
+%%reset the phase for sin signal
+phasechan = [0:0.05:0.9];
+phase_final = randperm(length(phasechan),1);
+SimulationPhase = phasechan(phase_final);
+erpworkingmemory('SimulationPhase',SimulationPhase);
+
+%%reset seeds for white or pink noise
+SimulationSeed = erpworkingmemory('SimulationSeed');
+try
+    SimulationSeed.Type = 'philox';
+    SimulationSeed.Seed = SimulationSeed.Seed+1;
+catch
+    SimulationSeed.Type = 'twister';
+    SimulationSeed.Seed = 1;
+end
+erpworkingmemory('SimulationSeed',SimulationSeed);
 
 plotsimulationwave(hObject, eventdata, handles);
