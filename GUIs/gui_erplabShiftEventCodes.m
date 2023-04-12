@@ -72,11 +72,11 @@ catch
 end
 
 if iscell(handles.eventcodes)
-    handles.eventcodes = strjoin(handles.eventcodes);
+    handles.eventcodes_txt = strjoin(handles.eventcodes);
 end
 
 set(handles.editboxEventCodes, ...
-    'String', num2str(handles.eventcodes));
+    'String', num2str(handles.eventcodes_txt));
 set(handles.editboxTimeshift,  ...
     'String', num2str(handles.timeshift));
 set(handles.checkbox_displayEEG, ...
@@ -238,7 +238,8 @@ function editboxEventCodes_Callback(hObject, eventdata, handles)
 %editString         = regexprep(get(hObject,'String'), '[^0-9:]', ' ');
 
 %in 2023, accept both non-numeric and numeric ecodes 
-editString = split(get(hObject,'String'));
+editString = regexprep(get(hObject,'String'),',',' '); %remove commas if exist 
+editString = split(editString);
 editString = editString(~cellfun('isempty',editString)); 
 %handles.eventcodes = str2num(editString);  %#ok<ST2NM>
 handles.eventcodes = (editString);
