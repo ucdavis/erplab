@@ -430,15 +430,7 @@ varargout{1} = ERP_simulation_box;
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.noisefun_title,...
             'String','Noise Function for Simulation','FontWeight','bold','FontSize',12 ,'BackgroundColor',ColorB_def);
         
-        %%update noise if needed New Noise
-        gui_erp_simulation.newnoise_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
-        gui_erp_simulation.newnoise_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.newnoise_option ,...
-            'String','New noise','callback',@newnoise_op,'FontSize',12,'BackgroundColor',ColorB_def,'Value',0);
-        uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
-        uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
-        uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
-        uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
-        set(gui_erp_simulation.newnoise_option, 'Sizes',[90 60 30 60 30]);
+        
         %%sin noise
         gui_erp_simulation.sin_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.sin_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.sin_option ,...
@@ -559,6 +551,27 @@ varargout{1} = ERP_simulation_box;
         uiextras.Empty('Parent', gui_erp_simulation.pink_title);
         uiextras.Empty('Parent', gui_erp_simulation.pink_title);
         set(gui_erp_simulation.pink_title, 'Sizes',[90 60 30 60 30]);
+        
+        %%update noise if needed New Noise
+        %%seeds for white and pink noise
+        gui_erp_simulation.SimulationSeed = erpworkingmemory('SimulationSeed');
+        rng(1,'twister');
+        SimulationSeed = rng;
+        erpworkingmemory('SimulationSeed',SimulationSeed);
+        %phase for sin noise
+        gui_erp_simulation.SimulationPhase = erpworkingmemory('SimulationPhase');
+        SimulationPhase = 0;
+        erpworkingmemory('SimulationPhase',SimulationPhase);
+        
+        gui_erp_simulation.newnoise_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
+        gui_erp_simulation.newnoise_op = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.newnoise_option ,...
+            'String','Re-randomize noise','callback',@newnoise_op,'FontSize',12,'BackgroundColor',[1 1 1],'Value',0);
+        %         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
+        %         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
+        uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
+        set(gui_erp_simulation.newnoise_option, 'Sizes',[70 130 70]);
+        
         
         %%Cancel and advanced
         gui_erp_simulation.other_option = uiextras.HBox('Parent',gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -1267,6 +1280,24 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------update new noise if needed------------------------------
     function newnoise_op(~,~)
+        %%reset the phase for sin signal
+        phasechan = [0:0.05:0.9];
+        phase_final = randperm(length(phasechan),1);
+        SimulationPhase = phasechan(phase_final);
+        erpworkingmemory('SimulationPhase',SimulationPhase);
+        
+        %%reset seeds for white or pink noise
+        SimulationSeed = erpworkingmemory('SimulationSeed');
+        try
+            SimulationSeed.Type = 'philox';
+            SimulationSeed.Seed = SimulationSeed.Seed+1;
+        catch
+            SimulationSeed.Type = 'twister';
+            SimulationSeed.Seed = 1;
+        end
+        erpworkingmemory('SimulationSeed',SimulationSeed);
+        gui_erp_simulation.SimulationSeed = SimulationSeed;
+        gui_erp_simulation.SimulationPhase = SimulationPhase;
         plot_erp_simulation();
     end
 
@@ -1857,8 +1888,6 @@ varargout{1} = ERP_simulation_box;
                 return;
             end
             
-            
-            
             Tau =  str2num(gui_erp_simulation.exgua_tau.String);
             if isempty(Tau) || numel(Tau)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Tau" of Ex-Gaussian function'];
@@ -1867,15 +1896,6 @@ varargout{1} = ERP_simulation_box;
                 observe_ERPDAT.Process_messg =4;
                 return;
             end
-            
-            %              if Tau~=0 && Meanamp<=0
-            %                 msgboxText =  ['Create Artificial ERP Waveform> "mean" of Ex-Gaussian function should be a positive numeric'];
-            %                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-            %                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            %                 observe_ERPDAT.Process_messg =4;
-            %                 return;
-            %              end
-            
             
             SD = str2num(gui_erp_simulation.exgua_sd.String);
             if isempty(SD) || numel(SD)~=1
@@ -1971,7 +1991,29 @@ varargout{1} = ERP_simulation_box;
             Desiredsignal(latsamp(1):latsamp(2)) = PeakAmp;
         end
         %%---------------------------Noise signal----------------------------------
-        NewnoiseFlag = gui_erp_simulation.newnoise_op.Value;
+        %         SimulationSeed = erpworkingmemory('SimulationSeed');
+        SimulationSeed= gui_erp_simulation.SimulationSeed ;
+        try
+            SimulationSeed_Type = SimulationSeed.Type;
+            SimulationSeed_seed=SimulationSeed.Seed;
+        catch
+            SimulationSeed_Type = 'twister';
+            SimulationSeed_seed = 1;
+        end
+        %phase for sin noise
+        %         SimulationPhase = erpworkingmemory('SimulationPhase');
+        SimulationPhase =  gui_erp_simulation.SimulationPhase;
+        if isempty(SimulationPhase) ||  ~isnumeric(SimulationPhase)
+            SimulationPhase = 0;
+        end
+        if numel(SimulationPhase)~=1
+            SimulationPhase = SimulationPhase(1);
+        end
+        if SimulationPhase<0 || SimulationPhase>0.9
+            SimulationPhase = 0;
+        end
+        
+        
         if gui_erp_simulation.sin_op.Value==1
             PeakAmp =   str2num(gui_erp_simulation.sin_amp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
@@ -1991,16 +2033,8 @@ varargout{1} = ERP_simulation_box;
                 return;
             end
             X =  Times/1000;
-            if NewnoiseFlag==1
-                phasechan = [0:0.1:0.9];
-                phase_final = randperm(length(phasechan),1);
-            else
-                rng(1);
-                phasechan = [0:0.1:0.9];
-                phase_final = randperm(length(phasechan),1);
-                rng(1);
-            end
-            Desirednosizesin = PeakAmp*sin(2*FreHz*pi*X+2*pi*phasechan(phase_final));
+            Desirednosizesin = PeakAmp*sin(2*FreHz*pi*(X)+2*pi*SimulationPhase);
+            
         end
         if gui_erp_simulation.white_op.Value==1
             PeakAmp =   str2num(gui_erp_simulation.white_amp.String);
@@ -2011,13 +2045,13 @@ varargout{1} = ERP_simulation_box;
                 observe_ERPDAT.Process_messg =4;
                 return;
             end
-            if NewnoiseFlag==1
-                Desirednosizewhite =  randn(1,numel(Times));%%white noise
-            else
-                rng(1);
-                Desirednosizewhite =  randn(1,numel(Times));%%white noise
-                rng(1);
+            try
+                rng(SimulationSeed_seed,SimulationSeed_Type);
+            catch
+                rng(1,'twister');
             end
+            Desirednosizewhite =  randn(1,numel(Times));%%white noise
+            
             Desirednosizewhite = PeakAmp*Desirednosizewhite./max(abs(Desirednosizewhite(:)));
         end
         
@@ -2030,23 +2064,20 @@ varargout{1} = ERP_simulation_box;
                 observe_ERPDAT.Process_messg =4;
                 return;
             end
-            if NewnoiseFlag==1
-                try
-                    Desirednosizepink = pinknoise(numel(Times));
-                catch
-                    Desirednosizepink = f_pinknoise(numel(Times));
-                end
-            else
-                rng(1);
-                try
-                    Desirednosizepink = pinknoise(numel(Times));
-                catch
-                    Desirednosizepink = f_pinknoise(numel(Times));
-                end
-                rng(1);
+            try
+                rng(SimulationSeed_seed,SimulationSeed_Type);
+            catch
+                rng(1,'twister');
             end
+            try
+                Desirednosizepink = pinknoise(numel(Times));
+            catch
+                Desirednosizepink = f_pinknoise(numel(Times));
+            end
+            
             Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
             Desirednosizepink = PeakAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));
+            
         end
         Sig = Desirednosizesin+Desiredsignal+Desirednosizepink+Desirednosizewhite;
         

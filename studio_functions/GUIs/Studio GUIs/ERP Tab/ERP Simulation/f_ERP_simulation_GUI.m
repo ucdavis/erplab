@@ -424,13 +424,19 @@ end
 
 
 %%seeds for white and pink noise
+SimulationSeed = erpworkingmemory('SimulationSeed');
+handles.SimulationSeed = SimulationSeed;
+
 rng(1,'twister');
 SimulationSeed = rng;
 erpworkingmemory('SimulationSeed',SimulationSeed);
 %phase for sin noise
+SimulationPhase = erpworkingmemory('SimulationPhase');
+handles.SimulationPhase = SimulationPhase;
+
 SimulationPhase = 0;
 erpworkingmemory('SimulationPhase',SimulationPhase);
-
+ 
 
 plotsimulationwave(hObject, eventdata, handles);
 
@@ -1761,7 +1767,7 @@ end
 
 
 %%---------------------------Noise signal----------------------------------
-SimulationSeed = erpworkingmemory('SimulationSeed');
+SimulationSeed = handles.SimulationSeed;
 try
     SimulationSeed_Type = SimulationSeed.Type;
     SimulationSeed_seed=SimulationSeed.Seed;
@@ -1770,7 +1776,7 @@ catch
     SimulationSeed_seed = 1;
 end
 %phase for sin noise
-SimulationPhase = erpworkingmemory('SimulationPhase');
+SimulationPhase = handles.SimulationPhase;
 if isempty(SimulationPhase) ||  ~isnumeric(SimulationPhase)
     SimulationPhase = 0;
 end
@@ -2423,5 +2429,7 @@ catch
     SimulationSeed.Seed = 1;
 end
 erpworkingmemory('SimulationSeed',SimulationSeed);
+handles.SimulationSeed = SimulationSeed;
+handles.SimulationPhase = SimulationPhase;
 
 plotsimulationwave(hObject, eventdata, handles);
