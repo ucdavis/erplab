@@ -243,7 +243,7 @@ function editboxEventCodes_Callback(hObject, eventdata, handles)
 try 
     editString = eval(num2str(get(hObject,'String'))); %if numeric
 catch
-    editString = regexp(get(hObject,'String'),'(?<=\w)\s(?=\w)|,\s*','split'); %remove commas if exist
+    editString = regexp(get(hObject,'String'),'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
     editString = editString(~cellfun('isempty',editString));
 end
 %handles.eventcodes = str2num(editString);  %#ok<ST2NM>
