@@ -72,11 +72,13 @@ catch
 end
 
 if iscell(handles.eventcodes)
-    handles.eventcodes = strjoin(handles.eventcodes);
+    handles.eventcodes_txt = strjoin(handles.eventcodes, ',');
+else
+     handles.eventcodes_txt = handles.eventcodes; 
 end
 
 set(handles.editboxEventCodes, ...
-    'String', num2str(handles.eventcodes));
+    'String', num2str(handles.eventcodes_txt));
 set(handles.editboxTimeshift,  ...
     'String', num2str(handles.timeshift));
 set(handles.checkbox_displayEEG, ...
@@ -161,12 +163,12 @@ display('Shifting events...');
 
 % editboxEventCodes_Callback(hObject, eventdata, handles)
 %in 2023, accept both non-numeric and numeric ecodes
-if iscell(handles.eventcodes)
-    editString = split(handles.eventcodes);
-    editString = editString(~cellfun('isempty',editString));
-    handles.eventcodes = (editString);
-end
-    
+% if iscell(handles.eventcodes)
+%     editString = split(handles.eventcodes);
+%     editString = editString(~cellfun('isempty',editString));
+%     handles.eventcodes = (editString);
+% end
+%     
 %handles.eventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Save the input variables to output
@@ -238,14 +240,42 @@ function editboxEventCodes_Callback(hObject, eventdata, handles)
 %editString         = regexprep(get(hObject,'String'), '[^0-9:]', ' ');
 
 %in 2023, accept both non-numeric and numeric ecodes 
-editString = split(get(hObject,'String'));
-editString = editString(~cellfun('isempty',editString)); 
+try 
+    editString = eval(num2str(get(hObject,'String'))); %if numeric
+catch
+    editString = regexp(get(hObject,'String'),'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
+    editString = editString(~cellfun('isempty',editString));
+end
 %handles.eventcodes = str2num(editString);  %#ok<ST2NM>
+%numeric events
+need_to_flat = 0; 
+for ec = 1:length(editString);
+    
+    try 
+       
+        temp_nums = num2cell(eval(num2str(editString{ec}))); %evaluate & flatten any numeric expression
+        editString{ec} = cellfun(@num2str,temp_nums,'UniformOutput',false); %change to string
+        need_to_flat = 1; 
+    catch
+        
+    end 
+end
+    
+%flatten cell array
+if need_to_flat == 1
+    editString =[editString{:}];
+end
+
 handles.eventcodes = (editString);
 
-% Display corrected eventcode string back to GUI
-set(handles.editboxEventCodes, 'String', strjoin(editString));
 
+
+% Display corrected eventcode string back to GUI
+try %if cell
+    set(handles.editboxEventCodes, 'String', strjoin(editString,','));
+catch
+    set(handles.editboxEventCodes, 'String', num2str(editString));
+end
 % Save the new replace channels value
 guidata(hObject,handles)
 

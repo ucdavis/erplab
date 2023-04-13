@@ -183,6 +183,7 @@ table_events.original_sample_num = table_events.sample_num;
 
 %% Convert event codes to a categorical variable type for selection
 table_events.type       = categorical(table_events.type);
+% eventcodes = cellfun(@eval, eventcodes,'UniformOutput',false); 
 eventcodes = cellfun(@num2str,eventcodes,'UniformOutput',false); 
 
 if(ischar(eventcodes))
