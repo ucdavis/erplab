@@ -235,14 +235,20 @@ for s = 1:nSubs %decoding is performed within each subject independently
    % mvpa.nBlocks = nBlocks;
    
     
-    %function outputs single/all MVPA
-    save(filepath{s},'mvpa','-v7.3');
+ 
     
     %probably a better way
     if nSubs == 1
+        
+        %function outputs single/all MVPA
+        save(filepath,'mvpa','-v7.3');
+        
         MVPA = mvpa;
         ALLMVPA = mvpa;
     else
+        %function outputs single/all MVPA
+        save(filepath{s},'mvpa','-v7.3');
+        
         MVPA = mvpa; 
         ALLMVPA(s) = mvpa; 
     end

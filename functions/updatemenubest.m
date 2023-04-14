@@ -3,7 +3,7 @@
 
 function updatemenubest(ALLBEST,overw) 
 if nargin<2
-      overw=0; % overwrite erpset menu? 0=no; 1=yes; -1=delete
+      overw=0; % overwrite bestset menu? 0=no; 1=yes; -1=delete
 end
 
 %
@@ -12,7 +12,7 @@ end
 BESTmenu  = findobj('tag', 'bestsets');
 statbestm = get(BESTmenu, 'Enable');
 if strcmp(statbestm,'off')
-      set(BESTmenu, 'Enable', 'on'); % activates erpsets menu
+      set(BESTmenu, 'Enable', 'on'); % activates bestsets menu
 end
 
 maxindexbest = length(ALLBEST); 
@@ -27,7 +27,7 @@ elseif length(bestsetlist) > maxindexbest
     overw = -1; %delete bestset
 elseif length(bestsetlist) < maxindexbest
     nbestset = length(bestsetlist);
-    overw = 0; %add erpset 
+    overw = 0; %add bestset 
     
 else
     nbestset = length(bestsetlist); 

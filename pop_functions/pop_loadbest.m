@@ -1,3 +1,23 @@
+% PURPOSE  : 	Loads BESTset(s)
+%
+% FORMAT   :
+%
+% ERP = pop_loadbest(parameters);
+%
+% PARAMETERS     :
+%
+% 'filename'        - BESTset filename
+% 'filepath'        - BESTset's filepath
+% 'overwrite'       - overwrite current erpset. 'on'/'off' *Not working
+% 'Warning'         - 'on'/'off'
+% 'multiload'       - load multiple BESTset using a single output variable (see example 2). 'on'/'off'
+% 'UpdateMainGui'   - 'on'/'off'
+%
+%
+% OUTPUTS  :
+%
+% BEST	- output BESTset
+
 function [BEST, ALLBEST] = pop_loadbest(varargin)
 
 try 
