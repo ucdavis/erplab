@@ -1783,7 +1783,7 @@ end
 if numel(SimulationPhase)~=1
     SimulationPhase = SimulationPhase(1);
 end
-if SimulationPhase<0 || SimulationPhase>0.9
+if SimulationPhase<0 || SimulationPhase>1
     SimulationPhase = 0;
 end
 
@@ -2412,11 +2412,8 @@ plotsimulationwave(hObject, eventdata, handles);
 % --- Executes on button press in checkbox_newnoise.
 function checkbox_newnoise_Callback(hObject, eventdata, handles)
 
-
 %%reset the phase for sin signal
-phasechan = [0:0.05:0.9];
-phase_final = randperm(length(phasechan),1);
-SimulationPhase = phasechan(phase_final);
+SimulationPhase = rand(1);
 erpworkingmemory('SimulationPhase',SimulationPhase);
 
 %%reset seeds for white or pink noise

@@ -1280,10 +1280,9 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------update new noise if needed------------------------------
     function newnoise_op(~,~)
+        
         %%reset the phase for sin signal
-        phasechan = [0:0.05:0.9];
-        phase_final = randperm(length(phasechan),1);
-        SimulationPhase = phasechan(phase_final);
+        SimulationPhase = rand(1);
         erpworkingmemory('SimulationPhase',SimulationPhase);
         
         %%reset seeds for white or pink noise
@@ -1990,6 +1989,7 @@ varargout{1} = ERP_simulation_box;
             [xxx, latsamp, latdiffms] = closest(Times, [onsetLat,offsetLat]);
             Desiredsignal(latsamp(1):latsamp(2)) = PeakAmp;
         end
+        
         %%---------------------------Noise signal----------------------------------
         %         SimulationSeed = erpworkingmemory('SimulationSeed');
         SimulationSeed= gui_erp_simulation.SimulationSeed ;
@@ -2009,7 +2009,7 @@ varargout{1} = ERP_simulation_box;
         if numel(SimulationPhase)~=1
             SimulationPhase = SimulationPhase(1);
         end
-        if SimulationPhase<0 || SimulationPhase>0.9
+        if SimulationPhase<0 || SimulationPhase>1
             SimulationPhase = 0;
         end
         

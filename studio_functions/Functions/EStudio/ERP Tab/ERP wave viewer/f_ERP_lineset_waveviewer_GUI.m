@@ -11,7 +11,7 @@
 function varargout = f_ERP_lineset_waveviewer_GUI(varargin)
 
 global viewer_ERPDAT;
-addlistener(viewer_ERPDAT,'count_legend_change',@count_legend_change);
+addlistener(viewer_ERPDAT,'legend_change',@legend_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
@@ -653,7 +653,7 @@ varargout{1} = box_erplineset_viewer_property;
 
 
 %%--------------change the legend name-------------------------------------
-    function count_legend_change(~,~)
+    function legend_change(~,~)
         if viewer_ERPDAT.count_legend==0
             return;
         end

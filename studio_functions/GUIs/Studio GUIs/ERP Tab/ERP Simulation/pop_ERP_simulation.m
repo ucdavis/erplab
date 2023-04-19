@@ -289,7 +289,6 @@ end
 
 %%Mean/latency/onset for basic function
 qMeanLatOnset = p.Results.MeanLatencyOnset;
-
 if isempty(qMeanLatOnset)
     qMeanLatOnset =100;
 else
@@ -601,15 +600,13 @@ end
 if numel(SimulationPhase)~=1
     SimulationPhase = SimulationPhase(1);
 end
-if SimulationPhase<0 || SimulationPhase>0.9
+if SimulationPhase<0 || SimulationPhase>1
     SimulationPhase = 0;
 end
 
 if qNewnoiseFlag==1
     %%reset the phase
-    phasechan = [0:0.05:0.9];
-    phase_final = randperm(length(phasechan),1);
-    SimulationPhase = phasechan(phase_final);
+    SimulationPhase = rand(1);
     
     %%reset the seed
     SimulationSeed_Type = 'philox';

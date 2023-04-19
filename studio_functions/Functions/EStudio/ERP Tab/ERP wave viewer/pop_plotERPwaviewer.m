@@ -26,7 +26,8 @@
 %GridposArray     -location and correponding index of each subplot. E.g.,
 %                  plot three channels with 2 (rows) x 2 (columns), the default qGridposArray is
 %                  [5,10;11,0]. The each element of GridposArray is the
-%                  index of selected Channel/bin/ERPset.
+%                  index of selected Channel/bin/ERPset. 0 repsents no
+%                  channel/bin/ERP will be dispalyed
 %LabelsName     -Channel/Bin/ERPset labels e.g., {'Fz','F3','F4'}
 %plotBox          -ditribution of plotting boxes in rows x columns.
 %Blc              -string or numeric interval for baseline correction
@@ -49,14 +50,16 @@
 %'SEM'              - plot standard error of the mean (if available). 0 is
 %                  off and other is on.
 %Transparency     -  the default is 0
-%MGFP             -Plot Mean Global Field Power? 1 is on and 0 is off
+%GridSpace        - Grid spacing includes two dimensions (2 X 2). The first
+%                   column is Gap (1) or Overlap (2); The second column
+%                   represents the specific values for Gap/Overlap.
 %TimeRange        -time window is used to display the wave e.g., [-200 800]
 %Xticks           - ticks for x axes e.g., [-200 0 200 400 600 800]
 %Xticklabel       -display xticklabels? 1 is on and 0 is off.
 %Xlabelfont       -font for xtick and xticklabel e.g., 'Courier'
 %Xlabelfontsize   -fontsize for xticklabel e.g., 12
 %Xlabelcolor      -color (RGB) for xticklabels e.g., [0 0 0]
-%MinorTicksX      -
+%MinorTicksX      - Minor Ticks for x axes
 %Xunits           -display units for x axes. "on" or "off"
 %YScales          - y scales e.g., [-6 10]
 %Yticks           - y ticks e.g., [-6 -3 0 5 10]
@@ -1075,9 +1078,17 @@ end
 
 % History command
 %
-fn = fieldnames(p.Results);
 
+fn = fieldnames(p.Results);
 skipfields = {'ALLERP','CURRENTPLOT','ERPsetArray', 'binArray', 'chanArray'};
+
+if qMinorticksX(1) ==0
+skipfields{length(skipfields)+1} = 'MinorTicksX';
+end
+
+if qMinorTicksY(1) ==0
+ skipfields{length(skipfields)+1} = 'MinorTicksY';   
+end
 
 BinArraystr  = vect2colon(qbinArray, 'Sort','yes');
 chanArraystr = vect2colon(qchanArray);

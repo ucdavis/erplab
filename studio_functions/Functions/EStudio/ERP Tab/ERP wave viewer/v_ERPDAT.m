@@ -21,7 +21,7 @@ classdef v_ERPDAT < handle
         ERP_chan_change
         ERP_bin_change
         v_currentERP_change
-        count_legend_change
+        legend_change
         page_xyaxis_change
         v_messg_change
         count_loadproper_change
@@ -80,7 +80,7 @@ classdef v_ERPDAT < handle
         %capture the changes of legend
         function set.count_legend(obj,value)
             obj.count_legend = value;
-            notify(obj,'count_legend_change');
+            notify(obj,'legend_change');
         end
         
         %%m9
@@ -89,7 +89,7 @@ classdef v_ERPDAT < handle
             obj.page_xyaxis = value;
             notify(obj,'page_xyaxis_change');
         end
-
+        
         %%%m10
         %Modified bins of the selected ERP
         function set.Process_messg(obj,value)
@@ -104,7 +104,7 @@ classdef v_ERPDAT < handle
             obj.count_loadproper = value;
             notify(obj,'count_loadproper_change');
         end
-
+        
     end
-
+    
 end

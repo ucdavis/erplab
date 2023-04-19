@@ -60,7 +60,7 @@ for Numofrows = 1:Numrows
         if count> numel(plotArray)
             GridinforDatadef{Numofrows,Numofcolumns} = char('None');
         else
-            GridinforDatadef{Numofrows,Numofcolumns} = char(plotArray(count));
+            GridinforDatadef{Numofrows,Numofcolumns} = char(plotArray{count});
         end
     end
 end

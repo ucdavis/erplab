@@ -13,7 +13,7 @@ function varargout = f_ERP_plotorg_waveviewer_GUI(varargin)
 global viewer_ERPDAT
 
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
-addlistener(viewer_ERPDAT,'count_legend_change',@count_legend_change);
+% addlistener(viewer_ERPDAT,'legend_change',@legend_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 
@@ -1621,6 +1621,16 @@ varargout{1} = box_erpwave_viewer_plotorg;
             disp('f_ERP_plotorg_waveviewer_GUI() error: Please run the ERP wave viewer again.');
             return;
         end
+        
+        %%Force Grid, Overlay, and Pages to be 1,2,3, respectively if "Same as ERPLAB"
+        PlotOrg_ERPLAB= estudioworkingmemory('PlotOrg_ERPLAB');%% "Same as ERPLAB"? See  "ERPsets" panel of ERP Wave Viewer
+        if PlotOrg_ERPLAB==1
+            gui_plotorg_waveviewer.grid.Value=1;
+            gui_plotorg_waveviewer.overlay.Value =2;
+            gui_plotorg_waveviewer.pages.Value =3;
+        end
+        estudioworkingmemory('PlotOrg_ERPLAB',0);
+        
         indexerp =  ERPwaviewer_apply.SelectERPIdx;
         ALLERP = ERPwaviewer_apply.ALLERP;
         %         chkerp = f_checkerpsets(ALLERP,indexerp);
@@ -1690,6 +1700,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                     end
                 end
             end
+            
             if gui_plotorg_waveviewer.layout_auto.Value
                 ERPwaviewer_apply.plot_org.Grid = gui_plotorg_waveviewer.grid.Value;
                 ERPwaviewer_apply.plot_org.gridlayout.data =GridinforData;
@@ -1697,7 +1708,24 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 ERPwaviewer_apply.plot_org.gridlayout.columns =gui_plotorg_waveviewer.columnnum.Value;
                 ERPwaviewer_apply.plot_org.gridlayout.columFormat = plotArrayFormt';
                 ERPwaviewer_apply.plot_org.gridlayout.columFormatOrig = plotArrayFormt';
+            else
+                ERPwaviewer_apply.plot_org.gridlayout.columFormatOrig = plotArrayFormt;
+                plotArrayFormtOld =  ERPwaviewer_apply.plot_org.gridlayout.columFormat;
+                for ii = 1:length(plotArrayFormt)-1
+                    if ii< length(plotArrayFormtOld)
+                        try
+                            plotArrayFormtNew{ii}  = char(plotArrayFormtOld{ii});
+                        catch
+                            plotArrayFormtNew{ii}  = char(plotArrayFormt{ii});
+                        end
+                    else
+                        plotArrayFormtNew{ii}  = char(plotArrayFormt{ii});
+                    end
+                end
+                plotArrayFormtNew{length(plotArrayFormt)} = {'None'};
+                ERPwaviewer_apply.plot_org.gridlayout.columFormat = plotArrayFormtNew';
             end
+            
             assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
         end
         
@@ -1791,7 +1819,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'on';
             end
         end
-        
     end
 
 end

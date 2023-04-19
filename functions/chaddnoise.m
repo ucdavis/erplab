@@ -214,9 +214,17 @@ if isempty(materase)
         chanpos(tk) = str2num(tok{1,tk}{1,1});
         
         if tk>1
-            [tf(tk), realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:EEGin.nbchan);
+            if iseegstruct(EEGin)
+                [tf(tk), realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:EEGin.nbchan);
+            else
+                [tf(tk), realchanpos(tk)] = ismember_bc2(chanpos(tk), 1:EEGin.nchan);
+            end
         else
-            [tf(1), realchanpos(1)] = ismember_bc2(chanpos(1), 1:EEGout.nbchan);
+            if iseegstruct(EEGout)
+                [tf(1), realchanpos(1)] = ismember_bc2(chanpos(1), 1:EEGout.nbchan);
+            else
+                [tf(1), realchanpos(1)] = ismember_bc2(chanpos(1), 1:EEGout.nchan);
+            end
         end
     end
     
@@ -338,7 +346,11 @@ end
 %
 %  Test New Channel
 %
-lastslot = EEGout.nbchan;
+if iseegstruct(EEGout)
+    lastslot = EEGout.nbchan;
+else
+    lastslot = EEGout.nchan;
+end
 
 if isempty(lastslot)
     lastslot= 0;
@@ -441,15 +453,15 @@ if confirma
             if isempty(Noiseedstr)
                 Noiseed = 0;
             else
-                Noiseed = str2num(char(Noiseedstr{1,1}));
+                Noiseed = str2num(char(Noiseedstr{1,1}{1,1}));
             end
             if isempty(Noiseed)
                 Noiseed =0;
             end
-            trialNum = EEGin.trials;
+            trialNum = ntrial;%EEGin.trials;
             sampleNum = EEGin.pnts;
-            if Noiseed==0
-                rng(1,'twister');
+            if Noiseed==0%% use the default generator to get noise
+                %                 rng(1,'twister');%% ramdom generate the noise
             else
                 try
                     rng(Noiseed,'philox');
@@ -458,30 +470,44 @@ if confirma
                 end
             end
             if NoiseFlag ==2%%white noise
-                Desirednoise =  randn(1,sampleNum*trialNum);%%white noise
+                Desirednoise =  randn(sampleNum,trialNum);%%white noise
+                Desirednoise = reshape(Desirednoise,sampleNum*trialNum,1);
             elseif NoiseFlag ==3%%pink noise
-                Desirednoise =  randn(1,sampleNum*trialNum);
+                
                 try
                     Desirednoise = pinknoise(sampleNum*trialNum);
                 catch
                     Desirednoise = f_pinknoise(sampleNum*trialNum);
                 end
             end
-            if max(abs(Desirednoise(:)))~=0
-                Desirednoise = AmpNoise*Desirednoise./max(abs(Desirednoise(:)));
+            
+            if trialNum==1%%one trial
+                if max(abs(Desirednoise(:)))~=0
+                    Desirednoise = AmpNoise*Desirednoise./max(abs(Desirednoise(:)));
+                end
+                Desirednoise = reshape(Desirednoise,sampleNum,trialNum);
+                if trialNum==1
+                    Desirednoise = reshape(Desirednoise,1,sampleNum);
+                end
+                EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desirednoise;
+            else%%multiple trials or bins
+                Desirednoise = reshape(Desirednoise,sampleNum,trialNum);
+                for Numoftrial = 1:trialNum
+                    Noisingle = Desirednoise(:,Numoftrial);
+                    if max(abs(Noisingle(:)))~=0
+                        Noisingle = AmpNoise*Noisingle./max(abs(Noisingle(:)));
+                    end
+                    Noisingle = reshape(Noisingle,1,sampleNum);
+                    EEGout.(datafield)(realchanpos(1),:,Numoftrial) = squeeze(EEGin.(datafield)(realchanpos(2),:,Numoftrial))+Noisingle;
+                end
+                
             end
-            Desirednoise = reshape(Desirednoise,sampleNum,trialNum);
-            if trialNum==1
-                Desirednoise = reshape(Desirednoise,1,sampleNum);
-            end
-            EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desirednoise;
             
         elseif NoiseFlag==1 %%line noise
             
             Periodconstr = regexpi(formula, ['\s*',char(toktype{1,1}),'\((.*)?\)'], 'tokens','ignorecase');
-            
             if isempty(Periodconstr)
-                msgboxText =  ['\nPlease, define period for line noise, e.g., ch1 = ch1 + 2*linenoise(60) label  FP1;'];
+                msgboxText =  ["\nPlease check Formula for line noise, the correct one likes, e.g., ch1 = ch1 + 2*linenoise(60,'fixed',90) label  FP1;"];
                 title = 'ERPLAB: chaddnoise() error:';
                 if errormsgtype == 1
                     errorfound(sprintf(msgboxText), title);
@@ -489,12 +515,12 @@ if confirma
                     cprintf('red',msgboxText);
                 end
                 return;
-            else
-                Periodcon = str2num(char(Periodconstr{1,1}));
             end
             
-            if isempty(Periodcon)
-                msgboxText =  ['\nPlease, define period for line noise, e.g., ch1 = ch1 + 2*linenoise(60) label  FP1;'];
+            PeriodPhase = regexpi(Periodconstr{1,1}, '[\d.]+', 'match');%%get period and phaseshifting/seed
+            
+            if isempty(PeriodPhase)
+                msgboxText =  ["\nPlease check Formula for line noise, the correct one likes, e.g., ch1 = ch1 + 2*linenoise(60,'fixed',90) label  FP1;"];
                 title = 'ERPLAB: chaddnoise() error:';
                 if errormsgtype == 1
                     errorfound(sprintf(msgboxText), title);
@@ -503,29 +529,66 @@ if confirma
                 end
                 return;
             end
-            PeriodValue = Periodcon(1);
             try
-                PhaseShit = Periodcon(2);
+                PeriodValue = str2num(char(PeriodPhase{1,1}{1}));%% period
+            catch
+                PeriodValue = [];
+            end
+            
+            if isempty(PeriodValue)
+                msgboxText =  ["\nPlease check Formula for line noise, the correct one likes, e.g., ch1 = ch1 + 2*linenoise(60,'fixed',90) label  FP1;"];
+                title = 'ERPLAB: chaddnoise() error:';
+                if errormsgtype == 1
+                    errorfound(sprintf(msgboxText), title);
+                else
+                    cprintf('red',msgboxText);
+                end
+                return;
+            end
+            
+            try
+                PhaseShit = str2num(char(PeriodPhase{1,1}{2}));%%phase shifting
             catch
                 PhaseShit = 0;
             end
             
-            trialNum = EEGin.trials;
+            [GenType,toktype] = regexpi(formula, '(fixed|random)', 'match','tokens');
+            if strcmpi(char(GenType),'fixed')
+                isGenType =1;%% fixed phase shifting
+            else
+                isGenType  = 2;%% seed for generating phase randomly
+            end
+            
+            trialNum = ntrial;% EEGin.trials;
             sampleNum = EEGin.pnts;
             timeStart = EEGin.xmin;
             timeEnd = EEGin.xmax;
-            if trialNum==1
-                Times = [timeStart:1/EEGin.srate:timeEnd];
+            
+            Times = [timeStart:1/EEGin.srate:timeEnd];
+            
+            if isGenType==1
+                PhaseShit = deg2rad(PhaseShit);%%Convert angles from degrees to radians.
+                for Numoftrial = 1:trialNum
+                    Desirednoise(:,Numoftrial) =  AmpNoise*sin(2*PeriodValue*pi*Times+PhaseShit);
+                end
             else
-                Times(1) =timeStart;
-                for ii = 2:sampleNum*trialNum
-                    Times(1,ii)  = Times(1,ii-1)+1/EEGin.srate;
+                PhaseShit = ceil(PhaseShit);
+                if PhaseShit<0
+                    PhaseShit = 0;
+                end
+                try
+                    rng(PhaseShit,'philox');
+                catch
+                    rng(1,'twister');
+                end
+                Phasemtrial = rand(1,trialNum)*2*pi;
+                for Numoftrial = 1:trialNum
+                    Desirednoise(:,Numoftrial) =  AmpNoise*sin(2*PeriodValue*pi*Times+Phasemtrial(Numoftrial));
                 end
                 
             end
-            Desirednoise =  AmpNoise*sin(2*PeriodValue*pi*Times+PhaseShit);
             
-            Desirednoise = reshape(Desirednoise,sampleNum,trialNum);
+            %             Desirednoise = reshape(Desirednoise,sampleNum,trialNum);
             if trialNum==1
                 Desirednoise = reshape(Desirednoise,1,sampleNum);
             end
@@ -539,11 +602,27 @@ if confirma
         if ~isempty(newlabel)
             EEGout.chanlocs(realchanpos(1)).labels = newlabel;
         end
+        if iseegstruct(EEGout)
+            EEGout.nbchan = size(EEGout.data, 1);
+            EEGout = eeg_checkset( EEGout );
+            disp(['Channel ' num2str(newchan) ' was  created'])
+            EEGout = update_rejEfields(EEGin,EEGout,realchanpos);  % update reject fields
+        else
+            EEGout.nchan = size(EEGout.bindata, 1);
+            disp(['Channel ' num2str(newchan) ' was  created'])
+        end
         
-        EEGout.nbchan = size(EEGout.data, 1);
-        EEGout = eeg_checkset( EEGout );
-        disp(['Channel ' num2str(newchan) ' was  created'])
-        EEGout = update_rejEfields(EEGin,EEGout,realchanpos);  % update reject fields
+        if eraser && ~iseegstruct(EEGout)
+            EEGout.bindata(newchan,:,:) = [];
+            EEGout.binerror(newchan,:,:)= [];
+            EEGout.nchan = size(EEGout.bindata, 1);
+            labaux = {EEGin.chanlocs.labels};
+            labaux{newchan}=[];
+            indxl = ~cellfun(@isempty, labaux);
+            labelout = labaux(indxl);
+            [EEGout.chanlocs(1:EEGout.nchan).labels] = labelout{:};
+            disp(['Channel ' num2str(newchan) ' was  erased'])
+        end
         
     catch
         serr = lasterror;

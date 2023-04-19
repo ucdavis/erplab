@@ -91,6 +91,11 @@ elseif overw==0 || overw==-1
         if maxindexerp==0
             assignin('base','CURRENTERP', 0);  % save to workspace
             set(erpmenu, 'enable', 'off');
+            %%changed by GH Apr 2023
+            observe_ERPDAT.ALLERP = [];
+            observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+            %%change end
+            
             return
         end
     end
@@ -140,19 +145,21 @@ else
     set(option1, 'enable', 'off');
     set(option2, 'enable', 'off');
     set(option3, 'enable', 'off');
-    
 end
 
 
 %%changed GZ Mar. 2023
 CURRENTERP = maxindexerp;
-if ~isempty(ALLERP)
+if ~isempty(ALLERP)%%if
     observe_ERPDAT.ALLERP =ALLERP;
     if isempty(CURRENTERP) || CURRENTERP<=0 || CURRENTERP> length(ALLERP)
         CURRENTERP= length(ALLERP);
     end
     observe_ERPDAT.CURRENTERP = CURRENTERP;
     observe_ERPDAT.ERP = ALLERP(CURRENTERP);
+    observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+else
+    observe_ERPDAT.ALLERP = [];
     observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 end

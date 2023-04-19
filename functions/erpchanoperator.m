@@ -90,6 +90,24 @@ if ~isempty(tokdelchan)
         return
 end
 
+
+%%---------------changed GH Apr 2023----Add sin/white/pink noise------------
+%
+% noise?
+%
+% toklinenoise = regexpi(expression, '\s*linenoise\((.*)?\)', 'tokens','ignorecase');%%this used to take the value
+toklinenoise = regexpi(expression, 'linenoise', 'match','ignorecase');
+tokwhitenoise = regexpi(expression, 'whitenoise', 'match','ignorecase');
+tokpinknoise = regexpi(expression, 'pinknoise', 'match','ignorecase');
+
+if ~isempty(toklinenoise) || ~isempty(tokwhitenoise) || ~isempty(tokpinknoise)
+   ERPout = chaddnoise(ERPin,ERPout,expression,wchmsgon);
+    return;
+end
+%%-----------------------------change end----------------------------------
+
+
+
 %
 % Reref chans?
 %

@@ -378,14 +378,14 @@ end
 
 %%--------------------Function is to close the toolbox---------------------
     function onExit(~,~)
-        BackERPLABcolor = [1 0.9 0.3];    % yellow
-        question = ['Are you sure to quit "ERP wave viewer"?'];
-        title = 'My Viewer>Exit';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-        if strcmpi(button,'Yes')
+        BackERPLABcolor1 = [1 0.9 0.3];    % yellow
+        question1 = ['Are you sure to quit "ERP wave viewer"?'];
+        title1 = 'My Viewer>Exit';
+        oldcolor1 = get(0,'DefaultUicontrolBackgroundColor');
+        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor1)
+        button1 = questdlg(sprintf(question1), title1,'Cancel','No', 'Yes','Yes');
+        set(0,'DefaultUicontrolBackgroundColor',oldcolor1);
+        if strcmpi(button1,'Yes')
             try
                 close(gui_erp_waviewer.Window);
                 clear ALLERPwaviewer;

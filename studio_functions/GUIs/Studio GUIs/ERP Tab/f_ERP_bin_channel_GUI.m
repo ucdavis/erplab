@@ -421,7 +421,7 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
         end
         
         EStduio_gui_erp_bin_chan.ElecRange.Min = 1;
-        EStduio_gui_erp_bin_chan.ElecRange.Max = length(Chanlist_name);
+        EStduio_gui_erp_bin_chan.ElecRange.Max = length(Chanlist_name)+1;
         
         chanArray_pv =  EStduio_gui_erp_bin_chan.ElecRange.Value;
         if numel(chanArray_pv)==1 && chanArray_pv ==1
@@ -481,7 +481,7 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
             EStduio_gui_erp_bin_chan.BinRange.Enable = 'on';
         end
         EStduio_gui_erp_bin_chan.BinRange.Min = 1;
-        EStduio_gui_erp_bin_chan.BinRange.Max = length(brange);
+        EStduio_gui_erp_bin_chan.BinRange.Max = length(brange)+1;
         
         if  numel(S_erpbinchan.geterpbinchan.bins{S_erpbinchan.geterpbinchan.Select_index}) == BinNum
             EStduio_gui_erp_bin_chan.BinRange.Value  =1;
