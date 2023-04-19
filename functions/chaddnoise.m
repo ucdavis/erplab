@@ -1,8 +1,8 @@
-% PURPOSE: add white/pink/line noise to EEG data with specific channels
+% PURPOSE: add white/pink/line noise to EEG/ERP data with specific channels
 %
 % FORMAT:
 %
-% [ERPOUT cherror] = chaddnoise(ERPLAB,EEGout,formula,errormsgtype,warningme)
+% [ERPOUT cherror] = chaddnoise(EEGin,EEGout,formula,errormsgtype,warningme)
 % However syntax is chaddnoise(formula) in eegchanoperator.
 %
 % INPUT:
@@ -22,7 +22,16 @@
 %
 %
 
+% EXAMPLE  :
+%
+% 1. [EEGout cherror] = chaddnoise(EEGin,EEGout,'nch1 = ch1 + 2*whitenoise(1)'); for whitenoise
+% 2. [EEGout cherror] = chaddnoise(EEGin,EEGout,'nch1 = ch1 + 2*pinknoise(1)'); for pinknoise
 
+% 3. [EEGout cherror] = chaddnoise(EEGin,EEGout,"nch1 = ch1 + 2*linenoise(10,'fixed',60)");
+%    Setting for linenoise, 10 is used to generage 10Hz signal; 60 is phase shifting that will be fixed across trials or bins.
+
+%    Using 'random' instead of 'fixed' if you want to set phase shifting across trials/bins
+%    [EEGout cherror] = chaddnoise(EEGin,EEGout,"nch1 = ch1 + 2*linenoise(10,'random',1)"); Note that 1 is the seed that is used to generate phase randomly
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -53,7 +62,7 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function  [EEGout cherror] = chaddnoise(ERPLAB,EEGout,formula,errormsgtype,warningme)
+function  [EEGout cherror] = chaddnoise(EEGin,EEGout,formula,errormsgtype,warningme)
 cherror = 0;
 
 if nargin<3
@@ -69,21 +78,21 @@ if nargin<5
     warningme=0;
 end
 
-if ~iserpstruct(ERPLAB) && ~iseegstruct(ERPLAB)
-    error('ERPLAB says: chaddnoise() only works with ERP and EEG structure.')
+if ~iserpstruct(EEGin) && ~iseegstruct(EEGin)
+    error('EEGin says: chaddnoise() only works with ERP and EEG structure.')
 end
-if iseegstruct(ERPLAB)  % EEG
-    ntrial    = ERPLAB.trials;
-    nchan     = ERPLAB.nbchan;
+if iseegstruct(EEGin)  % EEG
+    ntrial    = EEGin.trials;
+    nchan     = EEGin.nbchan;
     datafield = 'data';
-    ERPLABaux = [];
-    ntrial    = ERPLAB.trials;
+    EEGinaux = [];
+    ntrial    = EEGin.trials;
 else  % ERP
-    ntrial    = ERPLAB.nbin;
-    nchan     = ERPLAB.nchan;
+    ntrial    = EEGin.nbin;
+    nchan     = EEGin.nchan;
     datafield = 'bindata';
-    ERPLABaux = buildERPstruct([]);
-    ntrial = ERPLAB.nbin;
+    EEGinaux = buildERPstruct([]);
+    ntrial = EEGin.nbin;
 end
 % add a dot for .*, ./ and .^ operations
 expression = regexprep(formula, '([*/^])', '','ignorecase');%%remove * or ^
@@ -94,7 +103,7 @@ formula = regexprep(formula, '([*/^])', '','ignorecase');%%remove * or ^
 %
 % looking for label
 %
-EEGin = ERPLAB;
+% EEGin = EEGin;
 [matlabel, toklabel]    = regexpi(expression, '\s*label\s*\=*\s*(.*)', 'match', 'tokens');
 if ~isempty(toklabel) && ~isempty(EEGin.chanlocs)
     newlabel   = toklabel{:}{1};

@@ -983,7 +983,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 else
                     [timeticks stepX]= default_time_ticks_studio(ERPwaviewer.ERP, timeArray);%% in millisecond
                 end
-                xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+                if xdisSecondValue==0
+                    xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value;
+                else
+                    xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+                end
                 timeticks= f_decimal(char(timeticks),xtick_precision);
                 gui_erpxyaxeset_waveviewer.timeticks_edit.String = timeticks;
             end
