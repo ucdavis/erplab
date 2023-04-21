@@ -308,7 +308,7 @@ end
         gui_erp_waviewer.panelSizes(3) = 490;
         
         gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(4) = 310;
+        gui_erp_waviewer.panelSizes(4) = 335;
         
         gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(5) = 200;

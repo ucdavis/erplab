@@ -250,8 +250,8 @@ varargout{1} = box_erplineset_viewer_property;
         %%-------------------------help and apply--------------------------
         gui_erplinset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title );
-        uicontrol('Style','pushbutton','Parent', gui_erplinset_waveviewer.help_apply_title  ,'String','?',...
-            'callback',@linelegend_help,'FontSize',16,'BackgroundColor',[1 1 1],'FontWeight','bold'); %,'HorizontalAlignment','left'
+        uicontrol('Style','pushbutton','Parent', gui_erplinset_waveviewer.help_apply_title  ,'String','Cancel',...
+            'callback',@linelegend_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title  );
         gui_erplinset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',gui_erplinset_waveviewer.help_apply_title  ,'String','Apply',...
             'callback',@LineLegend_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
@@ -606,8 +606,60 @@ varargout{1} = box_erplineset_viewer_property;
 
 %%-------------------------------Help--------------------------------------
     function linelegend_help(~,~)
+        changeFlag =  estudioworkingmemory('MyViewer_linelegend');
+        if changeFlag~=1
+            return;
+        end
+        
+        try
+            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
+        catch
+            viewer_ERPDAT.Process_messg =3;
+            fprintf(2,'\nLines & Legends > Cancel-f_ERP_lineset_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
+            return;
+        end
+        
+        gui_erplinset_waveviewer.linesauto.Value= ERPwaviewer_apply.Lines.auto;
+        gui_erplinset_waveviewer.linescustom.Value= ~ERPwaviewer_apply.Lines.auto;
+        gui_erplinset_waveviewer.line_customtable.Data=ERPwaviewer_apply.Lines.data;
+        if gui_erplinset_waveviewer.linesauto.Value==1
+            gui_erplinset_waveviewer.line_customtable.Enable = 'off';
+        else
+            gui_erplinset_waveviewer.line_customtable.Enable = 'on';
+        end
+        
+        gui_erplinset_waveviewer.legendauto.Value= ERPwaviewer_apply.Legend.auto;
+        gui_erplinset_waveviewer.legendcustom.Value= ~ERPwaviewer_apply.Legend.auto;
+        gui_erplinset_waveviewer.legend_customtable.Data=ERPwaviewer_apply.Legend.data;
         
         
+        fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        labelfontsizeinum = str2num(char(fontsize));
+        gui_erplinset_waveviewer.font_custom_type.Value= ERPwaviewer_apply.Legend.font;
+        fontsizeValue = ERPwaviewer_apply.Legend.fontsize ;
+        [x_label,y_label] = find(labelfontsizeinum==fontsizeValue);
+        if isempty(x_label)
+            x_label = 5;
+        end
+        gui_erplinset_waveviewer.font_custom_size.Value= x_label;
+        gui_erplinset_waveviewer.legendtextauto.Value= ERPwaviewer_apply.Legend.textcolor;
+        gui_erplinset_waveviewer.legendtextcustom.Value= ~ERPwaviewer_apply.Legend.textcolor;
+        gui_erplinset_waveviewer.legendcolumns.Value=ERPwaviewer_apply.Legend.columns;
+        if gui_erplinset_waveviewer.legendauto.Value==1
+            LegendEnable = 'off';
+        else
+            LegendEnable = 'on';
+        end
+        gui_erplinset_waveviewer.font_custom_type.Enable = LegendEnable;
+        gui_erplinset_waveviewer.font_custom_size.Enable = LegendEnable;
+        gui_erplinset_waveviewer.legendtextauto.Enable = LegendEnable;
+        gui_erplinset_waveviewer.legendtextcustom.Enable = LegendEnable;
+        gui_erplinset_waveviewer.legendcolumns.Enable = LegendEnable;
+        gui_erplinset_waveviewer.legend_customtable.Enable = LegendEnable;
+        
+        estudioworkingmemory('MyViewer_linelegend',0);
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
     end
 
 
@@ -645,8 +697,7 @@ varargout{1} = box_erplineset_viewer_property;
         ERPwaviewer_apply.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
         ERPwaviewer_apply.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
         ERPwaviewer_apply.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
-        ALLERPwaviewer=ERPwaviewer_apply;
-        assignin('base','ALLERPwaviewer',ALLERPwaviewer);
+        assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
         f_redrawERP_viewer_test();
         viewer_ERPDAT.Process_messg =2;
     end

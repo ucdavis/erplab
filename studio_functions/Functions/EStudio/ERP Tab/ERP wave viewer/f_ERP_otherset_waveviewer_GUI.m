@@ -186,8 +186,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         %%Apply and save the changed parameters
         gui_otherset_waveviewer.help_run_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',   gui_otherset_waveviewer.help_run_title );
-        uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title,'String','?',...
-            'callback',@other_help,'FontSize',16,'BackgroundColor',[1 1 1],'FontWeight','bold'); %,'HorizontalAlignment','left'
+        uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title,'String','Cancel',...
+            'callback',@other_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold'%,'HorizontalAlignment','left'
         uiextras.Empty('Parent',   gui_otherset_waveviewer.help_run_title );
         gui_otherset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title ,'String','Apply',...
             'callback',@other_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
@@ -654,6 +654,73 @@ varargout{1} = box_erplabelset_viewer_otherset;
 
 %%----------------------------Help-----------------------------------------
     function other_help(~,~)
+        changeFlag =  estudioworkingmemory('MyViewer_other');
+        if changeFlag~=1
+            return;
+        end
+        
+        try
+            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
+        catch
+            viewer_ERPDAT.Process_messg =3;
+            fprintf(2,'\nOther > Cancel-f_ERP_otherset_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
+            return;
+        end
+        
+        gui_otherset_waveviewer.polarity_up.Value=ERPwaviewer_apply.polarity;%% the polarity of wave
+        gui_otherset_waveviewer.polarity_down.Value = ~ERPwaviewer_apply.polarity;
+        %%SME
+        SMEActiveFlag = ERPwaviewer_apply.SEM.active;
+        gui_otherset_waveviewer.show_SEM.Value=SMEActiveFlag;
+        gui_otherset_waveviewer.SEM_custom.Value=ERPwaviewer_apply.SEM.error +1;
+        %%trans
+        gui_otherset_waveviewer.SEMtrans_custom.Value = 10* ERPwaviewer_apply.SEM.trans +1;
+        if SMEActiveFlag==1
+            Enable = 'on';
+        else
+            Enable = 'off';
+        end
+        gui_otherset_waveviewer.SEM_custom.Enable = Enable;
+        gui_otherset_waveviewer.SEMtrans_custom.Enable = Enable;
+        gui_otherset_waveviewer.figurebakcolor.String=num2str(ERPwaviewer_apply.figbackgdcolor);
+        %%baseline correction method
+        BslMethod = ERPwaviewer_apply.baselinecorr;
+        if ischar(BslMethod)
+            if strcmpi(BslMethod,'none')
+                gui_otherset_waveviewer.bsl_custom.Value =0;
+                gui_otherset_waveviewer.bsl_none.Value=1;
+                gui_otherset_waveviewer.bsl_pre.Value=0;
+                gui_otherset_waveviewer.bsl_post.Value=0;
+                gui_otherset_waveviewer.bsl_whole.Value=0;
+            elseif strcmpi(BslMethod,'pre')
+                gui_otherset_waveviewer.bsl_custom.Value =0;
+                gui_otherset_waveviewer.bsl_none.Value=0;
+                gui_otherset_waveviewer.bsl_pre.Value=1;
+                gui_otherset_waveviewer.bsl_post.Value=0;
+                gui_otherset_waveviewer.bsl_whole.Value=0;
+            elseif strcmpi(BslMethod,'post')
+                gui_otherset_waveviewer.bsl_custom.Value =0;
+                gui_otherset_waveviewer.bsl_none.Value=0;
+                gui_otherset_waveviewer.bsl_pre.Value=0;
+                gui_otherset_waveviewer.bsl_post.Value=1;
+                gui_otherset_waveviewer.bsl_whole.Value=0;
+            elseif strcmpi(BslMethod,'whole')
+                gui_otherset_waveviewer.bsl_custom.Value =0;
+                gui_otherset_waveviewer.bsl_none.Value=0;
+                gui_otherset_waveviewer.bsl_pre.Value=0;
+                gui_otherset_waveviewer.bsl_post.Value=0;
+                gui_otherset_waveviewer.bsl_whole.Value=1;
+            end
+        elseif isnumeric(BslMethod)
+            gui_otherset_waveviewer.bsl_custom.Value =1;
+            gui_otherset_waveviewer.bsl_none.Value=0;
+            gui_otherset_waveviewer.bsl_pre.Value=0;
+            gui_otherset_waveviewer.bsl_post.Value=0;
+            gui_otherset_waveviewer.bsl_whole.Value=0;
+            gui_otherset_waveviewer.bsl_customedit.String = num2str(BslMethod);
+        end
+        estudioworkingmemory('MyViewer_other',0);
+        gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         
     end
 

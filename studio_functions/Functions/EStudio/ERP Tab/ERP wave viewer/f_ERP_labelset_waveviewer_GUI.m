@@ -152,8 +152,8 @@ varargout{1} = box_erplabelset_viewer_property;
         %%-----------------------help and apply----------------------------
         gui_labelset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title );
-        uicontrol('Style','pushbutton','Parent', gui_labelset_waveviewer.help_apply_title  ,'String','?',...
-            'callback',@label_help,'FontSize',16,'BackgroundColor',[1 1 1],'FontWeight','bold'); %,'HorizontalAlignment','left'
+        uicontrol('Style','pushbutton','Parent', gui_labelset_waveviewer.help_apply_title  ,'String','Cancel',...
+            'callback',@label_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         gui_labelset_waveviewer.Apply= uicontrol('Style','pushbutton','Parent',gui_labelset_waveviewer.help_apply_title  ,'String','Apply',...
             'callback',@label_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
@@ -466,7 +466,53 @@ varargout{1} = box_erplabelset_viewer_property;
 %%--------------------------Help-------------------------------------------
     function label_help(~,~)
         
+        try
+            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
+        catch
+            viewer_ERPDAT.Process_messg =3;
+            fprintf(2,'\n Chan/Bin/ERPset Labels > Apply-f_ERP_labelset_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
+            return;
+        end
         
+        if ERPwaviewer_apply.chanbinsetlabel.location.auto==1
+            Enable = 'off';
+            gui_labelset_waveviewer.labelauto.Value = 1;
+            gui_labelset_waveviewer.nolabel.Value = 0;
+            gui_labelset_waveviewer.customlabel.Value = 0;
+        elseif ERPwaviewer_apply.chanbinsetlabel.location.no==1
+            Enable = 'off';
+            gui_labelset_waveviewer.labelauto.Value = 0;
+            gui_labelset_waveviewer.nolabel.Value = 1;
+            gui_labelset_waveviewer.customlabel.Value = 0;
+        elseif ERPwaviewer_apply.chanbinsetlabel.location.custom==1
+            Enable = 'on';
+            gui_labelset_waveviewer.labelauto.Value = 0;
+            gui_labelset_waveviewer.nolabel.Value = 0;
+            gui_labelset_waveviewer.customlabel.Value = 1;
+        end
+        gui_labelset_waveviewer.xperc_edit.Enable = Enable;
+        gui_labelset_waveviewer.xperc_edit.String = num2str( ERPwaviewer_apply.chanbinsetlabel.location.xperc);
+        gui_labelset_waveviewer.yperc_edit.Enable = Enable;
+        gui_labelset_waveviewer.yperc_edit.String = num2str( ERPwaviewer_apply.chanbinsetlabel.location.yperc);
+        gui_labelset_waveviewer.font_custom_type.Enable = Enable;
+        gui_labelset_waveviewer.font_custom_type.Value = ERPwaviewer_apply.chanbinsetlabel.font;
+        gui_labelset_waveviewer.font_custom_size.Enable = Enable;
+        FontSize = ERPwaviewer_apply.chanbinsetlabel.fontsize;
+        fontsizeStr  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        labelfontsizeinum = str2num(char(fontsizeStr));
+        [X_label,Y_label] = find(labelfontsizeinum==FontSize);
+        if isempty(X_label) ||  X_label> numel(labelfontsizeinum)
+            X_label = 5;
+        end
+        gui_labelset_waveviewer.font_custom_size.Value = X_label;
+        gui_labelset_waveviewer.labelcolor.Enable = Enable;
+        gui_labelset_waveviewer.labelcolor.Value = ERPwaviewer_apply.chanbinsetlabel.textcolor;
+        gui_labelset_waveviewer.center.Enable = Enable;
+        gui_labelset_waveviewer.center.Value = ERPwaviewer_apply.chanbinsetlabel.location.center;
+        
+        estudioworkingmemory('MyViewer_labels',0);
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
     end
 
 %%------------------------------Apply--------------------------------------
