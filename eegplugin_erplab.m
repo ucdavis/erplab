@@ -174,8 +174,9 @@ assignin('base','plotset', plotset);
 assignin('base','MVPA', MVPA); 
 
 % ALLERP should be created with EEGLAB Globals in eeg_globals.m
-%global ALLERP ALLBEST
-%ALLERP = [];
+global ALLERP 
+%global ALLBEST
+ALLERP = [];
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
 %
