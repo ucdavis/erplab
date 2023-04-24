@@ -135,6 +135,8 @@ viewer_ERPDAT.count_legend=0;%% this is to capture the changes of legend name
 viewer_ERPDAT.page_xyaxis=0;%%get the changes of x/y axis based on the changed pages or selected ERPsets
 viewer_ERPDAT.count_loadproper = 0;
 viewer_ERPDAT.Process_messg = 0;
+viewer_ERPDAT.count_twopanels = 0;%% Automaticlly saving the changes on the other panel if the current panel is changed
+
 
 viewer_ERPDAT.ALLERP = ALLERP;
 viewer_ERPDAT.ERP_bin =  binArray;

@@ -685,6 +685,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.figurebakcolor.String=num2str(ERPwaviewer_apply.figbackgdcolor);
         %%baseline correction method
         BslMethod = ERPwaviewer_apply.baselinecorr;
+        gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+        gui_otherset_waveviewer.bsl_customedit.String = '';
         if ischar(BslMethod)
             if strcmpi(BslMethod,'none')
                 gui_otherset_waveviewer.bsl_custom.Value =0;
@@ -710,6 +712,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
                 gui_otherset_waveviewer.bsl_pre.Value=0;
                 gui_otherset_waveviewer.bsl_post.Value=0;
                 gui_otherset_waveviewer.bsl_whole.Value=1;
+                
             end
         elseif isnumeric(BslMethod)
             gui_otherset_waveviewer.bsl_custom.Value =1;
@@ -718,6 +721,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.bsl_post.Value=0;
             gui_otherset_waveviewer.bsl_whole.Value=0;
             gui_otherset_waveviewer.bsl_customedit.String = num2str(BslMethod);
+            gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
         end
         estudioworkingmemory('MyViewer_other',0);
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];

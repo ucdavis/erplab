@@ -25,7 +25,6 @@ function pdf = f_exgauss_pdf(x, mu, sigma, tau)
       muMinusX = mu - x;
       normalPart = 1 - normcdf(muMinusX./sigma + sigmaPerTau);
      
-      
       expPart = muMinusX./tau + (sigmaPerTau.^2)./2;
       if (useVPA)
           pdf = double((1/tau).*normalPart.*exp(expPart));

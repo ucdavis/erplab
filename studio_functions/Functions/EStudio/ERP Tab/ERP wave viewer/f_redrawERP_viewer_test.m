@@ -1179,9 +1179,9 @@ ALLERPBls = ALLERP;
 %%baseline correction
 if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
     if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1)
-        ERPArraybls = qCURRENTPLOT;
+        ERPArraybls = qERPArray(qCURRENTPLOT);
     else
-        ERPArraybls = [1:length(ALLERPBls)];
+        ERPArraybls = qERPArray;
     end
     for Numoferpset = ERPArraybls
         ERP = ALLERP(Numoferpset);
@@ -1217,7 +1217,7 @@ if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
             for Numofchan = qchanArray
                 for Numofbin = qbinArray
                     if Numofchan<= ERP.nchan && Numofbin<= ERP.nbin
-                        baselineV = mean(ERP.bindata(Numofchan,aa:indxtimelock,Numofbin));
+                        baselineV = mean(ERP.bindata(Numofchan,aa:indxtimelock,Numofbin),2);
                         ERP.bindata(Numofchan,:,Numofbin) =  ERP.bindata(Numofchan,:,Numofbin)-baselineV;
                     end
                 end
@@ -1535,7 +1535,7 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-                qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
+                %                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
                 %                 set(hplot(Numofoverlay),'DisplayName', qLegendName{Numofoverlay});
             end
             

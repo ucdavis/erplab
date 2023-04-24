@@ -639,7 +639,7 @@ uimenu( submenu,'Label','ERP Viewer ','CallBack', comERPView,'userdata','startup
 %% GRAND AVERAGE
 %
 uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', comGAVG,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu( submenu,'Label','Create Artificial ERP Waveform','CallBack', comERPSL,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( submenu,'Label','Create Artificial ERP Waveform','CallBack', comERPSL,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 
 
 

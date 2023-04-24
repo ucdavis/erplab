@@ -11,6 +11,7 @@ classdef v_ERPDAT < handle
         page_xyaxis
         Process_messg
         count_loadproper
+        count_twopanels
     end
     
     events
@@ -25,6 +26,7 @@ classdef v_ERPDAT < handle
         page_xyaxis_change
         v_messg_change
         count_loadproper_change
+        count_twopanels_change
     end
     
     methods
@@ -104,6 +106,15 @@ classdef v_ERPDAT < handle
             obj.count_loadproper = value;
             notify(obj,'count_loadproper_change');
         end
+        
+        
+        %%%m12
+        %Modified bins of the selected ERP
+        function set.count_twopanels(obj,value)
+            obj.count_twopanels = value;
+            notify(obj,'count_twopanels_change');
+        end
+        
         
     end
     

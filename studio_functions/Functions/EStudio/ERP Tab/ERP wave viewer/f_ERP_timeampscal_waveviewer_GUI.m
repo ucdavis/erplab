@@ -1857,6 +1857,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.ylabel_off.Value = 1;
+        gui_erpxyaxeset_waveviewer.yfont_custom.Enable = 'off';
+        gui_erpxyaxeset_waveviewer.yfont_custom_size.Enable = 'off';
+        gui_erpxyaxeset_waveviewer.ytextcolor.Enable = 'off';
     end
 
 %%---------------------------Y units:on------------------------------------
@@ -1929,9 +1932,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%-------------------------time range------------------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if xdispsecondValue==1
-        gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(ERPwaviewer_apply.xaxis.timerange);
-        else 
-         gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(ERPwaviewer_apply.xaxis.timerange/1000);   
+            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(ERPwaviewer_apply.xaxis.timerange);
+        else
+            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(ERPwaviewer_apply.xaxis.timerange/1000);
         end
         TRFlag =  ERPwaviewer_apply.xaxis.trangeauto;
         if TRFlag==1
@@ -1962,16 +1965,17 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.timeticks_edit.String  = timeticks;
             gui_erpxyaxeset_waveviewer.xticks_precision.Value = xticks_precision;
         end
-        xtickAuto = ERPwaviewer_apply.xaxis.ticksauto; 
+        xtickAuto = ERPwaviewer_apply.xaxis.ticksauto;
         gui_erpxyaxeset_waveviewer.xtimetickauto.Value=xtickAuto;
         if xtickAuto==1
-           gui_erpxyaxeset_waveviewer.timeticks_edit.Enable = 'off';  
+            gui_erpxyaxeset_waveviewer.timeticks_edit.Enable = 'off';
         else
-          gui_erpxyaxeset_waveviewer.timeticks_edit.Enable = 'on';   
+            gui_erpxyaxeset_waveviewer.timeticks_edit.Enable = 'on';
         end
         %%minor for xticks
         XMinorDis = ERPwaviewer_apply.xaxis.tminor.disp;
         xMinorAuto = ERPwaviewer_apply.xaxis.tminor.auto;
+        gui_erpxyaxeset_waveviewer.xtimeminorauto.Value = XMinorDis;
         if xMinorAuto==1
             gui_erpxyaxeset_waveviewer.timeminorticks_auto.Value =1;
             gui_erpxyaxeset_waveviewer.timeminorticks_custom.Enable = 'off';
@@ -2015,6 +2019,14 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         gui_erpxyaxeset_waveviewer.font_custom_size.Value = x_label;
         gui_erpxyaxeset_waveviewer.xtimetextcolor.Value = ERPwaviewer_apply.xaxis.fontcolor;
+        if xlabelFlag==1
+            xlabelFlagEnable = 'on';
+        else
+            xlabelFlagEnable = 'off';
+        end
+        gui_erpxyaxeset_waveviewer.xtimefont_custom.Enable = xlabelFlagEnable;
+        gui_erpxyaxeset_waveviewer.font_custom_size.Enable = xlabelFlagEnable;
+        gui_erpxyaxeset_waveviewer.xtimetextcolor.Enable = xlabelFlagEnable;
         %%x units
         xaxisunits= ERPwaviewer_apply.xaxis.units;
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value =xaxisunits;
@@ -2065,8 +2077,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.yminorstep_auto.Value = yMinorAuto;
         gui_erpxyaxeset_waveviewer.yminorstepedit.String = num2str(ERPwaviewer_apply.yaxis.yminor.step);
         
-        gui_erpxyaxeset_waveviewer.ylabel_on.Value = gui_erpxyaxeset_waveviewer.ylabel_on.Value;
-        gui_erpxyaxeset_waveviewer.ylabel_off.Value = ~gui_erpxyaxeset_waveviewer.ylabel_on.Value;
+        gui_erpxyaxeset_waveviewer.ylabel_on.Value = ERPwaviewer_apply.yaxis.label;
+        gui_erpxyaxeset_waveviewer.ylabel_off.Value = ~ERPwaviewer_apply.yaxis.label;
         gui_erpxyaxeset_waveviewer.yfont_custom.Value =ERPwaviewer_apply.yaxis.font;
         ylabelFontsize =  ERPwaviewer_apply.yaxis.fontsize;
         [yx_label,~] = find(xfontsizeinum==ylabelFontsize);
@@ -2075,6 +2087,15 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         gui_erpxyaxeset_waveviewer.yfont_custom_size.Value = yx_label;
         gui_erpxyaxeset_waveviewer.ytextcolor.Value= ERPwaviewer_apply.yaxis.fontcolor;
+        if gui_erpxyaxeset_waveviewer.ylabel_on.Value==1
+            ylabelFlagEnable = 'on';
+        else
+            ylabelFlagEnable = 'off';
+        end
+        gui_erpxyaxeset_waveviewer.yfont_custom.Enable = ylabelFlagEnable;
+        gui_erpxyaxeset_waveviewer.yfont_custom_size.Enable = ylabelFlagEnable;
+        gui_erpxyaxeset_waveviewer.ytextcolor.Enable = ylabelFlagEnable;
+        
         gui_erpxyaxeset_waveviewer.yunits_on.Value = ERPwaviewer_apply.yaxis.units;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = ~ERPwaviewer_apply.yaxis.units;
         estudioworkingmemory('MyViewer_xyaxis',0);
@@ -2275,10 +2296,20 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%----------------------------Setting for X axis-------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
-        if xdispysecondValue==1
-            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+        if gui_erpxyaxeset_waveviewer.xtimerangeauto==1
+            if xdispysecondValue==1
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+            else
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+            end
         else
-            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+            timeArray_pro = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
+            if xdispysecondValue==1
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro);
+            else
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro/1000);
+            end
+            
         end
         if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
@@ -2526,13 +2557,25 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%----------------------------Setting for X axis-------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%% display with millisecond
-        if xdispysecondValue==1
-            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
-            gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+        if gui_erpxyaxeset_waveviewer.xtimerangeauto==1
+            if xdispysecondValue==1
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+            else
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+            end
         else
-            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
-            gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+            timeArray_pro = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
+            if xdispysecondValue==1
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+            else
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro/1000);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+            end
         end
+        
         if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
             if xtick_precision<0

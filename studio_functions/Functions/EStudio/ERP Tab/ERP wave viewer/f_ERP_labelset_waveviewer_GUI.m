@@ -460,12 +460,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
     end
 
-
-
-
 %%--------------------------Help-------------------------------------------
     function label_help(~,~)
-        
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -526,7 +522,6 @@ varargout{1} = box_erplabelset_viewer_property;
         end
         estudioworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
-        
         
         MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);

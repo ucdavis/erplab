@@ -634,9 +634,9 @@ ALLERPBls = ALLERP;
 %%baseline correction
 if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
     if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1)
-        ERPArraybls = qCURRENTPLOT;
+        ERPArraybls = qERPArray(qCURRENTPLOT);
     else
-        ERPArraybls = [1:length(ALLERPBls)];
+        ERPArraybls = qERPArray;
     end
     for Numoferpset = ERPArraybls
         ERP = ALLERP(Numoferpset);
@@ -1012,7 +1012,7 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-                qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
+%                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
                 %                 set(hplot(Numofoverlay),'DisplayName', qLegendName{Numofoverlay});
             end
             

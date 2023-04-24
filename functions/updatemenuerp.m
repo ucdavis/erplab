@@ -94,6 +94,7 @@ elseif overw==0 || overw==-1
             %%changed by GH Apr 2023
             observe_ERPDAT.ALLERP = [];
             observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+            cprintf('red',['\n ERP Wave Viewer will be closed because ALLERP is empty.\n\n']);
             %%change end
             
             return
