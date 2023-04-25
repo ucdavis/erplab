@@ -562,10 +562,14 @@ if confirma
             end
             
             [GenType,toktype] = regexpi(formula, '(fixed|random)', 'match','tokens');
-            if strcmpi(char(GenType),'fixed')
-                isGenType =1;%% fixed phase shifting
+            if isempty(GenType)
+                isGenType  = 2;
             else
-                isGenType  = 2;%% seed for generating phase randomly
+                if strcmpi(char(GenType),'fixed')
+                    isGenType =1;%% fixed phase shifting
+                else
+                    isGenType  = 2;%% seed for generating phase randomly
+                end
             end
             
             trialNum = ntrial;% EEGin.trials;
@@ -588,7 +592,7 @@ if confirma
                 try
                     rng(PhaseShit,'philox');
                 catch
-                    rng(1,'twister');
+                    rng(0,'philox');
                 end
                 Phasemtrial = rand(1,trialNum)*2*pi;
                 for Numoftrial = 1:trialNum

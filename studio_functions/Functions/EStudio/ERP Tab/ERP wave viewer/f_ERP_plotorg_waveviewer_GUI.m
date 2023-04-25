@@ -13,9 +13,9 @@ function varargout = f_ERP_plotorg_waveviewer_GUI(varargin)
 global viewer_ERPDAT
 
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
-% addlistener(viewer_ERPDAT,'legend_change',@legend_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
-% addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
+addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
+
 
 gui_plotorg_waveviewer = struct();
 
@@ -253,24 +253,24 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.save_load_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_plotorg_waveviewer.layout_custom_edit = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.save_load_title ,'String','Edit',...
             'callback',@plotorg_edit,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',rowcolumnEnable); %,'HorizontalAlignment','left'
-%         uiextras.Empty('Parent',   gui_plotorg_waveviewer.save_load_title );
+        %         uiextras.Empty('Parent',   gui_plotorg_waveviewer.save_load_title );
         gui_plotorg_waveviewer.layout_custom_load = uicontrol('Style','pushbutton','Parent', gui_plotorg_waveviewer.save_load_title,'String','Load',...
             'callback',@layout_custom_load,'FontSize',12,'BackgroundColor',[1 1 1]); %
-%         uiextras.Empty('Parent',   gui_plotorg_waveviewer.save_load_title );
+        %         uiextras.Empty('Parent',   gui_plotorg_waveviewer.save_load_title );
         gui_plotorg_waveviewer.layout_custom_save = uicontrol('Style','pushbutton','Parent', gui_plotorg_waveviewer.save_load_title,'String','Save',...
             'callback',@layout_custom_save,'FontSize',12,'BackgroundColor',[1 1 1]); %
-%         uiextras.Empty('Parent',   gui_plotorg_waveviewer.save_load_title );
-%         set(gui_plotorg_waveviewer.save_load_title,'Sizes',[40 70 20 70 30]);
+        %         uiextras.Empty('Parent',   gui_plotorg_waveviewer.save_load_title );
+        %         set(gui_plotorg_waveviewer.save_load_title,'Sizes',[40 70 20 70 30]);
         
         gui_plotorg_waveviewer.help_run_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-                uiextras.Empty('Parent',   gui_plotorg_waveviewer.help_run_title );
+        uiextras.Empty('Parent',   gui_plotorg_waveviewer.help_run_title );
         gui_plotorg_waveviewer.cancel = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.help_run_title,'String','Cancel',...
             'callback',@plotorg_cancel,'FontSize',12,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_plotorg_waveviewer.help_run_title);
         gui_plotorg_waveviewer.apply = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.help_run_title,'String','Apply',...
             'callback',@plotorg_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
-                uiextras.Empty('Parent', gui_plotorg_waveviewer.help_run_title);
-                set(gui_plotorg_waveviewer.help_run_title,'Sizes',[40 70 20 70 30]);
+        uiextras.Empty('Parent', gui_plotorg_waveviewer.help_run_title);
+        set(gui_plotorg_waveviewer.help_run_title,'Sizes',[40 70 20 70 30]);
         set(gui_plotorg_waveviewer.DataSelBox,'Sizes',[80 25 25 20 25 25 25 25 25 25]);
         
         assignin('base','ALLERPwaviewer',ERPwaviewerin);
@@ -285,17 +285,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function plotorg_grid(source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            GridValue=  ERPwaviewerIN.plot_org.Grid;
-            source.Value = GridValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = source.Value;
         try
@@ -436,19 +431,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function plotorg_overlay(source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            OverlayValue=  ERPwaviewerIN.plot_org.Overlay;
-            source.Value = OverlayValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
-        
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         Value = source.Value;
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
@@ -574,17 +562,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function plotorg_pages(source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            pagesValue=  ERPwaviewerIN.plot_org.Pages;
-            source.Value = pagesValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         Value = source.Value;
         if Value ==4
             return;
@@ -638,18 +621,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function layout_auto(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Layoutvalue=  ERPwaviewerIN.plot_org.gridlayout.op;
-            gui_plotorg_waveviewer.layout_auto.Value =Layoutvalue;
-            gui_plotorg_waveviewer.layout_custom.Value = ~Layoutvalue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_plotorg_waveviewer.layout_auto.Value =1;
         gui_plotorg_waveviewer.layout_custom.Value = 0;
@@ -745,18 +722,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function layout_custom(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Layoutvalue=  ERPwaviewerIN.plot_org.gridlayout.op;
-            gui_plotorg_waveviewer.layout_auto.Value =Layoutvalue;
-            gui_plotorg_waveviewer.layout_custom.Value = ~Layoutvalue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.layout_auto.Value =0;
         gui_plotorg_waveviewer.layout_custom.Value = 1;
         gui_plotorg_waveviewer.rownum.Enable = 'on';
@@ -818,7 +789,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 
@@ -826,16 +799,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function plotorg_columnnum(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            columNum=  ERPwaviewerIN.plot_org.gridlayout.columns;
-            Str.Value = columNum;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 
@@ -844,18 +813,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function rowgapgtpauto(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            rowGap=  ERPwaviewerIN.plot_org.gridlayout.rowgap.GTPOP;
-            gui_plotorg_waveviewer.rowgap_auto.Value = rowGap;
-            gui_plotorg_waveviewer.rowoverlap.Value =~rowGap;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.rowgap_auto.Value = 1;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'on';
         gui_plotorg_waveviewer.rowoverlap.Value =0;
@@ -866,17 +829,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function rowgapgtpcustom(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            rowGapcustom=  ERPwaviewerIN.plot_org.gridlayout.rowgap.GTPValue;
-            Source.String = num2str(rowGapcustom);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         rowgap = str2num(Source.String);
         if isempty(rowgap) || numel(rowgap)~=1 || rowgap<=0
             Source.String = '10';
@@ -889,18 +847,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function rowoverlap(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            rowGap=  ERPwaviewerIN.plot_org.gridlayout.rowgap.GTPOP;
-            gui_plotorg_waveviewer.rowgap_auto.Value = rowGap;
-            gui_plotorg_waveviewer.rowoverlap.Value =~rowGap;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         gui_plotorg_waveviewer.rowgap_auto.Value = 0;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
         gui_plotorg_waveviewer.rowoverlap.Value =1;
@@ -911,17 +863,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function rowoverlapcustom(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            rowoverlaycustom=  ERPwaviewerIN.plot_org.gridlayout.rowgap.OverlayValue;
-            Source.String = num2str(rowoverlaycustom);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         rowoverlay = str2num(Source.String);
         if isempty(rowoverlay) || numel(rowoverlay)~=1 || rowoverlay<=0 || rowoverlay>=100
             Source.String = '40';
@@ -934,17 +881,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function columngapgtpop(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            columnGap=  ERPwaviewerIN.plot_org.gridlayout.columngap.GTPOP;
-            gui_plotorg_waveviewer.columngapgtpop.Value =columnGap;
-            gui_plotorg_waveviewer.columnoverlay.Value=~columnGap;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_plotorg_waveviewer.columngapgtpop.Value =1;
         gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'on';
@@ -955,17 +897,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function columngapGTPcustom(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            columnGapcustom=  ERPwaviewerIN.plot_org.gridlayout.columngap.GTPValue;
-            Source.String = num2str(columnGapcustom);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         columngap = str2num(Source.String);
         if isempty(columngap) || numel(columngap)~=1 || columngap<=0
             Source.String = '10';
@@ -979,18 +916,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function columnoverlap(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            columnGap=  ERPwaviewerIN.plot_org.gridlayout.columngap.GTPOP;
-            gui_plotorg_waveviewer.columngapgtpop.Value =columnGap;
-            gui_plotorg_waveviewer.columnoverlay.Value=~columnGap;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
         colnOverlay = str2num(char( gui_plotorg_waveviewer.columngapoverlapedit.String));
         gui_plotorg_waveviewer.columngapgtpop.Value =0;
@@ -1009,17 +940,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
     function columnoverlaycustom(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            columnOverlaycustom=  ERPwaviewerIN.plot_org.gridlayout.columngap.OverlayValue;
-            Source.String = num2str(columnOverlaycustom);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
         columnoverlay = str2num(Source.String);
         if isempty(columnoverlay) || numel(columnoverlay)~=1 || columnoverlay<=0 || columnoverlay>=100
@@ -1028,20 +954,16 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
     end
 
-
-
 %%-----------------Edit the layout-----------------------------------------
     function plotorg_edit(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
         MessageViewer= char(strcat('Plot Organization > Edit'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -1171,6 +1093,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
 
 %%-------load the saved parameters for plotting organization---------------
     function layout_custom_load(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=4
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         [filename, filepath] = uigetfile('*.mat', ...
             'Load parametrs for "Plot Organization"', ...
             'MultiSelect', 'off');
@@ -1413,7 +1340,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
         %         estudioworkingmemory('MyViewer_plotorg',1);
-        %         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        %         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         
         
         try
@@ -1510,7 +1437,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.columnoverlay.Value = ~columnGapValue;
         gui_plotorg_waveviewer.columngapgtpcustom.String = num2str(ERPwaviewer_apply.plot_org.gridlayout.columngap.GTPValue);
         gui_plotorg_waveviewer.columngapoverlapedit.String=num2str(ERPwaviewer_apply.plot_org.gridlayout.columngap.OverlayValue);
-%         gui_plotorg_waveviewer.layout_custom_edit.Enable = EnableFlag;
+        %         gui_plotorg_waveviewer.layout_custom_edit.Enable = EnableFlag;
         gui_plotorg_waveviewer.rownum.Enable = EnableFlag;
         gui_plotorg_waveviewer.columnnum.Enable = EnableFlag;
         gui_plotorg_waveviewer.rowgap_auto.Enable = EnableFlag;
@@ -1544,21 +1471,18 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
     end
 
 
 
 %%----------------------Apply the changed parameters-----------------------
     function plotorg_apply(~,~)
-        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
-        if ~isempty(messgStr) && viewerpanelIndex~=4
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            viewer_ERPDAT.Process_messg =4;
-            return;
-        end
         estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
         
         MessageViewer= char(strcat('Plot Organization > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -1742,10 +1666,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
             ERPwaviewer_apply.bin = binArray;
         end
         if numel(chanArray)> length(chanStr)
-           chanArray = [1:length(chanStr)]; 
-           ERPwaviewer_apply.chan = chanArray;
+            chanArray = [1:length(chanStr)];
+            ERPwaviewer_apply.chan = chanArray;
         end
-            
+        
         if GridValue ==1 || GridValue==2 || GridValue ==3
             if GridValue ==1 %% if  the selected Channel is "Grid"
                 plotArray = chanArray;
@@ -1909,6 +1833,49 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'on';
             end
         end
+    end
+
+
+
+%%-------------------------------------------------------------------------
+%%Automatically saving the changed parameters for the current panel if the
+%%user change parameters for the other panels.
+%%-------------------------------------------------------------------------
+    function count_twopanels_change(~,~)
+        if viewer_ERPDAT.count_twopanels==0
+            return;
+        end
+        changeFlag =  estudioworkingmemory('MyViewer_plotorg');
+        if changeFlag~=1
+            return;
+        end
+        
+        %%checking the numbers of rows and columns
+        try
+            ERPwaviewerin = evalin('base','ALLERPwaviewer');
+        catch
+            viewer_ERPDAT.Process_messg =3;
+            fprintf(2,'\n Plot Organization > Apply-f_ERP_plotorg_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
+            return;
+        end
+        ERPsetArray = ERPwaviewerin.SelectERPIdx;
+        ALLERPIN = ERPwaviewerin.ALLERP;
+        if max(ERPsetArray) >length(ALLERPIN)
+            ERPsetArray =length(ALLERPIN);
+        end
+        for ii = 1:numel(ERPsetArray)
+            Srates(ii) =  ALLERPIN(ERPsetArray(ii)).srate;
+        end
+        
+        if numel(unique(Srates))==1
+            
+            
+        else%%If the sampling rate varies across ERPsets, ERPsets must be "Pages".
+            
+        end
+        
+        
+        plotorg_apply();
     end
 
 end

@@ -13,6 +13,7 @@ function varargout = f_ERP_labelset_waveviewer_GUI(varargin)
 global viewer_ERPDAT;
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
+addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 
 gui_labelset_waveviewer = struct();
 
@@ -170,35 +171,12 @@ varargout{1} = box_erplabelset_viewer_property;
     function labelauto(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelAuto=  ERPwaviewerIN.chanbinsetlabel.location.auto;
-            labelNo = ERPwaviewerIN.chanbinsetlabel.location.no;
-            labelCustom = ERPwaviewerIN.chanbinsetlabel.location.custom;
-            if labelAuto==1
-                gui_labelset_waveviewer.labelauto.Value = 1;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            elseif labelNo ==1
-                gui_labelset_waveviewer.labelauto.Value = 0;
-                gui_labelset_waveviewer.nolabel.Value = 1;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            elseif labelCustom==1
-                gui_labelset_waveviewer.labelauto.Value = 0;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 1;
-            else
-                gui_labelset_waveviewer.labelauto.Value = 1;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_labelset_waveviewer.labelauto.Value = 1;
         gui_labelset_waveviewer.nolabel.Value = 0;
@@ -269,34 +247,12 @@ varargout{1} = box_erplabelset_viewer_property;
     function nolabel(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelAuto=  ERPwaviewerIN.chanbinsetlabel.location.auto;
-            labelNo = ERPwaviewerIN.chanbinsetlabel.location.no;
-            labelCustom = ERPwaviewerIN.chanbinsetlabel.location.custom;
-            if labelAuto==1
-                gui_labelset_waveviewer.labelauto.Value = 1;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            elseif labelNo ==1
-                gui_labelset_waveviewer.labelauto.Value = 0;
-                gui_labelset_waveviewer.nolabel.Value = 1;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            elseif labelCustom==1
-                gui_labelset_waveviewer.labelauto.Value = 0;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 1;
-            else
-                gui_labelset_waveviewer.labelauto.Value = 1;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_labelset_waveviewer.labelauto.Value = 0;
         gui_labelset_waveviewer.nolabel.Value = 1;
@@ -315,34 +271,12 @@ varargout{1} = box_erplabelset_viewer_property;
     function customlabel(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelAuto=  ERPwaviewerIN.chanbinsetlabel.location.auto;
-            labelNo = ERPwaviewerIN.chanbinsetlabel.location.no;
-            labelCustom = ERPwaviewerIN.chanbinsetlabel.location.custom;
-            if labelAuto==1
-                gui_labelset_waveviewer.labelauto.Value = 1;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            elseif labelNo ==1
-                gui_labelset_waveviewer.labelauto.Value = 0;
-                gui_labelset_waveviewer.nolabel.Value = 1;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            elseif labelCustom==1
-                gui_labelset_waveviewer.labelauto.Value = 0;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 1;
-            else
-                gui_labelset_waveviewer.labelauto.Value = 1;
-                gui_labelset_waveviewer.nolabel.Value = 0;
-                gui_labelset_waveviewer.customlabel.Value = 0;
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_labelset_waveviewer.labelauto.Value = 0;
         gui_labelset_waveviewer.nolabel.Value =0;
@@ -361,103 +295,72 @@ varargout{1} = box_erplabelset_viewer_property;
     function label_xperc(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xpercen= ERPwaviewerIN.chanbinsetlabel.location.xperc;
-            Source.String = num2str(xpercen);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%-------------------Y percentage------------------------------------------
     function label_yperc(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            ypercen= ERPwaviewerIN.chanbinsetlabel.location.yperc;
-            Source.String = num2str(ypercen);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%-------------------------center for label text---------------------------
     function label_center(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelcenter= ERPwaviewerIN.chanbinsetlabel.location.center;
-            Source.Value = labelcenter;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%--------------------------Font of label text-----------------------------
     function label_font(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelfont= ERPwaviewerIN.chanbinsetlabel.font;
-            Source.Value = labelfont;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%------------------------Fontsize of label text---------------------------
     function label_fontsize(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelfontsize= ERPwaviewerIN.chanbinsetlabel.fontsize;
-            fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
-                '40','50','60','70','80','90','100'};
-            fontsize = str2num(char(fontsize));
-            [xsize,y] = find(fontsize ==labelfontsize);
-            Source.Value = xsize;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%-----------------------color of label text-------------------------------
     function label_color(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            labelcolor= ERPwaviewerIN.chanbinsetlabel.textcolor;
-            Source.Value = labelcolor;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_labels',1);
-        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%--------------------------Help-------------------------------------------
@@ -509,19 +412,16 @@ varargout{1} = box_erplabelset_viewer_property;
         
         estudioworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
+        box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
     end
 
 %%------------------------------Apply--------------------------------------
     function label_apply(~,~)
-        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
-        if ~isempty(messgStr) && viewerpanelIndex~=5
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            viewer_ERPDAT.Process_messg =4;
-            return;
-        end
         estudioworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
+        box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
         
         MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -638,6 +538,22 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.font_custom_size.Value = xsize;
         textColor = ERPwaviewer_apply.chanbinsetlabel.textcolor;
         gui_labelset_waveviewer.labelcolor.Value = textColor;
+    end
+
+
+%%-------------------------------------------------------------------------
+%%Automatically saving the changed parameters for the current panel if the
+%%user change parameters for the other panels.
+%%-------------------------------------------------------------------------
+    function count_twopanels_change(~,~)
+        if viewer_ERPDAT.count_twopanels==0
+            return;
+        end
+        changeFlag =  estudioworkingmemory('MyViewer_labels');
+        if changeFlag~=1
+            return;
+        end
+        label_apply();
     end
 
 end

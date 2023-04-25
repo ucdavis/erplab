@@ -1535,7 +1535,7 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-                %                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
+                qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
                 %                 set(hplot(Numofoverlay),'DisplayName', qLegendName{Numofoverlay});
             end
             
@@ -1796,7 +1796,8 @@ set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 try
     for Numofoverlay = 1:numel(hplot)
-        qLegendName1 = strrep(qLegendName{Numofoverlay},'_','\_');
+        %         qLegendName1 = strrep(qLegendName{Numofoverlay},'_','\_');
+        qLegendName1 = qLegendName{Numofoverlay};
         LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',32,qLegendName1));
     end
     p  = get(myerpviewerlegend,'position');

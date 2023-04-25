@@ -15,6 +15,7 @@ addlistener(viewer_ERPDAT,'legend_change',@legend_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
+addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 
 gui_erplinset_waveviewer = struct();
@@ -271,17 +272,12 @@ varargout{1} = box_erplineset_viewer_property;
     function lines_auto(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            linesAutovalue =  ERPwaviewerIN.Lines.auto;
-            gui_erplinset_waveviewer.linesauto.Value =linesAutovalue;
-            gui_erplinset_waveviewer.linescustom.Value = ~linesAutovalue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erplinset_waveviewer.linesauto.Value =1;
         gui_erplinset_waveviewer.linescustom.Value = 0;
@@ -322,19 +318,12 @@ varargout{1} = box_erplineset_viewer_property;
     function lines_custom(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            linesAutovalue =  ERPwaviewerIN.Lines.auto;
-            gui_erplinset_waveviewer.linesauto.Value =linesAutovalue;
-            gui_erplinset_waveviewer.linescustom.Value = ~linesAutovalue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
-        
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erplinset_waveviewer.linesauto.Value =0;
         gui_erplinset_waveviewer.linescustom.Value = 1;
@@ -354,17 +343,12 @@ varargout{1} = box_erplineset_viewer_property;
     function line_customtable(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            linesData=  ERPwaviewerIN.Lines.data;
-            gui_erplinset_waveviewer.line_customtable.Data = linesData;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
-        
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 
@@ -372,18 +356,12 @@ varargout{1} = box_erplineset_viewer_property;
     function legend_auto(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            LegendAuto=  ERPwaviewerIN.Legend.auto;
-            gui_erplinset_waveviewer.legendauto.Value = LegendAuto;
-            gui_erplinset_waveviewer.legendcustom.Value = ~LegendAuto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
-        
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erplinset_waveviewer.legendauto.Value = 1;
         gui_erplinset_waveviewer.legendcustom.Value = 0;
@@ -470,17 +448,12 @@ varargout{1} = box_erplineset_viewer_property;
     function legend_custom(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            LegendAuto=  ERPwaviewerIN.Legend.auto;
-            gui_erplinset_waveviewer.legendauto.Value = LegendAuto;
-            gui_erplinset_waveviewer.legendcustom.Value = ~LegendAuto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erplinset_waveviewer.legendauto.Value = 0;
         gui_erplinset_waveviewer.legendcustom.Value = 1;
@@ -496,53 +469,36 @@ varargout{1} = box_erplineset_viewer_property;
     function legend_customtable(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            legendData=  ERPwaviewerIN.Legend.data;
-            gui_erplinset_waveviewer.legend_customtable.Data = legendData;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%----------------------font of legend text--------------------------------
     function legendfont(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            legendfont=  ERPwaviewerIN.Legend.font;
-            gui_erplinset_waveviewer.font_custom_type.Value = legendfont;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%----------------------fontsize of legend text----------------------------
     function legendfontsize(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            legendfontsize=  ERPwaviewerIN.Legend.fontsize;
-            fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
-                '40','50','60','70','80','90','100'};
-            gui_erplinset_waveviewer.font_custom_size.String = fontsize;
-            fontsize = str2num(char(fontsize));
-            [xsize,y] = find(fontsize ==legendfontsize);
-            gui_erplinset_waveviewer.font_custom_size.Value = xsize;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 
@@ -550,17 +506,12 @@ varargout{1} = box_erplineset_viewer_property;
     function legendtextauto(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            legendtextcolor=  ERPwaviewerIN.Legend.textcolor;
-            gui_erplinset_waveviewer.legendtextauto.Value =legendtextcolor; %
-            gui_erplinset_waveviewer.legendtextcustom.Value =~legendtextcolor;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erplinset_waveviewer.legendtextauto.Value =1; %
         gui_erplinset_waveviewer.legendtextcustom.Value =0;
@@ -571,17 +522,12 @@ varargout{1} = box_erplineset_viewer_property;
     function legendtextcustom(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            legendtextcolor=  ERPwaviewerIN.Legend.textcolor;
-            gui_erplinset_waveviewer.legendtextauto.Value =legendtextcolor; %
-            gui_erplinset_waveviewer.legendtextcustom.Value =~legendtextcolor;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erplinset_waveviewer.legendtextauto.Value =0; %
         gui_erplinset_waveviewer.legendtextcustom.Value =1;
@@ -591,16 +537,13 @@ varargout{1} = box_erplineset_viewer_property;
     function legendcolumns(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
         if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            legendcolumns=  ERPwaviewerIN.Legend.columns;
-            gui_erplinset_waveviewer.legendcolumns.Value = legendcolumns;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902]; %%mark the changes
+        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        
     end
 
 
@@ -660,20 +603,17 @@ varargout{1} = box_erplineset_viewer_property;
         
         estudioworkingmemory('MyViewer_linelegend',0);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
+        gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
     end
 
 
 %%-----------------Apply the changed parameters----------------------------
     function LineLegend_apply(~,~)
-        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
-        if ~isempty(messgStr) && viewerpanelIndex~=6
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            viewer_ERPDAT.Process_messg =4;
-            return;
-        end
         estudioworkingmemory('MyViewer_linelegend',0);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
+        gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
         
         MessageViewer= char(strcat('Lines & Legends > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -991,5 +931,21 @@ varargout{1} = box_erplineset_viewer_property;
         end
         gui_erplinset_waveviewer.legendcolumns.String = columnStr;
     end
+
+%%-------------------------------------------------------------------------
+%%Automatically saving the changed parameters for the current panel if the
+%%user change parameters for the other panels.
+%%-------------------------------------------------------------------------
+    function count_twopanels_change(~,~)
+        if viewer_ERPDAT.count_twopanels==0
+            return;
+        end
+        changeFlag =  estudioworkingmemory('MyViewer_linelegend');
+        if changeFlag~=1
+            return;
+        end
+        LineLegend_apply();
+    end
+
 
 end

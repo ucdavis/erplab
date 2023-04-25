@@ -12,6 +12,7 @@ classdef v_ERPDAT < handle
         Process_messg
         count_loadproper
         count_twopanels
+        Reset_Waviewer_panel
     end
     
     events
@@ -27,6 +28,7 @@ classdef v_ERPDAT < handle
         v_messg_change
         count_loadproper_change
         count_twopanels_change
+        Reset_Waviewer_panel_change
     end
     
     methods
@@ -115,6 +117,13 @@ classdef v_ERPDAT < handle
             notify(obj,'count_twopanels_change');
         end
         
+        
+        %%%m13
+        %Modified bins of the selected ERP
+        function set.Reset_Waviewer_panel(obj,value)
+            obj.Reset_Waviewer_panel = value;
+            notify(obj,'Reset_Waviewer_panel_change');
+        end
         
     end
     

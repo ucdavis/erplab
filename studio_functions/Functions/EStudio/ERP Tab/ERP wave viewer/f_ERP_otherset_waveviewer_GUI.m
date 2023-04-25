@@ -13,6 +13,7 @@ function varargout = f_ERP_otherset_waveviewer_GUI(varargin)
 global viewer_ERPDAT;
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
+addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 
 gui_otherset_waveviewer = struct();
 
@@ -208,19 +209,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function  polarup(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            PolarityValue =    ERPwaviewerIN.polarity;
-            gui_otherset_waveviewer.polarity_up.Value =PolarityValue;
-            gui_otherset_waveviewer.polarity_down.Value = ~PolarityValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.polarity_up.Value = 1;
         gui_otherset_waveviewer.polarity_down.Value = 0;
     end
@@ -229,19 +223,14 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function  polardown(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            PolarityValue =    ERPwaviewerIN.polarity;
-            gui_otherset_waveviewer.polarity_up.Value = PolarityValue;
-            gui_otherset_waveviewer.polarity_down.Value = ~PolarityValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
+        
         gui_otherset_waveviewer.polarity_up.Value = 0;
         gui_otherset_waveviewer.polarity_down.Value = 1;
     end
@@ -250,17 +239,14 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function showSEM(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            SMEop =   ERPwaviewerIN.SEM.active;
-            Str.Value =SMEop;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
+        
         Value = Str.Value;
         if Value ==1
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
@@ -278,31 +264,23 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function SEMerror(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            SMEerror =   ERPwaviewerIN.SEM.error;
-            gui_otherset_waveviewer.SEM_custom.Value = SMEerror+1;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
     end
 %%---------------------------SEM trans.------------------------------------
     function SEMtrans(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            SMEtrans =   ERPwaviewerIN.SEM.trans;
-            gui_otherset_waveviewer.SEMtrans_custom.Value = SMEtrans*10+1;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 
@@ -310,38 +288,14 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function bsl_none(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            BaselineCorrection =   ERPwaviewerIN.baselinecorr;
-            if isnumeric(BaselineCorrection)
-                gui_otherset_waveviewer.bsl_none.Value =0;
-                gui_otherset_waveviewer.bsl_pre.Value =0;
-                gui_otherset_waveviewer.bsl_post.Value =0;
-                gui_otherset_waveviewer.bsl_whole.Value =0;
-                gui_otherset_waveviewer.bsl_custom.Value = 1;
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
-                gui_otherset_waveviewer.bsl_customedit.String = char(num2str(BaselineCorrection));
-            else
-                basecorrValue = [0 0 0 0 0];
-                [C,IA]  = ismember_bc2(char(BaselineCorrection),{'none','pre','post','all','whole'});
-                if IA>0
-                    basecorrValue(IA) = 1;
-                end
-                gui_otherset_waveviewer.bsl_none.Value =basecorrValue(1);
-                gui_otherset_waveviewer.bsl_pre.Value =basecorrValue(2);
-                gui_otherset_waveviewer.bsl_post.Value =basecorrValue(3);
-                gui_otherset_waveviewer.bsl_whole.Value =basecorrValue(4);
-                gui_otherset_waveviewer.bsl_custom.Value = basecorrValue(5);
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
+        
         gui_otherset_waveviewer.bsl_none.Value =1;
         gui_otherset_waveviewer.bsl_pre.Value =0;
         gui_otherset_waveviewer.bsl_post.Value =0;
@@ -355,37 +309,13 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function bsl_pre(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            BaselineCorrection =   ERPwaviewerIN.baselinecorr;
-            if isnumeric(BaselineCorrection)
-                gui_otherset_waveviewer.bsl_none.Value =0;
-                gui_otherset_waveviewer.bsl_pre.Value =0;
-                gui_otherset_waveviewer.bsl_post.Value =0;
-                gui_otherset_waveviewer.bsl_whole.Value =0;
-                gui_otherset_waveviewer.bsl_custom.Value = 1;
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
-                gui_otherset_waveviewer.bsl_customedit.String = char(num2str(BaselineCorrection));
-            else
-                basecorrValue = [0 0 0 0 0];
-                [C,IA]  = ismember_bc2(char(BaselineCorrection),{'none','pre','post','all','whole'});
-                if IA>0
-                    basecorrValue(IA) = 1;
-                end
-                gui_otherset_waveviewer.bsl_none.Value =basecorrValue(1);
-                gui_otherset_waveviewer.bsl_pre.Value =basecorrValue(2);
-                gui_otherset_waveviewer.bsl_post.Value =basecorrValue(3);
-                gui_otherset_waveviewer.bsl_whole.Value =basecorrValue(4);
-                gui_otherset_waveviewer.bsl_custom.Value = basecorrValue(5);
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
+        
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =1;
         gui_otherset_waveviewer.bsl_post.Value =0;
@@ -400,38 +330,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            BaselineCorrection =   ERPwaviewerIN.baselinecorr;
-            if isnumeric(BaselineCorrection)
-                gui_otherset_waveviewer.bsl_none.Value =0;
-                gui_otherset_waveviewer.bsl_pre.Value =0;
-                gui_otherset_waveviewer.bsl_post.Value =0;
-                gui_otherset_waveviewer.bsl_whole.Value =0;
-                gui_otherset_waveviewer.bsl_custom.Value = 1;
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
-                gui_otherset_waveviewer.bsl_customedit.String = char(num2str(BaselineCorrection));
-            else
-                basecorrValue = [0 0 0 0 0];
-                [C,IA]  = ismember_bc2(char(BaselineCorrection),{'none','pre','post','all','whole'});
-                if IA>0
-                    basecorrValue(IA) = 1;
-                end
-                gui_otherset_waveviewer.bsl_none.Value =basecorrValue(1);
-                gui_otherset_waveviewer.bsl_pre.Value =basecorrValue(2);
-                gui_otherset_waveviewer.bsl_post.Value =basecorrValue(3);
-                gui_otherset_waveviewer.bsl_whole.Value =basecorrValue(4);
-                gui_otherset_waveviewer.bsl_custom.Value = basecorrValue(5);
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =0;
@@ -446,38 +350,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            BaselineCorrection =   ERPwaviewerIN.baselinecorr;
-            if isnumeric(BaselineCorrection)
-                gui_otherset_waveviewer.bsl_none.Value =0;
-                gui_otherset_waveviewer.bsl_pre.Value =0;
-                gui_otherset_waveviewer.bsl_post.Value =0;
-                gui_otherset_waveviewer.bsl_whole.Value =0;
-                gui_otherset_waveviewer.bsl_custom.Value = 1;
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
-                gui_otherset_waveviewer.bsl_customedit.String = char(num2str(BaselineCorrection));
-            else
-                basecorrValue = [0 0 0 0 0];
-                [C,IA]  = ismember_bc2(char(BaselineCorrection),{'none','pre','post','all','whole'});
-                if IA>0
-                    basecorrValue(IA) = 1;
-                end
-                gui_otherset_waveviewer.bsl_none.Value =basecorrValue(1);
-                gui_otherset_waveviewer.bsl_pre.Value =basecorrValue(2);
-                gui_otherset_waveviewer.bsl_post.Value =basecorrValue(3);
-                gui_otherset_waveviewer.bsl_whole.Value =basecorrValue(4);
-                gui_otherset_waveviewer.bsl_custom.Value = basecorrValue(5);
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =0;
@@ -491,38 +369,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function bsl_custom(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            BaselineCorrection =   ERPwaviewerIN.baselinecorr;
-            if isnumeric(BaselineCorrection)
-                gui_otherset_waveviewer.bsl_none.Value =0;
-                gui_otherset_waveviewer.bsl_pre.Value =0;
-                gui_otherset_waveviewer.bsl_post.Value =0;
-                gui_otherset_waveviewer.bsl_whole.Value =0;
-                gui_otherset_waveviewer.bsl_custom.Value = 1;
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
-                gui_otherset_waveviewer.bsl_customedit.String = char(num2str(BaselineCorrection));
-            else
-                basecorrValue = [0 0 0 0 0];
-                [C,IA]  = ismember_bc2(char(BaselineCorrection),{'none','pre','post','all','whole'});
-                if IA>0
-                    basecorrValue(IA) = 1;
-                end
-                gui_otherset_waveviewer.bsl_none.Value =basecorrValue(1);
-                gui_otherset_waveviewer.bsl_pre.Value =basecorrValue(2);
-                gui_otherset_waveviewer.bsl_post.Value =basecorrValue(3);
-                gui_otherset_waveviewer.bsl_whole.Value =basecorrValue(4);
-                gui_otherset_waveviewer.bsl_custom.Value = basecorrValue(5);
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =0;
@@ -535,38 +387,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
     function bsl_customedit(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            BaselineCorrection =   ERPwaviewerIN.baselinecorr;
-            if isnumeric(BaselineCorrection)
-                gui_otherset_waveviewer.bsl_none.Value =0;
-                gui_otherset_waveviewer.bsl_pre.Value =0;
-                gui_otherset_waveviewer.bsl_post.Value =0;
-                gui_otherset_waveviewer.bsl_whole.Value =0;
-                gui_otherset_waveviewer.bsl_custom.Value = 1;
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
-                gui_otherset_waveviewer.bsl_customedit.String = char(num2str(BaselineCorrection));
-            else
-                basecorrValue = [0 0 0 0 0];
-                [C,IA]  = ismember_bc2(char(BaselineCorrection),{'none','pre','post','all','whole'});
-                if IA>0
-                    basecorrValue(IA) = 1;
-                end
-                gui_otherset_waveviewer.bsl_none.Value =basecorrValue(1);
-                gui_otherset_waveviewer.bsl_pre.Value =basecorrValue(2);
-                gui_otherset_waveviewer.bsl_post.Value =basecorrValue(3);
-                gui_otherset_waveviewer.bsl_whole.Value =basecorrValue(4);
-                gui_otherset_waveviewer.bsl_custom.Value = basecorrValue(5);
-                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            end
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         
         MessageViewer= char(strcat('Other > Baseline Correction > Custom'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -594,7 +420,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
             fprintf(2,['\n Other > Baseline Correction > Custom() error: \n',32,msgboxText,'.\n\n']);
             return;
         end
-        
         if bacselinePeriod(2)>TimeRange(end)
             msgboxText =  strcat('Right edge of baseline period should not be larger than',32,num2str(TimeRange(end)),'ms');
             viewer_ERPDAT.Process_messg =3;
@@ -602,8 +427,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
             fprintf(2,['\n Other > Baseline Correction > Custom() error: \n',32,msgboxText,'.\n\n']);
             return;
         end
-        
-        
         if bacselinePeriod(1)>=bacselinePeriod(end)
             msgboxText =  strcat('Right edge of baseline period should be smaller than left edge');
             viewer_ERPDAT.Process_messg =3;
@@ -619,17 +442,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            figbgcolor =   ERPwaviewerIN.figbackgdcolor;
-            Str.String = num2str(figbgcolor);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_other',1);
-        gui_otherset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         
         bgColor = str2num(Str.String);
         if isempty(bgColor)
@@ -647,9 +465,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
             Str.String = num2str([1 1 1]);
             return;
         end
-        
-        
-        
     end
 
 %%----------------------------Help-----------------------------------------
@@ -725,22 +540,18 @@ varargout{1} = box_erplabelset_viewer_otherset;
         end
         estudioworkingmemory('MyViewer_other',0);
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
+        gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
         
     end
 
 
 %%-------------------------Apply the changed parameters--------------------
     function other_apply(~,~)
-        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
-        if ~isempty(messgStr) && viewerpanelIndex~=7
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            viewer_ERPDAT.Process_messg =4;
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            return;
-        end
         estudioworkingmemory('MyViewer_other',0);
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
-        
+        gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
         
         MessageViewer= char(strcat('Other > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -840,7 +651,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.SEMtrans_custom.Value =1;
         end
         
-        
         %
         %%Baseline settings
         BalineCorrection = ERPwaviewer_apply.baselinecorr;
@@ -895,7 +705,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
             end
         end
         
-        
         %
         %%Background color
         try
@@ -910,6 +719,22 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         ERPwaviewer_apply.figbackgdcolor = BackgroundColor;
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+    end
+
+
+%%-------------------------------------------------------------------------
+%%Automatically saving the changed parameters for the current panel if the
+%%user change parameters for the other panels.
+%%-------------------------------------------------------------------------
+    function count_twopanels_change(~,~)
+        if viewer_ERPDAT.count_twopanels==0
+            return;
+        end
+        changeFlag =  estudioworkingmemory('MyViewer_other');
+        if changeFlag~=1
+            return;
+        end
+        other_apply();
     end
 
 end

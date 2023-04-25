@@ -14,7 +14,7 @@ global viewer_ERPDAT
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
-% addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
+addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 
 gui_erpxyaxeset_waveviewer = struct();
 
@@ -521,12 +521,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%check if the changed parameters was saved for the other panels
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Source.Value= ERPwaviewerIN.xaxis.tdis;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
         xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
@@ -545,7 +540,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.xticks_precision.Value =xtick_precision+1;
             
             estudioworkingmemory('MyViewer_xyaxis',1);
-            gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+            gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+            gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+            box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+            
             gui_erpxyaxeset_waveviewer.xmillisecond.Value =1; %display with millisecond
             gui_erpxyaxeset_waveviewer.xsecond.Value =0;%display with second
             ERPwaviewerIN = evalin('base','ALLERPwaviewer');
@@ -579,6 +577,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
             end
             %%change xtick labels based on the modified  x range
+            xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+            if xtick_precision<0
+                xtick_precision =0;
+            end
             timeArray = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);% in millisecond
             timeticks = str2num(gui_erpxyaxeset_waveviewer.timeticks_edit.String);
             if ~isempty(timeticks)
@@ -601,8 +603,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             stepX = str2num(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String);
             if ~isempty(stepX)
                 stepX = stepX.*1000;
-                stepX= f_decimal(char(num2str(stepX)),xtick_precision);
-                gui_erpxyaxeset_waveviewer.timeminorticks_custom.String =stepX;
+                %                 stepX= f_decimal(char(num2str(stepX)),xtick_precision);
+                gui_erpxyaxeset_waveviewer.timeminorticks_custom.String =num2str(stepX);
             else
                 stepX = [];
                 if ~isempty(xticks) && numel(xticks)>1
@@ -650,13 +652,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%check if the changed parameters was saved for the other panels
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Source.Value= ~ERPwaviewerIN.xaxis.tdis;
-            gui_erpxyaxeset_waveviewer.xmillisecond.Value=ERPwaviewerIN.xaxis.tdis;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
         xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
@@ -672,9 +668,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 xtick_precision=1;
             end
             gui_erpxyaxeset_waveviewer.xticks_precision.Value=xtick_precision;
-            
             estudioworkingmemory('MyViewer_xyaxis',1);
-            gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+            gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+            gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+            box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+            
             gui_erpxyaxeset_waveviewer.xmillisecond.Value =0; %display with millisecond
             gui_erpxyaxeset_waveviewer.xsecond.Value =1;%display with second
             ERPwaviewerIN = evalin('base','ALLERPwaviewer');
@@ -709,6 +707,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
             end
             %%change xtick labels based on the modified  x range
+            xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value;
             timeArray = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);%% in seocnd
             timeticks = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
             if ~isempty(timeticks)
@@ -731,8 +730,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             
             if ~isempty(stepX)
                 stepX = stepX/1000;
-                stepX= f_decimal(char(num2str(stepX)),xtick_precision);
-                gui_erpxyaxeset_waveviewer.timeminorticks_custom.String =stepX;
+                %                 stepX= f_decimal(char(num2str(stepX)),xtick_precision);
+                gui_erpxyaxeset_waveviewer.timeminorticks_custom.String =num2str(stepX);
             else
                 stepX = [];
                 if ~isempty(xticks) && numel(xticks)>1
@@ -780,15 +779,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xtimerangeauto(strx_auto,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            strx_auto.Value= ERPwaviewerIN.xaxis.trangeauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = strx_auto.Value;
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
@@ -849,15 +845,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function timerangecustom(Strtimcustom,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Strtimcustom.String= num2str(ERPwaviewerIN.xaxis.timerange);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         try
@@ -910,15 +903,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
         ERPwaviewerIN = evalin('base','ALLERPwaviewer');
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            
-            Str.String= num2str(ERPwaviewerIN.xaxis.timeticks);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         timeArray =  str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
@@ -952,15 +942,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xtimetickauto(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Str.Value = ERPwaviewerIN.xaxis.ticksauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = Str.Value;
         if Value ==1
@@ -1001,15 +988,14 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xticksprecison(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Source.Value = ERPwaviewerIN.xaxis.tickdecimals+1;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        
+        
         if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
             xtick_precision = Source.Value-1;
             if xtick_precision<0
@@ -1036,16 +1022,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function timeminortickslabel(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Str.Value = ERPwaviewerIN.xaxis.tminor.disp;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = Str.Value;
         if Value ==1
@@ -1103,15 +1085,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function timeminorticks_custom(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Str.String = num2str(ERPwaviewerIN.xaxis.tminor.step);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Str_xtick_minor = str2num(Str.String);
         if isempty(Str_xtick_minor)
@@ -1128,16 +1107,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function timeminortickscustom_auto(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Str.Value = num2str(ERPwaviewerIN.xaxis.tminor.auto);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = Str.Value;
         xticks = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
@@ -1185,18 +1160,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xtimelabelon(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xlabelauto = ERPwaviewerIN.xaxis.label;
-            gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = xlabelauto;
-            gui_erpxyaxeset_waveviewer.xtimelabel_off.Value =~xlabelauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 1;
         gui_erpxyaxeset_waveviewer.xtimelabel_off.Value = 0;
@@ -1209,17 +1178,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xtimelabeloff(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xlabelauto = ERPwaviewerIN.xaxis.label;
-            gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = xlabelauto;
-            gui_erpxyaxeset_waveviewer.xtimelabel_off.Value =~xlabelauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimelabel_off.Value = 1;
@@ -1232,70 +1194,47 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xtimefont(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xlabelfont = ERPwaviewerIN.xaxis.font;
-            Source.Value = xlabelfont;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%---------------------fontsize of x labelticks----------------------------
     function xtimefontsize(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xlabelfontsize = ERPwaviewerIN.xaxis.fontsize;
-            fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
-                '40','50','60','70','80','90','100'};
-            fontsize = str2num(char(fontsize));
-            [xsize,y] = find(fontsize ==xlabelfontsize);
-            Source.Value = xsize;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 %%---------------------color of x labelticks-------------------------------
     function xtimecolor(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xlabelfontcolor = ERPwaviewerIN.xaxis.fontcolor;
-            Source.Value = xlabelfontcolor;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%------------------Setting for units:on-----------------------------------
     function xtimeunitson(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xaxisunits = ERPwaviewerIN.xaxis.units;
-            gui_erpxyaxeset_waveviewer.xtimeunits_on.Value =xaxisunits;
-            gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = ~xaxisunits;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value = 1;
         gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = 0;
@@ -1305,17 +1244,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function xtimeunitsoff(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            xaxisunits = ERPwaviewerIN.xaxis.units;
-            gui_erpxyaxeset_waveviewer.xtimeunits_on.Value =xaxisunits;
-            gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = ~xaxisunits;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = 1;
@@ -1330,17 +1264,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yrangecustom(yscalStr,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yscalecustom = ERPwaviewerIN.yaxis.scales;
-            yscalStr.String = num2str(yscalecustom);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         yscalecustom = str2num(char(yscalStr.String));
         %%checking the inputs
@@ -1385,17 +1314,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yrangeauto(yscaleauto,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yscaleautoValue = ERPwaviewerIN.yaxis.scalesauto;
-            yscaleauto.Value = yscaleautoValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = yscaleauto.Value;
         if Value ==1
@@ -1472,15 +1396,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
         yticksLabel = ERPwaviewerIN.yaxis.ticks;
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            Str.String = num2str(yticksLabel);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         ytickcustom = str2num(char(Str.String));
         %%checking the inputs
@@ -1538,17 +1459,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function ytickauto(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yticklabelauto = ERPwaviewerIN.yaxis.tickauto;
-            Str.Value = yticklabelauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = Str.Value;
         if Value ==1
@@ -1588,16 +1504,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yticksprecison(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yticklabelauto = ERPwaviewerIN.yaxis.tickauto;
-            Str.Value = yticklabelauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         yticksLabel =  gui_erpxyaxeset_waveviewer.yticks_edit.String;
         ytick_precision = Source.Value-1;
@@ -1627,17 +1539,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yminordisp(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            ytickminorauto = ERPwaviewerIN.yaxis.yminor.disp;
-            Str.Value = ytickminorauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = Str.Value;
         if Value ==1
@@ -1689,17 +1596,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yminorstepedit(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            ytickminorstep = ERPwaviewerIN.yaxis.yminor.step;
-            Str.String = num2str(ytickminorstep);
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         ytickmin_step = str2num(Str.String);
         if isempty(ytickmin_step)
@@ -1715,17 +1617,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yminorstepauto(Str,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            ytickminorstepauto = ERPwaviewerIN.yaxis.yminor.auto;
-            Str.Value = ytickminorstepauto;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
-        
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         Value = Str.Value;%%
         if Value ==1
@@ -1768,17 +1665,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function ylabelon(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            ylabelValue = ERPwaviewerIN.yaxis.label;
-            gui_erpxyaxeset_waveviewer.ylabel_on.Value = ylabelValue;
-            gui_erpxyaxeset_waveviewer.ylabel_off.Value = ~ylabelValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 1;
         gui_erpxyaxeset_waveviewer.ylabel_off.Value = 0;
@@ -1792,50 +1684,36 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yaxisfont(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Source.Value = ERPwaviewerIN.yaxis.font;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%------------------------fontsize of y label ticks------------------------
     function yaxisfontsize(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yfontsize = ERPwaviewerIN.yaxis.fontsize;
-            fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
-                '40','50','60','70','80','90','100'};
-            fontsize = str2num(char(fontsize));
-            [xsize,y] = find(fontsize ==yfontsize);
-            Source.Value = xsize;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 %%------------------------color of y label ticks---------------------------
     function yaxisfontcolor(Source,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            Source.Value = ERPwaviewerIN.yaxis.fontcolor;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
     end
 
 
@@ -1843,17 +1721,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function ylabeloff(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            ylabelValue = ERPwaviewerIN.yaxis.label;
-            gui_erpxyaxeset_waveviewer.ylabel_on.Value = ylabelValue;
-            gui_erpxyaxeset_waveviewer.ylabel_off.Value = ~ylabelValue;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.ylabel_off.Value = 1;
@@ -1866,17 +1739,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yunitson(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yunits = ERPwaviewerIN.yaxis.units;
-            gui_erpxyaxeset_waveviewer.yunits_on.Value = yunits;
-            gui_erpxyaxeset_waveviewer.yunits_off.Value = ~yunits;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.yunits_on.Value = 1;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = 0;
@@ -1886,17 +1754,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
     function yunitsoff(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            yunits = ERPwaviewerIN.yaxis.units;
-            gui_erpxyaxeset_waveviewer.yunits_on.Value = yunits;
-            gui_erpxyaxeset_waveviewer.yunits_off.Value = ~yunits;
-            viewer_ERPDAT.Process_messg =4;
-            return;
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
-        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.5569    0.9373    0.8902];
+        gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.yunits_on.Value = 0;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = 1;
@@ -2100,20 +1963,16 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = ~ERPwaviewer_apply.yaxis.units;
         estudioworkingmemory('MyViewer_xyaxis',0);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
-        
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
     end
 
 %%-----------------------------Apply---------------------------------------
     function xyaxis_apply(~,~)
-        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
-        if ~isempty(messgStr) && viewerpanelIndex~=3
-            erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
-            viewer_ERPDAT.Process_messg =4;
-            return;
-        end
         estudioworkingmemory('MyViewer_xyaxis',0);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
+        box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
         
         MessageViewer= char(strcat('Time and Amplitude Scales > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -2295,23 +2154,24 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%----------------------------Setting for X axis-------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
-        if gui_erpxyaxeset_waveviewer.xtimerangeauto==1
+        xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
+        xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
+        if isempty(xSecondflag) && isempty(xmSecondflag)
+            xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
+        end
+        if xSecondflag ==0 && xmSecondflag==1
+            xdispysecondValue =1;
             if xdispysecondValue==1
                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
             else
                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
             end
         else
-            timeArray_pro = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
-            if xdispysecondValue==1
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro);
-            else
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro/1000);
-            end
-            
+            xdispysecondValue =0;
         end
-        if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
+        if xdispysecondValue==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
             if xtick_precision<0
                 xtick_precision =0;
@@ -2423,7 +2283,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if ~isempty(str2num(yRangeLabel))
             yticksLabel = default_amp_ticks_viewer(str2num(yRangeLabel));
         end
-        ytick_precision= gui_erpxyaxeset_waveviewer.yticks_precision.Value;
+        ytick_precision= gui_erpxyaxeset_waveviewer.yticks_precision.Value-1;
         yticksLabel= f_decimal(char(yticksLabel),ytick_precision);
         if gui_erpxyaxeset_waveviewer.ytickauto.Value ==1
             gui_erpxyaxeset_waveviewer.yticks_edit.String = yticksLabel;
@@ -2556,8 +2416,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%----------------------------Setting for X axis-------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%% display with millisecond
-        if gui_erpxyaxeset_waveviewer.xtimerangeauto==1
+        xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
+        xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
+        if isempty(xSecondflag) && isempty(xmSecondflag)
+            xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
+        end
+        if xSecondflag ==0 && xmSecondflag==1
+            xdispysecondValue =1;
             if xdispysecondValue==1
                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
                 gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
@@ -2565,18 +2430,20 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
                 gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
             end
+            %         else
+            %             timeArray_pro = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
+            %             if xdispysecondValue==1
+            %                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro);
+            %                 gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+            %             else
+            %                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro/1000);
+            %                 gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+            %             end
         else
-            timeArray_pro = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
-            if xdispysecondValue==1
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
-            else
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro/1000);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
-            end
+            xdispysecondValue =0;
         end
         
-        if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
+        if xdispysecondValue==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
             if xtick_precision<0
                 xtick_precision =0;
@@ -2685,7 +2552,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             yticksLabel = default_amp_ticks_viewer(str2num(yRangeLabel));
         end
         
-        ytick_precision= gui_erpxyaxeset_waveviewer.yticks_precision.Value;
+        ytick_precision= gui_erpxyaxeset_waveviewer.yticks_precision.Value-1;
         yticksLabel= f_decimal(char(yticksLabel),ytick_precision);
         
         if gui_erpxyaxeset_waveviewer.ytickauto.Value ==1
@@ -2976,4 +2843,20 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.yunits_on.Value = yunits;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = ~yunits;
     end
+
+%%-------------------------------------------------------------------------
+%%Automatically saving the changed parameters for the current panel if the
+%%user change parameters for the other panels.
+%%-------------------------------------------------------------------------
+    function count_twopanels_change(~,~)
+        if viewer_ERPDAT.count_twopanels==0
+            return;
+        end
+        changeFlag =  estudioworkingmemory('MyViewer_xyaxis');
+        if changeFlag~=1
+            return;
+        end
+        xyaxis_apply();
+    end
+
 end
