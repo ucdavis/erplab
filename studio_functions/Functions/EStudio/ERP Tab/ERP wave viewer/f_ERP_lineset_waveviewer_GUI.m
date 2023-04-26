@@ -1021,8 +1021,10 @@ varargout{1} = box_erplineset_viewer_property;
             ERPwaviewerin.Legend.fontsize=12;
             ERPwaviewerin.Legend.textcolor=1;
             ERPwaviewerin.Legend.columns=1;
-            
             assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
             viewer_ERPDAT.Reset_Waviewer_panel=7;
         end
     end

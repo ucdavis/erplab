@@ -1968,6 +1968,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
             ERPwaviewerin.plot_org.gridlayout.columngap.OverlayOP = gui_plotorg_waveviewer.columnoverlay.Value;
             ERPwaviewerin.plot_org.gridlayout.columngap.OverlayValue = str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
             
+            gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
+            
             assignin('base','ALLERPwaviewer',ERPwaviewerin);
             viewer_ERPDAT.Reset_Waviewer_panel=5;
         end

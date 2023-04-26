@@ -2982,16 +2982,18 @@ varargout{1} = box_erpxtaxes_viewer_property;
             ERPwaviewer_apply.yaxis.scalesauto = 1;
             %%Y tick label
             %%y ticks
+            ytick_precision=1;
             yticksLabel = '';
             if ~isempty(str2num(yRangeLabel))
                 yticksLabel = default_amp_ticks_viewer(str2num(yRangeLabel));
+                yticksLabel= f_decimal(yticksLabel,ytick_precision);
             end
             gui_erpxyaxeset_waveviewer.yticks_edit.String  = yticksLabel;
             gui_erpxyaxeset_waveviewer.yticks_edit.Enable = 'off';
             gui_erpxyaxeset_waveviewer.ytickauto.Value =1;
             ERPwaviewer_apply.yaxis.ticks = str2num(yticksLabel);
             ERPwaviewer_apply.yaxis.tickauto = 1;
-            gui_erpxyaxeset_waveviewer.yticks_precision.Value=1;
+            gui_erpxyaxeset_waveviewer.yticks_precision.Value=2;
             ERPwaviewer_apply.yaxis.tickdecimals=1;
             %%Y minor
             ERPwaviewer_apply.yaxis.yminor.disp =0;
@@ -3021,6 +3023,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.yunits_off.Value=0; %
             ERPwaviewer_apply.yaxis.units=1;
             assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+            gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
             viewer_ERPDAT.Reset_Waviewer_panel=4;
         end
     end%% end of reset for the current panel

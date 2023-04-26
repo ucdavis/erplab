@@ -554,7 +554,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
-        
         MessageViewer= char(strcat('Other > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -567,7 +566,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
             return;
         end
         ERPwaviewer_apply.polarity = gui_otherset_waveviewer.polarity_up.Value;%% the polarity of wave
-        
         %%SME
         ERPwaviewer_apply.SEM.active  = gui_otherset_waveviewer.show_SEM.Value;
         ERPwaviewer_apply.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
@@ -778,6 +776,9 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.figurebakcolor.String ='1,1,1';
             ERPwaviewerin.figbackgdcolor =[1 1 1];
             assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
             %             viewer_ERPDAT.Reset_Waviewer_panel=3;
         end
     end

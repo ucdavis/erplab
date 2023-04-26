@@ -596,8 +596,10 @@ varargout{1} = box_erplabelset_viewer_property;
             gui_labelset_waveviewer.font_custom_size.Enable='off'; %
             gui_labelset_waveviewer.labelcolor.Value=1;
             gui_labelset_waveviewer.labelcolor.Enable='off'; %
-            
             assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
+            gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
+            box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
             viewer_ERPDAT.Reset_Waviewer_panel=6;
         end
     end

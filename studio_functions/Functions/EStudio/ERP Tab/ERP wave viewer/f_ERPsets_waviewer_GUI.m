@@ -478,7 +478,6 @@ varargout{1} = ERPsets_waveviewer_box;
         MessageViewer= char(strcat('ERPsets > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -486,7 +485,6 @@ varargout{1} = ERPsets_waveviewer_box;
             fprintf(2,'\n ERPsets > Apply-f_ERPsets_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
             return;
         end
-        
         if ERPwaveview_erpsetops.ERPLABFlag==1
             ERPwaviewer_apply.ALLERP =  ERPwaveview_erpsetops.ALLERP;
             ERPwaviewer_apply.ERP =        ERPwaveview_erpsetops.ERP;
@@ -495,8 +493,6 @@ varargout{1} = ERPsets_waveviewer_box;
             ERPwaviewer_apply.PageIndex=   ERPwaveview_erpsetops.PageIndex;
             ERPwaveview_erpsetops.ERPLABFlag=0;
         end
-        
-        
         ERPsetArray =  ERPwaveview_erpsetops.butttons_datasets.Value;
         CurrentERP = ERPsetArray(1);
         ALLERPIN = ERPwaviewer_apply.ALLERP;
@@ -537,10 +533,8 @@ varargout{1} = ERPsets_waveviewer_box;
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
         ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
-        
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
         viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;
-        
         f_redrawERP_viewer_test();%%Plot the waves
         MessageViewer= char(strcat('ERPsets > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -663,7 +657,6 @@ varargout{1} = ERPsets_waveviewer_box;
                 return;
             end
         end
-        
         try
             ERPwaviewer_up = evalin('base','ALLERPwaviewer');
         catch
@@ -671,8 +664,6 @@ varargout{1} = ERPsets_waveviewer_box;
             disp('f_ERPsets_waviewer_GUI() error: Restart ERPwave Viewer');
             return;
         end
-        
-        
         if ERPAutoValue ==1
             if strcmpi(ERPtooltype,'ERPLAB')
                 ERPArrayStudio= observe_ERPDAT.CURRENTERP;
@@ -879,6 +870,10 @@ varargout{1} = ERPsets_waveviewer_box;
             ERPwaviewer_apply.SelectERPIdx=    ERPwaveview_erpsetops.SelectERPIdx;
             ERPwaviewer_apply.PageIndex=   ERPwaveview_erpsetops.PageIndex;
             ERPwaviewer_apply.erp_binchan_op = ERPwaveview_erpsetops.auto.Value;
+            ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
+            ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
+            ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
+            
             assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
             viewer_ERPDAT.Reset_Waviewer_panel=2;
         end

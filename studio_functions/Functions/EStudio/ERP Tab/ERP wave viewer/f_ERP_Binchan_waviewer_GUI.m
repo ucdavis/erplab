@@ -407,11 +407,9 @@ varargout{1} = Chanbin_waveviewer_box;
 
 %%------------------------------Apply--------------------------------------
     function setbinchan_apply(~,~)
-        
         MessageViewer= char(strcat('Channels and Bins > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -953,7 +951,7 @@ varargout{1} = Chanbin_waveviewer_box;
             elseif strcmpi(ERPtooltype,'ERPLAB')
                 ERPwaveview_binchan.auto.Value = 1;
                 ERPwaveview_binchan.custom.Value =0;
-                   ERPwaveview_binchan.auto.Enable = 'off';
+                ERPwaveview_binchan.auto.Enable = 'off';
                 ERPwaveview_binchan.custom.Enable = 'off';
                 ERPwaveview_binchan.ElecRange.Enable = 'on';
                 ERPwaveview_binchan.BinRange.Enable = 'on';
@@ -982,6 +980,9 @@ varargout{1} = Chanbin_waveviewer_box;
                 ERPwaviewerIN.binchan_op = 1;
             end
             assignin('base','ALLERPwaviewer',ERPwaviewerIN);
+            ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
+            Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
+            ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
             viewer_ERPDAT.Reset_Waviewer_panel=3;
         end
     end%%reset end
