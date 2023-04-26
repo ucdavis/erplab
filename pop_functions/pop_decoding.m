@@ -2,8 +2,8 @@
 %
 % FORMAT   :
 %
-% >> BEST = pop_decoding(BEST); or
-% >> BEST = pop_decoding(ALLBEST)
+% >> MVPC = pop_decoding(BEST); or
+% >> ALLMVPC = pop_decoding(ALLBEST)
 %
 % INPUTS   :
 %
@@ -24,7 +24,7 @@
 %
 % OUTPUTS  :
 %
-% MVPA           -  output BEST dataset
+% MVPC           -  output MVPC dataset
 %
 % EXAMPLE  :
 %
@@ -61,20 +61,20 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [MVPA, ALLMVPA] = pop_decoding(ALLBEST, varargin) 
+function [MVPC, ALLMVPC] = pop_decoding(ALLBEST, varargin) 
 com = ''; 
 
 try
-        ALLMVPA   = evalin('base', 'ALLMVPA');
-       % preindex = length(ALLMVPA);
+        ALLMVPC   = evalin('base', 'ALLMVPC');
+       % preindex = length(ALLMVPC);
 catch
-        disp('WARNING: ALLMVPA structure was not found. ERPLAB will create an empty one.')
-        ALLMVPA = [];
+        disp('WARNING: ALLMVPC structure was not found. ERPLAB will create an empty one.')
+        ALLMVPC = [];
        % preindex = 0;
 end
 
-%preload MVPA
-MVPA = preloadMVPA; 
+%preload MVPAC
+MVPC = preloadMVPC; 
 
 if nargin<1
     help pop_decoding
@@ -114,7 +114,7 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 2 [] [] 0};
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 2 0};
       
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
@@ -128,9 +128,11 @@ if nargin == 1 %GUI
         %   bins & best (def))
         %def10 = classifer (1: SVM / 2: Crossnobis - def: SVM)
         %def11 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
-        %def12 = output filename (def = filename.mvpa in pwd)
-        %def13 = output path (def = cd); 
-        %def14 = parCompute (def = 0) 
+        %def12 = parCompute (def = 0) 
+
+        %DEFUNCT = output filename (def = filename.mvpa in pwd) *DEFUNCT
+        %DEFUNCT = output path (def = cd); *DEFUNCT 
+        
        
 
     else
@@ -259,7 +261,11 @@ if nargin == 1 %GUI
     end
     
     %parse arguments
-    ALLBEST = decoding_res{1}; 
+    if isempty(ALLBEST) %if no BESTset was passed to GUI
+        ALLBEST = decoding_res{1}; %use the GUI output
+        %but if BESTset was passed to GUI, use indexes to index
+        %the desired BESTsets
+    end 
     inp1 = decoding_res{2}; 
     indexBEST = decoding_res{3};
     relevantChans = decoding_res{4};
@@ -271,26 +277,26 @@ if nargin == 1 %GUI
     equalizeTrials = decoding_res{10};
     selected_method = decoding_res{11};
     SVMcoding = decoding_res{12};
-    file_out = decoding_res{13};
-    path_out = decoding_res{14}; 
-    ParCompute = decoding_res{15}; 
+%     file_out = decoding_res{13};
+%     path_out = decoding_res{14}; 
+    ParCompute = decoding_res{13}; 
     
     %save in working memory
     
     def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
         decodeTimes, decode_every_Npoint, equalizeTrials, ...
-        selected_method, SVMcoding, file_out, path_out, ParCompute}; 
+        selected_method, SVMcoding, ParCompute}; 
     erpworkingmemory('pop_decoding',def); 
     
     %for input into sommersault, change decodeTimes to ms
     decodeTimes = decodeTimes* 1000; 
    
     
-   [MVPA, ALLMVPA] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
+   [MVPC, ALLMVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
    'equalizeTrials', equalizeTrials, 'method', selected_method, ...
-   'SVMcoding',SVMcoding, 'filename_out',file_out, 'path_out', path_out, 'ParCompute',ParCompute); 
+   'SVMcoding',SVMcoding, 'Saveas','on', 'ParCompute',ParCompute); 
 
     pause(0.1);
     return
@@ -308,7 +314,7 @@ p.CaseSensitive = false;
 p.addRequired('ALLBEST');
 
 % option(s)
-p.addParamValue('BESTindex', [],@isnumeric); % erpset index or input file
+p.addParamValue('BESTindex', [1],@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
 p.addParamValue('chanArray',[], @isnumeric); %array of channel indicies (def: all channels)
 %p.addParamValue('nBins',0); %total number of bins/decoding labels/decoding levels
 p.addParamValue('nIter',100, @isnumeric); % total number of decoding iterations (def: 100 iters)
@@ -319,9 +325,8 @@ p.addParamValue('decodeTimes',[],@isnumeric); %[start end](in ms)
 p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
 p.addParamValue('equalizeTrials', 2, @isnumeric); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
 p.addParamValue('method',1,@isnumeric); %method (1:SVM/2:Crossnobis);
-p.addParamValue('SVMcoding',2,@isnumeric)% SVMcoding(1:oneVsone/2:oneVsall); 
-p.addParamValue('filename_out', 'tempofile.nosave'); % output file name
-p.addParamValue('path_out','tempofile.nosave'); 
+p.addParamValue('SVMcoding',2,@isnumeric); % SVMcoding(1:oneVsone/2:oneVsall); 
+p.addParamValue('Saveas','off',@ischar); 
 p.addParamValue('ParCompute',0, @isnumeric); %attempt parallization across CPU cores (def: false) 
 
 % Parsing
@@ -335,10 +340,19 @@ Decode_every_Npoint = p.Results.Decode_every_Npoint;
 equalize_trials = p.Results.equalizeTrials;
 method = p.Results.method; 
 SVMcoding = p.Results.SVMcoding;
-filename_out = p.Results.filename_out; 
-pathname_out = p.Results.path_out; 
+% filename_out = p.Results.filename_out; 
+% pathname_out = p.Results.path_out; 
 ParCompute = p.Results.ParCompute; 
 
+
+%% choose BESTsets
+%if empty, choose the entire ALLBEST struct
+%else
+if ~isempty(idx_bestset)  
+    ALLBEST = ALLBEST(idx_bestset) ; 
+else
+    ALLBEST = ALLBEST(1); %just do the first one 
+end
 
 
 %% Check ALLBEST
@@ -349,12 +363,51 @@ if ~checking
     return
 end
 
-%% choose BESTsets
-%if empty, choose the entire ALLBEST struct
-%else
-if ~isempty(idx_bestset)  
-    ALLBEST = ALLBEST(idx_bestset) ; 
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
+    issaveas  = 1;
+else
+    issaveas  = 0;
 end
+
+if issaveas == 1
+       [res] = mvpc_save_multi_file(ALLBEST,1:length(ALLBEST),''); 
+%             
+            if isempty(res)
+                %user pressed cancel
+                return
+            end
+
+          ALLBEST = res{1};
+         % file_out = {ALLBEST.filename}; 
+         % file_path = {ALLBEST.filepath}; 
+
+end
+
+%% Check # of filenames to # of BESTsets
+% k = numel(ALLBEST);
+% if isempty(filename_out)
+%     for new_file = 1:k 
+%          filename_out{new_file} = ALLBEST(new_file).filename; 
+%     end
+% else
+%     if k == 1
+%         filename_out = {filename_out}; 
+%     else
+%         if ~iscell(filename_out)
+%             disp('More than one BEST files was specified ')
+% 
+%         end
+%     end
+% end 
+
+% if k > 1 && ~iscell(filename_out)
+%     disp('
+% end
+
+
+
+
+
 
 %create/update the times field in each BESTset 
 
@@ -450,23 +503,6 @@ if (start_epoch ~= original_times(decoding_times_index(1))) | ...
     fprintf('WARNING: This adjustment was necessary due to sampling.  \n'); 
     fprintf('%s\n\n', repmat('*',1,60));
 end
-%     
-% 
-% %check if 0ms/TLE is included 
-% if 0>= start_epoch && 0 <= end_epoch
-%     %disp('0 is inside the range'); 
-%     fprintf('\n%s\n', repmat('*',1,60));
-%     fprintf('0 ms is included within Lower latency limit of %.3f and Upper latency limit of %.3f ms \n', start_epoch, end_epoch);
-%     fprintf('%s\n\n', repmat('*',1,60));
-%     
-% else
-%     %disp('0 is outside of the range');
-%     fprintf('\n%s\n', repmat('*',1,60));
-%     fprintf('WARNING: Lower latency limit %.3f ms was adjusted to %.3f ms \n', start_epoch, original_times(decoding_times_index(1)));
-%     fprintf('WARNING: Upper latency limit %.3f ms was adjusted to %.3f ms \n', end_epoch, original_times(decoding_times_index(end)));
-%     fprintf('WARNING: This adjustment was necessary due sampling and/or 0ms is always included.  \n'); 
-%     fprintf('%s\n\n', repmat('*',1,60));
-% end
 
 
 decodeTimes = [original_times(decoding_times_index(1)) original_times(decoding_times_index(end))];
@@ -546,33 +582,60 @@ end
 % fname = p.Results.filename_out; 
 % ParCompute = p.Results.ParCompute; 
 
-%filesaving 
-if isempty(pathname_out)
-    pathname_out = cd; 
+% %filesaving 
+% if isempty(pathname_out)
+%     pathname_out = cd; 
+% % else
+% %     pathname_out = pathname_out; 
+% end
+% %combine filename and paths
+% if k == 1
+%     if isunix
+%         filepath = strcat(pathname_out,'/',filename_out);
+%     else
+%         filepath =  strcat(pathname_out,'\',filename_out);
+%     end
 % else
-%     pathname_out = pathname_out; 
-end
-%combine filename and paths
-for i = 1:k %k = numel(BEST)
-    if k == 1
-        if isunix
-            filepath = strcat(pathname_out,'/',filename_out);
-        else
-            filepath =  strcat(pathname_out,'\',filename_out);
-        end    
-    else
-        if isunix
-            filepath{i} = strcat(pathname_out,'/',filename_out{i});
-        else
-            filepath{i}=  strcat(pathname_out,'\',filename_out{i});
-        end
-    end
-    
-end
+% 
+%     for i = 1:k %k = numel(BEST)
+%         if isunix
+%             filepath{i} = strcat(pathname_out,'/',filename_out{i});
+%         else
+%             filepath{i}=  strcat(pathname_out,'\',filename_out{i});
+%         end
+%     end
+%     
+% end
+% 
+
+
+
 
 if method == 1 %SVM
-    [MVPA, ALLMVPA] = erp_decoding(ALLBEST,filepath,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParCompute,method);
+    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParCompute,method);
 end
+
+%if saveas == 0, use pop_decoding per subject to output 1 MVPC file (even
+%though pop_decoding has the ability to do multiple decodings at one time (do through GUI). 
+if issaveas == 1
+  [MVPC,ALLMVPC,issave]  = pop_savemymvpc(MVPC,'ALLMVPC',ALLMVPC,'gui','erplab'); 
+  %since argument is 'erplab', will save as specified in MVPC fields, and
+  %update MVPC menu accordingly. 
+  if issave > 0 
+      if issave == 2 
+           msgwrng = '*** Your MVPCset was saved on your hard drive.***';
+      else
+           msgwrng = '*** Warning: Your MVPCset was only saved on the workspace.***';
+      end
+  else
+    msgwrng = 'ERPLAB Warning: Your changes were not saved';
+  end
+  
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+end
+
+
+
 
 return
     %erp_decoding(ALLBEST,filepath,nBins,nIter,nCrossBlocks,DataTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 

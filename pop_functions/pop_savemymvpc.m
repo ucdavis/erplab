@@ -1,24 +1,21 @@
-% PURPOSE  : Save BEST (.mat) file.
+% PURPOSE  : Save MVPC (.mvpc) file.
 %
 % FORMAT   :
 %
-% >>  [BEST] = pop_savemybest(BEST, parameters);
+% >>  [MVPC] = pop_savemybest(MVPC, parameters);
 %
 % INPUTS   :
 %
-%         BEST             - Bin-Epoched Single Trial (BEST) structure
+%         MVPC             - Multivariate Pattern Classification (MVPC) structure
 %
 % The available input parameters are as follows:
-%         'bestname'       - BEST name to be saved
+%         'mvpcname'       - mvpc name to be saved
 %         'filename'       - Output filename string as .best extension
 %         'filepath'       - Output file path
 %         'gui'            - 'save', 'saveas', 'erplab', or 'none'
 %                            - 'save' allows to save file to hard disk 
-%                            - 'saveas' allows to save file disk, user
-%                            choose desination with GUI and/or with new
-%                            specified filename. 
-%                             - 'none': for used with scriping; specify
-%                             file name and path; no GUI popup
+%                            - 'saveas' allows to change bestname, save to
+%                            hard disk
 %         'overwriteatmenu' - overwrite bestset at bestset menu 
 %                            'on'/'off'
 %         'warning'         - warning if overwriting file with same filename: 'on'(default)/off' 
@@ -64,24 +61,25 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [BEST, issave] = pop_savemybest(BEST, varargin)
-issave = 0 ;
-com = ''; 
+function [MVPC, ALLMVPC, issave] = pop_savemymvpc(MVPC,varargin)
+issave = 0; 
+com = '';
 
-
-if nargin<1
-    help pop_savemybest
+if nargin <1 
+    help pop_savemymvpc
     return
 end
-
 % parse inputs
 p = inputParser; 
 p.FunctionName = mfilename;
 p.CaseSensitive = false;
-p.addRequired('BEST');
+p.addRequired('MVPC');
+
 
 %optional
-p.addParamValue('bestname', '', @ischar); 
+%optional
+p.addParamValue('ALLMVPC',[]); %only for the decoding toolbox gui
+p.addParamValue('mvpcname', '', @ischar); 
 p.addParamValue('filename', '', @ischar); %EEG.filename
 p.addParamValue('filepath', '', @ischar);
 p.addParamValue('gui','no',@ischar); % or 'save', or 'saveas', or 'erplab'
@@ -89,28 +87,28 @@ p.addParamValue('overwriteatmenu','no',@ischar);
 p.addParamValue('Warning','on',@ischar); % on/off warning for existing file
 p.addParamValue('modegui',1,@isnumeric); 
 
-p.parse(BEST, varargin{:}); 
 
-if isempty(BEST)
-    msgboxText = 'No Bin-Epoched Single-Trial (BEST) Data was found!';
-    title_msg  = 'ERPLAB: pop_savemybest() error:';
+p.parse(MVPC,varargin{:}); 
+
+if isempty(MVPC)
+    msgboxText = 'No Multivariate Pattern Classification (MVPC) Data was found!';
+    title_msg  = 'ERPLAB: pop_savemymvpc() error:';
     errorfound(msgboxText, title_msg);
     return
 end
 
-%extract vars
-
+ALLMVPC = p.Results.ALLMVPC; 
 filenamex    = strtrim(p.Results.filename);
 filepathx    = strtrim(p.Results.filepath);
 fullfilename = fullfile(filepathx, filenamex); % full path
-bestname = p.Results.bestname;
+mvpcname = p.Results.mvpcname;
 overw = p.Results.overwriteatmenu; 
 modegui = p.Results.modegui; 
 
-if isempty(bestname)
-    bestname = BEST.bestname; 
+if isempty(mvpcname)
+    mvpcname = MVPC.mvpcname; 
 else
-    BEST.bestname = bestname; 
+    MVPC.mvpcname = mvpcname; 
 end
 
 if strcmpi(overw,'yes')||strcmpi(overw,'on')
@@ -125,56 +123,30 @@ else
     warnop = 0;
 end
 
-%
+if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset 
 
-
-%
-%Setting saving
-% 
-
-if strcmpi(p.Results.gui,'erplab') % open GUI to save BESTset 
     if overw == 0 
-        
-        %
-        % Call GUI
-        %
-%         
+       %GUI was already opened in pop_decoding
+       %MVPC filenames and pathnames already established
+       %Use ALLMVPC rather than MVPC since could be multiple saves
+       
+       filename = {ALLMVPC.filename};
+       filepath = {ALLMVPC.filepath}; 
 
-        if ~isempty(bestname)
-            bestname = {bestname}; 
-            
-        end
-
-        answer = savemybestGUI(bestname, fullfilename,0); 
-        
-        if isempty(answer)
-            disp('User selected Cancel')
-            return
-        end
-        bestname  = answer{1};
-        if isempty(bestname)
-            disp('User selected Cancel') % change
-            return
-        end
-        
-        fullfilename = answer{2};
-        overw        = answer{3}; % over write in memory? 1=yes
-        
+       fullfilename = strcat(filepath(:),filesep,filename(:));
+       overw = 0; %no option to overwrite mvpcset
     else
-        %do not open gui, and overwrite bestset at bestset menu
-        bestname = BEST.bestname; 
+        %do not open gui, and overwrite mvpcset at mvpcset menu
+        mvpcname = {ALLMVPC.mvpcname};
         fullfilename = ''; 
+
     end
-    
-    BEST.bestname = bestname; 
-    BEST.filename = ''; 
-    BEST.filepath = ''; 
-    BEST.saved = 'no'; 
-    modegui = 0; % do not open GUI to save
+
+    modegui = 0; 
     warnop = 1; 
-        
+
 elseif strcmpi(p.Results.gui, 'save') %just save, no ask
-    if isempty(BEST.bestname)
+    if isempty(MVPC.mvpcname)
         modegui = 2; % open a "save as" window to save
         filenamex = strtrim(p.Results.filename);
         filepathx = strtrim(p.Results.filepath);
@@ -182,17 +154,17 @@ elseif strcmpi(p.Results.gui, 'save') %just save, no ask
         %fullfilename = p.Results.filename;
     else
         modegui = 1;
-        fullfilename = fullfile(BEST.filepath,BEST.filename);
+        fullfilename = fullfile(MVPC.filepath,MVPC.filename);
         warnop  = 0;
     end
-    overw   = 1; % overwrite on menu
+    overw   = 0; % overwrite on menu
 
 %  "SAVE AS" .
 elseif strcmpi(p.Results.gui,'saveas')
     if isempty(fullfilename)
         
         try
-            filenamex = BEST.bestname;
+            filenamex = MVPC.mvpcname;
             filepathx = pwd;
             fullfilename = fullfile(filepathx, filenamex); % full path       
         catch
@@ -203,91 +175,54 @@ elseif strcmpi(p.Results.gui,'saveas')
             return
         end
     end
-    overw = 1; 
-    modegui = 2; 
-else
     overw = 0; 
-    modegui = 3; %savefrom script 
-    if isempty(fullfilename)
-        fullfilename = fullfile(BEST.filepath, BEST.filename);
-        if isempty(fullfilename)
-            error('ERPLAB says: You must specify a filename (path included) to save your BESTset.')
-        end
-        fprintf('\nNOTE: Since ''filename'' and ''filepath'' were not specified, \nERPLAB used BEST.filename and BEST.filepath to save your ERPset.\n\n');
-    end
-%     if isempty(erpname)
-%         erpname = ERP.erpname;
-%     else
-%         ERP.erpname = erpname;
-%     end
-%     if isempty(erpname)
-%         error('ERPLAB says: You must specify an erpname to save your ERPset.')
-%     end
-%     
-    
+    modegui = 2;
+
+else
+    %save from script! 
+
+
+
 end
 
-
-%
-% Saving
-% 
 if modegui == 0 
-    % "save-as" filepath has already been gathered from erplab GUI
-    % so NO extra gui will show (modegui =0) 
-   
-    if ~isempty(fullfilename)
-        %disp(['Saving BESTset at ' fullfilename '...'] )
-        [BEST, serror] = saveBEST(BEST, fullfilename, 0, warnop); %modegui = 0
-        if serror==1
-            return
-        end
-        issave = 2;
-    else % or the is no fullfilename (so no saving, just update menu)
-        issave = 1;
+    % "save-as" fullfilepath already been gathered from multifilesave erplab GUI
+
+    [MVPC,serror] = savemvpc(ALLMVPC, fullfilename, 0, warnop);
+    if serror == 1
+        return
     end
-    
-elseif modegui == 1 %"save-as" filepath has not been gathered yet, open new GUI
-    
+    issave = 2; %saved on hard drive
+
+elseif modegui == 1 %save directly 
+
     if ~isempty(fullfilename)
         %disp(['Saving BESTset at ' fullfilename '...'] )
-        [BEST, serror] = saveBEST(BEST, fullfilename, 0, warnop);
+        [MVPC, serror] = savemvpc(MVPC, fullfilename, 0, warnop);
         if serror==1
             return
         end
         issave = 2; %saved on harddrive
     else
-        issave = 1; %saved only on workspace 
+        issave = 1; %saved only on workspace
     end
 
-elseif modegui==2  
-    % save as (open window)
-    %disp(['Saving BEST at ' fullfilename '...'] )
-    [BEST, serror] = saveBEST(BEST, fullfilename, 1, warnop);
-    if serror==1
+elseif modegui == 2
 
+
+    %disp(['Saving BESTset at ' fullfilename '...'] )
+    [MVPC, serror] = savemvpc(MVPC, fullfilename, 1);
+    if serror==1
         return
     end
-    issave = 2;
-    
-elseif modegui==3
-    if ~isempty(fullfilename)
-        %disp(['Saving BESTset at ' fullfilename '...'] )
-        [BEST, serror] = saveBEST(BEST, fullfilename, 0, warnop);
-        if serror==1
-            return
-        end
-        issave = 2;
-    else
-        issave = 1;
-    end
-    
-    
+    issave = 2; %saved on harddrive
+
+
 end
 
-
-%overwriting in BESTset menu list 
+%overwriting in MVPCset menu list 
 if overw==1
-    
+    %this isn't possible if using Decoding GUI toolbox
     ALLBEST     = evalin('base', 'ALLBEST');
     CURRENTBEST = evalin('base', 'CURRENTBEST');
     ALLBEST(CURRENTBEST) = BEST;
@@ -295,8 +230,16 @@ if overw==1
     updatemenubest(ALLBEST,1)            % overwrite erpset at erpsetmenu
     
 else
-    assignin('base','BEST',BEST);
-    pop_loadbest('filename', 'workspace', 'UpdateMainGui', 'on');
+    if strcmpi(p.Results.gui,'erplab')
+        %in case of many mvpc sets through Decoding GUI toolbox
+        assignin('base','ALLMVPC2',MVPC)
+        pop_loadmvpc('filename', 'decodingtoolbox', 'UpdateMainGui', 'on');
+
+    else
+        assignin('base','MVPC',MVPC);
+        pop_loadmvpc('filename', 'workspace', 'UpdateMainGui', 'on');
+    end
+
     if issave ~= 2 
         issave = 1;
     end
@@ -304,7 +247,17 @@ else
     
 end
 
-
-
+%only output the last MVPC set
+MVPC = MVPC(end); 
 
 end
+
+
+
+
+
+
+
+
+
+

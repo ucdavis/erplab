@@ -309,7 +309,7 @@ if issaveas
             %erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
             msgwrng = '*** Your BESTset was saved on your hard drive.***';
         else
-            msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+            msgwrng = '*** Warning: Your BESTset was only saved on the workspace.***';
         end
     else
         msgwrng = 'ERPLAB Warning: Your changes were not saved';

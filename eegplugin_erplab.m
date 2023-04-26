@@ -161,7 +161,7 @@ CURRENTBEST      = 0;
 plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
-MVPA             = []; 
+MVPC             = []; 
 
 assignin('base','ERP',ERP);
 %assignin('base','ALLERP', ALLERP);
@@ -171,7 +171,7 @@ assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','CURRENTBEST', CURRENTBEST);
 assignin('base','BEST',BEST); 
 assignin('base','plotset', plotset);
-assignin('base','MVPA', MVPA); 
+assignin('base','MVPC', MVPC); 
 
 % ALLERP should be created with EEGLAB Globals in eeg_globals.m
 global ALLERP 
@@ -322,12 +322,17 @@ comDQQinfo = ['erpset_summary;'];
 comDQQpreavg = ['pop_DQ_preavg(ALLEEG)']; 
 
 
-%% MVPA callbacks
+%% BEST callbacks
 comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
-comSpatDecode = ['[MVPA, ALLMVPA] = pop_decoding(ALLBEST);']; 
 comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
 comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');'];
 comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
+
+%% MVPC callbacks
+comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');']; 
+comSaveMVPC = ['[MVPC] = pop_savemymvpc(MVPC,''gui'',''saveas'');']; 
+%comDelMVPC =
+comSpatDecode = ['[MVPC, ALLMVPC] = pop_decoding(ALLBEST);']; 
 
 
 
@@ -547,17 +552,23 @@ uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'Call
 
 
 %% BIN-EPOCHED Data (BEST sets)
-uimenu(submenu,'Label','BESTsets Menu','separator','on','foregroundcolor','#0072BD','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on')
-uimenu(submenu,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
-uimenu(submenu,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
-uimenu(submenu,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu(submenu,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
+mBEST = uimenu(submenu,'Label','Bin-Epoched Single Trial (BEST) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu(mBEST,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
+uimenu(mBEST,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+uimenu(mBEST,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
+uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off'); 
 
 %% Multivariate Pattern Analysis
-MVPAmenu = uimenu( submenu,'Label','MVPA','separator','on','tag','MVPAset','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
-%BESTmenu = uimenu(MVPAmenu,'Label','Currently loaded BESTsets','tag','LoadedBEST','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off');
-uimenu(MVPAmenu,'Label','ERP Decoding','separator','on','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off'); 
-set(MVPAmenu, 'enable','off'); 
+MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
+uimenu(MVPCmenu,'Label','Spatial ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+%uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
+uimenu(MVPCmenu,'Label','Currently Loaded MVPCsets:','tag','mvpcsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off'); 
+
+
+set(MVPCmenu, 'enable','off'); 
 
 
 
@@ -709,16 +720,8 @@ erpmenu = uimenu( menuERPLAB,'Label','ERPsets','separator','on','tag','erpsets',
 %set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
 set(erpmenu,'enable','off');
 
-%% Create BEST Main Menu 
-
-% bestmenu = uimenu( menuERPLAB,'Label','BESTsets','separator','on','tag','bestsets','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-% set(erpmenu,'position', 9); % Requesting a specific postion confuses the EEGLAB file menu order as of Matlab R2020a. Let's leave this off for now. AXS Nov 2020
-% set(bestmenu,'enable','off');
 
 
-
-%% Create MVPA MAIN MENU
-% % 
 
 
 

@@ -1,4 +1,4 @@
-function [mvpa] = rawscoreSVM(mvpa, truelabel, predictedlabel, SVMcoding) 
+function [mvpc] = rawscoreSVM(mvpc, truelabel, predictedlabel, SVMcoding) 
 
 % this function reshapes the decorder outputs 
 % and creates mvpa.raw_accuracy_1vsall 
@@ -11,7 +11,7 @@ if SVMcoding == 2
     predictions = permute(reshape_predictions,[2 1 3]);  
     %predictions = Timepoint x Run x Class
     %save predictions
-    mvpa.raw_predictions = predictions ; 
+    mvpc.raw_predictions = predictions ; 
     
 %     mvpa.raw_accuracy_1vAll = struct();
 %     

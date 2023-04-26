@@ -12,7 +12,7 @@
 %Edited by Aaron Simmons (UC Davis)
 %Original Author: Gi-Yeul Bae (Arizona State University)
 
-function [MVPA, ALLMVPA] = erp_decoding(ALLBEST, filepath, nIter, nCrossBlocks, DataTimes,relevantChans,SVMcoding,equalT,ParCompute,method)
+function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,SVMcoding,equalT,ParCompute,method)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
@@ -45,7 +45,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     %load subject BESTset & build mvpa dataset
     BEST = ALLBEST(s);   
-    mvpa = buildMVPAstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,SVMcoding,method); 
+    mvpc = buildMVPCstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,SVMcoding,method); 
     
     % The electrode channel list is mapped 1:1 with respect to your
     % electrode channel configuration (e.g., channel 1 is FP1 in our EEG cap)
@@ -55,11 +55,11 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     
     % for brevity in analysis
-    nBins =         mvpa.header.nClasses;
-    nIter =         mvpa.header.nIter;
-    nBlocks =       mvpa.header.nCrossfolds;
-    nElectrodes =   length(mvpa.header.electrodes); 
-    nSamps =        length(mvpa.times);
+    nBins =         mvpc.nClasses;
+    nIter =         mvpc.nIter;
+    nBlocks =       mvpc.nCrossfolds;
+    nElectrodes =   length(mvpc.electrodes); 
+    nSamps =        length(mvpc.times);
     sn =            BEST.bestname;
     
     
@@ -143,8 +143,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
             % save block assignment
             blockID = ['iter' num2str(iter) 'bin' num2str(bin)];
            
-            mvpa.header.blockassignment.(blockID) = blocks; % block assignment
-            mvpa.header.n_trials_per_erp(bin) = nPerBinBlock(bin); 
+            mvpc.SVMinfo.blockassignment.(blockID) = blocks; % block assignment
+            mvpc.SVMinfo.n_trials_per_erp(bin) = nPerBinBlock(bin); 
             
             
             %create ERP average and place into blockDat_filtData struct          
@@ -174,7 +174,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
         %% Step 7: Loop through each timepoint 
         % Do SVM_ECOC at each time point
         parfor (t = 1:nSamps,ParWorkers)
-            
+            mdl = []; 
             % grab data for timepoint t
             %toi = ismember(times,times(t)-svmECOC.window/2:times(t)+svmECOC.window/2);
             
@@ -219,8 +219,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     toc % stop timing the iteration loop
     
-    mvpa = rawscoreSVM(mvpa, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
-    mvpa = averageSVM(mvpa, SVMcoding,1); %average accuracy across runs
+    mvpc = rawscoreSVM(mvpc, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
+    mvpc = averageSVM(mvpc, SVMcoding,1); %average accuracy across runs
     %mvpa = avgconfusionSVM(mvpa,tst_target_svm_predict,SVMcoding); 
     
     
@@ -241,16 +241,16 @@ for s = 1:nSubs %decoding is performed within each subject independently
     if nSubs == 1
         
         %function outputs single/all MVPA
-        save(filepath,'mvpa','-v7.3');
+        %save(filepath,'mvpa','-v7.3');
         
-        MVPA = mvpa;
-        ALLMVPA = mvpa;
+        MVPC = mvpc;
+        ALLMVPC = mvpc;
     else
         %function outputs single/all MVPA
-        save(filepath{s},'mvpa','-v7.3');
+       % save(filepath{s},'mvpa','-v7.3');
         
-        MVPA = mvpa; 
-        ALLMVPA(s) = mvpa; 
+        MVPC = mvpc; 
+        ALLMVPC(s) = mvpc; 
     end
     
     
