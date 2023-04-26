@@ -15,6 +15,7 @@ addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 
 gui_erpxyaxeset_waveviewer = struct();
 
@@ -512,9 +513,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
 %%----------------------------------------------Sub function-----------------------------------------------------------------------%%
 %%*********************************************************************************************************************************%%
 
-
+%%-------------------------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%X axis%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%-------------------------------------------------------------------------
 
 %%----------------------dispaly xtick labels with milliseocnd--------------
     function xmilsecond(Source,~)
@@ -2858,5 +2859,170 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         xyaxis_apply();
     end
+
+%%-------------------------------------------------------------------------
+%%-----------------Reset this panel with the default parameters------------
+%%-------------------------------------------------------------------------
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel==3
+            try
+                ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
+                
+            catch
+                beep;
+                disp('f_ERP_Binchan_waviewer_GUI error: Restart ERPwave Viewer');
+                return;
+            end
+            
+            ALLERPIN = ERPwaviewer_apply.ALLERP;
+            try
+                ERPIN = ERPwaviewer_apply.ERP;
+                timeArray(1) = ERPwaviewer_apply.ERP.times(1);
+                timeArray(2) = ERPwaviewer_apply.ERP.times(end);
+                [timeticks stepX]= default_time_ticks_studio(ERPIN, [timeArray(1),timeArray(2)]);
+                if ~isempty(stepX) && numel(stepX) ==1
+                    stepX = floor(stepX/2);
+                end
+            catch
+                timeticks = '';
+                timeArray = [];
+            end
+            gui_erpxyaxeset_waveviewer.xmillisecond.Value =1;
+            gui_erpxyaxeset_waveviewer.xsecond.Value =0;
+            ERPwaviewer_apply.xaxis.tdis =1;
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%----------------------------Setting for X axis---------------
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%time range
+            gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+            ERPwaviewer_apply.xaxis.timerange = timeArray;
+            gui_erpxyaxeset_waveviewer.timerange_edit.Enable = 'off';
+            gui_erpxyaxeset_waveviewer.xtimerangeauto.Value = 1;
+            ERPwaviewer_apply.xaxis.trangeauto =1;
+            %%x ticklable
+            gui_erpxyaxeset_waveviewer.timeticks_edit.String = char(timeticks);%% xtick label
+            ERPwaviewer_apply.xaxis.timeticks = str2num(char(timeticks));
+            gui_erpxyaxeset_waveviewer.timeticks_edit.Enable = 'off';
+            gui_erpxyaxeset_waveviewer.xtimetickauto.Value=1;
+            ERPwaviewer_apply.xaxis.ticksauto = 1;
+            %%x precision for x ticklabel
+            gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+            gui_erpxyaxeset_waveviewer.xticks_precision.Value = 1;
+            ERPwaviewer_apply.xaxis.tickdecimals = 0;
+            %%x minor ticks
+            gui_erpxyaxeset_waveviewer.xtimeminorauto.Value =0;
+            ERPwaviewer_apply.xaxis.tminor.disp = 0;
+            stepX = [];
+            timeArray = str2num(char(gui_erpxyaxeset_waveviewer.timerange_edit.String));
+            xticksStr = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
+            gui_erpxyaxeset_waveviewer.timeminorticks_custom.String = '';
+            gui_erpxyaxeset_waveviewer.timeminorticks_custom.Enable = 'off';
+            gui_erpxyaxeset_waveviewer.timeminorticks_auto.Value=1;
+            gui_erpxyaxeset_waveviewer.timeminorticks_auto.Enable = 'off';
+            ERPwaviewer_apply.xaxis.tminor.step =[];
+            ERPwaviewer_apply.xaxis.tminor.auto = 1;
+            %%x label on/off
+            gui_erpxyaxeset_waveviewer.xtimelabel_on.Value=1; %
+            gui_erpxyaxeset_waveviewer.xtimelabel_off.Value=0;
+            ERPwaviewer_apply.xaxis.label =1;
+            
+            %%font and font size
+            ERPwaviewer_apply.xaxis.font  =1;
+            gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=1;
+            ERPwaviewer_apply.xaxis.fontsize =12;
+            gui_erpxyaxeset_waveviewer.font_custom_size.Value=5;
+            fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
+            gui_erpxyaxeset_waveviewer.yfont_custom.String=fonttype; %
+            yfontsize={'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+                '40','50','60','70','80','90','100'};
+            gui_erpxyaxeset_waveviewer.font_custom_size.String = yfontsize;
+            
+            %%color for x ticklabel
+            xtextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
+            gui_erpxyaxeset_waveviewer.xtimetextcolor.String =xtextColor ;
+            ERPwaviewer_apply.xaxis.fontcolor =1;
+            %%x units
+            ERPwaviewer_apply.xaxis.units =1;
+            gui_erpxyaxeset_waveviewer.xtimeunits_on.Value=1; %
+            gui_erpxyaxeset_waveviewer.xtimeunits_off.Value=0; %
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%----------------------------Setting for Y axis---------------
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%y scale
+            ALLERPIN = ERPwaviewer_apply.ALLERP;
+            ERPArrayin = ERPwaviewer_apply.SelectERPIdx;
+            BinArrayIN = [];
+            ChanArrayIn = [];
+            plotOrg = [1 2 3];
+            try
+                ChanArrayIn = ERPwaviewer_apply.chan;
+            catch
+                ChanArrayIn = [];
+            end
+            try
+                BinArrayIN = ERPwaviewer_apply.bin;
+            catch
+                BinArrayIN = [];
+            end
+            
+            PageCurrent =  ERPwaviewer_apply.PageIndex;
+            yylim_out = f_erpAutoYLim(ALLERPIN, ERPArrayin,plotOrg,BinArrayIN, ChanArrayIn);
+            try
+                yRangeLabel = num2str(yylim_out(PageCurrent,:));
+            catch
+                yRangeLabel = num2str(yylim_out(1,:));
+            end
+            %%Y range
+            gui_erpxyaxeset_waveviewer.yrange_edit.String = yRangeLabel;
+            gui_erpxyaxeset_waveviewer.yrange_edit.Enable = 'off';
+            gui_erpxyaxeset_waveviewer.yrangeauto.Value =1;
+            ERPwaviewer_apply.yaxis.scales = str2num(yRangeLabel);
+            ERPwaviewer_apply.yaxis.scalesauto = 1;
+            %%Y tick label
+            %%y ticks
+            yticksLabel = '';
+            if ~isempty(str2num(yRangeLabel))
+                yticksLabel = default_amp_ticks_viewer(str2num(yRangeLabel));
+            end
+            gui_erpxyaxeset_waveviewer.yticks_edit.String  = yticksLabel;
+            gui_erpxyaxeset_waveviewer.yticks_edit.Enable = 'off';
+            gui_erpxyaxeset_waveviewer.ytickauto.Value =1;
+            ERPwaviewer_apply.yaxis.ticks = str2num(yticksLabel);
+            ERPwaviewer_apply.yaxis.tickauto = 1;
+            gui_erpxyaxeset_waveviewer.yticks_precision.Value=1;
+            ERPwaviewer_apply.yaxis.tickdecimals=1;
+            %%Y minor
+            ERPwaviewer_apply.yaxis.yminor.disp =0;
+            ERPwaviewer_apply.yaxis.yminor.auto =1;
+            ERPwaviewer_apply.yaxis.yminor.step = [];
+            gui_erpxyaxeset_waveviewer.yminortick.Value=0; %
+            gui_erpxyaxeset_waveviewer.yminorstepedit.String ='';
+            gui_erpxyaxeset_waveviewer.yminorstepedit.Enable = 'off'; %
+            gui_erpxyaxeset_waveviewer.yminorstep_auto.Value=1;
+            gui_erpxyaxeset_waveviewer.yminorstep_auto.Enable ='off'; %
+            %%Y ticklabel on/off
+            ERPwaviewer_apply.yaxis.label = 1;
+            gui_erpxyaxeset_waveviewer.ylabel_on.Value=1; %
+            gui_erpxyaxeset_waveviewer.ylabel_off.Value=0;
+            %%font and fontsize
+            ERPwaviewer_apply.yaxis.font=1;
+            ERPwaviewer_apply.yaxis.fontsize=12;
+            gui_erpxyaxeset_waveviewer.yfont_custom.Value=1;
+            gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=5;
+            %%color for y ticklabels
+            ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
+            gui_erpxyaxeset_waveviewer.ytextcolor.String = ytextColor;
+            gui_erpxyaxeset_waveviewer.ytextcolor.Value=1;
+            ERPwaviewer_apply.yaxis.fontcolor =1;
+            %%y units
+            gui_erpxyaxeset_waveviewer.yunits_on.Value=1; %
+            gui_erpxyaxeset_waveviewer.yunits_off.Value=0; %
+            ERPwaviewer_apply.yaxis.units=1;
+            assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+            viewer_ERPDAT.Reset_Waviewer_panel=4;
+        end
+    end%% end of reset for the current panel
 
 end

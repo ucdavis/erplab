@@ -15,7 +15,7 @@ global viewer_ERPDAT
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
-
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 
 gui_plotorg_waveviewer = struct();
 
@@ -1873,9 +1873,104 @@ varargout{1} = box_erpwave_viewer_plotorg;
         else%%If the sampling rate varies across ERPsets, ERPsets must be "Pages".
             
         end
-        
-        
         plotorg_apply();
     end
+
+
+%%-------------------------------------------------------------------------
+%%-----------------Reset this panel with the default parameters------------
+%%-------------------------------------------------------------------------
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel==4
+            try
+                ERPwaviewerin = evalin('base','ALLERPwaviewer');
+            catch
+                beep;
+                disp('f_ERP_plotorg_waveviewer_GUI error: Restart ERPwave Viewer');
+                return;
+            end
+            gui_plotorg_waveviewer.grid.Value=1;
+            gui_plotorg_waveviewer.overlay.Value=2;
+            gui_plotorg_waveviewer.pages.Value=3;
+            ERPwaviewerin.plot_org.Grid = gui_plotorg_waveviewer.grid.Value;
+            ERPwaviewerin.plot_org.Overlay = gui_plotorg_waveviewer.overlay.Value;
+            ERPwaviewerin.plot_org.Pages = gui_plotorg_waveviewer.pages.Value;
+            
+            ERPwaviewerin.plot_org.gridlayout.op = 1;
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value =0;
+            %%row and column numbers
+            plotArray =  ERPwaviewerin.chan;
+            if isempty(plotArray)
+                plotArray   = [1:ERPwaviewerin.ERP.nchan];
+            end
+            plotBox = f_getrow_columnautowaveplot(plotArray);
+            try
+                NumrowsDef = plotBox(1);
+                NumcolumnsDef = plotBox(2);
+            catch
+                NumrowsDef = 1;
+                NumcolumnsDef = 1;
+            end
+            gui_plotorg_waveviewer.rownum.Value=NumrowsDef;
+            gui_plotorg_waveviewer.columnnum.Value=NumcolumnsDef;
+            gui_plotorg_waveviewer.rownum.Enable='off';
+            gui_plotorg_waveviewer.columnnum.Enable='off';
+            ERPwaviewerin.plot_org.gridlayout.rows = NumrowsDef;
+            ERPwaviewerin.plot_org.gridlayout.columns=NumcolumnsDef;
+            ERPsetArray = ERPwaviewerin.SelectERPIdx;
+            ALLERPIN = ERPwaviewerin.ALLERP;
+            if max(ERPsetArray) >length(ALLERPIN)
+                ERPsetArray =length(ALLERPIN);
+            end
+            [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+            plotArrayStr = chanStr(plotArray);
+            count = 0;
+            for Numofrows = 1:NumrowsDef
+                for Numofcolumns = 1:NumcolumnsDef
+                    count = count +1;
+                    if count> numel(plotArray)
+                        GridinforData{Numofrows,Numofcolumns} = char('None');
+                    else
+                        GridinforData{Numofrows,Numofcolumns} = char(plotArrayStr(count));
+                    end
+                end
+            end
+            ERPwaviewerin.plot_org.gridlayout.data =GridinforData;
+            plotArrayFormt = plotArrayStr;
+            plotArrayFormt(numel(plotArray)+1) = {'None'};
+            ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayFormt';
+            ERPwaviewerin.plot_org.gridlayout.columFormatOrig= plotArrayFormt';
+            %%Grid spacing
+            gui_plotorg_waveviewer.rowgap_auto.Value =1;
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowgapoverlayedit.String = '40';
+            gui_plotorg_waveviewer.columngapgtpop.Value =1;
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columnoverlay.Value=0;
+            gui_plotorg_waveviewer.columngapoverlapedit.String = '40';
+            gui_plotorg_waveviewer.rowgap_auto.Enable ='off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable ='off';
+            gui_plotorg_waveviewer.rowoverlap.Enable ='off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable ='off';
+            gui_plotorg_waveviewer.columngapgtpop.Enable ='off';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable ='off';
+            gui_plotorg_waveviewer.columnoverlay.Enable ='off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable ='off';
+            gui_plotorg_waveviewer.layout_custom_edit.Enable ='off';
+            ERPwaviewerin.plot_org.gridlayout.rowgap.GTPOP = gui_plotorg_waveviewer.rowgap_auto.Value;
+            ERPwaviewerin.plot_org.gridlayout.rowgap.GTPValue = str2num(gui_plotorg_waveviewer.rowgapGTPcustom.String);
+            ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayOP = gui_plotorg_waveviewer.rowoverlap.Value;
+            ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayValue = str2num(gui_plotorg_waveviewer.rowgapoverlayedit.String);
+            ERPwaviewerin.plot_org.gridlayout.columngap.GTPOP = gui_plotorg_waveviewer.columngapgtpop.Value;
+            ERPwaviewerin.plot_org.gridlayout.columngap.GTPValue = str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
+            ERPwaviewerin.plot_org.gridlayout.columngap.OverlayOP = gui_plotorg_waveviewer.columnoverlay.Value;
+            ERPwaviewerin.plot_org.gridlayout.columngap.OverlayValue = str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
+            
+            assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            viewer_ERPDAT.Reset_Waviewer_panel=5;
+        end
+    end%%end of reset
 
 end

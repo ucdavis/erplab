@@ -16,7 +16,8 @@ addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
-% addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
+
 
 gui_erplinset_waveviewer = struct();
 
@@ -947,5 +948,83 @@ varargout{1} = box_erplineset_viewer_property;
         LineLegend_apply();
     end
 
+%%-------------------------------------------------------------------------
+%%-----------------Reset this panel with the default parameters------------
+%%-------------------------------------------------------------------------
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel==6
+            try
+                ERPwaviewerin = evalin('base','ALLERPwaviewer');
+            catch
+                beep;
+                disp('f_ERP_lineset_waveviewer_GUI error: Restart ERPwave Viewer');
+                return;
+            end
+            %%Lines
+            gui_erplinset_waveviewer.linesauto.Value =1;
+            gui_erplinset_waveviewer.linescustom.Value = 0;
+            gui_erplinset_waveviewer.line_customtable.Enable = 'off';
+            [lineNameStr,linecolors,linetypes,linewidths,linecolors_str,linetypes_str,linewidths_str,linecolorsrgb] = f_get_lineset_ERPviewer();
+            lineset_str  =table(lineNameStr,linecolors,linetypes,linewidths);
+            lineset_str = table2cell(lineset_str);
+            gui_erplinset_waveviewer.line_customtable.ColumnFormat = {'char', 'char',...
+                {'solid','dash','dot','dashdot','plus','circle','asterisk'},...
+                {'0.25','0.5','1','1.5','2','2.5','3','3.5','4','4.5','5','5.5','6','6.5','7','7.5','8','8.5','9','9.5','10','10.5'}};
+            gui_erplinset_waveviewer.line_customtable.Data = lineset_str;
+            ERPwaviewerin.Lines.auto =1;
+            ERPwaviewerin.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
+            %%Legends
+            gui_erplinset_waveviewer.legendauto.Value = 1;
+            gui_erplinset_waveviewer.legendcustom.Value = 0;
+            gui_erplinset_waveviewer.legend_customtable.Enable = 'off';
+            gui_erplinset_waveviewer.font_custom_type.Enable = 'off'; %
+            gui_erplinset_waveviewer.font_custom_size.Enable = 'off';
+            gui_erplinset_waveviewer.legendtextauto.Enable = 'off';
+            gui_erplinset_waveviewer.legendtextcustom.Enable = 'off';
+            gui_erplinset_waveviewer.legendtextauto.Value = 1;
+            gui_erplinset_waveviewer.legendtextcustom.Value = 0;
+            gui_erplinset_waveviewer.legendcolumns.Value =1;
+            gui_erplinset_waveviewer.legendcolumns.Enable = 'off';
+            
+            for ii = 1:100
+                LegendName{ii,1} = '';
+                LegendNamenum(ii,1) =ii;
+            end
+            ALLERPIN = ERPwaviewerin.ALLERP;
+            ERPsetArray = ERPwaviewerin.SelectERPIdx;
+            if max(ERPsetArray(:))> length(ALLERPIN)
+                ERPsetArray =length(ALLERPIN);
+            end
+            [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+            try
+                plot_org = ERPwaviewerin.plot_org;
+                ERPIN = ERPwaviewerin.ERP;
+                if plot_org.Overlay ==2
+                    binArray = ERPwaviewerin.bin;
+                    for Numofbin = 1:numel(binArray)
+                        LegendName{Numofbin,1} = char(binStr(binArray(Numofbin)));
+                    end
+                    legendset_str = table(LegendNamenum,LegendName);
+                    legendset_str = table2cell(legendset_str);
+                end
+            catch
+                legendset_str = table(LegendNamenum,LegendName);
+                legendset_str = table2cell(legendset_str);
+            end
+            gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
+            gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
+            gui_erplinset_waveviewer.font_custom_size.Value = 5;
+            gui_erplinset_waveviewer.font_custom_type.Value =1;
+            ERPwaviewerin.Legend.auto=1;
+            ERPwaviewerin.Legend.data =gui_erplinset_waveviewer.legend_customtable.Data;
+            ERPwaviewerin.Legend.font=1;
+            ERPwaviewerin.Legend.fontsize=12;
+            ERPwaviewerin.Legend.textcolor=1;
+            ERPwaviewerin.Legend.columns=1;
+            
+            assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            viewer_ERPDAT.Reset_Waviewer_panel=7;
+        end
+    end
 
 end

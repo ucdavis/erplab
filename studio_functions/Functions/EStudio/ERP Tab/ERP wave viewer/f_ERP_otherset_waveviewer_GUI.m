@@ -14,6 +14,8 @@ global viewer_ERPDAT;
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
+
 
 gui_otherset_waveviewer = struct();
 
@@ -613,7 +615,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
             beep;
-            disp('f_ERP_lineset_waveviewer_GUI()>count_loadproper_change() error: Please run the ERP wave viewer again.');
+            disp('f_ERP_otherset_waveviewer_GUI() error: Please run the ERP wave viewer again.');
             return;
         end
         
@@ -735,6 +737,49 @@ varargout{1} = box_erplabelset_viewer_otherset;
             return;
         end
         other_apply();
+    end
+
+
+%%-------------------------------------------------------------------------
+%%-----------------Reset this panel with the default parameters------------
+%%-------------------------------------------------------------------------
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel==7
+            try
+                ERPwaviewerin = evalin('base','ALLERPwaviewer');
+            catch
+                beep;
+                disp('f_ERP_otherset_waveviewer_GUI error: Restart ERPwave Viewer');
+                return;
+            end
+            
+            gui_otherset_waveviewer.polarity_up.Value =1;
+            gui_otherset_waveviewer.polarity_down.Value =0;
+            ERPwaviewerin.polarity = gui_otherset_waveviewer.polarity_up.Value;%% the polarity of wave
+            
+            %%SME
+            gui_otherset_waveviewer.show_SEM.Value =0;
+            ERPwaviewerin.SEM.active  = gui_otherset_waveviewer.show_SEM.Value;
+            gui_otherset_waveviewer.SEM_custom.Value =1;
+            gui_otherset_waveviewer.SEM_custom.Enable = 'off';
+            ERPwaviewerin.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
+            %%trans
+            ERPwaviewerin.SEM.trans = (gui_otherset_waveviewer.SEMtrans_custom.Value-1)/10;
+            gui_otherset_waveviewer.SEMtrans_custom.Value =1;
+            gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
+            gui_otherset_waveviewer.bsl_none.Value =1;
+            ERPwaviewerin.baselinecorr = 'none';
+            gui_otherset_waveviewer.bsl_pre.Value =0;
+            gui_otherset_waveviewer.bsl_post.Value =0;
+            gui_otherset_waveviewer.bsl_whole.Value =0;
+            gui_otherset_waveviewer.bsl_custom.Value =0;
+            gui_otherset_waveviewer.bsl_customedit.String = '';
+            gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+            gui_otherset_waveviewer.figurebakcolor.String ='1,1,1';
+            ERPwaviewerin.figbackgdcolor =[1 1 1];
+            assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            %             viewer_ERPDAT.Reset_Waviewer_panel=3;
+        end
     end
 
 end

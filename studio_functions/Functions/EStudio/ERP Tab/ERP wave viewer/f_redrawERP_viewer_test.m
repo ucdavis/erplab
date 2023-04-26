@@ -136,8 +136,12 @@ gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_t
 gui_erp_waviewer.figureout = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
     'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@figure_out);
 
+gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Reset',...
+    'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
+
+
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',12,'BackgroundColor',ColorBviewer_def);
-set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 70 70 -1 100 170 20]);
+set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 70 70 -1 100 170 70 20]);
 
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
@@ -264,11 +268,7 @@ pagesValue =  ERPwaviewer.plot_org.Pages;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    Source.String = num2str(ERPwaviewer.PageIndex);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 Pagecurrent = str2num(Source.String);
@@ -308,10 +308,7 @@ global viewer_ERPDAT
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 try
@@ -361,10 +358,7 @@ global viewer_ERPDAT
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 try
@@ -413,10 +407,7 @@ global viewer_ERPDAT;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 
@@ -463,10 +454,7 @@ global viewer_ERPDAT;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 
@@ -493,10 +481,7 @@ global viewer_ERPDAT;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 
@@ -522,17 +507,34 @@ end
 end
 
 
+%%Reset each panel that using the default parameters
+function Panel_Reset(~,~)
+global viewer_ERPDAT;
+
+MessageViewer= char(strcat('Reset'));
+erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+
+try
+    viewer_ERPDAT.Process_messg =1;
+    viewer_ERPDAT.Reset_Waviewer_panel=1;
+    estudioworkingmemory('zoomSpace',0);
+    f_redrawERP_viewer_test();
+    viewer_ERPDAT.Process_messg =2;
+catch
+    viewer_ERPDAT.Process_messg =3;
+end
+
+end
+
+
+
+
 function zoomedit(Source,~)
 global viewer_ERPDAT;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    zoomspaceEdit = estudioworkingmemory('zoomSpace');
-    Source.String = num2str(zoomspaceEdit);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 zoomspaceEdit = str2num(Source.String);
@@ -575,10 +577,7 @@ global viewer_ERPDAT;
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
-    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-    fprintf(2,['\n Warning: ',messgStr,'.\n']);
-    viewer_ERPDAT.Process_messg =4;
-    return;
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
 

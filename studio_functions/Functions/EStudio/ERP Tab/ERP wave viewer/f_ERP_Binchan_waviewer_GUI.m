@@ -953,12 +953,14 @@ varargout{1} = Chanbin_waveviewer_box;
             elseif strcmpi(ERPtooltype,'ERPLAB')
                 ERPwaveview_binchan.auto.Value = 1;
                 ERPwaveview_binchan.custom.Value =0;
-                ERPwaveview_binchan.ElecRange.Enable = 'off';
-                ERPwaveview_binchan.BinRange.Enable = 'off';
+                   ERPwaveview_binchan.auto.Enable = 'off';
+                ERPwaveview_binchan.custom.Enable = 'off';
+                ERPwaveview_binchan.ElecRange.Enable = 'on';
+                ERPwaveview_binchan.BinRange.Enable = 'on';
                 Selected_erpset = evalin('base','CURRENTERP');
                 ALLERP = evalin('base','ALLERP');
                 if ~isempty(Selected_erpset) && ~isempty(ALLERP) && (Selected_erpset<= length(ALLERP)) && min(Selected_erpset)>0
-                    [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,SelectedIndex);
+                    [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,Selected_erpset);
                     Chanlist_name = cell(length(chanStr)+1,1);
                     Chanlist_name(1) = {'All'};
                     for Numofchan11 = 1:length(chanStr)
@@ -975,8 +977,8 @@ varargout{1} = Chanbin_waveviewer_box;
                     ERPwaveview_binchan.BinRange.String = brange;
                     ERPwaveview_binchan.BinRange.Value = 1;
                 end
-                ERPwaviewerIN.bin = [1:length(ERPwaveview_binchan.BinRange.String)];
-                ERPwaviewerIN.chan = [1:length(ERPwaveview_binchan.ElecRange.String)];
+                ERPwaviewerIN.bin = [1:length(ERPwaveview_binchan.BinRange.String)-1];
+                ERPwaviewerIN.chan = [1:length(ERPwaveview_binchan.ElecRange.String)-1];
                 ERPwaviewerIN.binchan_op = 1;
             end
             assignin('base','ALLERPwaviewer',ERPwaviewerIN);

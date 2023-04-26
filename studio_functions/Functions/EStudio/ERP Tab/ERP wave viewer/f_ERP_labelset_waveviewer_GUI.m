@@ -14,6 +14,7 @@ global viewer_ERPDAT;
 addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 
 gui_labelset_waveviewer = struct();
 
@@ -555,5 +556,51 @@ varargout{1} = box_erplabelset_viewer_property;
         end
         label_apply();
     end
+
+%%-------------------------------------------------------------------------
+%%-----------------Reset this panel with the default parameters------------
+%%-------------------------------------------------------------------------
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel==5
+            try
+                ERPwaviewerin = evalin('base','ALLERPwaviewer');
+            catch
+                beep;
+                disp('f_ERP_labelset_waveviewer_GUI error: Restart ERPwave Viewer');
+                return;
+            end
+            gui_labelset_waveviewer.labelauto.Value=1; %
+            gui_labelset_waveviewer.nolabel.Value=0; %
+            gui_labelset_waveviewer.customlabel.Value=0; %
+            ERPwaviewerin.chanbinsetlabel.location.auto =1;
+            ERPwaviewerin.chanbinsetlabel.location.no =0;
+            ERPwaviewerin.chanbinsetlabel.location.custom=0;
+            %%label position
+            gui_labelset_waveviewer.xperc_edit.String = '0';
+            gui_labelset_waveviewer.xperc_edit.Enable ='off'; %
+            gui_labelset_waveviewer.yperc_edit.String ='70';
+            gui_labelset_waveviewer.yperc_edit.Enable='off'; %
+            gui_labelset_waveviewer.center.Value =1;
+            gui_labelset_waveviewer.center.Enable='off'; %
+            ERPwaviewerin.chanbinsetlabel.location.xperc =0;
+            ERPwaviewerin.chanbinsetlabel.location.yperc = 70;
+            ERPwaviewerin.chanbinsetlabel.location.center =1;
+            %%label font, fontsize and color
+            ERPwaviewerin.chanbinsetlabel.font =1;
+            ERPwaviewerin.chanbinsetlabel.fontsize =12;
+            ERPwaviewerin.chanbinsetlabel.textcolor=1;
+            fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
+            gui_labelset_waveviewer.font_custom_type.Value=1;
+            gui_labelset_waveviewer.font_custom_type.Enable='off'; %
+            gui_labelset_waveviewer.font_custom_size.Value=5;
+            gui_labelset_waveviewer.font_custom_size.Enable='off'; %
+            gui_labelset_waveviewer.labelcolor.Value=1;
+            gui_labelset_waveviewer.labelcolor.Enable='off'; %
+            
+            assignin('base','ALLERPwaviewer',ERPwaviewerin);
+            viewer_ERPDAT.Reset_Waviewer_panel=6;
+        end
+    end
+
 
 end
