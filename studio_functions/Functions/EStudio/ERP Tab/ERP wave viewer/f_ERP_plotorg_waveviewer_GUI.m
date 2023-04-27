@@ -1088,6 +1088,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
         f_redrawERP_viewer_test();
         estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
+         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
     end
 
 

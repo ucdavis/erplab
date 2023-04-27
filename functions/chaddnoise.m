@@ -441,15 +441,13 @@ if confirma
     try
         trialNum = ntrial;%EEGin.trials;
         sampleNum = EEGin.pnts;
-        
+         formula = regexprep(formula, '([\s])', '','ignorecase');
         %%-----------------------------------------------------------------
         %%---------------------------------white noise---------------------
         %%-----------------------------------------------------------------
-        if isempty(NoiseFlagwhite)
-            AmpNoisewhite = 0;
-            Noiseedwhite =0;
-        else
-            [mattypewhite toktypewhite] = regexpi(formula, '\s+[\d+]*(whitenoise)', 'match','tokens');
+        if ~isempty(NoiseFlagwhite)
+           
+            [mattypewhite toktypewhite] = regexpi(formula, '\s*[+-]?[\d+]*(whitenoise)', 'match','tokens');
             if isempty(mattypewhite) || isempty(toktypewhite)
                 msgboxText =  ['\nPlease, check your formula: \n\n'...
                     char(formula) '\n'];
@@ -477,50 +475,47 @@ if confirma
             if isempty(Noiseedwhite)
                 Noiseedwhite =0;
             end
-        end
-        if Noiseedwhite==0%% use the default generator to get noise
-            %                 rng(1,'twister');%% ramdom generate the noise
-        else
-            try
-                rng(Noiseedwhite,'philox');
-            catch
-                rng(0,'philox');
-            end
-        end
-        Desiredwhitenoise =  randn(sampleNum,trialNum);%%white noise
-        Desiredwhitenoise = reshape(Desiredwhitenoise,sampleNum*trialNum,1);
-        if trialNum==1%%one trial
-            if max(abs(Desiredwhitenoise(:)))~=0
-                Desiredwhitenoise = AmpNoisewhite*Desiredwhitenoise./max(abs(Desiredwhitenoise(:)));
-            end
-            Desiredwhitenoise = reshape(Desiredwhitenoise,sampleNum,trialNum);
-            if trialNum==1
-                Desiredwhitenoise = reshape(Desiredwhitenoise,1,sampleNum);
-            end
-            EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desiredwhitenoise;
-        else%%multiple trials or bins
-            Desiredwhitenoise = reshape(Desiredwhitenoise,sampleNum,trialNum);
-            for Numoftrial = 1:trialNum
-                Noisinglewhite = Desiredwhitenoise(:,Numoftrial);
-                if max(abs(Noisinglewhite(:)))~=0
-                    Noisinglewhite = AmpNoisewhite*Noisinglewhite./max(abs(Noisinglewhite(:)));
+            if Noiseedwhite==0%% use the default generator to get noise
+                %                 rng(1,'twister');%% ramdom generate the noise
+            else
+                try
+                    rng(Noiseedwhite,'philox');
+                catch
+                    rng(0,'philox');
                 end
-                Noisinglewhite = reshape(Noisinglewhite,1,sampleNum);
-                EEGout.(datafield)(realchanpos(1),:,Numoftrial) = squeeze(EEGin.(datafield)(realchanpos(2),:,Numoftrial))+Noisinglewhite;
+            end
+            Desiredwhitenoise =  randn(sampleNum,trialNum);%%white noise
+            Desiredwhitenoise = reshape(Desiredwhitenoise,sampleNum*trialNum,1);
+            if trialNum==1%%one trial
+                if max(abs(Desiredwhitenoise(:)))~=0
+                    Desiredwhitenoise = AmpNoisewhite*Desiredwhitenoise./max(abs(Desiredwhitenoise(:)));
+                end
+                Desiredwhitenoise = reshape(Desiredwhitenoise,sampleNum,trialNum);
+                if trialNum==1
+                    Desiredwhitenoise = reshape(Desiredwhitenoise,1,sampleNum);
+                end
+                EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desiredwhitenoise;
+            else%%multiple trials or bins
+                Desiredwhitenoise = reshape(Desiredwhitenoise,sampleNum,trialNum);
+                for Numoftrial = 1:trialNum
+                    Noisinglewhite = Desiredwhitenoise(:,Numoftrial);
+                    if max(abs(Noisinglewhite(:)))~=0
+                        Noisinglewhite = AmpNoisewhite*Noisinglewhite./max(abs(Noisinglewhite(:)));
+                    end
+                    Noisinglewhite = reshape(Noisinglewhite,1,sampleNum);
+                    EEGout.(datafield)(realchanpos(1),:,Numoftrial) = squeeze(EEGin.(datafield)(realchanpos(2),:,Numoftrial))+Noisinglewhite;
+                end
             end
         end
+        
         
         
         
         %%-----------------------------------------------------------------
         %%---------------------------------pink noise----------------------
         %%-----------------------------------------------------------------
-        if isempty(NoiseFlagpink)
-            AmpNoisepink = 0;
-            Noiseedpink =0;
-        else
-            
-            [mattypepink toktypepink] = regexpi(formula, '\s+[\d+]*(pinknoise)', 'match','tokens');
+        if ~isempty(NoiseFlagpink)
+            [mattypepink toktypepink] = regexpi(formula, '\s*[+-]?[\d+]*(pinknoise)', 'match','tokens');
             if isempty(mattypepink) || isempty(toktypepink)
                 msgboxText =  ['\nPlease, check your formula: \n\n'...
                     char(formula) '\n'];
@@ -548,40 +543,41 @@ if confirma
             if isempty(Noiseedpink)
                 Noiseedpink =0;
             end
-        end
-        if Noiseedpink==0%% use the default generator to get noise
-            %                 rng(1,'twister');%% ramdom generate the noise
-        else
-            try
-                rng(Noiseedpink,'philox');
-            catch
-                rng(0,'philox');
-            end
-        end
-        try
-            Desiredpinknoise = pinknoise(sampleNum*trialNum);
-        catch
-            Desiredpinknoise = f_pinknoise(sampleNum*trialNum);
-        end
-        Desiredpinknoise = reshape(Desiredpinknoise,sampleNum*trialNum,1);
-        if trialNum==1%%one trial
-            if max(abs(Desiredpinknoise(:)))~=0
-                Desiredpinknoise = AmpNoisepink*Desiredpinknoise./max(abs(Desiredpinknoise(:)));
-            end
-            Desiredpinknoise = reshape(Desiredpinknoise,sampleNum,trialNum);
-            if trialNum==1
-                Desiredpinknoise = reshape(Desiredpinknoise,1,sampleNum);
-            end
-            EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desiredpinknoise;
-        else%%multiple trials or bins
-            Desiredpinknoise = reshape(Desiredpinknoise,sampleNum,trialNum);
-            for Numoftrial = 1:trialNum
-                Noisinglepink = Desiredpinknoise(:,Numoftrial);
-                if max(abs(Noisinglepink(:)))~=0
-                    Noisinglepink = AmpNoisepink*Noisinglepink./max(abs(Noisinglepink(:)));
+            
+            if Noiseedpink==0%% use the default generator to get noise
+                %                 rng(1,'twister');%% ramdom generate the noise
+            else
+                try
+                    rng(Noiseedpink,'philox');
+                catch
+                    rng(0,'philox');
                 end
-                Noisinglepink = reshape(Noisinglepink,1,sampleNum);
-                EEGout.(datafield)(realchanpos(1),:,Numoftrial) = squeeze(EEGin.(datafield)(realchanpos(2),:,Numoftrial))+Noisinglepink;
+            end
+            try
+                Desiredpinknoise = pinknoise(sampleNum*trialNum);
+            catch
+                Desiredpinknoise = f_pinknoise(sampleNum*trialNum);
+            end
+            Desiredpinknoise = reshape(Desiredpinknoise,sampleNum*trialNum,1);
+            if trialNum==1%%one trial
+                if max(abs(Desiredpinknoise(:)))~=0
+                    Desiredpinknoise = AmpNoisepink*Desiredpinknoise./max(abs(Desiredpinknoise(:)));
+                end
+                Desiredpinknoise = reshape(Desiredpinknoise,sampleNum,trialNum);
+                if trialNum==1
+                    Desiredpinknoise = reshape(Desiredpinknoise,1,sampleNum);
+                end
+                EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desiredpinknoise;
+            else%%multiple trials or bins
+                Desiredpinknoise = reshape(Desiredpinknoise,sampleNum,trialNum);
+                for Numoftrial = 1:trialNum
+                    Noisinglepink = Desiredpinknoise(:,Numoftrial);
+                    if max(abs(Noisinglepink(:)))~=0
+                        Noisinglepink = AmpNoisepink*Noisinglepink./max(abs(Noisinglepink(:)));
+                    end
+                    Noisinglepink = reshape(Noisinglepink,1,sampleNum);
+                    EEGout.(datafield)(realchanpos(1),:,Numoftrial) = squeeze(EEGin.(datafield)(realchanpos(2),:,Numoftrial))+Noisinglepink;
+                end
             end
         end
         
@@ -589,13 +585,9 @@ if confirma
         %%-----------------------------------------------------------------
         %%---------------------------------line noise----------------------
         %%-----------------------------------------------------------------
-        if isempty(NoiseFlagline)%%line noise
-            AmpNoise = 0;
-            PeriodValue = 60;
-            PhaseShit=0;
-            isGenType =1;
-        else
-            splitStr = regexp(formula,'\=|+','split');
+        if ~isempty(NoiseFlagline)%%line noise
+            
+            splitStr = regexp(formula,'\=|+|-','split');
             for ii = 1:length(splitStr)
                 toklinenoise = regexpi(splitStr{ii}, 'linenoise', 'match','ignorecase');
                 if ~isempty(toklinenoise)
@@ -604,7 +596,8 @@ if confirma
                 end
             end
             
-            [mattypeline toktypeline] = regexpi(formula, '\s+[\d+]*(linenoise)', 'match','tokens');
+            %             [mattypeline toktypeline] = regexpi(formula, '\s+[\d+]*(linenoise)', 'match','tokens');\s+[+-]?[\d+]*
+            [mattypeline toktypeline] = regexpi(formula, '\s*[+-]?[\d+]*(linenoise)', 'match','tokens');
             if isempty(mattypeline) || isempty(toktypeline)
                 msgboxText =  ['\nPlease, check your formula: \n\n'...
                     char(formula) '\n'];
@@ -687,40 +680,39 @@ if confirma
                     PhaseShit =[];
                 end
             end
-        end
-        timeStart = EEGin.xmin;
-        timeEnd = EEGin.xmax;
-        
-        Times = [timeStart:1/EEGin.srate:timeEnd];
-        Desirednoise =[];
-        if isGenType==1 %% fixed phase shifting mode
-            PhaseShit = deg2rad(PhaseShit);%%Convert angles from degrees to radians.
-            for Numoftrial = 1:trialNum
-                Desirednoise(:,Numoftrial) =  AmpNoise*sin(2*PeriodValue*pi*Times+PhaseShit);
-            end
-        else
-            if ~isempty(PhaseShit)%% define one seed for "random" mode
-                PhaseShit = ceil(PhaseShit);
-                if PhaseShit<0
-                    PhaseShit = 0;
-                end
-                try
-                    rng(PhaseShit,'philox');
-                catch
-                    rng(0,'philox');
-                end
-            end
-            Phasemtrial = rand(1,trialNum)*2*pi;
-            for Numoftrial = 1:trialNum
-                Desirednoise(:,Numoftrial) =  AmpNoise*sin(2*PeriodValue*pi*Times+Phasemtrial(Numoftrial));
-            end
+            timeStart = EEGin.xmin;
+            timeEnd = EEGin.xmax;
             
+            Times = [timeStart:1/EEGin.srate:timeEnd];
+            Desirednoise =[];
+            if isGenType==1 %% fixed phase shifting mode
+                PhaseShit = deg2rad(PhaseShit);%%Convert angles from degrees to radians.
+                for Numoftrial = 1:trialNum
+                    Desirednoise(:,Numoftrial) =  AmpNoise*sin(2*PeriodValue*pi*Times+PhaseShit);
+                end
+            else
+                if ~isempty(PhaseShit)%% define one seed for "random" mode
+                    PhaseShit = ceil(PhaseShit);
+                    if PhaseShit<0
+                        PhaseShit = 0;
+                    end
+                    try
+                        rng(PhaseShit,'philox');
+                    catch
+                        rng(0,'philox');
+                    end
+                end
+                Phasemtrial = rand(1,trialNum)*2*pi;
+                for Numoftrial = 1:trialNum
+                    Desirednoise(:,Numoftrial) =  AmpNoise*sin(2*PeriodValue*pi*Times+Phasemtrial(Numoftrial));
+                end
+                
+            end
+            if trialNum==1
+                Desirednoise = reshape(Desirednoise,1,sampleNum);
+            end
+            EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desirednoise;
         end
-        
-        if trialNum==1
-            Desirednoise = reshape(Desirednoise,1,sampleNum);
-        end
-        EEGout.(datafield)(realchanpos(1),:,1:trialNum) = squeeze(EEGin.(datafield)(realchanpos(2),:,1:trialNum))+Desirednoise;
         
         
         %
