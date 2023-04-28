@@ -2,8 +2,7 @@
 %
 % FORMAT   :
 %
-% >> MVPC = pop_decoding(BEST); or
-% >> ALLMVPC = pop_decoding(ALLBEST)
+% >> MVPC = pop_decoding(BEST)
 %
 % INPUTS   :
 %
@@ -61,7 +60,7 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [MVPC, ALLMVPC] = pop_decoding(ALLBEST, varargin) 
+function [MVPC] = pop_decoding(ALLBEST, varargin) 
 com = ''; 
 
 try
@@ -292,7 +291,7 @@ if nargin == 1 %GUI
     decodeTimes = decodeTimes* 1000; 
    
     
-   [MVPC, ALLMVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
+   [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
    'equalizeTrials', equalizeTrials, 'method', selected_method, ...
@@ -618,7 +617,7 @@ end
 %if saveas == 0, use pop_decoding per subject to output 1 MVPC file (even
 %though pop_decoding has the ability to do multiple decodings at one time (do through GUI). 
 if issaveas == 1
-  [MVPC,ALLMVPC,issave]  = pop_savemymvpc(MVPC,'ALLMVPC',ALLMVPC,'gui','erplab'); 
+  [MVPC,issave]  = pop_savemymvpc(MVPC,'ALLMVPC',ALLMVPC,'gui','erplab'); 
   %since argument is 'erplab', will save as specified in MVPC fields, and
   %update MVPC menu accordingly. 
   if issave > 0 

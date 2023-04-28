@@ -22,6 +22,7 @@ if nargin < 1
     mvpc.window = ''; %point or twindow
     mvpc.equalTrials = 1; %1: floor across files, %2 floor within files, %0 don't floor. 
     mvpc.n_trials_per_bin = ALLBEST.n_trials_per_bin;
+    mvpc.saved = 'no';
     
     %mvpa fields
     mvpc.epoch.pre = ALLBEST.times(1); % Set epoch start in ms (from imported data)
@@ -29,7 +30,7 @@ if nargin < 1
     mvpc.times = ALLBEST.times; %timepoints actually decoded
     
 else
-    mvpc.mvpcname = ALLBEST.bestname;
+    mvpc.mvpcname = ALLBEST.mvpcname;
     mvpc.filename = ALLBEST.filename;
     mvpc.filepath = ALLBEST.filepath; 
     mvpc.mvpc_version = 1; 
@@ -62,8 +63,11 @@ else
     mvpc.equalTrials = equalT; %1: floor across files, %2 floor within files, %0 don't floor. 
     mvpc.n_trials_per_bin = ALLBEST.n_trials_per_bin;
     
+    
     %mvpa fields
     mvpc.epoch.pre = DataTimes(1); % Set epoch start (from imported data)
     mvpc.epoch.post = DataTimes(2); % Set epoch end (from imported data)
     mvpc.times = ALLBEST.times; %timepoints actually decoded
+    mvpc.saved = 'no';
+    
 end

@@ -22,7 +22,7 @@ function varargout = mvpcviewerGUI(varargin)
 
 % Edit the above text to modify the response to help mvpcviewerGUI
 
-% Last Modified by GUIDE v2.5 24-Apr-2023 14:42:20
+% Last Modified by GUIDE v2.5 27-Apr-2023 18:23:42
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -260,7 +260,12 @@ iset  = 1;
 times = ALLMVPC(1).times;
 if strcmpi(datatype, 'SVM')
     xlim  = [min(times) max(times)];
-    ylim  = [-2 100];
+    if ALLMVPC(1).nChance*3 > 1
+        ylim = [0 1]; 
+    else
+        ylim =  [0 ALLMVPC(1).nChance*3];
+        
+    end
     
 else
     xlim  = [0 30];
@@ -269,8 +274,8 @@ else
 end
 
 
-% set(handles.edit_ylim, 'String', num2str(ylim))
-% set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)))
+set(handles.edit_ylim, 'String', num2str(ylim))
+set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)))
 
 set(handles.edit_file, 'String', num2str(iset))
 
@@ -375,6 +380,11 @@ fntsz = get(handles.edit_report, 'FontSize');
 set(handles.edit_report, 'FontSize', fntsz*1.5)
 set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
 
+linecols = ["red","green","blue","cyan","magenta","yellow","black","white"]; 
+    
+
+
+
 ALLMVPC = handles.ALLMVPA; 
 times = ALLMVPC(iset).times;
 p1 = times(1);
@@ -400,17 +410,22 @@ axes(handles.axes1);
 % set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
 %drawnow
 % tic
-for seta = jseta 
+for i = 1:numel(jseta)
+    
+    seta = jseta(i); 
     
     AverageAccuracy = ALLMVPC(seta).average_accuracy_1vAll; 
-
+    
     %plot
-    plot(timex,AverageAccuracy, 'LineWidth',1,'Color',[0 0.1 0.5]);
+    plot(timex,AverageAccuracy, 'LineWidth',1,'Color',linecols(seta));
+    axis([xlim ylim]); 
     hold on
     
     if handles.chance == 1
         chancelvl = ALLMVPC(seta).nChance; 
-        line([timex(1),timex(end)],[chancelvl,chancelvl]); %chance line
+        line([timex(1),timex(end)],[chancelvl,chancelvl],... 
+            'LineStyle','--','Color','black'); %chance line
+        
     end
 
  
@@ -439,6 +454,14 @@ if get(handles.checkbox_butterflyset, 'Value')
         else
                 var1 = num2str(setArray);
         end
+        for i = 1:numel(jseta)
+            seta = jseta(i);
+            setlabelx{seta} = sprintf('(%s)', ALLMVPC(seta).mvpcname);
+            chancelabelx{seta} = ALLMVPC(seta).nChance;
+            foldlabelx{seta} = ALLMVPC(seta).nCrossfolds;
+            methodlabelx{seta} = ALLMVPC(seta).DecodingMethod;
+        end
+        
 elseif nsetinput>0
         if nsetinput>10
                 var1 = vect2colon(jseta, 'Delimiter', 'off');
@@ -471,8 +494,22 @@ if ~get(handles.checkbox_butterflyset,'Value')
     strfrmt = ['File   : %s %s\nChance level: %.4f \nCrossfold Validation: %i \nDecoding Method: %s '];
     values2print = {var1, setlabelx, chancelabelx, foldlabelx, methodlabelx};
 else
-    strfrmt = ['File   : %s %s'];
-    values2print = {var1, setlabelx};
+    strfrmt = ['File   : %s'];
+    newL = repmat('\nFile %s: Color: %s',[1,numel(jseta)]); 
+    
+    strfrmt = [strfrmt newL]; 
+    
+    p = 1; 
+    for j = 1:numel(jseta)
+        if p == 1
+            values2print = {var1};
+        end
+        p = p + 1;
+        values2print{p} = setlabelx{j}; 
+        p = p + 1;
+        values2print{p} = linecols(j); 
+        
+    end
 end
 
 repo = sprintf(strfrmt, values2print{:});
@@ -552,8 +589,8 @@ handles.iset = iset;
 % Update handles structure
 guidata(hObject, handles);
 
-%ylim = str2num(get(handles.edit_ylim, 'String' ));
-%xlim = str2num(get(handles.edit_xlim, 'String' ));
+ylim = str2num(get(handles.edit_ylim, 'String' ));
+xlim = str2num(get(handles.edit_xlim, 'String' ));
 mplotdata(hObject, handles,iset, xlim, ylim)
 
 
@@ -577,8 +614,8 @@ handles.iset      = iset;
 % Update handles structure
 guidata(hObject, handles);
 
-% ylim = str2num(get(handles.edit_ylim, 'String' ));
-% xlim = str2num(get(handles.edit_xlim, 'String' ));
+ylim = str2num(get(handles.edit_ylim, 'String' ));
+xlim = str2num(get(handles.edit_xlim, 'String' ));
 mplotdata(hObject, handles,iset,xlim,ylim)
 
 
@@ -613,8 +650,8 @@ else
 end
 
 % tittle = handles.tittle;
-% ylim   = str2num(get(handles.edit_ylim, 'String' ));
-% xlim   = str2num(get(handles.edit_xlim, 'String' ));
+ylim   = str2num(get(handles.edit_ylim, 'String' ));
+xlim   = str2num(get(handles.edit_xlim, 'String' ));
 % 
 % if isempty(xlim) || isempty(ylim)
 %         return
@@ -624,7 +661,7 @@ end
 % ibin   = handles.ibin;
 iset   = handles.iset;
 
-mplotdata(hObject, handles,iset)
+mplotdata(hObject, handles, iset, xlim, ylim)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_butterflyset
 
@@ -663,6 +700,163 @@ if get(hObject,'Value')
 else
     handles.chance = 0;
 end
-mplotdata(hObject, handles,iset)
+
+ylim = str2num(get(handles.edit_ylim, 'String' ));
+xlim = str2num(get(handles.edit_xlim, 'String' ));
+
+mplotdata(hObject, handles,iset,xlim,ylim)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_chance
+
+
+
+function edit_ylim_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_ylim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_ylim as text
+%        str2double(get(hObject,'String')) returns contents of edit_ylim as a double
+%tittle = handles.tittle;
+ylim   = str2num(get(handles.edit_ylim, 'String' ));
+xlim   = str2num(get(handles.edit_xlim, 'String' ));
+
+if length(xlim)~=2 || length(ylim)~=2 || any(isnan(xlim)) || any(isnan(ylim)) || any(isinf(xlim)) || any(isinf(ylim)) || xlim(1)>=xlim(2) || ylim(1)>=ylim(2)
+        msgboxText =  'Invalid scale!\n You must enter 2 numeric values on each range.\tThe first one must be lower than the second one.';
+        title = 'ERPLAB: mvpciewerGUI, invalid baseline input';
+        errorfound(sprintf(msgboxText), title);
+        return
+end
+
+iset   = handles.iset;
+
+mplotdata(hObject, handles, iset, xlim, ylim)
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_ylim_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_ylim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit_xlim_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_xlim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_xlim as text
+%        str2double(get(hObject,'String')) returns contents of edit_xlim as a double
+%tittle = handles.tittle;
+ylim   = str2num(get(handles.edit_ylim, 'String' ));
+xlim   = str2num(get(handles.edit_xlim, 'String' ));
+
+if length(xlim)~=2 || length(ylim)~=2 || any(isnan(xlim)) || any(isnan(ylim)) || any(isinf(xlim)) || any(isinf(ylim)) || xlim(1)>=xlim(2) || ylim(1)>=ylim(2)
+        msgboxText =  'Invalid scale!\n You must enter 2 numeric values on each range.\tThe first one must be lower than the second one.';
+        title = 'ERPLAB: mvpciewerGUI, invalid baseline input';
+        errorfound(sprintf(msgboxText), title);
+        return
+end
+
+iset   = handles.iset;
+
+mplotdata(hObject, handles, iset, xlim, ylim)
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_xlim_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_xlim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton_createplot.
+function pushbutton_createplot_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_createplot (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% h1=handles.axes1;
+% %
+% % Create figure
+% %
+% hbig = figure('Name','ERP VIEWER',...
+%         'NumberTitle','on', 'Tag', 'Viewer_figure');erplab_figtoolbar(hbig);
+% % objects=allchild(h1);
+% copyobj(h1,hbig);
+% opengl software
+OFF_STD = 0.25; % std dev of figure offset
+MIN_OFF = 0.15; % minimum offset for new figure
+BORDER  = 0.04;  % screen edge tolerance
+
+fig=handles.gui_chassis;
+sel=handles.axes1;
+%
+% Get position for new figure
+%
+set(sel,'Units','normalized');
+place = get(sel,'Position');
+cmap  = colormap;
+% newxy = (OFF_STD*randn(1,2))+place(1,1:2);
+% newx  = newxy(1);newy=newxy(2);
+%
+% if abs(newx-place(1,1))<MIN_OFF, newx=place(1,1)+sign(newx-place(1,1))*MIN_OFF;end
+% if abs(newy-place(1,1))<MIN_OFF, newy=place(1,1)+sign(newy-place(1,1))*MIN_OFF;end
+% if newx<BORDER, newx=BORDER; end
+% if newy<BORDER, newy=BORDER; end
+% if newx+place(3)>1-BORDER, newx=1-BORDER-place(3); end
+% if newy+place(4)>1-BORDER, newy=1-BORDER-place(4); end
+
+% newfig = figure('Units','Normalized','Position',[newx,newy,place(1,3:4)]);
+newfig = figure('Units','Normalized','Position', place, 'Name','MVPC VIEWER', 'NumberTitle','on', 'Tag', 'Viewer_figure');
+
+%
+% Copy object to new figure
+%
+set(newfig,'Color',[1 1 1]);
+copyobj(sel,newfig);
+set(gca,'Position',[0.130 0.110 0.775 0.815]);
+set(gca,'Box', 'off')
+colormap(cmap);
+erplab_figtoolbar(newfig)
+
+% %
+% % Increase font size
+% %
+% set(findobj('parent',newfig,'type','axes'),'FontSize',14);
+% set(get(gca,'XLabel'),'FontSize',16)
+% set(get(gca,'YLabel'),'FontSize',16)
+% set(get(gca,'Title'),'Fontsize',16);
+%
+% Add xtick and ytick labels if missing
+%
+% if strcmp(get(gca,'Box'),'on')
+%    set(gca,'xticklabelmode','auto')
+%    set(gca,'xtickmode','auto')
+%    set(gca,'yticklabelmode','auto')
+%    set(gca,'ytickmode','auto')
+% end
+%
+% Turn on zoom in the new figure
+%
+% zoom on;
+pause(0.2)
+
+%latency = handles.latency;
+%handles.output = NaN;
+
+% Update handles structure
+guidata(hObject, handles);
+uiresume(handles.gui_chassis);

@@ -79,7 +79,7 @@ elseif strcmpi(filename,'decodingtoolbox')
         filepath = '';
         ALLMVPC2 = evalin('base', 'ALLMVPC2');
         nfile = length(ALLMVPC2);
-        preindex = length(ALLMVPC2); 
+        preindex = length(ALLMVPC); 
         loadfrom = 2;  % load from workspace
 else
         loadfrom = 1; % load from: 1=hard drive; 0=workspace
@@ -156,8 +156,8 @@ elseif loadfrom == 2
         ALLMVPC = ALLMVPC2;
     else
 
-        for i=1:nfile
-            ALLMVPC(preindex + 1 ) = ALLMVPC2(i);
+        for i= 1:nfile
+            ALLMVPC(i+preindex) = ALLMVPC2(i);
         end
 
     end

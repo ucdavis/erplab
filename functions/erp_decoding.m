@@ -60,7 +60,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     nBlocks =       mvpc.nCrossfolds;
     nElectrodes =   length(mvpc.electrodes); 
     nSamps =        length(mvpc.times);
-    sn =            BEST.bestname;
+    sn =            BEST.mvpcname;
     
     
     %progress output to command window

@@ -332,7 +332,7 @@ comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
 comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');']; 
 comSaveMVPC = ['[MVPC] = pop_savemymvpc(MVPC,''gui'',''saveas'');']; 
 %comDelMVPC =
-comSpatDecode = ['[MVPC, ALLMVPC] = pop_decoding(ALLBEST);']; 
+comSpatDecode = ['[MVPC] = pop_decoding(ALLBEST);']; 
 
 
 

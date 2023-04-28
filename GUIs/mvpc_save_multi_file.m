@@ -22,7 +22,7 @@ function varargout = mvpc_save_multi_file(varargin)
 
 % Edit the above text to modify the response to help mvpc_save_multi_file
 
-% Last Modified by GUIDE v2.5 20-Apr-2023 17:53:33
+% Last Modified by GUIDE v2.5 26-Apr-2023 19:05:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,7 +85,7 @@ set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save multiple MVPCset
 
 
 % set(handles.checkbox1_suffix,'Value',1);
-set(handles.edit_suffix_name,'String',suffix);
+%set(handles.edit_suffix_name,'String',suffix);
 set(handles.checkbox2_save_label,'Value',0); %never assume they want to save
 
 ColumnName_table = {'BEST name', 'MVPC name','File name'};
@@ -103,7 +103,9 @@ end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 set(handles.uitable1_erpset_table,'ColumnWidth',{248 248 248});
 set(handles.uitable1_erpset_table,'Enable','on');
-set(handles.checkbox3_filename_erpname,'Enable','off');
+%set(handles.checkbox3_filename_erpname,'Enable','off');
+set(handles.button_fnameMVPC,'Enable','on');
+set(handles.button_clearfname,'Enable','on');
 
 
 
@@ -220,7 +222,9 @@ function checkbox2_save_label_Callback(hObject, eventdata, handles)
 Values = handles.checkbox2_save_label.Value;
 
 if Values
-    set(handles.checkbox3_filename_erpname,'Enable','on');
+    %set(handles.checkbox3_filename_erpname,'Enable','on');
+    set(handles.button_fnameMVPC,'Enable','on');
+    set(handles.button_clearfname,'Enable','on');
     set(handles.browse_button,'Enable','on');
     ALLERP = handles.ALLERP;
     Selected_ERP_label = handles.Selected_ERP_label;
@@ -246,8 +250,9 @@ if Values
     %set(handles.browsedir,'BackgroundColor',[0,0,0]); 
     set(handles.browsedir,'String',cd);
 else
-    set(handles.checkbox3_filename_erpname,'Enable','off');
-    set(handles.browse_button,'Enable','on');
+    set(handles.button_fnameMVPC,'Enable','off');
+    set(handles.button_clearfname,'Enable','off');
+    set(handles.browse_button,'Enable','off');
     DataString_before = handles.uitable1_erpset_table.Data;
     for Numofselectederp = 1:size(DataString_before,1)
         DataString_before{Numofselectederp,3} = '';
@@ -312,15 +317,15 @@ if size(DataString,1) < numel(Selected_ERP_label)
     return
 end
 
-for Numofselected = 1:numel(Selected_ERP_label)
-    if  isempty(DataString{Numofselected,2})
-        msgboxText =  'Erpname for one of erpsets is empty at least! Please give name to that erpset';
-        title = 'ERPLAB: f_ERP_save_multi_file empty erpname';
-        errorfound(msgboxText, title);
-        return
-    end
-    
-end
+% for Numofselected = 1:numel(Selected_ERP_label)
+%     if  isempty(DataString{Numofselected,2})
+%         msgboxText =  'Erpname for one of erpsets is empty at least! Please give name to that erpset';
+%         title = 'ERPLAB: f_ERP_save_multi_file empty erpname';
+%         errorfound(msgboxText, title);
+%         return
+%     end
+%     
+% end
 
 
 
@@ -382,15 +387,17 @@ end
 
 
 for Numofselectederp = 1:numel(Selected_ERP_label)
-    ALLERP(Selected_ERP_label(Numofselectederp)).bestname = Data_String{Numofselectederp,2};
+    ALLERP(Selected_ERP_label(Numofselectederp)).mvpcname = Data_String{Numofselectederp,2};
     fileName = char(Data_String{Numofselectederp,3});
     if isempty(fileName)
-      fileName = Data_String{Numofselectederp,2};  
+      %fileName = Data_String{Numofselectederp,2}; 
+      fileName = ''; 
     end
     
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
-     file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_mvpc.mvpc'];
+    % file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_mvpc.mvpc'];
+      file_name = ''; 
     else
      file_name = [file_name,'.mvpc'];  
     end
@@ -407,6 +414,10 @@ for Numofselectederp = 1:numel(Selected_ERP_label)
     end
     
 end
+
+%Remove bestname
+%ALLERP = rmfield(ALLERP,'bestname');
+
 
 FilePath = handles.checkbox2_save_label.Value;
 
@@ -513,3 +524,60 @@ function browsedir_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in button_fnameMVPC.
+function button_fnameMVPC_Callback(hObject, eventdata, handles)
+% hObject    handle to button_fnameMVPC (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    DataString_before = handles.uitable1_erpset_table.Data;
+    for Numofselectederp = 1:size(DataString_before,1)
+        fileName = DataString_before{Numofselectederp,2};
+        %fileName= char(ALLERP(Selected_ERP_label(Numofselectederp)).filename);
+        [pathstr, file_name, ext] = fileparts(fileName);
+        if isempty(file_name)
+            file_name = [num2str(Selected_ERP_label(Numofselectederp)),'_ERPspatial.mvpc'];
+        else
+            file_name = [file_name,'.mvpc'];
+        end
+        DataString_before{Numofselectederp,3} = file_name;
+    end
+
+    set(handles.uitable1_erpset_table,'ColumnEditable',[false true true]); 
+    set(handles.uitable1_erpset_table,'Data',DataString_before);
+    guidata(hObject, handles);
+  
+
+
+% --- Executes on button press in button_clearMVPCname.
+function button_clearMVPCname_Callback(hObject, eventdata, handles)
+% hObject    handle to button_clearMVPCname (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+    DataString_before = handles.uitable1_erpset_table.Data;
+    for Numofselectederp = 1:size(DataString_before,1)
+        DataString_before{Numofselectederp,2} = '';
+    end
+
+    set(handles.uitable1_erpset_table,'ColumnEditable',[false true true]); 
+    set(handles.uitable1_erpset_table,'Data',DataString_before);
+    guidata(hObject, handles);
+  
+
+% --- Executes on button press in button_clearfname.
+function button_clearfname_Callback(hObject, eventdata, handles)
+% hObject    handle to button_clearfname (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+DataString_before = handles.uitable1_erpset_table.Data;
+for Numofselectederp = 1:size(DataString_before,1)
+    DataString_before{Numofselectederp,3} = '';
+end
+
+set(handles.uitable1_erpset_table,'ColumnEditable',[false true true]);
+set(handles.uitable1_erpset_table,'Data',DataString_before);
+guidata(hObject, handles);

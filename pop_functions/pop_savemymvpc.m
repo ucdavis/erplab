@@ -61,7 +61,7 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-function [MVPC, ALLMVPC, issave] = pop_savemymvpc(MVPC,varargin)
+function [MVPC, issave] = pop_savemymvpc(MVPC,varargin)
 issave = 0; 
 com = '';
 
@@ -132,8 +132,12 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset
        
        filename = {ALLMVPC.filename};
        filepath = {ALLMVPC.filepath}; 
-
-       fullfilename = strcat(filepath(:),filesep,filename(:));
+       
+       if ~isempty([ALLMVPC(:).filename]) && ~isempty([ALLMVPC(:).filepath])
+            fullfilename = strcat(filepath(:),filesep,filename(:));
+       else
+           fullfilename = '';
+       end
        overw = 0; %no option to overwrite mvpcset
     else
         %do not open gui, and overwrite mvpcset at mvpcset menu
@@ -142,6 +146,9 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset
 
     end
 
+    for i=1:numel(ALLMVPC)
+        ALLMVPC(i).saved    = 'no';
+    end
     modegui = 0; 
     warnop = 1; 
 
@@ -182,17 +189,26 @@ else
     %save from script! 
 
 
+   
 
 end
 
 if modegui == 0 
     % "save-as" fullfilepath already been gathered from multifilesave erplab GUI
-
-    [MVPC,serror] = savemvpc(ALLMVPC, fullfilename, 0, warnop);
-    if serror == 1
-        return
+    if ~isempty(fullfilename)
+        [MVPC,serror] = savemvpc(ALLMVPC, fullfilename, 0, warnop);
+        
+        issave = 2; %saved on hard drive
+        if serror == 1
+            return
+        end
+    else
+        issave =1 ;
     end
-    issave = 2; %saved on hard drive
+        
+        
+
+ 
 
 elseif modegui == 1 %save directly 
 
@@ -232,7 +248,7 @@ if overw==1
 else
     if strcmpi(p.Results.gui,'erplab')
         %in case of many mvpc sets through Decoding GUI toolbox
-        assignin('base','ALLMVPC2',MVPC)
+        assignin('base','ALLMVPC2',ALLMVPC)
         pop_loadmvpc('filename', 'decodingtoolbox', 'UpdateMainGui', 'on');
 
     else

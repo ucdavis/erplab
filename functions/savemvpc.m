@@ -63,12 +63,12 @@ else
     %         if isempty(ERP.erpname)
     %                 ERP.erpname = erpfilename; % without extension
     %         end
-    try
+    if numel(MVPC) == 1
         MVPC.filename = [mvpcfilename ext];
         MVPC.filepath = mvpcpathname;
         MVPC.saved ='yes';
 
-    catch
+    else
         for f = 1:length(MVPC)
             MVPC(f).filename = [mvpcfilename{f} ext];
             MVPC(f).filepath = mvpcpathname{f};
