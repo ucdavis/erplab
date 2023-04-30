@@ -892,7 +892,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
             else
                 [timeticks stepX]= default_time_ticks_studio(ERPwaviewer.ERP, timcustom);%% in millisecond
             end
-            xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+            if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
+                xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+            else
+                xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value;
+            end
             timeticks= f_decimal(char(timeticks),xtick_precision);
             gui_erpxyaxeset_waveviewer.timeticks_edit.String = char(timeticks);
         end
@@ -921,14 +925,18 @@ varargout{1} = box_erpxtaxes_viewer_property;
             else
                 [timeticksdef stepX]= default_time_ticks_studio(ERPwaviewerIN.ERP, timeArray);%% in millisecond
             end
-            xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+            if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
+                xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
+            else
+                xtick_precision = gui_erpxyaxeset_waveviewer.xticks_precision.Value;
+            end
             timeticksdef= f_decimal(char(timeticksdef),xtick_precision);
         end
         
         timtickcustom = str2num(char(Str.String));
         %%checking the inputs
         if isempty(timtickcustom)
-            messgStr =  strcat('Time ticks in "Time and Amplitude Scales" - Input must be numeric ');
+            messgStr =  strcat('Time ticks in "Time and Amplitude Scales" - We used the default values because input are not numeric values');
             erpworkingmemory('ERPViewer_proces_messg',messgStr);
             fprintf(2,['\n Warning: ',messgStr,'.\n']);
             viewer_ERPDAT.Process_messg =4;
@@ -1769,6 +1777,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
 
 %%-----------------------help----------------------------------------------
     function xyaxis_help(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=3
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         changeFlag =  estudioworkingmemory('MyViewer_xyaxis');
         if changeFlag~=1%% Donot reset this panel if there is no change
             return;
@@ -1970,6 +1983,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
 
 %%-----------------------------Apply---------------------------------------
     function xyaxis_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=3
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         estudioworkingmemory('MyViewer_xyaxis',0);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
@@ -2946,7 +2964,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             ERPwaviewer_apply.xaxis.units =1;
             gui_erpxyaxeset_waveviewer.xtimeunits_on.Value=1; %
             gui_erpxyaxeset_waveviewer.xtimeunits_off.Value=0; %
-            
+             erpworkingmemory('MyViewer_xaxis_second',0);
+            erpworkingmemory('MyViewer_xaxis_msecond',1);
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------------Setting for Y axis---------------
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

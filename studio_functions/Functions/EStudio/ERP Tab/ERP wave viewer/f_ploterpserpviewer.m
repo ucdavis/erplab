@@ -490,7 +490,7 @@ end
 
 %%location of channel/bin/erpset label
 if nargin<16
-    qCBELabels =[50 100 1];
+    qCBELabels =[0 70 1];
 end
 
 %%fontsize of legend name
@@ -774,6 +774,7 @@ catch
 end
 
 %%get y axis
+y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
 yMaxdef = ceil(max(bindata(:)))-floor(min(bindata(:)));
 try
     isyaxislabel = qGridspace(1,1);
@@ -798,6 +799,10 @@ if isyaxislabel==1 %% y axis GAP
             yscaleall = 2*max(abs(qYScales));
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
+        if yscaleall < y_scale_def(2)-y_scale_def(2)
+            yscaleall = y_scale_def(2)-y_scale_def(2);
+        end
+        
         for Numofrows = 1:Numrows
             OffSetY(Numofrows) = yscaleall*(Numrows-Numofrows)*(Ypert/100+1);
         end
@@ -817,6 +822,11 @@ else%% y axis Overlay
             yscaleall = 2*max(abs(qYScales));
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
+        
+        if yscaleall < y_scale_def(2)-y_scale_def(2)
+            yscaleall = y_scale_def(2)-y_scale_def(2);
+        end
+        
         if Numrows ==1
             OffSetY = 0;
         else
@@ -970,11 +980,7 @@ for Numofrows = 1:Numrows
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1))*(-1);
             end
             
-            try
-                ypercentage=qCBELabels(2);
-            catch
-                ypercentage =0;
-            end
+            
             if  qPolarityWave%%Positive up
                 yunitsypos = 0.98*qYticks(end);
             else
@@ -1012,24 +1018,24 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-%                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
+                %                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
                 %                 set(hplot(Numofoverlay),'DisplayName', qLegendName{Numofoverlay});
             end
             
             if numel(OffSetY)==1 && OffSetY==0
                 if ~qPolarityWave
-                    YscalesNew =  sort(qYScales*(-1));
+                    YscalesNew =  sort(y_scale_def*(-1));
                 else
-                    YscalesNew =  qYScales;
+                    YscalesNew =  y_scale_def;
                 end
                 set(hbig,'ylim',YscalesNew);
             else
                 if qPolarityWave
-                    ylimleftedge = floor(1.05*qYScales(1));
-                    ylimrightedge = ceil(1.05*qYScales(end))+OffSetY(1);
+                    ylimleftedge = floor(y_scale_def(1));
+                    ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
                 else
-                    ylimleftedge = -abs(ceil(1.05*qYScales(end)));
-                    ylimrightedge = ceil(1.05*abs(qYScales(1)))+OffSetY(1);
+                    ylimleftedge = -abs(ceil(y_scale_def(end)));
+                    ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
                 end
                 set(hbig,'ylim',[ylimleftedge,ylimrightedge]);
             end
@@ -1078,8 +1084,30 @@ for Numofrows = 1:Numrows
                 ytick_y = repmat(props.YTick, 2, 1);
                 ytick_x = repmat([tick_top;ytick_bottom] +myY_Crossing, 1, length(props.YTick));
                 line(hbig,ytick_x(:,:), ytick_y(:,:), 'color', 'k','LineWidth',1);
+                try
+                    [~,y_below0] =find(qYticks<0);
+                    if isempty(y_below0) && qYScales(1)<0
+                        line(hbig,ytick_x(:,:), ones(2,1)*(qYScales(1)+OffSetY(Numofrows)), 'color', 'k','LineWidth',1);
+                    end
+                    [~,y_over0] =find(qYticks>0);
+                    if isempty(y_over0) && qYScales(2)>0
+                        line(hbig,ytick_x(:,:), ones(2,1)*(qYScales(2)+OffSetY(Numofrows)), 'color', 'k','LineWidth',1);
+                    end
+                catch
+                end
             end
-            plot(hbig,ones(numel(props.YTick),1)*myY_Crossing, props.YTick,'k','LineWidth',1);
+            %             plot(hbig,ones(numel(props.YTick),1)*myY_Crossing, props.YTick,'k','LineWidth',1);
+            if ~isempty(qYScales)  && numel(qYScales)==2 %qYScales(end))+OffSetY(1)
+                %             plot(hbig,ones(numel(props.YTick),1)*myY_Crossing, props.YTick,'k','LineWidth',1);
+                plot(hbig,ones(numel(qYScales),1)*myY_Crossing, qYScales+OffSetY(Numofrows),'k','LineWidth',1);
+            else
+                if ~isempty(y_scale_def) && numel(unique(y_scale_def))==2
+                    plot(hbig,ones(numel(qYScales),1)*myY_Crossing, y_scale_def+OffSetY(Numofrows),'k','LineWidth',1);
+                else
+                    
+                end
+            end
+            
             nYTicks = length(props.YTick);
             for iCount = 1:nYTicks
                 if qPolarityWave
@@ -1115,8 +1143,8 @@ for Numofrows = 1:Numrows
                     MinorTicksYValue = [];
                 end
                 if ~isempty(MinorTicksYValue)
-                    MinorTicksYValue(find(MinorTicksYValue<qYticks(1))) = [];%% check the minorticks based on the left edge of yticks
-                    MinorTicksYValue(find(MinorTicksYValue>qYticks(end))) = [];%% check the minorticks based on the right edge of yticks
+                    MinorTicksYValue(find(MinorTicksYValue<qYScales(1))) = [];%% check the minorticks based on the left edge of yticks
+                    MinorTicksYValue(find(MinorTicksYValue>qYScales(end))) = [];%% check the minorticks based on the right edge of yticks
                     props.YAxis.TickValues = MinorTicksYValue;
                     if ~isempty( props.YAxis.TickValues)
                         ytick_y = repmat( props.YAxis.TickValues+OffSetY(Numofrows), 2, 1);
@@ -1229,6 +1257,11 @@ for Numofrows = 1:Numrows
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             if ~isempty(qCBELabels)
                 try
+                    ypercentage=qCBELabels(2);
+                catch
+                    ypercentage =70;
+                end
+                try
                     iscenter = qCBELabels(3);
                 catch
                     iscenter =1;
@@ -1242,7 +1275,11 @@ for Numofrows = 1:Numrows
                     ypos_LABEL = -((qYScales(end)-qYScales(1))*(ypercentage)/100+qYScales(1));
                 end
                 %                 end
-                xpercentage=qCBELabels(1);
+                try
+                    xpercentage=qCBELabels(1);
+                catch
+                    xpercentage = 0;
+                end
                 xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
                 labelcbe =  strrep(char(labelcbe),'_','\_');
                 try
@@ -1265,7 +1302,7 @@ for Numofrows = 1:Numrows
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is empty!']);
         end
     end%% end of columns
-%     ylim([(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
+    %     ylim([(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
 end%% end of rows
 set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 
@@ -1283,7 +1320,7 @@ try
     p  = get(sh,'position');
     if qlegcolor ~=1
         try
-            h_legend = legend(sh,hplot,LegendName);
+            h_legend = legend(sh,hplot,LegendName);%%,'Interpreter','none'
         catch
             h_legend = legend(sh,hplot,qLegendName);
         end

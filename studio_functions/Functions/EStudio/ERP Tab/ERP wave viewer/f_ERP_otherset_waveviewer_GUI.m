@@ -471,6 +471,11 @@ varargout{1} = box_erplabelset_viewer_otherset;
 
 %%----------------------------Help-----------------------------------------
     function other_help(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=7
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         changeFlag =  estudioworkingmemory('MyViewer_other');
         if changeFlag~=1
             return;
@@ -550,6 +555,11 @@ varargout{1} = box_erplabelset_viewer_otherset;
 
 %%-------------------------Apply the changed parameters--------------------
     function other_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=7
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         estudioworkingmemory('MyViewer_other',0);
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];

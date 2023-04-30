@@ -275,7 +275,7 @@ if nargin==1  %with GUI to get other parameters
     FontSizeLeg =  12;
     
     %%Setting for Channel/Bin/ERP label
-    CBELabels = [0 70 1];%location
+    CBELabels = [];%location 0 70 1
     CBEFont = 'Courier';%%font
     CBEFontsize=12;%% fontsize
     
@@ -737,7 +737,6 @@ end
 
 %%check line styles
 qLineStylespec = p_Results.LineStyle;
-
 if isempty(qLineStylespec)
     for Numofcolor = 1:numel(OverlayArray)
         NumIndex = ceil(Numofcolor/7);
@@ -1064,6 +1063,9 @@ end
 if isempty(qFigureName)
     qFigureName = 'My Viewer';
 end
+if isempty(qLabelsName)
+    qCBELabels = [];
+end
 %
 %%-------------Plot the ERP wave based on the above parameters-------------
 if ~isempty(qFigureName)
@@ -1083,12 +1085,20 @@ fn = fieldnames(p.Results);
 skipfields = {'ALLERP','CURRENTPLOT','ERPsetArray', 'binArray', 'chanArray'};
 
 if qMinorticksX(1) ==0
-skipfields{length(skipfields)+1} = 'MinorTicksX';
+    skipfields{length(skipfields)+1} = 'MinorTicksX';
 end
 
 if qMinorTicksY(1) ==0
- skipfields{length(skipfields)+1} = 'MinorTicksY';   
+    skipfields{length(skipfields)+1} = 'MinorTicksY';
 end
+if isempty(qCBELabels)
+    skipfields{length(skipfields)+1} = 'Labeloc';
+    skipfields{length(skipfields)+1} = 'Labelcolor';
+    skipfields{length(skipfields)+1} = 'Labelfontsize';
+    skipfields{length(skipfields)+1} = 'Labelfont';
+    skipfields{length(skipfields)+1} = 'LabelsName';
+end
+
 
 BinArraystr  = vect2colon(qbinArray, 'Sort','yes');
 chanArraystr = vect2colon(qchanArray);

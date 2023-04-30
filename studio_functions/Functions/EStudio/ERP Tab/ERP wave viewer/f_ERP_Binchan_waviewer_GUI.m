@@ -356,6 +356,11 @@ varargout{1} = Chanbin_waveviewer_box;
 
 %%-------------------------------Help--------------------------------------
     function setbinchan_help(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=2
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         changeFlag =  estudioworkingmemory('MyViewer_chanbin');
         if changeFlag~=1
             return;
@@ -407,6 +412,11 @@ varargout{1} = Chanbin_waveviewer_box;
 
 %%------------------------------Apply--------------------------------------
     function setbinchan_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=2
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         MessageViewer= char(strcat('Channels and Bins > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;

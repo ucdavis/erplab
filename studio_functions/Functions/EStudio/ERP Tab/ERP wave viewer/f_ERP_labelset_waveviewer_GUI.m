@@ -302,6 +302,9 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        if isempty(str2num(Source.String))
+          gui_labelset_waveviewer.xperc_edit.String ='0' ;  
+        end
     end
 
 %%-------------------Y percentage------------------------------------------
@@ -314,6 +317,9 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        if isempty(str2num(Source.String))
+          gui_labelset_waveviewer.yperc_edit.String = '70';  
+        end
     end
 
 %%-------------------------center for label text---------------------------
@@ -366,6 +372,16 @@ varargout{1} = box_erplabelset_viewer_property;
 
 %%--------------------------Help-------------------------------------------
     function label_help(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=5
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
+        changeFlag =  estudioworkingmemory('MyViewer_labels');
+        if changeFlag~=1
+            return;
+        end
+        
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -419,6 +435,11 @@ varargout{1} = box_erplabelset_viewer_property;
 
 %%------------------------------Apply--------------------------------------
     function label_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=5
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         estudioworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
         gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
@@ -591,6 +612,7 @@ varargout{1} = box_erplabelset_viewer_property;
             ERPwaviewerin.chanbinsetlabel.textcolor=1;
             fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
             gui_labelset_waveviewer.font_custom_type.Value=1;
+            gui_labelset_waveviewer.font_custom_type.String = fonttype;
             gui_labelset_waveviewer.font_custom_type.Enable='off'; %
             gui_labelset_waveviewer.font_custom_size.Value=5;
             gui_labelset_waveviewer.font_custom_size.Enable='off'; %

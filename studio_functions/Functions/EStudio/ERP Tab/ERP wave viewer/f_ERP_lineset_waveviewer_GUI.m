@@ -550,6 +550,11 @@ varargout{1} = box_erplineset_viewer_property;
 
 %%-------------------------------Help--------------------------------------
     function linelegend_help(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
+        if ~isempty(messgStr) && viewerpanelIndex~=6
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         changeFlag =  estudioworkingmemory('MyViewer_linelegend');
         if changeFlag~=1
             return;
@@ -611,6 +616,11 @@ varargout{1} = box_erplineset_viewer_property;
 
 %%-----------------Apply the changed parameters----------------------------
     function LineLegend_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();%%check if the changes were applied for the other panels
+        if ~isempty(messgStr) && viewerpanelIndex~=6
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         estudioworkingmemory('MyViewer_linelegend',0);
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];

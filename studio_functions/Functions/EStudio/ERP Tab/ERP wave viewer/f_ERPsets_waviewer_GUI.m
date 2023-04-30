@@ -410,6 +410,11 @@ varargout{1} = ERPsets_waveviewer_box;
 
 %%-------------------------------Help--------------------------------------
     function erpset_help(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=1
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         changeFlag =  estudioworkingmemory('MyViewer_ERPsetpanel');
         if changeFlag~=1
             return;
@@ -475,6 +480,11 @@ varargout{1} = ERPsets_waveviewer_box;
 
 %%------------------------------Apply--------------------------------------
     function ERPset_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=1
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         MessageViewer= char(strcat('ERPsets > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;

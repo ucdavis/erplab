@@ -994,6 +994,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         def =  ERP_layoutstringGUI(columFormatin,plotArrayFormtOlder,plotBox,GridinforData);
         if isempty(def)
+%             gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
+%             gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
+%             box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
             disp('User selected cancel');
             return;
         end
@@ -1089,7 +1092,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1,1,1];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
-         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
     end
 
 
@@ -1402,6 +1405,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
 
 %%--------------Canel changed parameters-----------------------------------
     function plotorg_cancel(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=4
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
         changeFlag =  estudioworkingmemory('MyViewer_plotorg');
         if changeFlag~=1
             return;
@@ -1481,6 +1488,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
 
 %%----------------------Apply the changed parameters-----------------------
     function plotorg_apply(~,~)
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex~=4
+            viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+        end
+        
         estudioworkingmemory('MyViewer_plotorg',0);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
