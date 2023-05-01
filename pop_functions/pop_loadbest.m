@@ -19,7 +19,7 @@
 % BEST	- output BESTset
 
 function [BEST, ALLBEST] = pop_loadbest(varargin)
-
+BEST = preloadBEST; 
 try 
     ALLBEST = evalin('base', 'ALLBEST');
     preindex = length(ALLBEST); 

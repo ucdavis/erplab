@@ -95,6 +95,6 @@ else
 end
     
 eeglab redraw; 
-set(BESTmenu, 'Enable', 'on'); % activates erpsets menu after redraw (eeglab hack)
+%set(BESTmenu, 'Enable', 'on'); % activates erpsets menu after redraw (eeglab hack)
 
 end

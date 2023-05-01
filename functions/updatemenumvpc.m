@@ -41,13 +41,13 @@ if overw == 1
         
         if strcmp(strcheck,'on')
             catchindx = nmvpcset-s+1;
-            mvpcn = ALLBEST(nmvpcset-s+1).bestname; 
-            menutitle = sprintf('BESTset %d: %s', nmvpcset-s+1,mvpcn); 
+            mvpcn = ALLMVPC(nmvpcset-s+1).mvpcname; 
+            menutitle = sprintf('MVPCset %d: %s', nmvpcset-s+1,mvpcn); 
             set(mvpcsetlist(s), 'Label', menutitle); 
         end
             
     end
-    best2memory(ALLBEST(catchindx),catchindx); 
+    mvpc2memory(ALLMVPC(catchindx),catchindx); 
     
 elseif overw == 0 || overw == -1
     
@@ -95,6 +95,6 @@ else
 end
     
 eeglab redraw; 
-set(MVPCmenu, 'Enable', 'on'); % activates erpsets menu after redraw (eeglab hack)
+%set(MVPCmenu, 'Enable', 'on'); % activates erpsets menu after redraw (eeglab hack)
 
 end

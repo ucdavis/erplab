@@ -54,6 +54,9 @@ switch lower(dosomething)
                 pop_erphelpscript;
         case 'redraw'
                 option = 0;
+                erp_check = 0;
+                best_check = 0;
+                mvpc_check = 0; 
                 try
                         ALLERP   = evalin('base', 'ALLERP');
                 catch
@@ -65,7 +68,8 @@ switch lower(dosomething)
                         ERP =[];
                 end
                 if isempty(ALLERP) &&  isempty(ERP)
-                        return
+                        %return
+                        erp_check = 1; 
                 elseif isempty(ALLERP) &&  ~isempty(ERP)
                         ALLERP = ERP;
                         CURRENTERP =1;
@@ -88,9 +92,105 @@ switch lower(dosomething)
                         assignin('base','ALLERP', ALLERP);  % save to workspace
                         assignin('base','CURRENTERP', CURRENTERP);  % save to workspace
                 end
-                eeglab redraw
-                pause(0.1)
-                updatemenuerp(ALLERP, option);
+                
+                %% BESTsets
+
+                try
+                    ALLBEST   = evalin('base', 'ALLBEST');
+                catch
+                    ALLBEST = [];
+                end
+                try
+                    BEST   = evalin('base', 'BEST');
+                catch
+                    BEST =[];
+                end
+                if isempty(ALLBEST) &&  isempty(BEST)
+                    %return
+                    best_check = 1; 
+                elseif isempty(ALLBEST) &&  ~isempty(BEST)
+                    ALLBEST = BEST;
+                    CURRENTBEST =1;
+                    assignin('base','CURRENTBEST', CURRENTBEST);  % save to workspace
+                    assignin('base','ALLBEST', ALLBEST);  % save to workspace
+                else
+                    try
+                        CURRENTBEST   = evalin('base', 'CURRENTBEST');
+                        if CURRENTBEST<=0 || isempty(CURRENTBEST)
+                            CURRENTBEST=1;
+                        end
+                    catch
+                        CURRENTBEST  = 1;
+                    end
+                    nbest = length(ALLBEST);
+                    if CURRENTBEST<=nbest
+                        option = 1;
+                    end
+                    assignin('base','ALLBEST', ALLBEST);  % save to workspace
+                    assignin('base','CURRENTBEST', CURRENTBEST);  % save to workspace
+                end
+
+                %% MVPC sets
+
+                try
+                    ALLMVPC   = evalin('base', 'ALLMVPC');
+                catch
+                    ALLMVPC = [];
+                end
+                try
+                    MVPC   = evalin('base', 'MVPC');
+                catch
+                    MVPC =[];
+                end
+                if isempty(ALLMVPC) &&  isempty(MVPC)
+                    %return
+                    mvpc_check = 1; 
+                elseif isempty(ALLMVPC) &&  ~isempty(MVPC)
+                    ALLMVPC = MVPC;
+                    CURRENTMVPC =1;
+                    assignin('base','CURRENTMVPC', CURRENTMVPC);  % save to workspace
+                    assignin('base','ALLMVPC', ALLMVPC);  % save to workspace
+                else
+                    try
+                        CURRENTMVPC   = evalin('base', 'CURRENTMVPC');
+                        if CURRENTMVPC<=0 || isempty(CURRENTMVPC)
+                            CURRENTMVPC=1;
+                        end
+                    catch
+                        CURRENTMVPC  = 1;
+                    end
+                    nmvpc = length(ALLMVPC);
+                    if CURRENTMVPC<=nmvpc
+                        option = 1;
+                    end
+                    assignin('base','ALLMVPC', ALLMVPC);  % save to workspace
+                    assignin('base','CURRENTMVPC', CURRENTMVPC);  % save to workspace
+                end
+
+                
+                if erp_check == 0  
+                    eeglab redraw
+                    pause(0.1)
+                    updatemenuerp(ALLERP, option);
+                end
+                
+               % redraws = 0; %since eeglab can't identify these data yet
+                if best_check == 0
+                    eeglab redraw
+                  %  redraws = 1; 
+                    pause(0.1)
+                    updatemenubest(ALLBEST,option); 
+                end
+
+                if mvpc_check == 0
+%                     if redraws == 0
+%                         eeglab redraw
+%                     end
+                    pause(0.1)
+                    updatemenumvpc(ALLMVPC,option);
+
+                end
+
         case 'amnesia'
                 erplabamnesia
         case 'freedom'

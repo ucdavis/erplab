@@ -153,7 +153,8 @@ end
 %
 ERP              = [];  % Start ERP Structure on workspace
 %ALLERP           = [];    %Start ALLERP Structure on workspace
-ALLBEST          = []; 
+ALLBEST          = [];
+ALLMVPC          = []; 
 ALLERPCOM        = [];
 CURRENTERP       = 0;
 BEST             = []; %Start BEST structure on workspace
@@ -165,7 +166,8 @@ MVPC             = [];
 
 assignin('base','ERP',ERP);
 %assignin('base','ALLERP', ALLERP);
-assignin('base','ALLBEST', ALLBEST); 
+assignin('base','ALLBEST', ALLBEST);
+assignin('base','ALLMVPC', ALLMVPC); 
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','CURRENTBEST', CURRENTBEST);
@@ -552,20 +554,20 @@ uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'Call
 
 
 %% BIN-EPOCHED Data (BEST sets)
-mBEST = uimenu(submenu,'Label','Bin-Epoched Single Trial (BEST) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu(mBEST,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on');
-uimenu(mBEST,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
-uimenu(mBEST,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
-uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off'); 
+mBEST = uimenu(submenu,'Label','Bin-Epoched Single Trial (BEST) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(mBEST,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(mBEST,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(mBEST,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on'); 
 
 %% Multivariate Pattern Analysis
-MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off');
-uimenu(MVPCmenu,'Label','Spatial ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
-uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on'); 
+MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Spatial ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 %uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on'); 
-uimenu(MVPCmenu,'Label','Currently Loaded MVPCsets:','tag','mvpcsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off'); 
+uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Currently Loaded MVPCsets:','tag','mvpcsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on'); 
 
 
 set(MVPCmenu, 'enable','off'); 
