@@ -274,8 +274,6 @@ varargout{1} = ERPsets_waveviewer_box;
                 ERPwaveview_erpsetops.SelectERPIdx = Selected_erpset;
                 ERPwaveview_erpsetops.PageIndex = y_index;
                 ERPwaveview_erpsetops.ERPLABFlag = 1;
-                
-                
                 ERPdatasets = getERPDatasets(ALLERPin); % Get datasets from ALLERP
                 ERPdatasets = sortdata(ERPdatasets);
                 dsnames = {};
@@ -509,14 +507,14 @@ varargout{1} = ERPsets_waveviewer_box;
         for Numofselectederp = 1:numel(ERPsetArray)
             SrateNum_mp(Numofselectederp,1)   =  ALLERPIN(ERPsetArray(Numofselectederp)).srate;
         end
-        if numel(unique(SrateNum_mp))>1
-            MessageViewer= char(strcat('Warning:Sampling rate varies across the selected ERPsets, we therefore set "ERPsets" to be "Pages".'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            %%
-            MessageViewer= char(strcat('ERPsets > Apply'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-        end
+%         if numel(unique(SrateNum_mp))>1
+%             MessageViewer= char(strcat('Sampling rate varies across the selected ERPsets, we therefore set "ERPsets" to be "Pages".'));
+%             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+%             viewer_ERPDAT.Process_messg =4;
+%             %%
+%             MessageViewer= char(strcat('ERPsets > Apply'));
+%             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+%         end
         
         ERPwaviewer_apply.CURRENTERP = CurrentERP;
         ERPwaviewer_apply.ERP = ERPwaviewer_apply.ALLERP(CurrentERP);

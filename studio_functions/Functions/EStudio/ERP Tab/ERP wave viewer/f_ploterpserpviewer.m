@@ -110,7 +110,7 @@ end
 if max(qERPArray)>length(ALLERP)
     qERPArray=length(ALLERP);
 end
-chkerp = f_checkerpsets(ALLERP,qERPArray);%%check Sampling rate, number of bins/channels, datatype, left/right edge of epoch, and number of samples across ERPsets
+
 [chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
 
 if nargin<5
@@ -136,16 +136,20 @@ if nargin<3
     qPLOTORG = [1 2 3];%%Channel is "Grid"; Bin is "Overlay"; ERPst is page
 end
 %%check ALLERP and adjust "qPLOTORG"
+for Numofselectederp = 1:numel(qERPArray)
+    SrateNum_mp(Numofselectederp,1)   =  ALLERP(qERPArray(Numofselectederp)).srate;
+    Datype{Numofselectederp} =   ALLERP(qERPArray(Numofselectederp)).datatype;
+end
 if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1)
     
 else
-    if chkerp(3) ==3
+    if length(unique(Datype))~=1
         msgboxText =  'Type of data across ERPsets is different!';
         title_msg  = 'EStudio: f_ploterpserpviewer() error:';
         errorfound(msgboxText, title_msg);
         return;
     end
-    if chkerp(7) ==7
+    if length(unique(SrateNum_mp))~=1
         msgboxText =  'Sampling rate varies across ERPsets!';
         title_msg  = 'EStudio: f_ploterpserpviewer() error:';
         errorfound(msgboxText, title_msg);
@@ -695,8 +699,13 @@ if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     end
     bindata = ERPdatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
     bindataerror = ERPerrordatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
-    if isempty(timeRangedef)
-        timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
+    %     if isempty(timeRangedef)
+    timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
+    %     end
+    try
+        fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
     end
 elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     if qCURRENTPLOT> length(qERPArray)
@@ -709,6 +718,11 @@ elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     if isempty(timeRangedef)
         timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
     end
+    try
+        fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
+    end
 elseif qPLOTORG(1)==1 && qPLOTORG(2)==3 %%Grid is channel; Overlay is ERPsets; Page is bin
     if qCURRENTPLOT> numel(qbinArray)
         qCURRENTPLOT = numel(qbinArray);
@@ -717,6 +731,11 @@ elseif qPLOTORG(1)==1 && qPLOTORG(2)==3 %%Grid is channel; Overlay is ERPsets; P
     bindata = permute(bindata,[1 2 4 3]);
     bindataerror = ERPerrordatadef(qchanArray,:,qbinArray(qCURRENTPLOT),:);
     bindataerror = permute(bindataerror,[1 2 4 3]);
+    try
+        fs= ALLERPBls(qERPArray(end)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
+    end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     if qCURRENTPLOT> numel(qbinArray)
         qCURRENTPLOT = numel(qbinArray);
@@ -725,7 +744,11 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     bindata = permute(bindata,[4 2 1 3]);
     bindataerror = ERPerrordatadef(qchanArray,:,qbinArray(qCURRENTPLOT),:);
     bindataerror = permute(bindataerror,[4 2 1 3]);
-    
+    try
+        fs= ALLERPBls(qERPArray(end)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
+    end
 elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
         qCURRENTPLOT = numel(qchanArray);
@@ -734,7 +757,11 @@ elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is
     bindata = permute(bindata,[3 2 4 1]);
     bindataerror = ERPerrordatadef(qchanArray(qCURRENTPLOT),:,qbinArray,:);
     bindataerror = permute(bindataerror,[3 2 4 1]);
-    
+    try
+        fs= ALLERPBls(qERPArray(end)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
+    end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
         qCURRENTPLOT = numel(qchanArray);
@@ -743,6 +770,11 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is
     bindata = permute(bindata,[4 2 3 1]);
     bindataerror = ERPerrordatadef(qchanArray(qCURRENTPLOT),:,qbinArray,:);
     bindataerror = permute(bindataerror,[4 2 3 1]);
+    try
+        fs= ALLERPBls(qERPArray(end)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
+    end
 else
     if qCURRENTPLOT> length(qERPArray)
         qCURRENTPLOT= length(qERPArray);
@@ -751,6 +783,11 @@ else
     bindataerror = ERPerrordatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
     if isempty(timeRangedef)
         timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
+    end
+    try
+        fs= ALLERPBls(qERPArray(end)).srate;
+    catch
+        fs= ALLERPBls(end).srate;
     end
 end
 
@@ -767,11 +804,6 @@ end
 
 NumOverlay = size(bindata,3);
 
-try
-    fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
-catch
-    fs= ALLERPBls(end).srate;
-end
 
 %%get y axis
 y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
@@ -950,6 +982,12 @@ if ~isempty(extfig)
     set(fig_gui,'visible','off');
 end
 
+try
+    y_scale_def(1) = min([1.1*y_scale_def(1),1.1*qYScales(1)]);
+    y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);
+catch
+end
+
 %%--------------Plot ERPwave-----------------
 stdalpha = qTransparency;
 countPlot = 0;
@@ -980,12 +1018,6 @@ for Numofrows = 1:Numrows
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1))*(-1);
             end
             
-            
-            if  qPolarityWave%%Positive up
-                yunitsypos = 0.98*qYticks(end);
-            else
-                yunitsypos = 0.95*abs(qYticks(1));
-            end
             data4plot = reshape(data4plot,numel(timeRangedef),NumOverlay);
             for Numofoverlay = 1:NumOverlay
                 [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
@@ -1077,6 +1109,11 @@ for Numofrows = 1:Numrows
                 end
             end
             %%add  yunits
+            if  qPolarityWave%%Positive up
+                yunitsypos = 0.98*qYScales(end);
+            else
+                yunitsypos = 0.95*abs(qYScales(1));
+            end
             if strcmpi(qYunits,'on')
                 text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows), '\muV', 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);
             end
@@ -1096,17 +1133,28 @@ for Numofrows = 1:Numrows
                 catch
                 end
             end
-            %             plot(hbig,ones(numel(props.YTick),1)*myY_Crossing, props.YTick,'k','LineWidth',1);
+            
             if ~isempty(qYScales)  && numel(qYScales)==2 %qYScales(end))+OffSetY(1)
-                %             plot(hbig,ones(numel(props.YTick),1)*myY_Crossing, props.YTick,'k','LineWidth',1);
-                plot(hbig,ones(numel(qYScales),1)*myY_Crossing, qYScales+OffSetY(Numofrows),'k','LineWidth',1);
+                if  qPolarityWave==0
+                    qYScalestras =   fliplr (-1*qYScales);
+                else
+                    qYScalestras = qYScales;
+                end
+                plot(hbig,ones(numel(qYScalestras),1)*myY_Crossing, qYScalestras+OffSetY(Numofrows),'k','LineWidth',1);
             else
                 if ~isempty(y_scale_def) && numel(unique(y_scale_def))==2
-                    plot(hbig,ones(numel(qYScales),1)*myY_Crossing, y_scale_def+OffSetY(Numofrows),'k','LineWidth',1);
+                    if  qPolarityWave==0
+                        qYScalestras =   fliplr (-1*y_scale_def);
+                    else
+                        qYScalestras = y_scale_def;
+                    end
+                    
+                    plot(hbig,ones(numel(qYScales),1)*myY_Crossing, qYScalestras+OffSetY(Numofrows),'k','LineWidth',1);
                 else
                     
                 end
             end
+            
             
             nYTicks = length(props.YTick);
             for iCount = 1:nYTicks
@@ -1266,14 +1314,11 @@ for Numofrows = 1:Numrows
                 catch
                     iscenter =1;
                 end
-                %                 if qMGFPValue && plotdatalabel == numel(plotArray)
-                %                     ypos_LABEL = (qYScales(end)-qYScales(1))*(ypercentage)/100+qYScales(1);
-                %                 else
-                if qPolarityWave  %%polarity up
-                    ypos_LABEL = (qYScales(end)-qYScales(1))*(ypercentage)/100+qYScales(1);
-                else %% negative up
-                    ypos_LABEL = -((qYScales(end)-qYScales(1))*(ypercentage)/100+qYScales(1));
-                end
+                
+                %                 if qPolarityWave  %%polarity up
+                ypos_LABEL = (qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1);
+                %                 else %% negative up
+                %                     ypos_LABEL = ((qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1));
                 %                 end
                 try
                     xpercentage=qCBELabels(1);
