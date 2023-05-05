@@ -194,7 +194,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.yperc_edit.String = '70';
         gui_labelset_waveviewer.labelcolor.Enable = Enable;
         gui_labelset_waveviewer.label_customtable.Enable = Enable;
-        
+         gui_labelset_waveviewer.labelcolor.Value = 1;
         %%----------------Update the label-----------------
         try
             ALLERPwaviewer = evalin('base','ALLERPwaviewer');

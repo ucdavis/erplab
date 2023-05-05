@@ -189,7 +189,15 @@ varargout{1} = Chanbin_waveviewer_box;
         if ~isempty(messgStr) && viewerpanelIndex~=2
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        
+        ChanArray = Source.Value;
+        [x_flag,y_flag] = find(ChanArray==1);
+        if ~isempty(y_flag)
+          Source.Value = 1;
+        else
+           if length(Source.String)-1 == numel(ChanArray)
+              Source.Value = 1; 
+           end
+        end
         estudioworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         ERPwaveview_binchan.apply.ForegroundColor = [1 1 1];
@@ -198,11 +206,22 @@ varargout{1} = Chanbin_waveviewer_box;
 
 
 %%----------------------------Bin change-----------------------------------
-    function ViewerBinRange(Source,~)
+    function ViewerBinRange(BinSource,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=2
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
+        
+        BinArray = BinSource.Value;
+        [x_flag,y_flag] = find(BinArray==1);
+        if ~isempty(y_flag)
+          BinSource.Value = 1;
+        else
+           if length(BinSource.String)-1 == numel(BinArray)
+              BinSource.Value = 1; 
+           end
+        end
+        
         estudioworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         ERPwaveview_binchan.apply.ForegroundColor = [1 1 1];
