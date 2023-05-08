@@ -152,6 +152,35 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset
     modegui = 0; 
     warnop = 1; 
 
+elseif strcmpi(p.Results.gui,'averager')
+
+
+    if ~isempty(mvpcname)
+        mvpcname = {mvpcname}
+    end
+
+    answer = savemymvpcGUI(mvpcname, fullfilename, 0);
+
+    if isempty(answer)
+        disp('User selected Cancel')
+        return
+    end
+    MVPC.mvpcname  = answer{1};
+    mvpcname = answer{1}; 
+    fullfilename = answer{2};
+    if isempty(mvpcname)
+        disp('User selected Cancel') % change
+        return
+    end
+
+    overw = 0; 
+    modegui = 1;
+
+
+
+
+
+
 elseif strcmpi(p.Results.gui, 'save') %just save, no ask
     if isempty(MVPC.mvpcname)
         modegui = 2; % open a "save as" window to save
@@ -182,7 +211,7 @@ elseif strcmpi(p.Results.gui,'saveas')
             return
         end
     end
-    overw = 0; 
+    overw = 1; 
     modegui = 2;
 
 else
@@ -239,11 +268,11 @@ end
 %overwriting in MVPCset menu list 
 if overw==1
     %this isn't possible if using Decoding GUI toolbox
-    ALLBEST     = evalin('base', 'ALLBEST');
-    CURRENTBEST = evalin('base', 'CURRENTBEST');
-    ALLBEST(CURRENTBEST) = BEST;
-    assignin('base','ALLERP',ALLBEST);  % save to workspace
-    updatemenubest(ALLBEST,1)            % overwrite erpset at erpsetmenu
+    ALLMVPC     = evalin('base', 'ALLMVPC');
+    CURRENTMVPC = evalin('base', 'CURRENTMVPC');
+    ALLMVPC(CURRENTMVPC) = MVPC;
+    assignin('base','ALLERP',ALLMVPC);  % save to workspace
+    updatemenumvpc(ALLMVPC,1)            % overwrite erpset at erpsetmenu
     
 else
     if strcmpi(p.Results.gui,'erplab')

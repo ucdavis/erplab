@@ -174,6 +174,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
         %% Step 7: Loop through each timepoint 
         % Do SVM_ECOC at each time point
         parfor (t = 1:nSamps,ParWorkers)
+%        for t = 1:nSamps
             mdl = []; 
             % grab data for timepoint t
             %toi = ismember(times,times(t)-svmECOC.window/2:times(t)+svmECOC.window/2);

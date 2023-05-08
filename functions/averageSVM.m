@@ -67,5 +67,6 @@ end
 
 % Save smoothe data
 mvpc.average_accuracy_1vAll = smoothed; 
+mvpc.stderror = (std(DecodingAccuracy,1,2)/sqrt(Nruns))'; 
 
 end

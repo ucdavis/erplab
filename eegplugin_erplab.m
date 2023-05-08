@@ -151,10 +151,8 @@ end
 %
 % ERPLAB's VARIABLES TO WORKSPACE
 %
+
 ERP              = [];  % Start ERP Structure on workspace
-%ALLERP           = [];    %Start ALLERP Structure on workspace
-ALLBEST          = [];
-ALLMVPC          = []; 
 ALLERPCOM        = [];
 CURRENTERP       = 0;
 BEST             = []; %Start BEST structure on workspace
@@ -162,23 +160,24 @@ CURRENTBEST      = 0;
 plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
-MVPC             = []; 
+MVPC             = [];
+CURRENTMVPC      = 0; 
 
 assignin('base','ERP',ERP);
-%assignin('base','ALLERP', ALLERP);
-assignin('base','ALLBEST', ALLBEST);
-assignin('base','ALLMVPC', ALLMVPC); 
+assignin('base','BEST',BEST);
+assignin('base','MVPC',MVPC); 
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','CURRENTBEST', CURRENTBEST);
-assignin('base','BEST',BEST); 
+assignin('base','CURRENTMVPC', CURRENTMVPC); 
+
 assignin('base','plotset', plotset);
-assignin('base','MVPC', MVPC); 
 
 % ALLERP should be created with EEGLAB Globals in eeg_globals.m
-global ALLERP 
-%global ALLBEST
-ALLERP = [];
+global ALLERP
+global ALLBEST
+global ALLMVPC
+
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
 %
@@ -331,10 +330,13 @@ comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');'];
 comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
 
 %% MVPC callbacks
-comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');']; 
-comSaveMVPC = ['[MVPC] = pop_savemymvpc(MVPC,''gui'',''saveas'');']; 
-%comDelMVPC =
 comSpatDecode = ['[MVPC] = pop_decoding(ALLBEST);']; 
+comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');']; 
+comSaveMVPC = ['[MVPC] = pop_savemymvpc(MVPC,''gui'',''saveas'');'];
+comAvgMVPC = ['[MVPC] = pop_mvpcaverager(ALLMVPC);'];
+comPlotMVPC = ['[MVPC] = mvpcviewerGUI(ALLMVPC);'];
+%comDelMVPC =
+
 
 
 
@@ -564,6 +566,8 @@ uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator',
 %% Multivariate Pattern Analysis
 MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Spatial ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Plot MVPCsets (in ALLMVPC)','CallBack',comPlotMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 %uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 

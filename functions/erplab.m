@@ -186,6 +186,7 @@ switch lower(dosomething)
 %                     if redraws == 0
 %                         eeglab redraw
 %                     end
+                    eeglab redraw
                     pause(0.1)
                     updatemenumvpc(ALLMVPC,option);
 
