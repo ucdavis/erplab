@@ -22,7 +22,7 @@ function varargout = mvpcviewerGUI(varargin)
 
 % Edit the above text to modify the response to help mvpcviewerGUI
 
-% Last Modified by GUIDE v2.5 27-Apr-2023 18:23:42
+% Last Modified by GUIDE v2.5 08-May-2023 17:44:22
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -164,10 +164,12 @@ meacodes    =      {'avgdecodingacc' };
 handles.meacodes    = meacodes;
 
 handles.chance = 0; 
-
+handles.stderror = 0; 
+handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'}; 
+set(handles.popupmenu_alpha,'String', handles.alpha); 
+set(handles.popupmenu_alpha,'Value',7); 
 
 %set(handles.text_measurementv, 'String', measurearray);
-
 %[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
 
 meamenu = 1; % 'Average Decoding Accuracy',...
@@ -274,12 +276,13 @@ else
 end
 
 
-set(handles.edit_ylim, 'String', num2str(ylim))
-set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)))
+set(handles.edit_ylim, 'String', num2str(ylim));
+set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
 
-set(handles.edit_file, 'String', num2str(iset))
+set(handles.edit_file, 'String', num2str(iset));
 
-set(handles.checkbox_butterflyset,'Value', 0)
+set(handles.checkbox_butterflyset,'Value', 0);
+set(handles.checkbox_stderror,'Value', 0);
 
 if length(setArray)==1
         set(handles.checkbox_butterflyset, 'Enable', 'off')
@@ -368,7 +371,7 @@ setinput = [];
 if get(handles.checkbox_butterflyset, 'Value')
         jseta      = setArray;
 else
-        setinput = str2num(get(handles.edit_file, 'String'));
+        setinput = eval(get(handles.edit_file, 'String'));
         
         if length(setinput)>1
                 jseta = setinput;
@@ -380,7 +383,10 @@ fntsz = get(handles.edit_report, 'FontSize');
 set(handles.edit_report, 'FontSize', fntsz*1.5)
 set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
 
-linecols = ["red","green","blue","cyan","magenta","yellow","black","white"]; 
+linecols = ["red","green","blue","cyan","magenta","black"];
+linecols_max = repmat(linecols,[size(setArray)]); %set max amount of colors
+linecols = linecols_max(setArray); 
+
     
 
 
@@ -427,6 +433,17 @@ for i = 1:numel(jseta)
             'LineStyle','--','Color','black'); %chance line
         
     end
+    
+    if handles.stderror == 1
+        indxalpha = handles.popupmenu_alpha.Value; 
+        stdalpha = str2num(handles.alpha{indxalpha}); 
+        yt1 = AverageAccuracy - ALLMVPC(seta).stderror; 
+        yt2 = AverageAccuracy + ALLMVPC(seta).stderror; 
+%         yt1 = data4plot(1,:,binArray(ibin)) - ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
+%         yt2 = data4plot(1,:,binArray(ibin)) + ERP.binerror(chanArray(i),:,binArray(ibin)).*errorstd;
+        ciplot(yt1,yt2, ALLMVPC(seta).times, linecols(seta), stdalpha);
+        
+    end
 
  
     
@@ -462,7 +479,7 @@ if get(handles.checkbox_butterflyset, 'Value')
             methodlabelx{seta} = ALLMVPC(seta).DecodingMethod;
         end
         
-elseif nsetinput>0
+elseif nsetinput == 1
         if nsetinput>10
                 var1 = vect2colon(jseta, 'Delimiter', 'off');
         else
@@ -476,7 +493,21 @@ elseif nsetinput>0
                 
         end
 else
-        var1 = ALLERP(seta).mvpcname;
+    %% what if more than one file is chosen, and with chance levels differnt? 
+%     if nsetinput>10
+%         var1 = vect2colon(jseta, 'Delimiter', 'off');
+%     else
+%         var1 = num2str(jseta);
+%         if nsetinput==1
+%             setlabelx = sprintf('(%s)', ALLMVPC(jseta).mvpcname);
+%             chancelabelx = ALLMVPC(jseta).nChance;
+%             foldlabelx = ALLMVPC(jseta).nCrossfolds;
+%             methodlabelx = ALLMVPC(jseta).DecodingMethod;
+%         end
+%         
+%     end
+    
+    var1 = vect2colon(jseta, 'Delimiter', 'off');
 end
 
 
@@ -555,6 +586,57 @@ function edit_file_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_file as text
 %        str2double(get(hObject,'String')) returns contents of edit_file as a double
+
+try
+    iset = eval(get(hObject,'String'));
+catch
+    error('You did not input valid file numbers'); 
+    return
+end
+
+if max(iset) > max(handles.setArray)
+    error('You input an invalid file number'); 
+    return
+end
+
+% setArray = handles.setArray;
+% if get(hObject, 'Value')
+%         set(handles.edit_file, 'String', vect2colon(setArray, 'Delimiter', 'off'))
+%         set(handles.edit_file, 'Enable', 'off');
+%         set(handles.pushbutton_right_file, 'Enable', 'off')
+%         set(handles.pushbutton_left_file, 'Enable', 'off')
+% 
+% else
+%         set(handles.edit_file, 'Enable', 'on');
+%         setinput  = str2num(get(handles.edit_file, 'String'));
+%         if length(setinput)>1 
+%                 setinput = setinput(1);
+%                 [xxx, iset] = closest(setArray, setinput);
+%                 handles.iset=iset;
+%                 set(handles.edit_file, 'String', num2str(setinput))
+%         end
+%         if length(setinput)<=1
+%                 set(handles.pushbutton_right_file, 'Enable', 'on')
+%                 set(handles.pushbutton_left_file, 'Enable', 'on')
+%         else
+%                 set(handles.pushbutton_right_file, 'Enable', 'off')
+%                 set(handles.pushbutton_left_file, 'Enable', 'off')
+%         end
+% end
+
+% tittle = handles.tittle;
+ylim   = str2num(get(handles.edit_ylim, 'String' ));
+xlim   = str2num(get(handles.edit_xlim, 'String' ));
+% 
+% if isempty(xlim) || isempty(ylim)
+%         return
+% end
+
+% ich    = handles.ich;
+% ibin   = handles.ibin;
+iset   = handles.iset;
+
+mplotdata(hObject, handles, iset, xlim, ylim)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -860,3 +942,58 @@ pause(0.2)
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
+
+
+% --- Executes on button press in checkbox_stderror.
+function checkbox_stderror_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_stderror (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_stderror
+
+iset   = handles.iset;
+if get(hObject,'Value') 
+    handles.stderror = 1; 
+else
+    handles.stderror = 0;
+end
+
+ylim = str2num(get(handles.edit_ylim, 'String' ));
+xlim = str2num(get(handles.edit_xlim, 'String' ));
+
+mplotdata(hObject, handles,iset,xlim,ylim)
+
+
+% --- Executes on selection change in popupmenu_alpha.
+function popupmenu_alpha_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu_alpha (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_alpha contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu_alpha
+iset   = handles.iset;
+if get(hObject,'Value') 
+    handles.stderror = 1; 
+else
+    handles.stderror = 0;
+end
+
+ylim = str2num(get(handles.edit_ylim, 'String' ));
+xlim = str2num(get(handles.edit_xlim, 'String' ));
+
+mplotdata(hObject, handles,iset,xlim,ylim)
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu_alpha_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu_alpha (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

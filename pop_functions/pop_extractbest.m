@@ -96,7 +96,9 @@ if nargin ==1 %GUI case, ALLEEG is input
     
 
     if serror
-        % need to create error checker if EVENTLIST is not found
+        % need to create error checker if 
+        %1: not epoched
+        %2: no eventlist (for bin descriptions)
         return
     end
     

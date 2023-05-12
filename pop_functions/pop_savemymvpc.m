@@ -215,7 +215,15 @@ elseif strcmpi(p.Results.gui,'saveas')
     modegui = 2;
 
 else
-    %save from script! 
+    overw = 0;
+    modegui = 1; %savefrom script
+    if isempty(fullfilename)
+        fullfilename = fullfile(BEST.filepath, BEST.filename);
+        if isempty(fullfilename)
+            error('ERPLAB says: You must specify a filename (path included) to save your BESTset.')
+        end
+        fprintf('\nNOTE: Since ''filename'' and ''filepath'' were not specified, \nERPLAB used BEST.filename and BEST.filepath to save your ERPset.\n\n');
+    end
 
 
    

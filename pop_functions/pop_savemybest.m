@@ -9,7 +9,7 @@
 %         BEST             - Bin-Epoched Single Trial (BEST) structure
 %
 % The available input parameters are as follows:
-%         'bestname'       - BEST name to be saved
+%         'bestname'       - BESTname to be saved
 %         'filename'       - Output filename string as .best extension
 %         'filepath'       - Output file path
 %         'gui'            - 'save', 'saveas', 'erplab', or 'none'

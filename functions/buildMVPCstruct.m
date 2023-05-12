@@ -30,7 +30,11 @@ if nargin < 1
     mvpc.times = ALLBEST.times; %timepoints actually decoded
     
 else
-    mvpc.mvpcname = ALLBEST.mvpcname;
+    try 
+        mvpc.mvpcname = ALLBEST.mvpcname;% if data went through decoding GUI 
+    catch
+        mvpc.mvpcname = ALLBEST.bestname; 
+    end
     mvpc.filename = ALLBEST.filename;
     mvpc.filepath = ALLBEST.filepath; 
     mvpc.mvpc_version = 1; 
