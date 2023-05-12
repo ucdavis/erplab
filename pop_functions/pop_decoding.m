@@ -113,7 +113,7 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 2 0};
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 [] 1 2 0};
       
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
@@ -124,10 +124,11 @@ if nargin == 1 %GUI
         %def7 = decodeTimes ([start,end]; def = []); % IN MS!
         %def8 = decode_every_Npoint (1 = every point)
         %def9 = Equalize Trials (0: don't equalize/ 1:equalize across bins/ 2: eqalize across
-        %   bins & best (def))
-        %def10 = classifer (1: SVM / 2: Crossnobis - def: SVM)
-        %def11 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
-        %def12 = parCompute (def = 0) 
+        %   bins & best (def)/ 3: Common Floor)
+        %def10 = Common  Floor Value (def: []); 
+        %def11 = classifer (1: SVM / 2: Crossnobis - def: SVM)
+        %def12 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
+        %def13 = parCompute (def = 0) 
 
         %DEFUNCT = output filename (def = filename.mvpa in pwd) *DEFUNCT
         %DEFUNCT = output path (def = cd); *DEFUNCT 
