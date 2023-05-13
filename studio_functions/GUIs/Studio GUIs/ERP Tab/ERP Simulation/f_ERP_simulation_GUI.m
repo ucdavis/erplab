@@ -787,6 +787,8 @@ if handles.radiobutton_whitenoise.Value==1
         return;
     end
     WhiteAmp =PeakAmp;
+else
+    WhiteOp = 0; 
 end
 
 if handles.radiobutton_pink_niose.Value==1
@@ -800,6 +802,8 @@ if handles.radiobutton_pink_niose.Value==1
         return;
     end
     pinkAmp =PeakAmp;
+else
+   pinkOp =0; 
 end
 
 NewnoiseFlag = handles.checkbox_newnoise.Value;

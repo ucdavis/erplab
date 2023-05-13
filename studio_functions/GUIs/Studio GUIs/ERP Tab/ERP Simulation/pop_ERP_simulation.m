@@ -267,14 +267,19 @@ else
     shist = 0; % off
 end
 
-
+ImpluseFlag = '';
+BoxCarFlag = '';
+GaussianFlag = '';
 qBasFuncName  = p.Results.BasFuncName;
 if strcmpi(qBasFuncName,'Impulse')
     qBasFunLabel = 2;
+    ImpluseFlag = 'on';
 elseif strcmpi(qBasFuncName,'Boxcar')
     qBasFunLabel = 3;
+    BoxCarFlag = 'on';
 else
     qBasFunLabel = 1;
+    GaussianFlag = 'on';
 end
 
 %%peak amplitude for basic function
@@ -680,6 +685,47 @@ EpochStopStr = num2str(EpochStop);
 Sratestr = num2str(Srate);
 % PLOTORGstr = vect2colon(qPLOTORG);
 erpcom     = sprintf( 'ERP = pop_ERP_simulation( %s, %s','ALLERP',[char(39),BasFuncName,char(39)]);
+
+if strcmpi(BoxCarFlag,'on')
+    skipfields = {'ALLERP','BasFuncName','ExGauTau'};
+end
+if strcmpi(ImpluseFlag,'on')
+    skipfields = {'ALLERP','BasFuncName','ExGauTau','SDOffset'};
+end
+
+def = erpworkingmemory('pop_ERP_simulation');
+try
+    SinoiseFlag = def{14};
+catch
+    SinoiseFlag =0;
+end
+
+try
+    whitenoiseFlag = def{10};
+catch
+    whitenoiseFlag =0;
+end
+
+try
+    pinknoiseFlag = def{12};
+catch
+    pinknoiseFlag =0;
+end
+if SinoiseFlag==0
+    skipfields{length(skipfields)+1} ='SinoiseAmp';
+    skipfields{length(skipfields)+1} ='SinoiseFre';
+end
+if whitenoiseFlag==0
+    skipfields{length(skipfields)+1} = 'WhiteAmp';
+end
+
+if pinknoiseFlag==0
+    skipfields{length(skipfields)+1} = 'PinkAmp';
+end
+
+if SinoiseFlag==0 && whitenoiseFlag==0&& pinknoiseFlag==0
+    skipfields{length(skipfields)+1} = 'NewnoiseFlag';
+end
 
 for q=1:length(fn)
     fn2com = fn{q}; % inputname
