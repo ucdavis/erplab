@@ -370,10 +370,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
                 return;
             else
-                if y_Flag==3
-                    gui_plotorg_waveviewer.plotorg_c1.Value = 0;
-                end
-                return;
+%                 if y_Flag==3
+%                     gui_plotorg_waveviewer.plotorg_c1.Value = 0;
+%                 end
+%                 return;
             end
         else
             gui_plotorg_waveviewer.plotorg_c2.Enable = 'on';
@@ -540,10 +540,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
                 return;
             else
-                if y_Flag==1
-                    gui_plotorg_waveviewer.plotorg_c3.Value = 0;
-                end
-                return;
+%                 if y_Flag==1
+%                     gui_plotorg_waveviewer.plotorg_c3.Value = 0;
+%                 end
+%                 return;
             end
         else
             gui_plotorg_waveviewer.plotorg_c2.Enable = 'on';
@@ -1756,7 +1756,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
         for Numofselectederp = 1:numel(indexerp)
-            SrateNum_mp{Numofselectederp} =   ALLERP(indexerp(Numofselectederp)).srate;
+            SrateNum_mp(Numofselectederp) =   ALLERP(indexerp(Numofselectederp)).srate;
         end
         if length(unique(SrateNum_mp))~=1
             gui_plotorg_waveviewer.plotorg_c2.Enable = 'off';

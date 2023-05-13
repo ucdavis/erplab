@@ -93,7 +93,7 @@ elseif overw==0 || overw==-1
             set(erpmenu, 'enable', 'off');
             %%changed by GH Apr 2023
             observe_ERPDAT.ALLERP = [];
-            observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+            observe_ERPDAT.Two_GUI = 1;
             cprintf('red',['\n ERP Wave Viewer will be closed because ALLERP is empty.\n\n']);
             %%change end
             
@@ -158,10 +158,10 @@ if ~isempty(ALLERP)%%if
     end
     observe_ERPDAT.CURRENTERP = CURRENTERP;
     observe_ERPDAT.ERP = ALLERP(CURRENTERP);
-    observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+    observe_ERPDAT.Two_GUI = 1;
 else
     observe_ERPDAT.ALLERP = [];
-    observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+    observe_ERPDAT.Two_GUI = 1;
 end
 end
 

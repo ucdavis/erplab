@@ -507,14 +507,14 @@ varargout{1} = ERPsets_waveviewer_box;
         for Numofselectederp = 1:numel(ERPsetArray)
             SrateNum_mp(Numofselectederp,1)   =  ALLERPIN(ERPsetArray(Numofselectederp)).srate;
         end
-%         if numel(unique(SrateNum_mp))>1
-%             MessageViewer= char(strcat('Sampling rate varies across the selected ERPsets, we therefore set "ERPsets" to be "Pages".'));
-%             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-%             viewer_ERPDAT.Process_messg =4;
-%             %%
-%             MessageViewer= char(strcat('ERPsets > Apply'));
-%             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-%         end
+        %         if numel(unique(SrateNum_mp))>1
+        %             MessageViewer= char(strcat('Sampling rate varies across the selected ERPsets, we therefore set "ERPsets" to be "Pages".'));
+        %             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        %             viewer_ERPDAT.Process_messg =4;
+        %             %%
+        %             MessageViewer= char(strcat('ERPsets > Apply'));
+        %             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        %         end
         
         ERPwaviewer_apply.CURRENTERP = CurrentERP;
         ERPwaviewer_apply.ERP = ERPwaviewer_apply.ALLERP(CurrentERP);
@@ -633,6 +633,44 @@ varargout{1} = ERPsets_waveviewer_box;
 %%change this panel based on the chaneges of main EStudio
     function Two_GUI_change(~,~)
         ERPtooltype = erpgettoolversion('tooltype');
+        if observe_ERPDAT.Two_GUI~=1
+            return;
+        end
+        
+        if isempty(observe_ERPDAT.ALLERP)
+            try
+                close(gui_erp_waviewer.Window);%%close previous GUI if exists
+            catch
+            end
+            return;
+        end
+        ALLERPNew = observe_ERPDAT.ALLERP;
+        %%checking datatype
+        counterp = 0;
+        datatypeFlag = [];
+        for Numoferpset = 1:length(ALLERPNew)
+            if ~strcmpi(ALLERPNew(Numoferpset).datatype, 'ERP') && ~strcmpi(ALLERPNew(Numoferpset).datatype, 'CSD')
+                counterp =   counterp+1;
+                datatypeFlag(counterp) = Numoferpset;
+            end
+        end
+        if ~isempty(datatypeFlag)
+            msgboxText =  ['ERP Wave Viewer donot support to plot the wave for the data that donot belong to "ERP" or "CSD".\n'...
+                'Please remove the following ERPset with index(es):',32,num2str(datatypeFlag),'.'];
+            if strcmpi(ERPtooltype,'ERPLAB')
+                title_msg = 'ERPLAB: ERPLAB_ERP_Viewer() datatype error:';
+            elseif strcmpi(ERPtooltype,'EStudio')
+                title_msg = 'EStudio: ERPLAB_ERP_Viewer() datatype error:';
+            else
+                title_msg = ' ERPLAB_ERP_Viewer() datatype error:';
+            end
+            errorfound(sprintf(msgboxText), title_msg);
+%             try
+%                 close(gui_erp_waviewer.Window);%%close previous GUI if exists
+%             catch
+%             end
+            return;
+        end
         
         try
             ERPAutoValue = ERPwaveview_erpsetops.auto.Value;
@@ -642,7 +680,6 @@ varargout{1} = ERPsets_waveviewer_box;
         
         if isempty(observe_ERPDAT.ALLERP)
             try
-                %                 cprintf('red',['\n ERP Wave viewer will be closed because ALLERP is empty.\n\n']);
                 close(gui_erp_waviewer.Window);
             catch
             end
@@ -729,8 +766,8 @@ varargout{1} = ERPsets_waveviewer_box;
         ERPwaveview_erpsetops.butttons_datasets.Value = ERPArrayStudio;
         
         if strcmpi(ERPtooltype,'ERPLAB') && ERPAutoValue ==1
-            ERPwaviewer_up.bin= [1:observe_ERPDAT.ERP.nbin];
-            ERPwaviewer_up.chan = [1:observe_ERPDAT.ERP.nchan];
+%             ERPwaviewer_up.bin= [1:observe_ERPDAT.ERP.nbin];
+%             ERPwaviewer_up.chan = [1:observe_ERPDAT.ERP.nchan];
             ERPwaviewer_up.PageIndex = 1;
         end
         
@@ -741,7 +778,7 @@ varargout{1} = ERPsets_waveviewer_box;
         MessageViewer= char(strcat('Update "ERP wave Viewer"'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
-        
+        observe_ERPDAT.Two_GUI =2;
     end
 
 %%-------------------------------------------------------------------------

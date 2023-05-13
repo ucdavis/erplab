@@ -634,10 +634,11 @@ else
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
-
-pause(0.01);
-gui_erp_waviewer.Process_messg.String = '';
-gui_erp_waviewer.Process_messg.BackgroundColor = ColorBviewer_def;%[0.95 0.95 0.95];
+if viewer_ERPDAT.Process_messg ==1 || viewer_ERPDAT.Process_messg==2 || viewer_ERPDAT.Process_messg==3
+    pause(0.01);
+    gui_erp_waviewer.Process_messg.String = '';
+    gui_erp_waviewer.Process_messg.BackgroundColor = ColorBviewer_def;%[0.95 0.95 0.95];
+end
 end
 
 
@@ -888,7 +889,7 @@ end
 
 %%ylable font
 if nargin <34
-    qYlabelfont = 'Courier';
+    qYlabelfont = 'Geneva';
 end
 
 %%display ylabels?
@@ -946,7 +947,7 @@ end
 
 %%xlabel font
 if nargin <26
-    qXlabelfont= 'Courier';
+    qXlabelfont= 'Geneva';
 end
 
 %%disply xtick labels ?
@@ -1036,7 +1037,7 @@ end
 
 %%font of channel/bin/erpset label
 if nargin <17
-    qLabelfont= 'Courier';
+    qLabelfont= 'Geneva';
 end
 
 %%location of channel/bin/erpset label
@@ -1051,7 +1052,7 @@ end
 
 %%font of legend name
 if nargin <14
-    qLegendFont  = 'Courier';
+    qLegendFont  = 'Geneva';
 end
 
 %%legend name
@@ -1242,7 +1243,7 @@ else
     qBlc = 'no';
 end
 
-
+datatype ='';
 % [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef]
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ALLERPBls,qERPArray,qPLOTORG,qCURRENTPLOT);
 
@@ -1257,8 +1258,10 @@ if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     %     end
     try
         fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
+        datatype = ALLERPBls(qERPArray(qCURRENTPLOT)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     if qCURRENTPLOT> length(qERPArray)
@@ -1273,8 +1276,10 @@ elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     end
     try
         fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
+        datatype = ALLERPBls(qERPArray(qCURRENTPLOT)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==1 && qPLOTORG(2)==3 %%Grid is channel; Overlay is ERPsets; Page is bin
     if qCURRENTPLOT> numel(qbinArray)
@@ -1286,8 +1291,10 @@ elseif qPLOTORG(1)==1 && qPLOTORG(2)==3 %%Grid is channel; Overlay is ERPsets; P
     bindataerror = permute(bindataerror,[1 2 4 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     if qCURRENTPLOT> numel(qbinArray)
@@ -1299,8 +1306,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     bindataerror = permute(bindataerror,[4 2 1 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+         datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+         datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -1312,8 +1321,10 @@ elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is
     bindataerror = permute(bindataerror,[3 2 4 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+         datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+         datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -1325,8 +1336,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is
     bindataerror = permute(bindataerror,[4 2 3 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+         datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+         datatype = ALLERPBls(end).datatype;
     end
 else
     if qCURRENTPLOT> length(qERPArray)
@@ -1339,8 +1352,10 @@ else
     end
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+         datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+         datatype = ALLERPBls(end).datatype;
     end
 end
 %
@@ -1359,9 +1374,6 @@ if isempty(pboxplot)
 end
 
 NumOverlay = size(bindata,3);
-
-
-
 
 
 %%get y axis
@@ -1638,8 +1650,15 @@ for Numofrows = 1:Numrows
             else
                 yunitsypos = 0.95*abs(qYScales(1));
             end
+            if strcmpi( datatype,'ERP') 
+            yunitstr =  '\muV';
+            elseif strcmpi( datatype,'CSD') 
+             yunitstr =  '\muV/m^2';   
+            else
+             yunitstr = '';   
+            end
             if strcmpi(qYunits,'on')
-                text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows), '\muV', 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);
+                text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows),yunitstr, 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);
             end
             if ~isempty(props.YTick)
                 ytick_y = repmat(props.YTick, 2, 1);
@@ -1832,13 +1851,13 @@ for Numofrows = 1:Numrows
                 try
                     ypercentage=qCBELabels(2);
                 catch
-                    ypercentage =70;
+                    ypercentage =100;
                 end
                 ypos_LABEL = ((qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1));
                 try
                     xpercentage=qCBELabels(1);
                 catch
-                    xpercentage = 0;
+                    xpercentage = 50;
                 end
                 xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
                 labelcbe =  strrep(char(labelcbe),'_','\_');
@@ -1858,9 +1877,9 @@ for Numofrows = 1:Numrows
         end
         try
             if isxaxislabel==2
-                set(hbig,'xlim',[Xtimerange(1),XtimerangetrasfALL(end)]);
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1)/10),XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             else
-                set(hbig,'xlim',[Xtimerange(1),XtimerangetrasfALL(end)]);
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end
         catch
             

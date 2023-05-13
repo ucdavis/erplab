@@ -224,7 +224,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         
         %%-----font, font size, and text color for time ticks--------------
-        ttickLabelfont = 1;
+        ttickLabelfont = 2;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         xfontsizeinum = str2num(char(fontsize));
@@ -449,7 +449,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         ERPwaviewer.yaxis.label = gui_erpxyaxeset_waveviewer.ylabel_on.Value;
         
         %%-----y ticklabel:font, font size, and text color for time ticks
-        ytickLabelfont = 1;
+        ytickLabelfont = 2;
         ytickLabelfontsize = 5;
         ytickLabelfontcolor = 1;
         gui_erpxyaxeset_waveviewer.yfont_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
@@ -2946,8 +2946,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             ERPwaviewer_apply.xaxis.label =1;
             
             %%font and font size
-            ERPwaviewer_apply.xaxis.font  =1;
-            gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=1;
+            ERPwaviewer_apply.xaxis.font  =2;
+            gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=2;
             ERPwaviewer_apply.xaxis.fontsize =12;
             gui_erpxyaxeset_waveviewer.font_custom_size.Value=5;
             fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
@@ -2964,7 +2964,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             ERPwaviewer_apply.xaxis.units =1;
             gui_erpxyaxeset_waveviewer.xtimeunits_on.Value=1; %
             gui_erpxyaxeset_waveviewer.xtimeunits_off.Value=0; %
-             erpworkingmemory('MyViewer_xaxis_second',0);
+            erpworkingmemory('MyViewer_xaxis_second',0);
             erpworkingmemory('MyViewer_xaxis_msecond',1);
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------------Setting for Y axis---------------
@@ -3028,9 +3028,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.ylabel_on.Value=1; %
             gui_erpxyaxeset_waveviewer.ylabel_off.Value=0;
             %%font and fontsize
-            ERPwaviewer_apply.yaxis.font=1;
+            ERPwaviewer_apply.yaxis.font=2;
             ERPwaviewer_apply.yaxis.fontsize=12;
-            gui_erpxyaxeset_waveviewer.yfont_custom.Value=1;
+            gui_erpxyaxeset_waveviewer.yfont_custom.Value=2;
             gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=5;
             %%color for y ticklabels
             ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};

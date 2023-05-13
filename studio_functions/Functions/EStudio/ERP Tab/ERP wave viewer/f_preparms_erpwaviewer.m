@@ -285,7 +285,7 @@ end%% end of loop for number of line
 %
 %%-----------------------------Setting for legend--------------------------
 FontSizeLeg=  12;
-FontLeg=  'Courier';
+FontLeg=  'Geneva';
 fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
 TextcolorLeg = 1;
 Legcolumns = 1;
@@ -305,8 +305,8 @@ end
 
 %
 %%--------------Chan/Bin/ERPset Labels, font, and fontsize-----------------
-CBELabels = [0 70 1];
-CBEFont = 'Courier';
+CBELabels = [50 100 1];
+CBEFont = 'Geneva';
 CBEFontsize=12;
 try
     if ERPwaviewerIN.chanbinsetlabel.location.no ==1
@@ -478,7 +478,7 @@ try
 catch
 end
 
-xlabelFont = 'Courier';
+xlabelFont = 'Geneva';
 try
     xFontlabelValue =  ERPwaviewerIN.xaxis.font;
     xlabelFont = fonttype{xFontlabelValue};
@@ -591,7 +591,7 @@ try
 catch
 end
 
-YlabelFont = 'Courier';
+YlabelFont = 'Geneva';
 try
     YFontlabelValue =  ERPwaviewerIN.yaxis.font;
     YlabelFont = fonttype{YFontlabelValue};

@@ -83,7 +83,7 @@ else
         end
         observe_ERPDAT.CURRENTERP = CURRENTERP;
         observe_ERPDAT.ERP = ALLERP(CURRENTERP);
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+        observe_ERPDAT.Two_GUI = 1;
     end
     
     

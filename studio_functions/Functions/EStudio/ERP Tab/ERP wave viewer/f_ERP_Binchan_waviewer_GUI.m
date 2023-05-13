@@ -792,6 +792,10 @@ varargout{1} = Chanbin_waveviewer_box;
 
 %%change channels and bins based on the main EStudio
     function Two_GUI_change(~,~)
+        if observe_ERPDAT.Two_GUI~=2
+           return; 
+        end
+        
         ERPtooltype = erpgettoolversion('tooltype');
         if isempty(observe_ERPDAT.ALLERP)
             try
@@ -879,6 +883,7 @@ varargout{1} = Chanbin_waveviewer_box;
         viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;
         %%plot waves
         f_redrawERP_viewer_test();
+        observe_ERPDAT.Two_GUI = 0;
     end
 
 %%-------------------------------------------------------------------------

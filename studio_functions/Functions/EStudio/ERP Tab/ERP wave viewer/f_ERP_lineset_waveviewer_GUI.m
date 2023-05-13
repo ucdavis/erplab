@@ -203,7 +203,7 @@ varargout{1} = box_erplineset_viewer_property;
         %
         %%--------------------legend font and font size---------------------------
         gui_erplinset_waveviewer.labelfont_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        fontDef = 1;
+        fontDef = 2;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
@@ -1024,7 +1024,7 @@ varargout{1} = box_erplineset_viewer_property;
             gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
             gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
             gui_erplinset_waveviewer.font_custom_size.Value = 5;
-            gui_erplinset_waveviewer.font_custom_type.Value =1;
+            gui_erplinset_waveviewer.font_custom_type.Value =2;
             ERPwaviewerin.Legend.auto=1;
             ERPwaviewerin.Legend.data =gui_erplinset_waveviewer.legend_customtable.Data;
             ERPwaviewerin.Legend.font=1;
@@ -1038,5 +1038,4 @@ varargout{1} = box_erplineset_viewer_property;
             viewer_ERPDAT.Reset_Waviewer_panel=7;
         end
     end
-
 end

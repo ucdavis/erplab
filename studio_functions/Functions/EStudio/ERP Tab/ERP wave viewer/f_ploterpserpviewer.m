@@ -340,7 +340,7 @@ end
 
 %%ylable font
 if nargin <34
-    qYlabelfont = 'Courier';
+    qYlabelfont = 'Geneva';
 end
 
 %%display ylabels?
@@ -398,7 +398,7 @@ end
 
 %%xlabel font
 if nargin <26
-    qXlabelfont= 'Courier';
+    qXlabelfont= 'Geneva';
 end
 
 %%disply xtick labels ?
@@ -489,12 +489,12 @@ end
 
 %%font of channel/bin/erpset label
 if nargin <17
-    qLabelfont= 'Courier';
+    qLabelfont= 'Geneva';
 end
 
 %%location of channel/bin/erpset label
 if nargin<16
-    qCBELabels =[0 70 1];
+    qCBELabels =[50 100 1];
 end
 
 %%fontsize of legend name
@@ -504,7 +504,7 @@ end
 
 %%font of legend name
 if nargin <14
-    qLegendFont  = 'Courier';
+    qLegendFont  = 'Geneva';
 end
 
 %%legend name
@@ -692,7 +692,7 @@ end
 
 % [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef]
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ALLERPBls,qERPArray,qPLOTORG,qCURRENTPLOT);
-
+datatype = '';
 if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     if qCURRENTPLOT> numel(qERPArray)
         qCURRENTPLOT= length(qERPArray);
@@ -704,8 +704,10 @@ if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     %     end
     try
         fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
+        datatype = ALLERPBls(qERPArray(qCURRENTPLOT)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     if qCURRENTPLOT> length(qERPArray)
@@ -720,8 +722,10 @@ elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     end
     try
         fs= ALLERPBls(qERPArray(qCURRENTPLOT)).srate;
+        datatype = ALLERPBls(qERPArray(qCURRENTPLOT)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==1 && qPLOTORG(2)==3 %%Grid is channel; Overlay is ERPsets; Page is bin
     if qCURRENTPLOT> numel(qbinArray)
@@ -733,8 +737,10 @@ elseif qPLOTORG(1)==1 && qPLOTORG(2)==3 %%Grid is channel; Overlay is ERPsets; P
     bindataerror = permute(bindataerror,[1 2 4 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     if qCURRENTPLOT> numel(qbinArray)
@@ -746,8 +752,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     bindataerror = permute(bindataerror,[4 2 1 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -759,8 +767,10 @@ elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is
     bindataerror = permute(bindataerror,[3 2 4 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -772,8 +782,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is
     bindataerror = permute(bindataerror,[4 2 3 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 else
     if qCURRENTPLOT> length(qERPArray)
@@ -786,10 +798,17 @@ else
     end
     try
         fs= ALLERPBls(qERPArray(end)).srate;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
+        datatype = ALLERPBls(end).datatype;
     end
 end
+
+if isempty(qtimeRange)
+    qtimeRange = [timeRangedef(1) timeRangedef(end)];
+end
+
 
 Numrows = plotBox(1);
 Numcolumns = plotBox(2);
@@ -1114,9 +1133,17 @@ for Numofrows = 1:Numrows
             else
                 yunitsypos = 0.95*abs(qYScales(1));
             end
-            if strcmpi(qYunits,'on')
-                text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows), '\muV', 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);
+            if strcmpi( datatype,'ERP')
+                yunitstr =  '\muV';
+            elseif strcmpi( datatype,'CSD')
+                yunitstr =  '\muV/m^2';
+            else
+                yunitstr = '';
             end
+            if strcmpi(qYunits,'on')
+                text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows),yunitstr, 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);
+            end
+            
             if ~isempty(props.YTick)
                 ytick_y = repmat(props.YTick, 2, 1);
                 ytick_x = repmat([tick_top;ytick_bottom] +myY_Crossing, 1, length(props.YTick));
@@ -1307,7 +1334,7 @@ for Numofrows = 1:Numrows
                 try
                     ypercentage=qCBELabels(2);
                 catch
-                    ypercentage =70;
+                    ypercentage =100;
                 end
                 try
                     iscenter = qCBELabels(3);
@@ -1323,7 +1350,7 @@ for Numofrows = 1:Numrows
                 try
                     xpercentage=qCBELabels(1);
                 catch
-                    xpercentage = 0;
+                    xpercentage = 50;
                 end
                 xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
                 labelcbe =  strrep(char(labelcbe),'_','\_');
@@ -1337,14 +1364,17 @@ for Numofrows = 1:Numrows
                     text(hbig,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe), 'FontName',qLabelfont,'FontSize',qLabelfontsize,'HorizontalAlignment', 'left', 'Color', qLabelcolor);%'FontWeight', 'bold',
                 end
             end
-            
-            if isxaxislabel==2
-                set(hbig,'xlim',[Xtimerange(1),XtimerangetrasfALL(end)]);
-            else
-                set(hbig,'xlim',[Xtimerange(1),XtimerangetrasfALL(end)]);
-            end
         else
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is empty!']);
+        end
+        try
+            if isxaxislabel==2
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1)/10),XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+            else
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+            end
+        catch
+            
         end
     end%% end of columns
     %     ylim([(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
@@ -1391,27 +1421,26 @@ catch
     disp('Cannot display the legend names, please check "qGridposArray" or other parameters!');
 end
 set(gcf,'color',qFigbgColor);
+prePaperType = get(fig_gui,'PaperType');
+prePaperUnits = get(fig_gui,'PaperUnits');
+preUnits = get(fig_gui,'Units');
+prePaperPosition = get(fig_gui,'PaperPosition');
+prePaperSize = get(fig_gui,'PaperSize');
+% Make changing paper type possible
+set(fig_gui,'PaperType','<custom>');
 
+% Set units to all be the same
+set(fig_gui,'PaperUnits','inches');
+set(fig_gui,'Units','inches');
+% Set the page size and position to match the figure's dimensions
+paperPosition = get(fig_gui,'PaperPosition');
+position = get(fig_gui,'Position');
+set(fig_gui,'PaperPosition',[0,0,position(3:4)]);
+set(fig_gui,'PaperSize',position(3:4));
 %%save figure  with different formats
 if ~isempty(extfig)
     [C_style,IA_style] = ismember_bc2(extfig,{'.pdf','.svg','.jpg','.png','.tif','.bmp','.eps'});
     figFileName = fullfile(pathstrfig,qFigureName);
-    prePaperType = get(fig_gui,'PaperType');
-    prePaperUnits = get(fig_gui,'PaperUnits');
-    preUnits = get(fig_gui,'Units');
-    prePaperPosition = get(fig_gui,'PaperPosition');
-    prePaperSize = get(fig_gui,'PaperSize');
-    % Make changing paper type possible
-    set(fig_gui,'PaperType','<custom>');
-    
-    % Set units to all be the same
-    set(fig_gui,'PaperUnits','inches');
-    set(fig_gui,'Units','inches');
-    % Set the page size and position to match the figure's dimensions
-    paperPosition = get(fig_gui,'PaperPosition');
-    position = get(fig_gui,'Position');
-    set(fig_gui,'PaperPosition',[0,0,position(3:4)])
-    set(fig_gui,'PaperSize',position(3:4))
     try
         switch IA_style
             case 1

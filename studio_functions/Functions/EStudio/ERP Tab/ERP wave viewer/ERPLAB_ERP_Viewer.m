@@ -72,6 +72,30 @@ if isempty(ALLERP)
     return;
 end
 
+%%checking datatype
+counterp = 0;
+datatypeFlag = [];
+for Numoferpset = 1:length(ALLERP)
+    if ~strcmpi(ALLERP(Numoferpset).datatype, 'ERP') && ~strcmpi(ALLERP(Numoferpset).datatype, 'CSD')
+        counterp =   counterp+1;
+        datatypeFlag(counterp) = Numoferpset;
+    end
+end
+if ~isempty(datatypeFlag)
+    msgboxText =  ['ERP Wave Viewer donot support to plot the wave for the data that donot belong to "ERP" or "CSD".\n'...
+        'Please remove the following ERPset with index(es):',32,num2str(datatypeFlag),'.'];
+    if strcmpi(ERPtooltype,'ERPLAB')
+        title_msg = 'ERPLAB: ERPLAB_ERP_Viewer() datatype error:';
+    elseif strcmpi(ERPtooltype,'EStudio')
+        title_msg = 'EStudio: ERPLAB_ERP_Viewer() datatype error:';
+    else
+        title_msg = ' ERPLAB_ERP_Viewer() datatype error:';
+    end
+    errorfound(sprintf(msgboxText), title_msg);
+    return;
+end
+
+
 
 if nargin<2
     selectedERP_index = length(ALLERP);
