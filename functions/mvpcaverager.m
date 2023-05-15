@@ -1,4 +1,6 @@
-function [MVPC, serror, msgboxText] = mvpcaverager(ALLMVPC, lista, optioni, mvpcset, nfile, stderror)
+function [MVPC, serror, msgboxText] = mvpcaverager(ALLMVPC, lista, optioni, mvpcset, nfile, stderror,warnon)
+%Only averages  across decoding accuracy per subject (SVM 1vall).
+%Does not yet average across SMV (1v1) and Crossnobis Distance. 
 
 serror = 0 ; 
 msgboxText = ''; 
@@ -6,6 +8,7 @@ msgboxText = '';
 %Reads in the correct ALLMVPC set
 ds = 1; 
 for j = 1:nfile
+    
     if optioni==1
         fprintf('Loading %s...\n', lista{j});
         MVPCX = load(lista{j}, '-mat');
@@ -13,72 +16,88 @@ for j = 1:nfile
     else
         MVPCT = ALLMVPC(mvpcset(j));
     end
-
+    
     if j>1
-        % basic test for number of channels (for now...)
-        if  pre_nchan ~= size(MVPCT.electrodes,2); 
-            msgboxText =  sprintf('MVPCsets #%g and #%g have different number of channels!', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            serror = 1;
-            break
-        end
-        % basic test for number of points (for now...)
+        
+        % basic test for number of points
         if pre_pnts  ~= MVPCT.pnts
             msgboxText =  sprintf('MVPCsets #%g and #%g have different number of points!', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
+            title = 'ERPLAB: pop_gaverager() Error';
+            errorfound(msgboxText, title);
             serror = 1;
             break
         end
-        % basic test for number of bins (for now...)
-        if pre_nClasses  ~= MVPCT.nClasses
-            msgboxText =  sprintf('MVPCsets #%g and #%g have different number of bins!', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
-            serror = 1;
-            break
+        
+        if warnon == 1
+            % basic test for number of channels (for now...)
+            if  pre_nchan ~= size(MVPCT.electrodes,2)
+                msgwrng =  sprintf('MVPCsets #%g and #%g have different number of channels!', j-1, j);
+                cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+                
+                %title = 'ERPLAB: pop_gaverager() Error';
+                %errorfound(msgboxText, title);
+                %serror = 1;
+                %break
+            end
+            
+            
+            
+            % basic test for number of bins (for now...)
+            if pre_nClasses  ~= MVPCT.nClasses
+                msgwrng =  sprintf('MVPCsets #%g and #%g have different number of classes!', j-1, j);
+                cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+                %title = 'ERPLAB: pop_gaverager() Error';
+                %errorfound(msgboxText, title);
+                %return
+                %serror = 1;
+                %break
+            end
+            
+            if pre_nIter  ~= MVPCT.nIter
+                msgwrng =  sprintf('MVPCsets #%g and #%g have different number of Iterations!', j-1, j);
+                cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+                %title = 'ERPLAB: pop_gaverager() Error';
+                %errorfound(msgboxText, title);
+                %return
+                %serror = 1;
+                %break
+            end
+            
+            if pre_nCrossfolds  ~= MVPCT.nCrossfolds
+                msgwrng =  sprintf('MVPCsets #%g and #%g have different number of Iterations!', j-1, j);
+                cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+                %title = 'ERPLAB: pop_gaverager() Error';
+                %errorfound(msgboxText, title);
+                %return
+                %serror = 1;
+                %break
+            end
+            
+            
+            
+            % basic test for data type (for now...)
+            if ~strcmpi(pre_dtype, MVPCT.DecodingMethod)
+                msgwrng =  sprintf('MVPCsets #%g and #%g have different type of data (see ERP.datatype)', j-1, j);
+                cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
+                %errorfound(msgboxText, title);
+                %return
+%                 serror = 1;
+%                 break
+            end
+            
+            
         end
-
-        if pre_nIter  ~= MVPCT.nIter
-            msgboxText =  sprintf('MVPCsets #%g and #%g have different number of Iterations!', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
-            serror = 1;
-            break
-        end
-
-        if pre_nCrossfolds  ~= MVPCT.nCrossfolds
-            msgboxText =  sprintf('MVPCsets #%g and #%g have different number of Iterations!', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
-            serror = 1;
-            break
-        end
-
-
-
-        % basic test for data type (for now...)
-        if ~strcmpi(pre_dtype, MVPCT.DecodingMethod)
-            msgboxText =  sprintf('MVPCsets #%g and #%g have different type of data (see ERP.datatype)', j-1, j);
-            %title = 'ERPLAB: pop_gaverager() Error';
-            %errorfound(msgboxText, title);
-            %return
-            serror = 1;
-            break
-        end
+        
     end
+    
 
 
-    pre_nchan  = size(MVPCT.electrodes,2);
+
+   % pre_nchan  = size(MVPCT.electrodes,2);
     pre_pnts   = MVPCT.pnts;
-    pre_nClasses   = MVPCT.nClasses;
     pre_nCrossfolds = MVPCT.nCrossfolds; 
-    pre_nIter   = MVPCT.nIter; 
+   % pre_nClasses   = MVPCT.nClasses;
+  %  pre_nIter   = MVPCT.nIter; 
     pre_dtype  = MVPCT.DecodingMethod;
    %
     % Preparing MVPC struct (first MVPC)
@@ -98,46 +117,33 @@ for j = 1:nfile
         % ERPset
         MVPC.mvpcname    = [];
         MVPC.filename   = [];
-        MVPC.filepath   = [];
-        MVPC.mvpc_version    = MVPCT.mvpc_version;
+        MVPC.filepath   = []; 
         MVPC.electrodes      = MVPCT.electrodes;
         MVPC.nClasses       = MVPCT.nClasses;
-        MVPC.nIter      = MVPCT.nIter;
-        MVPC.nCrossfolds = MVPCT.nCrossfolds;
         MVPC.nChance    = MVPCT.nChance; 
+        MVPC.nIter      = MVPCT.nIter;
+        MVPC.nCrossfolds = MVPCT.nCrossfolds;  
         MVPC.nSampling  = MVPCT.nSampling;
         MVPC.pnts       = MVPCT.pnts;
-        MVPC.OneVsOne      = MVPCT.OneVsOne;
-        MVPC.OneVsAll       = MVPCT.OneVsAll;
-        MVPC.DecodingAccuracy       = MVPCT.DecodingAccuracy;
+        MVPC.SVM.OneVsOne      = MVPCT.SVM.OneVsOne;
+        MVPC.SVM.OneVsAll       = MVPCT.SVM.OneVsAll;
+        MVPC.DecodingUnit       = MVPCT.DecodingUnit;
         MVPC.DecodingMethod     = MVPCT.DecodingMethod;
-        MVPC.DecodingDistance = MVPCT.DecodingDistance; 
-        MVPC.grandaverage   = 'yes'; 
-        MVPC.window         = MVPCT.window;
-        MVPC.equalTrials   = 'grandavg';
-        MVPC.n_trials_per_bin    = 'grandavg';
+        MVPC.average_status   = 'grandaverage'; 
+        MVPC.equalTrials   = 'grandavg'; %%%%%%%%%%%%%%%%%%%%%%%
+        MVPC.n_trials_per_class    = 'grandavg'; %%%%%%%%%%%%%%%%
+        MVPC.saved = 'no'; 
         MVPC.epoch          = MVPCT.epoch;
-        MVPC.times          = MVPCT.times; 
+        MVPC.times          = MVPCT.times;
+        MVPC.mvpc_version    = MVPCT.mvpc_version;
         MVPC.SVMinfo        = 'grandavg'; 
         MVPC.raw_predictions = 'grandavg'; 
         MVPC.average_accuracy_1vAll = []; 
-        MVPC.saved = 'no'; 
-%         MVPC.binerror   = [];
-%         
-%         MVPC.datatype   = ERPT.datatype;
-%         
-%         MVPC.chanlocs   = ERPT.chanlocs;
-%         MVPC.ref        = ERPT.ref;
-%         MVPC.bindescr   = ERPT.bindescr;
-%         MVPC.history    = ERPT.history;
-%         MVPC.saved      = ERPT.saved;
-%         MVPC.isfilt     = ERPT.isfilt;
-%         MVPC.version    = ERPT.version;
-%         MVPC.splinefile = ERPT.splinefile;
+        
+
 %         EVEL           = ERPT.EVENTLIST;
 %         ALLEVENTLIST(1:length(EVEL)) = EVEL;
     else
-%         workfileArray = [workfileArray ERPT.workfiles];
 %         EVEL =  ERPT.EVENTLIST;
 %         ALLEVENTLIST(end+1:end+length(EVEL)) = EVEL;
     end

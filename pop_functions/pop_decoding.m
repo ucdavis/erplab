@@ -113,7 +113,7 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 [] 1 2 0};
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 1 2 0};
       
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
@@ -125,7 +125,7 @@ if nargin == 1 %GUI
         %def8 = decode_every_Npoint (1 = every point)
         %def9 = Equalize Trials (0: don't equalize/ 1:equalize across bins/ 2: eqalize across
         %   bins & best (def)/ 3: Common Floor)
-        %def10 = Common  Floor Value (def: []); 
+        %def10 = Common  Floor Value (def: 1); 
         %def11 = classifer (1: SVM / 2: Crossnobis - def: SVM)
         %def12 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
         %def13 = parCompute (def = 0) 
@@ -275,16 +275,17 @@ if nargin == 1 %GUI
     decodeTimes = decoding_res{8}; %in s
     decode_every_Npoint = decoding_res{9};
     equalizeTrials = decoding_res{10};
-    selected_method = decoding_res{11};
-    SVMcoding = decoding_res{12};
+    floorValue = decoding_res{11};
+    selected_method = decoding_res{12};
+    SVMcoding = decoding_res{13};
 %     file_out = decoding_res{13};
 %     path_out = decoding_res{14}; 
-    ParCompute = decoding_res{13}; 
+    ParCompute = decoding_res{14}; 
     
     %save in working memory
     
     def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
-        decodeTimes, decode_every_Npoint, equalizeTrials, ...
+        decodeTimes, decode_every_Npoint, equalizeTrials, floorValue, ...
         selected_method, SVMcoding, ParCompute}; 
     erpworkingmemory('pop_decoding',def); 
     
@@ -295,7 +296,7 @@ if nargin == 1 %GUI
    [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
-   'equalizeTrials', equalizeTrials, 'method', selected_method, ...
+   'equalizeTrials', equalizeTrials,'floorValue',floorValue,'method', selected_method, ...
    'SVMcoding',SVMcoding, 'Saveas','on', 'ParCompute',ParCompute); 
 
     pause(0.1);
@@ -323,7 +324,8 @@ p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock vali
 %p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
 p.addParamValue('decodeTimes',[],@isnumeric); %[start end](in ms)
 p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
-p.addParamValue('equalizeTrials', 2, @isnumeric); % number of trials per bin (req: length must equal nBins // def: equalize trials across bins & BESTsets)
+p.addParamValue('equalizeTrials', 2, @isnumeric); % def: equalize trials across bins & BESTsets (2)
+p.addParamValue('floorValue', 0, @isnumeric); 
 p.addParamValue('method',1,@isnumeric); %method (1:SVM/2:Crossnobis);
 p.addParamValue('SVMcoding',2,@isnumeric); % SVMcoding(1:oneVsone/2:oneVsall); 
 p.addParamValue('Saveas','off',@ischar); 
@@ -338,6 +340,7 @@ nCrossblocks = p.Results.nCrossblocks;
 decodeTimes = p.Results.decodeTimes; 
 Decode_every_Npoint = p.Results.Decode_every_Npoint; 
 equalize_trials = p.Results.equalizeTrials;
+floor_value = p.Results.floorValue; 
 method = p.Results.method; 
 SVMcoding = p.Results.SVMcoding;
 % filename_out = p.Results.filename_out; 
@@ -563,7 +566,15 @@ elseif equalize_trials == 1 %equalize bins within best files
             ALLBEST(s).n_trials_per_bin(tr) = minCnt;
         end
         
-     end
+    end
+elseif equalize_trials == 3
+    
+    for s = 1:nsubs
+        for tr = 1:nbins
+            ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks ;
+        end
+    end
+    
 
 end
 

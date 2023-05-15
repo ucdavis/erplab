@@ -87,7 +87,7 @@ if nargin==1  % GUI
         
         def  = erpworkingmemory('pop_mvpcaverager');
         if isempty(def)
-            def = { actualnset 0 '' 1};
+            def = { actualnset 0 '' 1 1};
         else
             def{1}=actualnset;
         end
@@ -115,6 +115,7 @@ if nargin==1  % GUI
         optioni    = answer{1}; %1 means from a filelist, 0 means from mvpcsets menu
         mvpcset     = answer{2};
         stderror   = answer{3}; % 0;1
+        warnon    = answer {4}; 
       
         
         if optioni==1 % from files
@@ -126,12 +127,17 @@ if nargin==1  % GUI
         end
         
         %def = {actualnset, optioni, mvpcset,stderror};
-        def = {actualnset, optioni, mvpcset,stderror};
+        def = {actualnset, optioni, mvpcset,stderror,warnon};
         erpworkingmemory('pop_mvpcaverager', def);
         if stderror==1
             stdsstr = 'on';
         else
             stdsstr = 'off';
+        end
+        if warnon==1
+            warnon_str = 'on';
+        else
+            warnon_str = 'off';
         end
             %
             % Somersault
@@ -139,7 +145,7 @@ if nargin==1  % GUI
             %[ERP erpcom]  = pop_gaverager(ALLMVPC, 'mvpcsets', mvpcset, 'Loadlist', filelist,'Criterion', artcrite,...
             %        'SEM', stdsstr, 'Weighted', wavgstr, 'Saveas', 'on');
             [MVPC]  = pop_mvpcaverager(ALLMVPC, 'Mvpcsets', mvpcset, 'SEM', stdsstr,...
-               'Warning', 'off', 'Saveas','on','History', 'gui');
+               'Warning', warnon_str, 'Saveas','on','History', 'gui');
         pause(0.1)
         return
     else
@@ -218,12 +224,18 @@ else
     stderror = 0;
 end
 
+if ismember_bc2({p.Results.Warning}, {'on','yes'})
+    warnon = 1;
+else
+    warnon = 0;
+end
+
 %
 %subroutine
 %
 
 MVPCaux = MVPC;
-[MVPC, serror, msgboxText] = mvpcaverager(ALLMVPC, lista, optioni, mvpcset, nfile, stderror);
+[MVPC, serror, msgboxText] = mvpcaverager(ALLMVPC, lista, optioni, mvpcset, nfile, stderror,warnon);
 
 
 if serror>0

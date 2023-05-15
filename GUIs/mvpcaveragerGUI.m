@@ -51,7 +51,7 @@ function varargout = mvpcaveragerGUI(varargin)
 
 % Edit the above text to modify the response to help mvpcaveragerGUI
 
-% Last Modified by GUIDE v2.5 02-May-2023 14:26:00
+% Last Modified by GUIDE v2.5 15-May-2023 15:05:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -353,6 +353,7 @@ function pushbutton_GO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 stderror   = get(handles.checkbox_SEM,'Value'); % for standard error  1=>yes
+warnon     = get(handles.checkbox_warning,'Value'); 
 
 %
 % mvpcsets
@@ -372,7 +373,7 @@ if get(handles.radiobutton_mvpcset, 'Value')
                 errorfound(msgboxText, title);
                 return
         else
-                handles.output = {0, mvpcset, stderror};
+                handles.output = {0, mvpcset, stderror, warnon};
         end
 else
         mvpcset = cellstr(get(handles.listbox_mvpcnames, 'String'));
@@ -427,8 +428,10 @@ else
                         guidata(hObject, handles);
                         return
                 end
-        end        
-        handles.output = {1, listname, stderror};
+        end   
+        
+        
+        handles.output = {1, listname, stderror, warnon};
 end
 
 
@@ -753,3 +756,12 @@ function edit_filelist_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in checkbox_warning.
+function checkbox_warning_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_warning (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_warning
