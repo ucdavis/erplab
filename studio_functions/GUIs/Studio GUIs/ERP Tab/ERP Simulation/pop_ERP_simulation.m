@@ -639,11 +639,11 @@ try
 catch
     rng(1,'twister');
 end
-try
-    Desirednosizepink = pinknoise(numel(Times));
-catch
+% try
+%     Desirednosizepink = pinknoise(numel(Times));
+% catch
     Desirednosizepink = f_pinknoise(numel(Times));
-end
+% end
 Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
 if max(abs(Desirednosizepink(:)))~=0
     Desirednosizepink = qPinkAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));

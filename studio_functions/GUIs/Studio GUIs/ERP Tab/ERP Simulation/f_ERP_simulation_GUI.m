@@ -436,7 +436,7 @@ handles.SimulationPhase = SimulationPhase;
 
 SimulationPhase = 0;
 erpworkingmemory('SimulationPhase',SimulationPhase);
- 
+
 
 plotsimulationwave(hObject, eventdata, handles);
 
@@ -788,7 +788,7 @@ if handles.radiobutton_whitenoise.Value==1
     end
     WhiteAmp =PeakAmp;
 else
-    WhiteOp = 0; 
+    WhiteOp = 0;
 end
 
 if handles.radiobutton_pink_niose.Value==1
@@ -803,7 +803,7 @@ if handles.radiobutton_pink_niose.Value==1
     end
     pinkAmp =PeakAmp;
 else
-   pinkOp =0; 
+    pinkOp =0;
 end
 
 NewnoiseFlag = handles.checkbox_newnoise.Value;
@@ -1847,11 +1847,11 @@ if handles.radiobutton_pink_niose.Value==1
     catch
         rng(1,'twister');
     end
-    try
-        Desirednosizepink = pinknoise(numel(Times));
-    catch
-        Desirednosizepink = f_pinknoise(numel(Times));
-    end
+    %     try
+    %         Desirednosizepink = pinknoise(numel(Times));
+    %     catch
+    Desirednosizepink = f_pinknoise(numel(Times));
+    %     end
     
     Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
     Desirednosizepink = PeakAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));

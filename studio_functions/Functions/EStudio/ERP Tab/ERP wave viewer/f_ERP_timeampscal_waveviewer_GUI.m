@@ -2180,12 +2180,14 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         if xSecondflag ==0 && xmSecondflag==1
             xdispysecondValue =1;
-            if xdispysecondValue==1
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
-            else
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+            if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
+                if xdispysecondValue==1
+                    gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+                    gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+                else
+                    gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+                    gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+                end
             end
         else
             xdispysecondValue =0;
@@ -2442,22 +2444,15 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         if xSecondflag ==0 && xmSecondflag==1
             xdispysecondValue =1;
-            if xdispysecondValue==1
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
-            else
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+            if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
+                if xdispysecondValue==1
+                    gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+                    gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+                else
+                    gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+                    gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+                end
             end
-            %         else
-            %             timeArray_pro = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
-            %             if xdispysecondValue==1
-            %                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro);
-            %                 gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
-            %             else
-            %                 gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray_pro/1000);
-            %                 gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
-            %             end
         else
             xdispysecondValue =0;
         end

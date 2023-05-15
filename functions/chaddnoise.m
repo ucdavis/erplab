@@ -510,7 +510,6 @@ if confirma
         
         
         
-        
         %%-----------------------------------------------------------------
         %%---------------------------------pink noise----------------------
         %%-----------------------------------------------------------------
@@ -553,11 +552,11 @@ if confirma
                     rng(0,'philox');
                 end
             end
-            try
-                Desiredpinknoise = pinknoise(sampleNum*trialNum);
-            catch
+%             try
+%                 Desiredpinknoise = pinknoise(sampleNum*trialNum);
+%             catch
                 Desiredpinknoise = f_pinknoise(sampleNum*trialNum);
-            end
+%             end
             Desiredpinknoise = reshape(Desiredpinknoise,sampleNum*trialNum,1);
             if trialNum==1%%one trial
                 if max(abs(Desiredpinknoise(:)))~=0

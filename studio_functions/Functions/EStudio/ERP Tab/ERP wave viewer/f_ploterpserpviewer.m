@@ -1437,6 +1437,7 @@ paperPosition = get(fig_gui,'PaperPosition');
 position = get(fig_gui,'Position');
 set(fig_gui,'PaperPosition',[0,0,position(3:4)]);
 set(fig_gui,'PaperSize',position(3:4));
+
 %%save figure  with different formats
 if ~isempty(extfig)
     [C_style,IA_style] = ismember_bc2(extfig,{'.pdf','.svg','.jpg','.png','.tif','.bmp','.eps'});
