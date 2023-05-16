@@ -302,6 +302,7 @@ else
     end
 end
 
+
 %%SD or offset for basic function
 qSDOffset = p.Results.SDOffset;
 if isempty(qSDOffset)
@@ -350,6 +351,45 @@ if EpochStop<=EpochStart
     errorfound(msgboxText, title);
     return;
 end
+
+if qMeanLatOnset< EpochStart
+    msgboxText =  [' "MeanLatencyOnset" should be larger than',32,num2str(EpochStop),'ms'];
+    title = 'ERPLAB: pop_ERP_simulation() error';
+    errorfound(msgboxText, title);
+    return;
+end
+
+
+if qMeanLatOnset >  EpochStop
+    msgboxText =  [' "MeanLatencyOnset" should be smaller than',32,num2str(EpochStop),'ms'];
+    title = 'ERPLAB: pop_ERP_simulation() error';
+    errorfound(msgboxText, title);
+    return;
+end
+if strcmpi(BasFuncName,'Exgaussian')
+    if qSDOffset<=0
+        msgboxText =  [' "SDOffset" for EX-Gaussian function should be a positive number.'];
+        title = 'ERPLAB: pop_ERP_simulation() error';
+        errorfound(msgboxText, title);
+    end
+end
+
+if strcmpi(BasFuncName,'Boxcar')
+    if qSDOffset >  EpochStop
+        msgboxText =  [' "SDOffset" for Boxcar function should be smaller than',32,num2str(EpochStop),'ms'];
+        title = 'ERPLAB: pop_ERP_simulation() error';
+        errorfound(msgboxText, title);
+        return;
+    end
+    
+    if qMeanLatOnset>qSDOffset
+        msgboxText =  [' "MeanLatencyOnset" for Boxcar function should be smaller than',32, num2str(qSDOffset),'ms'];
+        title = 'ERPLAB: pop_ERP_simulation() error';
+        errorfound(msgboxText, title);
+        return;
+    end
+end
+
 
 
 %%Sampling rate
@@ -642,7 +682,7 @@ end
 % try
 %     Desirednosizepink = pinknoise(numel(Times));
 % catch
-    Desirednosizepink = f_pinknoise(numel(Times));
+Desirednosizepink = f_pinknoise(numel(Times));
 % end
 Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
 if max(abs(Desirednosizepink(:)))~=0
