@@ -1,9 +1,10 @@
-% Author: Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
+% Author: Aaron Matthew Simmons, Guanghui Zhang,
+% Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2007-2020
-% Version 9.10
+% Version 9.20
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -172,32 +173,33 @@ end
 %
 % ERPLAB's VARIABLES TO WORKSPACE
 %
+
 ERP              = [];  % Start ERP Structure on workspace
-ALLERP           = [];    %Start ALLERP Structure on workspace
-ALLBEST          = [];
 ALLERPCOM        = [];
 CURRENTERP       = 0;
 BEST             = []; %Start BEST structure on workspace
-CURRENTBEST      = 0;
+CURRENTBEST      = 0; 
 plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
-MVPA             = [];
+MVPC             = [];
+CURRENTMVPC      = 0; 
 
 assignin('base','ERP',ERP);
-assignin('base','ALLERP', ALLERP);
-assignin('base','ALLBEST', ALLBEST);
+assignin('base','BEST',BEST);
+assignin('base','MVPC',MVPC); 
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','CURRENTBEST', CURRENTBEST);
-assignin('base','BEST',BEST);
+assignin('base','CURRENTMVPC', CURRENTMVPC); 
+
 assignin('base','plotset', plotset);
-assignin('base','MVPA', MVPA);
 
 % ALLERP should be created with EEGLAB Globals in eeg_globals.m
-global ALLERP 
-%global ALLBEST
-ALLERP = [];
+global ALLERP
+global ALLBEST
+global ALLMVPC
+
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
 %
