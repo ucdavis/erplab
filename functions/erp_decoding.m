@@ -122,27 +122,55 @@ for s = 1:nSubs %decoding is performed within each subject independently
             
 
             % We will use as many possible trials per
-            % bin having accounted already for artifacts
-            % Controlled by specifying equalize_trials in pop_decoding
+            % bin having accounted already for artifacts (required, not
+            % changable by subject yet).
+            % Following logic controlled by specifying equalize_trials in pop_decoding
             
             %Drop excess trials
             nPerBinBlock = floor(nPerBin/nBlocks); %array for nPerBin
             
+            if ~any(nPerBinBlock)
+                %for single trial decoding or trials less than nBlocks
+                
+                nPerBinBlock = nPerBin; 
+            end
+                  
+            
+             %grab current bin with correct # of electrodes & samps
+             eeg_now = eegs(bin).data(ReleventChan,:,:);
+            
+             true_ntrials = size(eeg_now,3);
+             min_trial_sparsity = floor(true_ntrials/nBlocks); % or max? 
+                   
             %Obtain index within each shuffled bin
-            shuffBin = randperm((nPerBinBlock(bin))*nBlocks)';
+            %shuffBin = randperm((nPerBinBlock(bin))*nBlocks)';
+            shuffBin = randperm(min_trial_sparsity*nBlocks)'; 
             
             %Preallocate arrays
             
-            blocks = nan(size(shuffBin));
-            shuffBlocks = nan(size(shuffBin));
+%             blocks = nan(size(shuffBin));
+%             shuffBlocks = nan(size(shuffBin));
+
+            x = repmat((1:nBlocks)',nPerBinBlock(bin),1); %blockindex
+            x2 = shuffBin(1:length(x)); %trial index within bin
+            
+            blocks = nan(size(x));
+            %shuffBlocks = nan(size(x));
             
             %arrage block order within bins
-            x = repmat((1:nBlocks)',nPerBinBlock(bin),1);
-            shuffBlocks(shuffBin) = x;
+%             x = repmat((1:nBlocks)',nPerBinBlock(bin),1);
+%             x2 = shuffBin(1:length(x)); 
+            %due to common floor option, x and x2 may different sizes 
+            %shuffBlocks(shuffBin) = x;
+           % [~,blocks] = ismember(shuffBin, x); 
+            %shuffBlocks(shuffBin) = x2;
+           
 
             
             %unshuffled block assignment
-            blocks(shuffBin) = shuffBlocks;
+            %blocks(shuffBin) = shuffBlocks;
+            blocks(:,1) = x; %block assignment
+            blocks(:,2) = x2; %trial number
             
             % save block assignment
             blockID = ['iter' num2str(iter) 'bin' num2str(bin)];
@@ -150,19 +178,24 @@ for s = 1:nSubs %decoding is performed within each subject independently
             mvpc.SVMinfo.blockassignment.(blockID) = blocks; % block assignment
             mvpc.SVMinfo.n_trials_per_erp(bin) = nPerBinBlock(bin); 
             
-            
-            %create ERP average and place into blockDat_filtData struct          
-            %grab current bin with correct # of electrodes & samps
-            eeg_now = eegs(bin).data(ReleventChan,:,:);
-            
-            %here, we create blockDat_filtData. 
+
+
+            %create ERP average and place into blockDat_filtData struct         
             %this results in nBins*nBlocks amount of ERP spatial
             %distributions (across nChans) at each sample/timepoint
             
             %% Step 1: computing ERPs based on random subset of trials for each block 
             for bl = 1:nBlocks
                 
-                blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,:,blocks==bl),3));
+                %unmask trial within block 
+                unMasktrial = x2(x == bl); 
+                
+                %blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,:,blocks==bl),3));
+                if nPerBinBlock(bin) == 1
+                    blockDat_filtData(bCnt,:,:) = eeg_now(:,:,(unMasktrial)); 
+                else
+                    blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,:,(unMasktrial)),3));
+                end
                 
                 labels(bCnt) = bin; %used for arranging classification obj.
                 

@@ -18,7 +18,7 @@ if nargin < 1
     mvpc.DecodingMethod = '';
     mvpc.average_status = 'single_subject';
     mvpc.equalTrials = 1; %1: floor across files, %2 floor within files, %0 don't floor. 
-    mvpc.n_trials_per_class = ALLBEST.n_trials_per_class;
+    mvpc.n_trials_per_class = ALLBEST.n_trials_per_bin;
     mvpc.saved = 'no';
     mvpc.epoch.pre = ALLBEST.times(1); % Set epoch start in ms (from imported data)
     mvpc.epoch.post = ALLBEST.times(end); % Set epoch end in ms (from imported data)
@@ -58,7 +58,7 @@ else
     end
     mvpc.average_status = 'single_subject';
     mvpc.equalTrials = equalT; %1: floor across files, %2 floor within files, %0 don't floor %3 common floor. 
-    mvpc.n_trials_per_class = ALLBEST.n_trials_per_class;
+    mvpc.n_trials_per_class = ALLBEST.n_trials_per_bin;
     mvpc.saved = 'no';
     mvpc.epoch.pre = DataTimes(1); % Set epoch start (from imported data)
     mvpc.epoch.post = DataTimes(2); % Set epoch end (from imported data)

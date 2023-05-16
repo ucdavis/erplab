@@ -571,7 +571,8 @@ elseif equalize_trials == 3
     
     for s = 1:nsubs
         for tr = 1:nbins
-            ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks ;
+            %ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks ;
+            ALLBEST(s).n_trials_per_bin(tr) = floor_value ;
         end
     end
     
