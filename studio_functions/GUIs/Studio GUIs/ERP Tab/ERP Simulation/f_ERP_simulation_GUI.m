@@ -896,6 +896,46 @@ Amp = str2num(handles.edit_exgau_mean.String);
 if isempty(Amp) || numel(Amp)~=1
     handles.edit_exgau_mean.String = '';
 end
+
+
+EpochStart = str2num(handles.edit_epoch_start.String);
+if isempty(EpochStart)
+    msgboxText =  'Please define a value for epoch start first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_exgau_mean.String = '';
+    return;
+    
+end
+EpochStop =str2num(handles.edit_epochstop.String);
+if isempty(EpochStop)
+    msgboxText =  'Please define a value for epoch stop first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_exgau_mean.String = '';
+    return;
+end
+
+if Amp< EpochStart
+    msgboxText =  ['Gaussian mean should be larger than',32,num2str(EpochStart),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_exgau_mean.String = '';
+    return;
+end
+
+if Amp > EpochStop
+    msgboxText =  ['Gaussian mean should be smaller than',32,num2str(EpochStop),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_exgau_mean.String = '';
+    return;
+end
+
 plotsimulationwave(hObject, eventdata, handles);
 
 
@@ -921,6 +961,16 @@ Amp = str2num(handles.edit_exgau_sd.String);
 if isempty(Amp) || numel(Amp)~=1
     handles.edit_exgau_sd.String = '';
 end
+
+if Amp<=0
+    msgboxText =  'SD for Ex-Gaussian function should be a positive value!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_exgau_sd.String = '';
+    return;
+end
+
 plotsimulationwave(hObject, eventdata, handles);
 
 
@@ -1017,6 +1067,46 @@ if isempty(Lat) || numel(Lat)~=1
     handles.edit_impulse_lat.String = '';
     return;
 end
+
+EpochStart = str2num(handles.edit_epoch_start.String);
+if isempty(EpochStart)
+    msgboxText =  'Please define a value for epoch start first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+   handles.edit_impulse_lat.String = '';
+    return;
+    
+end
+EpochStop =str2num(handles.edit_epochstop.String);
+if isempty(EpochStop)
+    msgboxText =  'Please define a value for epoch stop first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+   handles.edit_impulse_lat.String = '';
+    return;
+end
+
+if Lat< EpochStart
+    msgboxText =  ['Latency for Impulse function should be larger than',32,num2str(EpochStart),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_impulse_lat.String = '';
+    return;
+end
+
+if Lat > EpochStop
+    msgboxText =  ['Latency for Impulse function should be smaller than',32,num2str(EpochStop),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_impulse_lat.String = '';
+    return;
+end
+
+
 plotsimulationwave(hObject, eventdata, handles);
 
 
@@ -1082,6 +1172,47 @@ if isempty(LatencyOnset) || numel(LatencyOnset)~=1
     handles.edit_square_onset.String = '';
     return;
 end
+
+
+EpochStart = str2num(handles.edit_epoch_start.String);
+if isempty(EpochStart)
+    msgboxText =  'Please define a value for epoch start first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+     handles.edit_square_onset.String = '';
+    return;
+    
+end
+EpochStop =str2num(handles.edit_epochstop.String);
+if isempty(EpochStop)
+    msgboxText =  'Please define a value for epoch stop first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_square_onset.String = '';
+    return;
+end
+
+if LatencyOnset< EpochStart
+    msgboxText =  ['Onset for Boxcar for Impulse function should be larger than',32,num2str(EpochStart),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+     handles.edit_square_onset.String = '';
+    return;
+end
+
+if LatencyOnset > EpochStop
+    msgboxText =  ['Onset for Boxcar function should be smaller than',32,num2str(EpochStop),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+   handles.edit_square_onset.String = '';
+    return;
+end
+
+
 LatencyOffset = str2num(handles.edit_square_offset.String);
 if LatencyOnset> LatencyOffset
     msgboxText =  'Offset for Boxcar should be larger than Onset!';
@@ -1117,6 +1248,48 @@ if isempty(LatencyOffset) || numel(LatencyOffset)~=1
     handles.edit_square_offset.String = '';
     return;
 end
+
+EpochStart = str2num(handles.edit_epoch_start.String);
+if isempty(EpochStart)
+    msgboxText =  'Please define a value for epoch start first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+     handles.edit_square_offset.String = '';
+    return;
+    
+end
+EpochStop =str2num(handles.edit_epochstop.String);
+if isempty(EpochStop)
+    msgboxText =  'Please define a value for epoch stop first!';
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+    handles.edit_square_offset.String = '';
+    return;
+end
+
+if LatencyOffset< EpochStart
+    msgboxText =  ['Offset for Boxcar for Impulse function should be larger than',32,num2str(EpochStart),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+     handles.edit_square_offset.String = '';
+    return;
+end
+
+if LatencyOffset > EpochStop
+    msgboxText =  ['Offset for Boxcar function should be smaller than',32,num2str(EpochStop),'ms'];
+    handles.text_message.String = msgboxText;
+    handles.text_message.ForegroundColor = 'k';
+    handles.text_message.FontSize = 12;
+  handles.edit_square_offset.String = '';
+    return;
+end
+
+
+
+
 LatencyOnset = str2num(handles.edit_square_onset.String);
 if LatencyOnset>LatencyOffset
     msgboxText =  'Offset for Boxcar should be larger than Onset!';
@@ -1958,6 +2131,19 @@ else
     handles.edit_srate.Enable = 'on';
     handles.radiobutton_speriod.Enable = 'on';
     handles.edit_speriod.Enable = 'on';
+    
+    if handles.radiobutton_srate.Value==1
+        set(handles.radiobutton_srate,'Value',1);
+        set(handles.edit_srate,'Enable','on');
+        set(handles.radiobutton_speriod,'Value',0);
+        set(handles.edit_speriod,'Enable','off');
+    else
+        set(handles.radiobutton_srate,'Value',0);
+        set(handles.edit_srate,'Enable','off');
+        set(handles.radiobutton_speriod,'Value',1);
+        set(handles.edit_speriod,'Enable','on');
+    end
+    
 end
 plotsimulationwave(hObject, eventdata, handles);
 

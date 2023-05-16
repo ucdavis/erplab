@@ -1,4 +1,5 @@
-% PURPOSE: add white/pink/line noise to EEG/ERP data with specific channels
+% PURPOSE: add white/pink/line noise to EEG/ERP data with specific
+% channels. Different types of noise are also allowed to add simultaneously.
 %
 % FORMAT:
 %
