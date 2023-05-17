@@ -93,11 +93,11 @@ for j = 1:nfile
 
 
 
-   % pre_nchan  = size(MVPCT.electrodes,2);
+    pre_nchan  = size(MVPCT.electrodes,2);
     pre_pnts   = MVPCT.pnts;
     pre_nCrossfolds = MVPCT.nCrossfolds; 
-   % pre_nClasses   = MVPCT.nClasses;
-  %  pre_nIter   = MVPCT.nIter; 
+    pre_nClasses   = MVPCT.nClasses;
+    pre_nIter   = MVPCT.nIter; 
     pre_dtype  = MVPCT.DecodingMethod;
    %
     % Preparing MVPC struct (first MVPC)
