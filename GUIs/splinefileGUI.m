@@ -3,15 +3,15 @@ function varargout = splinefileGUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-      'gui_Singleton',  gui_Singleton, ...
-      'gui_OpeningFcn', @splinefileGUI_OpeningFcn, ...
-      'gui_OutputFcn',  @splinefileGUI_OutputFcn, ...
-      'gui_LayoutFcn',  [] , ...
-      'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @splinefileGUI_OpeningFcn, ...
+    'gui_OutputFcn',  @splinefileGUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
-      if ~isempty(varargin{1})
-            gui_State.gui_Callback = str2func(varargin{1});
-      end
+    if ~isempty(varargin{1})
+        gui_State.gui_Callback = str2func(varargin{1});
+    end
 end
 
 if nargout
@@ -25,18 +25,39 @@ end
 % --- Executes just before splinefileGUI is made visible.
 function splinefileGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
+
 handles.output = [];
 try
-      splinefile = varargin{1};
-      splinefile = splinefile{:};
+    splinefile = varargin{1};
+    splinefile = splinefile{:};
 catch
-      splinefile = '';
+    splinefile = '';
 end
 
-if isempty(splinefile)
-      mainmsg = 'Your ERPset does not have a spline file info.\n A spline file is needed for 3d plotting.';
+try
+    ERP = varargin{2};%%GH 2022
+catch
+    ERP = {};
+    
+end
+
+try 
+    erpname = ERP.erpname;
+catch
+  erpname = '';
+end
+if ~isempty(erpname)
+    if isempty(splinefile)
+        mainmsg = ['#',erpname,32,' does not have a spline file info.\n A spline file is needed for 3d plotting.'];%% GH 2022
+    else
+        mainmsg = ['Load a spline file for 3d plotting for #', erpname];%%GH 2022
+    end
 else
-      mainmsg = 'Load a spline file for 3d plotting.';
+    if isempty(splinefile)
+        mainmsg = [' Current ERPset does not have a spline file info.\n A spline file is needed for 3d plotting.'];%% GH 2022
+    else
+        mainmsg = ['Load a spline file for 3d plotting.'];%%GH 2022
+    end
 end
 set(handles.text_main, 'String', sprintf(mainmsg))
 set(handles.edit_splinepath, 'String', splinefile)
@@ -47,12 +68,40 @@ set(handles.pushbutton_browse_saves_as, 'Enable', 'off');
 %
 % Color GUI
 %
-handles = painterplab(handles);
+% handles = painterplab(handles);
+% 
+% %
+% % Set font size
+% %
+% handles = setfonterplab(handles);
+ERPtooltype = erpgettoolversion('tooltype');
+if ~isempty(ERPtooltype)
+    if strcmpi(ERPtooltype,'EStudio')
+        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed. 
+    else
+        Toolabel = 0;
+    end
+else
+    Toolabel = 1;
+end
 
-%
-% Set font size
-%
-handles = setfonterplab(handles);
+if Toolabel
+%     erplab_studio_default_values;
+%     version = erplabstudiover;
+%     set(handles.gui_chassis,'Name', ['EStudio',version,'  -   Bin Operation > Advanced GUI for '])
+    handles = painterplabstudio(handles);
+    handles = setfonterplabestudio(handles);
+%     handles.RUN.String = 'OK';
+else
+    
+%     version = geterplabversion;
+% set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Bin Operation GUI '])
+    %
+    handles = painterplab(handles);
+    
+    handles = setfonterplab(handles);
+end
+
 
 % Update handles structure
 guidata(hObject, handles);
@@ -74,25 +123,25 @@ pause(0.1)
 %--------------------------------------------------------------------------
 function radiobutton_path_Callback(hObject, eventdata, handles)
 if get(hObject, 'Value')
-      set(handles.radiobutton_newspline, 'Value', 0);
-      set(handles.edit_splinepath, 'Enable', 'on');
-      set(handles.pushbutton_browse, 'Enable', 'on');      
-      set(handles.edit_saveas, 'Enable', 'off');
-      set(handles.pushbutton_browse_saves_as, 'Enable', 'off');
+    set(handles.radiobutton_newspline, 'Value', 0);
+    set(handles.edit_splinepath, 'Enable', 'on');
+    set(handles.pushbutton_browse, 'Enable', 'on');
+    set(handles.edit_saveas, 'Enable', 'off');
+    set(handles.pushbutton_browse_saves_as, 'Enable', 'off');
 else
-      set(hObject, 'Value', 1)
+    set(hObject, 'Value', 1)
 end
 
 %--------------------------------------------------------------------------
 function radiobutton_newspline_Callback(hObject, eventdata, handles)
 if get(hObject, 'Value')
-      set(handles.radiobutton_path, 'Value', 0);
-      set(handles.edit_splinepath, 'Enable', 'off');
-      set(handles.pushbutton_browse, 'Enable', 'off');      
-      set(handles.edit_saveas, 'Enable', 'on');
-      set(handles.pushbutton_browse_saves_as, 'Enable', 'on');      
+    set(handles.radiobutton_path, 'Value', 0);
+    set(handles.edit_splinepath, 'Enable', 'off');
+    set(handles.pushbutton_browse, 'Enable', 'off');
+    set(handles.edit_saveas, 'Enable', 'on');
+    set(handles.pushbutton_browse_saves_as, 'Enable', 'on');
 else
-      set(hObject, 'Value', 1)
+    set(hObject, 'Value', 1)
 end
 
 %--------------------------------------------------------------------------
@@ -115,44 +164,44 @@ function pushbutton_browse_Callback(hObject, eventdata, handles)
 [blfilename, blpathname, filterindex] = uigetfile({'*.*'},'Load spline file ');
 
 if isequal(blfilename,0)
-        disp('User selected Cancel')
-        return
+    disp('User selected Cancel')
+    return
 else
-        [px, fname, ext] = fileparts(blfilename);
-        fname = [ fname ext];
-        fullsplinename = fullfile(blpathname, fname);
-        set(handles.edit_splinepath,'String', fullsplinename);
-        disp(['Spline file will be loaded from ' fullsplinename])
+    [px, fname, ext] = fileparts(blfilename);
+    fname = [ fname ext];
+    fullsplinename = fullfile(blpathname, fname);
+    set(handles.edit_splinepath,'String', fullsplinename);
+    disp(['Spline file will be loaded from ' fullsplinename])
 end
 
 %--------------------------------------------------------------------------
 function pushbutton_OK_Callback(hObject, eventdata, handles)
 
 if get(handles.radiobutton_path, 'Value')
-      splineinfo.path = get(handles.edit_splinepath,'String');
-      splineinfo.new = 0;
-      %splineinfo.newname = [];
+    splineinfo.path = get(handles.edit_splinepath,'String');
+    splineinfo.new = 0;
+    %splineinfo.newname = [];
 else
-      if get(handles.radiobutton_newspline, 'Value')
-            splineinfo.path = get(handles.edit_saveas,'String');
-            splineinfo.new  = 1; 
-            %splineinfo.newname = get(handles.edit_saveas,'String');
-      else
-            splineinfo.path = [];
-            splineinfo.new = [];
-            %splineinfo.newname = [];
-      end
+    if get(handles.radiobutton_newspline, 'Value')
+        splineinfo.path = get(handles.edit_saveas,'String');
+        splineinfo.new  = 1;
+        %splineinfo.newname = get(handles.edit_saveas,'String');
+    else
+        splineinfo.path = [];
+        splineinfo.new = [];
+        %splineinfo.newname = [];
+    end
 end
-if isempty(splineinfo.path)        
-        msgboxText =  'You must specify a name for the spline file.';
-        title = 'ERPLAB: spline file for 3D maps';
-        errorfound(msgboxText, title);
-        return
+if isempty(splineinfo.path)
+    msgboxText =  'You must specify a name for the spline file.';
+    title = 'ERPLAB: spline file for 3D maps';
+    errorfound(msgboxText, title);
+    return
 end
 if get(handles.checkbox_savespline, 'Value')
-      splineinfo.save = 1;
+    splineinfo.save = 1;
 else
-      splineinfo.save = 0;
+    splineinfo.save = 0;
 end
 
 handles.output = splineinfo;
@@ -180,13 +229,13 @@ uiresume(handles.gui_chassis);
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 
 if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
-      handles.output = [];
-      %Update handles structure
-      guidata(hObject, handles);
-      uiresume(handles.gui_chassis);
+    handles.output = [];
+    %Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.gui_chassis);
 else
-      % The GUI is no longer waiting, just close it
-      delete(handles.gui_chassis);
+    % The GUI is no longer waiting, just close it
+    delete(handles.gui_chassis);
 end
 
 %--------------------------------------------------------------------------
@@ -208,11 +257,11 @@ prename = get(handles.edit_saveas,'String');
 [blfilename, blpathname, filterindex] = uiputfile({'*.*'},'Save new spline file as ', prename);
 
 if isequal(blfilename,0)
-        disp('User selected Cancel')
-        return
+    disp('User selected Cancel')
+    return
 else
-        [px, fname, ext] = fileparts(blfilename);
-        fname = [ fname ext];
-        fullsplinename = fullfile(blpathname, fname);
-        set(handles.edit_saveas,'String', fullsplinename);
+    [px, fname, ext] = fileparts(blfilename);
+    fname = [ fname ext];
+    fullsplinename = fullfile(blpathname, fname);
+    set(handles.edit_saveas,'String', fullsplinename);
 end

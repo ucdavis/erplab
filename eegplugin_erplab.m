@@ -69,6 +69,9 @@ p = p(1:findstr(p,'eegplugin_erplab.m')-1);
 addpath(genpath(p))
 
 
+
+
+
 %
 % CHECK VERSION NUMBER & FOLDER NAME
 % Grab the end of the path, like '7.0'
