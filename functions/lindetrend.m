@@ -44,7 +44,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -93,10 +93,12 @@ else
 end
 
 if strcmpi(interv,'pre')
-        bb = find(ERPLAB.times==0);    % zero-time locked
+%         bb = find(ERPLAB.times==0);    % zero-time locked
+        [xxx, bb, latdiffms] = closest(ERPLAB.times, 0);%%GH 2022
         aa =1;
 elseif strcmpi(interv,'post')
-        aa = find(ERPLAB.times==0);    % zero-time locked
+%         aa = find(ERPLAB.times==0);    % zero-time locked
+        [xxx, aa, latdiffms] = closest(ERPLAB.times, 0);%%GH 2022
         bb = pnts;
 elseif strcmpi(interv,'all')
         bb = pnts;  % full epoch

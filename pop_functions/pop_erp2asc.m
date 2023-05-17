@@ -30,7 +30,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2007 The Regents of the University of California
+% Copyright Â© 2007 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -76,8 +76,10 @@ if nargin==1
         
         %
         % Save ascii file
-        %
-        [filenamei, pathname] = uiputfile({'*.txt';'*.*'},'Save Exported Averaged file as');
+        %Changed by Guanghui August 2022
+        [pathx, erpfilename, ext] = fileparts(ERP.filename);
+        
+        [filenamei, pathname] = uiputfile({'*.txt';'*.*'},['Save "',ERP.erpname, '" as'],[erpfilename,'.txt']);
         
         if isequal(filenamei,0)
                 disp('User selected Cancel')

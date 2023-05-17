@@ -27,18 +27,48 @@ handles.output = [];
 %
 % Name & version
 %
-version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   IMPORT ERP from ERPSS (ASCII) GUI'])
+% version = geterplabversion;
+% set(handles.gui_chassis,'Name', ['Estudio 2022.1  -   IMPORT ERP from ERPSS (ASCII) GUI'])
+
+ERPtooltype = erpgettoolversion('tooltype');
+if ~isempty(ERPtooltype)
+    if strcmpi(ERPtooltype,'EStudio')
+        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed. 
+    else
+        Toolabel = 0;
+    end
+else
+    Toolabel = 1;
+end
+
+if Toolabel
+    erplab_studio_default_values;
+    version = erplabstudiover;
+    set(handles.gui_chassis,'Name', ['EStudio',version,'  -   IMPORT ERP from ERPSS (ASCII) GUI'])
+    handles = painterplabstudio(handles);
+    %
+    % %
+    % % Set font size
+    % %
+    handles = setfonterplabestudio(handles);
+else
+    version = geterplabversion;
+    set(handles.gui_chassis,'Name', ['ERPLAB',version,'  -   IMPORT ERP from ERPSS (ASCII) GUI'])
+    %
+    handles = painterplab(handles);
+    
+    handles = setfonterplab(handles);
+end
 
 %
 % Color GUI
 %
-handles = painterplab(handles);
+% handles = painterplab(handles);
 
 %
 % Set font size
 %
-handles = setfonterplab(handles);
+% handles = setfonterplab(handles);
 
 % Update handles structure
 guidata(hObject, handles);

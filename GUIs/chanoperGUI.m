@@ -75,8 +75,34 @@ handles.formtype = formtype;
 %
 % Name & version
 %
-version = geterplabversion;
+ERPtooltype = erpgettoolversion('tooltype');
+if ~isempty(ERPtooltype)
+    if strcmpi(ERPtooltype,'EStudio')
+        Toolabel = 1;%%Get  label from work space to confirm whether EStudio was executed. 
+    else
+        Toolabel = 0;
+    end
+else
+    Toolabel = 1;
+end
+
+if Toolabel
+    erplab_studio_default_values;
+    version = erplabstudiover;
+    set(handles.gui_chassis,'Name', ['EStudio',version,'  -   Channel Operation > Advanced GUI for ',typedata])
+    handles = painterplabstudio(handles);
+    handles = setfonterplabestudio(handles);
+    handles.pushbutton_RUN.String = 'OK';
+else
+    version = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Channel Operation GUI for ' typedata])
+    %
+    handles = painterplab(handles);
+    handles = setfonterplab(handles);
+end
+
+
+
 
 % formulas = erpworkingmemory(formtype);
 
@@ -172,12 +198,12 @@ handles.locs = ERPLAB.chanlocs;
 %
 % Color GUI
 %
-handles = painterplab(handles);
+% handles = painterplab(handles);
 
 %
 % Set font size
 %
-handles = setfonterplab(handles);
+% handles = setfonterplab(handles);
 
 % Update handles structure
 guidata(hObject, handles);
