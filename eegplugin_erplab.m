@@ -183,7 +183,8 @@ plotset.pscalp   = [];
 plotset.pfrequ   = [];
 MVPC             = [];
 CURRENTMVPC      = 0; 
-
+% ALLERP = [];
+% assignin('base','ALLERP',ALLERP);
 assignin('base','ERP',ERP);
 assignin('base','BEST',BEST);
 assignin('base','MVPC',MVPC); 
@@ -603,7 +604,7 @@ uimenu( mERPOP,'Label','ERP Calibration ','CallBack', comCALIERP,'separator','on
 %
 mERPLOT = uimenu( submenu,'Label','Plot ERP','tag','ERPlot','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP waveforms ','CallBack', comPLOT,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
-% uimenu( mERPLOT,'Label','ERP Waveform Viewer ','CallBack', comPLOTV,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mERPLOT,'Label','ERP Waveform Viewer ','CallBack', comPLOTV,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP scalp maps ','CallBack', comSCALP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Print plotted figure(s) to a file','CallBack', comEXPPDF,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Edit ERP channel location table','CallBack', comCHLOCTABLE,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
