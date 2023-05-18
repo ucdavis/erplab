@@ -113,8 +113,8 @@ gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plo
 % gui_erp_waviewer.ViewAxes_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',ColorBviewer_def);
 
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',14,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-
-gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
+gui_erp_waviewer.Resize = 0;
+gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);
 
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
@@ -249,8 +249,20 @@ else
     gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
-
+gui_erp_waviewer.Resize =1;
 end % redrawDemo
+
+
+
+%%Resize the GUI automatically as the user changes the size of the window at run-time.
+function WAviewerResize(~,~)
+global gui_erp_waviewer;
+if gui_erp_waviewer.Resize ~= 0
+    f_redrawERP_viewer_test();
+end
+end
+
+
 
 %%-------------------------------Page Editor-------------------------------
 function page_edit(Source,~)
@@ -1306,10 +1318,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     bindataerror = permute(bindataerror,[4 2 1 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -1321,10 +1333,10 @@ elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is
     bindataerror = permute(bindataerror,[3 2 4 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -1336,10 +1348,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is
     bindataerror = permute(bindataerror,[4 2 3 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 else
     if qCURRENTPLOT> length(qERPArray)
@@ -1352,10 +1364,10 @@ else
     end
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 end
 %
@@ -1650,12 +1662,12 @@ for Numofrows = 1:Numrows
             else
                 yunitsypos = 0.95*abs(qYScales(1));
             end
-            if strcmpi( datatype,'ERP') 
-            yunitstr =  '\muV';
-            elseif strcmpi( datatype,'CSD') 
-             yunitstr =  '\muV/m^2';   
+            if strcmpi( datatype,'ERP')
+                yunitstr =  '\muV';
+            elseif strcmpi( datatype,'CSD')
+                yunitstr =  '\muV/m^2';
             else
-             yunitstr = '';   
+                yunitstr = '';
             end
             if strcmpi(qYunits,'on')
                 text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows),yunitstr, 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);

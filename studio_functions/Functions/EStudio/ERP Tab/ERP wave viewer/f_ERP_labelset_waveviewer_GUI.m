@@ -34,10 +34,19 @@ else
 end
 %-----------------------------Draw the panel-------------------------------------
 
-drawui_plot_property();
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+
+drawui_plot_property(FonsizeDefault);
 varargout{1} = box_erplabelset_viewer_property;
 
-    function drawui_plot_property()
+    function drawui_plot_property(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         
         try
@@ -53,7 +62,7 @@ varargout{1} = box_erplabelset_viewer_property;
         %%-----------------Setting for label location title-------
         gui_labelset_waveviewer.location_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_labelset_waveviewer.location_title,'String','Label Location:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',1,'FontWeight','bold'); %,'HorizontalAlignment','left'
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',1,'FontWeight','bold'); %,'HorizontalAlignment','left'
         
         %%-----------------Setting for Auto-------
         locationAuto = 1;
@@ -71,11 +80,11 @@ varargout{1} = box_erplabelset_viewer_property;
         end
         gui_labelset_waveviewer.parameters_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_labelset_waveviewer.labelauto = uicontrol('Style','radiobutton','Parent', gui_labelset_waveviewer.parameters_title,'String','Auto',...
-            'callback',@labelauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',locationAuto); %
+            'callback',@labelauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',locationAuto); %
         gui_labelset_waveviewer.nolabel = uicontrol('Style','radiobutton','Parent', gui_labelset_waveviewer.parameters_title,'String','No labels',...
-            'callback',@nolabel,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',locationno); %
+            'callback',@nolabel,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',locationno); %
         gui_labelset_waveviewer.customlabel = uicontrol('Style','radiobutton','Parent', gui_labelset_waveviewer.parameters_title,'String','Custom',...
-            'callback',@customlabel,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',locationcustom); %
+            'callback',@customlabel,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',locationcustom); %
         if gui_labelset_waveviewer.labelauto.Value
             gui_labelset_waveviewer.nolabel.Value = ~gui_labelset_waveviewer.labelauto.Value;
             gui_labelset_waveviewer.customlabel.Value = ~gui_labelset_waveviewer.labelauto.Value;
@@ -98,15 +107,15 @@ varargout{1} = box_erplabelset_viewer_property;
         CenDef = 1;
         gui_labelset_waveviewer.labelloc_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_labelset_waveviewer.xperctitle = uicontrol('Style','text','Parent', gui_labelset_waveviewer.labelloc_title,'String','X%',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',~gui_labelset_waveviewer.labelauto.Value); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~gui_labelset_waveviewer.labelauto.Value); %
         gui_labelset_waveviewer.xperc_edit = uicontrol('Style','edit','Parent', gui_labelset_waveviewer.labelloc_title,'String',xperDef,...
-            'callback',@label_xperc, 'FontSize',12,'BackgroundColor',[1 1 1],'Enable',customdefEnable); %
+            'callback',@label_xperc, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customdefEnable); %
         gui_labelset_waveviewer.yperctitle = uicontrol('Style','text','Parent', gui_labelset_waveviewer.labelloc_title,'String','Y%',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         gui_labelset_waveviewer.yperc_edit = uicontrol('Style','edit','Parent', gui_labelset_waveviewer.labelloc_title,'String',yperDef,...
-            'callback',@label_yperc, 'FontSize',12,'BackgroundColor',[1 1 1],'Enable',customdefEnable); %
+            'callback',@label_yperc, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customdefEnable); %
         gui_labelset_waveviewer.center = uicontrol('Style','checkbox','Parent', gui_labelset_waveviewer.labelloc_title,'String','Centered',...
-            'callback',@label_center,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Enable',customdefEnable,'Value',CenDef); %
+            'callback',@label_center,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Enable',customdefEnable,'Value',CenDef); %
         set(gui_labelset_waveviewer.labelloc_title,'Sizes',[30 45 30 45 80]);
         ERPwaviewer.chanbinsetlabel.location.xperc = str2num(char(gui_labelset_waveviewer.xperc_edit.String));
         ERPwaviewer.chanbinsetlabel.location.yperc = str2num(char(gui_labelset_waveviewer.yperc_edit.String));
@@ -121,19 +130,19 @@ varargout{1} = box_erplabelset_viewer_property;
         labelfontsizeinum = str2num(char(fontsize));
         LabelfontsizeValue = 5;
         uicontrol('Style','text','Parent', gui_labelset_waveviewer.font_title,'String','Label Font & Fontsize & Color:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
         gui_labelset_waveviewer.font_custom_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_labelset_waveviewer.font_custom_title ,'String','Font',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_labelset_waveviewer.font_custom_type = uicontrol('Style','popupmenu','Parent', gui_labelset_waveviewer.font_custom_title ,'String',fonttype,...
-            'callback',@label_font,'FontSize',12,'BackgroundColor',[1 1 1],'Value',fontDef,'Enable',customdefEnable); %
+            'callback',@label_font,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',fontDef,'Enable',customdefEnable); %
         
         uicontrol('Style','text','Parent', gui_labelset_waveviewer.font_custom_title ,'String','Size',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         
         gui_labelset_waveviewer.font_custom_size = uicontrol('Style','popupmenu','Parent', gui_labelset_waveviewer.font_custom_title ,'String',fontsize,...
-            'callback',@label_fontsize,'FontSize',12,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',customdefEnable); %
+            'callback',@label_fontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',customdefEnable); %
         set(gui_labelset_waveviewer.font_custom_title,'Sizes',[30 110 30 70]);
         ERPwaviewer.chanbinsetlabel.font = gui_labelset_waveviewer.font_custom_type.Value;
         ERPwaviewer.chanbinsetlabel.fontsize = labelfontsizeinum(gui_labelset_waveviewer.font_custom_size.Value);
@@ -142,10 +151,10 @@ varargout{1} = box_erplabelset_viewer_property;
         Labelfontcolor =1;
         gui_labelset_waveviewer.labelcolor_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_labelset_waveviewer.labelcolor_title,'String','Color',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         textColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
         gui_labelset_waveviewer.labelcolor = uicontrol('Style','popupmenu','Parent',gui_labelset_waveviewer.labelcolor_title,'String',textColor,...
-            'callback',@label_color,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',customdefEnable,'Value',Labelfontcolor); %
+            'callback',@label_color,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customdefEnable,'Value',Labelfontcolor); %
         uiextras.Empty('Parent',gui_labelset_waveviewer.labelcolor_title);
         uiextras.Empty('Parent',gui_labelset_waveviewer.labelcolor_title);
         set(gui_labelset_waveviewer.labelcolor_title,'Sizes',[40 100 30 70]);
@@ -155,10 +164,10 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title );
         uicontrol('Style','pushbutton','Parent', gui_labelset_waveviewer.help_apply_title  ,'String','Cancel',...
-            'callback',@label_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@label_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         gui_labelset_waveviewer.Apply= uicontrol('Style','pushbutton','Parent',gui_labelset_waveviewer.help_apply_title  ,'String','Apply',...
-            'callback',@label_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@label_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         set(gui_labelset_waveviewer.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(gui_labelset_waveviewer.DataSelBox ,'Sizes',[20 25 25 20 25 25 25]);

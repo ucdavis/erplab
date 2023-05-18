@@ -75,7 +75,17 @@ estudioworkingmemory('ERP_save_folder',sel_path);
 % dataset, the dataset will be cleared when dataset = sortdata(datasets) is
 % called. erpsetname must contain at least one non-numeric character.
 datasets = sortdata(datasets);
-drawui_erpset()
+
+
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_erpset(FonsizeDefault);
 
 varargout{1} = box_erpset_gui;
 
@@ -84,7 +94,7 @@ varargout{1} = box_erpset_gui;
 % replacing it)
 
 % Draw the ui
-    function drawui_erpset()
+    function drawui_erpset(FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -131,34 +141,34 @@ varargout{1} = box_erpset_gui;
         ds_length = length(datasets);
         if selectedData == 0
             ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-                ds_length,'String', dsnames,'Value',1,'Callback',@selectdata,'FontSize',12);
+                ds_length,'String', dsnames,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault);
         else
             ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-                ds_length,'String', dsnames,'Value', SelectedERP,'Callback',@selectdata,'FontSize',12);
+                ds_length,'String', dsnames,'Value', SelectedERP,'Callback',@selectdata,'FontSize',FonsizeDefault);
         end
         set(vBox, 'Sizes', 150);
         
         %%---------------------Options for ERPsets-----------------------------------------------------
         ERPsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.dupeselected = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
-            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',12);
+            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FonsizeDefault);
         ERPsetops.renameselected = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Rename',...
-            'Callback', @renamedata,'Enable',Edit_label,'FontSize',12);
+            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault);
         ERPsetops.suffix = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
-            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',12);
+            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault);
         
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
-            'Callback', @imp_erp,'FontSize',12);
-        ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export', 'Callback', @exp_erp,'Enable',Edit_label,'FontSize',12);
+            'Callback', @imp_erp,'FontSize',FonsizeDefault);
+        ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export', 'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
-            'Callback', @load,'FontSize',12);
-        ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', 'Callback', @cleardata,'Enable',Edit_label,'FontSize',12);
+            'Callback', @load,'FontSize',FonsizeDefault);
+        ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', 'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault);
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save', 'Callback', @savechecked,'Enable',Edit_label,'FontSize',12);
-        ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', 'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',12);
-        ERPsetops.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', 'Callback', @toggledots,'Enable',Edit_label,'FontSize',12);
+        ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save', 'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', 'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', 'Callback', @toggledots,'Enable',Edit_label,'FontSize',FonsizeDefault);
         set(buttons4,'Sizes',[70 70 115])
     end
 

@@ -320,7 +320,8 @@ end
         set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]); % Viewpanel and settings panel
         
         
-        gui_erp_waviewer.panel_fonts = 12;
+        gui_erp_waviewer.panel_fonts  = f_get_default_fontsize(); %% get the default fontsize based on the different plat form, e.g., Mac
+        
         gui_erp_waviewer.settingLayout = uiextras.VBox('Parent', gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         
         % + Create the settings window panels for ERP panel

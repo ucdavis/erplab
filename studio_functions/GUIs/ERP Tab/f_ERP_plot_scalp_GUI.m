@@ -30,11 +30,19 @@ else
 end
 
 %-----------------------------Draw the panel-------------------------------------
-drawui_erp_scalp_operation();
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_erp_scalp_operation(FonsizeDefault);
 
 varargout{1} = ERP_plot_scalp_gui;
 
-    function drawui_erp_scalp_operation()
+    function drawui_erp_scalp_operation(FonsizeDefault)
         %         FontSize_defualt = erpworkingmemory('fontsizeGUI');
         %         if isempty(FontSize_defualt)
         FontSize_defualt = 12;
@@ -69,7 +77,7 @@ varargout{1} = ERP_plot_scalp_gui;
         %%%------------BIN TO PLOT---------------------
         gui_erp_scalp_map.bin_latency_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.bin_latency_title,...
-            'String','Bin & Latency:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Bin & Latency:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...
@@ -92,23 +100,23 @@ varargout{1} = ERP_plot_scalp_gui;
         %%----------------------------------Map Type------------------------------
         gui_erp_scalp_map.map_type_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_type_title,...
-            'String','Map Type:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Map Type:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         %%2d
         gui_erp_scalp_map.map_type = uiextras.Grid('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         %
         gui_erp_scalp_map.map_type_2d = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.map_type,...
-            'String','2D','callback',@map_type_2d,'Value',1,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','2D','callback',@map_type_2d,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_scalp_map.map_type_3d = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.map_type,...
-            'String','3D','callback',@map_type_3d,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','3D','callback',@map_type_3d,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_scalp_map.map_type_2d_type = uicontrol('Style', 'popupmenu','Parent',gui_erp_scalp_map.map_type,...
-            'String',{'map','contour','both','fill','blank'},'Enable',Enable_label,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',{'map','contour','both','fill','blank'},'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_scalp_map.map_type_3d_spl = uicontrol('Style', 'pushbutton','Parent',gui_erp_scalp_map.map_type,...
-            'String','Spline','callback',@map_type_3d_spl,'Enable',Enable_label,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','Spline','callback',@map_type_3d_spl,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         gui_erp_scalp_map.map_type_2d_type_outside = uicontrol('Style', 'checkbox','Parent',gui_erp_scalp_map.map_type,...
-            'String','Outside','Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Outside','Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_scalp_map.map_type);
         
         set(gui_erp_scalp_map.map_type, 'ColumnSizes',[50 130 90],'RowSizes',[25 30]);
@@ -116,42 +124,42 @@ varargout{1} = ERP_plot_scalp_gui;
         %%----------------------------------Bar scale------------------------------
         gui_erp_scalp_map.bar_scale_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.bar_scale_title,...
-            'String','Color Bar Scale:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Color Bar Scale:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_scalp_map.bar_scale = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         
         gui_erp_scalp_map.max_min = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.bar_scale,...
-            'String','Max-Min','callback',@bar_scale_max_min,'Value',1,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Max-Min','callback',@bar_scale_max_min,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.custom_option = uicontrol('Style', 'radiobutton','Parent',gui_erp_scalp_map.bar_scale,...
-            'String','Custom (min max:e.g.uv)','callback',@bar_scale_custom_opt,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Custom (min max:e.g.uv)','callback',@bar_scale_custom_opt,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_scalp_map.bar_scale ,'Sizes',[100 170]);
         
         
         gui_erp_scalp_map.bar_scale_2 = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.abs_max = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.bar_scale_2,...
-            'String','Abs Max','callback',@bar_scale_abs_max,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Abs Max','callback',@bar_scale_abs_max,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.bar_scale_custom_option_edit = uicontrol('Style', 'edit','Parent',gui_erp_scalp_map.bar_scale_2,...
-            'String',' ','callback',@bar_scale_custom_edit,'Enable',Enable_label,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',' ','callback',@bar_scale_custom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(gui_erp_scalp_map.bar_scale_2 ,'Sizes',[100 170]);
         
         %%----------------------------------Map Extras------------------------------
         gui_erp_scalp_map.map_extras_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_extras_title,...
-            'String','Map Extras:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Map Extras:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         %%view
         gui_erp_scalp_map.map_extras_view = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_extras_view,...
-            'String','View','FontSize',12,'BackgroundColor',ColorB_def,'HorizontalAlignment','left');
+            'String','View','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left');
         
         morimenu = {'front', 'back', 'right', 'left', 'top',...
             'frontleft', 'frontright', 'backleft', 'backright',...
             'custom'};
         gui_erp_scalp_map.map_extras_view_ops = uicontrol('Style', 'popupmenu','Parent',gui_erp_scalp_map.map_extras_view,...
-            'String',morimenu,'callback',@map_extras_view_ops,'Enable','off','FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',morimenu,'callback',@map_extras_view_ops,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         gui_erp_scalp_map.map_extras_view_location = uicontrol('Style', 'edit','Parent',gui_erp_scalp_map.map_extras_view,...
-            'String','','callback',@map_extras_view_location,'Enable','off','FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','','callback',@map_extras_view_location,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         set(gui_erp_scalp_map.map_extras_view,'Sizes',[70 100 100]);
         
@@ -160,14 +168,14 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.map_extras_cmap_display= uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         
         gui_erp_scalp_map.map_extras_cmap = uicontrol('Style', 'text','Parent',  gui_erp_scalp_map.map_extras_cmap_display,...
-            'String','Colormap','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Colormap','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_scalp_map.map_extras_cmap,'HorizontalAlignment','left');
         cMap_par={'jet','hsv','hot','cool','gray','viridis'};
         gui_erp_scalp_map.map_extras_cmap_ops = uicontrol('Style', 'popupmenu','Parent', gui_erp_scalp_map.map_extras_cmap_display,...
-            'String',cMap_par,'Value',1,'Enable',Enable_label,'FontSize',12,'BackgroundColor',[1,1,1]);
+            'String',cMap_par,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1,1,1]);
         
         gui_erp_scalp_map.map_extras_cmapb_disp = uicontrol('Style', 'checkbox','Parent', gui_erp_scalp_map.map_extras_cmap_display,...
-            'String','Display color scale bar','Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Display color scale bar','Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.map_extras_cmapb_disp.String =  '<html>Display Color<br />Scale Bar</html>';
         set(gui_erp_scalp_map.map_extras_cmap_display ,'Sizes',[70 90 110]);
         

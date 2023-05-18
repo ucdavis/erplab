@@ -53,11 +53,20 @@ elseif nargin == 4
     
 end
 
-drawui_erpsetbinchan_viewer()
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+
+drawui_erpsetbinchan_viewer(FonsizeDefault);
 
 varargout{1} = Chanbin_waveviewer_box;
 % Draw the ui
-    function drawui_erpsetbinchan_viewer()
+    function drawui_erpsetbinchan_viewer(FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
@@ -93,11 +102,11 @@ varargout{1} = Chanbin_waveviewer_box;
         %%---------------------Options for selecting channel and bins-----------------------------------------------------
         ERPwaveview_binchan.opts_title = uiextras.HBox('Parent', ERPwaveview_binchan.vBox, 'Spacing', 5,'BackgroundColor',ColorBviewer_def);
         ERPwaveview_binchan.auto = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_binchan.opts_title,...
-            'String','Same as EStudio','callback',@Chanbin_auto,'Value',Enable_auto,'Enable','on','FontSize',12,'BackgroundColor',ColorBviewer_def);
+            'String','Same as EStudio','callback',@Chanbin_auto,'Value',Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
         
         
         ERPwaveview_binchan.custom = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_binchan.opts_title,...
-            'String','Custom','callback',@Chanbin_custom,'Value',~Enable_auto,'Enable','on','FontSize',12,'BackgroundColor',ColorBviewer_def);
+            'String','Custom','callback',@Chanbin_custom,'Value',~Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
         %
         %%---------------------Display channel and bin labels-----------------------------------------------------
         ERPwaveview_binchan.DataSelGrid = uiextras.HBox('Parent', ERPwaveview_binchan.vBox,'BackgroundColor',ColorBviewer_def);
@@ -119,7 +128,7 @@ varargout{1} = Chanbin_waveviewer_box;
             Chan_sel=   1:length(Chanlist);
         end
         ERPwaveview_binchan.ElecRange = uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',12,'Enable',Enable_label); % 2B
+            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2B
         if  numel(Chan_sel) == numel(Chanlist)
             ERPwaveview_binchan.ElecRange.Value  =1;
         else
@@ -141,7 +150,7 @@ varargout{1} = Chanbin_waveviewer_box;
             brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
         end
         ERPwaveview_binchan.BinRange =  uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','Min',1,'Max',BinNum+1,...
-            'String', brange,'callback',@ViewerBinRange,'FontSize',12,'Enable',Enable_label); % 2C
+            'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2C
         if BinNum== numel(Bin_sel)
             ERPwaveview_binchan.BinRange.Value  =1;
         else
@@ -170,10 +179,10 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.help_apply_title = uiextras.HBox('Parent', ERPwaveview_binchan.vBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         uicontrol('Style','pushbutton','Parent', ERPwaveview_binchan.help_apply_title  ,'String','Cancel',...
-            'callback',@setbinchan_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@setbinchan_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title  );
         ERPwaveview_binchan.apply =  uicontrol('Style','pushbutton','Parent',ERPwaveview_binchan.help_apply_title  ,'String','Apply',...
-            'callback',@setbinchan_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@setbinchan_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         set(ERPwaveview_binchan.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(ERPwaveview_binchan.vBox, 'Sizes', [20 190 25]);

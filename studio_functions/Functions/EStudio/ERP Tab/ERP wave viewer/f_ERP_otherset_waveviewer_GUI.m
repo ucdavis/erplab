@@ -34,11 +34,18 @@ else
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 %-----------------------------Draw the panel-------------------------------------
-
-drawui_otherset_waviewer();
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_otherset_waviewer(FonsizeDefault);
 varargout{1} = box_erplabelset_viewer_otherset;
 
-    function drawui_otherset_waviewer()
+    function drawui_otherset_waviewer(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         
         try
@@ -55,11 +62,11 @@ varargout{1} = box_erplabelset_viewer_otherset;
         Polaritylabel = 1;
         gui_otherset_waveviewer.polarity_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.polarity_title,'String','Polarity',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %,'FontWeight','bold'
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %,'FontWeight','bold'
         gui_otherset_waveviewer.polarity_up = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.polarity_title,'String','Positive up',...
-            'callback',@polarup,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',Polaritylabel); %,'FontWeight','bold'
+            'callback',@polarup,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',Polaritylabel); %,'FontWeight','bold'
         gui_otherset_waveviewer.polarity_down = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.polarity_title,'String','Negative up',...
-            'callback',@polardown, 'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',~Polaritylabel); %,'FontWeight','bold'
+            'callback',@polardown, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~Polaritylabel); %,'FontWeight','bold'
         set(gui_otherset_waveviewer.polarity_title,'Sizes',[50 90 90]);
         ERPwaviewer.polarity=gui_otherset_waveviewer.polarity_up.Value;
         
@@ -68,20 +75,20 @@ varargout{1} = box_erplabelset_viewer_otherset;
         SEMCustomValue = 0;
         gui_otherset_waveviewer.SEM_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.show_SEM = uicontrol('Style','checkbox','Parent', gui_otherset_waveviewer.SEM_title ,'String','Show standard error X',...
-            'callback',@showSEM,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',SEMlabel); %
+            'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',SEMlabel); %
         SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
         gui_otherset_waveviewer.SEM_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEM_title ,'String',SMEString,...
-            'callback',@SEMerror,'FontSize',12,'BackgroundColor',[1 1 1],'Value',SEMCustomValue+1); %
+            'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMCustomValue+1); %
         set(gui_otherset_waveviewer.SEM_title,'Sizes',[150 90]);
         ERPwaviewer.SEM.active =gui_otherset_waveviewer.show_SEM.Value;
         ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
         SEMtransValue = 0;
         gui_otherset_waveviewer.SEMtrans_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.SEMtrans_title ,'String','transoarency',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','right'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','right'); %
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         gui_otherset_waveviewer.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEMtrans_title ,'String',SMEtransString,...
-            'callback',@SEMtrans,'FontSize',12,'BackgroundColor',[1 1 1],'Value',SEMtransValue*10 +1); %
+            'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMtransValue*10 +1); %
         set(gui_otherset_waveviewer.SEMtrans_title,'Sizes',[150 90]);
         if SEMlabel
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
@@ -144,21 +151,21 @@ varargout{1} = box_erplabelset_viewer_otherset;
         end
         gui_otherset_waveviewer.bsl_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.bsl_title ,'String','Baseline Correction:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
         gui_otherset_waveviewer.bsl_title_1 = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.bsl_none = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','None',...
-            'callback',@bsl_none,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',noneValue);
+            'callback',@bsl_none,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',noneValue);
         gui_otherset_waveviewer.bsl_pre = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Pre',...
-            'callback',@bsl_pre,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',preValue); %,'HorizontalAlignment','left','FontWeight','bold'
+            'callback',@bsl_pre,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',preValue); %,'HorizontalAlignment','left','FontWeight','bold'
         gui_otherset_waveviewer.bsl_post = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Post',...
-            'callback',@bsl_post, 'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',postValue); %,'HorizontalAlignment','left','FontWeight','bold'
+            'callback',@bsl_post, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',postValue); %,'HorizontalAlignment','left','FontWeight','bold'
         gui_otherset_waveviewer.bsl_whole = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Whole',...
-            'callback',@bsl_whole, 'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',wholeValue); %,'HorizontalAlignment','left','FontWeight','bold'
+            'callback',@bsl_whole, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',wholeValue); %,'HorizontalAlignment','left','FontWeight','bold'
         gui_otherset_waveviewer.bsl_title_3 = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.bsl_custom = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_3 ,'String','Custom',...
-            'callback',@bsl_custom,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',customValue); %,'HorizontalAlignment','left','FontWeight','bold'
+            'callback',@bsl_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',customValue); %,'HorizontalAlignment','left','FontWeight','bold'
         gui_otherset_waveviewer.bsl_customedit = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.bsl_title_3 ,'String',customString,...
-            'callback',@bsl_customedit, 'FontSize',12,'BackgroundColor',[1 1 1],'Enable',customEnable); %,'HorizontalAlignment','left','FontWeight','bold'
+            'callback',@bsl_customedit, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customEnable); %,'HorizontalAlignment','left','FontWeight','bold'
         set( gui_otherset_waveviewer.bsl_title_3,'Sizes',[80 155]);
         
         if gui_otherset_waveviewer.bsl_none.Value ==1
@@ -179,9 +186,9 @@ varargout{1} = box_erplabelset_viewer_otherset;
         bgColor = [1 1 1];
         gui_otherset_waveviewer.figurebakcolor_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String','Figure Background Color:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
         gui_otherset_waveviewer.figurebakcolor = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String',num2str(bgColor),...
-            'callback',@figbackcolor,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@figbackcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         set(gui_otherset_waveviewer.figurebakcolor_title,'Sizes',[150 85]);
         ERPwaviewer.figbackgdcolor = str2num(gui_otherset_waveviewer.figurebakcolor.String);
         
@@ -190,10 +197,10 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.help_run_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',   gui_otherset_waveviewer.help_run_title );
         uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title,'String','Cancel',...
-            'callback',@other_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold'%,'HorizontalAlignment','left'
+            'callback',@other_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold'%,'HorizontalAlignment','left'
         uiextras.Empty('Parent',   gui_otherset_waveviewer.help_run_title );
         gui_otherset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title ,'String','Apply',...
-            'callback',@other_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@other_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent', gui_otherset_waveviewer.help_run_title);
         set(gui_otherset_waveviewer.help_run_title,'Sizes',[40 70 20 70 20]);
         

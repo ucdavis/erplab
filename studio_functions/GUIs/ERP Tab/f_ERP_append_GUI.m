@@ -35,10 +35,18 @@ else
 end
 
 %-----------------------------Draw the panel-------------------------------------
-drawui_erp_append()
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_erp_append(FonsizeDefault);
 varargout{1} = box_erp_history;
 
-    function drawui_erp_append()
+    function drawui_erp_append(FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -51,17 +59,17 @@ varargout{1} = box_erp_history;
         uiextras.Empty('Parent', gui_erp_append.erpappend_select_title);
         
         gui_erp_append.sameerpset = uicontrol('Style','radiobutton','Parent', gui_erp_append.erpappend_select_title,'String','Same as ERPset Panel',...
-            'callback',@same_to_erpset,'FontSize',12,'BackgroundColor',ColorB_def,'Value',1); % 2F
+            'callback',@same_to_erpset,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',1); % 2F
         
         gui_erp_append.erpset_custom = uicontrol('Style','radiobutton','Parent',gui_erp_append.erpappend_select_title,'String','Custom',...
-            'callback',@erpsetcutom,'FontSize',12,'BackgroundColor',ColorB_def,'Value',0);
+            'callback',@erpsetcutom,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0);
         set(gui_erp_append.erpappend_select_title, 'Sizes',[50 145 70]);
         
         gui_erp_append.erp_append_title = uiextras.HBox('Parent', gui_erp_append.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_append.erp_h_all = uicontrol('Style','text','Parent',gui_erp_append.erp_append_title,'String','ERPsets',...
-            'FontSize',12,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); % 2F
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','left'); % 2F
         gui_erp_append.erpset_edit = uicontrol('Style','edit','Parent', gui_erp_append.erp_append_title,'String',' ',...
-            'callback',@erpset_edit,'FontSize',12,'BackgroundColor',[1 1 1],'Enable','off'); % 2F
+            'callback',@erpset_edit,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 2F
         set(gui_erp_append.erp_append_title, 'Sizes',[65 200]);
         
         
@@ -70,9 +78,9 @@ varargout{1} = box_erp_history;
         uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,'String','?','callback',@erpset_append_help,'Enable','on','FontSize',16);
         %         uiextras.Empty('Parent', gui_erp_append.advance_help_title);
         gui_erp_append.append_advance = uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,...
-            'String','Advanced','callback',@advance_erpappend,'FontSize',12);
+            'String','Advanced','callback',@advance_erpappend,'FontSize',FonsizeDefault);
         gui_erp_append.append_run = uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,'String','Run',...
-            'callback',@append_run,'FontSize',12);
+            'callback',@append_run,'FontSize',FonsizeDefault);
         
         set(gui_erp_append.DataSelBox,'Sizes',[30 25 30]);
         
