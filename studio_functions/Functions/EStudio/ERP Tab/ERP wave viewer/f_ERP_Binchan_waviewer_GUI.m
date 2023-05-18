@@ -881,12 +881,13 @@ varargout{1} = Chanbin_waveviewer_box;
                 else
                     ERPwaveview_binchan.ElecRange.Value =ChanArrayStudio+1;
                 end
+                 ERPwaveview_binchan.ElecRange.Max = length( ERPwaveview_binchan.ElecRange.String)+2;
             catch
                 ERPwaveview_binchan.ElecRange.Value  =1;
             end
             ALLERPwaviewer_apply.chan = ChanArrayStudio;
         end
-        
+        ERPwaveview_binchan.ElecRange.Max = length(ERPwaveview_binchan.ElecRange.String)+2;
         assignin('base','ALLERPwaviewer',ALLERPwaviewer_apply);
         %%change  the other panels based on the changed bins and channels
         viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;

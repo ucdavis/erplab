@@ -71,7 +71,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 
 drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
@@ -676,10 +676,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 title_msg = ' ERPLAB_ERP_Viewer() datatype error:';
             end
             errorfound(sprintf(msgboxText), title_msg);
-            %             try
-            %                 close(gui_erp_waviewer.Window);%%close previous GUI if exists
-            %             catch
-            %             end
             return;
         end
         
@@ -730,13 +726,16 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             end
             CURRENTERPStudio = observe_ERPDAT.CURRENTERP;
             estudioworkingmemory('PlotOrg_ERPLAB',1);%%This is used to Grid, Overlay, and Pages if "same as ERPLAB"
-            ALLERPStudio = observe_ERPDAT.ALLERP;
-        else
-            ERPArrayStudio = ERPwaviewer_up.SelectERPIdx;
-            CURRENTERPStudio=ERPwaviewer_up.CURRENTERP;
-            ALLERPStudio = evalin('base','ALLERP');
+            
         end
         
+        %         else
+        if ERPAutoValue ~=1
+            ERPArrayStudio = ERPwaviewer_up.SelectERPIdx;
+            CURRENTERPStudio=ERPwaviewer_up.CURRENTERP;
+            %                     ALLERPStudio = evalin('base','ALLERP');
+        end
+        ALLERPStudio = observe_ERPDAT.ALLERP;
         if max(ERPArrayStudio(:))> length(ALLERPStudio) || min(ERPArrayStudio(:))<=0
             ERPArrayStudio = length(ALLERPStudio);
             CURRENTERPStudio = length(ALLERPStudio);

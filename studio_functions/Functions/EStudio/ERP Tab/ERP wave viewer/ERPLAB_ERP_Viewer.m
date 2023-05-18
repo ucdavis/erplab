@@ -100,8 +100,8 @@ end
 if nargin<2
     selectedERP_index = length(ALLERP);
     try
-        binArray = [1:ALLERP(selectedERP_index).nbin];
-        chanArray =[1:ALLERP(selectedERP_index).nchan];
+        binArray = [1:ALLERP(selectedERP_index(end)).nbin];
+        chanArray =[1:ALLERP(selectedERP_index(end)).nchan];
     catch
         binArray = [1:ALLERP(end).nbin];
         chanArray =[1:ALLERP(end).nchan];
@@ -114,8 +114,8 @@ end
 
 if nargin<3
     try
-        binArray = [1:ALLERP(selectedERP_index).nbin];
-        chanArray =[1:ALLERP(selectedERP_index).nchan];
+        binArray = [1:ALLERP(selectedERP_index(end)).nbin];
+        chanArray =[1:ALLERP(selectedERP_index(end)).nchan];
     catch
         binArray = [1:ALLERP(end).nbin];
         chanArray =[1:ALLERP(end).nchan];
@@ -125,9 +125,8 @@ end
 
 if nargin<4
     try
-        chanArray =[1:ALLERP(selectedERP_index).nchan];
+        chanArray =[1:ALLERP(selectedERP_index(end)).nchan];
     catch
-        
         chanArray =[1:ALLERP(end).nchan];
     end
     Parameterfile = [];
@@ -188,8 +187,8 @@ estudioworkingmemory('MyViewer_linelegend',0);
 estudioworkingmemory('MyViewer_other',0);
 
 ERPwaviewer.ALLERP =ALLERP;
-ERPwaviewer.ERP = ALLERP(1);
-ERPwaviewer.CURRENTERP =selectedERP_index(1);
+ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
+ERPwaviewer.CURRENTERP =selectedERP_index(end);
 ERPwaviewer.SelectERPIdx =selectedERP_index;
 ERPwaviewer.bin = binArray;
 ERPwaviewer.chan = chanArray;

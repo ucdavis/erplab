@@ -215,7 +215,7 @@ varargout{1} = box_erplineset_viewer_property;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
-        LabelfontsizeValue = 5;
+        LabelfontsizeValue = 4;
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.labelfont_title ,'String','Font',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
@@ -449,7 +449,7 @@ varargout{1} = box_erplineset_viewer_property;
         end
         gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
         gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
-        gui_erplinset_waveviewer.font_custom_size.Value = 5;
+        gui_erplinset_waveviewer.font_custom_size.Value = 4;
         gui_erplinset_waveviewer.font_custom_type.Value =1;
     end
 
@@ -597,7 +597,7 @@ varargout{1} = box_erplineset_viewer_property;
         fontsizeValue = ERPwaviewer_apply.Legend.fontsize ;
         [x_label,y_label] = find(labelfontsizeinum==fontsizeValue);
         if isempty(x_label)
-            x_label = 5;
+            x_label = 4;
         end
         gui_erplinset_waveviewer.font_custom_size.Value= x_label;
         gui_erplinset_waveviewer.legendtextauto.Value= ERPwaviewer_apply.Legend.textcolor;
@@ -1031,12 +1031,12 @@ varargout{1} = box_erplineset_viewer_property;
             end
             gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
             gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
-            gui_erplinset_waveviewer.font_custom_size.Value = 5;
+            gui_erplinset_waveviewer.font_custom_size.Value = 4;
             gui_erplinset_waveviewer.font_custom_type.Value =2;
             ERPwaviewerin.Legend.auto=1;
             ERPwaviewerin.Legend.data =gui_erplinset_waveviewer.legend_customtable.Data;
             ERPwaviewerin.Legend.font=1;
-            ERPwaviewerin.Legend.fontsize=12;
+            ERPwaviewerin.Legend.fontsize=10;
             ERPwaviewerin.Legend.textcolor=1;
             ERPwaviewerin.Legend.columns=1;
             assignin('base','ALLERPwaviewer',ERPwaviewerin);
