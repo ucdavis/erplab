@@ -12,7 +12,7 @@ elseif isunix
     FonsizeDefault = 9;
 elseif ispc
     % Code to run on Windows platform
-    FonsizeDefault = 12;
+    FonsizeDefault = 9;
 else
     FonsizeDefault = 9;
 end

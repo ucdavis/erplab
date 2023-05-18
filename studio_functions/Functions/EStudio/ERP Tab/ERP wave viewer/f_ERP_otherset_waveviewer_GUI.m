@@ -423,21 +423,21 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         TimeRange = ERPwaviewer.ERP.times;
         if bacselinePeriod(1)<TimeRange(1)
-            msgboxText =  strcat('Left edge of baseline period should not be smaller than',32,num2str(TimeRange(1)),'ms');
+            msgboxText =  strcat('Left edge of baseline period should be larger than',32,num2str(TimeRange(1)),'ms');
             viewer_ERPDAT.Process_messg =3;
             Str.String = '';
             fprintf(2,['\n Other > Baseline Correction > Custom() error: \n',32,msgboxText,'.\n\n']);
             return;
         end
         if bacselinePeriod(2)>TimeRange(end)
-            msgboxText =  strcat('Right edge of baseline period should not be larger than',32,num2str(TimeRange(end)),'ms');
+            msgboxText =  strcat('Right edge of baseline period should be smaller than',32,num2str(TimeRange(end)),'ms');
             viewer_ERPDAT.Process_messg =3;
             Str.String = '';
             fprintf(2,['\n Other > Baseline Correction > Custom() error: \n',32,msgboxText,'.\n\n']);
             return;
         end
         if bacselinePeriod(1)>=bacselinePeriod(end)
-            msgboxText =  strcat('Right edge of baseline period should be smaller than left edge');
+            msgboxText =  strcat('Right edge of baseline period should be larger than left edge');
             viewer_ERPDAT.Process_messg =3;
             Str.String = '';
             fprintf(2,['\n Other > Baseline Correction > Custom() error: \n',32,msgboxText,'.\n\n']);

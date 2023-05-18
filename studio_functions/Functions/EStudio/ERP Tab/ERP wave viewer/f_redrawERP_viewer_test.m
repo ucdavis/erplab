@@ -253,19 +253,20 @@ Fill = 1;
 splot_n = size(OutputViewerpar{6},1);
 if splot_n*pb_height<(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plotgrid.Heights(1))&&Fill
     pb_height = 0.9*(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plotgrid.Heights(1)-gui_erp_waviewer.plotgrid.Heights(2))/splot_n;
- 
+else
+    pb_height = 0.9*pb_height;
 end
 if zoomSpace <0
     gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height;
 else
-    gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
+    gui_erp_waviewer.ViewAxes.Heights = 0.9*splot_n*pb_height*(1+zoomSpace/100);
 end
 
 widthViewer = gui_erp_waviewer.ViewAxes.Position(3)-gui_erp_waviewer.ViewAxes.Position(2);
 if zoomSpace <0
-    gui_erp_waviewer.ViewAxes.Widths = widthViewer;
+    gui_erp_waviewer.ViewAxes.Widths = 0.9*widthViewer;
 else
-    gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
+    gui_erp_waviewer.ViewAxes.Widths = 0.9*widthViewer*(1+zoomSpace/100);
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
 gui_erp_waviewer.Resize =1;
