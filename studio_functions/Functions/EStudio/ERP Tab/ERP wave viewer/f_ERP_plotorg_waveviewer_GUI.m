@@ -197,11 +197,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         uiextras.Empty('Parent', gui_plotorg_waveviewer.row_column_title);
         uicontrol('Style','text','Parent', gui_plotorg_waveviewer.row_column_title,'String','Row(s)',...
-            'FontSize',10,'BackgroundColor',ColorBviewer_def); % 1B
+            'FontSize',FonsizeDefault-2,'BackgroundColor',ColorBviewer_def); % 1B
         gui_plotorg_waveviewer.rownum = uicontrol('Style','popupmenu','Parent', gui_plotorg_waveviewer.row_column_title,'String',rowcolumnString,...
             'callback',@plotorg_rownum,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',Numrows,'Enable',rowcolumnEnable); % 1B
         uicontrol('Style','text','Parent', gui_plotorg_waveviewer.row_column_title,'String','Column(s)',...
-            'FontSize',10,'BackgroundColor',ColorBviewer_def); % 1B
+            'FontSize',FonsizeDefault-2,'BackgroundColor',ColorBviewer_def); % 1B
         gui_plotorg_waveviewer.columnnum = uicontrol('Style','popupmenu','Parent', gui_plotorg_waveviewer.row_column_title,'String',rowcolumnString,...
             'callback',@plotorg_columnnum,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',Numcolumns,'Enable',rowcolumnEnable); % 1B
         set(gui_plotorg_waveviewer.row_column_title, 'Sizes',[20 35 65 55 65]);

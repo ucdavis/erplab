@@ -98,7 +98,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Display in','HorizontalAlignment','left'); %
         xdispysecondValue = 1;
         gui_erpxyaxeset_waveviewer.xmillisecond = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.display_title,...
-            'callback',@xmilsecond,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Millisecond','Value',xdispysecondValue); %
+            'callback',@xmilsecond,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Millisecond','Value',xdispysecondValue); %
         gui_erpxyaxeset_waveviewer.xsecond = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.display_title,...
             'callback',@xsecond,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Second','Value',~xdispysecondValue); %
         set(gui_erpxyaxeset_waveviewer.display_title,'Sizes',[75 90 75]);
@@ -158,7 +158,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'callback',@xticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',xtick_precision+1); %
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtickprecision_title,'String','# decimals',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
-        set(gui_erpxyaxeset_waveviewer.xtickprecision_title,'Sizes',[45 55 70 70]);
+        set(gui_erpxyaxeset_waveviewer.xtickprecision_title,'Sizes',[30 65 60 80]);
         ERPwaviewer.xaxis.tickdecimals = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
         
         
@@ -239,7 +239,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         xfontsizeinum = str2num(char(fontsize));
-        ttickLabelfontsizeV = 5;
+        ttickLabelfontsizeV = 4;
         ttickLabelfontcolor = 1;
         gui_erpxyaxeset_waveviewer.xtimefont_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtimefont_title,'String','Font',...
@@ -384,7 +384,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'callback',@yticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',ytick_precision+1); %
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.ytickprecision_title,'String','# decimals',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
-        set(gui_erpxyaxeset_waveviewer.ytickprecision_title,'Sizes',[45 55 70 70]);
+        set(gui_erpxyaxeset_waveviewer.ytickprecision_title,'Sizes',[30 65 60 80]);
         ERPwaviewer.yaxis.tickdecimals = gui_erpxyaxeset_waveviewer.yticks_precision.Value-1;
         
         %%-----y minor ticks-----------------------------------------------
@@ -461,7 +461,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         %%-----y ticklabel:font, font size, and text color for time ticks
         ytickLabelfont = 2;
-        ytickLabelfontsize = 5;
+        ytickLabelfontsize = 4;
         ytickLabelfontcolor = 1;
         gui_erpxyaxeset_waveviewer.yfont_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.yfont_title,'String','Font',...
@@ -2954,8 +2954,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             %%font and font size
             ERPwaviewer_apply.xaxis.font  =2;
             gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=2;
-            ERPwaviewer_apply.xaxis.fontsize =12;
-            gui_erpxyaxeset_waveviewer.font_custom_size.Value=5;
+            ERPwaviewer_apply.xaxis.fontsize =10;
+            gui_erpxyaxeset_waveviewer.font_custom_size.Value=4;
             fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
             gui_erpxyaxeset_waveviewer.yfont_custom.String=fonttype; %
             yfontsize={'4','6','8','10','12','14','16','18','20','24','28','32','36',...
@@ -3035,9 +3035,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.ylabel_off.Value=0;
             %%font and fontsize
             ERPwaviewer_apply.yaxis.font=2;
-            ERPwaviewer_apply.yaxis.fontsize=12;
+            ERPwaviewer_apply.yaxis.fontsize=10;
             gui_erpxyaxeset_waveviewer.yfont_custom.Value=2;
-            gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=5;
+            gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=4;
             %%color for y ticklabels
             ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
             gui_erpxyaxeset_waveviewer.ytextcolor.String = ytextColor;

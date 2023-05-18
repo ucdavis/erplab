@@ -74,12 +74,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
         SEMlabel = 0;
         SEMCustomValue = 0;
         gui_otherset_waveviewer.SEM_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        gui_otherset_waveviewer.show_SEM = uicontrol('Style','checkbox','Parent', gui_otherset_waveviewer.SEM_title ,'String','Show standard error X',...
+        gui_otherset_waveviewer.show_SEM = uicontrol('Style','checkbox','Parent', gui_otherset_waveviewer.SEM_title ,'String','Show standard error',...
             'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',SEMlabel); %
         SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
         gui_otherset_waveviewer.SEM_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEM_title ,'String',SMEString,...
             'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMCustomValue+1); %
-        set(gui_otherset_waveviewer.SEM_title,'Sizes',[150 90]);
+        set(gui_otherset_waveviewer.SEM_title,'Sizes',[160 80]);
         ERPwaviewer.SEM.active =gui_otherset_waveviewer.show_SEM.Value;
         ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
         SEMtransValue = 0;
@@ -89,7 +89,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         gui_otherset_waveviewer.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEMtrans_title ,'String',SMEtransString,...
             'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMtransValue*10 +1); %
-        set(gui_otherset_waveviewer.SEMtrans_title,'Sizes',[150 90]);
+        set(gui_otherset_waveviewer.SEMtrans_title,'Sizes',[160 80]);
         if SEMlabel
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'on';
@@ -186,7 +186,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         bgColor = [1 1 1];
         gui_otherset_waveviewer.figurebakcolor_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String','Figure Background Color:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
+            'FontSize',FonsizeDefault-1,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
         gui_otherset_waveviewer.figurebakcolor = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String',num2str(bgColor),...
             'callback',@figbackcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         set(gui_otherset_waveviewer.figurebakcolor_title,'Sizes',[150 85]);

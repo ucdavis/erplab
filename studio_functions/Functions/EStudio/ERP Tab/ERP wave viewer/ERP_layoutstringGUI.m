@@ -77,7 +77,7 @@ end
 if size(GridinforData,1)~= Numrows || size(GridinforData,2)~= Numcolumns
     GridinforData = GridinforDatadef;
 end
-
+FonsizeDefault = f_get_default_fontsize();
 % tablePosition = handles.uitable1_layout.Position;
 for Numofcolumns = 1:Numcolumns
     if size(plotArrayFormt,1) > size(plotArrayFormt,2)
@@ -99,7 +99,7 @@ handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
 handles.uitable1_layout.ColumnName = ColumnName;
 handles.uitable1_layout.RowName = RowName;
 handles.uitable1_layout.ColumnFormat = columFormat;
-
+handles.uitable1_layout.FontSize = FonsizeDefault;
 %
 % Color GUI
 %

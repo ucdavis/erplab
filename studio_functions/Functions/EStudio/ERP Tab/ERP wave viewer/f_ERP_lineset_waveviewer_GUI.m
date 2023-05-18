@@ -76,7 +76,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.linescustom = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.parameters_title,'String','Custom',...
             'callback',@lines_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~linAutoValue); %
         
-        set(gui_erplinset_waveviewer.parameters_title,'Sizes',[40 80 80]);
+        set(gui_erplinset_waveviewer.parameters_title,'Sizes',[60 70 70]);
         
         %%-----------Setting for line table-----------------------------
         gui_erplinset_waveviewer.line_customtable_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
@@ -108,7 +108,7 @@ varargout{1} = box_erplineset_viewer_property;
             {'0.25','0.5','1','1.5','2','2.5','3','3.5','4','4.5','5','5.5','6','6.5','7','7.5','8','8.5','9','9.5','10','10.5'}};
         gui_erplinset_waveviewer.line_customtable.Data = lineset_str;
         gui_erplinset_waveviewer.line_customtable.ColumnEditable = [false, true,true,true];
-        gui_erplinset_waveviewer.line_customtable.FontSize = 12;
+        gui_erplinset_waveviewer.line_customtable.FontSize = FonsizeDefault;
         gui_erplinset_waveviewer.line_customtable.ColumnName = {'<html><font size=3 >#','<html><font size= 3>Color','<html><font size=3 >Style', '<html><font size=3 >Width'};
         gui_erplinset_waveviewer.line_customtable.Enable = DataEnable;
         gui_erplinset_waveviewer.line_customtable.BackgroundColor = [1 1 1;1 1 1];
@@ -133,7 +133,7 @@ varargout{1} = box_erplineset_viewer_property;
             'callback',@legend_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',legendAuto); %
         gui_erplinset_waveviewer.legendcustom = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_title,'String','Custom',...
             'callback',@legend_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~legendAuto); %
-        set( gui_erplinset_waveviewer.legend_title,'Sizes',[50 80 80]);
+        set( gui_erplinset_waveviewer.legend_title,'Sizes',[60 70 70]);
         
         
         %%-----------Setting for legend table -----------------------------
@@ -189,7 +189,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
         
         gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
-        gui_erplinset_waveviewer.legend_customtable.FontSize = 12;
+        gui_erplinset_waveviewer.legend_customtable.FontSize = FonsizeDefault;
         gui_erplinset_waveviewer.legend_customtable.ColumnName = {'<html><font size=3 >#','<html><font size=3 >Name'};
         gui_erplinset_waveviewer.legend_customtable.CellEditCallback  = @legend_customtable;
         gui_erplinset_waveviewer.legend_customtable.BackgroundColor = [1 1 1;1 1 1];

@@ -271,13 +271,13 @@ if nargin==1  %with GUI to get other parameters
     end%% end of loop for number of line
     
     %%Font and fontsize for legend
-    FontLeg = 'Courier';
-    FontSizeLeg =  12;
+    FontLeg = 'Geneva';
+    FontSizeLeg =  10;
     
     %%Setting for Channel/Bin/ERP label
     CBELabels = [];%location 0 70 1
-    CBEFont = 'Courier';%%font
-    CBEFontsize=12;%% fontsize
+    CBEFont = 'Geneva';%%font
+    CBEFontsize=10;%% fontsize
     
     %%Polarity of wave
     PolarityWave =1;%%1.positive up; 0. negative up
@@ -299,8 +299,8 @@ if nargin==1  %with GUI to get other parameters
     timeRange(2) = ERP.times(end);
     timeticks = str2num(char(default_time_ticks_studio(ERP, timeRange)));
     xticklabel = 'on';
-    xlabelFont = 'Courier';
-    xlabelFontsize = 12;
+    xlabelFont = 'Geneva';
+    xlabelFontsize = 10;
     xlabelFontcolor = [0 0 0];
     Xunits = 'on';
     MinorticksX = [0];%% off
@@ -313,8 +313,8 @@ if nargin==1  %with GUI to get other parameters
         Yticks = [];
     end
     yticklabel = 'on';
-    YlabelFont = 'Courier';
-    YlabelFontsize = 12;
+    YlabelFont = 'Geneva';
+    YlabelFontsize = 10;
     ylabelFontcolor = [0 0 0];
     yunits = 'on';
     MinorticksY = [0];
@@ -777,13 +777,13 @@ end
 %%Legend font
 qFontLeg = p_Results.LegendFont;
 if isempty(qFontLeg)
-    qFontLeg = 'Courier';
+    qFontLeg = 'Geneva';
 end
 
 %%legend fontsize
 qFontSizeLeg = p_Results.LegendFontsize;
 if isempty(qFontSizeLeg)
-    qFontSizeLeg = 12;
+    qFontSizeLeg = 10;
 end
 
 %%Channel/bin/ERPset Label
@@ -802,12 +802,12 @@ end
 
 qCBEFont = p_Results.Labelfont;
 if isempty(qCBEFont)
-    qCBEFont ='Courier';
+    qCBEFont ='Geneva';
 end
 
 qCBEFontsize = p_Results.Labelfontsize;
 if isempty(qCBEFontsize)
-    qCBEFontsize =12;
+    qCBEFontsize =10;
 end
 
 qPolarityWave = p_Results.YDir;
@@ -913,11 +913,11 @@ end
 
 qXlabelfont = p_Results.Xlabelfont;
 if isempty(qXlabelfont)
-    qXlabelfont = 'Courier';
+    qXlabelfont = 'Geneva';
 end
 qXlabelfontsize = p_Results.Xlabelfontsize;
 if isempty(qXlabelfontsize)
-    qXlabelfontsize =12;
+    qXlabelfontsize =10;
 end
 
 qXlabelcolor = p_Results.Xlabelcolor;
@@ -1000,12 +1000,12 @@ end
 qYlabelfont = p_Results.Ylabelfont;
 
 if isempty(qYlabelfont)
-    qYlabelfont = 'Courier';
+    qYlabelfont = 'Geneva';
 end
 
 qYlabelfontsize = p_Results.Ylabelfontsize;
 if isempty(qYlabelfontsize)
-    qYlabelfontsize=12;
+    qYlabelfontsize=10;
 end
 
 
