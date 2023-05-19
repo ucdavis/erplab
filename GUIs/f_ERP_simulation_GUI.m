@@ -427,7 +427,7 @@ end
 SimulationSeed = erpworkingmemory('SimulationSeed');
 handles.SimulationSeed = SimulationSeed;
 
-rng(1,'twister');
+rng(0,'twister');
 SimulationSeed = rng;
 erpworkingmemory('SimulationSeed',SimulationSeed);
 %phase for sin noise
@@ -1950,7 +1950,7 @@ try
     SimulationSeed_seed=SimulationSeed.Seed;
 catch
     SimulationSeed_Type = 'twister';
-    SimulationSeed_seed = 1;
+    SimulationSeed_seed = 0;
 end
 %phase for sin noise
 SimulationPhase = handles.SimulationPhase;
@@ -1999,11 +1999,10 @@ if handles.radiobutton_whitenoise.Value==1
     try
         rng(SimulationSeed_seed,SimulationSeed_Type);
     catch
-        rng(1,'twister');
+        rng(0,'twister');
     end
     Desirednosizewhite =  randn(1,numel(Times));%%white noise
-    
-    Desirednosizewhite = PeakAmp*Desirednosizewhite./max(abs(Desirednosizewhite(:)));
+    Desirednosizewhite = PeakAmp*Desirednosizewhite;
 end
 
 if handles.radiobutton_pink_niose.Value==1
@@ -2018,23 +2017,18 @@ if handles.radiobutton_pink_niose.Value==1
     try
         rng(SimulationSeed_seed,SimulationSeed_Type);
     catch
-        rng(1,'twister');
+        rng(0,'twister');
     end
-    %     try
-    %         Desirednosizepink = pinknoise(numel(Times));
-    %     catch
     Desirednosizepink = f_pinknoise(numel(Times));
-    %     end
     
     Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
-    Desirednosizepink = PeakAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));
+    Desirednosizepink = PeakAmp*Desirednosizepink;
 end
 
 
 Sig = Desirednosizesin+Desiredsignal+Desirednosizepink+Desirednosizewhite;
 if ~isempty(ERP) && ~isempty(ChannelArray) && ~isempty(binArray)
     try
-        %         hold(handles.axes1,'on');
         RealData = squeeze(ERP.bindata(ChannelArray,:,binArray));
         plot(handles.axes1,Times,[Sig;RealData],'linewidth',1.5);
         legend({'Simulated data',['Real data at',32,ERP.chanlocs(ChannelArray).labels]},'fontsize',14);
@@ -2609,11 +2603,11 @@ erpworkingmemory('SimulationPhase',SimulationPhase);
 %%reset seeds for white or pink noise
 SimulationSeed = erpworkingmemory('SimulationSeed');
 try
-    SimulationSeed.Type = 'philox';
+    SimulationSeed.Type = 'twister';
     SimulationSeed.Seed = SimulationSeed.Seed+1;
 catch
     SimulationSeed.Type = 'twister';
-    SimulationSeed.Seed = 1;
+    SimulationSeed.Seed = 0;
 end
 erpworkingmemory('SimulationSeed',SimulationSeed);
 handles.SimulationSeed = SimulationSeed;

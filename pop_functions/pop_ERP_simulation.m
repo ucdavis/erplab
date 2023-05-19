@@ -654,7 +654,7 @@ if qNewnoiseFlag==1
     SimulationPhase = rand(1);
     
     %%reset the seed
-    SimulationSeed_Type = 'philox';
+    SimulationSeed_Type = 'twister';
     SimulationSeed_seed = SimulationSeed_seed+1;
 end
 
@@ -666,28 +666,21 @@ Desirednosizesin = qSinoiseAmp*sin(2*qSinoiseFre*pi*X+2*pi*SimulationPhase);
 try
     rng(SimulationSeed_seed,SimulationSeed_Type);
 catch
-    rng(1,'twister');
+    rng(0,'twister');
 end
 Desirednosizewhite =  randn(1,numel(Times));%%white noise
-if max(abs(Desirednosizewhite(:)))~=0
-    Desirednosizewhite = qWhiteAmp*Desirednosizewhite./max(abs(Desirednosizewhite(:)));
-end
+Desirednosizewhite = qWhiteAmp*Desirednosizewhite;
 
 %%pink noise
 try
     rng(SimulationSeed_seed,SimulationSeed_Type);
 catch
-    rng(1,'twister');
+    rng(0,'twister');
 end
-% try
-%     Desirednosizepink = pinknoise(numel(Times));
-% catch
+
 Desirednosizepink = f_pinknoise(numel(Times));
-% end
 Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
-if max(abs(Desirednosizepink(:)))~=0
-    Desirednosizepink = qPinkAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));
-end
+Desirednosizepink = qPinkAmp*Desirednosizepink;
 
 Sig = Desirednosizesin+Desiredsignal+Desirednosizepink+Desirednosizewhite;
 ERPautx    = buildERPstruct([]);
@@ -763,7 +756,7 @@ if pinknoiseFlag==0
     skipfields{length(skipfields)+1} = 'PinkAmp';
 end
 
-if SinoiseFlag==0 && whitenoiseFlag==0&& pinknoiseFlag==0
+if pinknoiseFlag==0
     skipfields{length(skipfields)+1} = 'NewnoiseFlag';
 end
 
