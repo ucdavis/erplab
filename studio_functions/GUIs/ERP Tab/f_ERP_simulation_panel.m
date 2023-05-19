@@ -27,11 +27,18 @@ else
 end
 
 gui_erp_simulation = struct();
-
-erp_blc_dt_gui();
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+    FonsizeDefault = f_get_default_fontsize();
+end
+erp_blc_dt_gui(FonsizeDefault);
 varargout{1} = ERP_simulation_box;
 %%********************Draw the GUI for ERP measurement tool*****************
-    function erp_blc_dt_gui()
+    function erp_blc_dt_gui(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
         if strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
@@ -69,44 +76,44 @@ varargout{1} = ERP_simulation_box;
         %%----------------------information for Real data------------------
         gui_erp_simulation.realdata_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.realdata_title,...
-            'String','Basic Information for Real Data','FontWeight','bold','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Basic Information for Real Data','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         
         gui_erp_simulation.realdatamatch_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.realerp_check = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.realdatamatch_title,...
-            'callback',@erpcheckbox,'String','Compare with Real Data','FontSize',12 ,'BackgroundColor',ColorB_def,'Value',0);
+            'callback',@erpcheckbox,'String','Compare with Real Data','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def,'Value',0);
         uiextras.Empty('Parent', gui_erp_simulation.realdatamatch_title);
         set(gui_erp_simulation.realdatamatch_title, 'Sizes',[200 70]);
         
         %%ERPset for real data
         gui_erp_simulation.erpset_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.erpset_title,...
-            'String','ERPset:','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','ERPset:','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.erpsetedit = uicontrol('Style', 'edit','Parent', gui_erp_simulation.erpset_title,...
-            'callback',@erpsetedit,'String','','FontSize',12 ,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@erpsetedit,'String','','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
         gui_erp_simulation.erpsetpopup = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.erpset_title,...
-            'callback',@erpsetpopup,'String','Browse','FontSize',12 ,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@erpsetpopup,'String','Browse','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
         %%Channel for real data
         gui_erp_simulation.erpsetchan_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.erpsetchan_title,...
-            'String','Channel:','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Channel:','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.channeledit = uicontrol('Style', 'edit','Parent', gui_erp_simulation.erpsetchan_title,...
-            'callback',@channeledit,'String','','FontSize',12 ,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@channeledit,'String','','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
         gui_erp_simulation.channelpopup = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.erpsetchan_title,...
-            'callback',@channelpopup,'String','Browse','FontSize',12 ,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@channelpopup,'String','Browse','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
         
         %%bin for real data
         gui_erp_simulation.erpsetbin_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.erpsetbin_title,...
-            'String','Bin:','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Bin:','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.binedit = uicontrol('Style', 'edit','Parent', gui_erp_simulation.erpsetbin_title,...
-            'callback',@binedit,'String','','FontSize',12 ,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@binedit,'String','','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
         gui_erp_simulation.binpopup = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.erpsetbin_title,...
-            'callback',@binpopup,'String','Browse','FontSize',12 ,'BackgroundColor',[1 1 1],'Enable','off');
+            'callback',@binpopup,'String','Browse','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
         if length(observe_ERPDAT.ALLERP)==1 && strcmpi(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
             gui_erp_simulation.realerp_check.Value =0;
@@ -116,23 +123,23 @@ varargout{1} = ERP_simulation_box;
         %%--------------------Basic information----------------------------
         gui_erp_simulation.asif_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.asif_title,...
-            'String','Basic Information for Simulation','FontWeight','bold','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Basic Information for Simulation','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         
         
         gui_erp_simulation.epoch_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
-            'String','Epoch: Start','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Epoch: Start','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         try
             epochStart = def{6};
         catch
             epochStart = -200;
         end
         gui_erp_simulation.epoch_start = uicontrol('Style', 'edit','Parent',  gui_erp_simulation.epoch_title,...
-            'callback',@epochstart,'String',num2str(epochStart),'FontSize',12 ,'BackgroundColor',[1 1 1]);
+            'callback',@epochstart,'String',num2str(epochStart),'FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
         
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
-            'String','Stop','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Stop','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         try
             epochStop = def{7};
         catch
@@ -140,10 +147,10 @@ varargout{1} = ERP_simulation_box;
         end
         
         gui_erp_simulation.epoch_stop = uicontrol('Style', 'edit','Parent',  gui_erp_simulation.epoch_title,...
-            'callback',@epocstop,'String',num2str(epochStop),'FontSize',12 ,'BackgroundColor',[1 1 1]);
+            'callback',@epocstop,'String',num2str(epochStop),'FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
         
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
-            'String','ms','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         set(gui_erp_simulation.epoch_title, 'Sizes',[80 60 40 60 25]);
         
         try
@@ -154,14 +161,14 @@ varargout{1} = ERP_simulation_box;
         
         gui_erp_simulation.srate_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.srate=uicontrol('Style', 'radiobutton','Parent',  gui_erp_simulation.srate_title,...
-            'callback',@srateop,'String','Sampling rate','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'callback',@srateop,'String','Sampling rate','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         try
             srate = def{9};
         catch
             srate = 1000;
         end
         gui_erp_simulation.srateedit =uicontrol('Style', 'edit','Parent',  gui_erp_simulation.srate_title,...
-            'callback',@srateedit,'String', '','FontSize',12 ,'BackgroundColor',[1 1 1]);
+            'callback',@srateedit,'String', '','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
         if srateop==1
             gui_erp_simulation.srate.Value =1;
             gui_erp_simulation.srateedit.Enable = 'on';
@@ -174,7 +181,7 @@ varargout{1} = ERP_simulation_box;
         
         
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.srate_title,...
-            'String','Hz','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Hz','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.srate_title);
         set(gui_erp_simulation.srate_title, 'Sizes',[120 80 25 40]);
         
@@ -182,9 +189,9 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.speriod_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         
         gui_erp_simulation.srateperiod=uicontrol('Style', 'radiobutton','Parent',  gui_erp_simulation.speriod_title,...
-            'callback',@srateperiod,'String','Sampling period','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'callback',@srateperiod,'String','Sampling period','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.srateperiodedit =uicontrol('Style', 'edit','Parent',  gui_erp_simulation.speriod_title,...
-            'callback',@srateperiodedit,'String', '','FontSize',12 ,'BackgroundColor',[1 1 1]);
+            'callback',@srateperiodedit,'String', '','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
         if srateop==1
             gui_erp_simulation.srateperiod.Value =0;
             gui_erp_simulation.srateperiodedit.Enable = 'off';
@@ -196,7 +203,7 @@ varargout{1} = ERP_simulation_box;
         end
         
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.speriod_title,...
-            'String','ms','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.speriod_title);
         set(gui_erp_simulation.speriod_title, 'Sizes',[120 80 25 40]);
         
@@ -204,12 +211,12 @@ varargout{1} = ERP_simulation_box;
         %%----------------------Basic Function title type-------------------
         gui_erp_simulation.bsfun_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.bsfun_title,...
-            'String','Basic Function for Simulation','FontWeight','bold','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Basic Function for Simulation','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         
         %%ExGaussian Function
         gui_erp_simulation.exguafun_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.exgua_op = uicontrol('Style', 'radiobutton','Parent', gui_erp_simulation.exguafun_option,...
-            'String','ExGaussian','callback',@exguass_op,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','ExGaussian','callback',@exguass_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==1
             gui_erp_simulation.exgua_op.Value =1;
             ExgauEnable = 'on';
@@ -218,7 +225,7 @@ varargout{1} = ERP_simulation_box;
             ExgauEnable = 'off';
         end
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_option,...
-            'String','Peak amplitude','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Peak amplitude','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
             Exgau_amp = def{2};
         catch
@@ -231,9 +238,9 @@ varargout{1} = ERP_simulation_box;
             Exgau_amp = Exgau_amp(1);
         end
         gui_erp_simulation.exgua_peakamp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_option,...
-            'String',num2str(Exgau_amp),'callback',@exgau_peakamp,'Enable',ExgauEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',num2str(Exgau_amp),'callback',@exgau_peakamp,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_option,...
-            'String','μV','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_option);
         set(gui_erp_simulation.exguafun_option, 'Sizes',[90 90 60 30 15]);
@@ -241,7 +248,7 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.exguafun_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_setting,...
-            'String','Gaussian mean','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Gaussian mean','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
             Exgau_mean = def{3};
         catch
@@ -251,10 +258,10 @@ varargout{1} = ERP_simulation_box;
             Exgau_mean =100;
         end
         gui_erp_simulation.exgua_mean = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting,...
-            'String',num2str(Exgau_mean),'callback',@exgau_mean,'Enable',ExgauEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',num2str(Exgau_mean),'callback',@exgau_mean,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_setting,...
-            'String','SD','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','SD','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
             ExGauSD = def{4};
         catch
@@ -264,7 +271,7 @@ varargout{1} = ERP_simulation_box;
             ExGauSD =50;
         end
         gui_erp_simulation.exgua_sd = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting,...
-            'String',num2str(ExGauSD),'callback',@exgau_sd,'Enable',ExgauEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',num2str(ExGauSD),'callback',@exgau_sd,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(gui_erp_simulation.exguafun_setting, 'Sizes',[15 90 50 40 50]);
         
         
@@ -272,7 +279,7 @@ varargout{1} = ERP_simulation_box;
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting1);
         
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_setting1,...
-            'String','Exponential tau','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Exponential tau','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         try
             ExGauTau = def{5};
@@ -283,7 +290,7 @@ varargout{1} = ERP_simulation_box;
             ExGauTau =0;
         end
         gui_erp_simulation.exgua_tau = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting1,...
-            'String',num2str(ExGauTau),'callback',@exgau_tau,'Enable',ExgauEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String',num2str(ExGauTau),'callback',@exgau_tau,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting1);
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting1);
         set(gui_erp_simulation.exguafun_setting1, 'Sizes',[15 90 50 40 50]);
@@ -291,7 +298,7 @@ varargout{1} = ERP_simulation_box;
         %%Impulse function
         gui_erp_simulation.impulse_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.impulse_op = uicontrol('Style', 'radiobutton','Parent', gui_erp_simulation.impulse_option,...
-            'String','Impulse','callback',@impulse_op,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Impulse','callback',@impulse_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==2
             ImpulseEnable ='on';
             gui_erp_simulation.impulse_op.Value =1;
@@ -302,12 +309,12 @@ varargout{1} = ERP_simulation_box;
         end
         
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_option,...
-            'String','Peak amplitude','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Peak amplitude','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_simulation.impulse_peakamp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.impulse_option,...
-            'String','','callback',@impulse_peakamp,'Enable',ImpulseEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','','callback',@impulse_peakamp,'Enable',ImpulseEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_option,...
-            'String','μV','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==2
             try
                 impulsePeakamp = def{2};
@@ -325,12 +332,12 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.impulse_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.impulse_setting);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,...
-            'String','Latency','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Latency','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_simulation.impulse_latency = uicontrol('Style', 'edit','Parent', gui_erp_simulation.impulse_setting,...
-            'String','','callback',@impulse_latency,'Enable',ImpulseEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','','callback',@impulse_latency,'Enable',ImpulseEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,...
-            'String','ms','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==2
             try
                 impulselat = def{3};
@@ -349,19 +356,19 @@ varargout{1} = ERP_simulation_box;
         %%Boxcar function
         gui_erp_simulation.square_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.square_op = uicontrol('Style', 'radiobutton','Parent', gui_erp_simulation.square_option,...
-            'String','Boxcar','callback',@square_op,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Boxcar','callback',@square_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_option,...
-            'String','Peak amplitude','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Peak amplitude','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==3
             squareEnable = 'on';
         else
             squareEnable = 'off';
         end
         gui_erp_simulation.square_peakamp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.square_option,...
-            'String','','callback',@square_peakamp,'Enable',squareEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','','callback',@square_peakamp,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_option,...
-            'String','μV','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.square_option);
         if BasFunLabel==3
             try
@@ -382,12 +389,12 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.square_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.square_setting);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
-            'String','Onset','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Onset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_simulation.square_onset = uicontrol('Style', 'edit','Parent', gui_erp_simulation.square_setting,...
-            'String','','callback',@square_onset,'Enable',squareEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','','callback',@square_onset,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
-            'String','ms','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==3
             try
                 Onsetlat = def{3};
@@ -402,12 +409,12 @@ varargout{1} = ERP_simulation_box;
         
         
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
-            'String','Offset','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Offset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_simulation.square_offset = uicontrol('Style', 'edit','Parent', gui_erp_simulation.square_setting,...
-            'String','','callback',@square_offset,'Enable',squareEnable,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','','callback',@square_offset,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
-            'String','ms','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         if BasFunLabel==3
             try
                 Offsetlat = def{4};
@@ -428,13 +435,13 @@ varargout{1} = ERP_simulation_box;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         gui_erp_simulation.noisefun_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.noisefun_title,...
-            'String','Noise Function for Simulation','FontWeight','bold','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Noise Function for Simulation','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         
         
         %%sin noise
         gui_erp_simulation.sin_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.sin_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.sin_option ,...
-            'String','Sinusoidal','callback',@sinoise_op,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Sinusoidal','callback',@sinoise_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
             sinop = def{14};
         catch
@@ -452,7 +459,7 @@ varargout{1} = ERP_simulation_box;
         end
         
         gui_erp_simulation.sin_amp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.sin_option ,...
-            'String',' ','callback',@sin_amp,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',sinEnable);
+            'String',' ','callback',@sin_amp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',sinEnable);
         try
             sinamp = def{15};
         catch
@@ -463,11 +470,11 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.sin_amp.String = num2str(sinamp);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.sin_option,...
-            'String','μV','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_simulation.sin_fre = uicontrol('Style', 'edit','Parent', gui_erp_simulation.sin_option ,...
-            'String',' ','callback',@sinoise_fre,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',sinEnable);
+            'String',' ','callback',@sinoise_fre,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',sinEnable);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.sin_option,...
-            'String','Hz','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         try
             sinfre = def{16};
@@ -483,7 +490,7 @@ varargout{1} = ERP_simulation_box;
         %%white noise
         gui_erp_simulation.white_title = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.white_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.white_title ,...
-            'String','White','callback',@whitenoise_op,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','White','callback',@whitenoise_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
             whiteop =def{10};
         catch
@@ -501,10 +508,10 @@ varargout{1} = ERP_simulation_box;
         end
         
         gui_erp_simulation.white_amp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.white_title ,...
-            'String',' ','callback',@white_amp,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',whitEnable);
+            'String',' ','callback',@white_amp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',whitEnable);
         
         uicontrol('Style', 'text','Parent', gui_erp_simulation.white_title,...
-            'String','μV','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.white_title);
         uiextras.Empty('Parent', gui_erp_simulation.white_title);
         try
@@ -521,7 +528,7 @@ varargout{1} = ERP_simulation_box;
         %%pink noise
         gui_erp_simulation.pink_title = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.pink_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.pink_title ,...
-            'String','Pink','callback',@pinknoise_op,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Pink','callback',@pinknoise_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
             pinkeop =def{12};
         catch
@@ -539,7 +546,7 @@ varargout{1} = ERP_simulation_box;
         end
         
         gui_erp_simulation.pink_amp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.pink_title ,...
-            'String',' ','callback',@pink_amp,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',pinkEnable);
+            'String',' ','callback',@pink_amp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',pinkEnable);
         try
             pinkAmp = def{13};
         catch
@@ -547,7 +554,7 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.pink_amp.String = num2str(pinkAmp);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.pink_title,...
-            'String','μV','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.pink_title);
         uiextras.Empty('Parent', gui_erp_simulation.pink_title);
         set(gui_erp_simulation.pink_title, 'Sizes',[90 60 30 60 30]);
@@ -566,7 +573,7 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.newnoise_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
         gui_erp_simulation.newnoise_op = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.newnoise_option ,...
-            'String','Re-randomize noise','callback',@newnoise_op,'FontSize',12,'BackgroundColor',[1 1 1],'Value',0);
+            'String','Re-randomize noise','callback',@newnoise_op,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',0);
         %         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
         %         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
@@ -580,7 +587,7 @@ varargout{1} = ERP_simulation_box;
             'String','?','FontWeight','bold','callback',@simulation_help,'FontSize',14,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_simulation.other_option);
         gui_erp_simulation.apply = uicontrol('Style','pushbutton','Parent',gui_erp_simulation.other_option,...
-            'String','Apply','callback',@simulation_apply,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@simulation_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_simulation.other_option);
         set(gui_erp_simulation.other_option, 'Sizes',[15 105  30 105 15]);
         set(gui_erp_simulation.bsfun_box, 'Sizes',[200 20 25 25 25 25 20 25 25 25 20 25 25 25 25 25 25 25 20 25 25 25 25 25]);
@@ -2069,11 +2076,8 @@ varargout{1} = ERP_simulation_box;
             catch
                 rng(1,'twister');
             end
-            try
-                Desirednosizepink = pinknoise(numel(Times));
-            catch
-                Desirednosizepink = f_pinknoise(numel(Times));
-            end
+            
+            Desirednosizepink = f_pinknoise(numel(Times));
             
             Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
             Desirednosizepink = PeakAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));
@@ -2086,14 +2090,14 @@ varargout{1} = ERP_simulation_box;
                 %         hold(handles.axes1,'on');
                 RealData = squeeze(ERP.bindata(ChannelArray,:,binArray));
                 plot(gui_erp_simulation.plot_erp,Times,[Sig;RealData],'linewidth',1.5);
-                %                 legend(gui_erp_simulation.plot_erp,{'Simulated data',['Real data at',32,ERP.chanlocs(ChannelArray).labels]},'fontsize',12);
+                %                 legend(gui_erp_simulation.plot_erp,{'Simulated data',['Real data at',32,ERP.chanlocs(ChannelArray).labels]},'FontSize',FonsizeDefault);
                 %                 legend(gui_erp_simulation.plot_erp,'boxoff');
                 
             catch
             end
         else
             plot(gui_erp_simulation.plot_erp,Times,Sig,'k','linewidth',1.5);
-            %             legend(gui_erp_simulation.plot_erp,{'Simulated data'},'fontsize',12);
+            %             legend(gui_erp_simulation.plot_erp,{'Simulated data'},'FontSize',FonsizeDefault);
             %             legend(gui_erp_simulation.plot_erp,'boxoff');
         end
         gui_erp_simulation.plot_erp.FontSize =12;

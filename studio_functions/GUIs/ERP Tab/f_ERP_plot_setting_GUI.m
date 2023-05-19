@@ -63,10 +63,18 @@ else
 end
 
 %-----------------------------Draw the panel-------------------------------------
-drawui_erpplot()
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_erpplot(FonsizeDefault);
 varargout{1} = ERP_plotset_box;
 
-    function drawui_erpplot()
+    function drawui_erpplot(FonsizeDefault)
         
         estudioworkingmemory('erp_plot_set',0);
         estudioworkingmemory('erp_xtickstep',0);
@@ -78,77 +86,77 @@ varargout{1} = ERP_plotset_box;
         gui_erp_plot.plotop = uiextras.VBox('Parent',ERP_plotset_box, 'Spacing',1,'BackgroundColor',ColorB_def);
         
         %         set(gui_erp_plot.time_sel, 'Sizes', [-1 -1 -1 -1 -1]);
-        uicontrol('Style','text','Parent', gui_erp_plot.plotop,'String','Time Range:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', gui_erp_plot.plotop,'String','Time Range:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
         
         gui_erp_plot.ticks = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
-        plotops_erp.timet_auto = uicontrol('Style','checkbox','Parent', gui_erp_plot.ticks,'String','Auto','callback',@timet_auto,'Value',1,'FontSize',12,'BackgroundColor',ColorB_def); % 2B
-        uicontrol('Style','text','Parent', gui_erp_plot.ticks,'String','Low','FontSize',12,'BackgroundColor',ColorB_def);
+        plotops_erp.timet_auto = uicontrol('Style','checkbox','Parent', gui_erp_plot.ticks,'String','Auto','callback',@timet_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2B
+        uicontrol('Style','text','Parent', gui_erp_plot.ticks,'String','Low','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         plotops_erp.timet_low = uicontrol('Style', 'edit','Parent',gui_erp_plot.ticks,...
-            'String',num2str(S_erpplot.timet_low(Select_index)),'callback',@low_ticks_change,'Enable','off','FontSize',12);
-        uicontrol('Style','text','Parent', gui_erp_plot.ticks,'String','High','FontSize',12,'BackgroundColor',ColorB_def);
+            'String',num2str(S_erpplot.timet_low(Select_index)),'callback',@low_ticks_change,'Enable','off','FontSize',FonsizeDefault);
+        uicontrol('Style','text','Parent', gui_erp_plot.ticks,'String','High','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         plotops_erp.timet_high = uicontrol('Style', 'edit','Parent',gui_erp_plot.ticks,'String',num2str(S_erpplot.timet_high(Select_index)),...
-            'callback',@high_ticks_change,'Enable','off','FontSize',12);
-        uicontrol('Style','text','Parent', gui_erp_plot.ticks,'String','Step','FontSize',12,'BackgroundColor',ColorB_def);
+            'callback',@high_ticks_change,'Enable','off','FontSize',FonsizeDefault);
+        uicontrol('Style','text','Parent', gui_erp_plot.ticks,'String','Step','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         plotops_erp.timet_step = uicontrol('Style', 'edit','Parent',gui_erp_plot.ticks,'String',num2str(S_erpplot.timet_step(Select_index)),...
-            'callback',@ticks_step_change,'Enable','off','FontSize',12);
+            'callback',@ticks_step_change,'Enable','off','FontSize',FonsizeDefault);
         
         set(gui_erp_plot.ticks, 'Sizes', [60 -1 -1 -1 -1 -1 -1]);
         
-        uicontrol('Style','text','Parent', gui_erp_plot.plotop,'String','Y Scale:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', gui_erp_plot.plotop,'String','Y Scale:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_plot.yscale = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         plotops_erp.yscale_auto = uicontrol('Style','checkbox','Parent',gui_erp_plot.yscale,'String','Auto',...
-            'callback',@yscale_auto,'Value',1,'FontSize',12,'BackgroundColor',ColorB_def);
+            'callback',@yscale_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         tooltiptext = sprintf('Tick Length:\nSize of Y Ticks');
-        uicontrol('Style','text','Parent',gui_erp_plot.yscale,'String','Ticks','TooltipString',tooltiptext,'FontSize',12,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',gui_erp_plot.yscale,'String','Ticks','TooltipString',tooltiptext,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         plotops_erp.yscale_change = uicontrol('Style','edit','Parent',gui_erp_plot.yscale,...
-            'String',S_erpplot.yscale(Select_index),'callback',@yscale_change,'Enable','off','FontSize',12);
+            'String',S_erpplot.yscale(Select_index),'callback',@yscale_change,'Enable','off','FontSize',FonsizeDefault);
         tooltiptext = sprintf('Minimum Vertical Spacing:\nSmallest possible distance in inches between zero lines before plots go off the page.');
-        uicontrol('Style','text','Parent',gui_erp_plot.yscale,'String','Spacing','TooltipString',tooltiptext,'FontSize',12,'BackgroundColor',ColorB_def);
-        plotops_erp.min_vspacing = uicontrol('Style','edit','Parent',gui_erp_plot.yscale,'String',S_erpplot.min_vspacing(Select_index),'callback',@min_vspacing,'Enable','off','FontSize',12);
+        uicontrol('Style','text','Parent',gui_erp_plot.yscale,'String','Spacing','TooltipString',tooltiptext,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        plotops_erp.min_vspacing = uicontrol('Style','edit','Parent',gui_erp_plot.yscale,'String',S_erpplot.min_vspacing(Select_index),'callback',@min_vspacing,'Enable','off','FontSize',FonsizeDefault);
         tooltiptext = sprintf('Fill Screen:\nDynamically expand plots to fill screen.');
         plotops_erp.fill_screen = uicontrol('Style','checkbox','Parent',gui_erp_plot.yscale,'String','Fill','callback',@fill_screen,...
-            'TooltipString',tooltiptext,'Value',S_erpplot.fill(Select_index),'FontSize',12,'BackgroundColor',ColorB_def);
+            'TooltipString',tooltiptext,'Value',S_erpplot.fill(Select_index),'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         set(gui_erp_plot.yscale, 'Sizes', [50 45 35 50 35 60]);
         
         
         gui_erp_plot.plot_column = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
         
-        uicontrol('Style','text','Parent', gui_erp_plot.plot_column,'String','Number of columns:','FontSize',12,'BackgroundColor',ColorB_def); % 1E
+        uicontrol('Style','text','Parent', gui_erp_plot.plot_column,'String','Number of columns:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
         
         ColumnNum =  estudioworkingmemory('EStudioColumnNum');
         if isempty(ColumnNum) || numel(ColumnNum)~=1
             ColumnNum =1;
         end
         plotops_erp.columns = uicontrol('Style','edit','Parent', gui_erp_plot.plot_column,...
-            'String',num2str(ColumnNum),'callback',@onElecNbox,'FontSize',12); % 2E Plot_column
+            'String',num2str(ColumnNum),'callback',@onElecNbox,'FontSize',FonsizeDefault); % 2E Plot_column
         set(gui_erp_plot.plot_column, 'Sizes', [150 -1]);
         
         
         gui_erp_plot.polarity_waveform = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         
-        uicontrol('Style','text','Parent', gui_erp_plot.polarity_waveform,'String','Polarity:','FontSize',12,'BackgroundColor',ColorB_def); % 1F
+        uicontrol('Style','text','Parent', gui_erp_plot.polarity_waveform,'String','Polarity:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1F
         
         %% second column:
-        plotops_erp.positive_up = uicontrol('Style','radiobutton','Parent',gui_erp_plot.polarity_waveform,'String','Positive Up','callback',@polarity_up,'Value',1,'FontSize',12,'BackgroundColor',ColorB_def); % 2F
-        plotops_erp.negative_up = uicontrol('Style','radiobutton','Parent', gui_erp_plot.polarity_waveform,'String','Negative Up','callback',@polarity_down,'Value',0,'FontSize',12,'BackgroundColor',ColorB_def); % 2F
+        plotops_erp.positive_up = uicontrol('Style','radiobutton','Parent',gui_erp_plot.polarity_waveform,'String','Positive Up','callback',@polarity_up,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
+        plotops_erp.negative_up = uicontrol('Style','radiobutton','Parent', gui_erp_plot.polarity_waveform,'String','Negative Up','callback',@polarity_down,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
         
         set(gui_erp_plot.polarity_waveform, 'Sizes',[60  -1 -1]);
         
         gui_erp_plot.bin_chan = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         
         gui_erp_plot.pagesel = uicontrol('Parent', gui_erp_plot.bin_chan, 'Style', 'popupmenu','String',...
-            {'CHANNELS with BINS overlay','BINS with CHANNELS overlay'},'callback',@pageviewchanged,'FontSize',12);
+            {'CHANNELS with BINS overlay','BINS with CHANNELS overlay'},'callback',@pageviewchanged,'FontSize',FonsizeDefault);
         
         
         gui_erp_plot.reset_apply = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_plot.reset_apply); % 1A
         plotops_erp.plot_reset = uicontrol('Style', 'pushbutton','Parent',gui_erp_plot.reset_apply,...
-            'String','Reset','callback',@plot_erp_reset,'FontSize',12);
+            'String','Reset','callback',@plot_erp_reset,'FontSize',FonsizeDefault);
         uiextras.Empty('Parent', gui_erp_plot.reset_apply); % 1A
         plotops_erp.plot_apply = uicontrol('Style', 'pushbutton','Parent',gui_erp_plot.reset_apply,...
-            'String','Apply','callback',@plot_erp_apply,'FontSize',12);
+            'String','Apply','callback',@plot_erp_apply,'FontSize',FonsizeDefault);
         uiextras.Empty('Parent', gui_erp_plot.reset_apply); % 1A
         set(gui_erp_plot.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         

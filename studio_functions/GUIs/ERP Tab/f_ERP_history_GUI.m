@@ -35,10 +35,18 @@ else
 end
 
 %-----------------------------Draw the panel-------------------------------------
-drawui_erp_history()
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_erp_history(FonsizeDefault);
 varargout{1} = box_erp_history;
 
-    function drawui_erp_history()
+    function drawui_erp_history(FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
@@ -50,9 +58,9 @@ varargout{1} = box_erp_history;
         
         
         gui_erp_history.erp_h_all = uicontrol('Style','radiobutton','Parent',gui_erp_history.erp_history_title,'String','Current ERPset',...
-            'callback',@ERP_H_ALL,'Value',1,'FontSize',12,'BackgroundColor',ColorB_def); % 2F
+            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
         gui_erp_history.erp_h_EEG = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','Current session',...
-            'callback',@ERP_H_EEG,'Value',0,'FontSize',12,'BackgroundColor',ColorB_def); % 2F
+            'callback',@ERP_H_EEG,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
         
         %         gui_erp_history.erp_h_erp = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','ERP','callback',@ERP_H_ERP,'Value',0); % 2F
         

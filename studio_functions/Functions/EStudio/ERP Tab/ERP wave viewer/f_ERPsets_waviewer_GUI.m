@@ -63,12 +63,21 @@ ERPdatasets = sortdata(ERPdatasets);
 sel_path = cd;
 estudioworkingmemory('ERP_save_folder',sel_path);
 
-drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer)
 
 varargout{1} = ERPsets_waveviewer_box;
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+    FonsizeDefault = f_get_default_fontsize();
+end
+
+drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 
 % Draw the ui
-    function drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer)
+    function drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
@@ -106,13 +115,15 @@ varargout{1} = ERPsets_waveviewer_box;
         elseif Enable_auto ==0
             Enable_label = 'on';
         end
+        
+        
         %%---------------------Options for selecting ERPsets-----------------------------------------------------
         ERPwaveview_erpsetops.opts_title = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox, 'Spacing', 5,'BackgroundColor',ColorBviewer_def);
         ERPwaveview_erpsetops.auto = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_erpsetops.opts_title,...
-            'String',' ','callback',@erpselect_auto,'Value',Enable_auto,'Enable','on','FontSize',12,'BackgroundColor',ColorBviewer_def);
+            'String',' ','callback',@erpselect_auto,'Value',Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
         
         ERPwaveview_erpsetops.custom = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_erpsetops.opts_title,...
-            'String','Custom','callback',@erpselect_custom,'Value',~Enable_auto,'Enable','on','FontSize',12,'BackgroundColor',ColorBviewer_def);
+            'String','Custom','callback',@erpselect_custom,'Value',~Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
         
         if strcmpi(ERPtooltype,'EStudio')
             ERPwaveview_erpsetops.auto.String = 'Same as EStudio';
@@ -143,15 +154,15 @@ varargout{1} = ERPsets_waveviewer_box;
         end
         ds_length = length(ERPdatasets);
         ERPwaveview_erpsetops.butttons_datasets = uicontrol('Parent', panelshbox, 'Style', 'listbox', 'min', 1,'max',...
-            ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',12,'Enable',Enable_label);
+            ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Enable_label);
         %%Help and apply
         ERPwaveview_erpsetops.help_apply_title = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
         uicontrol('Style','pushbutton','Parent', ERPwaveview_erpsetops.help_apply_title  ,'String','Cancel',...
-            'callback',@erpset_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@erpset_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title  );
         ERPwaveview_erpsetops.erpset_apply = uicontrol('Style','pushbutton','Parent',ERPwaveview_erpsetops.help_apply_title  ,'String','Apply',...
-            'callback',@ERPset_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@ERPset_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
         set(ERPwaveview_erpsetops.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(ERPwaveview_erpsetops.vBox, 'Sizes', [20 190 25]);
@@ -665,10 +676,6 @@ varargout{1} = ERPsets_waveviewer_box;
                 title_msg = ' ERPLAB_ERP_Viewer() datatype error:';
             end
             errorfound(sprintf(msgboxText), title_msg);
-%             try
-%                 close(gui_erp_waviewer.Window);%%close previous GUI if exists
-%             catch
-%             end
             return;
         end
         
@@ -719,13 +726,16 @@ varargout{1} = ERPsets_waveviewer_box;
             end
             CURRENTERPStudio = observe_ERPDAT.CURRENTERP;
             estudioworkingmemory('PlotOrg_ERPLAB',1);%%This is used to Grid, Overlay, and Pages if "same as ERPLAB"
-            ALLERPStudio = observe_ERPDAT.ALLERP;
-        else
-            ERPArrayStudio = ERPwaviewer_up.SelectERPIdx;
-            CURRENTERPStudio=ERPwaviewer_up.CURRENTERP;
-            ALLERPStudio = evalin('base','ALLERP');
+            
         end
         
+        %         else
+        if ERPAutoValue ~=1
+            ERPArrayStudio = ERPwaviewer_up.SelectERPIdx;
+            CURRENTERPStudio=ERPwaviewer_up.CURRENTERP;
+            %                     ALLERPStudio = evalin('base','ALLERP');
+        end
+        ALLERPStudio = observe_ERPDAT.ALLERP;
         if max(ERPArrayStudio(:))> length(ALLERPStudio) || min(ERPArrayStudio(:))<=0
             ERPArrayStudio = length(ALLERPStudio);
             CURRENTERPStudio = length(ALLERPStudio);
@@ -766,8 +776,8 @@ varargout{1} = ERPsets_waveviewer_box;
         ERPwaveview_erpsetops.butttons_datasets.Value = ERPArrayStudio;
         
         if strcmpi(ERPtooltype,'ERPLAB') && ERPAutoValue ==1
-%             ERPwaviewer_up.bin= [1:observe_ERPDAT.ERP.nbin];
-%             ERPwaviewer_up.chan = [1:observe_ERPDAT.ERP.nchan];
+            %             ERPwaviewer_up.bin= [1:observe_ERPDAT.ERP.nbin];
+            %             ERPwaviewer_up.chan = [1:observe_ERPDAT.ERP.nchan];
             ERPwaviewer_up.PageIndex = 1;
         end
         

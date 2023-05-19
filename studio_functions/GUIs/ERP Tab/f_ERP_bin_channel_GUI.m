@@ -53,15 +53,23 @@ else
 end
 
 %-----------------------------Draw the panel-------------------------------------
-drawui_bin_chan()
-varargout{1} = EStudio_box_bin_chan;
+
 
 observe_ERPDAT.ERP_chan = S_erpbinchan.geterpbinchan.elecs_shown{1};
 observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+FonsizeDefault = f_get_default_fontsize();
+end
 
+drawui_bin_chan(FonsizeDefault)
+varargout{1} = EStudio_box_bin_chan;
 
-
-    function drawui_bin_chan()
+    function drawui_bin_chan(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_gui_erp_bin_chan.DataSelBox = uiextras.VBox('Parent', EStudio_box_bin_chan,'BackgroundColor',ColorB_def);
@@ -69,14 +77,14 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
         
         
         % Second column:
-        uicontrol('Style','text','Parent', EStduio_gui_erp_bin_chan.DataSelGrid,'String','Channels','FontSize',12,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_gui_erp_bin_chan.DataSelGrid,'String','Channels','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
         Chanlist = observe_ERPDAT.ERP.chanlocs;
         Chanlist_name{1} = 'All';
         for Numofchan = 1:length(Chanlist)
             Chanlist_name{Numofchan+1} = char(strcat(num2str(Numofchan),'.',32,Chanlist(Numofchan).labels));
         end
         EStduio_gui_erp_bin_chan.ElecRange = uicontrol('Parent', EStduio_gui_erp_bin_chan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',12,'Enable','on'); % 2B
+            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable','on'); % 2B
         
         if  S_erpbinchan.geterpbinchan.checked_curr_index ==1 || S_erpbinchan.geterpbinchan.checked_ERPset_Index(2) ==2
             EStduio_gui_erp_bin_chan.ElecRange.Enable = 'off';
@@ -90,7 +98,7 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
         
         
         % Third column:
-        uicontrol('Style','text','Parent', EStduio_gui_erp_bin_chan.DataSelGrid,'String','Bins','FontSize',12,'BackgroundColor',ColorB_def); % 1C
+        uicontrol('Style','text','Parent', EStduio_gui_erp_bin_chan.DataSelGrid,'String','Bins','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1C
         
         BinNum = observe_ERPDAT.ERP.nbin;
         BinName = observe_ERPDAT.ERP.bindescr;
@@ -100,7 +108,7 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
             brange(i+1) = {strcat(num2str(i),'.',32,BinName{i})};
         end
         EStduio_gui_erp_bin_chan.BinRange =  uicontrol('Parent', EStduio_gui_erp_bin_chan.DataSelGrid,'Style','listbox','Min',1,'Max',BinNum+1,...
-            'String', brange,'callback',@onBinChanged,'FontSize',12); % 2C
+            'String', brange,'callback',@onBinChanged,'FontSize',FonsizeDefault); % 2C
         if BinNum== numel(S_erpbinchan.geterpbinchan.bins{1})
             EStduio_gui_erp_bin_chan.BinRange.Value  =1;
         else
@@ -111,8 +119,6 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
         end
         
         set(EStduio_gui_erp_bin_chan.DataSelGrid, 'ColumnSizes',[ -1.2 -2],'RowSizes',[20 -3]);
-        
-        
     end
 
 
@@ -309,6 +315,9 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
 
 %----------displayed channel label will be midified after channels was selected--------
     function ERP_chan_changed(~,~)
+        if observe_ERPDAT.Process_messg==0
+           return; 
+        end
         chanString = EStduio_gui_erp_bin_chan.ElecRange.String;
         chanArray = observe_ERPDAT.ERP_chan;
         if max(chanArray)> length(chanString)-1
@@ -332,6 +341,9 @@ observe_ERPDAT.ERP_bin = S_erpbinchan.geterpbinchan.bins{1};
 
 %----------displayed bin label will be midified after different channels was selected--------
     function ERP_bin_changed(~,~)
+        if observe_ERPDAT.Process_messg==0
+           return; 
+        end
         binArray =  observe_ERPDAT.ERP_bin;
         binString = EStduio_gui_erp_bin_chan.BinRange.String;
         

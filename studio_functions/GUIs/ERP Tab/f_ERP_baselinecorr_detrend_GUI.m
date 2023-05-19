@@ -27,11 +27,18 @@ else
 end
 
 gui_erp_blc_dt = struct();
-
-erp_blc_dt_gui();
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+erp_blc_dt_gui(FonsizeDefault);
 varargout{1} = ERP_basecorr_detrend_box;
 %%********************Draw the GUI for ERP measurement tool*****************
-    function erp_blc_dt_gui()
+    function erp_blc_dt_gui(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
         if strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
@@ -44,37 +51,37 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%Measurement type
         gui_erp_blc_dt.blc_dt_type_title = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_type_title,...
-            'String','Type:','FontWeight','bold','FontSize',12 ,'BackgroundColor',ColorB_def);
+            'String','Type:','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_blc_dt.blc_dt_option = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.blc = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_option,...
-            'String','Baseline Correction','callback',@baseline_correction_erp,'Value',1,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Baseline Correction','callback',@baseline_correction_erp,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.dt = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_option,...
-            'String','Linear detrend','callback',@detrend_erp,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Linear detrend','callback',@detrend_erp,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         %%Baseline period: Pre, post whole custom
         gui_erp_blc_dt.blc_dt_baseline_period_title = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_baseline_period_title,...
-            'String','Baseline Period:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Baseline Period:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.blc_dt_bp_option = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.pre = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_bp_option,...
-            'String','Pre','callback',@pre_erp,'Value',1,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Pre','callback',@pre_erp,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.post = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_bp_option,...
-            'String','Post','callback',@post_erp,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Post','callback',@post_erp,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_blc_dt.whole = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_bp_option,...
-            'String','Whole','callback',@whole_erp,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Whole','callback',@whole_erp,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.blc_dt_bp_option_cust = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.custom = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_dt_bp_option_cust,...
-            'String','Custom (ms) [start stop]','callback',@custom_erp,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Custom (ms) [start stop]','callback',@custom_erp,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.custom_edit = uicontrol('Style', 'edit','Parent', gui_erp_blc_dt.blc_dt_bp_option_cust,...
-            'String','','callback',@custom_edit,'Enable',Enable_label,'FontSize',12);
+            'String','','callback',@custom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault);
         
         if observe_ERPDAT.ERP.times(1)>=0
             CUstom_String = '';
@@ -88,25 +95,25 @@ varargout{1} = ERP_basecorr_detrend_box;
         %%Bin and channels selection
         gui_erp_blc_dt.blc_dt_bin_chan_title = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_bin_chan_title,...
-            'String','Bin and Chan Selection:','FontWeight','bold','FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Bin and Chan Selection:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.blc_bin_chan_option = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.all_bin_chan = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_bin_chan_option,...
-            'String','All(Recommended)','callback',@All_bin_chan,'Value',1,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','All(Recommended)','callback',@All_bin_chan,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.Selected_bin_chan = uicontrol('Style', 'radiobutton','Parent', gui_erp_blc_dt.blc_bin_chan_option,...
-            'String','Selected bin & chan','callback',@Selected_bin_chan,'Value',0,'Enable',Enable_label,'FontSize',12,'BackgroundColor',ColorB_def);
+            'String','Selected bin & chan','callback',@Selected_bin_chan,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_blc_dt.blc_bin_chan_option, 'Sizes',[125  175]);
         
         %%Cancel and advanced
         gui_erp_blc_dt.other_option = uiextras.HBox('Parent',gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_blc_dt.other_option,'BackgroundColor',ColorB_def);
         gui_erp_blc_dt.reset = uicontrol('Parent',gui_erp_blc_dt.other_option,'Style','pushbutton',...
-            'String','Reset','callback',@Reset_blc_dt,'Enable',Enable_label,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','Reset','callback',@Reset_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_blc_dt.other_option);
         gui_erp_blc_dt.apply = uicontrol('Style','pushbutton','Parent',gui_erp_blc_dt.other_option,...
-            'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',12,'BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_blc_dt.other_option);
         set(gui_erp_blc_dt.other_option, 'Sizes',[15 105  30 105 15]);
         

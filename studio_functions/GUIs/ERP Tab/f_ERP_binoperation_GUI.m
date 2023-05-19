@@ -29,14 +29,20 @@ else
 end
 
 %-----------------------------Draw the panel-------------------------------------
-drawui_erp_bin_operation()
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_erp_bin_operation(FonsizeDefault);
 varargout{1} = ERP_bin_operation_gui;
 
-    function drawui_erp_bin_operation()
-        FontSize_defualt = erpworkingmemory('fontsizeGUI');
-        if isempty(FontSize_defualt)
-            FontSize_defualt = 12;
-        end
+    function drawui_erp_bin_operation(FonsizeDefault)
+        FontSize_defualt = FonsizeDefault;
+       
         if strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
             Enable_label = 'off';
         else

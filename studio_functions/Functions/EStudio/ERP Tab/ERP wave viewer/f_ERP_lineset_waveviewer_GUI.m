@@ -37,10 +37,18 @@ else
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 %-----------------------------Draw the panel-------------------------------------
-drawui_lineset_property();
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+drawui_lineset_property(FonsizeDefault);
 varargout{1} = box_erplineset_viewer_property;
 
-    function drawui_lineset_property()
+    function drawui_lineset_property(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         try
             ALLERPwaviewer = evalin('base','ALLERPwaviewer');
@@ -61,14 +69,14 @@ varargout{1} = box_erplineset_viewer_property;
         end
         gui_erplinset_waveviewer.parameters_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.parameters_title,'String','Lines:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','FontWeight','bold'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','FontWeight','bold'); %
         
         gui_erplinset_waveviewer.linesauto = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.parameters_title,'String','Auto',...
-            'callback',@lines_auto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',linAutoValue); %
+            'callback',@lines_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',linAutoValue); %
         gui_erplinset_waveviewer.linescustom = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.parameters_title,'String','Custom',...
-            'callback',@lines_custom,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',~linAutoValue); %
+            'callback',@lines_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~linAutoValue); %
         
-        set(gui_erplinset_waveviewer.parameters_title,'Sizes',[40 80 80]);
+        set(gui_erplinset_waveviewer.parameters_title,'Sizes',[60 70 70]);
         
         %%-----------Setting for line table-----------------------------
         gui_erplinset_waveviewer.line_customtable_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
@@ -100,7 +108,7 @@ varargout{1} = box_erplineset_viewer_property;
             {'0.25','0.5','1','1.5','2','2.5','3','3.5','4','4.5','5','5.5','6','6.5','7','7.5','8','8.5','9','9.5','10','10.5'}};
         gui_erplinset_waveviewer.line_customtable.Data = lineset_str;
         gui_erplinset_waveviewer.line_customtable.ColumnEditable = [false, true,true,true];
-        gui_erplinset_waveviewer.line_customtable.FontSize = 12;
+        gui_erplinset_waveviewer.line_customtable.FontSize = FonsizeDefault;
         gui_erplinset_waveviewer.line_customtable.ColumnName = {'<html><font size=3 >#','<html><font size= 3>Color','<html><font size=3 >Style', '<html><font size=3 >Width'};
         gui_erplinset_waveviewer.line_customtable.Enable = DataEnable;
         gui_erplinset_waveviewer.line_customtable.BackgroundColor = [1 1 1;1 1 1];
@@ -120,12 +128,12 @@ varargout{1} = box_erplineset_viewer_property;
         legendAuto = 1;
         gui_erplinset_waveviewer.legend_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.legend_title,'String','Legend:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','FontWeight','bold'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','FontWeight','bold'); %
         gui_erplinset_waveviewer.legendauto = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_title,'String','Auto',...
-            'callback',@legend_auto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',legendAuto); %
+            'callback',@legend_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',legendAuto); %
         gui_erplinset_waveviewer.legendcustom = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_title,'String','Custom',...
-            'callback',@legend_custom,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',~legendAuto); %
-        set( gui_erplinset_waveviewer.legend_title,'Sizes',[50 80 80]);
+            'callback',@legend_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~legendAuto); %
+        set( gui_erplinset_waveviewer.legend_title,'Sizes',[60 70 70]);
         
         
         %%-----------Setting for legend table -----------------------------
@@ -181,7 +189,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
         
         gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
-        gui_erplinset_waveviewer.legend_customtable.FontSize = 12;
+        gui_erplinset_waveviewer.legend_customtable.FontSize = FonsizeDefault;
         gui_erplinset_waveviewer.legend_customtable.ColumnName = {'<html><font size=3 >#','<html><font size=3 >Name'};
         gui_erplinset_waveviewer.legend_customtable.CellEditCallback  = @legend_customtable;
         gui_erplinset_waveviewer.legend_customtable.BackgroundColor = [1 1 1;1 1 1];
@@ -207,16 +215,16 @@ varargout{1} = box_erplineset_viewer_property;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
-        LabelfontsizeValue = 5;
+        LabelfontsizeValue = 4;
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.labelfont_title ,'String','Font',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_erplinset_waveviewer.font_custom_type = uicontrol('Style','popupmenu','Parent', gui_erplinset_waveviewer.labelfont_title ,'String',fonttype,...
-            'callback',@legendfont,'FontSize',12,'BackgroundColor',[1 1 1],'Value',fontDef,'Enable',fontEnable); %
+            'callback',@legendfont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',fontDef,'Enable',fontEnable); %
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.labelfont_title ,'String','Size',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         gui_erplinset_waveviewer.font_custom_size = uicontrol('Style','popupmenu','Parent', gui_erplinset_waveviewer.labelfont_title ,'String',fontsize,...
-            'callback',@legendfontsize,'FontSize',12,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',fontEnable); %
+            'callback',@legendfontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',fontEnable); %
         set(gui_erplinset_waveviewer.labelfont_title,'Sizes',[30 110 30 70]);
         ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
         ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
@@ -226,11 +234,11 @@ varargout{1} = box_erplineset_viewer_property;
         legendtextcolorAuto =1;
         gui_erplinset_waveviewer.legend_textitle = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.legend_textitle,'String','Text color',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erplinset_waveviewer.legendtextauto = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_textitle,'String','Auto',...
-            'callback',@legendtextauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',legendtextcolorAuto,'Enable',fontEnable); %
+            'callback',@legendtextauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',legendtextcolorAuto,'Enable',fontEnable); %
         gui_erplinset_waveviewer.legendtextcustom = uicontrol('Style','radiobutton','Parent',gui_erplinset_waveviewer.legend_textitle,'String','Same as lines',...
-            'callback',@legendtextcustom,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',~legendtextcolorAuto,'Enable',fontEnable,'HorizontalAlignment','left'); %
+            'callback',@legendtextcustom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~legendtextcolorAuto,'Enable',fontEnable,'HorizontalAlignment','left'); %
         set(gui_erplinset_waveviewer.legend_textitle,'Sizes',[70 60 150]);
         ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
         
@@ -238,12 +246,12 @@ varargout{1} = box_erplineset_viewer_property;
         legendcolumns =1;
         gui_erplinset_waveviewer.legend_columnstitle = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.legend_columnstitle,'String','Columns',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         for Numoflegend = 1:100
             columnStr{Numoflegend} = num2str(Numoflegend);
         end
         gui_erplinset_waveviewer.legendcolumns = uicontrol('Style','popupmenu','Parent', gui_erplinset_waveviewer.legend_columnstitle,'String',columnStr,...
-            'callback',@legendcolumns,'FontSize',12,'BackgroundColor',[1 1 1],'Value',legendcolumns,'Enable',fontEnable); %
+            'callback',@legendcolumns,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',legendcolumns,'Enable',fontEnable); %
         uiextras.Empty('Parent', gui_erplinset_waveviewer.legend_columnstitle );
         set(gui_erplinset_waveviewer.legend_columnstitle,'Sizes',[60 100 70]);
         ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
@@ -253,10 +261,10 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title );
         uicontrol('Style','pushbutton','Parent', gui_erplinset_waveviewer.help_apply_title  ,'String','Cancel',...
-            'callback',@linelegend_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@linelegend_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title  );
         gui_erplinset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',gui_erplinset_waveviewer.help_apply_title  ,'String','Apply',...
-            'callback',@LineLegend_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@LineLegend_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title  );
         set(gui_erplinset_waveviewer.help_apply_title ,'Sizes',[40 70 20 70 20]);
         
@@ -441,7 +449,7 @@ varargout{1} = box_erplineset_viewer_property;
         end
         gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
         gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
-        gui_erplinset_waveviewer.font_custom_size.Value = 5;
+        gui_erplinset_waveviewer.font_custom_size.Value = 4;
         gui_erplinset_waveviewer.font_custom_type.Value =1;
     end
 
@@ -589,7 +597,7 @@ varargout{1} = box_erplineset_viewer_property;
         fontsizeValue = ERPwaviewer_apply.Legend.fontsize ;
         [x_label,y_label] = find(labelfontsizeinum==fontsizeValue);
         if isempty(x_label)
-            x_label = 5;
+            x_label = 4;
         end
         gui_erplinset_waveviewer.font_custom_size.Value= x_label;
         gui_erplinset_waveviewer.legendtextauto.Value= ERPwaviewer_apply.Legend.textcolor;
@@ -1023,12 +1031,12 @@ varargout{1} = box_erplineset_viewer_property;
             end
             gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
             gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
-            gui_erplinset_waveviewer.font_custom_size.Value = 5;
+            gui_erplinset_waveviewer.font_custom_size.Value = 4;
             gui_erplinset_waveviewer.font_custom_type.Value =2;
             ERPwaviewerin.Legend.auto=1;
             ERPwaviewerin.Legend.data =gui_erplinset_waveviewer.legend_customtable.Data;
             ERPwaviewerin.Legend.font=1;
-            ERPwaviewerin.Legend.fontsize=12;
+            ERPwaviewerin.Legend.fontsize=10;
             ERPwaviewerin.Legend.textcolor=1;
             ERPwaviewerin.Legend.columns=1;
             assignin('base','ALLERPwaviewer',ERPwaviewerin);

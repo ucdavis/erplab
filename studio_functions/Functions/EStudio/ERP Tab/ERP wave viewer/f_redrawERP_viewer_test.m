@@ -17,6 +17,9 @@ global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'v_messg_change',@V_messg_change);
 
 
+FonsizeDefault = f_get_default_fontsize();
+
+
 if nargin>1
     help f_redrawERP_viewer;
     return;
@@ -104,7 +107,7 @@ gui_erp_waviewer.plotgrid = uix.VBox('Parent',gui_erp_waviewer.ViewContainer,'Pa
 gui_erp_waviewer.pageinfo_box = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.erpwaviewer_legend_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
-uicontrol('Parent',gui_erp_waviewer.erpwaviewer_legend_title,'Style','text','String','','FontSize',14,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.erpwaviewer_legend_title,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.erpwaviewer_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.erpwaviewer_legend_title,'BackgroundColor',figbgdColor);
 
@@ -112,56 +115,55 @@ gui_erp_waviewer.erpwaviewer_legend = uix.ScrollingPanel( 'Parent', gui_erp_wavi
 gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
 % gui_erp_waviewer.ViewAxes_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',ColorBviewer_def);
 
-uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',14,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-
-gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
-
+uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.Resize = 0;
+gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
-uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',12,'BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.zoom_in = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Zoom In',...
-    'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@zoomin);
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin);
 
 gui_erp_waviewer.zoom_edit = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','edit','String',num2str(zoomSpace),...
-    'FontSize',14,'BackgroundColor',[1 1 1],'Callback',@zoomedit);
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit);
 
 gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Zoom Out',...
-    'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@zoomout);
-uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',12,'BackgroundColor',ColorBviewer_def);
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
+uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
-    'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
 
 gui_erp_waviewer.figureout = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
-    'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@figure_out);
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_out);
 
 gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Reset',...
-    'FontSize',12,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
 
 
-uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',12,'BackgroundColor',ColorBviewer_def);
+uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 70 70 -1 100 170 70 20]);
 
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.xaxis_panel = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
-gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',20,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 %%Setting title
 gui_erp_waviewer.pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr{pagecurrentNum}];
 
-gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',14,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 
-gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '<','Callback',@page_minus,'FontSize',30,'BackgroundColor',[1 1 1]);
+gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '<','Callback',@page_minus,'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'FontWeight','bold');
 % if S_ws_getbinchan.Select_index ==1
 gui_erp_waviewer.pageinfo_minus.Enable = 'off';
 % end
-gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',20,'BackgroundColor',[1 1 1]);
+gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
 
 
-gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '>','Callback',@page_plus,'FontSize',30,'BackgroundColor',[1 1 1]);
+gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '>','Callback',@page_plus,'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'FontWeight','bold');
 % if S_ws_getbinchan.Select_index == numel(S_ws_geterpset)
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
 % end
@@ -196,9 +198,6 @@ gui_erp_waviewer.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 set(gui_erp_waviewer.plot_wav_legend, 'Sizes', [10 -1]);
 set(gui_erp_waviewer.erpwaviewer_legend_title, 'Sizes', [10 -1]);
 set(gui_erp_waviewer.pageinfo_box, 'Sizes', [-1 50 50 50] );
-% set(gui_erp_waviewer.pageinfo_box,'BackgroundColor',ColorBviewer_def);
-% set(gui_erp_waviewer.pageinfo_text,'BackgroundColor',ColorBviewer_def);
-%Setting title. END,'BackgroundColor',ColorBviewer_def
 
 gui_erp_waviewer.myerpviewer = axes('Parent', gui_erp_waviewer.ViewAxes,'Color','none','Box','on','FontWeight','bold');
 hold(gui_erp_waviewer.myerpviewer,'on');
@@ -210,7 +209,6 @@ myerpviewerlegend = gui_erp_waviewer.myerpviewer_legend;
 
 OutputViewerpar = f_preparms_erpwaviewer('');
 
-
 gui_erp_waviewer.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
 gui_erp_waviewer.plotgrid.Heights(2) = 50; % set the first element (pageinfo) to 30px high
 gui_erp_waviewer.plotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
@@ -221,12 +219,12 @@ if isempty(OutputViewerpar)
     return;
 end
 
-
 f_plotviewerwave(OutputViewerpar{1},OutputViewerpar{2}, OutputViewerpar{3},OutputViewerpar{4},OutputViewerpar{5},OutputViewerpar{6},OutputViewerpar{9},OutputViewerpar{8},OutputViewerpar{10},OutputViewerpar{11},...
     OutputViewerpar{12},OutputViewerpar{13},OutputViewerpar{14},OutputViewerpar{15},OutputViewerpar{16},OutputViewerpar{17},OutputViewerpar{18},OutputViewerpar{19},OutputViewerpar{20},OutputViewerpar{21},OutputViewerpar{22},...
     OutputViewerpar{23},OutputViewerpar{24},OutputViewerpar{25},OutputViewerpar{26},OutputViewerpar{27},OutputViewerpar{28},OutputViewerpar{29},OutputViewerpar{31},OutputViewerpar{30},OutputViewerpar{32},OutputViewerpar{33},...
     OutputViewerpar{34},OutputViewerpar{35},OutputViewerpar{36},OutputViewerpar{37},OutputViewerpar{38},OutputViewerpar{39},OutputViewerpar{7},OutputViewerpar{43}, OutputViewerpar{40},OutputViewerpar{41},OutputViewerpar{44},...
     OutputViewerpar{45},OutputViewerpar{46},OutputViewerpar{47},myerpviewer,myerpviewerlegend);
+
 %%
 set(gui_erp_waviewer.myerpviewer, 'XTick', [], 'XTickLabel', []);
 set(gui_erp_waviewer.myerpviewer_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
@@ -234,7 +232,9 @@ set(gui_erp_waviewer.myerpviewer_legend, 'XTick', [], 'YTick', [],'Box','off', '
 Fill = 1;
 splot_n = size(OutputViewerpar{6},1);
 if splot_n*pb_height<(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plotgrid.Heights(1))&&Fill
-    pb_height = (gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plotgrid.Heights(1)-gui_erp_waviewer.plotgrid.Heights(2))/splot_n;
+    pb_height = 0.9*(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plotgrid.Heights(1)-gui_erp_waviewer.plotgrid.Heights(2))/splot_n;
+else
+    pb_height = 0.9*pb_height;
 end
 if zoomSpace <0
     gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height;
@@ -247,10 +247,22 @@ if zoomSpace <0
     gui_erp_waviewer.ViewAxes.Widths = widthViewer;
 else
     gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
+    
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
-
+gui_erp_waviewer.Resize =1;
 end % redrawDemo
+
+
+
+%%Resize the GUI automatically as the user changes the size of the window at run-time.
+function WAviewerResize(~,~)
+global gui_erp_waviewer;
+if gui_erp_waviewer.Resize ~= 0
+    f_redrawERP_viewer_test();
+end
+end
+
 
 %%-------------------------------Page Editor-------------------------------
 function page_edit(Source,~)
@@ -303,8 +315,6 @@ end
 %------------------Display the waveform for proir ERPset--------------------
 function page_minus(~,~)
 global viewer_ERPDAT
-% addlistener(viewer_ERPDAT,'page_xyaxis',@count_page_xyaxis_change);
-% addlistener(viewer_ERPDAT,'V_messg_change',@V_messg_change);
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
@@ -353,9 +363,6 @@ end
 %------------------Display the waveform for next ERPset--------------------
 function  page_plus(~,~)
 global viewer_ERPDAT
-% addlistener(viewer_ERPDAT,'page_xyaxis',@count_page_xyaxis_change);
-% addlistener(viewer_ERPDAT,'V_messg_change',@V_messg_change);
-
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -450,13 +457,10 @@ end
 %%-----------------Pop figure---------------------------------------------
 function figure_out(~,~)
 global viewer_ERPDAT;
-% addlistener(viewer_ERPDAT,'V_messg_change',@V_messg_change);
-
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
-
 
 ViewerName = estudioworkingmemory('viewername');
 if isempty(ViewerName)
@@ -483,8 +487,6 @@ global viewer_ERPDAT;
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
-
-
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
     estudioworkingmemory('zoomSpace',0)
@@ -540,7 +542,7 @@ end
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>0
+if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
     estudioworkingmemory('zoomSpace',zoomspaceEdit);
     try
         viewer_ERPDAT.Process_messg =1;
@@ -580,8 +582,6 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-
-zoomSpace = estudioworkingmemory('zoomSpace');
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
     estudioworkingmemory('zoomSpace',0)
@@ -607,7 +607,7 @@ end
 function V_messg_change(~,~)
 global viewer_ERPDAT;
 global gui_erp_waviewer;
-
+FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;%%Get background color
 catch
@@ -617,7 +617,7 @@ if isempty(ColorBviewer_def)
     ColorBviewer_def = [0.7765,0.7294,0.8627];
 end
 gui_erp_waviewer.Process_messg.BackgroundColor = [0.95 0.95 0.95];
-gui_erp_waviewer.Process_messg.FontSize = 14;
+gui_erp_waviewer.Process_messg.FontSize = FonsizeDefault;
 Processed_Method=erpworkingmemory('ERPViewer_proces_messg');
 if viewer_ERPDAT.Process_messg ==1
     gui_erp_waviewer.Process_messg.String =  strcat('1- ',Processed_Method,': Running....');
@@ -667,8 +667,6 @@ if max(ERPsetArray)>length(ALLERP)
     ERPsetArray=length(ALLERP);
 end
 
-
-
 [chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
 qERPArray = ERPsetArray;
 
@@ -696,8 +694,6 @@ end
 if nargin<3
     qPLOTORG = [1 2 3];%%Channel is "Grid"; Bin is "Overlay"; ERPst is page
 end
-
-
 
 %%check ALLERP and adjust "qPLOTORG"
 for Numofselectederp = 1:numel(ERPsetArray)
@@ -884,7 +880,7 @@ end
 
 %%ylabel fontsize
 if nargin<35
-    qYlabelfontsize =12;
+    qYlabelfontsize =10;
 end
 
 %%ylable font
@@ -941,7 +937,7 @@ end
 
 %%xlabel fontsize
 if nargin <27
-    qXlabelfontsize = 12;
+    qXlabelfontsize = 10;
 end
 
 
@@ -1032,7 +1028,7 @@ end
 
 %%fontsize of channel/bin/erpset label
 if nargin <18
-    qLabelfontsize = 12;
+    qLabelfontsize = 10;
 end
 
 %%font of channel/bin/erpset label
@@ -1047,7 +1043,7 @@ end
 
 %%fontsize of legend name
 if nargin <15
-    qLegendFontsize  = 12;
+    qLegendFontsize  = 10;
 end
 
 %%font of legend name
@@ -1306,10 +1302,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     bindataerror = permute(bindataerror,[4 2 1 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -1321,10 +1317,10 @@ elseif qPLOTORG(1)==2 && qPLOTORG(2)==3%%Grid is bin; Overlay is ERPset; Page is
     bindataerror = permute(bindataerror,[3 2 4 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is channel
     if qCURRENTPLOT> numel(qchanArray)
@@ -1336,10 +1332,10 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==2%%Grid is ERPset; Overlay is bin; Page is
     bindataerror = permute(bindataerror,[4 2 3 1]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 else
     if qCURRENTPLOT> length(qERPArray)
@@ -1352,10 +1348,10 @@ else
     end
     try
         fs= ALLERPBls(qERPArray(end)).srate;
-         datatype = ALLERPBls(qERPArray(end)).datatype;
+        datatype = ALLERPBls(qERPArray(end)).datatype;
     catch
         fs= ALLERPBls(end).srate;
-         datatype = ALLERPBls(end).datatype;
+        datatype = ALLERPBls(end).datatype;
     end
 end
 %
@@ -1650,12 +1646,12 @@ for Numofrows = 1:Numrows
             else
                 yunitsypos = 0.95*abs(qYScales(1));
             end
-            if strcmpi( datatype,'ERP') 
-            yunitstr =  '\muV';
-            elseif strcmpi( datatype,'CSD') 
-             yunitstr =  '\muV/m^2';   
+            if strcmpi( datatype,'ERP')
+                yunitstr =  '\muV';
+            elseif strcmpi( datatype,'CSD')
+                yunitstr =  '\muV/m^2';
             else
-             yunitstr = '';   
+                yunitstr = '';
             end
             if strcmpi(qYunits,'on')
                 text(hbig,myY_Crossing+abs(ytick_bottom),yunitsypos+OffSetY(Numofrows),yunitstr, 'FontName',qYlabelfont,'FontSize',qYlabelfontsize,'HorizontalAlignment', 'left', 'Color', qYlabelcolor);

@@ -29,7 +29,11 @@ set(EStudio_gui_erp_totl.panelscroll,'BackgroundColor',ColorB_def);
 set( EStudio_gui_erp_totl.tabERP, 'Widths', [-4, 300]); % Viewpanel and settings panel
 
 
-EStudio_gui_erp_totl.panel_fonts = 12;
+
+
+
+EStudio_gui_erp_totl.panel_fonts  = f_get_default_fontsize();
+
 EStudio_gui_erp_totl.settingLayout = uiextras.VBox('Parent', EStudio_gui_erp_totl.panelscroll,'BackgroundColor',ColorB_def);
 
 % + Create the settings window panels for ERP panel

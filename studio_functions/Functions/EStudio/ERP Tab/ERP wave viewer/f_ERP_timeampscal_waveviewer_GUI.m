@@ -34,10 +34,21 @@ else
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
 %-----------------------------Draw the panel-------------------------------------
-drawui_plot_xyaxis_viewer()
+
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+   FonsizeDefault = f_get_default_fontsize();
+end
+
+
+drawui_plot_xyaxis_viewer(FonsizeDefault);
 varargout{1} = box_erpxtaxes_viewer_property;
 
-    function drawui_plot_xyaxis_viewer()
+    function drawui_plot_xyaxis_viewer(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         try
             ALLERPwaviewer = evalin('base','ALLERPwaviewer');
@@ -79,17 +90,17 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%-----------------Setting for time range-------
         gui_erpxyaxeset_waveviewer.xaxis_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.xaxis_title,'String','X Axis:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','center','FontWeight','bold'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','center','FontWeight','bold'); %
         
         %%-------Display with second or millisecond------------------------
         gui_erpxyaxeset_waveviewer.display_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.display_title,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Display in','HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Display in','HorizontalAlignment','left'); %
         xdispysecondValue = 1;
         gui_erpxyaxeset_waveviewer.xmillisecond = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.display_title,...
-            'callback',@xmilsecond,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Millisecond','Value',xdispysecondValue); %
+            'callback',@xmilsecond,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Millisecond','Value',xdispysecondValue); %
         gui_erpxyaxeset_waveviewer.xsecond = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.display_title,...
-            'callback',@xsecond,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Second','Value',~xdispysecondValue); %
+            'callback',@xsecond,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Second','Value',~xdispysecondValue); %
         set(gui_erpxyaxeset_waveviewer.display_title,'Sizes',[75 90 75]);
         ERPwaviewer.xaxis.tdis = 1;
         erpworkingmemory('MyViewer_xaxis_second',0);
@@ -97,12 +108,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%------time range------
         gui_erpxyaxeset_waveviewer.xtimerange_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.timerange_label = uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.xtimerange_title,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Time Range','Max',10,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Time Range','Max',10,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.timerange_edit = uicontrol('Style','edit','Parent', gui_erpxyaxeset_waveviewer.xtimerange_title,'String',num2str(timeArray),...
-            'callback',@timerangecustom,'FontSize',12,'BackgroundColor',[1 1 1]); %
+            'callback',@timerangecustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         
         gui_erpxyaxeset_waveviewer.xtimerangeauto = uicontrol('Style','checkbox','Parent', gui_erpxyaxeset_waveviewer.xtimerange_title,'String','Auto',...
-            'callback',@xtimerangeauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',timerangeAuto); %
+            'callback',@xtimerangeauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',timerangeAuto); %
         if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value ==1
             enableName = 'off';
         else
@@ -120,11 +131,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         gui_erpxyaxeset_waveviewer.xtimetick_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.timeticks_label = uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtimetick_title ,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Time Ticks','HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Time Ticks','HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.timeticks_edit = uicontrol('Style','edit','Parent',  gui_erpxyaxeset_waveviewer.xtimetick_title ,'String',timeticks,...
-            'callback',@timetickscustom,'FontSize',12,'BackgroundColor',[1 1 1]); %
+            'callback',@timetickscustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         gui_erpxyaxeset_waveviewer.xtimetickauto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.xtimetick_title ,'String','Auto',...
-            'callback',@xtimetickauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',timeticksAuto); %
+            'callback',@xtimetickauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',timeticksAuto); %
         if gui_erpxyaxeset_waveviewer.xtimetickauto.Value ==1
             enableName_tick = 'off';
         else
@@ -141,13 +152,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.xtickprecision_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtickprecision_title);
         uicontrol('Style','text','Parent',gui_erpxyaxeset_waveviewer.xtickprecision_title ,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Precision','HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Precision','HorizontalAlignment','left'); %
         xprecisoonName = {'0','1','2','3','4','5','6'};
         gui_erpxyaxeset_waveviewer.xticks_precision = uicontrol('Style','popupmenu','Parent',gui_erpxyaxeset_waveviewer.xtickprecision_title,'String',xprecisoonName,...
-            'callback',@xticksprecison,'FontSize',12,'BackgroundColor',[1 1 1],'Value',xtick_precision+1); %
+            'callback',@xticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',xtick_precision+1); %
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtickprecision_title,'String','# decimals',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
-        set(gui_erpxyaxeset_waveviewer.xtickprecision_title,'Sizes',[45 55 70 70]);
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
+        set(gui_erpxyaxeset_waveviewer.xtickprecision_title,'Sizes',[30 65 60 80]);
         ERPwaviewer.xaxis.tickdecimals = gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
         
         
@@ -194,11 +205,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         gui_erpxyaxeset_waveviewer.xtimeminnortick_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.xtimeminorauto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.xtimeminnortick_title ,...
-            'callback',@timeminortickslabel,'String','Minor ticks','FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','Value',timeminorLabel); %
+            'callback',@timeminortickslabel,'String','Minor ticks','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','Value',timeminorLabel); %
         gui_erpxyaxeset_waveviewer.timeminorticks_custom = uicontrol('Style','edit','Parent',  gui_erpxyaxeset_waveviewer.xtimeminnortick_title ,...
-            'callback',@timeminorticks_custom,'FontSize',12,'BackgroundColor',[1 1 1],'String',num2str(stepX),'Enable',xminorEnable_custom); %
+            'callback',@timeminorticks_custom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'String',num2str(stepX),'Enable',xminorEnable_custom); %
         gui_erpxyaxeset_waveviewer.timeminorticks_auto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.xtimeminnortick_title,...
-            'callback',@timeminortickscustom_auto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Auto','Value',timeminorstep, 'Enable',xminorEnable_auto); %
+            'callback',@timeminortickscustom_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Auto','Value',timeminorstep, 'Enable',xminorEnable_auto); %
         set(gui_erpxyaxeset_waveviewer.xtimeminnortick_title,'Sizes',[90 90 50]);
         ERPwaviewer.xaxis.tminor.disp = gui_erpxyaxeset_waveviewer.xtimeminorauto.Value;
         ERPwaviewer.xaxis.tminor.step = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
@@ -208,11 +219,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         timetickLabel = 1;
         gui_erpxyaxeset_waveviewer.xtimelabel_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtimelabel_title ,'String','Labels',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.xtimelabel_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimelabel_title,...
-            'callback',@xtimelabelon,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','On','Value',timetickLabel); %
+            'callback',@xtimelabelon,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',timetickLabel); %
         gui_erpxyaxeset_waveviewer.xtimelabel_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimelabel_title,...
-            'callback',@xtimelabeloff,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~timetickLabel); %
+            'callback',@xtimelabeloff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~timetickLabel); %
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.xtimelabel_title);
         set(gui_erpxyaxeset_waveviewer.xtimelabel_title,'Sizes',[50 50 50 80]);
         if gui_erpxyaxeset_waveviewer.xtimelabel_on.Value ==1
@@ -228,18 +239,18 @@ varargout{1} = box_erpxtaxes_viewer_property;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         xfontsizeinum = str2num(char(fontsize));
-        ttickLabelfontsizeV = 5;
+        ttickLabelfontsizeV = 4;
         ttickLabelfontcolor = 1;
         gui_erpxyaxeset_waveviewer.xtimefont_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtimefont_title,'String','Font',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_erpxyaxeset_waveviewer.xtimefont_custom = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.xtimefont_title ,'String',fonttype,...
-            'callback',@xtimefont,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfont); %
+            'callback',@xtimefont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfont); %
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.xtimefont_title ,'String','Size',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.font_custom_size = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.xtimefont_title ,'String',fontsize,...
-            'callback',@xtimefontsize,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfontsizeV); %
+            'callback',@xtimefontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfontsizeV); %
         set(gui_erpxyaxeset_waveviewer.xtimefont_title,'Sizes',[30 100 30 80]);
         ERPwaviewer.xaxis.font = gui_erpxyaxeset_waveviewer.xtimefont_custom.Value;
         ERPwaviewer.xaxis.fontsize = xfontsizeinum(gui_erpxyaxeset_waveviewer.font_custom_size.Value);
@@ -247,10 +258,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%%---------------------color for x label text--------------
         gui_erpxyaxeset_waveviewer.xtimelabelcolor_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtimelabelcolor_title,'String','Color',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         textColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
         gui_erpxyaxeset_waveviewer.xtimetextcolor = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.xtimelabelcolor_title ,'String',textColor,...
-            'callback',@xtimecolor,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfontcolor); %
+            'callback',@xtimecolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfontcolor); %
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtimelabelcolor_title);
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtimelabelcolor_title);
         set(gui_erpxyaxeset_waveviewer.xtimelabelcolor_title,'Sizes',[40 100 30 70]);
@@ -260,11 +271,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         timeunits = 1;
         gui_erpxyaxeset_waveviewer.xtimeunits_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title ,'String','Units',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.xtimeunits_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title,...
-            'callback',@xtimeunitson,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','On','Value',timeunits); %
+            'callback',@xtimeunitson,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',timeunits); %
         gui_erpxyaxeset_waveviewer.xtimeunits_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title,...
-            'callback',@xtimeunitsoff,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~timeunits); %
+            'callback',@xtimeunitsoff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~timeunits); %
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title);
         set(gui_erpxyaxeset_waveviewer.xtimeunits_title,'Sizes',[50 50 50 80]);
         ERPwaviewer.xaxis.units = gui_erpxyaxeset_waveviewer.xtimeunits_on.Value;
@@ -307,14 +318,14 @@ varargout{1} = box_erpxtaxes_viewer_property;
         yRangeauto = 1;
         gui_erpxyaxeset_waveviewer.yaxis_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.yaxis_title,'String','Y Axis:',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',1,'HorizontalAlignment','center','FontWeight','bold'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',1,'HorizontalAlignment','center','FontWeight','bold'); %
         gui_erpxyaxeset_waveviewer.yrange_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.yrange_label = uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.yrange_title,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Y Scale','Max',10,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Y Scale','Max',10,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.yrange_edit = uicontrol('Style','edit','Parent', gui_erpxyaxeset_waveviewer.yrange_title,'String',yRangeLabel,...
-            'callback',@yrangecustom,'FontSize',12,'BackgroundColor',[1 1 1]); %
+            'callback',@yrangecustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         gui_erpxyaxeset_waveviewer.yrangeauto = uicontrol('Style','checkbox','Parent', gui_erpxyaxeset_waveviewer.yrange_title,'String','Auto',...
-            'callback',@yrangeauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',yRangeauto); %
+            'callback',@yrangeauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',yRangeauto); %
         if gui_erpxyaxeset_waveviewer.yrangeauto.Value ==1
             yenableName = 'off';
         else
@@ -348,11 +359,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         gui_erpxyaxeset_waveviewer.ytick_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.yticks_label = uicontrol('Style','text','Parent',gui_erpxyaxeset_waveviewer.ytick_title ,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Y Ticks','HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Y Ticks','HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.yticks_edit = uicontrol('Style','edit','Parent',gui_erpxyaxeset_waveviewer.ytick_title,'String',yticksLabel,...
-            'callback',@ytickscustom,'FontSize',12,'BackgroundColor',[1 1 1]); %
+            'callback',@ytickscustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         gui_erpxyaxeset_waveviewer.ytickauto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.ytick_title ,'String','Auto',...
-            'callback',@ytickauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'Value',yTickauto); %
+            'callback',@ytickauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',yTickauto); %
         if gui_erpxyaxeset_waveviewer.ytickauto.Value ==1
             yenableName_tick = 'off';
         else
@@ -367,13 +378,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.ytickprecision_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.ytickprecision_title);
         uicontrol('Style','text','Parent',gui_erpxyaxeset_waveviewer.ytickprecision_title ,...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Precision','HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Precision','HorizontalAlignment','left'); %
         yprecisoonName = {'0','1','2','3','4','5','6'};
         gui_erpxyaxeset_waveviewer.yticks_precision = uicontrol('Style','popupmenu','Parent',gui_erpxyaxeset_waveviewer.ytickprecision_title,'String',yprecisoonName,...
-            'callback',@yticksprecison,'FontSize',12,'BackgroundColor',[1 1 1],'Value',ytick_precision+1); %
+            'callback',@yticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',ytick_precision+1); %
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.ytickprecision_title,'String','# decimals',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
-        set(gui_erpxyaxeset_waveviewer.ytickprecision_title,'Sizes',[45 55 70 70]);
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
+        set(gui_erpxyaxeset_waveviewer.ytickprecision_title,'Sizes',[30 65 60 80]);
         ERPwaviewer.yaxis.tickdecimals = gui_erpxyaxeset_waveviewer.yticks_precision.Value-1;
         
         %%-----y minor ticks-----------------------------------------------
@@ -420,11 +431,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         gui_erpxyaxeset_waveviewer.yminnortick_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.yminortick = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.yminnortick_title ,'String','Minor Ticks',...
-            'callback',@yminordisp,'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','Value',yminorLabel); %
+            'callback',@yminordisp,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','Value',yminorLabel); %
         gui_erpxyaxeset_waveviewer.yminorstepedit = uicontrol('Style','edit','Parent',gui_erpxyaxeset_waveviewer.yminnortick_title ,...
-            'callback',@yminorstepedit,'FontSize',12,'BackgroundColor',[1 1 1],'String',char(num2str(stepY)),'Enable',yminoreditEnable); %
+            'callback',@yminorstepedit,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'String',char(num2str(stepY)),'Enable',yminoreditEnable); %
         gui_erpxyaxeset_waveviewer.yminorstep_auto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.yminnortick_title,...
-            'callback',@yminorstepauto,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Auto','Value',yminorautoValue,'Enable',yminorautoLabel); %
+            'callback',@yminorstepauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Auto','Value',yminorautoValue,'Enable',yminorautoLabel); %
         ERPwaviewer.yaxis.yminor.disp = gui_erpxyaxeset_waveviewer.yminortick.Value;
         ERPwaviewer.yaxis.yminor.step = str2num(char(gui_erpxyaxeset_waveviewer.yminorstepedit.String));
         ERPwaviewer.yaxis.yminor.auto = gui_erpxyaxeset_waveviewer.yminorstep_auto.Value;
@@ -434,11 +445,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         ytickLabel = 1;
         gui_erpxyaxeset_waveviewer.ylabel_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.ylabel_title,'String','Labels',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.ylabel_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.ylabel_title,...
-            'callback',@ylabelon,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','On','Value',ytickLabel); %
+            'callback',@ylabelon,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',ytickLabel); %
         gui_erpxyaxeset_waveviewer.ylabel_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.ylabel_title,...
-            'callback',@ylabeloff,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~ytickLabel); %
+            'callback',@ylabeloff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~ytickLabel); %
         if gui_erpxyaxeset_waveviewer.ylabel_on.Value ==1
             yfontenable = 'on';
         else
@@ -450,20 +461,20 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         %%-----y ticklabel:font, font size, and text color for time ticks
         ytickLabelfont = 2;
-        ytickLabelfontsize = 5;
+        ytickLabelfontsize = 4;
         ytickLabelfontcolor = 1;
         gui_erpxyaxeset_waveviewer.yfont_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.yfont_title,'String','Font',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_erpxyaxeset_waveviewer.yfont_custom = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.yfont_title,'String',fonttype,...
-            'callback',@yaxisfont, 'FontSize',12,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfont); %
+            'callback',@yaxisfont, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfont); %
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.yfont_title ,'String','Size',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         yfontsize={'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         gui_erpxyaxeset_waveviewer.yfont_custom_size = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.yfont_title ,'String',yfontsize,...
-            'callback',@yaxisfontsize,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfontsize); %
+            'callback',@yaxisfontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfontsize); %
         set(gui_erpxyaxeset_waveviewer.yfont_title,'Sizes',[30 100 30 80]);
         ERPwaviewer.yaxis.font = gui_erpxyaxeset_waveviewer.yfont_custom.Value;
         ERPwaviewer.yaxis.fontsize = xfontsizeinum(gui_erpxyaxeset_waveviewer.yfont_custom_size.Value);
@@ -471,10 +482,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%% color for y ticklabel text
         gui_erpxyaxeset_waveviewer.ylabelcolor_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.ylabelcolor_title,'String','Color',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
         gui_erpxyaxeset_waveviewer.ytextcolor = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.ylabelcolor_title ,'String',ytextColor,...
-            'callback',@yaxisfontcolor,'FontSize',12,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfontcolor); %
+            'callback',@yaxisfontcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfontcolor); %
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.ylabelcolor_title);
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.ylabelcolor_title);
         set(gui_erpxyaxeset_waveviewer.ylabelcolor_title,'Sizes',[40 100 30 70]);
@@ -484,11 +495,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         yunits = 1;
         gui_erpxyaxeset_waveviewer.yunits_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.yunits_title ,'String','Units',...
-            'FontSize',12,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.yunits_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.yunits_title,...
-            'callback',@yunitson,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','On','Value',yunits); %
+            'callback',@yunitson,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',yunits); %
         gui_erpxyaxeset_waveviewer.yunits_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.yunits_title,...
-            'callback',@yunitsoff,'FontSize',12,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~yunits); %
+            'callback',@yunitsoff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~yunits); %
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.yunits_title);
         set(gui_erpxyaxeset_waveviewer.yunits_title,'Sizes',[50 50 50 80]);
         ERPwaviewer.yaxis.units = gui_erpxyaxeset_waveviewer.yunits_on.Value;
@@ -497,10 +508,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.help_run_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.help_run_title);
         uicontrol('Style','pushbutton','Parent', gui_erpxyaxeset_waveviewer.help_run_title ,'String','Cancel',...
-            'callback',@xyaxis_help,'FontSize',12,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@xyaxis_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.help_run_title );
         gui_erpxyaxeset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',gui_erpxyaxeset_waveviewer.help_run_title ,'String','Apply',...
-            'callback',@xyaxis_apply,'FontSize',12,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@xyaxis_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.help_run_title );
         set(gui_erpxyaxeset_waveviewer.help_run_title,'Sizes',[40 70 20 70 30]);
         
@@ -1191,6 +1202,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimelabel_off.Value = 1;
@@ -2943,8 +2956,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             %%font and font size
             ERPwaviewer_apply.xaxis.font  =2;
             gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=2;
-            ERPwaviewer_apply.xaxis.fontsize =12;
-            gui_erpxyaxeset_waveviewer.font_custom_size.Value=5;
+            ERPwaviewer_apply.xaxis.fontsize =10;
+            gui_erpxyaxeset_waveviewer.font_custom_size.Value=4;
             fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
             gui_erpxyaxeset_waveviewer.yfont_custom.String=fonttype; %
             yfontsize={'4','6','8','10','12','14','16','18','20','24','28','32','36',...
@@ -3024,9 +3037,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.ylabel_off.Value=0;
             %%font and fontsize
             ERPwaviewer_apply.yaxis.font=2;
-            ERPwaviewer_apply.yaxis.fontsize=12;
+            ERPwaviewer_apply.yaxis.fontsize=10;
             gui_erpxyaxeset_waveviewer.yfont_custom.Value=2;
-            gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=5;
+            gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=4;
             %%color for y ticklabels
             ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
             gui_erpxyaxeset_waveviewer.ytextcolor.String = ytextColor;
