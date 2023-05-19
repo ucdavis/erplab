@@ -1202,6 +1202,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         estudioworkingmemory('MyViewer_xyaxis',1);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimelabel_off.Value = 1;

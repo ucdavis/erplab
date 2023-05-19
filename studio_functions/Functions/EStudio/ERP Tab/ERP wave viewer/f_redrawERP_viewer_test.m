@@ -117,7 +117,7 @@ gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plo
 
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.Resize = 0;
-gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);
+gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
@@ -198,24 +198,16 @@ gui_erp_waviewer.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 set(gui_erp_waviewer.plot_wav_legend, 'Sizes', [10 -1]);
 set(gui_erp_waviewer.erpwaviewer_legend_title, 'Sizes', [10 -1]);
 set(gui_erp_waviewer.pageinfo_box, 'Sizes', [-1 50 50 50] );
-% set(gui_erp_waviewer.pageinfo_box,'BackgroundColor',ColorBviewer_def);
-% set(gui_erp_waviewer.pageinfo_text,'BackgroundColor',ColorBviewer_def);
-%Setting title. END,'BackgroundColor',ColorBviewer_def
-
-
-
 
 gui_erp_waviewer.myerpviewer = axes('Parent', gui_erp_waviewer.ViewAxes,'Color','none','Box','on','FontWeight','bold');
 hold(gui_erp_waviewer.myerpviewer,'on');
 myerpviewer = gui_erp_waviewer.myerpviewer;
-
 
 gui_erp_waviewer.myerpviewer_legend = axes('Parent', gui_erp_waviewer.erpwaviewer_legend ,'Color',figbgdColor,'Box','off');
 hold(gui_erp_waviewer.myerpviewer_legend,'on');
 myerpviewerlegend = gui_erp_waviewer.myerpviewer_legend;
 
 OutputViewerpar = f_preparms_erpwaviewer('');
-
 
 gui_erp_waviewer.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
 gui_erp_waviewer.plotgrid.Heights(2) = 50; % set the first element (pageinfo) to 30px high
@@ -227,23 +219,11 @@ if isempty(OutputViewerpar)
     return;
 end
 
-% try
-%     PlotBox = OutputViewerpar{9};
-% SupPlot = subplot(PlotBox(1),PlotBox(2),1,myerpviewer);
-%  SupPlot = subplot(10,10,1,myerpviewer);
-% PlotFontsize = SupPlot.FontSize;
-% 
-% catch  
-% end
-% OutputViewerpar{16}=PlotFontsize;
-% OutputViewerpar{28}=PlotFontsize;
-
 f_plotviewerwave(OutputViewerpar{1},OutputViewerpar{2}, OutputViewerpar{3},OutputViewerpar{4},OutputViewerpar{5},OutputViewerpar{6},OutputViewerpar{9},OutputViewerpar{8},OutputViewerpar{10},OutputViewerpar{11},...
     OutputViewerpar{12},OutputViewerpar{13},OutputViewerpar{14},OutputViewerpar{15},OutputViewerpar{16},OutputViewerpar{17},OutputViewerpar{18},OutputViewerpar{19},OutputViewerpar{20},OutputViewerpar{21},OutputViewerpar{22},...
     OutputViewerpar{23},OutputViewerpar{24},OutputViewerpar{25},OutputViewerpar{26},OutputViewerpar{27},OutputViewerpar{28},OutputViewerpar{29},OutputViewerpar{31},OutputViewerpar{30},OutputViewerpar{32},OutputViewerpar{33},...
     OutputViewerpar{34},OutputViewerpar{35},OutputViewerpar{36},OutputViewerpar{37},OutputViewerpar{38},OutputViewerpar{39},OutputViewerpar{7},OutputViewerpar{43}, OutputViewerpar{40},OutputViewerpar{41},OutputViewerpar{44},...
     OutputViewerpar{45},OutputViewerpar{46},OutputViewerpar{47},myerpviewer,myerpviewerlegend);
-
 
 %%
 set(gui_erp_waviewer.myerpviewer, 'XTick', [], 'XTickLabel', []);
@@ -259,14 +239,15 @@ end
 if zoomSpace <0
     gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height;
 else
-    gui_erp_waviewer.ViewAxes.Heights = 0.9*splot_n*pb_height*(1+zoomSpace/100);
+    gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
 end
 
 widthViewer = gui_erp_waviewer.ViewAxes.Position(3)-gui_erp_waviewer.ViewAxes.Position(2);
 if zoomSpace <0
-    gui_erp_waviewer.ViewAxes.Widths = 0.9*widthViewer;
+    gui_erp_waviewer.ViewAxes.Widths = widthViewer;
 else
-    gui_erp_waviewer.ViewAxes.Widths = 0.9*widthViewer*(1+zoomSpace/100);
+    gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
+    
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
 gui_erp_waviewer.Resize =1;
@@ -281,7 +262,6 @@ if gui_erp_waviewer.Resize ~= 0
     f_redrawERP_viewer_test();
 end
 end
-
 
 
 %%-------------------------------Page Editor-------------------------------
@@ -335,8 +315,6 @@ end
 %------------------Display the waveform for proir ERPset--------------------
 function page_minus(~,~)
 global viewer_ERPDAT
-% addlistener(viewer_ERPDAT,'page_xyaxis',@count_page_xyaxis_change);
-% addlistener(viewer_ERPDAT,'V_messg_change',@V_messg_change);
 
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
@@ -385,9 +363,6 @@ end
 %------------------Display the waveform for next ERPset--------------------
 function  page_plus(~,~)
 global viewer_ERPDAT
-% addlistener(viewer_ERPDAT,'page_xyaxis',@count_page_xyaxis_change);
-% addlistener(viewer_ERPDAT,'V_messg_change',@V_messg_change);
-
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -482,13 +457,10 @@ end
 %%-----------------Pop figure---------------------------------------------
 function figure_out(~,~)
 global viewer_ERPDAT;
-% addlistener(viewer_ERPDAT,'V_messg_change',@V_messg_change);
-
 [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
-
 
 ViewerName = estudioworkingmemory('viewername');
 if isempty(ViewerName)
@@ -515,8 +487,6 @@ global viewer_ERPDAT;
 if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
-
-
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
     estudioworkingmemory('zoomSpace',0)
@@ -572,7 +542,7 @@ end
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>0
+if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
     estudioworkingmemory('zoomSpace',zoomspaceEdit);
     try
         viewer_ERPDAT.Process_messg =1;
@@ -612,8 +582,6 @@ if ~isempty(messgStr)
     viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
 end
 
-
-zoomSpace = estudioworkingmemory('zoomSpace');
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
     estudioworkingmemory('zoomSpace',0)
@@ -699,8 +667,6 @@ if max(ERPsetArray)>length(ALLERP)
     ERPsetArray=length(ALLERP);
 end
 
-
-
 [chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
 qERPArray = ERPsetArray;
 
@@ -728,8 +694,6 @@ end
 if nargin<3
     qPLOTORG = [1 2 3];%%Channel is "Grid"; Bin is "Overlay"; ERPst is page
 end
-
-
 
 %%check ALLERP and adjust "qPLOTORG"
 for Numofselectederp = 1:numel(ERPsetArray)
