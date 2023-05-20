@@ -79,6 +79,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
     % Preallocate Matrices
     svm_predict = nan(nIter,nBlocks, nSamps,nBins); % a matrix to save prediction from SVM
     tst_target = nan(nIter,nBlocks,nSamps,nBins);  % a matrix to save true target values
+    % BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nElectrodes);
+    % BetaWeights_Corr = BetaWeights_Raw;
     
     % create svmECOC.block structure to save block assignments
    % mvpa.blocks=struct();
@@ -112,6 +114,10 @@ for s = 1:nSubs %decoding is performed within each subject independently
         blockDat_filtData = nan(nBins*nBlocks,nElectrodes,nSamps);   
         labels = nan(nBins*nBlocks,1);     % bin labels for averaged & filtered EEG data
         blockNum = nan(nBins*nBlocks,1);   % block numbers for averaged & filtered EEG data
+        
+        
+
+        
         bCnt = 1; %initialize binblock counter 
         
         % this code operates and creates ERPs at each bin 
@@ -235,7 +241,12 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 
                 %% Step 3: Training
                 if SVMcoding == 2
-                    mdl = fitcecoc(trnD,trnl, 'Coding','onevsall','Learners','SVM' );   %train support vector mahcine
+                    if nBins == 2
+                        mdl = fitcsvm(trnD,trnl);   %binary decoder
+                    else
+                        mdl = fitcecoc(trnD,trnl, 'Coding','onevsall','Learners','SVM' ); %train support vector mahcine
+                    end
+                    
                 elseif SVMcoding == 1
                     mdl = fitcecoc(trnD,trnl, 'Coding','onevsone','Learners','SVM' );   %train support vector mahcine
                 end
@@ -248,6 +259,10 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 tst_target(iter,i,t,:) = tstl;             % save true target labels
                 
                 
+               % BetaWeights_Raw(iter,t,i,:) = mdl.Beta;% SVM weights uncorrected
+               % BetaWeights_Corr(iter,t,i,:) = double(cov(trnD))*mdl.Beta;% SVM weights after correction
+                
+                
             end % end of block: Step 6: cross-validation
             
         end % end of time points: Step 7: Decoding each time point
@@ -258,10 +273,12 @@ for s = 1:nSubs %decoding is performed within each subject independently
     toc % stop timing the iteration loop
     
     mvpc = rawscoreSVM(mvpc, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
-    mvpc = averageSVM(mvpc, SVMcoding,1); %average accuracy across runs
-    %mvpa = avgconfusionSVM(mvpa,tst_target_svm_predict,SVMcoding); 
-    
-    
+    mvpc = averageSVM(mvpc, SVMcoding,0); %average accuracy across runs, %no smoothing
+    mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,SVMcoding); 
+
+%     mvpc.BetaWeights_Raw = BetaWeights_Raw; 
+%     mvpc.BetaWeights_Corr = BetaWeights_Corr; 
+%     
     %create the MVPA output 
     %output decoding results in main svmECOC structure
     

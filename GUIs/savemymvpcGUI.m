@@ -110,11 +110,11 @@ else
         set(handles.radiobutton_newbestset, 'Value', 0);
         set(handles.radiobutton_overwrite, 'Value', 1);
 end
-[nset CURRENTBEST] = getallbeststate;
+[nset, CURRENTMVPC] = getallmvpcstate;
 if nset>0
-        set(handles.text_question,'String', ['Your active MVPCset is # ' num2str(CURRENTBEST)],...
+        set(handles.text_question,'String', ['Your active MVPCset is # ' num2str(CURRENTMVPC)],...
                 'FontWeight','Bold', 'FontSize', 12)
-        set(handles.radiobutton_overwrite,'String', ['Overwrite in memory MVPCset # ' num2str(CURRENTBEST)])
+        set(handles.radiobutton_overwrite,'String', ['Overwrite in memory MVPCset # ' num2str(CURRENTMVPC)])
         set(handles.radiobutton_newbestset,'String', ['Create a new MVPCset # ' num2str(nset+1)])
 else
         set(handles.text_question,'String', 'You are creating a new MVPCset',...

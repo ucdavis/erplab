@@ -56,7 +56,7 @@ if SVMcoding == 2 %1vAll
         end
         
     else
-        smoothed = grandAvg;
+        smoothed = grandAvg';
     end
     
 else %1V1 case? 

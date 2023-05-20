@@ -20,9 +20,9 @@ catch
 end
 if isempty(BEST)
         try
-                ALLERP = evalin('base', 'ALLBEST');
+                ALLBEST = evalin('base', 'ALLBEST');
                 k = evalin('base', 'CURRENTBEST');
-                BEST = ALLERP(k);
+                BEST = ALLBEST(k);
         catch
                 BEST = [];
         end       

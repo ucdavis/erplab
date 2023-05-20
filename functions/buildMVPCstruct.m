@@ -6,9 +6,11 @@ if nargin < 1
     mvpc.mvpcname = '';
     mvpc.filename = '';
     mvpc.filepath = ''; 
-    mvpc.electrodes = ALLBEST.chanlocs; 
+    mvpc.electrodes = 1:length(ALLBEST.chanlocs);
+    mvpc.chanlocs = ALLBEST.chanlocs;     
     mvpc.nClasses = ALLBEST.nbin; % # of bins
     mvpc.nChance = 1/mvpc.header.nClasses; %chance
+    mvpc.classlabels = ALLBEST.bindesc; 
     mvpc.nIter = 0;
     mvpc.nCrossfolds = 0; %[] if tw.
     mvpc.nSampling = ALLBEST.srate; %updated fs
@@ -17,7 +19,15 @@ if nargin < 1
     mvpc.DecodingUnit = 'None'; %Accuracy vs Distance vs None
     mvpc.DecodingMethod = '';
     mvpc.average_status = 'single_subject';
-    mvpc.equalTrials = 1; %1: floor across files, %2 floor within files, %0 don't floor. 
+    if equalT == 1
+        mvpc.equalTrials = 'acrBEST'; %1: floor across files, %2 floor within files, %0 don't floor. 
+    elseif equalT == 2
+        mvpc.equalTrials = 'acrClasses';
+    elseif equalT == 3
+        mvpc.equalTrials = 'floor'; 
+    else
+        mvpc.equalTrials = 'N/a'; 
+    end
     mvpc.n_trials_per_class = ALLBEST.n_trials_per_bin;
     mvpc.saved = 'no';
     mvpc.epoch.pre = ALLBEST.times(1); % Set epoch start in ms (from imported data)
@@ -34,8 +44,10 @@ else
     mvpc.filename = ALLBEST.filename;
     mvpc.filepath = ALLBEST.filepath;  
     mvpc.electrodes = relevantChans; 
+    mvpc.chanlocs = ALLBEST.chanlocs(relevantChans); 
     mvpc.nClasses = ALLBEST.nbin; % # of bins
     mvpc.nChance = 1/mvpc.nClasses; %chance
+    mvpc.classlabels = ALLBEST.bindesc; 
     mvpc.nIter = nIter;
     mvpc.nCrossfolds = nCrossBlocks; %[] if tw. 
     mvpc.nSampling = ALLBEST.srate; %updated fs
@@ -57,7 +69,15 @@ else
         mvpc.DecodingMethod = 'Crossnobis';
     end
     mvpc.average_status = 'single_subject';
-    mvpc.equalTrials = equalT; %1: floor across files, %2 floor within files, %0 don't floor %3 common floor. 
+    if equalT == 1
+        mvpc.equalTrials = 'acrBEST'; %1: floor across files, %2 floor within files,%3 common floor. %0 don't floor.
+    elseif equalT == 2
+        mvpc.equalTrials = 'acrClasses';
+    elseif equalT == 3
+        mvpc.equalTrials = 'floor';
+    else
+        mvpc.equalTrials = 'N/a';
+    end
     mvpc.n_trials_per_class = ALLBEST.n_trials_per_bin;
     mvpc.saved = 'no';
     mvpc.epoch.pre = DataTimes(1); % Set epoch start (from imported data)

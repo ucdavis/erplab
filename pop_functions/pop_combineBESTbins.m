@@ -60,10 +60,18 @@
 % You should have received a copy of the GNU General Public License
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [BEST] = pop_combineBESTbins(BEST,varargin) 
+function [BEST] = pop_combineBESTbins(ALLBEST,varargin) 
 com = '';
 
-BEST = preloadBEST;
+try 
+    ALLBEST = evalin('base','ALLBEST');
+catch
+    disp('WARNING: ALLBEST structure was not found. ERPLAB will create an empty one')
+    ALLBEST = [];
+end
+
+%preload BEST
+BEST = preloadBEST; 
 
 if nargin < 1
     help pop_combineBESTbins
@@ -89,7 +97,7 @@ if nargin == 1 %open GUI
         
     end
     
-    app = feval('combinebestbinsGUI',BEST,currdata,def); 
+    app = feval('combinebestbinsGUI',ALLBEST,currdata,def); 
     waitfor(app,'FinishButton',1); 
     
     
