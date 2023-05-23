@@ -259,7 +259,8 @@ end % redrawDemo
 function WAviewerResize(~,~)
 global gui_erp_waviewer;
 if gui_erp_waviewer.Resize ~= 0
-    f_redrawERP_viewer_test();
+    set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
+    f_redrawERP_viewer_test(); 
 end
 end
 

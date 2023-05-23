@@ -51,13 +51,13 @@ function f_ERP_simulation_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 try
     def  = varargin{1};
 catch
-    def  = {1,1,100,50,1,-200,799,1,1000,0,1,0,1,0,1,10,0};
+    def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
     %%Basic option, amp, mean, SD, Tau, epoch start, epoch
     %%stop, sample rate option, srate value, whitenoiseop,
     %%ampwhite, pinkop,amppink,sinop,sinamp,sinfre,random number generator
 end
 if isempty(def)
-    def  = {1,1,100,50,1,-200,799,1,1000,0,1,0,1,0,1,10,0};
+    def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
 end
 
 try
@@ -1852,6 +1852,7 @@ if handles.radiobutton_exgaus.Value ==1
         return;
     end
     SD = SD/100;
+    Tau = Tau/1000;
     if Tau~=0
         Mu =  Meanamp/100-Times(1)/100;
         if Mu<0

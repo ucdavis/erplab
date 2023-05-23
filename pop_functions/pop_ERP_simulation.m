@@ -22,7 +22,7 @@
 %MeanLatencyOnset - gaussian mean for Ex-Guassian function, Latency for impulse
 %                   function, and onset for boxcar
 %SDOffset         - SD for Ex-Guassian function and off set for boxcar
-%ExGauTau         -Exponential tau for ex-Gaussian function
+%ExGauTau         -Exponential tau for ex-Gaussian function in ms
 %SinoiseAmp       -Peak amplitude for sinusoidal function
 %SinoiseFre       -Frequency for sinusoidal function
 %WhiteAmp         -peak amplitude for white noise e.g., 1
@@ -54,7 +54,7 @@ if nargin==1 || nargin==2 %with GUI to get other parameters
     
     def   = erpworkingmemory('pop_ERP_simulation');
     if isempty(def)
-        def  = {1,1,100,50,1,-200,799,1,1000,0,1,0,1,0,1,10,0};
+        def  = {1,1,100,50,1000,-200,799,1,1000,0,1,0,1,0,1,10,0};
     end
     
     if isempty(BasFuncName) || ~ischar(BasFuncName)
@@ -322,7 +322,7 @@ else
         ExGauTau = ExGauTau(1);
     end
 end
-
+ExGauTau  =ExGauTau/1000;
 
 %%Epoch start
 EpochStart = p.Results.EpochStart;
@@ -698,7 +698,8 @@ ERPautx.pnts = numel(Times);
 ERPautx.erpname ='Cretedartificialwave';
 ERPautx.srate = Srate;
 ERPautx.saved  = 'no';
-
+ERPautx.ntrials.accepted = 1;
+ERPautx.ntrials.rejected  =0;
 %
 % History
 %
