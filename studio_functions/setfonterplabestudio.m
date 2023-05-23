@@ -51,10 +51,10 @@ if isempty(fontsize)
     %
     % GUI's fontsize
     %
-    fontsize = erpworkingmemory('fontsizeGUI');
+    fontsize = f_get_default_fontsize();
 end
 if isempty(fontsize)
-    fontsize = 12;
+    fontsize = 10;
 end
 if isempty(fontunits)
     %
