@@ -1,6 +1,6 @@
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users. Click the Wiki icon at the top of the page for documentation, tutorials, and FAQs.
 
-## ERPLAB v9.10
+## ERPLAB v9.20
 
 <p align="center" >
   <a href="https://github.com/lucklab/erplab/releases/download/9.10/ERPLAB9.10.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
@@ -11,7 +11,7 @@ ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It
 </p>
 
 
-To install ERPLAB v9.10, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
+To install ERPLAB v9.20, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
 To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
 
@@ -53,6 +53,18 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 <br/>
 
 ## Release Notes
+
+
+## ERPLABv9.20 Release Notes
+Now Includes:
+Create Artificial Waveform Viewer routine: Users can simulate a variety of waveforms to be saved as ERP files (.erp). See documentation [here](https://github.com/lucklab/erplab/wiki/Create-an-Artificial-ERP-Waveform). 
+
+New options for adding noise to data via EEG and ERP channel operations (see [here](https://github.com/lucklab/erplab/wiki/EEG-and-ERP-Channel-Operations#example-of-adding-simulated-noise)). 
+
+Users may now shift string event codes in time in addtion to numeric event codes (see Preprocess EEG > Shift Event Codes (continuous EEG)). 
+
+Various bug fixes across ERPLAB.
+
 
 ### ERPLAB v9.10 Release Notes
 Now includes: 

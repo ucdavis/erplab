@@ -1,4 +1,4 @@
-% Author: Aaron Matthew Simmons, Guanghui Zhang,
+% Author: Guanghui Zhang, Aaron Matthew Simmons, 
 % Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
