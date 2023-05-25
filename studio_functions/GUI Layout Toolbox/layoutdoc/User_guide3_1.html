@@ -1,0 +1,84 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>Visible example</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="User_guide.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>User_guide</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="User_guide3.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="User_guide4.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>3.1: Visible example&nbsp;<a href="User_guide3.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+            <p>(The code for this example can be found here: 
+                            [ <a href="Examples/visibleexample.m">view</a>
+                | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','visibleexample.m'))">edit</a>
+                | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); visibleexample; cd(p)">run</a> ]
+            )</p>
+       <p>
+            This example shows how the <code>Visible</code> property can be
+            used to hide whole sections of an interface.
+        </p>
+        <example>
+            <para>Open a window and add a panel</para>
+            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">fig = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Name', 'Visible example', ...
+    'Position', [100 100 150 250], ...
+    'MenuBar', 'none', ...
+    'ToolBar', 'none', ...
+    'NumberTitle', 'off' );
+panel = <a href="uix.BoxPanel.html"><code class="FUNCTION">uix.BoxPanel</code></a>( 'Parent', fig, 'Title', 'Panel' );</font></pre>
+            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/VisibleExample1.png"/></center></font></p>
+        </example>
+        <example>
+            <para>Put some buttons inside the panel</para>
+            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">box = <a href="uix.VButtonBox.html"><code class="FUNCTION">uix.VButtonBox</code></a>( 'Parent', panel );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 1' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 2' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 3', 'Visible', 'off' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 4' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 5', 'Visible', 'off' );
+<a href="matlab:doc uicontrol"><code class="FUNCTION">uicontrol</code></a>( 'Parent', box, 'String', 'Button 6' );</font></pre>
+            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/VisibleExample2.png"/></center></font></p>
+        </example>
+        <example>
+            <para>Try hiding the panel</para>
+            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">set( panel, 'Visible', 'off' );</font></pre>
+            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/VisibleExample3.png"/></center></font></p>
+        </example>
+        <example>
+            <para>Try showing the panel. Note that the original <code>Visible</code> state of each button is remembered.</para>
+            <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">set( panel, 'Visible', 'on' );</font></pre>
+            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/VisibleExample2.png"/></center></font></p>
+        </example>
+    
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide3.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide3.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Controlling visibility</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide4.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Advanced maneuvers with panels</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide4.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+
+            

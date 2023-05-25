@@ -1,0 +1,70 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>updateInterface</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="User_guide.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>User_guide</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="User_guide7_2.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="User_guide7_4.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>7.3: updateInterface&nbsp;<a href="User_guide7.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+        <p>The second subfunction we will look at, <code>updateInterface</code>, uses the
+            current selections to update the interface. This uses the structure
+            "data" to update various parts of the interface. For this simple example this just means:
+        </p>
+        <p><b>1. Update the selected item in the listbox</b></p>
+        <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">set( gui.ListBox, <code class="STRING">'Value'</code>, data.SelectedDemo );</font></pre></example>
+        <p><b>2. Update the help button label</b></p>
+        <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">demoName = data.DemoNames{ data.SelectedDemo };<br/><a href="matlab:doc set"><code class="FUNCTION">set</code></a>( gui.HelpButton, <code class="STRING">'String'</code>, [<code class="STRING">'Help for '</code>,demoName] );</font></pre></example>
+        <p><b>3. Update the view panel title</b></p>
+        <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011"><a href="matlab:doc set"><code class="FUNCTION">set</code></a>( gui.ViewPanel, <code class="STRING">'Title'</code>, <a href="matlab:doc sprintf"><code class="FUNCTION">sprintf</code></a>( <code class="STRING">'Viewing: %s'</code>, demoName ) );</font></pre></example>
+        <p><b>4. Update the ticked menu</b></p>
+        <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">menus = <a href="matlab:doc get"><code class="FUNCTION">get</code></a>( gui.ViewMenu, <code class="STRING">'Children'</code> );
+<a href="matlab:doc set"><code class="FUNCTION">set</code></a>( menus, <code class="STRING">'Checked'</code>, <code class="STRING">'off'</code> );
+<code class="COMMENT">% Use the name to work out which menu item should be ticked</code>
+whichMenu = <a href="matlab:doc strcmpi"><code class="FUNCTION">strcmpi</code></a>( demoName, <a href="matlab:doc get"><code class="FUNCTION">get</code></a>( menus, <code class="STRING">'Label'</code> ) );
+<a href="matlab:doc set"><code class="FUNCTION">set</code></a>( menus(whichMenu), <code class="STRING">'Checked'</code>, <code class="STRING">'on'</code> );
+</font></pre></example>
+        <example><p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/demoBrowser4.png"/></center></font></p></example>
+        <p>In general, this update function is called whenever the underlying
+            shared "data" structure is changed. This happens when the user clicks
+            a button, selects a list item or a menu. Next we will look at a typical
+        callback.</p>
+                 <p><small>(Full source code for this application is available here: 
+                     [ <a href="Examples/demoBrowser.m">view</a>
+                     | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','demoBrowser.m'))">edit</a>
+                     | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); demoBrowser; cd(p)">run</a> ]
+                 )</small></p>
+    
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide7_2.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide7_2.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">createInterface</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide7_4.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">onListSelection</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide7_4.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+        

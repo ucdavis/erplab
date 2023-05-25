@@ -1,0 +1,92 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>Axes inside layouts</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="User_guide.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>User_guide</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="User_guide2_1.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="User_guide2_3.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>2.2: Axes inside layouts&nbsp;<a href="User_guide2.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+            <p>(The code for this example can be found here: 
+                            [ <a href="Examples/axesexample.m">view</a>
+                | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','axesexample.m'))">edit</a>
+                | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); axesexample; cd(p)">run</a> ]
+            )</p>
+            <p>
+                When using layouts to position axes, the position property
+                is set by the layout, not the user. Whether the <code>Position</code>
+                or <code>OuterPosition</code> property is used is determined by the
+                <code>ActivePositionProperty</code> property of the <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>.
+                Note that the default setting is "outerposition".
+            </p>
+            <p>
+                The following example illustrates the two usages.
+            </p>
+            
+            <h4>Open a window</h4>
+            <p>Open a new figure window and remove the toolbar and menus.</p>
+            <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">window = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Name', 'Axes inside layouts', ...
+            'MenuBar', 'none', ...
+            'Toolbar', 'none', ...
+            'NumberTitle', 'off' );</font></pre>
+            </example>
+            <h4>Create the layout</h4>
+            <p>The layout involves two axes side by side. This is done using a flexible horizontal box. The left-hand axes is left with the <code>ActivePositionProperty</code> set to "outerposition", but the right-hand axes is switched to use <code>Position</code>.</p>
+            <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">hbox = <a href="uix.HBoxFlex.html"><code class="FUNCTION">uix.HBoxFlex</code></a>('Parent', window, 'Spacing', 3);
+axes1 = <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', hbox, ...
+    'ActivePositionProperty', 'outerposition' );
+axes2 = <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', hbox, ...
+    'ActivePositionProperty', 'Position' );
+set( hbox, 'Widths', [-2 -1] );</font></pre>
+             <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/axes_layout_example_2.png"/></center></font></p>
+           </example>
+           
+            <h4>Fill the axes</h4>
+            <p>Using <code>OuterPosition</code> (left-hand axes) is the normal mode and looks good for virtually any plot type. Using <code>Position</code> is only really useful for 2D plots with the axes turned off, such as images.</p>
+            <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">x = membrane( 1, 15 );
+<a href="matlab:doc surf"><code class="FUNCTION">surf</code></a>( axes1, x );
+<a href="matlab:doc lighting"><code class="FUNCTION">lighting</code></a>( axes1, 'gouraud' );
+<a href="matlab:doc shading"><code class="FUNCTION">shading</code></a>( axes1, 'interp' );
+l = <a href="matlab:doc light"><code class="FUNCTION">light</code></a>( 'Parent', axes1 );
+<a href="matlab:doc camlight"><code class="FUNCTION">camlight</code></a>( l, 'head' );
+<a href="matlab:doc axis"><code class="FUNCTION">axis</code></a>( axes1, 'tight' );
+
+<a href="matlab:doc imagesc"><code class="FUNCTION">imagesc</code></a>( x, 'Parent', axes2 );
+set( axes2, 'xticklabel', [], 'yticklabel', [] );</font></pre>
+            <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/axes_layout_example_3.png"/></center></font></p>
+            </example>
+            <p/>
+        
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide2_1.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide2_1.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Position vs OuterPosition</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide2_3.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Colorbars and legends</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide2_3.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+        

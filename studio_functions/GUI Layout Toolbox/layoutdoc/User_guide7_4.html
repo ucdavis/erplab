@@ -1,0 +1,70 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>onListSelection</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="User_guide.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>User_guide</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="User_guide7_3.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="User_guide7_5.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>7.4: onListSelection&nbsp;<a href="User_guide7.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+            <p>Finally, let's have a look at how one of the callbacks works: "onListSelection", the function
+        that is called when an item is selected in the listbox. The other
+            callbacks obey the same pattern.</p>
+            <p>The basic rule of thumb is that a callback should not update any part of
+        the user interface directly - it's job is to respond to user interaction by changing the "data" structure. 
+        In this example, each callback changes the underlying data structure
+    then asks the interface to refresh. This might mean that things update in the
+interface that don't need to, but ensures the callbacks remain simple and that all
+interface update logic is in one place. Extending this to more granular interface updates
+            is straightforward. See <a href="demoBrowserScalability.html">Scalability</a> for more details.</p>
+            <p>For the listbox callback, the "src" argument is a handle to the
+            listbox and we simply need to update the SelectedDemo field of "data"
+            to reflect the new selection. We then ask the rest of the interface to
+            update in response to the change.
+            </p>
+            <example><pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">
+                <code class="COMMENT">% User selected a demo from the list - update "data" and refresh</code>
+data.SelectedDemo = <a href="matlab:doc get"><code class="FUNCTION">get</code></a>( src, <code class="STRING">'Value'</code> );
+updateInterface();
+redrawDemo();</font></pre>
+        <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022"><center><img src="Images/demoBrowser4.png"/></center></font></p>
+        </example>
+                 <p><small>(Full source code for this application is available here: 
+                     [ <a href="Examples/demoBrowser.m">view</a>
+                     | <a href="matlab: edit(fullfile(layoutDocRoot,'Examples','demoBrowser.m'))">edit</a>
+                     | <a href="matlab: p=pwd();cd(fullfile(layoutDocRoot,'Examples')); demoBrowser; cd(p)">run</a> ]
+                 )</small></p>
+        
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide7_3.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide7_3.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">updateInterface</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide7_5.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Running it</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="User_guide7_5.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+        

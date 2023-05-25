@@ -1,0 +1,76 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>uix.ScrollingPanel</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="Function_reference.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>Function_reference</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="Function_reference1_4.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="Function_reference2_1.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>1.5: uix.ScrollingPanel&nbsp;<a href="Function_reference.html#1"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+             
+             <img src="Images/bigicon_ScrollingPanel.png" align="left"/>
+             <br clear="all"/>
+             <p>Arrange a single element inside a panel and provide scrollbars if the panel is smaller than the element</p>
+                          <dl>
+                 <dt><code class="OUTARG">obj</code><code class="FUNCTION"> = uix.ScrollingPanel(</code><code class="FUNCTION">&nbsp;)</code></dt>
+                 <dd>creates a new scrolling panel.</dd>
+                 
+                 <dt><code class="OUTARG">obj</code><code class="FUNCTION"> = uix.ScrollingPanel(</code><code class="INARG">&nbsp;prop</code><code class="FUNCTION">,</code><code class="INARG">&nbsp;value</code><code class="FUNCTION">,</code><code class="INARG">&nbsp;...</code><code class="FUNCTION">&nbsp;)</code></dt>
+                 <dd>also sets one or more property values.</dd>
+                 
+             </dl>
+             
+                    
+             <h3>uix.ScrollingPanel properties</h3>
+                 <center><table frame="box" rules="all" class="PROPERTYTABLE"><tr><th class="PROPERTYTABLE">Property</th><th class="PROPERTYTABLE">Value</th><th class="PROPERTYTABLE">Description</th></tr><tr><td valign="top" class="PROPERTYTABLE"><code>BackgroundColor&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value><a href="matlab:doc colorspec"><code class="FUNCTION">colorspec</code></a></value></td><td valign="top" class="PROPERTYTABLE"><description>Color to use for exposed areas of the layout background. This can be an RGB triple (e.g. [0 0 1]) or a colour name (e.g. 'b').</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>BeingDeleted&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>on | off</value></td><td valign="top" class="PROPERTYTABLE"><description>Deletion status.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Contents&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>empty GraphicsPlaceholder array | array of graphics objects</value></td><td valign="top" class="PROPERTYTABLE"><description>Children within this layout, regardless of HandleVisibility.  Note that this can only be set to permutations of itself.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>DeleteFcn&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value><a href="matlab:doc function_handle"><code class="FUNCTION">function_handle</code></a></value></td><td valign="top" class="PROPERTYTABLE"><description>Function to call when the layout is being deleted.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Heights&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Height of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>HorizontalOffsets&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Horizontal offset of each of the children. Each value is limited to between 0 and the difference between the width of child and the width of the panel. The size of this vector must always match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>HorizontalSteps&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>positive double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Horizontal slider step for each of the children. The size of this vector must always match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>MinimumHeights&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Minimum height in pixels of each of the children. The size of this vector must match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>MinimumWidths&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Minimum width in pixels of each of the children. The size of this vector must match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>MouseWheelEnabled&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>on | off</value></td><td valign="top" class="PROPERTYTABLE"><description>Mouse wheel scrolling status (default 'on').</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Padding&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>positive integer</value></td><td valign="top" class="PROPERTYTABLE"><description>This property is not honored by this class.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Parent&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>empty GraphicsPlaceholder array | figure | container</value></td><td valign="top" class="PROPERTYTABLE"><description>Parent of the layout.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Position&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>[x y w h]</value></td><td valign="top" class="PROPERTYTABLE"><description>Position (x,y) and size (w,h) within figure or container.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Selection&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>positive integer or empty</value></td><td valign="top" class="PROPERTYTABLE"><description>Which child is visible.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Tag&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>string</value></td><td valign="top" class="PROPERTYTABLE"><description>Tag to associate with layout.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Type&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>string</value></td><td valign="top" class="PROPERTYTABLE"><description>Type of graphics object.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Units&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>inches | centimeters | normalized | points | pixels | characters</value></td><td valign="top" class="PROPERTYTABLE"><description>Position units.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>VerticalOffsets&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Vertical offset of each of the children. Each value is limited to between 0 and the difference between the height of child and the height of the panel. The size of this vector must always match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>VerticalSteps&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>positive double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Vertical slider step for each of the children. The size of this vector must always match the size of Contents.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Visible&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>on | off</value></td><td valign="top" class="PROPERTYTABLE"><description>Visibility.</description></td></tr><tr><td valign="top" class="PROPERTYTABLE"><code>Widths&nbsp;</code></td><td valign="top" class="PROPERTYTABLE"><value>double vector</value></td><td valign="top" class="PROPERTYTABLE"><description>Width of each of the children. Positive entries indicate fixed sizes in pixels, negative values indicate relative weights for resizing. The size of this vector must always match the size of Contents.</description></td></tr></table></center>                 
+             
+             <h3>For example:</h3>
+                 	   <pre style="background-color: #eeeeff; margin-left: 20px; margin-right: 20px"><font color="#000011">f = <a href="matlab:doc figure"><code class="FUNCTION">figure</code></a>( 'Name', 'uix.ScrollingPanel Help Example' );
+f.Position(3:4) = 400;
+p = <a href="uix.ScrollingPanel.html"><code class="FUNCTION">uix.ScrollingPanel</code></a>( 'Parent', f );
+a = <a href="matlab:doc axes"><code class="FUNCTION">axes</code></a>( 'Parent', p );
+[x, y, z] = <a href="matlab:doc peaks"><code class="FUNCTION">peaks</code></a>();
+surf( a, x, y, z )
+a.ActivePositionProperty = 'position';
+<a href="matlab:doc set"><code class="FUNCTION">set</code></a>( p, 'Widths', 600, 'Heights', 600, 'HorizontalOffsets', 100, 'VerticalOffsets', 100 )</font></pre>
+                     <p style="background-color: #ddddee; margin-left: 20px; margin-right: 20px"><font color="#000022">
+                         <center><img src="Images/ScrollingPanel.png"/></center>
+                     </font></p>
+                 
+             
+             <br/><b>See also:</b><ul><li><code class="FUNCTION"><a href="uix.Panel.html">uix.Panel</a></code> - for creating a standard panel</li><li><code class="FUNCTION"><a href="uix.CardPanel.html">uix.CardPanel</a></code> - for creating an undecorated panel</li><li><code class="FUNCTION"><a href="uix.BoxPanel.html">uix.BoxPanel</a></code> - for creating a more boxy panel</li></ul>
+     
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="Function_reference1_4.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="Function_reference1_4.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">uix.TabPanel</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="Function_reference2_1.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">uix.HBox</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="Function_reference2_1.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+
+        

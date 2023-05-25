@@ -1,0 +1,60 @@
+<html xmlns:saxon="http://icl.com/saxon">
+   <head>
+      <link rel="stylesheet" type="text/css" href="doc.css"/>
+      <link rel="stylesheet" type="text/css" href=""/>
+      <meta author="The MathWorks Ltd."/>
+      <meta copyright="2020 The MathWorks Ltd."/>
+      <title>Scalability</title>
+   </head>
+
+   
+    <body>
+      <table class="header" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td bgcolor="#e4f0f8"><A href="User_guide.html"><font face="Arial" bgcolor="#e4f0f8" size="+0" underline="0" color="#000000"><b>User_guide</b></font></A></td>
+            <td width="36" bgcolor="#e4f0f8"><A HREF="User_guide7_5.html"><IMG SRC="Images/leftarrow.png" BORDER="0" ALT="previous page"/></A><A HREF="index.html"><IMG SRC="Images/rightarrow.png" BORDER="0" ALT="next page"/></A></td>
+         </tr>
+      </table>
+   
+
+      <br clear="all"/>
+          
+      <h2>7.6: Scalability&nbsp;<a href="User_guide7.html"><img src="Images/uparrow.png" border="0" align="top" alt="Go back up one level"/></a></h2>
+      
+            <p>As applications get bigger the code gets more complex. The simple
+                application structure used here does not scale well to large applications,
+            however some small adjustments can make life much better:</p>
+            <ul>
+                <li>Convert the "data" structure into a <a href="matlab: doc handle">handle object</a>. This allows
+                    a single "data" object to be shared between mutliple graphical interfaces, and in turn means that the interface
+                need not be built as a single monolithic entity.</li>
+                <li>Use the <a href="matlab: doc event.listener">events system</a> to trigger updates
+                    to specific parts of the GUI in response to bits of the data object changing. This removes the need
+                for a single large "UpdateInterface" function and reduces coupling between parts of the interface. For example,
+            the "SelectedDemo" property would have an associated event such that when it is changed by a callback (or from the command-line) it
+        notifies other interface components of the change. Each interface component (or group thereof) can
+    just listen for the events that affect it.</li>
+            </ul>
+            <p>Advice on how to build large-scale applications is beyond the scope
+                of this document. If you need help in this area, please contact your MathWorks
+            account manager who will be able to put you in touch with a technical specialist.</p>
+        
+      
+      <br clear="ALL"/>
+      <table class="footer" width="100%" border="0" cellspacing="0" cellpadding="0">
+         <tr>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide7_5.html"><img src="Images/leftarrow.png" border="0" alt="previous page"/></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="left"><a href="User_guide7_5.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Running it</font></a></td>
+            <td width="20%" height="15" bgcolor="#e4f0f8" align="center"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">[Top]</font></a></td>
+            <td width="40%" height="15" bgcolor="#e4f0f8" align="right"><a href="index.html"><font face="arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">Front page</font></a></td>
+            <td width="18" height="15" bgcolor="#e4f0f8" align="right"><a href="index.html"><img src="Images/rightarrow.png" border="0" alt="next page"/></a></td>
+         </tr>
+      </table>
+      <font face="Arial" bgcolor="#e4f0f8" size="normal" underline="0" color="#000000">&copy; 2020 The MathWorks Ltd</font>
+      <TT>&#149; </TT><a href="matlab: termsOfUse">Terms of Use</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/patents.txt'])">Patents</a>
+      <TT>&#149; </TT><a href="matlab: helpview([matlabroot,'/trademarks.txt'])">Trademarks</a>
+   
+   </body>
+</html>
+&gt;
