@@ -216,7 +216,7 @@ elseif strcmpi(p.Results.gui,'saveas')
 
 else
     overw = 0;
-    modegui = 1; %savefrom script
+    modegui = 3; %savefrom script
     if isempty(fullfilename)
         fullfilename = fullfile(BEST.filepath, BEST.filename);
         if isempty(fullfilename)
@@ -269,6 +269,23 @@ elseif modegui == 2
         return
     end
     issave = 2; %saved on harddrive
+
+elseif modegui == 3  % save from script 
+    if ~isempty(fullfilename)
+
+        [MVPC, serror] = savemvpc(MVPC, fullfilename, 0, warnop);
+        if serror==1
+            return
+        end
+        issave = 2;
+    else
+        issave = 1;
+    end
+    %msg2end
+    return
+    
+else
+    error('ERPLAB says: Oops! error at pop_savemymvpc'); 
 
 
 end

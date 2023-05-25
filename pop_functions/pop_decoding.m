@@ -372,8 +372,9 @@ else
     issaveas  = 0;
 end
 
+% Save routine only for Decoding Toolbox GUI
 if issaveas == 1
-       [res] = mvpc_save_multi_file(ALLBEST,1:length(ALLBEST),''); 
+       [res] = mvpc_save_multi_file(ALLBEST,1:numel(ALLBEST),''); 
 %             
             if isempty(res)
                 %user pressed cancel
@@ -385,30 +386,6 @@ if issaveas == 1
          % file_path = {ALLBEST.filepath}; 
 
 end
-
-%% Check # of filenames to # of BESTsets
-% k = numel(ALLBEST);
-% if isempty(filename_out)
-%     for new_file = 1:k 
-%          filename_out{new_file} = ALLBEST(new_file).filename; 
-%     end
-% else
-%     if k == 1
-%         filename_out = {filename_out}; 
-%     else
-%         if ~iscell(filename_out)
-%             disp('More than one BEST files was specified ')
-% 
-%         end
-%     end
-% end 
-
-% if k > 1 && ~iscell(filename_out)
-%     disp('
-% end
-
-
-
 
 
 
@@ -461,8 +438,6 @@ end_epoch = decodeTimes(2);%ms
 %check valid times and round to nearest time
 [startms,ind_start,latdiffms(1)] = closest(original_times,start_epoch); 
 [endms,ind_end,latdiffms(2)] = closest(original_times,end_epoch); 
-
-
 
 tm_zero = find(original_times== 0); %always include tm point = 0ms
 tm_zero_to_begin= (tm_zero:-Decode_every_Npoint:ind_start);
@@ -543,6 +518,11 @@ end
 nbins = ALLBEST.nbin; 
 nsubs = numel(ALLBEST); 
 
+if nsubs == 1 && equalize_trials == 2
+    %cannot equalize trials across BESTset if only one BESTset
+    equalize_trials = 1; 
+end
+
 if equalize_trials == 2 % equalize across best files 
     
     trials_acr_best = [ALLBEST(:).n_trials_per_bin]; 
@@ -594,37 +574,24 @@ end
 % fname = p.Results.filename_out; 
 % ParCompute = p.Results.ParCompute; 
 
-% %filesaving 
-% if isempty(pathname_out)
-%     pathname_out = cd; 
-% % else
-% %     pathname_out = pathname_out; 
-% end
-% %combine filename and paths
-% if k == 1
-%     if isunix
-%         filepath = strcat(pathname_out,'/',filename_out);
-%     else
-%         filepath =  strcat(pathname_out,'\',filename_out);
-%     end
-% else
-% 
-%     for i = 1:k %k = numel(BEST)
-%         if isunix
-%             filepath{i} = strcat(pathname_out,'/',filename_out{i});
-%         else
-%             filepath{i}=  strcat(pathname_out,'\',filename_out{i});
-%         end
-%     end
-%     
-% end
-% 
 
-
+if ParCompute == 1
+   % delete(gcp)
+   try
+    par_profile = parpool;
+    ParWorkers = par_profile.NumWorkers; 
+   catch
+       %opened parallel pool profile already
+       par_profile = gcp ;
+       ParWorkers = par_profile.NumWorkers;
+   end
+else
+    ParWorkers = 0; %makes parfor run without workers, even if pool is open. 
+end
 
 
 if method == 1 %SVM
-    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParCompute,method);
+    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParWorkers,method);
 end
 
 %if saveas == 0, use pop_decoding per subject to output 1 MVPC file (even

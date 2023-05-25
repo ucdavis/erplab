@@ -12,18 +12,18 @@
 %Edited by Aaron Simmons (UC Davis)
 %Original Author: Gi-Yeul Bae (Arizona State University)
 
-function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,SVMcoding,equalT,ParCompute,method)
+function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,SVMcoding,equalT,ParWorkers,method)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
 
-if ParCompute == 1
-    delete(gcp)
-    par_profile = parpool;
-    ParWorkers = par_profile.NumWorkers; 
-else
-    ParWorkers = 0; %makes parfor run without workers, even if pool is open. 
-end
+% if ParCompute == 1
+%     delete(gcp)
+%     par_profile = parpool;
+%     ParWorkers = par_profile.NumWorkers; 
+% else
+%     ParWorkers = 0; %makes parfor run without workers, even if pool is open. 
+% end
 
 %% Check presence of Matlab Statistics and Machine Learning Toolbox
 % This toolbox is required for the SVM classification

@@ -269,7 +269,7 @@ elseif modegui==2
     end
     issave = 2;
     
-elseif modegui==3
+elseif modegui==3 %save by script
     if ~isempty(fullfilename)
         %disp(['Saving BESTset at ' fullfilename '...'] )
         [BEST, serror] = saveBEST(BEST, fullfilename, 0, warnop);
@@ -280,7 +280,10 @@ elseif modegui==3
     else
         issave = 1;
     end
-    
+    %msg2end
+    return 
+else
+    error('ERPLAB says: Oops! error at pop_savemybest()'); 
     
 end
 
