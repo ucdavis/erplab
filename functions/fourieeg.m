@@ -333,7 +333,7 @@ if plot_type % if non-zero, run
         set(gca,'XScale','log')
         set(gca,'XTick',[1 10 60 100])
         if f1 == 0
-            xstart = 0.1
+            xstart = 0.1;
         else
             xstart = f1;
         end

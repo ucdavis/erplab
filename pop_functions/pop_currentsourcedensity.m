@@ -21,7 +21,7 @@
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
 % ERPLAB Toolbox
-% Copyright © 2016 The Regents of the University of California
+% Copyright Â© 2016 The Regents of the University of California
 % Created by Javier Lopez-Calderon and Steven Luck
 % Center for Mind and Brain, University of California, Davis,
 % javlopez@ucdavis.edu, sjluck@ucdavis.edu
@@ -51,7 +51,7 @@ else
 end
 
 % check input dataset
-try 
+try
     elec_num = length(EEG.chanlocs);
     assert(elec_num >= 1)
 catch
@@ -66,7 +66,7 @@ if isfield(EEG,'nbchan')
     has_loc = zeros(EEG.nbchan,1);
 end
 
-try    
+try
     for i = 1:numel(has_loc)
         has_loc(i) = EEG.chanlocs(i).X;
     end
@@ -82,11 +82,11 @@ end
 % check CSD tool in path
 csd_path = which('MapMontage');
 if numel(csd_path) == 0
-    msgboxText =  'Current Source Density error: Do you have the Jürgen Kayser CSD toolbox in your path?';
+    msgboxText =  'Current Source Density error: Do you have the JÃ¼rgen Kayser CSD toolbox in your path?';
     title      = 'ERPLAB: CSD path problems?';
     errorfound(msgboxText, title);
     return
-        
+    
 end
 
 
@@ -123,16 +123,27 @@ M = ExtractMontage('loc_csd.csd',chan_label);
 % visually check montage
 MapMontage(M)
 
-%%%
-% Run CSD GUI to get 3 CSD parameters
-[csd_param] = csd_generate;
+%%%changed by Guanghui August 10 2022
+csd_param = erpworkingmemory('csd_param');
+
+ERPtooltype = erpgettoolversion('tooltype');
+if strcmpi(ERPtooltype,'EStudio')
+    csd_param(4) = 0;
+    erpworkingmemory('csd_param',csd_param);
+    csd_param = csd_param(1:3);
+    savepref=0;
+else
+    [csd_param] = csd_generate;
+    csd_param(4) = 1;
+    erpworkingmemory('csd_param',csd_param);
+end%%Changing end
 
 % check if user cancelled GUI. If so, end here.
 if numel(csd_param) == 0
     display('User selected cancel')
     return
 end
-    
+
 
 % generate transform matrices
 [csd_G, csd_H] = GetGH(M, csd_param(1));

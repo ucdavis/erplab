@@ -1,0 +1,95 @@
+  H4 { color: rgb(153,0,0);
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    font-size: smallnormal;
+    }
+
+  H3 { color: rgb(153,0,0);
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    font-size: large;
+    }
+
+  H2 { color: rgb(153,0,0);
+    font-weight: bold;
+    font-size: x-large;
+    font-family: Arial,Helvetica,sans-serif;
+    }
+
+  H1 { color: rgb(10,0,0);
+    font-weight: bold;
+    font-size: xx-large;
+    font-family: Arial,Helvetica,sans-serif;
+    }
+
+  P { font-weight: normal;
+    font-style: normal;
+    color: rgb(0, 0, 32);
+    font-family: Arial,Helvetica,sans-serif;
+    text-decoration: none;
+    }  
+
+  LI { font-weight: normal;
+    font-style: normal;
+    color: rgb(0, 0, 32);
+    font-family: Arial,Helvetica,sans-serif;
+    text-decoration: none;
+    }  
+
+  A { font-weight: normal;
+    font-style: normal;
+    color: rgb(0,0,180, 0, 0);
+    font-family: Arial,Helvetica,sans-serif;
+    text-decoration: none;
+    }
+
+  CODE { font-family: Courier New,Courier,monospace;
+    color: #000044;
+    font-size: -1;
+    }
+CODE.FUNCTION {
+    color: #0000EE;
+    font-weight: bold;
+}
+CODE.INARG {
+    color: #008800;
+    font-weight: bold;
+}
+CODE.OUTARG {
+    color: #880000;
+    font-weight: bold;
+ }
+CODE.COMMENT {
+    color: #008800;
+}
+CODE.STRING {
+    color: #DD00FF;
+}
+
+TABLE.PROPERTYTABLE {
+    border-width: 3;
+    border-style: inset;
+    border-color: #777777;
+    cellpadding: 4;
+    cellspacing: 0;
+}
+TH.PROPERTYTABLE {
+    font-weight: bold;
+    color: #000000;
+    border-width: 2;
+    border-style: inset;
+    background-color: #b2b2b2;
+}
+TD.PROPERTYTABLE {
+    font-weight: normal;
+    color: #000000;
+    border-width: 2;
+    border-style: inset;
+    background-color: #f2f2f2;
+}
+
+PRE { font-family: Courier New,Courier,monospace;
+    color: #000044;
+    font-size: -1;
+}
+
