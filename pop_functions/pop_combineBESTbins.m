@@ -90,23 +90,103 @@ if nargin == 1 %open GUI
         
     end
     
-    def = erpworkingmemory('pop_combineBESTbins()'); 
+    def = erpworkingmemory('pop_combineBESTbins'); 
     
     if isempty(def)
-        def = {{[0]},{'none'}}; 
+        def = {{[]},{[]}}; 
+        %1 binindex(s) from old BEST that will create new BEST
+        %2 binlabel(s) from oldBEST taht will create new BEST
         
     end
+    
+    
+    
     
     app = feval('combinebestbinsGUI',ALLBEST,currdata,def); 
     waitfor(app,'FinishButton',1); 
     
+    try
+        res = app.output;
+        app.delete; %delete app from view
+        pause(0.5); %wait for app to leave
+    catch
+        disp('User selected Cancel')
+        return
+    end
+    
+    
+    BEST = res{1};
+    nbins = res{2}.bini;
+    nlabels = res{2}.labels; 
+    
+    def = {nbins,nlabels}; 
+    erpworkingmemory('pop_combineBESTbins',def); 
+    
+    [BEST] = pop_combineBESTbins(ALLBEST,'BESTindex',currdata, 'new_bins',nbins,'new_labels',nlabels, ...
+        'Saveas','on'); 
+    
+    pause(0.1);
+    return
     
 end 
     
+%
+% Parsing inputs
+%
+p = inputParser;
+p.FunctionName  = mfilename;
+p.CaseSensitive = false;
+p.addRequired('ALLBEST');
     
+
+p.addParamValue('BESTindex', [1],@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
+p.addParamValue('new_bins',{}); %array of channel indicies (def: all channels)
+p.addParamValue('new_labels',{}); 
+p.addParamValue('Saveas','off'); 
+
+% Parsing
+p.parse(ALLBEST, varargin{:});
+
+idx_bestset = p.Results.BESTindex;
+new_bins = p.Results.new_bins;
+new_labels = p.Results.new_labels;
+
+%% choose BESTsets
+if ~isempty(idx_bestset)  
+    BEST = ALLBEST(idx_bestset) ; 
+else
+    BEST = ALLBEST(1); %just do the first one 
+end
     
-    
-    
+if ismember_bc2({p.Results.Saveas}, {'on','yes'})
+    issaveas  = 1;
+else
+    issaveas  = 0;
+end
+
+
+%% bin-combiner routine 
+
+BEST = combineBESTbins(BEST, new_bins, new_labels); 
+
+
+%% save function
+
+if issaveas
+    [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
+    if issave>0
+        if issave==2
+            %erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
+            msgwrng = '*** Your BESTset was saved on your hard drive.***';
+        else
+            msgwrng = '*** Warning: Your BESTset was only saved on the workspace.***';
+        end
+    else
+        msgwrng = 'ERPLAB Warning: Your changes were not saved';
+    end
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+end
+
 
 
 

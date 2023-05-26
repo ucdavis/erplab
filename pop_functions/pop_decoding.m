@@ -349,8 +349,6 @@ ParCompute = p.Results.ParCompute;
 
 
 %% choose BESTsets
-%if empty, choose the entire ALLBEST struct
-%else
 if ~isempty(idx_bestset)  
     ALLBEST = ALLBEST(idx_bestset) ; 
 else

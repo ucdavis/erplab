@@ -325,6 +325,7 @@ comDQQpreavg = ['pop_DQ_preavg(ALLEEG)'];
 
 %% BEST callbacks
 comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
+comCombineBest = ['[BEST] = pop_combineBESTbins(ALLBEST);']; 
 comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'');'];
 comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');'];
 comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
@@ -558,6 +559,7 @@ uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'Call
 %% BIN-EPOCHED Data (BEST sets)
 mBEST = uimenu(submenu,'Label','Bin-Epoched Single Trial (BEST) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(mBEST,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(mBEST,'Label','Combine BESTset bins across trials','CallBack',comCombineBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(mBEST,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 uimenu(mBEST,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
