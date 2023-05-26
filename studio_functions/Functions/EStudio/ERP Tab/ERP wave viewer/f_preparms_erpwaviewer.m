@@ -73,6 +73,7 @@ if PLOTORG(1) ==1 %% if  the selected Channel is "Grid"
         try
             plotArrayStrdef{Numofchan} = chanStr{plotArray(Numofchan)};
         catch
+            plotArrayStrdef{Numofchan} = 'none';
         end
     end
 elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
@@ -81,6 +82,7 @@ elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
         try
             plotArrayStrdef{Numofchan} = binStr{plotArray(Numofchan)};
         catch
+            plotArrayStrdef{Numofchan} = 'none';
         end
     end
 elseif PLOTORG(1) == 3%% if the selected ERPset is "Grid"
@@ -285,7 +287,7 @@ end%% end of loop for number of line
 %
 %%-----------------------------Setting for legend--------------------------
 FontSizeLeg=  10;
-FontLeg=  'Geneva';
+FontLeg=  'Helvetica';
 fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
 TextcolorLeg = 1;
 Legcolumns = 1;
@@ -306,7 +308,7 @@ end
 %
 %%--------------Chan/Bin/ERPset Labels, font, and fontsize-----------------
 CBELabels = [50 100 1];
-CBEFont = 'Geneva';
+CBEFont = 'Helvetica';
 CBEFontsize=10;
 try
     if ERPwaviewerIN.chanbinsetlabel.location.no ==1
@@ -478,7 +480,7 @@ try
 catch
 end
 
-xlabelFont = 'Geneva';
+xlabelFont = 'Helvetica';
 try
     xFontlabelValue =  ERPwaviewerIN.xaxis.font;
     xlabelFont = fonttype{xFontlabelValue};
@@ -591,7 +593,7 @@ try
 catch
 end
 
-YlabelFont = 'Geneva';
+YlabelFont = 'Helvetica';
 try
     YFontlabelValue =  ERPwaviewerIN.yaxis.font;
     YlabelFont = fonttype{YFontlabelValue};

@@ -156,7 +156,7 @@ viewer_ERPDAT.Count_currentERP = 0;
 %3 means there are some errors for processing procedure
 viewer_ERPDAT.count_legend=0;%% this is to capture the changes of legend name
 viewer_ERPDAT.page_xyaxis=0;%%get the changes of x/y axis based on the changed pages or selected ERPsets
-viewer_ERPDAT.count_loadproper = 0;
+viewer_ERPDAT.loadproper_count = 0;
 viewer_ERPDAT.Process_messg = 0;
 viewer_ERPDAT.count_twopanels = 0;%% Automaticlly saving the changes on the other panel if the current panel is changed
 viewer_ERPDAT.Reset_Waviewer_panel = 0;
@@ -253,7 +253,7 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
         end
     end
     assignin('base','ALLERPwaviewer',Parameterfile);
-    viewer_ERPDAT.count_loadproper = viewer_ERPDAT.count_loadproper+1;
+    viewer_ERPDAT.loadproper_count = 1;
     f_redrawERP_viewer_test();
 end
 

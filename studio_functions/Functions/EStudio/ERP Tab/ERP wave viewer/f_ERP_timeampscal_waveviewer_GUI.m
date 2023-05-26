@@ -13,7 +13,7 @@ global viewer_ERPDAT
 
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 
@@ -41,7 +41,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 
 
@@ -235,7 +235,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         
         %%-----font, font size, and text color for time ticks--------------
-        ttickLabelfont = 2;
+        ttickLabelfont = 3;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         xfontsizeinum = str2num(char(fontsize));
@@ -460,7 +460,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         ERPwaviewer.yaxis.label = gui_erpxyaxeset_waveviewer.ylabel_on.Value;
         
         %%-----y ticklabel:font, font size, and text color for time ticks
-        ytickLabelfont = 2;
+        ytickLabelfont = 3;
         ytickLabelfontsize = 4;
         ytickLabelfontcolor = 1;
         gui_erpxyaxeset_waveviewer.yfont_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
@@ -880,7 +880,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if xdisSecondValue==0
             timeArray = timeArray/1000;
         end
-        if numel(timcustom)==1 || isempty(timcustom)
+        if isempty(timcustom) || numel(timcustom)~=2
             messgStr =  strcat('Time range in "Time and Amplitude Scales" - Inputs must be two numbers!');
             erpworkingmemory('ERPViewer_proces_messg',messgStr);
             fprintf(2,['\n Warning: ',messgStr,'.\n']);
@@ -1295,10 +1295,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         yscalecustom = str2num(char(yscalStr.String));
         %%checking the inputs
-        if isempty(yscalecustom)|| numel(yscalecustom)==1
+        if isempty(yscalecustom)|| numel(yscalecustom)~=2
             messgStr =  strcat('Y scale for "Y Axs" in "Time and Amplitude Scales" - Inputs must be two numbers ');
             erpworkingmemory('ERPViewer_proces_messg',messgStr);
             fprintf(2,['\n Warning: ',messgStr,'.\n']);
+%             yscalStr.String = '';
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -2024,19 +2025,19 @@ varargout{1} = box_erpxtaxes_viewer_property;
             timeRange = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String)*1000;
         end
         
-        if numel(timeRange)==1 || isempty(timeRange)
+        if isempty(timeRange) ||  numel(timeRange)~=2
             timeRange(1) = ERPwaviewer_apply.ERP.times(1);
             timeRange(2) = ERPwaviewer_apply.ERP.times(end);
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n Time and Amplitude Scales > Apply-Time range() error.\n Inputs must be two numbers! Please change it, otherwise, the default values will be used.\n\n');
-            %             return;
+            messgStr =  strcat('The default time range will be used because the inputs are not two numbers');
+            erpworkingmemory('ERPViewer_proces_messg',messgStr);
+            fprintf(2,['\n Warning: ',messgStr,'.\n']);
+            viewer_ERPDAT.Process_messg =4;
         end
         if timeRange(1) >= timeRange(2)
             timeRange(1) = ERPwaviewer_apply.ERP.times(1);
             timeRange(2) = ERPwaviewer_apply.ERP.times(end);
             viewer_ERPDAT.Process_messg =3;
             fprintf(2,'\n Time and Amplitude Scales > Apply-Time range() error.\n The left edge should not be smaller than the right one!\n Please change current values, otherwise, the default ones will be used!\n\n');
-            %             return;
         end
         ERPwaviewer_apply.xaxis.timerange = timeRange;
         ERPwaviewer_apply.xaxis.trangeauto = gui_erpxyaxeset_waveviewer.xtimerangeauto.Value;
@@ -2086,7 +2087,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         ERPwaviewer_apply.xaxis.units = gui_erpxyaxeset_waveviewer.xtimeunits_on.Value;
         %%y scales
         YScales = str2num(char(gui_erpxyaxeset_waveviewer.yrange_edit.String));
-        if isempty(YScales)
+        if isempty(YScales) || numel(YScales)~=2
             ALLERPIN = ERPwaviewer_apply.ALLERP;
             ERPArrayin = ERPwaviewer_apply.SelectERPIdx;
             BinArrayIN = [];
@@ -2117,6 +2118,15 @@ varargout{1} = box_erpxtaxes_viewer_property;
             catch
                 YScales = yylim_out(1,:);
             end
+            
+            if isempty(YScales)
+                messgStr =  strcat('The default Y scales will be used because the inputs are empty');
+            elseif numel(YScales)~=2
+                messgStr =  strcat('The default Y scales will be used because the number of inputs is not 2');
+            end
+            erpworkingmemory('ERPViewer_proces_messg',messgStr);
+            fprintf(2,['\n Warning: ',messgStr,'.\n']);
+            viewer_ERPDAT.Process_messg =4;
         end
         ERPwaviewer_apply.yaxis.scales =YScales ;
         ERPwaviewer_apply.yaxis.scalesauto = gui_erpxyaxeset_waveviewer.yrangeauto.Value;
@@ -2684,15 +2694,15 @@ varargout{1} = box_erpxtaxes_viewer_property;
     end
 
 %%-------------modify this panel based on the updated parameters-----------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=3
             return;
         end
         try
             ERPwaviewer_apply  = evalin('base','ALLERPwaviewer');
         catch
             beep;
-            disp('f_ERP_timeampscal_waveviewer_GUI()> count_loadproper_change() error: Please run the ERP wave viewer again.');
+            disp('f_ERP_timeampscal_waveviewer_GUI()> loadproper_change() error: Please run the ERP wave viewer again.');
             return;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2869,6 +2879,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         yunits = ERPwaviewer_apply.yaxis.units;
         gui_erpxyaxeset_waveviewer.yunits_on.Value = yunits;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = ~yunits;
+        
+        viewer_ERPDAT.loadproper_count=4;
     end
 
 %%-------------------------------------------------------------------------
@@ -2954,8 +2966,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             ERPwaviewer_apply.xaxis.label =1;
             
             %%font and font size
-            ERPwaviewer_apply.xaxis.font  =2;
-            gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=2;
+            ERPwaviewer_apply.xaxis.font  =3;
+            gui_erpxyaxeset_waveviewer.xtimefont_custom.Value=3;
             ERPwaviewer_apply.xaxis.fontsize =10;
             gui_erpxyaxeset_waveviewer.font_custom_size.Value=4;
             fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
@@ -3036,9 +3048,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.ylabel_on.Value=1; %
             gui_erpxyaxeset_waveviewer.ylabel_off.Value=0;
             %%font and fontsize
-            ERPwaviewer_apply.yaxis.font=2;
+            ERPwaviewer_apply.yaxis.font=3;
             ERPwaviewer_apply.yaxis.fontsize=10;
-            gui_erpxyaxeset_waveviewer.yfont_custom.Value=2;
+            gui_erpxyaxeset_waveviewer.yfont_custom.Value=3;
             gui_erpxyaxeset_waveviewer.yfont_custom_size.Value=4;
             %%color for y ticklabels
             ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};

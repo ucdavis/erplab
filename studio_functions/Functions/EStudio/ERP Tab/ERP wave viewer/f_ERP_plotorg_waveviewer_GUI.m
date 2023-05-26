@@ -13,7 +13,7 @@ function varargout = f_ERP_plotorg_waveviewer_GUI(varargin)
 global viewer_ERPDAT
 
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 
@@ -2240,8 +2240,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
 
 
 %%-------------modify this panel based on updated parameters---------------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=4
             return;
         end
         try
@@ -2269,7 +2269,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
         for Numofselectederp = 1:numel(indexerp)
-            SrateNum_mp{Numofselectederp} =   ALLERP(indexerp(Numofselectederp)).srate;
+            SrateNum_mp(Numofselectederp) =   ALLERP(indexerp(Numofselectederp)).srate;
         end
         if length(unique(SrateNum_mp))~=1
             gui_plotorg_waveviewer.plotorg_c2.Enable = 'off';
@@ -2453,6 +2453,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         end
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+        viewer_ERPDAT.loadproper_count =5;
     end
 
 

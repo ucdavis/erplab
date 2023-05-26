@@ -13,7 +13,7 @@ function varargout = f_ERP_lineset_waveviewer_GUI(varargin)
 global viewer_ERPDAT;
 addlistener(viewer_ERPDAT,'legend_change',@legend_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
@@ -211,7 +211,7 @@ varargout{1} = box_erplineset_viewer_property;
         %
         %%--------------------legend font and font size---------------------------
         gui_erplinset_waveviewer.labelfont_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        fontDef = 2;
+        fontDef = 3;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
@@ -450,7 +450,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
         gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
         gui_erplinset_waveviewer.font_custom_size.Value = 4;
-        gui_erplinset_waveviewer.font_custom_type.Value =1;
+        gui_erplinset_waveviewer.font_custom_type.Value =3;
     end
 
 %%-------------------legend custom-----------------------------------------
@@ -517,8 +517,8 @@ varargout{1} = box_erplineset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=6
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        estudioworkingmemory('MyViewer_linelegend',1);
-        gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
+        estudioworkingmemory('MyViewelinelegend',1);
+        gui_erplinset_waveviewer.apply.Bacr_kgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         
@@ -869,8 +869,8 @@ varargout{1} = box_erplineset_viewer_property;
 
 
 %%-------------change this panel based on the loaded parameters------------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=6
             return;
         end
         try
@@ -949,6 +949,7 @@ varargout{1} = box_erplineset_viewer_property;
             columnStr{Numoflegend} = num2str(Numoflegend);
         end
         gui_erplinset_waveviewer.legendcolumns.String = columnStr;
+        viewer_ERPDAT.loadproper_count =7;
     end
 
 %%-------------------------------------------------------------------------
@@ -1032,10 +1033,10 @@ varargout{1} = box_erplineset_viewer_property;
             gui_erplinset_waveviewer.legend_customtable.ColumnEditable = [false,true];
             gui_erplinset_waveviewer.legend_customtable.Data = legendset_str;
             gui_erplinset_waveviewer.font_custom_size.Value = 4;
-            gui_erplinset_waveviewer.font_custom_type.Value =2;
+            gui_erplinset_waveviewer.font_custom_type.Value =3;
             ERPwaviewerin.Legend.auto=1;
             ERPwaviewerin.Legend.data =gui_erplinset_waveviewer.legend_customtable.Data;
-            ERPwaviewerin.Legend.font=1;
+            ERPwaviewerin.Legend.font=3;
             ERPwaviewerin.Legend.fontsize=10;
             ERPwaviewerin.Legend.textcolor=1;
             ERPwaviewerin.Legend.columns=1;

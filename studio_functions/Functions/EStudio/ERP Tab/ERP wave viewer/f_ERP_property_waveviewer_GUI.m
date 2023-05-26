@@ -12,7 +12,7 @@ function varargout = f_ERP_property_waveviewer_GUI(varargin)
 global gui_erp_waviewer;
 global viewer_ERPDAT;
 % addlistener(viewer_ERPDAT,'v_currentERP_change',@Count_currentERPChanged);
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+% addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 
 
 gui_property_waveviewer = struct();
@@ -143,7 +143,7 @@ varargout{1} = box_erpwave_viewer_property;
             fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n Cannot load the saved parameters of My viewer.\n\n');
             return;
         end
-        viewer_ERPDAT.count_loadproper = viewer_ERPDAT.count_loadproper+1;
+        viewer_ERPDAT.loadproper_count = 1;
         %         estudioworkingmemory('zoomSpace',1.5);
         f_redrawERP_viewer_test();
         viewer_ERPDAT.Process_messg =2;

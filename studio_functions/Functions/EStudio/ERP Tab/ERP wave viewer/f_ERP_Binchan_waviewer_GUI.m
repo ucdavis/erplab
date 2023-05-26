@@ -17,7 +17,7 @@ function varargout = f_ERP_Binchan_waviewer_GUI(varargin)
 global viewer_ERPDAT
 global observe_ERPDAT;
 
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
@@ -59,7 +59,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 
 drawui_erpsetbinchan_viewer(FonsizeDefault);
@@ -201,11 +201,11 @@ varargout{1} = Chanbin_waveviewer_box;
         ChanArray = Source.Value;
         [x_flag,y_flag] = find(ChanArray==1);
         if ~isempty(y_flag)
-          Source.Value = 1;
+            Source.Value = 1;
         else
-           if length(Source.String)-1 == numel(ChanArray)
-              Source.Value = 1; 
-           end
+            if length(Source.String)-1 == numel(ChanArray)
+                Source.Value = 1;
+            end
         end
         estudioworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
@@ -224,11 +224,11 @@ varargout{1} = Chanbin_waveviewer_box;
         BinArray = BinSource.Value;
         [x_flag,y_flag] = find(BinArray==1);
         if ~isempty(y_flag)
-          BinSource.Value = 1;
+            BinSource.Value = 1;
         else
-           if length(BinSource.String)-1 == numel(BinArray)
-              BinSource.Value = 1; 
-           end
+            if length(BinSource.String)-1 == numel(BinArray)
+                BinSource.Value = 1;
+            end
         end
         
         estudioworkingmemory('MyViewer_chanbin',1);
@@ -590,8 +590,8 @@ varargout{1} = Chanbin_waveviewer_box;
 
 
 %%------------update this panel based on the imported parameters-----------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=2
             return;
         end
         
@@ -631,6 +631,7 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             Chan_sel= 1:length(Chanlist);
         end
+        ERPwaviewer_S.chan = Chan_sel;
         ERPwaveview_binchan.ElecRange.String = Chanlist_name;
         try
             if length(Chan_sel) ==  numel(chanStr)
@@ -665,6 +666,7 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             ERPwaveview_binchan.BinRange.Value = Bin_sel+1;
         end
+        ERPwaviewer_S.bin = Bin_sel;
         
         ERPtooltype = erpgettoolversion('tooltype');
         if ~strcmpi(ERPtooltype,'EStudio') && ~strcmpi(ERPtooltype,'ERPLAB')
@@ -689,6 +691,10 @@ varargout{1} = Chanbin_waveviewer_box;
             ERPwaveview_binchan.auto.String = 'Same as EStudio';
         elseif  strcmpi(ERPtooltype,'ERPLAB')
             ERPwaveview_binchan.auto.String = 'Same as ERPLAB';
+            ERPwaveview_binchan.BinRange.Enable = 'on';
+            ERPwaveview_binchan.ElecRange.Enable = 'on';
+            ERPwaveview_binchan.auto.Enable = 'off';
+            ERPwaveview_binchan.custom.Enable = 'off';
         else
             ERPwaveview_binchan.auto.String = '';
             ERPwaveview_binchan.auto.Enable = 'off';
@@ -700,6 +706,8 @@ varargout{1} = Chanbin_waveviewer_box;
             ERPwaveview_binchan.BinRange.Enable = 'on';
         end
         
+        assignin('base','ALLERPwaviewer',ERPwaviewer_S);
+        viewer_ERPDAT.loadproper_count=3;
     end
 
 %%modify the channels based on the changes of main EStudio
@@ -802,7 +810,7 @@ varargout{1} = Chanbin_waveviewer_box;
 %%change channels and bins based on the main EStudio
     function Two_GUI_change(~,~)
         if observe_ERPDAT.Two_GUI~=2
-           return; 
+            return;
         end
         
         ERPtooltype = erpgettoolversion('tooltype');
@@ -881,7 +889,7 @@ varargout{1} = Chanbin_waveviewer_box;
                 else
                     ERPwaveview_binchan.ElecRange.Value =ChanArrayStudio+1;
                 end
-                 ERPwaveview_binchan.ElecRange.Max = length( ERPwaveview_binchan.ElecRange.String)+2;
+                ERPwaveview_binchan.ElecRange.Max = length( ERPwaveview_binchan.ElecRange.String)+2;
             catch
                 ERPwaveview_binchan.ElecRange.Value  =1;
             end

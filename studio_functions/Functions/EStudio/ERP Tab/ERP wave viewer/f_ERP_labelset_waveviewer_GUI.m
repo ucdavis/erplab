@@ -11,7 +11,7 @@
 function varargout = f_ERP_labelset_waveviewer_GUI(varargin)
 
 global viewer_ERPDAT;
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
@@ -124,7 +124,7 @@ varargout{1} = box_erplabelset_viewer_property;
         %
         %%--------------------font and font size---------------------------
         gui_labelset_waveviewer.font_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        fontDef = 2;
+        fontDef = 3;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
@@ -197,7 +197,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.center.Enable = Enable;
         gui_labelset_waveviewer.font_custom_type.Enable = Enable;
         gui_labelset_waveviewer.font_custom_size.Enable = Enable;
-        gui_labelset_waveviewer.font_custom_type.Value = 2;
+        gui_labelset_waveviewer.font_custom_type.Value = 3;
         gui_labelset_waveviewer.font_custom_size.Value = 4;
         gui_labelset_waveviewer.xperc_edit.String ='50' ;
         gui_labelset_waveviewer.yperc_edit.String = '100';
@@ -494,8 +494,8 @@ varargout{1} = box_erplabelset_viewer_property;
 
 
 %%-------------change this panel based on the loaded parameters------------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=5
             return;
         end
         try
@@ -569,6 +569,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.font_custom_size.Value = xsize;
         textColor = ERPwaviewer_apply.chanbinsetlabel.textcolor;
         gui_labelset_waveviewer.labelcolor.Value = textColor;
+        viewer_ERPDAT.loadproper_count =6;
     end
 
 
@@ -616,11 +617,11 @@ varargout{1} = box_erplabelset_viewer_property;
             ERPwaviewerin.chanbinsetlabel.location.yperc = 100;
             ERPwaviewerin.chanbinsetlabel.location.center =1;
             %%label font, fontsize and color
-            ERPwaviewerin.chanbinsetlabel.font =2;
+            ERPwaviewerin.chanbinsetlabel.font =3;
             ERPwaviewerin.chanbinsetlabel.fontsize =10;
             ERPwaviewerin.chanbinsetlabel.textcolor=1;
             fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
-            gui_labelset_waveviewer.font_custom_type.Value=2;
+            gui_labelset_waveviewer.font_custom_type.Value=3;
             gui_labelset_waveviewer.font_custom_type.String = fonttype;
             gui_labelset_waveviewer.font_custom_type.Enable='off'; %
             gui_labelset_waveviewer.font_custom_size.Value=4;

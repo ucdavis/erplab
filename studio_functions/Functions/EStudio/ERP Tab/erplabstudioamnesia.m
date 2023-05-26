@@ -10,7 +10,7 @@
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
-% Author: Javier Lopez-Calderon,Guanghui ZHhang & Johanna Kreither
+% Author: Javier Lopez-Calderon,Guanghui Zhang & Johanna Kreither
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA

@@ -271,12 +271,12 @@ if nargin==1  %with GUI to get other parameters
     end%% end of loop for number of line
     
     %%Font and fontsize for legend
-    FontLeg = 'Geneva';
+    FontLeg = 'Helvetica';
     FontSizeLeg =  10;
     
     %%Setting for Channel/Bin/ERP label
     CBELabels = [];%location 0 70 1
-    CBEFont = 'Geneva';%%font
+    CBEFont = 'Helvetica';%%font
     CBEFontsize=10;%% fontsize
     
     %%Polarity of wave
@@ -299,7 +299,7 @@ if nargin==1  %with GUI to get other parameters
     timeRange(2) = ERP.times(end);
     timeticks = str2num(char(default_time_ticks_studio(ERP, timeRange)));
     xticklabel = 'on';
-    xlabelFont = 'Geneva';
+    xlabelFont = 'Helvetica';
     xlabelFontsize = 10;
     xlabelFontcolor = [0 0 0];
     Xunits = 'on';
@@ -313,7 +313,7 @@ if nargin==1  %with GUI to get other parameters
         Yticks = [];
     end
     yticklabel = 'on';
-    YlabelFont = 'Geneva';
+    YlabelFont = 'Helvetica';
     YlabelFontsize = 10;
     ylabelFontcolor = [0 0 0];
     yunits = 'on';
@@ -777,7 +777,7 @@ end
 %%Legend font
 qFontLeg = p_Results.LegendFont;
 if isempty(qFontLeg)
-    qFontLeg = 'Geneva';
+    qFontLeg = 'Helvetica';
 end
 
 %%legend fontsize
@@ -802,7 +802,7 @@ end
 
 qCBEFont = p_Results.Labelfont;
 if isempty(qCBEFont)
-    qCBEFont ='Geneva';
+    qCBEFont ='Helvetica';
 end
 
 qCBEFontsize = p_Results.Labelfontsize;
@@ -913,7 +913,7 @@ end
 
 qXlabelfont = p_Results.Xlabelfont;
 if isempty(qXlabelfont)
-    qXlabelfont = 'Geneva';
+    qXlabelfont = 'Helvetica';
 end
 qXlabelfontsize = p_Results.Xlabelfontsize;
 if isempty(qXlabelfontsize)
@@ -1000,7 +1000,7 @@ end
 qYlabelfont = p_Results.Ylabelfont;
 
 if isempty(qYlabelfont)
-    qYlabelfont = 'Geneva';
+    qYlabelfont = 'Helvetica';
 end
 
 qYlabelfontsize = p_Results.Ylabelfontsize;

@@ -260,7 +260,7 @@ function WAviewerResize(~,~)
 global gui_erp_waviewer;
 if gui_erp_waviewer.Resize ~= 0
     set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
-    f_redrawERP_viewer_test(); 
+    f_redrawERP_viewer_test();
 end
 end
 
@@ -886,7 +886,7 @@ end
 
 %%ylable font
 if nargin <34
-    qYlabelfont = 'Geneva';
+    qYlabelfont = 'Helvetica';
 end
 
 %%display ylabels?
@@ -944,7 +944,7 @@ end
 
 %%xlabel font
 if nargin <26
-    qXlabelfont= 'Geneva';
+    qXlabelfont= 'Helvetica';
 end
 
 %%disply xtick labels ?
@@ -1034,7 +1034,7 @@ end
 
 %%font of channel/bin/erpset label
 if nargin <17
-    qLabelfont= 'Geneva';
+    qLabelfont= 'Helvetica';
 end
 
 %%location of channel/bin/erpset label
@@ -1049,7 +1049,7 @@ end
 
 %%font of legend name
 if nargin <14
-    qLegendFont  = 'Geneva';
+    qLegendFont  = 'Helvetica';
 end
 
 %%legend name

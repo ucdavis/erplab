@@ -74,7 +74,11 @@ if numel(SelectedERPIndex) ==1
     BinName = ERP.bindescr;
     binStr = cell(BinNum,1);
     for i = 1:BinNum
-        binStr(i) = {char(BinName{i})};
+        try
+            binStr(i) = {char(BinName{i})};
+        catch
+            binStr(i) = {['Bin',num2str(i)]};
+        end
     end
     
     %%--------Get the names of chans-----------
@@ -82,7 +86,11 @@ if numel(SelectedERPIndex) ==1
     Chanlist = ERP.chanlocs;
     chanStr = cell(ChanNum,1);
     for Numofchan = 1:length(Chanlist)
-        chanStr(Numofchan) = {char(Chanlist(Numofchan).labels)};
+        try
+            chanStr(Numofchan) = {char(Chanlist(Numofchan).labels)};
+        catch
+            chanStr(Numofchan) = {['Chan',num2str(Numofchan)]};
+        end
     end
     return;
 end
@@ -124,7 +132,11 @@ elseif numel(unique(chanNum_mp))>1%%varies across the selected ERPsets
     Chanlist = ERP.chanlocs;
     chanStr_max = cell(ChanNum,1);
     for Numofchan = 1:length(Chanlist)
-        chanStr_max(Numofchan) = {Chanlist(Numofchan).labels};
+        try
+            chanStr_max(Numofchan) = {Chanlist(Numofchan).labels};
+        catch
+            chanStr_max(Numofchan) = {['Chan',num2str(Numofchan)]};
+        end
     end
     
     SelectedERPIndex_chan_lf =SelectedERPIndex(setdiff(1:numel(SelectedERPIndex),x_chan));
@@ -166,7 +178,11 @@ if numel(unique(BinNum_mp))==1%%if the number of bins is the same
     BinName = ERP.bindescr;
     binStr = cell(BinNum,1);
     for Numofbin = 1:BinNum
-        binStr(Numofbin) = {char(BinName{Numofbin})};
+        try
+            binStr(Numofbin) = {char(BinName{Numofbin})};
+        catch
+            binStr(Numofbin) = {['Bin',num2str(Numofbin)]};
+        end
     end
     
 elseif numel(unique(BinNum_mp))>1%%varies across the selected ERPsets
@@ -180,7 +196,11 @@ elseif numel(unique(BinNum_mp))>1%%varies across the selected ERPsets
     
     binStr_max = cell(BinNum,1);
     for Numofbin = 1:BinNum
-        binStr_max(Numofbin) = {char(BinName{Numofbin})};
+        try
+            binStr_max(Numofbin) = {char(BinName{Numofbin})};
+        catch
+            binStr_max(Numofbin) = {['Bin',num2str(Numofbin)]};
+        end
     end
     
     

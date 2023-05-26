@@ -17,7 +17,7 @@ function varargout = f_ERPsets_waviewer_GUI(varargin)
 global viewer_ERPDAT
 global observe_ERPDAT;
 global gui_erp_waviewer;
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 addlistener(observe_ERPDAT,'Two_GUI_change',@Two_GUI_change);
@@ -562,8 +562,8 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 
 
 %%------------Update this panel based on the imported parameters-----------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=1
             return;
         end
         try
@@ -572,7 +572,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             ALLERPup = ERPwaviewer_up.ALLERP;
             if isempty(ALLERPup)
                 beep;
-                disp('f_ERPsets_waviewer_GUI()>count_loadproper_change() error: ALLERP is empty.');
+                disp('f_ERPsets_waviewer_GUI()>loadproper_change() error: ALLERP is empty.');
                 return;
             end
             if max(SelectedIndex(:))> length(ALLERPup)
@@ -581,7 +581,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             end
         catch
             beep;
-            disp('f_ERPsets_waviewer_GUI()>count_loadproper_change() error: Restart ERPwave Viewer');
+            disp('f_ERPsets_waviewer_GUI()>loadproper_change() error: Restart ERPwave Viewer');
             return;
         end
         
@@ -637,6 +637,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             ERPwaveview_erpsetops.custom.Enable = 'off';
         end
         assignin('base','ALLERPwaviewer',ERPwaviewer_up);
+        viewer_ERPDAT.loadproper_count=2;
     end
 
 

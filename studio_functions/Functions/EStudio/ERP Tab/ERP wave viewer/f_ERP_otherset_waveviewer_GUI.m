@@ -11,7 +11,7 @@
 function varargout = f_ERP_otherset_waveviewer_GUI(varargin)
 
 global viewer_ERPDAT;
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
@@ -622,8 +622,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
     end
 
 %%---------change this panel based on the loaded paras.--------------------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=7
             return;
         end
         try
@@ -736,6 +736,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         ERPwaviewer_apply.figbackgdcolor = BackgroundColor;
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+        viewer_ERPDAT.loadproper_count =0;
     end
 
 
