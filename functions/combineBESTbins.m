@@ -14,6 +14,9 @@ n_trials_per_bin = NaN(1,numel(new_bins));
 for b = 1:n_bins
     
     selected_bins = new_bins{b};
+    if ischar(selected_bins) || isstring(selected_bins)
+        selected_bins = str2num(selected_bins);
+    end
     
     if numel(selected_bins) == 1
         data_splice = BEST.binwise_data(selected_bins).data; 

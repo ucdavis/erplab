@@ -274,7 +274,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     mvpc = rawscoreSVM(mvpc, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
     mvpc = averageSVM(mvpc, SVMcoding,0); %average accuracy across runs, %no smoothing
-    mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,SVMcoding); 
+    %mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,SVMcoding); 
 
 %     mvpc.BetaWeights_Raw = BetaWeights_Raw; 
 %     mvpc.BetaWeights_Corr = BetaWeights_Corr; 
