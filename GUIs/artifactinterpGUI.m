@@ -43,7 +43,7 @@ function varargout = artifactinterpGUI(varargin)
 
 % Edit the above text to modify the response to help artifactinterpGUI
 
-% Last Modified by GUIDE v2.5 30-Aug-2021 16:05:42
+% Last Modified by GUIDE v2.5 31-May-2023 11:45:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -95,7 +95,7 @@ catch
     def = {0, 'spherical',[],[],[]};  %holds all of the defaults
     defx =def; 
     chanlabels = [];
-    active_flags = varargin{5};
+    active_flags = varargin{5};   
 end
 
 
@@ -106,7 +106,9 @@ handles.flagx = def{1};
 handles.methodx = def{2};
 handles.indxlistch = def{3};
 handles.chanxlabel = def{4}; 
-handles.replaceChannels = def{5}; 
+handles.ignoreChannels = def{5}; 
+handles.many_electrodes = def{6}; 
+handles.threshold_perc = def{7}; 
 
 %set flag button positions defaults
 for j=1:8
@@ -165,11 +167,11 @@ end
 
 %if user had previous ignore channel, populate ignore channels box
 
-if ~isempty(handles.replaceChannels) 
+if ~isempty(handles.ignoreChannels) 
     %if user previously had channels to ignore
     
-    editStr = num2str(handles.replaceChannels);
-    set(handles.(['editbox_ignoreChannels']),'String',editStr); 
+    editStr = num2str(handles.ignoreChannels);
+    set(handles.editbox_ignoreChannels,'String',editStr); 
     
 end
 
@@ -180,8 +182,31 @@ set(handles.flag_1, 'Enable', 'inactive');% flag 1 is pressed but inactive
 set(handles.radiobutton1, 'Enable', 'inactive'); 
 %set(handles.radiobutton1, 'Visibile', 'off'); 
 
-%place interpolate method choice to default to spherical
-set(handles.radiobutton_spherical,'value',1); 
+%set interpolate method choice 
+
+if strcmpi(handles.methodx,'spherical') 
+    set(handles.radiobutton_spherical,'Value',1); 
+else
+    set(handles.radiobutton_invdist,'Value',1); 
+end
+
+%set electrode options 
+if handles.many_electrodes == 1 
+    set(handles.radiobutton_interpAny,'Value',1);
+    set(handles.radiobutton_interpOne,'Value',0);   
+    set(handles.electrode_threshold,'String',num2str(handles.threshold_perc)); 
+    set(handles.electrode_threshold,'Enable','On');
+    set(handles.popupmenu1,'Enable','Off'); 
+    %set(handles.popupmenu2,'Enable','Off'); 
+else
+    set(handles.radiobutton_interpAny,'Value',0);
+    set(handles.radiobutton_interpOne,'Value',1);
+    set(handles.electrode_threshold,'String',num2str(handles.threshold_perc)); 
+    set(handles.electrode_threshold,'Enable','On');    
+    set(handles.popupmenu1,'Enable','On');
+   % set(handles.popupmenu2,'Enable','On'); 
+end
+
 
 %title of gui 
 set(handles.gui_chassis, 'Name', dlg_title);
@@ -205,6 +230,7 @@ handles.indxlistch = def{1}; % what channel is prev selected
 
 %set channels popup menu
 set(handles.popupmenu1, 'string', listch); 
+%set(handles.popupmenu2, 'string', listch); 
 
 %
 % Paint GUI
@@ -336,14 +362,18 @@ end
 %query channel selected
 allItems = get(handles.popupmenu1,'String'); 
 chanIndex = get(handles.popupmenu1,'Value');
+%measIndex = get(handles.popupmenu2,'Value'); 
+
 handles.indxlistch = chanIndex; 
 handles.chanxlabel = allItems{chanIndex}; 
+%meas_chan = allItems{measIndex}; 
 
 % updates handles.output (include channels to ignore/replace)
 % order: flag to use, method of interpolate, channel index,
 % channel_to_interp, channels to replace 
 handles.output = {handles.flagx, handles.methodx, ...
-    handles.indxlistch, handles.chanxlabel, handles.replaceChannels};
+    handles.indxlistch, handles.chanxlabel, handles.ignoreChannels, ...
+    handles.radiobutton_interpAny.Value, handles.threshold_perc};
 
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
@@ -530,3 +560,161 @@ function radiobutton7_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of radiobutton7
+
+
+% --- Executes on button press in radiobutton_interpOne.
+function radiobutton_interpOne_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_interpOne (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_interpOne
+
+if get(hObject,'Value') == 1
+    set(handles.radiobutton_interpAny,'Value',0');
+    set(handles.electrode_threshold,'Enable','On');
+    
+    set(handles.radiobutton_interpOne,'Value',1);
+    set(handles.popupmenu1,'Enable','On'); 
+    %set(handles.popupmenu2,'Enable','Off'); 
+    
+
+    
+end
+
+
+
+function electrode_threshold_Callback(hObject, eventdata, handles)
+% hObject    handle to electrode_threshold (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of electrode_threshold as text
+%        str2double(get(hObject,'String')) returns contents of electrode_threshold as a double
+
+% Test string
+perc = str2num(get(hObject,'String')); 
+if perc >= 1 & perc <= 100
+    handles.threshold_perc = perc; 
+else
+    msgboxText{1} =  'ERROR: Cannot be less than 1 or greater than 100';
+    title = 'ERPLAB: input error';
+    errorfound(msgboxText, title);
+    handles.threshold_perc = 10; 
+    set(handles.electrode_threshold,'String',''); 
+    return
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function electrode_threshold_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to electrode_threshold (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in radiobutton_interpAny.
+function radiobutton_interpAny_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_interpAny (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if get(hObject,'Value') == 1 %interpolate any flagged channel
+    
+    set(handles.radiobutton_interpOne,'Value',0);
+    set(handles.popupmenu1,'Enable','Off'); 
+    %set(handles.popupmenu2,'Enable','On'); 
+    
+    set(handles.radiobutton_interpAny,'Value',1);
+    set(handles.electrode_threshold,'Enable','On'); 
+    
+    
+end
+    
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_interpAny
+
+
+% --- Executes on selection change in popupmenu2.
+function popupmenu2_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu2
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton14.
+function pushbutton14_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+%
+% Prepare List of current Channels
+%
+% listch = {''};
+% nchan  = length(chanlabels); % Total number of channels
+% if isempty(chanlabels)
+%         for e = 1:nchan
+%                 chanlabels{e} = ['Ch' num2str(e)];
+%         end
+% end
+% for ch =1:nchan
+%         listch{ch} = [num2str(ch) ' = ' chanlabels{ch} ];
+% end
+
+listch = handles.listch; 
+indxlistch = 1:numel(listch); 
+titlename = 'Select Channels to Ignore'; 
+
+
+if ~isempty(listch)
+    ch = browsechanbinGUI(listch, indxlistch, titlename);
+    if ~isempty(ch)
+        %set(handles.chwindow, 'String', vect2colon(ch, 'Delimiter', 'off'));
+        set(handles.editbox_ignoreChannels,'String',vect2colon(ch, 'Delimiter','off'));
+        %handles.indxlistch = ch;
+        % Update app structure
+        handles.ignoreChannels = ch;
+        guidata(hObject, handles);
+        %                     guidata(hObject, handles);
+        %                     redraw_outliers(hObject, eventdata, handles);
+        %                     guidata(hObject, handles);
+        
+    else
+        disp('User selected Cancel')
+        return
+    end
+else
+    msgboxText =  'No channel information was found';
+    title = 'ERPLAB: BrowseChans GUI input';
+    errorfound(msgboxText, title);
+    return
+end
+
+
+
+%handles.indxlistch = def{1}; % what channel is prev selected
+
+%set channels popup menu
+set(handles.popupmenu1, 'string', listch); 
