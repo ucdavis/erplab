@@ -335,7 +335,8 @@ for e = 1:N_interpolate
         
         %fix redundancies between chan_to_interp & ignore channels
         if any(ismember(chans_to_interp,ignoreChannels))
-            ignoreChannelsE = setdiff(ignoreChannelsE, chans_to_interp);
+            %ignoreChannelsE = setdiff(ignoreChannelsE, chans_to_interp);
+            chans_to_interp = setdiff(chans_to_interp,ignoreChannelsE);
         end
         
         %adjust bad channel count with updated ignored channels
