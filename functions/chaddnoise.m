@@ -448,7 +448,11 @@ if confirma
         %%-----------------------------------------------------------------
         if ~isempty(NoiseFlagwhite)
             
-            [mattypewhite toktypewhite] = regexpi(formula, '\s*[+-]?[\d+]*(whitenoise)', 'match','tokens');
+            %             [mattypewhite toktypewhite] = regexpi(formula, '\s*[+-]?[\d+]*(whitenoise)', 'match','tokens');
+            [mattypewhite toktypewhite] = regexpi(formula, '\s*[+-][\d+]?[\.?\d+]*(whitenoise)', 'match','tokens');%%Fixed GH, Jun 2023
+            if isempty(mattypewhite) && isempty(toktypewhite)
+                [mattypewhite toktypewhite] = regexpi(formula, '\s*[+-]?[\d+]*(whitenoise)', 'match','tokens');
+            end
             if isempty(mattypewhite) || isempty(toktypewhite)
                 msgboxText =  ['\nPlease, check your formula: \n\n'...
                     char(formula) '\n'];
@@ -464,12 +468,16 @@ if confirma
             %Get the amplitude for noise signal
             AmpNoisewhite = str2num(regexprep(char(mattypewhite{1,1}), char(toktypewhite{1,1}), '','ignorecase'));
             if isempty(AmpNoisewhite)
-                AmpNoisewhite = 1;
+                if strcmpi(regexprep(char(mattypewhite{1,1}), char(toktypewhite{1,1}), '','ignorecase'),'-')
+                    AmpNoisewhite = -1;
+                else
+                    AmpNoisewhite = 1;
+                end
             end
             WhiteNoiseedstr = regexpi(formula, ['\s*',char(toktypewhite{1,1}),'\((\d)?\)'], 'tokens','ignorecase');
             
             if isempty(WhiteNoiseedstr)
-                Noiseedwhite = 0;
+                Noiseedwhite = [];
             else
                 Noiseedwhite = str2num(char(WhiteNoiseedstr{1,1}{1,1}));
             end
@@ -509,7 +517,11 @@ if confirma
         %%---------------------------------pink noise----------------------
         %%-----------------------------------------------------------------
         if ~isempty(NoiseFlagpink)
-            [mattypepink toktypepink] = regexpi(formula, '\s*[+-]?[\d+]*(pinknoise)', 'match','tokens');
+            %             [mattypepink toktypepink] = regexpi(formula, '\s*[+-]?[\d+]*(pinknoise)', 'match','tokens');
+            [mattypepink toktypepink] = regexpi(formula, '\s*[+-][\d+]?[\.?\d+]*(pinknoise)', 'match','tokens');%%Fixed GH, Jun 2023
+            if isempty(mattypepink) && isempty(toktypepink)
+                [mattypepink toktypepink] = regexpi(formula, '\s*[+-]?[\d+]*(pinknoise)', 'match','tokens');
+            end
             if isempty(mattypepink) || isempty(toktypepink)
                 msgboxText =  ['\nPlease, check your formula: \n\n'...
                     char(formula) '\n'];
@@ -525,7 +537,11 @@ if confirma
             %Get the amplitude for noise signal
             AmpNoisepink = str2num(regexprep(char(mattypepink{1,1}), char(toktypepink{1,1}), '','ignorecase'));
             if isempty(AmpNoisepink)
-                AmpNoisepink = 1;
+                if strcmpi(regexprep(char(mattypepink{1,1}), char(toktypepink{1,1}), '','ignorecase'),'-')
+                    AmpNoisepink = -1;
+                else
+                    AmpNoisepink = 1;
+                end
             end
             PinkNoiseedstr = regexpi(formula, ['\s*',char(toktypepink{1,1}),'\((\d+)?\)'], 'tokens','ignorecase');
             
@@ -574,13 +590,27 @@ if confirma
             for ii = 1:length(splitStr)
                 toklinenoise = regexpi(splitStr{ii}, 'linenoise', 'match','ignorecase');
                 if ~isempty(toklinenoise)
-                    formula = splitStr{ii};
+                    formulaNew = splitStr{ii};
                     break;
                 end
             end
+            try
+                PoStr = strfind(formula,formulaNew);
+                if ~isempty(PoStr)
+                    if strcmpi(formula(PoStr-1),'-')
+                        formula=  ['-',formulaNew ];
+                    end
+                end
+            catch
+                formula= formulaNew;
+            end
             
-            %             [mattypeline toktypeline] = regexpi(formula, '\s+[\d+]*(linenoise)', 'match','tokens');\s+[+-]?[\d+]*
-            [mattypeline toktypeline] = regexpi(formula, '\s*[+-]?[\d+]*(linenoise)', 'match','tokens');
+            %             [mattypeline toktypeline] = regexpi(formula, '\s*[+-]?[\d+]*(linenoise)', 'match','tokens');
+            
+            [mattypeline toktypeline] = regexpi(formula, '\s*[+-][\d+]?[\.?\d+]*(linenoise)', 'match','tokens');%%fixed  by GH Jun 2023
+            if isempty(mattypeline) && isempty(toktypeline)
+                [mattypeline toktypeline] = regexpi(formula, '\s*[+-]?[\d+]*(linenoise)', 'match','tokens');
+            end
             if isempty(mattypeline) || isempty(toktypeline)
                 msgboxText =  ['\nPlease, check your formula: \n\n'...
                     char(formula) '\n'];
@@ -596,7 +626,11 @@ if confirma
             %Get the amplitude for noise signal
             AmpNoise = str2num(regexprep(char(mattypeline{1,1}), char(toktypeline{1,1}), '','ignorecase'));
             if isempty(AmpNoise)
-                AmpNoise = 1;
+                if strcmpi(regexprep(char(mattypeline{1,1}), char(toktypeline{1,1}), '','ignorecase'),'-')
+                    AmpNoise = -1;
+                else
+                    AmpNoise = 1;
+                end
             end
             
             Periodconstr = regexpi(formula, ['\s*','linenoise','\((.*)?\)'], 'tokens','ignorecase');
