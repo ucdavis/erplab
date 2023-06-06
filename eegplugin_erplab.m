@@ -48,6 +48,27 @@ p = p(1:findstr(p,'eegplugin_erplab.m')-1);
 addpath(genpath(p))
 
 
+try
+    clearvars observe_ERPDAT;
+    clearvars v_ERPDAT;
+catch
+end
+
+erplab_default_values % script
+currvers  = ['erplab' erplabver];
+
+erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+%global needed for ERPLAB viewer
+global observe_ERPDAT;
+observe_ERPDAT = o_ERPDAT;
+observe_ERPDAT.Two_GUI = 0;
+observe_ERPDAT.ALLERP = [];
+observe_ERPDAT.CURRENTERP = [];
+observe_ERPDAT.ERP = [];
+observe_ERPDAT.Count_ERP = 0;
+observe_ERPDAT.Count_currentERP = 0;
+observe_ERPDAT.Process_messg = 0;%%change end
+
 %
 % CHECK VERSION NUMBER & FOLDER NAME
 % Grab the end of the path, like '7.0'
@@ -569,7 +590,7 @@ uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator',
 MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Spatial ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Plot MVPCsets (in ALLMVPC)','CallBack',comPlotMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Plot MVPCsets','CallBack',comPlotMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 %uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 

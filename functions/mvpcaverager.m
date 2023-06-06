@@ -109,6 +109,7 @@ for j = 1:nfile
         if stderror
             sumMVPC2  = zeros(nfile,MVPCT.pnts);
         end
+        sumCFs           =zeros(MVPCT.nClasses,MVPCT.nClasses,MVPCT.pnts); 
 %         naccepted      = zeros(1,nbin);
 %         auxnaccepted   = zeros(1,nbin); % ###
 %         nrejected      = zeros(1,nbin);
@@ -141,6 +142,8 @@ for j = 1:nfile
         MVPC.SVMinfo        = 'grandavg'; 
         MVPC.raw_predictions = 'grandavg'; 
         MVPC.average_accuracy_1vAll = []; 
+        MVPC.confusions.scores = [];
+        MVPC.confusions.labels = MVPCT.confusions.labels;
         
 
 %         EVEL           = ERPT.EVENTLIST;
@@ -151,6 +154,7 @@ for j = 1:nfile
     end
 
     sumMVPC    = sumMVPC + MVPCT.average_accuracy_1vAll;                % cumulative sum: Sum(xi)
+    sumCFs     = sumCFs  + MVPCT.confusions.scores; 
     
     if stderror 
         sumMVPC2(j,:) = MVPCT.average_accuracy_1vAll; 
@@ -164,6 +168,8 @@ end
 
 %get average across MVPCsets
 MVPC.average_accuracy_1vAll = sumMVPC/nfile;
+MVPC.confusions.scores = sumCFs/nfile;
+
 if stderror
     MVPC.stderror = squeeze(std(sumMVPC2,1))/sqrt(nfile);
 end

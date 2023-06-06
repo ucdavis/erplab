@@ -15,9 +15,18 @@
 %                          For a single bin-epoched dataset using EEG structure this value must be equal to 1 or
 %                          left unspecified.
 %        'Bins'        -    Bin index array as indicated in binlister file. Example: [1:4]
+%        'Criterion'   - Inclusion/exclusion of marked epochs during
+%                           artifact detection:
+% 		                   'all'   - include all epochs (ignore artifact detections)
+% 		                   'good'  - exclude epochs marked during artifact detection
+% 		                   'bad'   - include only epochs marked with artifact rejection
+%                           Default: 'good'; 
+%        'ExcludeBoundary' - exclude epochs having boundary events.
+%                           'on'(def)/'off'
 %        'ApplyFS'     -  If bandpass filtering, must be 1. Default = 0
 %        'BandPass'    -  For bandpass filtering: [Low_edge_freq High_edge_freq], e.g [8 12];
-%        'SaveAs'      -  (optional) open GUI for saving BESTset.
+%        'SaveAs'      -  (optional) open GUI for saving BESTset. Not
+%                       useful if scripting; use separate pop_savemybest(). 
 %                           'on'/'off' (Default: off)
 %                           - (if "off", will not update in BESTset menu)
 %
@@ -76,10 +85,7 @@ if isobject(ALLEEG)
     whenEEGisanObject
     return
 end
-
-%load current MVPA
-%MVPA = evalin('base', 'MVPA');  
-    
+   
 
 if nargin ==1 %GUI case, ALLEEG is input
     
@@ -102,23 +108,19 @@ if nargin ==1 %GUI case, ALLEEG is input
         return
     end
     
-    % need to create working memory for this feature? 
-    % yes, for selecting the same bins as last time 
+    % create working memory
     def  = erpworkingmemory('pop_extractBEST');
     
-    %instead of downsampling, resample as follow:
-    % - check EEGstruct for "pnts"
-    % - provide textbox for "every N [textbox] point" 
-    % - calculate what that would be as a resampled value and show 
-    % - e.g. "every 5th point" = 1/fs = 0.030 * 5 = 20ms 
+
     
     if isempty(def) 
-        def = {1,0,{'',''}}; 
-        %def = {1,0,[]}; 
-        
+        def = {1,0,{'',''},1,1}; 
+
         %1: choose bin1 only; 
         %2: apply freq- transform (1 yes 0 no); 
         %3: bandpass freqs
+        %4: include into epochs (def 1: exclude AD flagged epochs)
+        %5: exclude epochs with boundary events (def 1:YES, exclude) 
     end
     
     
@@ -142,12 +144,11 @@ if nargin ==1 %GUI case, ALLEEG is input
         return
     end
     bins_to_use = app.output{1}; %selected bins
-%     cmk_fs = app.output{2}; %apply resampling?
-%     srate = app.output{3}; %resample value in terms of $ of sample steps
     cmk_bp = double(app.output{2}); %apply bandpass?
     bpfreq = cell2mat(app.output{3}); %bandpass frequncies
-   % filename_empty = '' ;%ALLEEG(currdata).filename; 
-   % filepath_empty = '' ;%ALLEEG(currdata).filepath; 
+    artcrite = double(app.output{4}); 
+    exclude_be = app.output{5}; 
+
     
     
     app.delete; %delete app/app_object from view
@@ -165,6 +166,20 @@ if nargin ==1 %GUI case, ALLEEG is input
         bpfreq = str2num(bpfreq); 
     end
     
+    if artcrite == 0
+        crit = 'all'; 
+    elseif artcrite == 1
+        crit = 'good';
+    elseif artcrite == 2
+        crit = 'bad';
+    end
+    
+    if exclude_be == 1
+        excbound = 'on';
+        
+    else
+        excbound = 'off';
+    end
     
     %
     % Somersault
@@ -174,7 +189,8 @@ if nargin ==1 %GUI case, ALLEEG is input
 %         'ApplyBP', cmk_bp, 'Bandpass', bpfreq, 'Filename', filename_empty, 'Filepath', filepath_empty);
 
     [BEST] = pop_extractbest(ALLEEG,'DSindex',currdata,'Bins',bins_to_use,...
-        'ApplyBP', cmk_bp, 'Bandpass', bpfreq, 'Saveas', 'on');
+        'Criterion', crit, 'ExcludeBoundary',excbound,  ... 
+        'ApplyBP', cmk_bp, 'Bandpass', bpfreq,'Saveas', 'on');
     
     pause(0.1)
     return
@@ -196,6 +212,8 @@ p.addParamValue('DSindex', 1,@isnumeric); %defaults to 1
 p.addParamValue('Bins', [], @isnumeric);
 p.addParamValue('ApplyBP', 0, @isnumeric);
 p.addParamValue('Bandpass', [], @isnumeric);
+p.addParamValue('Criterion','good',@ischar);
+p.addParamValue('ExcludeBoundary','on',@ischar); 
 p.addParamValue('Saveas', 'off', @ischar); 
 
 
@@ -205,6 +223,8 @@ setindex = p.Results.DSindex;
 bin_ind = p.Results.Bins;
 bandpass_on = p.Results.ApplyBP; 
 bandpass_freq = p.Results.Bandpass; 
+artcrite = p.Results.Criterion; 
+exclude_be = p.Results.ExcludeBoundary; 
 
 
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
@@ -212,6 +232,22 @@ if ismember_bc2({p.Results.Saveas}, {'on','yes'})
 else
     issaveas  = 0;
 end
+
+if strcmpi(artcrite,'all')
+    artif = 0; 
+elseif strcmpi(artcrite,'good')
+    artif = 1;
+elseif strcmpi(artcrite,'bad')
+    artif = 2;
+end
+
+if strcmpi(exclude_be,'on')
+    excbound = 1; 
+elseif strcmpi(exclude_be,'off')
+    excbound = 2;
+end
+
+
 
 %main EEG struct
 EEG2 = ALLEEG(setindex);
@@ -228,41 +264,8 @@ if bandpass_on == 1
 end
 
 
-%check sampling rate and resample (if chosen **DEFUNCT**)
-% if fschange_on == 1
-%     
-%     %change EEG2 fields to new resampled data
-%     %samp_index = 1:fs_newsteps:EEG2.pnts;
-%     %find 0 ms
-%     zero_index = find(EEG2.times == 0); 
-%     
-%     samp_index_post = [zero_index:fs_newsteps:EEG2.pnts]; 
-%     samp_index_pre = [zero_index-fs_newsteps:-4:1]; 
-%     samp_index = sort([samp_index_pre samp_index_post]); 
-%     EEG2.data = EEG2.data(:,samp_index,:); 
-%     EEG2.xmax = EEG2.times(samp_index(end));
-%     
-%     npnts_old = EEG2.pnts;
-%     fs = EEG2.srate;
-%     samps = 1/fs; %granularity of data sample in ms
-%     epochtime = (samps*npnts_old) * 1000 ; %ms
-%     npnts_new = length(samp_index); 
-%     EEG2.pnts = npnts_new; 
-%     
-%     new_FS = (npnts_new/epochtime * 1000); 
-%     EEG2.srate = new_FS; 
-%     
-%     EEG2.times = EEG2.times(samp_index); 
-%     
-%     
-%     
-% end
-
-
-
 %Obtain indexed EEGSET
 % Thanks to AXS, adapted binepEEG_to_binorgEEG.m code following:
-
 
 dim_data = numel(size(EEG2.data));
 if dim_data ~= 3
@@ -275,7 +278,7 @@ end
 
 % Prepare info for averager call
 % Excludes epochs marked with artifacts and that contains boundary events
-artif = 1; stderror = 1; excbound = 1; apod = []; nfft = []; dcompu = 1; avgText =0;  
+stderror = 1; apod = []; nfft = []; dcompu = 1; avgText =0;  
 
 % Call ERP Averager subfunction, populating the epoch_list
 [ERP2, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(EEG2, artif, stderror, excbound, dcompu, nfft, apod, avgText);
@@ -320,22 +323,5 @@ if issaveas
 end
 
 
-% %Save function (DEFUNCT)
-% 
-% if isempty(filenamex) 
-%     currFilename = EEG2.filename;
-%     currFilepath = pwd;
-%     %MVPA = pop_savemymvpa(MVPA,'fname', currFilename, 'fpath', currFilepath);
-%     pop_savemybest(BEST,'fname', currFilename, 'fpath', currFilepath);
-% else
-%     currFilename = filenamex;
-%     currFilepath = filepathx;
-%     pop_savemybest(BEST,'fname', currFilename, 'fpath', currFilepath, 'modegui', 0);
-% end
-
-% [file_name, file_path] = uiputfile('*.mvpa','Please pick a path to save the MVPA dataset');
-% write_file_path = [file_path file_name];
-% save(write_file_path,'MVPA');
-    
 msg2end
 return

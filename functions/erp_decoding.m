@@ -79,8 +79,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
     % Preallocate Matrices
     svm_predict = nan(nIter,nBlocks, nSamps,nBins); % a matrix to save prediction from SVM
     tst_target = nan(nIter,nBlocks,nSamps,nBins);  % a matrix to save true target values
-    % BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nElectrodes);
-    % BetaWeights_Corr = BetaWeights_Raw;
+    %BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nElectrodes);
+    %BetaWeights_Corr = BetaWeights_Raw;
     
     % create svmECOC.block structure to save block assignments
    % mvpa.blocks=struct();
@@ -260,7 +260,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 
                 
                % BetaWeights_Raw(iter,t,i,:) = mdl.Beta;% SVM weights uncorrected
-               % BetaWeights_Corr(iter,t,i,:) = double(cov(trnD))*mdl.Beta;% SVM weights after correction
+                %BetaWeights_Corr(iter,t,i,:) = double(cov(trnD))*mdl.Beta;% SVM weights after correction
                 
                 
             end % end of block: Step 6: cross-validation
@@ -274,11 +274,11 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     mvpc = rawscoreSVM(mvpc, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
     mvpc = averageSVM(mvpc, SVMcoding,0); %average accuracy across runs, %no smoothing
-    %mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,SVMcoding); 
+    mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,SVMcoding); 
 
-%     mvpc.BetaWeights_Raw = BetaWeights_Raw; 
-%     mvpc.BetaWeights_Corr = BetaWeights_Corr; 
-%     
+   % mvpc.BetaWeights_Raw = BetaWeights_Raw; 
+   % mvpc.BetaWeights_Corr = BetaWeights_Corr; 
+     
     %create the MVPA output 
     %output decoding results in main svmECOC structure
     

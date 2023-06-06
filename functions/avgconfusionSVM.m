@@ -20,7 +20,7 @@ if SVMcoding == 2
     % TrueAnswer = reshape([1:Nclasses],[Nclasses,1]); 
      
      %preallocate confusions at each tp 
-     confusions = {}; 
+     confusions = zeros(nBins,nBins,Ntp); 
      
      for tp = 1:Ntp 
          
@@ -33,12 +33,12 @@ if SVMcoding == 2
          tmat_tp = reshape(trues,[1 Nclasses*runs]); 
          
          [C,c3] = confusionmat(tmat_tp, pmat_tp); 
-         confusions{tp} = C/(unique(sum(C,2)));  % Y is true labels, x is predicted labels 
+         confusions(:,:,tp) = C/(unique(sum(C,2)));  % Y is true labels, x is predicted labels 
          
      end
      
-     mvpc.confusions = confusions;
-     mvpc.Confusions.labels = mvpc.classlabels;
+     mvpc.confusions.scores = confusions;
+     mvpc.confusions.labels = mvpc.classlabels;
     
      
 elseif SVMcoding == 1

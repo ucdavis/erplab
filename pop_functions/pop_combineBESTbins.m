@@ -20,6 +20,7 @@
 %        'SaveAs'      -  (optional) open GUI for saving BESTset.
 %                           'on'/'off' (Default: off)
 %                           - (if "off", will not update in BESTset menu)
+%                           - if scripting, use "off" and pop_savemybest() 
 %
 % OUTPUTS  :
 %

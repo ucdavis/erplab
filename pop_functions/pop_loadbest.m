@@ -2,16 +2,14 @@
 %
 % FORMAT   :
 %
-% ERP = pop_loadbest(parameters);
+% BEST = pop_loadbest(parameters);
 %
 % PARAMETERS     :
 %
 % 'filename'        - BESTset filename
 % 'filepath'        - BESTset's filepath
-% 'overwrite'       - overwrite current erpset. 'on'/'off' *Not working
-% 'Warning'         - 'on'/'off'
-% 'multiload'       - load multiple BESTset using a single output variable (see example 2). 'on'/'off'
-% 'UpdateMainGui'   - 'on'/'off'
+% 'Warning'         - 'on'/'off'(Def)
+% 'UpdateMainGui'   - 'on'/'off'(Def)
 %
 %
 % OUTPUTS  :
@@ -66,7 +64,7 @@ if nargin == 1
         % Somersault
         %
         
-        [BEST, ALLBEST] = pop_loadbest('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off');
+        [BEST, ALLBEST] = pop_loadbest('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on');
         return
     
     
@@ -83,7 +81,7 @@ p.addParamValue('filename', '');
 p.addParamValue('filepath', '', @ischar);
 p.addParamValue('overwrite', 'off', @ischar);
 p.addParamValue('Warning', 'off', @ischar);
-p.addParamValue('multiload', 'off', @ischar); % ERP stores ALLERP's contain (ERP = ...), otherwise [ERP ALLERP] = ... must to be specified.
+%p.addParamValue('multiload', 'off', @ischar); % ERP stores ALLERP's contain (ERP = ...), otherwise [ERP ALLERP] = ... must to be specified.
 p.addParamValue('UpdateMainGui', 'off', @ischar);
 %p.addParamValue('History', 'script', @ischar); % history from scripting
 
@@ -110,11 +108,12 @@ if strcmpi(p.Results.UpdateMainGui,'on')
 else
         updatemaingui = 0;
 end
-if strcmpi(p.Results.multiload,'on')
-        multiload = 1;
-else
-        multiload = 0;
-end
+
+% if strcmpi(p.Results.multiload,'on')
+%         multiload = 1;
+% else
+%         multiload = 0;
+% end
 
 if loadfrom==1
         if iscell(filename)
@@ -175,9 +174,9 @@ if conti==0
         return
 end
 
-if nargout==1 && multiload==1
-        BEST = ALLBEST;
-end
+% if nargout==1 && multiload==1
+%         BEST = ALLBEST;
+% end
 
 if nfile==1
         outv = 'BEST';

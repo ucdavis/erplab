@@ -1,25 +1,51 @@
-% PURPOSE  : Decode BEST files after setting parameters/
+% PURPOSE  : Decode BEST files after setting parameters. 
 %
 % FORMAT   :
 %
-% >> MVPC = pop_decoding(BEST)
+% >> MVPC = pop_decoding(ALLBEST)
 %
 % INPUTS   :
 %
-% EEG           - input dataset
+% BEST or ALLBEST       - input dataset (BESTset) or input ALLBEST (via
+%                           decoding toolbox GUI)
 %
 % The available parameters are as follows:
 %
-%        'Twindow' 	- time period (in ms) to apply this tool (start end). Example [-200 800]
-%        'Threshold'    - range of amplitude (in uV). e.g  -100 100
-%        'Windowsize'   - moving window width in ms.
-%        'Windowstep'   - moving window step in ms.
-%        'Channel' 	- channel(s) to search artifacts.
-%        'LowPass' - Apply low pass filter at provided half-amplitude
-%                           cutoff (FIR @ 26 filter order). 
+%        'BESTindex' 	- Index of BESTset to decode.
+%                         If supplying one BESTset, use index "1".
+%                         Default: "1" for the only/first BESTset in
+%                         ALLBEST
+%        'chanArray'    - Index of channels to use. Default: all channels
+%        'nIter'        - Amount of iterations to run decoding per BESTset.
+%                         Default: 100 iterations
+%        'nCrossblocks' - Amount of Crossfold Validation blocks where
+%                         Ntrials/nCrossblocks = Ntrials(ERP) / default: 3
+%        'decodeTimes' 	- [start_epoch_decoding end_epoch_decoding]
+%                         Default: use whole epoch length. 
+%        'Decode_every_Npoint' -  Decode every N points where 1 point =
+%                                 1/sampling rate (in ms)
 %                           Default: -1/Do Not Apply
-%        'Flag'         - flag value between 1 to 8 to be marked when an artifact is found.(1 value)
-%        'Review'       - open a popup window for scrolling marked epochs.
+%        'equalizeTrials'  - 1: Across Bins within BESTset
+%                            2: Across BESTsets (if more than 1 BESTset) -
+%                            defualt 
+%                            3: Use common floor value 
+%        'floorValue'   - Amount of trials per ERP* 
+%                       *Only valid if equalizeTrials == 2
+%        'method'       - Classification method 
+%                          1:SVM (default), 2: Crossnobis
+%        'SVMcoding'    - If classification method == SVM*, then
+%                         SVMcoding = 1 -> 'One vs. One' classifiers;
+%                         SVMcoding = 2 -> 'One vs. ALL classifiers
+%                         if SMM has only two classes, fitcecoc becomes
+%                         fitcsvm. 
+%        'SaveAs'        -  (optional) open GUI for saving MVPCset. Not
+%                       useful if scripting; use separate pop_savemymvpc(). 
+%                           'on'/'off' (Default: off)
+%                            (if "off", will not update in MVPCset menu)
+%        'ParCompute'    - (optional) Use parallelization to make decoding
+%                          faster. Uses as many available cores. Must have 'Parallel
+%                          Computing Toolbox' installed. 
+%
 %
 % OUTPUTS  :
 %
@@ -62,6 +88,28 @@
 
 function [MVPC] = pop_decoding(ALLBEST, varargin) 
 com = ''; 
+
+% check Signal Processing Toolbox (SPT)
+if exist('filtfilt','file')~= 2
+    msgboxText =  'ERROR: You currently do not have the Signal Processing Toolbox installed. Please contact your system administration or MATLAB to install "Signal Processing Toolbox" to your MATLAB version';
+    title = 'ERPLAB: Missing Signal Processing Toolbox';
+    errorfound(msgboxText, title);
+    return
+end
+
+% check Statistics and Machine Learning toolbox
+v = ver;
+hasSMT = any(strcmp(cellstr(char(v.Name)), 'Statistics and Machine Learning Toolbox'));
+
+if hasSMT ~= 1
+    msgboxText =  ['Error: You currently do not have the Statistics and Machine Learning toolbox, an offiical MATLAB toolbox add-on. ...' ...
+        'Please contact MATHWORKS or your system admin to install this for your MATLAB version'];
+    title = 'ERPLAB: Missing Statistics and Machine Learning Toolbox';
+    errorfound(msgboxText, title);
+    return
+end
+
+
 
 try
         ALLMVPC   = evalin('base', 'ALLMVPC');
@@ -615,7 +663,6 @@ end
 
 
 return
-    %erp_decoding(ALLBEST,filepath,nBins,nIter,nCrossBlocks,DataTimes,times,decoding_times,relevantChans,nPerBinBlock,ParCompute); 
     
 
 
