@@ -9,8 +9,8 @@ end
 
 if nargin==1 % read
     try
-        p = which('EStudio');
-        p = p(1:findstr(p,'EStudio.m')-1);
+        p = which('o_ERPDAT');
+        p = p(1:findstr(p,'o_ERPDAT.m')-1);
         v = load(fullfile(p,'erplab_running_version.erpm'), '-mat');
     catch
         
