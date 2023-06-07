@@ -340,7 +340,7 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_cancel (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.figure1 = []
+handles.figure1 = [];
 handles.output = [];
 % Update handles structure
 guidata(hObject, handles);

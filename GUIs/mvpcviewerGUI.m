@@ -22,7 +22,7 @@ function varargout = mvpcviewerGUI(varargin)
 
 % Edit the above text to modify the response to help mvpcviewerGUI
 
-% Last Modified by GUIDE v2.5 08-May-2023 17:44:22
+% Last Modified by GUIDE v2.5 06-Jun-2023 18:10:34
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -62,121 +62,13 @@ handles.output = [];
 %         cerpi = 1;
 % end
 % handles.cerpi = cerpi;
-try
-        ALLMVPC = varargin{1};
-        setArray = 1:length(ALLMVPC);
-catch
-        ALLMVPC          = buildMVPCstruct;
-        ALLMVPC.times    = -200:800;
-        ALLMVPC.xmin     = -0.2;
-        ALLMVPC.xmax     = 0.8;
-        ALLMVPC.nchan    = 1;
-        ALLMVPC.pnts     = length(ALLMVPC.times);
-        ALLMVPC.nbin     = 1;
-        ALLMVPC.bindata  = zeros(1, ALLMVPC.pnts, 1);
-        ALLMVPC.srate    = 1000;
-        ALLMVPC.bindescr = {'empty'};
-        ALLMVPC.chanlocs.labels = 'empty';
-end
-% if strcmpi(datatype, 'ERP')
-%     meaword = 'latenc';
-% else
-%     meaword = 'frequenc';
-% end
-% if isempty(defx)
-%         if isempty(ALLMVPA)
-%                 inp1   = 1; %from hard drive
-%                 erpset = [];
-%         else
-%                 inp1   = 0; %from erpset menu
-%                 erpset = 1:length(ALLMVPA);
-%         end
-%         defx = {inp1 erpset '' 0 1 1 'instabl' 1 3 'pre' 0 1 5 0 0.5 0 0 0 '' 0 1};
-% end
-% try
-%         def         = varargin{2};
-%         AMP         = def{1};
-%         Lat         = def{2};
-%         binArray    = def{3};
-%         chanArray   = def{4};
-%         setArray    = def{5};
-%         latency     = def{6};
-%         moreoptions = def{7};
-%         
-%         blc        = moreoptions{1};
-%         moption    = moreoptions{2};
-%         tittle     = moreoptions{3};
-%         dig        = moreoptions{4};
-%         coi        = moreoptions{5};
-%         polpeak    = moreoptions{6};
-%         sampeak    = moreoptions{7};
-%         locpeakrep = moreoptions{8};
-%         frac       = moreoptions{9};
-%         fracmearep = moreoptions{10};
-%         intfactor  = moreoptions{11};
-% catch
-%         latency    = defx{4};
-%         moption    = defx{7};
-%         
-%         AMP        = [];
-%         Lat        = {{[-200 800]}};
-%         binArray   = 1:ALLMVPA(1).nbin;
-%         chanArray  = 1:ALLMVPA(1).nchan;
-%         setArray   = 1:length(ALLMVPA);
-%         %latency    = 0;
-%         blc        = 'pre';
-%         %moption    = 'instabl';
-%         tittle     = 'nada';
-%         dig        = 3;
-%         coi        = [];
-%         polpeak    = [];
-%         sampeak    = [];
-%         locpeakrep = [];
-%         frac       = [];
-%         fracmearep = [];
-%         intfactor  = 1;
-% end
-%datatype2 = '';
-if isfield(ALLMVPC(1), 'DecodingMethod')
-        datatype = ALLMVPC(1).DecodingMethod;
-        
-        if strcmpi(datatype,'SVM')
-            % here, treat SEM data like ERP data
-            datatype = 'SVM';
-           % datatype2 = 'SEM';
-        end
-        
-else
-        datatype = 'SVM';
-end
+ALLMVPC = varargin{1};
+setArray = 1:length(ALLMVPC);
 
-if strcmpi(datatype, 'SVM')
-        measurearray = {'Average Decoding Accuracy'};
-else
-        %blc        = 'none';
-        measurearray = {'Average Decoding Accuracy'};
-end
+measurearray = {'Average Decoding Accuracy','Crossnobis Distance','None'};
 
-handles.measurearray = measurearray;
 
-meacodes    =      {'avgdecodingacc' };
-
-handles.meacodes    = meacodes;
-
-handles.chance = 0; 
-handles.stderror = 0; 
-handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'}; 
-set(handles.popupmenu_alpha,'String', handles.alpha); 
-set(handles.popupmenu_alpha,'Value',7); 
-
-%set(handles.text_measurementv, 'String', measurearray);
-%[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
-
-meamenu = 1; % 'Average Decoding Accuracy',...
-set(handles.text_measurementv, 'String', measurearray{meamenu});
-% set(handles.text_measurementv, 'Value', meamenu);
-% set(handles.text_measurementv, 'Enable', 'inactive');
-
+%colors 
 cwm = erpworkingmemory('WMColor'); % window color for measurement
 cvl = erpworkingmemory('VLColor'); % line color for measurement
 mwm = erpworkingmemory('WMmouse'); % select window measurement by mouse option
@@ -194,29 +86,179 @@ end
 %handles.defx       = defx;
 handles.cwm        = cwm;
 handles.cvl        = cvl;
-handles.ALLMVPA     = ALLMVPC;
-%handles.binArray   = binArray;
-%handles.chanArray  = chanArray;
-handles.setArray   = setArray;
-%handles.ich        = 1;
-%handles.ibin       = 1;
-handles.iset       = 1;
-%handles.orilatency = latency;
-%handles.blc        = blc;
-%handles.moption    = moption;
-%handles.tittle     = tittle;
-handles.dig        = 3;
-handles.x1         = -1.75;
-handles.x2         = 1.75;
+
+%
+% Color GUI
+%
+handles = painterplab(handles);
+
+%
+% Set font size
+%
+handles = setfonterplab(handles);
+
+
+if isempty(ALLMVPC)
+    set(handles.radiobutton2,'Value',1)
+    
+    handles.measurearray = {''};
+    handles.meacodes =   {''};
+    handles.chance = 0;
+    handles.stderror = 0;
+    handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'};
+    set(handles.popupmenu_alpha,'String', handles.alpha);
+    set(handles.popupmenu_alpha,'Value',7);
+    set(handles.popupmenu_alpha,'String', handles.alpha);
+    set(handles.popupmenu_alpha,'Value',7);
+    meamenu = 3;
+    set(handles.text_measurementv, 'String', measurearray{meamenu});
+    
+    
+    handles.ALLMVPA     = ALLMVPC;
+    handles.setArray   = setArray;
+    handles.iset       = 0;
+    handles.dig        = 3;
+    handles.x1         = -1.75;
+    handles.x2         = 1.75;
+    
+    xlim  = [0 30]; %default for empty values
+    ylim  = [0 15]; %default for emtpy values
+    
+    set(handles.edit_ylim, 'String', num2str(ylim));
+    set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
+    
+    iset = 0; %empty file
+    set(handles.edit_file, 'String', num2str(iset));
+    
+    set(handles.checkbox_butterflyset,'Enable', 'off');
+    set(handles.checkbox_stderror,'Enable', 'off');
+    
+
+    set(handles.checkbox_butterflyset, 'Enable', 'off')
+    set(handles.pushbutton_right_file, 'Enable', 'off')
+    set(handles.pushbutton_left_file, 'Enable', 'off')
+
+    handles.datatype = '';
+    
+else
+    set(handles.radiobutton1,'Value',1); 
+    set(handles.listbox_mvpcnames,'Enable','off'); 
+    set(handles.text3,'String','MVPCmenu Index'); 
+    
+    if isfield(ALLMVPC(1), 'DecodingMethod')
+        datatype = ALLMVPC(1).DecodingMethod;
+        
+        if strcmpi(datatype,'SVM')
+            % here, treat SEM data like ERP data
+            datatype = 'SVM';
+            % datatype2 = 'SEM';
+        end
+        
+    else
+        datatype = 'SVM';
+    end
+    
+    
+    if strcmpi(datatype, 'SVM')
+        meamenu = 1;
+    else
+        meamenu = 2
+    end
+    
+    handles.measurearray = measurearray;
+    
+    meacodes    =      {'avgdecodingacc' };
+    
+    handles.meacodes    = meacodes;
+    
+    handles.chance = 0;
+    handles.stderror = 0;
+    handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'};
+    set(handles.popupmenu_alpha,'String', handles.alpha);
+    set(handles.popupmenu_alpha,'Value',7);
+    
+    %set(handles.text_measurementv, 'String', measurearray);
+    %[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
+    
+    set(handles.text_measurementv, 'String', measurearray{meamenu});
+    % set(handles.text_measurementv, 'Value', meamenu);
+    % set(handles.text_measurementv, 'Enable', 'inactive');
+    
+    
+    handles.ALLMVPA     = ALLMVPC;
+    handles.ALLMVPA_reset = ALLMVPC; 
+    %handles.binArray   = binArray;
+    %handles.chanArray  = chanArray;
+    handles.setArray   = setArray;
+    %handles.ich        = 1;
+    %handles.ibin       = 1;
+    handles.iset       = 1;
+    %handles.orilatency = latency;
+    %handles.blc        = blc;
+    %handles.moption    = moption;
+    %handles.tittle     = tittle;
+    handles.dig        = 3;
+    handles.x1         = -1.75;
+    handles.x2         = 1.75;
+    
+    
+    % ibin  = 1;
+    % ich   = 1;
+    iset  = 1;
+    times = ALLMVPC(1).times;
+    if strcmpi(datatype, 'SVM')
+        xlim  = [min(times) max(times)];
+        if ALLMVPC(1).nChance*3 > 1
+            ylim = [0 1];
+        else
+            ylim =  [0 ALLMVPC(1).nChance*3];
+            
+        end
+        
+    else
+        xlim  = [0 30];
+        ylim  = [0 15];
+        
+    end
+    
+    
+    set(handles.edit_ylim, 'String', num2str(ylim));
+    set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
+    
+    set(handles.edit_file, 'String', num2str(iset));
+    
+    set(handles.checkbox_butterflyset,'Value', 0);
+    set(handles.checkbox_stderror,'Value', 0);
+    
+    if length(setArray)==1
+        set(handles.checkbox_butterflyset, 'Enable', 'off')
+        %         if frdm; set(handles.edit_file, 'Enable', 'off');end
+        set(handles.pushbutton_right_file, 'Enable', 'off')
+        set(handles.pushbutton_left_file, 'Enable', 'off')
+    end
+    handles.datatype = datatype;
+    
+    
+    
+    %
+    % Plot figure
+    %
+    % Update handles structure
+    guidata(hObject, handles);
+
+    
+    mplotdata(hObject, handles, iset, xlim, ylim); 
+    
+end
 
 %
 % create random x-values for scatter plot
 %
 % xscatt = rand(1,numel(AMP))*2.5-1.25;
 % handles.xscatt = xscatt;
-indxsetstr     = {''};
-% end
-handles.indxsetstr = indxsetstr;
+% indxsetstr     = {''};
+% % end
+% handles.indxsetstr = indxsetstr;
 
 % handles.membin     = [];
 % handles.memch      = [];
@@ -256,112 +298,17 @@ handles.indxsetstr = indxsetstr;
 version = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   VIEWER FOR MVPC GUI']); %, 'toolbar','figure')
 
-% ibin  = 1;
-% ich   = 1;
-iset  = 1;
-times = ALLMVPC(1).times;
-if strcmpi(datatype, 'SVM')
-    xlim  = [min(times) max(times)];
-    if ALLMVPC(1).nChance*3 > 1
-        ylim = [0 1]; 
-    else
-        ylim =  [0 ALLMVPC(1).nChance*3];
-        
-    end
-    
-else
-    xlim  = [0 30];
-    ylim  = [0 15];
-    
-end
-
-
-set(handles.edit_ylim, 'String', num2str(ylim));
-set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
-
-set(handles.edit_file, 'String', num2str(iset));
-
-set(handles.checkbox_butterflyset,'Value', 0);
-set(handles.checkbox_stderror,'Value', 0);
-
-if length(setArray)==1
-        set(handles.checkbox_butterflyset, 'Enable', 'off')
-%         if frdm; set(handles.edit_file, 'Enable', 'off');end
-        set(handles.pushbutton_right_file, 'Enable', 'off')
-        set(handles.pushbutton_left_file, 'Enable', 'off')
-end
-handles.datatype = datatype;
-
-%
-% Color GUI
-% %
-% handles = painterplab(handles);
-% 
-% %
-% % Set font size
-% %
-% handles = setfonterplab(handles);
-
-
-% help
-% helpbutton
-
-%
-% Drag
-%
-% set(handles.checkbox_dmouse,'Value', 0)
-% set(handles.radiobutton_histo,'Value', 0)
-% set(handles.radiobutton_histo,'Enable', 'off')
-% set(handles.pushbutton_histosetting,'Enable', 'off')
-% set(handles.radiobutton_scatter,'Value', 0)
-% set(handles.radiobutton_scatter,'Enable', 'off')
-% set(handles.checkbox_fileindx,'Value', 0)
-% set(handles.checkbox_fileindx,'Enable', 'off')
-% set(handles.checkbox_scatterlabels, 'Value',0)
-% set(handles.checkbox_scatterlabels, 'Enable', 'off')
-% set(handles.pushbutton_narrow, 'Enable', 'off')
-% set(handles.pushbutton_wide, 'Enable', 'off')
-% set(handles.checkbox_3sigma, 'Value',0)
-% set(handles.checkbox_3sigma, 'Enable', 'off')
-% % set(handles.togglebutton_y_axis_polarity, 'Enable', 'on');
-% set(handles.gui_chassis,'DoubleBuffer','on')
-
-% if isempty(AMP)
-%         [ AMP, Lat, latency ] = getnewvals(hObject, handles, latency);
-%         handles.AMP        = AMP;
-%         handles.Lat        = Lat;
-%         handles.latency    = latency;
-% else
-%         handles.AMP        = AMP;
-%         handles.Lat        = Lat;
-%         handles.latency    = latency;
-%         
-% end
-
-
-%
-% Color GUI
-%
-handles = painterplab(handles);
-
-%
-% Set font size
-%
-handles = setfonterplab(handles);
-
 
 % Update handles structure
 guidata(hObject, handles);
-
-%
-% Plot figure
-%
-mplotdata(hObject, handles, iset, xlim, ylim)
 
 
 
 % UIWAIT makes mvpaviewerGUI wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
+
+
+
 
 function mplotdata(hObject,handles,iset,xlim,ylim)
 
@@ -384,7 +331,7 @@ set(handles.edit_report, 'FontSize', fntsz*1.5)
 set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
 
 linecols = ["red","green","blue","cyan","magenta","black"];
-linecols_max = repmat(linecols,[size(setArray)]); %set max amount of colors
+linecols_max = repmat(linecols,size(setArray)); %set max amount of colors
 linecols = linecols_max(setArray); 
 
     
@@ -571,7 +518,9 @@ function varargout = mvpcviewerGUI_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+
 varargout{1} = handles.output;
+
 
 % The figure can be deleted now
 delete(handles.gui_chassis);
@@ -996,4 +945,379 @@ function popupmenu_alpha_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in radiobutton1.
+function radiobutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.radiobutton2,'Value',0); 
+set(handles.listbox_mvpcnames,'Enable','off'); 
+set(handles.pushbutton_addmvpc,'Enable','off'); 
+
+set(handles.text3,'String','MVPC index'); 
+
+%plot first MVPCset
+
+ALLMVPC =  handles.ALLMVPA_reset; %obtain reset value
+setArray = 1:length(ALLMVPC); 
+  
+    if isfield(ALLMVPC(1), 'DecodingMethod')
+        datatype = ALLMVPC(1).DecodingMethod;
+        
+        if strcmpi(datatype,'SVM')
+            % here, treat SEM data like ERP data
+            datatype = 'SVM';
+            % datatype2 = 'SEM';
+        end
+        
+    else
+        datatype = 'SVM';
+    end
+    
+    
+    if strcmpi(datatype, 'SVM')
+        meamenu = 1;
+    else
+        meamenu = 2
+    end
+    
+    measurearray = handles.measurearray; 
+
+    handles.chance = 0;
+    handles.stderror = 0;
+    handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'};
+    set(handles.popupmenu_alpha,'String', handles.alpha);
+    set(handles.popupmenu_alpha,'Value',7);
+
+    set(handles.text_measurementv, 'String', measurearray{meamenu});
+
+    
+    handles.ALLMVPA     = ALLMVPC;
+    %handles.binArray   = binArray;
+    %handles.chanArray  = chanArray;
+    handles.setArray   = setArray;
+    %handles.ich        = 1;
+    %handles.ibin       = 1;
+    handles.iset       = 1;
+    %handles.orilatency = latency;
+    %handles.blc        = blc;
+    %handles.moption    = moption;
+    %handles.tittle     = tittle;
+    handles.dig        = 3;
+    handles.x1         = -1.75;
+    handles.x2         = 1.75;
+    
+    
+
+    iset  = 1;
+    times = ALLMVPC(1).times;
+    if strcmpi(datatype, 'SVM')
+        xlim  = [min(times) max(times)];
+        if ALLMVPC(1).nChance*3 > 1
+            ylim = [0 1];
+        else
+            ylim =  [0 ALLMVPC(1).nChance*3];
+            
+        end
+        
+    else
+        xlim  = [0 30];
+        ylim  = [0 15];
+        
+    end
+    
+    
+    set(handles.edit_ylim, 'String', num2str(ylim));
+    set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
+    
+    set(handles.edit_file, 'String', num2str(iset));
+    
+    set(handles.checkbox_butterflyset,'Value', 0);
+    set(handles.checkbox_stderror,'Value', 0);
+    
+    if length(setArray)==1
+        set(handles.checkbox_butterflyset, 'Enable', 'off')
+        %         if frdm; set(handles.edit_file, 'Enable', 'off');end
+        set(handles.pushbutton_right_file, 'Enable', 'off')
+        set(handles.pushbutton_left_file, 'Enable', 'off')
+    end
+    handles.datatype = datatype;
+    
+    
+    
+    %
+    % Plot figure
+    %
+    % Update handles structure
+    guidata(hObject, handles);
+
+    
+    mplotdata(hObject, handles, iset, xlim, ylim); 
+
+
+
+
+
+
+
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton1
+
+
+% --- Executes on button press in radiobutton2.
+function radiobutton2_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+set(handles.radiobutton1,'Value',0); 
+set(handles.listbox_mvpcnames,'Enable','on');
+set(handles.pushbutton_addmvpc,'Enable','on'); 
+
+if isempty(get(handles.listbox_mvpcnames,'String'))
+    set(handles.listbox_mvpcnames,'String',{'new mvpcset'});
+    set(handles.edit_file,'String','0'); 
+else
+
+   set(handles.listbox_mvpcnames,'Value',1); 
+   set(handles.listbox_mvpcnames,'String',{'new mvpcset'});
+   set(handles.edit_file,'String','0');
+end
+
+set(handles.text3,'String','File index'); 
+
+
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton2
+
+
+% --- Executes on selection change in listbox_mvpcnames.
+function listbox_mvpcnames_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox_mvpcnames (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox_mvpcnames contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox_mvpcnames
+
+
+% --- Executes during object creation, after setting all properties.
+function listbox_mvpcnames_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox_mvpcnames (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton_addmvpc.
+function pushbutton_addmvpc_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_addmvpc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%reset listbox
+% handles.listbox_mvpcnames.String = [];
+% handles.listbox_mvpcnames.Value = 0; 
+% set(handles.listbox_mvpcnames,'String',{'new mvpcset'});
+% set(handles.edit_file,'String','0');
+
+[mvpcfname, mvpcpathname] = uigetfile({  '*.mvpc','Multivariate Pattern Classification files (*.mvpc)'; ...
+        '*.mat','Matlab (*.mat)'; ...
+        '*.*',  'All Files (*.*)'}, ...
+        'Select an edited file', ...
+        'MultiSelect', 'on');
+
+if isequal(mvpcfname,0)
+        disp('User selected Cancel')
+        return
+else
+        if ~iscell(mvpcfname)
+                mvpcfname = {mvpcfname};
+        end
+        
+        nmvpcn = length(mvpcfname);
+        
+        for i=1:nmvpcn
+                newline  = fullfile(mvpcpathname, mvpcfname{i});
+                currline = get(handles.listbox_mvpcnames, 'Value');
+                fulltext = get(handles.listbox_mvpcnames, 'String');
+                indxline = length(fulltext);
+                
+                if currline==indxline
+                        % extra line forward
+                        fulltext  = cat(1, fulltext, {'new mvpcset'});
+                        set(handles.listbox_mvpcnames, 'Value', currline+1)
+                else
+                        set(handles.listbox_mvpcnames, 'Value', currline)
+                        resto = fulltext(currline:indxline);
+                        fulltext  = cat(1, fulltext, {'new mvpcset'});
+                        set(handles.listbox_mvpcnames, 'Value', currline+1)
+                        [fulltext{currline+1:indxline+1}] = resto{:};
+                end
+                
+                fulltext{currline} = newline;
+                set(handles.listbox_mvpcnames, 'String', fulltext)
+        end
+        
+        indxline = length(fulltext);
+        handles.indxline = indxline;
+        handles.fulltext = fulltext;
+        handles.listname = [];
+        preindex = 0; 
+        for i=1:(numel(handles.fulltext) - 1)
+            
+            
+            %currline = get(handles.listbox_mvpcnames, 'Value');
+            fullname = handles.listbox_mvpcnames.String{i}; 
+            fprintf('Loading %s\n', fullname);
+            L   = load(fullname, '-mat');
+            MVPC = L.MVPC;
+            %             if i == 1
+            %                 BEST = L.BEST;
+            %             else
+            %                 BEST(i) = L.BEST;
+            %             end
+        
+        if i == 1 
+            ALLMVPC = MVPC;
+
+        else
+            ALLMVPC(i+preindex) = MVPC;
+
+        end
+        
+        end
+        
+        %plot latest entry
+         
+        if isfield(ALLMVPC(end), 'DecodingMethod')
+            datatype = ALLMVPC(end).DecodingMethod;
+            
+            if strcmpi(datatype,'SVM')
+                % here, treat SEM data like ERP data
+                datatype = 'SVM';
+                % datatype2 = 'SEM';
+            end
+            
+        else
+            datatype = 'SVM';
+        end
+        
+        
+        if strcmpi(datatype, 'SVM')
+            meamenu = 1;
+        else
+            meamenu = 2
+        end
+        
+        measurearray = handles.measurearray ;
+        
+
+        
+        handles.chance = 0;
+        handles.stderror = 0;
+        handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'};
+        set(handles.popupmenu_alpha,'String', handles.alpha);
+        set(handles.popupmenu_alpha,'Value',7);
+
+        
+        set(handles.text_measurementv, 'String', measurearray{meamenu});
+        % set(handles.text_measurementv, 'Value', meamenu);
+        % set(handles.text_measurementv, 'Enable', 'inactive');
+        setArray = 1:length(ALLMVPC);
+        
+        handles.ALLMVPA     = ALLMVPC;
+        %handles.binArray   = binArray;
+        %handles.chanArray  = chanArray;
+        handles.setArray   = setArray;
+        %handles.ich        = 1;
+        %handles.ibin       = 1;
+        handles.iset       = setArray(end);
+        %handles.orilatency = latency;
+        %handles.blc        = blc;
+        %handles.moption    = moption;
+        %handles.tittle     = tittle;
+        handles.dig        = 3;
+        handles.x1         = -1.75;
+        handles.x2         = 1.75;
+        
+        
+        % ibin  = 1;
+        % ich   = 1;
+        iset  = setArray(end);
+        times = ALLMVPC(end).times;
+        if strcmpi(datatype, 'SVM')
+            xlim  = [min(times) max(times)];
+            if ALLMVPC(end).nChance*3 > 1
+                ylim = [0 1];
+            else
+                ylim =  [0 ALLMVPC(end).nChance*3];
+                
+            end
+            
+        else
+            xlim  = [0 30];
+            ylim  = [0 15];
+            
+        end
+        
+        
+        set(handles.edit_ylim, 'String', num2str(ylim));
+        set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
+        
+        set(handles.edit_file, 'String', num2str(iset));
+        
+        set(handles.checkbox_butterflyset,'Value', 0);
+        set(handles.checkbox_stderror,'Value', 0);
+        
+        if length(setArray)==1
+            set(handles.checkbox_butterflyset, 'Enable', 'off')
+            %         if frdm; set(handles.edit_file, 'Enable', 'off');end
+            set(handles.pushbutton_right_file, 'Enable', 'off')
+            set(handles.pushbutton_left_file, 'Enable', 'off')
+        else
+            set(handles.checkbox_butterflyset, 'Enable', 'on')
+            %         if frdm; set(handles.edit_file, 'Enable', 'off');end
+            set(handles.pushbutton_right_file, 'Enable', 'on')
+            set(handles.pushbutton_left_file, 'Enable', 'on')
+            
+        end
+        handles.datatype = datatype;
+        
+         % Update handles structure
+        guidata(hObject, handles);       
+        
+        mplotdata(hObject, handles, iset, xlim, ylim)
+        
+        
+        
+end
+
+   
+   
+
+
+% --- Executes when user attempts to close gui_chassis.
+function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to gui_chassis (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
+        %The GUI is still in UIWAIT, us UIRESUME
+        handles.output = [];
+        %Update handles structure
+        guidata(hObject, handles);
+        uiresume(handles.gui_chassis);
+else
+        % The GUI is no longer waiting, just close it
+        delete(handles.gui_chassis);
 end
