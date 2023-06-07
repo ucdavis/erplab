@@ -56,7 +56,13 @@ datatype = checkdatatype(ERPLAB);
 
 if strcmpi(datatype, 'ERP')
     Ktime  = 1000; % ms
-    toffsa = abs(round(ERPLAB.xmin*fs))+1;
+    try
+          toffsa = abs(round(ERPLAB.xmin*fs))+1;
+    catch
+          ERPLAB.xmin = ERPLAB.times(1)/Ktime; 
+          ERPLAB.xmax = ERPLAB.times(end)/Ktime;
+          toffsa = abs(round(ERPLAB.xmin*fs))+1;
+    end
 else % FFT
     Ktime  = 1;    % sec or Hz
     toffsa = 0;

@@ -100,7 +100,7 @@ if nargin==1  % GUI
             end
         end
         
-        def{2} = 0; %aaron: until I fix lists, always load mvpcmenu
+       % def{2} = 0; %aaron: until I fix lists, always load mvpcmenu
 
         %
         % Open Grand Average GUI

@@ -357,6 +357,7 @@ comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');'];
 comSaveMVPC = ['[MVPC] = pop_savemymvpc(MVPC,''gui'',''saveas'');'];
 comAvgMVPC = ['[MVPC] = pop_mvpcaverager(ALLMVPC);'];
 comViewMVPC = ['mvpcviewerGUI(ALLMVPC);'];
+comPlotCF  = ['pop_plotconfusions(ALLMVPC)']; 
 %comDelMVPC =
 
 
@@ -590,7 +591,8 @@ uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator',
 MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Spatial ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','View MVPCsets','CallBack',comViewMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','View MVPCsets Results','CallBack',comViewMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Plot Confusion Matrix','CallBack',comPlotCF,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
 %uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
