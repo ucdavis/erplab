@@ -23,8 +23,7 @@
 %                           Default: 'good'; 
 %        'ExcludeBoundary' - exclude epochs having boundary events.
 %                           'on'(def)/'off'
-%        'ApplyFS'     -  If bandpass filtering, must be 1. Default = 0
-%        'BandPass'    -  For bandpass filtering: [Low_edge_freq High_edge_freq], e.g [8 12];
+%        'BandPass'    -  If desired, bandpass filtering: [Low_edge_freq High_edge_freq], e.g [8 12];
 %        'SaveAs'      -  (optional) open GUI for saving BESTset. Not
 %                       useful if scripting; use separate pop_savemybest(). 
 %                           'on'/'off' (Default: off)
@@ -149,7 +148,9 @@ if nargin ==1 %GUI case, ALLEEG is input
     artcrite = double(app.output{4}); 
     exclude_be = app.output{5}; 
 
-    
+    if cmk_bp == 0
+        bpfreq = [];
+    end
     
     app.delete; %delete app/app_object from view
     
@@ -161,10 +162,10 @@ if nargin ==1 %GUI case, ALLEEG is input
         disp('User selected Cancel')
         return
     end
-    
-    if isempty(bpfreq)
-        bpfreq = str2num(bpfreq); 
-    end
+%     
+%     if ~isempty(bpfreq)
+%         bpfreq = str2num(bpfreq); 
+%     end
     
     if artcrite == 0
         crit = 'all'; 
@@ -190,7 +191,7 @@ if nargin ==1 %GUI case, ALLEEG is input
 
     [BEST] = pop_extractbest(ALLEEG,'DSindex',currdata,'Bins',bins_to_use,...
         'Criterion', crit, 'ExcludeBoundary',excbound,  ... 
-        'ApplyBP', cmk_bp, 'Bandpass', bpfreq,'Saveas', 'on');
+        'Bandpass', bpfreq,'Saveas', 'on','History','gui');
     
     pause(0.1)
     return
@@ -210,18 +211,19 @@ p.addRequired('ALLEEG', @isstruct);
 % option(s)
 p.addParamValue('DSindex', 1,@isnumeric); %defaults to 1 
 p.addParamValue('Bins', [], @isnumeric);
-p.addParamValue('ApplyBP', 0, @isnumeric);
+%p.addParamValue('ApplyBP', 0, @isnumeric);
 p.addParamValue('Bandpass', [], @isnumeric);
 p.addParamValue('Criterion','good',@ischar);
 p.addParamValue('ExcludeBoundary','on',@ischar); 
-p.addParamValue('Saveas', 'off', @ischar); 
+p.addParamValue('Saveas', 'off', @ischar);
+p.addParamValue('History','script',@ischar); 
 
 
 p.parse(ALLEEG, varargin{:}); 
 
 setindex = p.Results.DSindex; 
 bin_ind = p.Results.Bins;
-bandpass_on = p.Results.ApplyBP; 
+%bandpass_on = p.Results.ApplyBP; 
 bandpass_freq = p.Results.Bandpass; 
 artcrite = p.Results.Criterion; 
 exclude_be = p.Results.ExcludeBoundary; 
@@ -247,6 +249,16 @@ elseif strcmpi(exclude_be,'off')
     excbound = 2;
 end
 
+if strcmpi(p.Results.History,'implicit')
+    shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+    shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+    shist = 1; % gui
+else
+    shist = 0; % off
+end
+
 
 
 %main EEG struct
@@ -254,7 +266,7 @@ EEG2 = ALLEEG(setindex);
 fs_original = EEG2.srate; % need original FS (for frequency transformation)
 
 
-if bandpass_on == 1
+if ~isempty(bandpass_freq)
     nElectrodes = EEG2.nbchan;
     
     for c = 1:nElectrodes
@@ -304,6 +316,79 @@ BEST.original_bin = BEST.original_bin([bin_ind]);
 BEST.nbin = length(bin_ind); 
 
 %
+% History
+%
+skipfields = {'ALLEEG', 'Saveas','Warning','History'};
+if isempty(bandpass_freq) == 1 % ERP
+    skipfields = [skipfields 'Bandpass'];
+end
+% if isfield(p.Results,'DQ_spec') == 0 || isempty(p.Results.DQ_spec)
+%     skipfields = [skipfields 'DQ_spec'];  % skip DQ spec in History if it was absent
+% elseif isfield(p.Results.DQ_spec(1),'comments') && numel(p.Results.DQ_spec(1).comments) >= 1
+%         if strcmpi(p.Results.DQ_spec(1).comments{1},'defaults')
+%             skipfields = [skipfields 'DQ_spec'];  % skip DQ spec in History if default was used
+%         end
+% end
+fn      = fieldnames(p.Results);
+explica = 0;
+if length(setindex)==1 && setindex(1)==1
+    inputvari  = 'EEG'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
+    skipfields = [skipfields 'DSindex']; % SL
+else
+    if length(setindex)==1
+        explica   = 1;
+    end
+    inputvari = inputname(1);
+end
+bestcom = sprintf( 'BEST = pop_extractbest( %s ', inputvari);
+for q=1:length(fn)
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    bestcom = sprintf( '%s, ''%s'', ''%s''', bestcom, fn2com, fn2res);
+                end
+            else
+                if iscell(fn2res)
+                    if all(cellfun(@isnumeric, fn2res))
+                        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                    else
+                        fn2resstr = '';
+                        for kk=1:length(fn2res)
+                            auxcont = fn2res{kk};
+                            if ischar(auxcont);
+                                fn2resstr = [fn2resstr '''' auxcont ''''];
+                            else
+                                fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
+                            end                            
+                        end
+                    end
+                    fnformat = '{%s}';
+                elseif isnumeric(fn2res)
+                    fn2resstr = num2str(fn2res); fnformat = '%s';
+                elseif isstruct(fn2res)
+                    fn2resstr = 'DQ_spec_structure'; fnformat = '%s';
+                else
+                    fn2resstr = vect2colon(fn2res, 'Sort','on');
+                    fnformat = '%s';
+                end
+                
+                if strcmpi(fn2com,'DSindex') || strcmpi(fn2com,'Bins') || strcmpi(fn2com,'Bandpass')
+                    bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
+                else
+                    bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+                end
+                
+                %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+            end
+        end
+    end
+end
+bestcom = sprintf( '%s );', bestcom);
+
+%
 % Save BESTset
 %
 
@@ -311,7 +396,7 @@ if issaveas
     [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
     if issave>0
         if issave==2
-            %erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
+          %  erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
             msgwrng = '*** Your BESTset was saved on your hard drive.***';
         else
             msgwrng = '*** Warning: Your BESTset was only saved on the workspace.***';
@@ -320,6 +405,25 @@ if issaveas
         msgwrng = 'ERPLAB Warning: Your changes were not saved';
     end
     try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+end
+
+switch shist
+    case 1 % from GUI
+        % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        displayEquiComERP(bestcom);
+        if explica
+            try
+                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_extractbest, you may use EEG instead of ALLEEG, and remove "''DSindex'',%g"\n',setindex);
+            catch
+                fprintf('%%IMPORTANT: For pop_extractbest, you may use EEG instead of ALLEEG, and remove ''DSindex'',%g:\n',setindex);
+            end
+        end
+    case 2 % from script
+       % ERP = erphistory(ERP, [], bestcom, 1);
+    case 3
+        % implicit
+    otherwise % off or none
+        bestcom = '';
 end
 
 

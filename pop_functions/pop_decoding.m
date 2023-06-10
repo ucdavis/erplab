@@ -30,7 +30,7 @@
 %                            defualt 
 %                            3: Use common floor value 
 %        'floorValue'   - Amount of trials per ERP* 
-%                       *Only valid if equalizeTrials == 2
+%                       *Only valid if equalizeTrials == 3
 %        'method'       - Classification method 
 %                          1:SVM (default), 2: Crossnobis
 %        'SVMcoding'    - If classification method == SVM*, then

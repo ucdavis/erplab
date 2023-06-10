@@ -1,5 +1,5 @@
-% PURPOSE: Loads a current MVPA structure (if any) from the workspace
-%        Otherwise, load ALLMVPA(CURRENTMVPA); Otherwise, MVPA = []
+% PURPOSE: Loads a current MVPC structure (if any) from the workspace
+%        Otherwise, load ALLMVPC(CURRENTMVPC); Otherwise, MVPC = []
 %
 %        To avoid clearing an already filled MVPA structure after an
 %        interrupted process (for instance, after error) or canceling

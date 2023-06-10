@@ -12,7 +12,7 @@
 % The available input parameters are as follows:
 %
 %        'bins_to_combine' 	   - Cell array of bins to combine where each
-%                                 element is a set of bin indexes.
+%                                 element is a set of bin indexes from BEST.
 %        'bin_labels'          - Cell array of bin description names for
 %                                   each newly combined bin. 
 %                                   Length of cellarray must equal 'bins_to_combine' 
@@ -64,15 +64,15 @@
 function [BEST] = pop_combineBESTbins(ALLBEST,varargin) 
 com = '';
 
-try 
-    ALLBEST = evalin('base','ALLBEST');
-catch
-    disp('WARNING: ALLBEST structure was not found. ERPLAB will create an empty one')
-    ALLBEST = [];
-end
+% try 
+%     ALLBEST = evalin('base','ALLBEST');
+% catch
+%     disp('WARNING: ALLBEST structure was not found. ERPLAB will create an empty one')
+%     ALLBEST = [];
+% end
 
 %preload BEST
-BEST = preloadBEST; 
+% BEST = preloadBEST; 
 
 if nargin < 1
     help pop_combineBESTbins
@@ -141,16 +141,16 @@ p.addRequired('ALLBEST');
     
 
 p.addParamValue('BESTindex', [1],@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
-p.addParamValue('new_bins',{}); %array of channel indicies (def: all channels)
-p.addParamValue('new_labels',{}); 
+p.addParamValue('bins_to_combine',{}); %array of channel indicies (def: all channels)
+p.addParamValue('bin_labels',{}); 
 p.addParamValue('Saveas','off'); 
 
 % Parsing
 p.parse(ALLBEST, varargin{:});
 
 idx_bestset = p.Results.BESTindex;
-new_bins = p.Results.new_bins;
-new_labels = p.Results.new_labels;
+new_bins = p.Results.bins_to_combine;
+new_labels = p.Results.bin_labels;
 
 %% choose BESTsets
 if ~isempty(idx_bestset)  
