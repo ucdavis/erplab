@@ -43,8 +43,8 @@ p.parse(varargin{:});
 
 % if ~iserpmem
 
-p_location = which('EStudio');
-p_location = p_location(1:findstr(p_location,'EStudio.m')-1);
+p_location = which('o_ERPDAT');
+p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
 try
     tooltype =  p.Results.tooltype;
 catch
