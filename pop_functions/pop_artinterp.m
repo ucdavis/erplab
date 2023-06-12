@@ -23,7 +23,12 @@
 %        'ChanToInterp'  - [integer] Index of channel to interpolate. 
 %        'ChansToIgnore' - [integer array] Do not include these electrodes
 %                          as input for interpolation.
-%        'Channel' 	- channel(s) to search artifacts.
+%        'InterpAnyChan'    - default = 0; If 1, all channels that are flagged with artifacts
+%                           will be interpolated IF no more than THRESHOLD
+%                           percent of channels are flagged
+%        'Threshold'    - default = 10%; if greater than X% of channels are flagged, 
+%        then interpolation routine will NOT work for that epoch 
+%
 %
 % OUTPUTS  :
 %
@@ -84,12 +89,16 @@ if nargin==1
         dlg_title = {'Interpolate Flagged Artifact Epochs'};
 
         %defaults 
-        defx = {0, 'spherical',[],[],[]}; 
+        defx = {0, 'spherical',[],[],[],0,10}; 
         %first pos: no previous flag selected
         %second pos: no previous method selected (default to 'spherical')
         %third pos: no prev electrode selected (should agree with fourth pos)
         %fourth pos: no prev "channel-label" selected (should agree with third pos)
         %fifth pos: no prev "channels" to ignore
+        %sixth pos: set to 0 = "interpolate only one" electrode option
+        %seventh pos: set to 10% default threshold (of artifacts across
+        %   electrode) for 'any electrode interpolation' option
+        %eigth pos: set [] default, for measurment channel rule 
 
         %take previously selected electrodes and flags used from previous
         % artinterp() usage? 
@@ -136,6 +145,10 @@ if nargin==1
         replaceChannelInd     =  answer{3};
         replaceChannelLabel     =  answer{4};
         ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
+        many_electrodes = answer{6};
+        threshold_perc = answer{7};
+       % measurement_chan = answer{8}; 
+        
        % displayEEG       =  answer{6}; %no display EEG for now
        % viewer     =  answer{end}; %no viewer for Now 
         
@@ -151,7 +164,9 @@ if nargin==1
                 errorfound(msgboxText, title);
                 return
         end
-        erpworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5}});
+        erpworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
+            answer{6}, answer{7}});
+        
         if length(EEG)==1
                 EEG.setname = [EEG.setname '_arInterp']; %suggest a new name
         end
@@ -160,8 +175,9 @@ if nargin==1
         % Somersault
         %
         [EEG, com] = pop_artinterp(EEG, 'FlagToUse', replaceFlag, 'InterpMethod', interpolationMethod, ...
-                'ChanToInterp', replaceChannelInd, ...
-                'ChansToIgnore', ignoreChannels, 'Review', viewstr, 'History', 'gui');
+                'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
+                'InterpAnyChan', many_electrodes, 'Threshold',threshold_perc,...
+                 'Review', viewstr, 'History', 'gui');
         return
 end
 
@@ -182,6 +198,9 @@ p.addParamValue('InterpMethod', 'spherical', @ischar);
 p.addParamValue('ChanToInterp', 0, @isnumeric); %%%%%%%%%%%%% <<<<
 %p.addParamValue('ChanLabel', 'none', @ischar);
 p.addParamValue('ChansToIgnore', [], @isnumeric); 
+p.addParamValue('InterpAnyChan', 0,@isnumeric);
+p.addParamValue('Threshold', 10, @isnumeric); %percentage value 
+%p.addParamValue('MeasurementChanIdx',[],@isnumeric); 
 p.addParamValue('Review', 'off', @ischar); % to open a window with the marked epochs
 %p.addParamValue('Flag', 1, @isnumeric); %param for things to-be flagged
 p.addParamValue('History', 'script', @ischar); % history from scripting
@@ -193,8 +212,13 @@ interpolationMethod      =  p.Results.InterpMethod;
 replaceChannelInd = p.Results.ChanToInterp; 
 %replaceChannelLabel     =  p.Results.ChanLabel;
 ignoreChannels  =  p.Results.ChansToIgnore; 
+many_electrodes = p.Results.InterpAnyChan; 
+threshold_perc = p.Results.Threshold; 
+%meas_chan = p.Results.MeasurementChanIdx; 
 %flag       =  p.Results.Flag;
 displayEEG = p.Results.Review; 
+
+
 
 if strcmpi(p.Results.Review, 'on')% to open a window with the marked epochs
         eprev = 1;
@@ -265,26 +289,156 @@ flagged_epochs = bitand(flagbit(replaceFlag), oldflag);
 epoch_ind = find(flagged_epochs); %list of index of epochs, filtered by specified flag, to interpolate
 
 %% interpolate only the epochs with the specified flag 
-N_interpolate = length(epoch_ind);
+N_interpolate = numel(epoch_ind);
+
+
 
 for e = 1:N_interpolate
     
     tmpEEG = EEG; %temp EEG struct 
     
-    fprintf('\nInterpolating epoch #%s by flag %s \n', num2str(epoch_ind(e)), ...
-        num2str(replaceFlag));
-    
+       
     tmpEEG.data = tmpEEG.data(:,:,epoch_ind(e)); %index current epoch
     tmpEEG.trials = 1; %update temp single trial EEG struct 
+    all_chans = EEG.reject.rejmanualE(:,epoch_ind(e)); 
     
-    %need to figure out how to only interpolate the epoch 
-    tmpEEG = erplab_interpolateElectrodes(tmpEEG, replaceChannelInd, ...
-        ignoreChannels,interpolationMethod);
+    ignoreChannelsE = ignoreChannels;
+    chanlocs = tmpEEG.chanlocs; 
+    
+    %skip epoch if the channel to be interpolated is itself a not-real
+    %channel (i.e. no theta information)
+    nonemptychans = find(~cellfun('isempty', { chanlocs.theta }));
+    
+    
+    
+    if many_electrodes == 1
+        
+        
+        
+        chans_to_interp = find(all_chans)';
+  
+        %skip channels to be interpolated is itself a not-real
+        %channel (i.e. no theta information)
+        
+        [~,chan_ind ] = intersect_bc(chans_to_interp,nonemptychans);    
+        chans_to_interp2 = chans_to_interp(chan_ind); 
+        
+        if isempty(chans_to_interp2)
+            
+            fprintf('\nSkipping epoch #%s since the channel(s) #%i to be interpolated are not real channels (no channel location theta info)', ...
+                num2str(epoch_ind(e)), chans_to_interp);
+            
+            continue
+        end
+            
+   
+        
+        %fix redundancies between chan_to_interp & ignore channels
+        if any(ismember(chans_to_interp,ignoreChannels))
+            %ignoreChannelsE = setdiff(ignoreChannelsE, chans_to_interp);
+            chans_to_interp = setdiff(chans_to_interp,ignoreChannelsE);
+        end
+        
+        %adjust bad channel count with updated ignored channels
+        
+        total_chans = numel(all_chans) - numel(ignoreChannelsE);
+        
+        
+        if sum(all_chans)/(total_chans) >= (threshold_perc/100)
+            
+            fprintf('\nSkipping epoch #%s by flag %s since amount of channels with artifact threshold %i percent exceeded\n', ...
+                num2str(epoch_ind(e)),num2str(replaceFlag), threshold_perc);
+            
+            continue
+            
+        else
+            
+            
+            
+            fprintf('\nInterpolating epoch #%s by flag %s \n', num2str(epoch_ind(e)), ...
+                num2str(replaceFlag));
+            
+            fprintf('\nFlag for epoch %s has been reset in EEG.rejmanual \n', num2str(epoch_ind(e)));
+            
+            %interpolate
+            tmpEEG = erplab_interpolateElectrodes(tmpEEG, chans_to_interp, ...
+                ignoreChannelsE,interpolationMethod);
+            
+            %reset flag at EEG.reject.manual
+            EEG.reject.rejmanual(epoch_ind(e)) = 0;
+            
+            
+            
+            
+        end
+
+        
+        
+    else
+        %one electrode case
+        
+        %skip channels to be interpolated is itself a not-real
+        %channel (i.e. no theta information)       
+        [~,chan_ind ] = intersect_bc(replaceChannelInd,nonemptychans);    
+        replaceChannelInd2 = replaceChannelInd(chan_ind); 
+        
+        if isempty(replaceChannelInd2)
+            fprintf('\nSkipping epoch #%s since the channel(s) #%i to be interpolated are not real channels (no channel location theta info)', ...
+                num2str(epoch_ind(e)), replaceChannelInd);
+            continue
+        end
+            
+        
+        %fix redundancies between chan_to_interp & ignore channels
+        if ismember(replaceChannelInd,ignoreChannels)
+            ignoreChannelsE = setdiff(ignoreChannels, replaceChannelInd);
+        end
+        
+        %fix ignoreChannels to not include channels that are bad (unless it's the chosen channel)!
+        include_to_ignore = double(find(all_chans)');
+        
+        
+        if replaceChannelInd ~= include_to_ignore
+            ignoreChannelsE = cat(2,ignoreChannelsE, include_to_ignore);
+        end
+        
+         %adjust bad channel count with updated ignored channels
+        total_chans = numel(all_chans) - numel(ignoreChannelsE);  
+        
+ 
+        if sum(all_chans)/(total_chans) >= (threshold_perc/100)
+            
+            fprintf('\nSkipping epoch #%s by flag %s since amount of channels with artifact threshold %i percent exceeded\n', ...
+                num2str(epoch_ind(e)),num2str(replaceFlag), threshold_perc);
+            
+            continue
+            
+        else
+            
+            fprintf('\nInterpolating epoch #%s by flag %s \n', num2str(epoch_ind(e)), ...
+                num2str(replaceFlag));
+            
+            fprintf('\nFlag for epoch %s has been reset in EEG.rejmanual \n', num2str(epoch_ind(e)));
+
+            
+            tmpEEG = erplab_interpolateElectrodes(tmpEEG, replaceChannelInd, ...
+                ignoreChannelsE,interpolationMethod);
+            
+            %reset flag at EEG.reject.manual
+            EEG.reject.rejmanual(epoch_ind(e)) = 0;
+        end
+        
+    end
+
     
     %re-add interpolated temp EEG epoch into original EEG
     EEG.data(:,:,epoch_ind(e)) = tmpEEG.data; 
 
 end
+
+% transfer the EEG.reject artifact marks to EVENTLIST
+EEG = pop_syncroartifacts(EEG, 'Direction','eeglab2erplab'); % GUI: 30-May-2023 21:02:55
+
 
 fprintf('\n');
 
@@ -304,6 +458,12 @@ else
     skipfields = {'EEG', 'Review', 'History'};
     fn  = fieldnames(p.Results);
     com = sprintf( '%s  = pop_artinterp( %s ', inputname(1), inputname(1));
+    if many_electrodes
+        idx= strcmp(fn,'ChanToInterp');
+        fn(idx) = []; 
+    end
+        
+    
     for q=1:length(fn)
         fn2com = fn{q};
         if ~ismember_bc2(fn2com, skipfields)
