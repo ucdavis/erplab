@@ -270,6 +270,7 @@ elseif modegui==2
     issave = 2;
     
 elseif modegui==3 %save by script
+    overw = 2; %skip loading it into the menu
     if ~isempty(fullfilename)
         %disp(['Saving BESTset at ' fullfilename '...'] )
         [BEST, serror] = saveBEST(BEST, fullfilename, 0, warnop);
@@ -297,13 +298,13 @@ if overw==1
     assignin('base','ALLERP',ALLBEST);  % save to workspace
     updatemenubest(ALLBEST,1)            % overwrite erpset at erpsetmenu
     
-else
+elseif overw == 0
     assignin('base','BEST',BEST);
     pop_loadbest('filename', 'workspace', 'UpdateMainGui', 'on');
     if issave ~= 2 
         issave = 1;
     end
-    
+       
     
 end
 
