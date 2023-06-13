@@ -268,10 +268,14 @@ fs_original = EEG2.srate; % need original FS (for frequency transformation)
 
 if ~isempty(bandpass_freq)
     nElectrodes = EEG2.nbchan;
+    filtData = nan(EEG2.trials, EEG2.nbchan,EEG2.pnts); 
+    unfiltData = permute(EEG2.data,[3 1 2]); 
     
     for c = 1:nElectrodes
-        EEG2.data(c,:,:) =abs(hilbert(eegfilt(squeeze(EEG2.data(c,:,:)),fs_original,bandpass_freq(1,1),bandpass_freq(1,2))')').^2;   %Instantaneous power
+        
+        filtData(:,c,:) =abs(hilbert(eegfilt(squeeze(unfiltData(:,c,:)),fs_original,bandpass_freq(1,1),bandpass_freq(1,2))')').^2;   %Instantaneous power
     end
+    
 
 end
 
@@ -294,6 +298,13 @@ stderror = 1; apod = []; nfft = []; dcompu = 1; avgText =0;
 
 % Call ERP Averager subfunction, populating the epoch_list
 [ERP2, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname,epoch_list] = averager(EEG2, artif, stderror, excbound, dcompu, nfft, apod, avgText);
+
+if ~isempty(bandpass_freq) %if bandpassed, add filtered data to EEG2
+    
+    filtData = permute(filtData,[2 3 1]); 
+    EEG2.data = filtData; 
+    
+end
 
 
 % Create BEST structure fields from .set file data (subroutine)

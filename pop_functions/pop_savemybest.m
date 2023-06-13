@@ -87,7 +87,7 @@ p.addParamValue('filepath', '', @ischar);
 p.addParamValue('gui','no',@ischar); % or 'save', or 'saveas', or 'erplab'
 p.addParamValue('overwriteatmenu','no',@ischar); 
 p.addParamValue('Warning','on',@ischar); % on/off warning for existing file
-p.addParamValue('modegui',1,@isnumeric); 
+p.addParamValue('History','script',@ischar); 
 
 p.parse(BEST, varargin{:}); 
 
@@ -104,8 +104,8 @@ filenamex    = strtrim(p.Results.filename);
 filepathx    = strtrim(p.Results.filepath);
 fullfilename = fullfile(filepathx, filenamex); % full path
 bestname = p.Results.bestname;
-overw = p.Results.overwriteatmenu; 
-modegui = p.Results.modegui; 
+overw = p.Results.overwriteatmenu;
+
 
 if isempty(bestname)
     bestname = BEST.bestname; 
@@ -125,7 +125,16 @@ else
     warnop = 0;
 end
 
-%
+if strcmpi(p.Results.History,'implicit')
+    shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+    shist = 2; % script
+elseif strcmpi(p.Results.History,'gui') || strcmpi(p.Results.History,'erplab') 
+    shist = 1; % gui
+    
+else
+    shist = 0; % off
+end
 
 
 %
@@ -171,7 +180,8 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save BESTset
     BEST.filepath = ''; 
     BEST.saved = 'no'; 
     modegui = 0; % do not open GUI to save
-    warnop = 1; 
+    warnop = 1;
+    shist = 3; %change history to implicit beacuse called from pop_extractbest()
         
 elseif strcmpi(p.Results.gui, 'save') %just save, no ask
     if isempty(BEST.bestname)
@@ -246,7 +256,7 @@ if modegui == 0
         issave = 1;
     end
     
-elseif modegui == 1 %"save-as" filepath has not been gathered yet, open new GUI
+elseif modegui == 1 %"save" filepath has not been gathered yet, open new GUI
     
     if ~isempty(fullfilename)
         %disp(['Saving BESTset at ' fullfilename '...'] )
@@ -262,7 +272,7 @@ elseif modegui == 1 %"save-as" filepath has not been gathered yet, open new GUI
 elseif modegui==2  
     % save as (open window)
     %disp(['Saving BEST at ' fullfilename '...'] )
-    [BEST, serror] = saveBEST(BEST, fullfilename, 1, warnop);
+    [BEST, serror,fullfilename] = saveBEST(BEST, fullfilename, 1, warnop);
     if serror==1
 
         return
@@ -295,7 +305,7 @@ if overw==1
     ALLBEST     = evalin('base', 'ALLBEST');
     CURRENTBEST = evalin('base', 'CURRENTBEST');
     ALLBEST(CURRENTBEST) = BEST;
-    assignin('base','ALLERP',ALLBEST);  % save to workspace
+    assignin('base','ALLBEST',ALLBEST);  % save to workspace
     updatemenubest(ALLBEST,1)            % overwrite erpset at erpsetmenu
     
 elseif overw == 0
@@ -309,6 +319,43 @@ elseif overw == 0
 end
 
 
+%
+%history
+%
+if isempty(fullfilename)
+    pname='';
+    fname='';
+    ext='';
+else
+    [pname, fname, ext] = fileparts(fullfilename) ; %10-20-11
+end
+fname = [fname ext];
+bestcom = sprintf('%s = pop_savemybest(%s', inputname(1), inputname(1));
+if ~isempty(bestname)
+    bestcom = sprintf('%s, ''bestname'', ''%s''', bestcom, bestname);
+end
+if ~isempty(fname)
+    bestcom = sprintf('%s, ''filename'', ''%s''', bestcom, fname);
+end
+if ~isempty(pname)
+    bestcom = sprintf('%s, ''filepath'', ''%s''', bestcom, pname);
+    if warnop==1
+        bestcom = sprintf('%s, ''Warning'', ''on''', bestcom);
+    end
+end
+bestcom = sprintf('%s);', bestcom);
 
+
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(bestcom);
+        case 2 % from script
+                %ERP = erphistory(ERP, [], erpcom, 1);
+        case 3 % implicit
+                % just using erpcom
+        otherwise %off or none
+                bestcom = '';
+                return
+end
 
 end

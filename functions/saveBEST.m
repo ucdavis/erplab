@@ -1,4 +1,4 @@
-function [BEST, serror] = saveBEST(BEST,filenamex,modegui,warnop)
+function [BEST, serror, filenamex] = saveBEST(BEST,filenamex,modegui,warnop)
 
 serror  = 0; 
 
