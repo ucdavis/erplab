@@ -64,15 +64,8 @@
 function [BEST] = pop_combineBESTbins(ALLBEST,varargin) 
 com = '';
 
-% try 
-%     ALLBEST = evalin('base','ALLBEST');
-% catch
-%     disp('WARNING: ALLBEST structure was not found. ERPLAB will create an empty one')
-%     ALLBEST = [];
-% end
-
 %preload BEST
-% BEST = preloadBEST; 
+BEST = preloadBEST; 
 
 if nargin < 1
     help pop_combineBESTbins
@@ -123,8 +116,8 @@ if nargin == 1 %open GUI
     def = {nbins,nlabels}; 
     erpworkingmemory('pop_combineBESTbins',def); 
     
-    [BEST] = pop_combineBESTbins(ALLBEST,'BESTindex',currdata, 'new_bins',nbins,'new_labels',nlabels, ...
-        'Saveas','on'); 
+    [BEST] = pop_combineBESTbins(ALLBEST,'BESTindex',currdata, 'bins_to_combine',nbins,'bin_labels',nlabels, ...
+        'Saveas','on', 'History','gui'); 
     
     pause(0.1);
     return
@@ -140,10 +133,12 @@ p.CaseSensitive = false;
 p.addRequired('ALLBEST');
     
 
-p.addParamValue('BESTindex', [1],@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
+p.addParamValue('BESTindex', 1,@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
 p.addParamValue('bins_to_combine',{}); %array of channel indicies (def: all channels)
 p.addParamValue('bin_labels',{}); 
-p.addParamValue('Saveas','off'); 
+p.addParamValue('Saveas','off');
+p.addParamValue('History','script'); 
+
 
 % Parsing
 p.parse(ALLBEST, varargin{:});
@@ -166,9 +161,90 @@ else
 end
 
 
+if strcmpi(p.Results.History,'implicit')
+    shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+    shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+    shist = 1; % gui
+else
+    shist = 0; % off
+end
+
+
 %% bin-combiner routine 
 
 BEST = combineBESTbins(BEST, new_bins, new_labels); 
+
+%
+% History
+%
+skipfields = {'ALLBEST', 'Saveas','Warning','History'};
+
+
+fn      = fieldnames(p.Results);
+explica = 0;
+if length(idx_bestset)==1 && idx_bestset(1)==1
+    inputvari  = 'BEST'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
+    skipfields = [skipfields 'ALLBEST' 'BESTindex']; % SL
+else
+    if length(idx_bestset)==1
+        explica   = 1;
+    end
+    inputvari = inputname(1);
+end
+bestcom = sprintf( 'BEST = pop_combineBESTbins( %s ', inputvari);
+for q=1:length(fn)
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    bestcom = sprintf( '%s, ''%s'', ''%s''', bestcom, fn2com, fn2res);
+                end
+            else
+                if iscell(fn2res)
+                    if all(cellfun(@isnumeric, fn2res))
+                        %fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                        fn2resstr =cell2mat(cellfun(@vect2colon,fn2res,'UniformOutput',false));
+                        
+                    else
+                        fn2resstr = '';
+                        for kk=1:numel(fn2res)
+                            auxcont = fn2res{kk};
+                            if ischar(auxcont)
+                                fn2resstr = [fn2resstr '''' auxcont ''',' ];
+                            else
+                                fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
+                            end
+                            
+                        end
+                        fn2resstr(end) = []; %take out last comma
+
+                    end
+                    fnformat = '{%s}';
+                elseif isnumeric(fn2res)
+                    fn2resstr = num2str(fn2res); fnformat = '%s';
+                elseif isstruct(fn2res)
+                    fn2resstr = 'ALLBEST'; fnformat = '%s';
+                else
+                    fn2resstr = vect2colon(fn2res, 'Sort','on');
+                    fnformat = '%s';
+                end
+                
+                if strcmpi(fn2com,'BESTindex') 
+                    bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
+                else
+                    bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+                end
+                
+                %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+            end
+        end
+    end
+end
+bestcom = sprintf( '%s );', bestcom);
 
 
 %% save function
@@ -188,7 +264,24 @@ if issaveas
     try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end
 
-
+switch shist
+    case 1 % from GUI
+        % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        displayEquiComERP(bestcom);
+        if explica
+            try
+                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove "''BESTindex'',%g"\n',setindex);
+            catch
+                fprintf('%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove ''BESTindex'',%g:\n',idx_bestset);
+            end
+        end
+    case 2 % from script
+       % ERP = erphistory(ERP, [], bestcom, 1);
+    case 3
+        % implicit
+    otherwise % off or none
+        bestcom = '';
+end
 
 
 return
