@@ -339,13 +339,44 @@ if nargin == 1 %GUI
     
     %for input into sommersault, change decodeTimes to ms
     decodeTimes = decodeTimes* 1000; 
+    
+    if equalizeTrials == 1 
+        seqtr = 'bins';
+        floorValue = [];
+        
+    elseif equalizeTrials == 2
+        seqtr = 'best';
+        floorValue = [];
+    elseif equalizeTrials == 3
+        seqtr = 'floor'; 
+        
+    else
+        seqtr ='none'; 
+        floorValue = [];
+    end
+    
+    if selected_method == 1 %svm
+        smethod = 'SVM';
+        
+    elseif selected_method == 2
+        smethod = 'Crossnobis'; 
+    end
+    
+    if SVMcoding == 1
+        strSVMcoding = 'OneVsOne';
+    elseif SVMcoding == 2
+        strSVMcoding = 'OneVsAll'; 
+    else
+        strSVMcoding = 'none'; 
+    end
+        
    
     
    [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
-   'equalizeTrials', equalizeTrials,'floorValue',floorValue,'method', selected_method, ...
-   'SVMcoding',SVMcoding, 'Saveas','on', 'ParCompute',ParCompute); 
+   'equalizeTrials', seqtr, 'floorValue',floorValue,'method', smethod, ...
+   'SVMcoding',strSVMcoding, 'Saveas','on', 'ParCompute',ParCompute); 
 
     pause(0.1);
     return
@@ -372,10 +403,10 @@ p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock vali
 %p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
 p.addParamValue('decodeTimes',[],@isnumeric); %[start end](in ms)
 p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
-p.addParamValue('equalizeTrials', 2, @isnumeric); % def: equalize trials across bins & BESTsets (2)
-p.addParamValue('floorValue', 0, @isnumeric); 
-p.addParamValue('method',1,@isnumeric); %method (1:SVM/2:Crossnobis);
-p.addParamValue('SVMcoding',2,@isnumeric); % SVMcoding(1:oneVsone/2:oneVsall); 
+p.addParamValue('equalizeTrials', 'none', @ischar); % def: equalize trials across bins & BESTsets (2)
+p.addParamValue('floorValue', [], @isnumeric); 
+p.addParamValue('method','SVM',@ischar); %method (1:SVM/2:Crossnobis);
+p.addParamValue('SVMcoding','none',@ischar); % SVMcoding(1:oneVsone/2:oneVsall); 
 p.addParamValue('Saveas','off',@ischar); 
 p.addParamValue('ParCompute',0, @isnumeric); %attempt parallization across CPU cores (def: false) 
 
@@ -389,8 +420,8 @@ decodeTimes = p.Results.decodeTimes;
 Decode_every_Npoint = p.Results.Decode_every_Npoint; 
 equalize_trials = p.Results.equalizeTrials;
 floor_value = p.Results.floorValue; 
-method = p.Results.method; 
-SVMcoding = p.Results.SVMcoding;
+smethod = p.Results.method; 
+strSVMcoding = p.Results.SVMcoding;
 % filename_out = p.Results.filename_out; 
 % pathname_out = p.Results.path_out; 
 ParCompute = p.Results.ParCompute; 
@@ -536,7 +567,7 @@ ntimes = numel(decoding_times_index);
 
 
 
-% update ALLBEST.times & ALLBEST.binwisedata, ALLBEST.pnts, 
+%% update ALLBEST.times & ALLBEST.binwisedata, ALLBEST.pnts, 
 
 k = numel(ALLBEST);
 bins = numel(ALLBEST(1).binwise_data);
@@ -559,17 +590,23 @@ for b = 1:k
     end
 end
 
-% reset the trial counts according to nperbinblock/Equalize Trials
-% if equalize_trials = 0 explicitly, we don't equalize.  
+%% reset the trial counts according to nperbinblock/Equalize Trials
+
 nbins = ALLBEST.nbin; 
 nsubs = numel(ALLBEST); 
 
-if nsubs == 1 && equalize_trials == 2
+if ~isempty(floor_value)
+    %in case user only supplies the floor value
+    % we will assume they meant to floor 
+    equalize_trials = 'floor';
+end
+
+if nsubs == 1 && strcmpi(equalize_trials,'best')
     %cannot equalize trials across BESTset if only one BESTset
     equalize_trials = 1; 
 end
 
-if equalize_trials == 2 % equalize across best files 
+if strcmpi(equalize_trials,'best') % equalize across best files 
     
     trials_acr_best = [ALLBEST(:).n_trials_per_bin]; 
     minCnt = min(trials_acr_best); 
@@ -582,7 +619,7 @@ if equalize_trials == 2 % equalize across best files
    end
     
    
-elseif equalize_trials == 1 %equalize bins within best files
+elseif strcmpi(equalize_trials,'bins') %equalize bins within best files
     
     for s = 1:nsubs
         trials_acr_sub = ALLBEST(s).n_trials_per_bin;
@@ -593,15 +630,16 @@ elseif equalize_trials == 1 %equalize bins within best files
         end
         
     end
-elseif equalize_trials == 3
-    
+elseif strcmpi(equalize_trials,'floor')
+    %use common floor_value
     for s = 1:nsubs
-        for tr = 1:nbins
-            %ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks ;
+        for tr = 1:nbins        
             ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks;
         end
     end
     
+else
+    disp('Trials are not equalized'); 
 
 end
 
@@ -625,14 +663,28 @@ if ParCompute == 1
    % delete(gcp)
    try
     par_profile = parpool;
-    ParWorkers = par_profile.NumWorkers; 
+    ParWorkers = (par_profile.NumWorkers) -1 ; %all but one  
    catch
        %opened parallel pool profile already
        par_profile = gcp ;
-       ParWorkers = par_profile.NumWorkers;
+       ParWorkers = par_profile.NumWorkers - 1 ; %all but one
    end
 else
     ParWorkers = 0; %makes parfor run without workers, even if pool is open. 
+end
+
+if strcmpi(smethod,'SVM')
+    method = 1;
+else
+    method = 2;
+end
+
+if strcmpi(strSVMcoding,'OneVsOne')
+    SVMcoding = 1;
+elseif strcmpi(strSVMcoding,'OneVsAll')
+    SVMcoding = 2;
+else
+    SVMcoding = 0;
 end
 
 

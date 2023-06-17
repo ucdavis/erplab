@@ -146,7 +146,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
              eeg_now = eegs(bin).data(ReleventChan,:,:);
             
              true_ntrials = size(eeg_now,3);
-             min_trial_sparsity = floor(true_ntrials/nBlocks); % or max? 
+             min_trial_sparsity = floor(true_ntrials/nBlocks); % max 
                    
             %Obtain index within each shuffled bin
             %shuffBin = randperm((nPerBinBlock(bin))*nBlocks)';
@@ -198,7 +198,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 
                 %blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,:,blocks==bl),3));
                 if nPerBinBlock(bin) == 1
-                    blockDat_filtData(bCnt,:,:) = eeg_now(:,:,(unMasktrial)); 
+                    blockDat_filtData(bCnt,:,:) = eeg_now(:,:,(unMasktrial)); %single trial
                 else
                     blockDat_filtData(bCnt,:,:) = squeeze(mean(eeg_now(:,:,(unMasktrial)),3));
                 end
