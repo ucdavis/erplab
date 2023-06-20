@@ -39,7 +39,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_plot_property(FonsizeDefault);
 varargout{1} = box_erpwave_viewer_property;
@@ -109,7 +109,7 @@ varargout{1} = box_erpwave_viewer_property;
         
         try
             ERPwaviewer = importdata([filepath,erpFilename]);
-            
+            ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
             if isempty(ERPwaviewer.ALLERP)
                 BackERPLABcolor = [1 0.9 0.3];    % yellow
                 question = ['Do you want to use the default "ALLERP"? \n Because there is no "ALLERP" in the file'];
@@ -119,23 +119,47 @@ varargout{1} = box_erpwave_viewer_property;
                 button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
                 set(0,'DefaultUicontrolBackgroundColor',oldcolor);
                 if strcmpi(button,'Yes')
-                    ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
                     ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
                     ERPwaviewer.ERP = ERPwaviewerdef.ERP;
+                    ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
+                    ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
+                    ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
                 else
                     if strcmpi(button,'No')
                         beep;
                         viewer_ERPDAT.Process_messg =3;
                         fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n Cannot use the file because no ALLERP can be used.\n\n');
                     else
-                        beep
+                        beep;
                         viewer_ERPDAT.Process_messg =3;
                         fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n User selected cancel.\n\n');
                     end
                     return;
                 end
+            else
+                if ~isempty(ERPwaviewer.ALLERP) && ~isempty(ERPwaviewerdef.ALLERP)
+                    BackERPLABcolor = [1 0.9 0.3];    % yellow
+                    question = ['Using the default "ALLERP" in the imported file or existing one?'];
+                    title = 'My Viewer>Viewer Properties';
+                    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+                    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+                    button = questdlg(sprintf(question), title,'Cancel','Existing', 'Default','Default');
+                    set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+                    if strcmpi(button,'Existing') %%using the existing ALLERP
+                        ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
+                        ERPwaviewer.ERP = ERPwaviewerdef.ERP;
+                        ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
+                        ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
+                        ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
+                    elseif strcmpi(button,'Default')%%using the ALLERP from the imported file
+                    else%%cancel the selection
+                        beep;
+                        viewer_ERPDAT.Process_messg =3;
+                        fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n User selected cancel.\n\n');
+                        return;
+                    end
+                end
             end
-            
             assignin('base','ALLERPwaviewer',ERPwaviewer);
         catch
             beep;
@@ -144,7 +168,6 @@ varargout{1} = box_erpwave_viewer_property;
             return;
         end
         viewer_ERPDAT.loadproper_count = 1;
-        %         estudioworkingmemory('zoomSpace',1.5);
         f_redrawERP_viewer_test();
         viewer_ERPDAT.Process_messg =2;
     end
