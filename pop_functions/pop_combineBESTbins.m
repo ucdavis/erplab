@@ -225,6 +225,8 @@ for q=1:length(fn)
                     end
                     fnformat = '{%s}';
                 elseif isnumeric(fn2res)
+                    %fn2resstr = num2str(fn2res); fnformat = '%s';
+                    fn2res = mat2colon(fn2res);
                     fn2resstr = num2str(fn2res); fnformat = '%s';
                 elseif isstruct(fn2res)
                     fn2resstr = 'ALLBEST'; fnformat = '%s';
@@ -233,11 +235,11 @@ for q=1:length(fn)
                     fnformat = '%s';
                 end
                 
-                if strcmpi(fn2com,'BESTindex') 
-                    bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
-                else
-                    bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
-                end
+%                 if strcmpi(fn2com,'BESTindex') 
+%                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
+%                 else
+                bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+               % end
                 
                 %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
             end
@@ -270,7 +272,7 @@ switch shist
         displayEquiComERP(bestcom);
         if explica
             try
-                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove "''BESTindex'',%g"\n',setindex);
+                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove "''BESTindex'',%g"\n',idx_bestset);
             catch
                 fprintf('%%IMPORTANT: For pop_combineBESTbins, you may use BEST instead of ALLBEST, and remove ''BESTindex'',%g:\n',idx_bestset);
             end

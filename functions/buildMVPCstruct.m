@@ -19,15 +19,7 @@ if nargin < 1
     mvpc.DecodingUnit = 'None'; %Accuracy vs Distance vs None
     mvpc.DecodingMethod = '';
     mvpc.average_status = 'single_subject';
-    if equalT == 1
-        mvpc.equalTrials = 'acrBEST'; %1: floor across files, %2 floor within files, %0 don't floor. 
-    elseif equalT == 2
-        mvpc.equalTrials = 'acrClasses';
-    elseif equalT == 3
-        mvpc.equalTrials = 'floor'; 
-    else
-        mvpc.equalTrials = 'N/a'; 
-    end
+    mvpc.equalTrials = equalT; %str
     mvpc.n_trials_per_class = ALLBEST.n_trials_per_bin;
     mvpc.saved = 'no';
     mvpc.epoch.pre = ALLBEST.times(1); % Set epoch start in ms (from imported data)
@@ -69,15 +61,7 @@ else
         mvpc.DecodingMethod = 'Crossnobis';
     end
     mvpc.average_status = 'single_subject';
-    if equalT == 1
-        mvpc.equalTrials = 'acrBEST'; %1: floor across files, %2 floor within files,%3 common floor. %0 don't floor.
-    elseif equalT == 2
-        mvpc.equalTrials = 'acrClasses';
-    elseif equalT == 3
-        mvpc.equalTrials = 'floor';
-    else
-        mvpc.equalTrials = 'N/a';
-    end
+    mvpc.equalTrials = equalT; %str
     mvpc.n_trials_per_class = ALLBEST.n_trials_per_bin;
     mvpc.saved = 'no';
     mvpc.epoch.pre = DataTimes(1); % Set epoch start (from imported data)

@@ -11,40 +11,58 @@
 %
 % The available parameters are as follows:
 %
-%        'BESTindex' 	- Index of BESTset to decode.
-%                         If supplying one BESTset, use index "1".
-%                         Default: "1" for the only/first BESTset in
-%                         ALLBEST
-%        'chanArray'    - Index of channels to use. Default: all channels
+%        'BESTindex' 	- Index of BESTset(s) to decode when contained
+%                         within the ALLBEST structure
+%                         If supplying one BESTset using BEST structure this value
+%                         must be equal to 1 or left unspecified.
+%                         Def: [1]
+%
+%        'Channels'     - Index of channels to use. Def: all channels
+%
 %        'nIter'        - Amount of iterations to run decoding per BESTset.
-%                         Default: 100 iterations
+%                         Def: 100 
+%
 %        'nCrossblocks' - Amount of Crossfold Validation blocks where
-%                         Ntrials/nCrossblocks = Ntrials(ERP) / default: 3
-%        'decodeTimes' 	- [start_epoch_decoding end_epoch_decoding]
+%                         Ntrials/nCrossblocks = Ntrials(ERP) / Def: 3
+%
+%        'DecodeTimes' 	- 2-element array denoting epoch start and end times
+%                         e.g.: [start_epoch_decoding end_epoch_decoding]
 %                         Default: use whole epoch length. 
-%        'Decode_every_Npoint' -  Decode every N points where 1 point =
-%                                 1/sampling rate (in ms)
-%                           Default: -1/Do Not Apply
-%        'equalizeTrials'  - 1: Across Bins within BESTset
-%                            2: Across BESTsets (if more than 1 BESTset) -
-%                            defualt 
-%                            3: Use common floor value 
-%        'floorValue'   - Amount of trials per ERP* 
-%                       *Only valid if equalizeTrials == 3
-%        'method'       - Classification method 
-%                          1:SVM (default), 2: Crossnobis
-%        'SVMcoding'    - If classification method == SVM*, then
-%                         SVMcoding = 1 -> 'One vs. One' classifiers;
-%                         SVMcoding = 2 -> 'One vs. ALL classifiers
-%                         if SMM has only two classes, fitcecoc becomes
-%                         fitcsvm. 
+%
+%        'Decode_Every_Npoint' -  Decode every timepoint (T) points where 1 point =
+%                                 1/sampling rate (in ms). Effectively resampling
+%                                 the decoding analysis. For example, a
+%                                 value of 1 decodes every timepoint. 
+%                           Def: [1] 
+%
+%        'EqualizeTrials'  - (Optional) Equalizing the amount of trials per ERP.
+%                            - 'classes': Across classes within BESTset
+%                            - 'best': Across BESTsets (if more than 1 BESTset)
+%                            - 'floor': Using Common Floor Value 
+%                           
+%        'FloorValue'   - (Optional) Equalize amount of trials per ERP across all
+%                           classes (and BESTsets) to this value. If
+%                           specified, overides the 'EqualizeTrials'
+%                           argument. 
+%                          
+%                      
+%        'Method'       - Classification method:
+%                          - 'SVM' (default) using fitcecoc()
+%                               - if BESTset has only two classes/binary,
+%                                    algorithm uses fitcsvm()
+%                          - 'Crossnobis'
+%
+%        'SVMcoding'    - If classification method is 'SVM':
+%                         - 'OneVsOne' 
+%                         - 'OneVsAll' (def)
+%
 %        'SaveAs'        -  (optional) open GUI for saving MVPCset. Not
 %                       useful if scripting; use separate pop_savemymvpc(). 
 %                           'on'/'off' (Default: off)
 %                            (if "off", will not update in MVPCset menu)
 %        'ParCompute'    - (optional) Use parallelization to make decoding
 %                          faster. Uses as many available cores. Must have 'Parallel
-%                          Computing Toolbox' installed. 
+%                          Computing Toolbox' installed. 'on'/'off' (Def)
 %
 %
 % OUTPUTS  :
@@ -341,7 +359,7 @@ if nargin == 1 %GUI
     decodeTimes = decodeTimes* 1000; 
     
     if equalizeTrials == 1 
-        seqtr = 'bins';
+        seqtr = 'classes';
         floorValue = [];
         
     elseif equalizeTrials == 2
@@ -369,14 +387,22 @@ if nargin == 1 %GUI
     else
         strSVMcoding = 'none'; 
     end
+    
+    if ParCompute
+        spar = 'on';
+    else
+        spar = 'off';
+    end
+        
+        
         
    
     
-   [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'chanArray', relevantChans, ...
+   [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'Channels', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
-   'decodeTimes', decodeTimes, 'Decode_every_Npoint',decode_every_Npoint,  ...
-   'equalizeTrials', seqtr, 'floorValue',floorValue,'method', smethod, ...
-   'SVMcoding',strSVMcoding, 'Saveas','on', 'ParCompute',ParCompute); 
+   'DecodeTimes', decodeTimes, 'Decode_Every_Npoint',decode_every_Npoint,  ...
+   'EqualizeTrials', seqtr, 'FloorValue',floorValue,'Method', smethod, ...
+   'SVMcoding',strSVMcoding, 'Saveas','on', 'ParCompute',spar, 'History','gui'); 
 
     pause(0.1);
     return
@@ -395,36 +421,58 @@ p.addRequired('ALLBEST');
 
 % option(s)
 p.addParamValue('BESTindex', [1],@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
-p.addParamValue('chanArray',[], @isnumeric); %array of channel indicies (def: all channels)
+p.addParamValue('Channels',[], @isnumeric); %array of channel indicies (def: all channels)
 %p.addParamValue('nBins',0); %total number of bins/decoding labels/decoding levels
 p.addParamValue('nIter',100, @isnumeric); % total number of decoding iterations (def: 100 iters)
 p.addParamValue('nCrossblocks',3, @isnumeric); % total number of crossblock validations (def: 3 crossblocks)
 %p.addParamValue('nDatatimes',[]); %struct with fields pre(start),post(end) epoch times (def: entire epoch)
 %p.addParamValue('SampleTimes',[]); %array of epoch sampling times in ms, i.e. EEG.times (def: all times)
-p.addParamValue('decodeTimes',[],@isnumeric); %[start end](in ms)
-p.addParamValue('Decode_every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
-p.addParamValue('equalizeTrials', 'none', @ischar); % def: equalize trials across bins & BESTsets (2)
-p.addParamValue('floorValue', [], @isnumeric); 
-p.addParamValue('method','SVM',@ischar); %method (1:SVM/2:Crossnobis);
-p.addParamValue('SVMcoding','none',@ischar); % SVMcoding(1:oneVsone/2:oneVsall); 
+p.addParamValue('DecodeTimes',[],@isnumeric); %[start end](in ms)
+p.addParamValue('Decode_Every_Npoint',1, @isnumeric); %(def = all times(1) // must be positive number )
+p.addParamValue('EqualizeTrials', 'none', @ischar); % def: equalize trials across bins & BESTsets (2)
+p.addParamValue('FloorValue', [], @isnumeric); 
+p.addParamValue('Method','SVM',@ischar); %method (1:SVM/2:Crossnobis);
+p.addParamValue('SVMcoding','OneVsAll',@ischar); % SVMcoding(1:oneVsone/2:oneVsall); 
 p.addParamValue('Saveas','off',@ischar); 
-p.addParamValue('ParCompute',0, @isnumeric); %attempt parallization across CPU cores (def: false) 
+p.addParamValue('ParCompute','off', @ischar); %attempt parallization across CPU cores (def: false)
+p.addParamValue('History','script'); 
 
 % Parsing
 p.parse(ALLBEST, varargin{:});
 idx_bestset = p.Results.BESTindex;
-chanArray = p.Results.chanArray;
+chanArray = p.Results.Channels;
 nIter = p.Results.nIter;
 nCrossblocks = p.Results.nCrossblocks;
-decodeTimes = p.Results.decodeTimes; 
-Decode_every_Npoint = p.Results.Decode_every_Npoint; 
-equalize_trials = p.Results.equalizeTrials;
-floor_value = p.Results.floorValue; 
-smethod = p.Results.method; 
+decodeTimes = p.Results.DecodeTimes; 
+Decode_every_Npoint = p.Results.Decode_Every_Npoint; 
+equalize_trials = p.Results.EqualizeTrials;
+floor_value = p.Results.FloorValue; 
+smethod = p.Results.Method; 
 strSVMcoding = p.Results.SVMcoding;
 % filename_out = p.Results.filename_out; 
 % pathname_out = p.Results.path_out; 
-ParCompute = p.Results.ParCompute; 
+sParCompute = p.Results.ParCompute; 
+
+
+%history
+if strcmpi(p.Results.History,'implicit')
+    shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+    shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+    shist = 1; % gui
+else
+    shist = 0; % off
+end
+
+%parallelization
+if strcmpi(sParCompute, 'on') || strcmpi(sParCompute,'yes')
+    ParCompute = 1; 
+else
+    ParCompute = 0;
+end
+    
+    
 
 
 %% choose BESTsets
@@ -439,7 +487,7 @@ end
 checking = checkmultiBEST(ALLBEST);
 
 if ~checking
-    disp('Sorry, your BEST files do not agree with each other in terms of bins and channels')
+    disp('Sorry, your BEST files do not agree with each other in terms of classes and channels')
     return
 end
 
@@ -603,7 +651,7 @@ end
 
 if nsubs == 1 && strcmpi(equalize_trials,'best')
     %cannot equalize trials across BESTset if only one BESTset
-    equalize_trials = 1; 
+    equalize_trials = 'classes'; 
 end
 
 if strcmpi(equalize_trials,'best') % equalize across best files 
@@ -619,7 +667,7 @@ if strcmpi(equalize_trials,'best') % equalize across best files
    end
     
    
-elseif strcmpi(equalize_trials,'bins') %equalize bins within best files
+elseif strcmpi(equalize_trials,'classes') %equalize bins within best files
     
     for s = 1:nsubs
         trials_acr_sub = ALLBEST(s).n_trials_per_bin;
@@ -640,7 +688,7 @@ elseif strcmpi(equalize_trials,'floor')
     
 else
     disp('Trials are not equalized'); 
-
+   
 end
 
 
@@ -669,6 +717,9 @@ if ParCompute == 1
        par_profile = gcp ;
        ParWorkers = par_profile.NumWorkers - 1 ; %all but one
    end
+   %display num of parallel workers 
+   fprintf('ERPLAB will use %i parallel workers (Max # Workers - 1) for decoding...\n',ParWorkers); 
+   
 else
     ParWorkers = 0; %makes parfor run without workers, even if pool is open. 
 end
@@ -688,9 +739,92 @@ else
 end
 
 
+
 if method == 1 %SVM
     [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParWorkers,method);
 end
+
+
+%
+%History
+%
+
+
+
+skipfields = {'ALLBEST', 'Saveas','History'};
+
+
+fn      = fieldnames(p.Results);
+explica = 0;
+if length(idx_bestset)==1 && idx_bestset(1)==1
+    inputvari  = 'BEST'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
+    skipfields = [skipfields 'ALLBEST' 'BESTindex']; % SL
+else
+    if length(idx_bestset)==1
+        explica   = 1;
+    end
+    inputvari = inputname(1);
+end
+
+if strcmpi(smethod,'Crossnobis')
+    skipfields = [skipfields 'SVMcoding'];
+end
+
+bestcom = sprintf( 'MVPC = pop_decoding( %s ', inputvari);
+for q=1:length(fn)
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    bestcom = sprintf( '%s, ''%s'', ''%s''', bestcom, fn2com, fn2res);
+                end
+            else
+                if iscell(fn2res)
+                    if all(cellfun(@isnumeric, fn2res))
+                        %fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                        fn2resstr =cell2mat(cellfun(@vect2colon,fn2res,'UniformOutput',false));
+                        
+                    else
+                        fn2resstr = '';
+                        for kk=1:numel(fn2res)
+                            auxcont = fn2res{kk};
+                            if ischar(auxcont)
+                                fn2resstr = [fn2resstr '''' auxcont ''',' ];
+                            else
+                                fn2resstr = [fn2resstr ' ' vect2colon(auxcont, 'Delimiter', 'on')];
+                            end
+                            
+                        end
+                        fn2resstr(end) = []; %take out last comma
+
+                    end
+                    fnformat = '{%s}';
+                elseif isnumeric(fn2res)
+                    fn2res = mat2colon(fn2res); 
+                    fn2resstr = num2str(fn2res); fnformat = '%s';
+                elseif isstruct(fn2res)
+                    fn2resstr = 'ALLBEST'; fnformat = '%s';
+                else
+                    fn2resstr = vect2colon(fn2res, 'Sort','on');
+                    fnformat = '%s';
+                end
+                
+%                 if strcmpi(fn2com,'BESTindex') 
+%                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
+%                 else
+                bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+%                 end
+                
+                %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+            end
+        end
+    end
+end
+bestcom = sprintf( '%s );', bestcom);
+
+
 
 %if saveas == 0, use pop_decoding per subject to output 1 MVPC file (even
 %though pop_decoding has the ability to do multiple decodings at one time (do through GUI). 
@@ -712,6 +846,29 @@ if issaveas == 1
 end
 
 
+switch shist
+    case 1 % from GUI
+        % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        displayEquiComERP(bestcom);
+        if explica
+            try
+                cprintf([0.1333, 0.5451, 0.1333], '%%IMPORTANT: For pop_decoding(), you may use BEST instead of ALLBEST, and remove "''BESTindex'',%g"\n',idx_bestset);
+            catch
+                fprintf('%%IMPORTANT: For pop_decoding(), you may use BEST instead of ALLBEST, and remove ''BESTindex'',%g:\n',idx_bestset);
+            end
+        end
+    case 2 % from script
+       % ERP = erphistory(ERP, [], bestcom, 1);
+    case 3
+        % implicit
+    otherwise % off or none
+        bestcom = '';
+end
+
+
+
+
+
 
 
 return
@@ -722,68 +879,3 @@ return
 
 
 
-%% defunct method of loading in BESTsets        
-%     filename = varargin{1};
-%     if strcmpi(filename,'workspace')
-%         filepath = '';
-%     else
-%         
-%         if isempty(filename)
-%             [filename, filepath] = uigetfile({'*.best','BEST (*.best)'}, ...
-%                 'Load BEST', ...
-%                 'MultiSelect', 'on');
-%             if isequal(filename,0)
-%                 disp('User selected Cancel')
-%                 return
-%             end
-%             
-%             %
-%             % test current directory
-%             %
-%             %changecd(filepath) % Steve does not like this...
-%         else
-%             filepath = cd;
-%         end
-%     end
-%     
-%     %for for scripting purposes, this is generalizeable? 
-%     if strcmpi(filename,'workspace')
-%         filepath = '';
-%         nfile = 1;
-%         loadfrom = 0; %load from workspace
-%     else
-%         loadfrom = 1;
-%     end
-%     
-%     
-%     %% load BEST files in workspace 
-%     if iscell(filename)
-%         nfile = length(filename);
-%         inputfname = filename;
-%     else
-%         nfile = 1;
-%         inputfname = {filename}; 
-%     end
-%     inputpath = filepath; 
-%     
-%     
-%     %file_ERPLAB_versions = nan(nfile,1);
-%     
-% %
-% % load BEST(s)
-% %
-%     for i=1:nfile
-%         if loadfrom==1
-%             fullname = fullfile(inputpath, inputfname{i});
-%             fprintf('Loading %s\n', fullname);
-%             L   = load(fullname, '-mat');
-%             if i == 1
-%                 ALLBEST = L.BEST;
-%             else
-%                 ALLBEST(i) = L.BEST;
-%             end
-%         else
-%             ALLBEST = evalin('base', 'BEST');
-%         end
-%     end
-% %   

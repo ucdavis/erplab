@@ -249,6 +249,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
                     
                 elseif SVMcoding == 1
                     mdl = fitcecoc(trnD,trnl, 'Coding','onevsone','Learners','SVM' );   %train support vector mahcine
+                else
+                    error('Decoding Toolbox has unspecified SVMcoding'); 
                 end
                 
                 %% Step 5: Testing
