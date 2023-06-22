@@ -181,16 +181,31 @@ selected_bin = handles.popupmenu_bin.Value;
 
 table_data = ERP.dataquality(selected_DQ_type).data(:,:,selected_bin);
 
-pSEM = 0; 
+pSEM = 0;
+
+pointwise_str = {'Point-wise SEM', 'Point-wise SEM, GrandAvg RMS', ...
+   'Point-wise SEM Pool ERPSETs, RMS GrandAvg Combine','Point-wise SEM Pool ERPSETs, mean GrandAvg combine',...
+   'Point-wise SEM (Corrected), GrandAvg RMS', ...
+   'Point-wise SEM Pool ERPSETs(Corrected), RMS GrandAvg Combine',...
+   'Point-wise SEM Pool ERPSETs(Corrected), mean GrandAvg combine'};
+
+handles.pointwise_str = pointwise_str; 
+
 if isempty(table_data) %check if potentially pointwise SEM
-    if strcmp(ERP.dataquality(selected_DQ_type).type,'Point-wise SEM') && isempty(ERP.binerror) == 0
+    if any(strcmpi(pointwise_str, ERP.dataquality(selected_DQ_type).type)) && isempty(ERP.binerror) == 0
         table_data = ERP.binerror(:,:,selected_bin);
         pSEM = 1; 
         
-    elseif strcmp(ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(ERP.binerror) == 0
-        table_data = ERP.binerror(:,:,selected_bin);
-        pSEM = 1; 
+%     elseif strcmp(ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(ERP.binerror) == 0
+%         table_data = ERP.binerror(:,:,selected_bin);
+%         pSEM = 1; 
+%         
+    
+    else   
         
+        % Data empty here.
+        table_data = nan(1);
+        disp('DQ data not found for this DQ type and bin. Perhaps it has been cleared?');
     end
 
     
@@ -315,18 +330,18 @@ function popupmenu_DQ_type_Callback(hObject, eventdata, handles)
 % handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
 selected_bin = handles.popupmenu_bin.Value;
-
+pointwise_str = handles.pointwise_str; 
 % Check data exists, plot
 if isempty(handles.ERP.dataquality(selected_DQ_type).data)
     
     % if pointwise SEM, use ERP.binerror
-    if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM') && isempty(handles.ERP.binerror) == 0
+    if any(strcmpi(pointwise_str, handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0
         table_data = handles.ERP.binerror(:,:,selected_bin);
-    
-    elseif strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(handles.ERP.binerror) == 0
-        table_data = handles.ERP.binerror(:,:,selected_bin); 
     else
-        
+%     elseif strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM (Corrected)') && isempty(handles.ERP.binerror) == 0
+%         table_data = handles.ERP.binerror(:,:,selected_bin); 
+%     else
+%         
         
         
         % Data empty here.
@@ -420,12 +435,12 @@ function popupmenu_bin_Callback(hObject, eventdata, handles)
 % handles.popupmenu_DQ_type.Value saves the indx of the selected DQ Measure
 selected_DQ_type = handles.popupmenu_DQ_type.Value;
 selected_bin = handles.popupmenu_bin.Value;
-
+pointwise_str = handles.pointwise_str; 
 % Check data exists, plot
 if isempty(handles.ERP.dataquality(selected_DQ_type).data)
     
     % if pointwise SEM, use ERP.binerror
-    if strcmp(handles.ERP.dataquality(selected_DQ_type).type,'Point-wise SEM') && isempty(handles.ERP.binerror) == 0
+    if any(strcmpi(pointwise_str,handles.ERP.dataquality(selected_DQ_type).type)) && isempty(handles.ERP.binerror) == 0
         table_data = handles.ERP.binerror(:,:,selected_bin);
     else
         
