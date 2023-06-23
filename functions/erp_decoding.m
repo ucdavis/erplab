@@ -12,7 +12,7 @@
 %Edited by Aaron Simmons (UC Davis)
 %Original Author: Gi-Yeul Bae (Arizona State University)
 
-function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,SVMcoding,equalT,ParWorkers,method)
+function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,classcoding,equalT,ParWorkers,method)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
@@ -45,7 +45,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     %load subject BESTset & build mvpa dataset
     BEST = ALLBEST(s);   
-    mvpc = buildMVPCstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,SVMcoding,method); 
+    mvpc = buildMVPCstruct(BEST,relevantChans, nIter, nCrossBlocks, DataTimes,equalT,classcoding,method); 
     
     % The electrode channel list is mapped 1:1 with respect to your
     % electrode channel configuration (e.g., channel 1 is FP1 in our EEG cap)
@@ -181,8 +181,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
             % save block assignment
             blockID = ['iter' num2str(iter) 'bin' num2str(bin)];
            
-            mvpc.SVMinfo.blockassignment.(blockID) = blocks; % block assignment
-            mvpc.SVMinfo.n_trials_per_erp(bin) = nPerBinBlock(bin); 
+            mvpc.details.info.blockassignment.(blockID) = blocks; % block assignment
+            mvpc.details.n_trials_per_erp(bin) = nPerBinBlock(bin); 
             
 
 
@@ -240,14 +240,14 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 tstD = dataAtTimeT(blockNum==i,:);    % test data
                 
                 %% Step 3: Training
-                if SVMcoding == 2
+                if classcoding == 2
                     if nBins == 2
                         mdl = fitcsvm(trnD,trnl);   %binary decoder
                     else
                         mdl = fitcecoc(trnD,trnl, 'Coding','onevsall','Learners','SVM' ); %train support vector mahcine
                     end
                     
-                elseif SVMcoding == 1
+                elseif classcoding == 1
                     mdl = fitcecoc(trnD,trnl, 'Coding','onevsone','Learners','SVM' );   %train support vector mahcine
                 else
                     error('Decoding Toolbox has unspecified SVMcoding'); 
@@ -274,9 +274,10 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     toc % stop timing the iteration loop
     
-    mvpc = rawscoreSVM(mvpc, tst_target, svm_predict, SVMcoding); %compute raw method/decoder scores
-    mvpc = averageSVM(mvpc, SVMcoding,0); %average accuracy across runs, %no smoothing
-    mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,SVMcoding); 
+    %only applies to SVM... need logic for crossnobis
+    mvpc = rawscoreSVM(mvpc, tst_target, svm_predict, classcoding); %compute raw method/decoder scores
+    mvpc = averageSVM(mvpc, classcoding,0); %average accuracy across runs, %no smoothing
+    mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict,classcoding); 
 
    % mvpc.BetaWeights_Raw = BetaWeights_Raw; 
    % mvpc.BetaWeights_Corr = BetaWeights_Corr; 

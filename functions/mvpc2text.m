@@ -59,7 +59,7 @@ serror = 0; % no errors
 if strcmp(ext,'')
         ext = '.txt';
 end
-
+precision = 4; 
 prefname2 = fullfile(pathstr, prefname1);
 try        
         disp('Your MVPC results have been exported into the following files:')
@@ -68,7 +68,7 @@ try
                 %
                 % ERP data
                 %
-                data = MVPC.average_accuracy_1vAll;
+                data = MVPC.average_score;
                 
                 %
                 % add time axis
@@ -87,10 +87,10 @@ try
                 %
                 %strbindescr = MVPC.bindescr{binArray(ibin)};
                % strbindescr = regexprep(strbindescr,'\\|\/|\*|\#|\$|\@|\:','_'); % replace forbidden characters
-                binfilename = [ prefname2 '_'  ext ]; % ...and add ext
+                binfilename = [ prefname2 ext ]; % ...and add ext
                 fid = fopen(binfilename, 'w');
                 
-                if transpose==0 % no transpose
+                if transpose==1 % no transpose
                         
                         %
                         % writing electrodes
@@ -102,19 +102,19 @@ try
                                 else
                                         tmpind = index;
                                 end
-%                                 if electrodes==1                                        
-%                                         if tmpind > 0
-%                                                 if ~isempty(MVPC.chanlocs)
-%                                                         labx = MVPC.chanlocs(tmpind).labels;
-%                                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters
-%                                                         fprintf(fid, '%s\t', labx);
-%                                                 else
-%                                                         fprintf(fid, '%d\t', tmpind);
-%                                                 end
-%                                         else
-%                                                 fprintf(fid, 'time\t');
-%                                         end
-%                                 end
+                                  
+                                if tmpind > 0
+%                                     if ~isempty(MVPC.chanlocs)
+%                                         labx = MVPC.chanlocs(tmpind).labels;
+%                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters
+%                                         fprintf(fid, '%s\t', labx);
+%                                     else
+                                        fprintf(fid, '\t');
+%                                     end
+                                else
+                                    fprintf(fid, 'time\t\n');
+                                end
+
                                 strprintf = [ strprintf '%.' num2str(precision) 'f\t' ];
                         end
                         
@@ -135,25 +135,25 @@ try
                                 else
                                         tmpind = index;
                                 end
-                                if electrodes==1
-                                        if tmpind > 0
-                                                if ~isempty(MVPC.chanlocs)
-                                                        labx = MVPC.chanlocs(tmpind).labels;
-                                                        labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters.
-                                                        fprintf(fid,'%s\t', labx);
-                                                else
-                                                        fprintf(fid,'%d\t', tmpind);
-                                                end
-                                        else
-                                                fprintf(fid, 'time\t');
-                                        end
-                                end
+%                                 if electrodes==1
+%                                         if tmpind > 0
+%                                                 if ~isempty(MVPC.chanlocs)
+%                                                         labx = MVPC.chanlocs(tmpind).labels;
+%                                                         labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_'); % replace forbidden characters.
+%                                                         fprintf(fid,'%s\t', labx);
+%                                                 else
+%                                                         fprintf(fid,'%d\t', tmpind);
+%                                                 end
+%                                         else
+%                                                 fprintf(fid, 'time\t');
+%                                         end
+%                                 end
                                 fprintf(fid,[ '%.' num2str(precision) 'f\t' ], data(index, :));
                                 fprintf(fid, '\n');
                         end
                 end
                 fclose(fid);
-                disp([num2str(ibin) ') <a href="matlab: open(''' binfilename ''')">' binfilename '</a> (bin#' num2str(binArray(ibin)) ')']);
+            %    disp(['<a href="matlab: open(''' binfilename ''')">' binfilename]);
 %        end
 catch
         serror = 1; %something went wrong

@@ -52,7 +52,7 @@
 %                                    algorithm uses fitcsvm()
 %                          - 'Crossnobis'
 %
-%        'SVMcoding'    - If classification method is 'SVM':
+%        'classcoding'    - If classification method is 'SVM':
 %                         - 'OneVsOne' 
 %                         - 'OneVsAll' (def)
 %
@@ -343,7 +343,7 @@ if nargin == 1 %GUI
     equalizeTrials = decoding_res{10};
     floorValue = decoding_res{11};
     selected_method = decoding_res{12};
-    SVMcoding = decoding_res{13};
+    classcoding = decoding_res{13};
 %     file_out = decoding_res{13};
 %     path_out = decoding_res{14}; 
     ParCompute = decoding_res{14}; 
@@ -352,7 +352,7 @@ if nargin == 1 %GUI
     
     def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
         decodeTimes, decode_every_Npoint, equalizeTrials, floorValue, ...
-        selected_method, SVMcoding, ParCompute}; 
+        selected_method, classcoding, ParCompute}; 
     erpworkingmemory('pop_decoding',def); 
     
     %for input into sommersault, change decodeTimes to ms
@@ -380,12 +380,12 @@ if nargin == 1 %GUI
         smethod = 'Crossnobis'; 
     end
     
-    if SVMcoding == 1
-        strSVMcoding = 'OneVsOne';
-    elseif SVMcoding == 2
-        strSVMcoding = 'OneVsAll'; 
+    if classcoding == 1
+        strcoding = 'OneVsOne';
+    elseif classcoding == 2
+        strcoding = 'OneVsAll'; 
     else
-        strSVMcoding = 'none'; 
+        strcoding = 'none'; 
     end
     
     if ParCompute
@@ -402,7 +402,7 @@ if nargin == 1 %GUI
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'DecodeTimes', decodeTimes, 'Decode_Every_Npoint',decode_every_Npoint,  ...
    'EqualizeTrials', seqtr, 'FloorValue',floorValue,'Method', smethod, ...
-   'SVMcoding',strSVMcoding, 'Saveas','on', 'ParCompute',spar, 'History','gui'); 
+   'classcoding',strcoding, 'Saveas','on', 'ParCompute',spar, 'History','gui'); 
 
     pause(0.1);
     return
@@ -432,7 +432,7 @@ p.addParamValue('Decode_Every_Npoint',1, @isnumeric); %(def = all times(1) // mu
 p.addParamValue('EqualizeTrials', 'none', @ischar); % def: equalize trials across bins & BESTsets (2)
 p.addParamValue('FloorValue', [], @isnumeric); 
 p.addParamValue('Method','SVM',@ischar); %method (1:SVM/2:Crossnobis);
-p.addParamValue('SVMcoding','OneVsAll',@ischar); % SVMcoding(1:oneVsone/2:oneVsall); 
+p.addParamValue('classcoding','OneVsAll',@ischar); % SVMcoding(1:oneVsone/2:oneVsall); 
 p.addParamValue('Saveas','off',@ischar); 
 p.addParamValue('ParCompute','off', @ischar); %attempt parallization across CPU cores (def: false)
 p.addParamValue('History','script'); 
@@ -448,7 +448,7 @@ Decode_every_Npoint = p.Results.Decode_Every_Npoint;
 equalize_trials = p.Results.EqualizeTrials;
 floor_value = p.Results.FloorValue; 
 smethod = p.Results.Method; 
-strSVMcoding = p.Results.SVMcoding;
+strcoding = p.Results.classcoding;
 % filename_out = p.Results.filename_out; 
 % pathname_out = p.Results.path_out; 
 sParCompute = p.Results.ParCompute; 
@@ -730,18 +730,18 @@ else
     method = 2;
 end
 
-if strcmpi(strSVMcoding,'OneVsOne')
-    SVMcoding = 1;
-elseif strcmpi(strSVMcoding,'OneVsAll')
-    SVMcoding = 2;
+if strcmpi(strcoding,'OneVsOne')
+    classcoding = 1;
+elseif strcmpi(strcoding,'OneVsAll')
+    classcoding = 2;
 else
-    SVMcoding = 0;
+    classcoding = 0;
 end
 
 
 
 if method == 1 %SVM
-    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,SVMcoding,equalize_trials,ParWorkers,method);
+    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method);
 end
 
 
@@ -766,9 +766,9 @@ else
     inputvari = inputname(1);
 end
 
-if strcmpi(smethod,'Crossnobis')
-    skipfields = [skipfields 'SVMcoding'];
-end
+% if strcmpi(smethod,'Crossnobis')
+%     skipfields = [skipfields 'classcoding'];
+% end
 
 bestcom = sprintf( 'MVPC = pop_decoding( %s ', inputvari);
 for q=1:length(fn)

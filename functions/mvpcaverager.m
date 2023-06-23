@@ -122,14 +122,14 @@ for j = 1:nfile
         MVPC.electrodes      = MVPCT.electrodes;
         MVPC.chanlocs   = MVPCT.chanlocs; 
         MVPC.nClasses       = MVPCT.nClasses;
-        MVPC.nChance    = MVPCT.nChance;
+        MVPC.chance    = MVPCT.chance;
         MVPC.classlabels = MVPCT.classlabels; 
         MVPC.nIter      = MVPCT.nIter;
         MVPC.nCrossfolds = MVPCT.nCrossfolds;  
-        MVPC.nSampling  = MVPCT.nSampling;
+        MVPC.srate  = MVPCT.srate;
         MVPC.pnts       = MVPCT.pnts;
-        MVPC.SVM.OneVsOne      = MVPCT.SVM.OneVsOne;
-        MVPC.SVM.OneVsAll       = MVPCT.SVM.OneVsAll;
+        MVPC.classcoding.OneVsOne      = MVPCT.classcoding.OneVsOne;
+        MVPC.classcoding.OneVsAll       = MVPCT.classcoding.OneVsAll;
         MVPC.DecodingUnit       = MVPCT.DecodingUnit;
         MVPC.DecodingMethod     = MVPCT.DecodingMethod;
         MVPC.average_status   = 'grandaverage'; 
@@ -139,9 +139,9 @@ for j = 1:nfile
         MVPC.epoch          = MVPCT.epoch;
         MVPC.times          = MVPCT.times;
         MVPC.mvpc_version    = MVPCT.mvpc_version;
-        MVPC.SVMinfo        = 'grandavg'; 
+        MVPC.details        = 'grandavg'; 
         MVPC.raw_predictions = 'grandavg'; 
-        MVPC.average_accuracy_1vAll = []; 
+        MVPC.average_score = []; 
         MVPC.confusions.scores = [];
         MVPC.confusions.labels = MVPCT.confusions.labels;
         
@@ -153,11 +153,11 @@ for j = 1:nfile
 %         ALLEVENTLIST(end+1:end+length(EVEL)) = EVEL;
     end
 
-    sumMVPC    = sumMVPC + MVPCT.average_accuracy_1vAll;                % cumulative sum: Sum(xi)
+    sumMVPC    = sumMVPC + MVPCT.average_score;                % cumulative sum: Sum(xi)
     sumCFs     = sumCFs  + MVPCT.confusions.scores; 
     
     if stderror 
-        sumMVPC2(j,:) = MVPCT.average_accuracy_1vAll; 
+        sumMVPC2(j,:) = MVPCT.average_score; 
 
     end
 
@@ -167,7 +167,7 @@ for j = 1:nfile
 end
 
 %get average across MVPCsets
-MVPC.average_accuracy_1vAll = sumMVPC/nfile;
+MVPC.average_score = sumMVPC/nfile;
 MVPC.confusions.scores = sumCFs/nfile;
 
 if stderror

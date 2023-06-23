@@ -1,4 +1,4 @@
-function [mvpc] = averageSVM(mvpc, SVMcoding, smoothing)
+function [mvpc] = averageSVM(mvpc, classcoding, smoothing)
 
 % Create the decoding accuracy at each time point (averaged over classes) 
 
@@ -15,7 +15,7 @@ DecodingAccuracy = nan(Ntp,Nruns);
 
 %% load SVM_ECOC output files
 
-if SVMcoding == 2 %1vAll
+if classcoding == 2 %1vAll
     % Obtain predictions from SVM-ECOC model
     svmPrediction = squeeze(mvpc.raw_predictions);
    % tstTargets = squeeze(ALLMVPA(seta).targets);
@@ -66,7 +66,7 @@ end
 
 
 % Save smoothe data
-mvpc.average_accuracy_1vAll = smoothed; 
+mvpc.average_score = smoothed; 
 mvpc.stderror = (std(DecodingAccuracy,1,2)/sqrt(Nruns))'; 
 
 end

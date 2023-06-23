@@ -75,9 +75,9 @@ if isempty(MVPC)
         errorfound(msgboxText, title_msg);
         return
 end
-if ~isfield(MVPC, 'average_accuracy_1vAll') %or use if DecodingUnit == 'None'? 
-        msgboxText =  'pop_export2text cannot export an empty ERP dataset';
-        title = 'ERPLAB: pop_export2text() error:';
+if ~isfield(MVPC, 'average_score') %or use if DecodingUnit == 'None'? 
+        msgboxText =  'pop_mvpct2text cannot export an empty ERP dataset';
+        title = 'ERPLAB: pop_mvpc2text() error:';
         errorfound(msgboxText, title);
         return
 end
@@ -85,7 +85,7 @@ end
 if nargin==1    
         def  = erpworkingmemory('pop_mvpc2text');
         if isempty(def)
-                def = {1,1000, 1,''};
+                def = {1,1000, 0,''};
                 %istime
                 %timeunit
                 %transpose
@@ -154,7 +154,7 @@ p.addParamValue('timeunit', 1E-3, @isnumeric); % milliseconds by default
 p.addParamValue('transpose', 'on', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
-p.parse(MVPC, filename, binArray, varargin{:});
+p.parse(MVPC, filename, varargin{:});
 
 if strcmpi(p.Results.time, 'on')
         time = 1;
@@ -194,9 +194,9 @@ end
 %
 % History
 %
-skipfields = {'ERP', 'filename', 'binArray','History'};
+skipfields = {'MVPC', 'filename','History'};
 fn     = fieldnames(p.Results);
-mvpccom = sprintf( 'pop_export2text( %s, ''%s'', %s', inputname(1), filename, vect2colon(binArray)  );
+mvpccom = sprintf( 'pop_mvpc2text( %s, ''%s'', %s', inputname(1), filename );
 for q=1:length(fn)
         fn2com = fn{q};
         if ~ismember_bc2(fn2com, skipfields)
@@ -204,7 +204,7 @@ for q=1:length(fn)
                 if ~isempty(fn2res)
                         if ischar(fn2res)
                                 if ~strcmpi(fn2res,'off')
-                                        mvpccom = sprintf( '%s, ''%s'', ''%s''', mvpccom, fn2com, fn2res);
+                                        mvpccom = sprintf( '%s ''%s'', ''%s''', mvpccom, fn2com, fn2res);
                                 end
                         else
                                 if iscell(fn2res)

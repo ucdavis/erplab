@@ -208,10 +208,10 @@ else
     times = ALLMVPC(1).times;
     if strcmpi(datatype, 'SVM')
         xlim  = [min(times) max(times)];
-        if ALLMVPC(1).nChance*3 > 1
+        if ALLMVPC(1).chance*3 > 1
             ylim = [0 1];
         else
-            ylim =  [0 ALLMVPC(1).nChance*3];
+            ylim =  [0 ALLMVPC(1).chance*3];
             
         end
         
@@ -367,7 +367,7 @@ for i = 1:numel(jseta)
     
     seta = jseta(i); 
     
-    AverageAccuracy = ALLMVPC(seta).average_accuracy_1vAll; 
+    AverageAccuracy = ALLMVPC(seta).average_score; 
     
     %plot
     plot(timex,AverageAccuracy, 'LineWidth',1,'Color',linecols(seta));
@@ -375,7 +375,7 @@ for i = 1:numel(jseta)
     hold on
     
     if handles.chance == 1
-        chancelvl = ALLMVPC(seta).nChance; 
+        chancelvl = ALLMVPC(seta).chance; 
         line([timex(1),timex(end)],[chancelvl,chancelvl],... 
             'LineStyle','--','Color','black'); %chance line
         
@@ -421,7 +421,7 @@ if get(handles.checkbox_butterflyset, 'Value')
         for i = 1:numel(jseta)
             seta = jseta(i);
             setlabelx{seta} = sprintf('(%s)', ALLMVPC(seta).mvpcname);
-            chancelabelx{seta} = ALLMVPC(seta).nChance;
+            chancelabelx{seta} = ALLMVPC(seta).chance;
             foldlabelx{seta} = ALLMVPC(seta).nCrossfolds;
             methodlabelx{seta} = ALLMVPC(seta).DecodingMethod;
         end
@@ -433,7 +433,7 @@ elseif nsetinput == 1
                 var1 = num2str(jseta);
                 if nsetinput==1
                         setlabelx = sprintf('(%s)', ALLMVPC(jseta).mvpcname);
-                        chancelabelx = ALLMVPC(jseta).nChance;
+                        chancelabelx = ALLMVPC(jseta).chance;
                         foldlabelx = ALLMVPC(jseta).nCrossfolds; 
                         methodlabelx = ALLMVPC(jseta).DecodingMethod; 
                 end
@@ -1016,10 +1016,10 @@ setArray = 1:length(ALLMVPC);
     times = ALLMVPC(1).times;
     if strcmpi(datatype, 'SVM')
         xlim  = [min(times) max(times)];
-        if ALLMVPC(1).nChance*3 > 1
+        if ALLMVPC(1).chance*3 > 1
             ylim = [0 1];
         else
-            ylim =  [0 ALLMVPC(1).nChance*3];
+            ylim =  [0 ALLMVPC(1).chance*3];
             
         end
         
@@ -1255,10 +1255,10 @@ else
         times = ALLMVPC(end).times;
         if strcmpi(datatype, 'SVM')
             xlim  = [min(times) max(times)];
-            if ALLMVPC(end).nChance*3 > 1
+            if ALLMVPC(end).chance*3 > 1
                 ylim = [0 1];
             else
-                ylim =  [0 ALLMVPC(end).nChance*3];
+                ylim =  [0 ALLMVPC(end).chance*3];
                 
             end
             

@@ -1,4 +1,4 @@
-function [mvpc] = buildMVPCstruct(ALLBEST,relevantChans,nIter,nCrossBlocks,DataTimes,equalT,SVMcoding,method)
+function [mvpc] = buildMVPCstruct(ALLBEST,relevantChans,nIter,nCrossBlocks,DataTimes,equalT,classcoding,method)
 
 mvpc = []; %empty mvpa
 
@@ -9,13 +9,13 @@ if nargin < 1
     mvpc.electrodes = 1:length(ALLBEST.chanlocs);
     mvpc.chanlocs = ALLBEST.chanlocs;     
     mvpc.nClasses = ALLBEST.nbin; % # of bins
-    mvpc.nChance = 1/mvpc.header.nClasses; %chance
+    mvpc.chance = 1/mvpc.header.nClasses; %chance
     mvpc.classlabels = ALLBEST.bindesc; 
     mvpc.nIter = 0;
     mvpc.nCrossfolds = 0; %[] if tw.
-    mvpc.nSampling = ALLBEST.srate; %updated fs
+    mvpc.srate = ALLBEST.srate; %updated fs
     mvpc.pnts = ALLBEST.pnts;
-    mvpc.SVMcoding = [];
+    mvpc.classcoding = [];
     mvpc.DecodingUnit = 'None'; %Accuracy vs Distance vs None
     mvpc.DecodingMethod = '';
     mvpc.average_status = 'single_subject';
@@ -38,26 +38,27 @@ else
     mvpc.electrodes = relevantChans; 
     mvpc.chanlocs = ALLBEST.chanlocs(relevantChans); 
     mvpc.nClasses = ALLBEST.nbin; % # of bins
-    mvpc.nChance = 1/mvpc.nClasses; %chance
+    mvpc.chance = 1/mvpc.nClasses; %chance
     mvpc.classlabels = ALLBEST.bindesc; 
     mvpc.nIter = nIter;
     mvpc.nCrossfolds = nCrossBlocks; %[] if tw. 
-    mvpc.nSampling = ALLBEST.srate; %updated fs
+    mvpc.srate = ALLBEST.srate; %updated fs
     mvpc.pnts = ALLBEST.pnts;
-    if SVMcoding == 1
-        mvpc.SVM.OneVsOne = 'yes';
-        mvpc.SVM.OneVsAll ='no';
-    elseif SVMcoding == 2
-        mvpc.SVM.OneVsOne ='no';
-        mvpc.SVM.OneVsAll='yes';
-    elseif isempty(SVMcoding)
-        mvpc.SVM.OneVsOne ='no';
-        mvpc.SVM.OneVsAll = 'no'; 
+    if classcoding == 1
+        mvpc.classcoding.OneVsOne = 'yes';
+        mvpc.classcoding.OneVsAll ='no';
+    elseif classcoding == 2
+        mvpc.classcoding.OneVsOne ='no';
+        mvpc.classcoding.OneVsAll='yes';
+    elseif isempty(classcoding)
+        mvpc.classcoding.OneVsOne ='no';
+        mvpc.classcoding.OneVsAll = 'no'; 
     end
-    mvpc.DecodingUnit= 'Accuracy'; %or "Distance" for crossnobis
     if method == 1
+        mvpc.DecodingUnit= '%correct'; % if svm='%correct', crossnobis: "uV" for crossnobis
         mvpc.DecodingMethod = 'SVM';
     elseif method == 2
+        mvpc.DecodingUnit = 'uV'; 
         mvpc.DecodingMethod = 'Crossnobis';
     end
     mvpc.average_status = 'single_subject';

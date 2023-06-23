@@ -378,6 +378,7 @@ for q=1:length(fn)
                     end
                     fnformat = '{%s}';
                 elseif isnumeric(fn2res)
+                    fn2res = mat2colon(fn2res);  
                     fn2resstr = num2str(fn2res); fnformat = '%s';
                 elseif isstruct(fn2res)
                     fn2resstr = 'DQ_spec_structure'; fnformat = '%s';
@@ -386,11 +387,11 @@ for q=1:length(fn)
                     fnformat = '%s';
                 end
                 
-                if strcmpi(fn2com,'DSindex') || strcmpi(fn2com,'Bins') || strcmpi(fn2com,'Bandpass')
-                    bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
-                else
-                    bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
-                end
+%                 if strcmpi(fn2com,'DSindex') || strcmpi(fn2com,'Bins') || strcmpi(fn2com,'Bandpass')
+%                     bestcom = sprintf( ['%s, ''%s'', [', fnformat,']'], bestcom, fn2com, fn2resstr);
+%                 else
+                bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
+%                 end
                 
                 %bestcom = sprintf( ['%s, ''%s'', ' fnformat], bestcom, fn2com, fn2resstr);
             end

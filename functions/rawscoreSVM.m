@@ -1,9 +1,9 @@
-function [mvpc] = rawscoreSVM(mvpc, truelabel, predictedlabel, SVMcoding) 
+function [mvpc] = rawscoreSVM(mvpc, truelabel, predictedlabel, classcoding) 
 
 % this function reshapes the decorder outputs 
 % and creates mvpa.raw_accuracy_1vsall 
 
-if SVMcoding == 2 
+if classcoding == 2 
     [Nitr, Nblock, Ntp, nBins] =  size(truelabel);
     runs = Nitr*Nblock; %"run" is combination of iteration and fold 
 
@@ -29,7 +29,7 @@ if SVMcoding == 2
 %     end
     
 
-elseif SVMcoding == 1
+elseif classcoding == 1
     %create for 1v1 case
     
     
