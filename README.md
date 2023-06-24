@@ -1,4 +1,6 @@
 ERPLAB Toolbox is a free, open-source Matlab package for analyzing ERP data.  It is tightly integrated with [EEGLAB Toolbox](http://sccn.ucsd.edu/eeglab/), extending EEGLAB’s capabilities to provide robust, industrial-strength tools for ERP processing, visualization, and analysis.  A graphical user interface makes it easy for beginners to learn, and Matlab scripting provides enormous power for intermediate and advanced users. Click the Wiki icon at the top of the page for documentation, tutorials, and FAQs.
+</p>
+To ask questions, subscribe to the [ERPLAB email list](https://erpinfo.org/erplab-email-list). Bug reports can be submitted via GitHub or by sending an email to [erplab-bugreports@ucdavis.edu](mailto://erplab-bugreports@ucdavis.edu).
 
 ## ERPLAB v9.20
 
