@@ -35,6 +35,9 @@
 % Now with more in nested functions
 
 function  ERPLAB_ERP_Viewer(ALLERP,selectedERP_index,binArray,chanArray,Parameterfile)
+tic;%
+disp('ERP Waveform Viewer is launching...');
+
 
 global viewer_ERPDAT;
 global gui_erp_waviewer;
@@ -256,6 +259,8 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
     viewer_ERPDAT.loadproper_count = 1;
     f_redrawERP_viewer_test();
 end
+timeElapsed = toc;
+disp([num2str(timeElapsed),'s was used to launch ERP Waveform Viewer.']);
 
     function gui_erp_waviewer = createInterface();
         ERPtooltype = erpgettoolversion('tooltype');

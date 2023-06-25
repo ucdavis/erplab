@@ -132,6 +132,10 @@ gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
+gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
+
+
 gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
 
@@ -143,7 +147,7 @@ gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'S
 
 
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 70 70 -1 100 170 70 20]);
+set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 10]);
 
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
@@ -406,6 +410,31 @@ else
 end
 
 end
+
+function Show_command(~,~)
+global viewer_ERPDAT;
+[messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+if ~isempty(messgStr)
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+end
+
+ViewerName = estudioworkingmemory('viewername');
+if isempty(ViewerName)
+    ViewerName = char('My Viewer');
+end
+MessageViewer= char(strcat('Show Command'));
+erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+try
+    viewer_ERPDAT.Process_messg =1;
+    OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'command');
+    viewer_ERPDAT.Process_messg =2;
+catch
+    viewer_ERPDAT.Process_messg =3;
+end
+
+
+end
+
 
 
 %%-------------------------Save figure as----------------------------------

@@ -472,7 +472,9 @@ if ~isempty(qParameterfile)
     return;
 end
 
-if strcmpi(p_Results.History,'implicit')
+if strcmpi(p_Results.History,'command')
+    shist = 4;%%Show  Maltab command only and donot plot the wave
+elseif strcmpi(p_Results.History,'implicit')
     shist = 3; % implicit
 elseif strcmpi(p_Results.History,'script')
     shist = 2; % script
@@ -1068,7 +1070,7 @@ if isempty(qLabelsName)
 end
 %
 %%-------------Plot the ERP wave based on the above parameters-------------
-if ~isempty(qFigureName)
+if ~isempty(qFigureName) && shist~=4
     f_ploterpserpviewer(ALLERP,qCURRENTPLOT, qPLOTORG,qbinArray,qchanArray,qGridposArray,qplotBox,qBlc,qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,...
         qLegendName,qFontLeg,qFontSizeLeg,qCBELabels,qCBEFont,qCBEFontsize,qPolarityWave,qStanderr,qTransparency,qGridspace,qtimeRange,qXticks,qxticklabel,...
         qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorticksX,qXunits,qYscales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,...
@@ -1162,7 +1164,10 @@ switch shist
             ALLERP(i) = erphistory(ALLERP(i), [], erpcom, 1);
         end
     case 3
-        % implicit
+         % implicit 
+    case 4
+        displayEquiComERP(erpcom);
+       
     otherwise %off or none
         erpcom = '';
         return
