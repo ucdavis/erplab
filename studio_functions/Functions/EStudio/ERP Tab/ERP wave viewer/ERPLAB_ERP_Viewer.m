@@ -36,7 +36,7 @@
 
 function  ERPLAB_ERP_Viewer(ALLERP,selectedERP_index,binArray,chanArray,Parameterfile)
 tic;%
-disp('ERP Waveform Viewer is launching...');
+disp(' ERP Waveform Viewer is launching...');
 
 
 global viewer_ERPDAT;
@@ -222,9 +222,8 @@ try
 catch
 end
 
-gui_erp_waviewer = struct();
 
-gui_erp_waviewer = createInterface();
+createInterface_ERPWave_viewer();
 
 f_redrawERP_viewer_test();
 if ~isempty( Parameterfile)%% update the panels based on the saved file
@@ -260,9 +259,9 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
     f_redrawERP_viewer_test();
 end
 timeElapsed = toc;
-disp([num2str(timeElapsed),'s was used to launch ERP Waveform Viewer.']);
+fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\n\n']);
 
-    function gui_erp_waviewer = createInterface();
+    function  createInterface_ERPWave_viewer();
         ERPtooltype = erpgettoolversion('tooltype');
         
         if strcmpi(ERPtooltype,'EStudio')
@@ -313,9 +312,9 @@ disp([num2str(timeElapsed),'s was used to launch ERP Waveform Viewer.']);
         %% Arrange the main interface for ERP panel (Tab3)
         gui_erp_waviewer.ViewBox = uix.VBox('Parent', gui_erp_waviewer.tabERP,'BackgroundColor',ColorBviewer_def);
         
-        
+        gui_erp_waviewer.Resize = 0;
         gui_erp_waviewer.ViewPanel = uix.BoxPanel('Parent', gui_erp_waviewer.ViewBox,'TitleColor',ColorBviewer_def,'ForegroundColor','k');%
-        gui_erp_waviewer.ViewContainer = uicontainer('Parent', gui_erp_waviewer.ViewPanel);
+        gui_erp_waviewer.ViewContainer = uicontainer('Parent', gui_erp_waviewer.ViewPanel,'SizeChangedFcn',@WAviewerResize);
         
         gui_erp_waviewer.panelscroll = uix.ScrollingPanel('Parent', gui_erp_waviewer.tabERP);
         set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
@@ -381,8 +380,8 @@ disp([num2str(timeElapsed),'s was used to launch ERP Waveform Viewer.']);
         %% + Create the view
         p = gui_erp_waviewer.ViewContainer;
         gui_erp_waviewer.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorBviewer_def);
-        
-    end % createInterface
+        gui_erp_waviewer.Resize =1;
+    end % createInterface_ERPWave_viewer
 
 
     function nMinimize( eventSource, eventData, whichpanel) %#ok<INUSL>
@@ -432,6 +431,16 @@ disp([num2str(timeElapsed),'s was used to launch ERP Waveform Viewer.']);
         
         
     end
+
+%%Resize the GUI automatically as the user changes the size of the window at run-time.
+    function WAviewerResize(~,~)
+        % global gui_erp_waviewer;
+        if gui_erp_waviewer.Resize ~= 0
+%             set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
+            f_redrawERP_viewer_test();
+        end
+    end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function

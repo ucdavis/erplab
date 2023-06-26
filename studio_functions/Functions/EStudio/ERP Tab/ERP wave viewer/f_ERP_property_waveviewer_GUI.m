@@ -83,7 +83,6 @@ varargout{1} = box_erpwave_viewer_property;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
 %%-------------------------Setting for load--------------------------------
     function parameters_load(~,~)
         [filename, filepath,indxs] = uigetfile({'*.mat'}, ...
@@ -189,32 +188,18 @@ varargout{1} = box_erpwave_viewer_property;
         namedef ='Viewer';
         erpFilename = char(strcat(namedef,'.mat'));
         
-        BackERPLABcolor = [1 0.9 0.3];    % yellow
-        question = ['Do you want to include "ALLERP"?'];
-        title = 'My Viewer>Viewer Properties';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-        
-        if strcmpi(button,'No') || strcmpi(button,'Yes')
-            if strcmpi(button,'No')
-                ERPwaviewer.ALLERP = [];
-                ERPwaviewer.ERP = [];
-            end
-            try
-                save([pathstr,filesep,erpFilename],'ERPwaviewer','-v7.3');
-                viewer_ERPDAT.Process_messg =2;
-            catch
-                beep;
-                viewer_ERPDAT.Process_messg =3;
-                fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
-                return;
-            end
-        else
+        ERPwaviewer.ALLERP = [];
+        ERPwaviewer.ERP = [];
+        ERPwaviewer.CURRENTERP = [];
+        ERPwaviewer.SelectERPIdx = [];
+        ERPwaviewer.PageIndex = [];
+        try
+            save([pathstr,filesep,erpFilename],'ERPwaviewer','-v7.3');
+            viewer_ERPDAT.Process_messg =2;
+        catch
             beep;
             viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n User selected cancel.\n\n');
+            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
             return;
         end
         
@@ -258,39 +243,24 @@ varargout{1} = box_erpwave_viewer_property;
         end
         erpFilename = char(strcat(erpfilename,ext));
         
-        
-        BackERPLABcolor = [1 0.9 0.3];    % yellow
-        question = ['Do you want to include "ALLERP"?'];
-        title = 'My Viewer>Viewer Properties';
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-        
-        if strcmpi(button,'No') || strcmpi(button,'Yes')
-            if strcmpi(button,'No')
-                ERPwaviewer.ALLERP = [];
-                ERPwaviewer.ERP = [];
-            end
-            try
-                save([erppathname,erpFilename],'ERPwaviewer','-v7.3');
-                viewer_ERPDAT.Process_messg =2;
-            catch
-                beep;
-                viewer_ERPDAT.Process_messg =3;
-                fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
-                return;
-            end
-        else
+        ERPwaviewer.ALLERP = [];
+        ERPwaviewer.ERP = [];
+        ERPwaviewer.CURRENTERP = [];
+        ERPwaviewer.SelectERPIdx = [];
+        ERPwaviewer.PageIndex = [];
+        try
+            save([erppathname,erpFilename],'ERPwaviewer','-v7.3');
+            viewer_ERPDAT.Process_messg =2;
+        catch
             beep;
             viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n User selected cancel.\n\n');
+            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
             return;
         end
         
     end
 
-%%----------------Setting for location path-----------------------------
+%%------------------Title name for Wave Viewer-----------------------------
     function viewer_TN(source_locationname,~)
         MessageViewer= char(strcat('Viewer Properties > Title'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);

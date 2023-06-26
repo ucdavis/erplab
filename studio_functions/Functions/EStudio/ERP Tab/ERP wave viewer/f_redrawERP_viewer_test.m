@@ -116,8 +116,11 @@ gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plo
 % gui_erp_waviewer.ViewAxes_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',ColorBviewer_def);
 
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-gui_erp_waviewer.Resize = 0;
-gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
+% gui_erp_waviewer.Resize = 0;
+
+
+% gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
+gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
@@ -254,19 +257,19 @@ else
     
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
-gui_erp_waviewer.Resize =1;
+% gui_erp_waviewer.Resize =1;
 end % redrawDemo
 
 
 
 %%Resize the GUI automatically as the user changes the size of the window at run-time.
-function WAviewerResize(~,~)
-global gui_erp_waviewer;
-if gui_erp_waviewer.Resize ~= 0
-    set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
-    f_redrawERP_viewer_test();
-end
-end
+% function WAviewerResize(~,~)
+% global gui_erp_waviewer;
+% if gui_erp_waviewer.Resize ~= 0
+%     set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
+%     f_redrawERP_viewer_test();
+% end
+% end
 
 
 %%-------------------------------Page Editor-------------------------------
