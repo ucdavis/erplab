@@ -9,7 +9,7 @@ if nargin < 1
 end
 
 if nargin<4
-        warnop = 1 ; % no warning for overwriting a file
+        warnop = 0 ; % no warning for overwriting a file
 end
 if nargin<3
         modegui = 0; % no uiputfile

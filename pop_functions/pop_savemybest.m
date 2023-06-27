@@ -86,7 +86,7 @@ p.addParamValue('filename', '', @ischar); %EEG.filename
 p.addParamValue('filepath', '', @ischar);
 p.addParamValue('gui','no',@ischar); % or 'save', or 'saveas', or 'erplab'
 p.addParamValue('overwriteatmenu','no',@ischar); 
-p.addParamValue('Warning','on',@ischar); % on/off warning for existing file
+p.addParamValue('Warning','off',@ischar); % on/off warning for existing file
 p.addParamValue('History','script',@ischar); 
 
 p.parse(BEST, varargin{:}); 

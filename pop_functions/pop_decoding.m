@@ -679,12 +679,41 @@ elseif strcmpi(equalize_trials,'classes') %equalize bins within best files
         
     end
 elseif strcmpi(equalize_trials,'floor')
+    
+    
     %use common floor_value
     for s = 1:nsubs
-        for tr = 1:nbins        
+        
+        %check floor value validity 
+        test_val = floor(min(ALLBEST(s).n_trials_per_bin)/nCrossblocks);
+        
+        if floor_value > test_val
+            msgboxTest = sprintf('You selected an invalid floor %i. The value exceeds the max the number of trials within cross-validation blocks',floor_value);
+            title = 'ERPLAB: Cross-Validation error';
+            errorfound(msgboxTest, title);
+            
+            return
+        end
+        
+        if floor_value < 1
+            msgboxTest = sprintf('You selected an invalid floor %i. You cannot go less than 1 trial per ERP',floor_value);
+            title = 'ERPLAB: Cross-Validation error';
+            errorfound(msgboxTest, title);
+            
+            return
+            
+        end
+        
+        
+        for tr = 1:nbins
+               
             ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks;
         end
     end
+    
+    %error check this floor_value 
+    
+    
     
 else
     disp('Trials are not equalized'); 

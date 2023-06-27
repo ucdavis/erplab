@@ -55,7 +55,7 @@ else
         mvpc.classcoding.OneVsAll = 'no'; 
     end
     if method == 1
-        mvpc.DecodingUnit= '%correct'; % if svm='%correct', crossnobis: "uV" for crossnobis
+        mvpc.DecodingUnit= 'proportion correct'; % if svm='%correct', crossnobis: "uV" for crossnobis
         mvpc.DecodingMethod = 'SVM';
     elseif method == 2
         mvpc.DecodingUnit = 'uV'; 

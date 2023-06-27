@@ -33,22 +33,13 @@ if nargin == 1 %GUI
             def = {1 1};
             %def{1} = plot menu (1: tp confusion 2:mean confusion two
             %                           latency)
+            %def{2} = colormap
         end
         
         
-        
-%         if isnumeric(def{3}) && ~isempty(MVPC) %if ALLMVPC indexs are supplied
-%             if max(def{3})>length(MVPC)
-%                 def{3} = def{3}(def{3}<=length(MVPC));
-%             end
-%             if isempty(def{3})
-%                 def{3} = 1;
-%             end
-%         end       
-%           def{2} = 0; %aaron: until I fix lists, always load mvpcmenu
-
+  
         %
-        % Open Grand Average GUI
+        % Open plot confusion GUI
         %
         app = feval('plotConfusionGUI',ALLMVPC,currdata,def); 
         waitfor(app,'FinishButton',1);
@@ -164,11 +155,14 @@ cf_scores = cf_scores(:,:,time_ind);
 for p = 1:numel(time_ind)
     
     C = cf_scores(:,:,p); 
-    h = heatmap(cf_strings,cf_strings,C);
+    C = flipud(C); %flips element values in matrix to align with Bae&Luck 2018, but doesn't flip row labels
+    cf_string2 = fliplr(cf_strings); % flips row labels
+    h = heatmap(cf_strings,cf_string2,C);
+    
     
     h.Title = ['Confusion Matrix @ time ', num2str(tp(p)), ' ms'];
     h.YLabel = 'True Labels';
-%    h.YData = [NBins:-1:1]; %%%% only put if you use "FLIPUD(C)" argument (line 126)
+   % h.YData = [NBins:-1:1]; %%%% only put if you use "FLIPUD(C)" argument (line 126)
     h.XLabel = 'Predicted Labels';
   %  h.ColorLimits = [0.02 0.12]; %this is arbitrary limits
     

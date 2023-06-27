@@ -171,11 +171,13 @@ else
     
     handles.meacodes    = meacodes;
     
-    handles.chance = 0;
+    handles.chance = 1; %set default on 
+    set(handles.checkbox_chance,'Value',1); %set default on 
     handles.stderror = 0;
     handles.alpha = {'0.10','0.20','0.30','0.40','0.50','0.60','0.70','0.80','0.90','1.0'};
     set(handles.popupmenu_alpha,'String', handles.alpha);
-    set(handles.popupmenu_alpha,'Value',7);
+    set(handles.popupmenu_alpha,'Value',3);
+    
     
     %set(handles.text_measurementv, 'String', measurearray);
     %[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
@@ -208,10 +210,10 @@ else
     times = ALLMVPC(1).times;
     if strcmpi(datatype, 'SVM')
         xlim  = [min(times) max(times)];
-        if ALLMVPC(1).chance*3 > 1
+        if ALLMVPC(1).chance*4 > 1
             ylim = [0 1];
         else
-            ylim =  [0 ALLMVPC(1).chance*3];
+            ylim =  [0 ALLMVPC(1).chance*4];
             
         end
         

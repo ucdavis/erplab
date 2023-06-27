@@ -110,12 +110,12 @@ if nargin ==1 %GUI case, ALLEEG is input
     % create working memory
     def  = erpworkingmemory('pop_extractBEST');
     
-
+    nbins = ALLEEG(currdata).EVENTLIST.nbin;
     
     if isempty(def) 
-        def = {1,0,{'',''},1,1}; 
+        def = {1:nbins,0,{'',''},1,1}; 
 
-        %1: choose bin1 only; 
+        %1: choose all bins (Def)
         %2: apply freq- transform (1 yes 0 no); 
         %3: bandpass freqs
         %4: include into epochs (def 1: exclude AD flagged epochs)

@@ -85,7 +85,7 @@ end
 if nargin==1    
         def  = erpworkingmemory('pop_mvpc2text');
         if isempty(def)
-                def = {1,1000, 0,''};
+                def = {1,1E-3, 0,''};
                 %istime
                 %timeunit
                 %transpose
