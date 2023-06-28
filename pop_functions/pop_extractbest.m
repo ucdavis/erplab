@@ -228,6 +228,12 @@ bandpass_freq = p.Results.Bandpass;
 artcrite = p.Results.Criterion; 
 exclude_be = p.Results.ExcludeBoundary; 
 
+if isempty(bin_ind) 
+    %if no bins input, then use all bins 
+    bin_ind = 1:(ALLEEG.EVENTLIST.nbin); 
+end
+    
+
 
 if ismember_bc2({p.Results.Saveas}, {'on','yes'})
     issaveas  = 1;
