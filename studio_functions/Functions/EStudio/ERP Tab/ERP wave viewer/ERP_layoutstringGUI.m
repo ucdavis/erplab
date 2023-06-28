@@ -114,6 +114,17 @@ handles.text_rownum.String = num2str(Numrows);
 handles.edit1_columnsNum.String = num2str(Numcolumns);
 handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
 
+Data = handles.uitable1_layout.Data;
+LabelStr=handles.plotArrayFormt;
+Data = f_checktable(Data,LabelStr);
+try
+    SingleCell = LabelStr{handles.listbox_Labels.Value};
+catch
+    SingleCell = LabelStr{1};
+end
+Data = f_add_bgcolor_cell(Data,SingleCell);
+handles.uitable1_layout.Data=Data;
+
 %
 % Set font size
 %
@@ -153,7 +164,9 @@ uiresume(handles.gui_chassis);
 %----------------------------------------------------------------------------------
 function pushbutton_ok_Callback(hObject, eventdata, handles)
 handles.text7_message.String = '';
-Data = handles.GridinforData;
+Data = handles.uitable1_layout.Data;
+LabelStr=handles.plotArrayFormt;
+Data = f_checktable(Data,LabelStr);
 handles.output = Data;
 
 % Update handles structure
@@ -195,27 +208,17 @@ guidata(hObject, handles);
 % --- Executes on selection change in listbox_Labels.
 function listbox_Labels_Callback(hObject, eventdata, handles)
 handles.text7_message.String = '';
-List_Label=handles.listbox_Labels.String;
 handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
-
-% colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
-% Data = handles.GridinforData;
-% LabelStr=handles.plotArrayFormt;
-% try
-%     SingleCell = LabelStr{handles.listbox_Labels.Value};
-% catch
-%     SingleCell = LabelStr{1};
-% end
-% for ii = 1:size(Data,1)
-%     for jj = 1:size(Data,2)
-%         if strcmpi(Data{ii,jj},SingleCell)
-%             hex_color_here = ['#' dec2hex(255,2) dec2hex(255,2) dec2hex(0,2)];
-%             Data{ii,jj} = colergen(hex_color_here,Data{ii,jj});
-%         end
-%     end
-%     
-% end
-% handles.uitable1_layout.Data=Data;
+Data = handles.uitable1_layout.Data;
+LabelStr=handles.plotArrayFormt;
+Data = f_checktable(Data,LabelStr);
+try
+    SingleCell = LabelStr{handles.listbox_Labels.Value};
+catch
+    SingleCell = LabelStr{1};
+end
+Data = f_add_bgcolor_cell(Data,SingleCell);
+handles.uitable1_layout.Data=Data;
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -235,24 +238,22 @@ function MakerLabels(~,~, handles)
 Data = handles.uitable1_layout.Data;
 LabelStr=handles.plotArrayFormt;
 %%check the changed labels
-for ii = 1:size(Data,1)
-    for jj = 1:size(Data,2)
-        count = 0;
-        for kk = 1:length(LabelStr)
-            if strcmpi(LabelStr{kk},Data{ii,jj})
-                count = count +1;
-            end
-        end
-        if count==0
-            Data{ii,jj} = '';
-        end
-    end
-end
+Data = f_checktable(Data,LabelStr);
+
 handles.GridinforData = Data;
 handles.uitable1_layout.Data = Data;
 [LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr);
 handles.listbox_Labels.String=LabelStr;
-
+Data = handles.GridinforData;
+LabelStr=handles.plotArrayFormt;
+try
+    SingleCell = LabelStr{handles.listbox_Labels.Value};
+catch
+    SingleCell = LabelStr{1};
+end
+Data = f_add_bgcolor_cell(Data,SingleCell);
+handles.uitable1_layout.Data=Data;
+% guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_default.
@@ -281,6 +282,17 @@ handles.listbox_Labels.String=LabelStr;
 handles.text_rownum.String = num2str(Numrows);
 handles.edit1_columnsNum.String = num2str(Numcolumns);
 handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+Data = handles.uitable1_layout.Data;
+LabelStr=handles.plotArrayFormt;
+Data = f_checktable(Data,LabelStr);
+try
+    SingleCell = LabelStr{handles.listbox_Labels.Value};
+catch
+    SingleCell = LabelStr{1};
+end
+Data = f_add_bgcolor_cell(Data,SingleCell);
+handles.uitable1_layout.Data=Data;
+
 guidata(hObject, handles);
 
 
@@ -288,13 +300,16 @@ guidata(hObject, handles);
 function edit1_columnsNum_Callback(hObject, eventdata, handles)
 handles.text7_message.String = '';
 columNum =  str2num(get(hObject,'String'));
-Data= handles.GridinforData;
+Data= handles.uitable1_layout.Data;
 if isempty(columNum) || columNum<=0
     handles.text7_message.String = '"Columns" should be a positive number.';
     handles.edit1_columnsNum.String  = size(Data,2);
     return;
 end
-RowsNum = size(Data,1);
+RowsNum = str2num(handles.text_rownum.String);
+if isempty(RowsNum) || RowsNum<=0
+    RowsNum = size(Data,1);
+end
 cuntNum = 0;
 for ii = 1:size(Data,1)
     for jj = 1:size(Data,2)
@@ -302,6 +317,7 @@ for ii = 1:size(Data,1)
         DataOld{cuntNum} = char(Data{ii,jj});
     end
 end
+
 LabelStr=handles.plotArrayFormt;
 count1 = 0;
 for Numofrow = 1:RowsNum
@@ -328,9 +344,20 @@ handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
 handles.uitable1_layout.ColumnName = ColumnName;
 handles.uitable1_layout.ColumnFormat = columFormat;
 handles.uitable1_layout.Data=DataNew;
+LabelStr=handles.plotArrayFormt;
+DataNew = f_checktable(DataNew,LabelStr);
 [LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr);
 handles.listbox_Labels.String=LabelStr;
 handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+
+LabelStr=handles.plotArrayFormt;
+try
+    SingleCell = LabelStr{handles.listbox_Labels.Value};
+catch
+    SingleCell = LabelStr{1};
+end
+Data = f_add_bgcolor_cell(DataNew,SingleCell);
+handles.uitable1_layout.Data=Data;
 guidata(hObject, handles);
 
 
@@ -348,14 +375,16 @@ end
 function text_rownum_Callback(hObject, eventdata, handles)
 handles.text7_message.String = '';
 RowsNum =  str2num(get(hObject,'String'));
-Data= handles.GridinforData;
+Data= handles.uitable1_layout.Data;
 if isempty(RowsNum) || RowsNum<=0
     handles.text7_message.String = '"Rows" should be a positive number.';
     handles.text_rownum.String  = size(Data,1);
     return;
 end
-
-columNum = size(Data,2);
+columNum = str2num(handles.edit1_columnsNum.String);
+if isempty(columNum) || columNum<=0
+    columNum = size(Data,2);
+end
 cuntNum = 0;
 for ii = 1:size(Data,1)
     for jj = 1:size(Data,2)
@@ -363,6 +392,7 @@ for ii = 1:size(Data,1)
         DataOld{cuntNum} = char(Data{ii,jj});
     end
 end
+
 LabelStr=handles.plotArrayFormt;
 count1 = 0;
 for Numofrow = 1:RowsNum
@@ -382,10 +412,23 @@ for Numofrow = 1:RowsNum
 end
 handles.GridinforData = DataNew;
 handles.uitable1_layout.RowName = RowName;
+handles.uitable1_layout.Data = [];
 handles.uitable1_layout.Data=DataNew;
+LabelStr=handles.plotArrayFormt;
+DataNew = f_checktable(DataNew,LabelStr);
 [LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr);
 handles.listbox_Labels.String=LabelStr;
+
 handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+% Data = handles.uitable1_layout.Data;
+LabelStr=handles.plotArrayFormt;
+try
+    SingleCell = LabelStr{handles.listbox_Labels.Value};
+catch
+    SingleCell = LabelStr{1};
+end
+DataNew = f_add_bgcolor_cell(DataNew,SingleCell);
+handles.uitable1_layout.Data=DataNew;
 guidata(hObject, handles);
 
 
@@ -397,7 +440,7 @@ for ii = 1:length(LabelStr)
     code1 = 0;
     for jj = 1:size(Gridata,1)
         for kk = 1:size(Gridata,2)
-            if strcmpi(LabelStr{ii},Gridata{jj,kk})
+            if strcmp(LabelStr{ii},Gridata{jj,kk})
                 code1 = code1+1;
             end
         end
@@ -415,4 +458,34 @@ for ii = 1:length(LabelStr)
 end
 
 
+function Data = f_add_bgcolor_cell(Data,SingleCell)
+colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        if strcmp(Data{ii,jj},SingleCell)
+            hex_color_here = ['#' dec2hex(255,2) dec2hex(255,2) dec2hex(0,2)];
+            Data{ii,jj} = colergen(hex_color_here,Data{ii,jj});
+        end
+    end
+    
+end
+
+
+function Data = f_checktable(Data,LabelStr)
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        count = 0;
+        for kk = 1:length(LabelStr)
+            Data1=  strrep(Data{ii,jj},'<html><table border=0 width=400 bgcolor=#FFFF00><TR><TD>','');
+            Data1 = strrep(Data1,'</TD></TR> </table>','');
+            Data{ii,jj} = char(Data1);
+            if strcmp(LabelStr{kk},Data{ii,jj})
+                count = count +1;
+            end
+        end
+        if count==0
+            Data{ii,jj} = '';
+        end
+    end
+end
 
