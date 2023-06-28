@@ -63,6 +63,17 @@ try
 catch
 end
 
+if exist('memoryerpstudiopanels.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('o_ERPDAT');
+    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'ERPtooltype')
+end
+
 if nargin<1
     beep;
     disp('ERP_wave_viewer() error: ALLERP should be imported.');
@@ -325,7 +336,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
         %%-----------Setting------------------------------------------------
         %% Create tabs
-        context_tabs =  uix.VBox('Parent', gui_erp_waviewer.Window,'SizeChangedFcn',@WAviewerResize);
+        gui_erp_waviewer.Window.Resize = 0;
+        context_tabs =  uix.VBox('Parent', gui_erp_waviewer.Window);%,'SizeChangedFcn',@WAviewerResize
         gui_erp_waviewer.tabERP = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorBviewer_def);
         %% Arrange the main interface for ERP panel (Tab3)
         gui_erp_waviewer.ViewBox = uix.VBox('Parent', gui_erp_waviewer.tabERP,'BackgroundColor',ColorBviewer_def);
@@ -452,11 +464,15 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
     end
 
 %%Resize the GUI automatically as the user changes the size of the window at run-time.
-    function WAviewerResize(~,~)
-        if gui_erp_waviewer.Resize ~= 0
-            f_redrawERP_viewer_test();
-        end
-    end
+%     function WAviewerResize(~,~)
+%         if gui_erp_waviewer.Resize ~= 0
+%             new_pos = gui_erp_waviewer.Window.Position;
+%             estudioworkingmemory('ERPWaveScreenPos',new_pos);
+%             gui_erp_waviewer.screen_pos = new_pos;
+% %             set(gui_erp_waviewer.Window, 'Position', new_pos);
+%             f_redrawERP_viewer_test();
+%         end
+%     end
 
 
 %%setting the screen size
@@ -466,7 +482,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             set(gui_erp_waviewer.Window, 'Position', new_pos);
             estudioworkingmemory('ERPWaveScreenPos',new_pos);
             gui_erp_waviewer.screen_pos = new_pos;
-            %             f_redrawERP_viewer_test();
+            f_redrawERP_viewer_test();
         end
     end
 

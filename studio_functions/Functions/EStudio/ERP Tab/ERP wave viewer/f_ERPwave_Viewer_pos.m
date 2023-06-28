@@ -49,7 +49,7 @@ handles.text1.BackgroundColor = ColorBviewer_def;
 %
 % Set font size
 %
-% handles = setfonterplab(handles);
+ handles = setfonterplab(handles);
 
 % Update handles structure
 

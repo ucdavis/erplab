@@ -128,7 +128,7 @@ handles.uitable1_layout.Data=Data;
 %
 % Set font size
 %
-% handles = setfonterplab(handles);
+ handles = setfonterplab(handles);
 
 % Update handles structure
 

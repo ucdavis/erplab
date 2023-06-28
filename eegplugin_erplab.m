@@ -90,11 +90,8 @@ end
 %
 % CHECK EEGLAB Version
 %
-if exist('memoryerp.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
+
+
 egv = regexp(eeg_getversion,'^(\d+)\.+','tokens','ignorecase');
 eegversion = str2num(char(egv{:}));
 check_matlab_version;
@@ -177,21 +174,21 @@ ERP              = [];  % Start ERP Structure on workspace
 ALLERPCOM        = [];
 CURRENTERP       = 0;
 BEST             = []; %Start BEST structure on workspace
-CURRENTBEST      = 0; 
+CURRENTBEST      = 0;
 plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
 MVPC             = [];
-CURRENTMVPC      = 0; 
+CURRENTMVPC      = 0;
 ALLERP = [];
 assignin('base','ALLERP',ALLERP);
 assignin('base','ERP',ERP);
 assignin('base','BEST',BEST);
-assignin('base','MVPC',MVPC); 
+assignin('base','MVPC',MVPC);
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','CURRENTBEST', CURRENTBEST);
-assignin('base','CURRENTMVPC', CURRENTMVPC); 
+assignin('base','CURRENTMVPC', CURRENTMVPC);
 
 assignin('base','plotset', plotset);
 

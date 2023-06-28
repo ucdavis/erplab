@@ -111,7 +111,7 @@ set(handles.gui_chassis, 'Color', ColorBviewer_def);
 %
 % Set font size
 %
-% handles = setfonterplab(handles);
+handles = setfonterplab(handles);
 
 % Update handles structure
 
