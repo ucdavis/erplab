@@ -80,7 +80,8 @@
 %Xtickdecimal     -determine the nunmber of decimals of x tick labels
 %                 -e.g., -0.2 0.0 0.2 0.4 0.6 0.8 if Xtickdecimal is 1
 %XtickdisFlag     -the way is to display xticks: 1 is in millisecond, 0 is in second
-
+%FigOutpos        - The width and height for the figure. The default one is
+%                   the same to the monitor.
 
 
 % *** This function is part of ERPLAB Studio ***
@@ -331,7 +332,7 @@ if nargin==1  %with GUI to get other parameters
     Xtickprecision = 1;
     XdisFlag = 1;
     Parameterfile = '';
-    
+    FigOutpos = [];
     [ALLERP, erpcom] = pop_plotERPwaviewer(ALLERP,CURRENTPLOT,ERPsetArray,binArray, chanArray,'PLOTORG',PLOTORG,'GridposArray',GridposArray,'LabelsName',LabelsName, 'Blc', Blc,'Box',plotBox,'LineColor',LineColorspec,'LineStyle',LineStylespec,...
         'LineMarker',LineMarkerspec,'LineWidth',LineWidthspec,'LegendName',LegendName,'LegendFont',FontLeg,'LegendFontsize',FontSizeLeg,...
         'Labeloc',CBELabels,'Labelfont',CBEFont,'Labelfontsize',CBEFontsize,'YDir',PolarityWave,'SEM',Standerr,'Transparency', Transparency,...
@@ -339,7 +340,7 @@ if nargin==1  %with GUI to get other parameters
         'Xlabelcolor',xlabelFontcolor,'Xunits',Xunits,'MinorTicksX',MinorticksX,...
         'YScales',Yscales,'Yticks',Yticks,'Yticklabel',yticklabel,'Ylabelfont',YlabelFont,'Ylabelfontsize',YlabelFontsize,...
         'Ylabelcolor',ylabelFontcolor,'Yunits',yunits,'MinorTicksY',MinorticksY,'LegtextColor',TextcolorLeg,'Legcolumns',Legcolumns,'FigureName',FigureName,...
-        'FigbgColor',figbgdColor,'Labelcolor',Labelcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdisFlag,'Parameterfile',Parameterfile,'History', 'gui');
+        'FigbgColor',figbgdColor,'Labelcolor',Labelcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdisFlag,'FigOutpos',FigOutpos,'Parameterfile',Parameterfile,'History', 'gui');
     
     pause(0.1);
     return;
@@ -409,6 +410,7 @@ p.addParamValue('Labelcolor', [], @isnumeric);%%
 p.addParamValue('Ytickdecimal', [], @isnumeric);
 p.addParamValue('Xtickdecimal', [], @isnumeric);
 p.addParamValue('XtickdisFlag', [], @isnumeric);
+p.addParamValue('FigOutpos', [], @isnumeric);
 p.addParamValue('Parameterfile', '', @ischar);
 
 p.addParamValue('ErrorMsg', '', @ischar);
@@ -1068,13 +1070,15 @@ end
 if isempty(qLabelsName)
     qCBELabels = [];
 end
+
+qFigOutpos = p_Results.FigOutpos;
 %
 %%-------------Plot the ERP wave based on the above parameters-------------
 if ~isempty(qFigureName) && shist~=4
     f_ploterpserpviewer(ALLERP,qCURRENTPLOT, qPLOTORG,qbinArray,qchanArray,qGridposArray,qplotBox,qBlc,qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,...
         qLegendName,qFontLeg,qFontSizeLeg,qCBELabels,qCBEFont,qCBEFontsize,qPolarityWave,qStanderr,qTransparency,qGridspace,qtimeRange,qXticks,qxticklabel,...
         qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorticksX,qXunits,qYscales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,...
-        qLabelsName,qERPsetArray,qlegcolor,qlegcolumns,qFigureName,qFigbgColor,qLabelcolor,qYtickdecimal,qxtickprecision,qxdisFlag);
+        qLabelsName,qERPsetArray,qlegcolor,qlegcolumns,qFigureName,qFigbgColor,qLabelcolor,qYtickdecimal,qxtickprecision,qxdisFlag,qFigOutpos);
 end
 
 

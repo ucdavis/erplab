@@ -29,13 +29,21 @@ catch
         listname{ii,1} = num2str(ii);
     end
 end
-
+for ii = 1:numel(listname)
+   listname1{ii,1}=  listname{ii};
+end
+ listname = listname1;   
+    
 try
     listnameOlder = varargin{2};
 catch
-   listnameOlder = listname;
+    listnameOlder = listname;
 end
 
+for ii = 1:numel(listnameOlder)
+   listnameOlder1{ii,1}=  listnameOlder{ii};
+end
+ listnameOlder = listnameOlder1;   
 
 try
     PLOTORG = varargin{3};
@@ -46,7 +54,15 @@ end
 try
     titlename = varargin{4};
 catch
-    titlename = 'Edit labels for Plot Organization';
+    if PLOTORG(1)==1
+        titlename = 'Customize channel labels for Plot Organization';
+    elseif PLOTORG(1)==2
+        titlename = 'Customize bin labels for Plot Organization';
+    elseif PLOTORG(1)==3
+        titlename = 'Customize ERPset labels for Plot Organization';
+    else
+        titlename = 'Customize ERPset labels for Plot Organization';
+    end
 end
 
 [Numrows,Numcolumns]  = size(listname);
@@ -55,13 +71,13 @@ end
 for Numofrows = 1:Numrows
     for Numofcolumns = 1:2
         try
-            if Numofcolumns==1
-            GridinforData{Numofrows,Numofcolumns} = char(listname{Numofrows,1});
+            if Numofcolumns==2
+                GridinforData{Numofrows,Numofcolumns} = char(listname{Numofrows,1});
             else
-              GridinforData{Numofrows,Numofcolumns} = char(listnameOlder{Numofrows});   
+                GridinforData{Numofrows,Numofcolumns} = char(listnameOlder{Numofrows});
             end
         catch
-            GridinforData{Numofrows,Numofcolumns} = 'None';
+            GridinforData{Numofrows,Numofcolumns} = '';
         end
     end
 end
@@ -159,3 +175,13 @@ else
     % The GUI is no longer waiting, just close it
     delete(handles.gui_chassis);
 end
+
+
+% --- Executes on button press in pushbutton_default.
+function pushbutton_default_Callback(hObject, eventdata, handles)
+Data = handles.uitable1_layout.Data;
+for ii = 1:size(Data,1)
+    Data{ii,2}=Data{ii,1};
+end
+set(handles.uitable1_layout,'Data',Data);
+

@@ -150,7 +150,7 @@ gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'S
 
 
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 10]);
+set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 5]);
 
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
@@ -225,7 +225,9 @@ if isempty(OutputViewerpar)
     disp('Please restart EStudio Wave Viewer');
     return;
 end
-
+FigOutposition = gui_erp_waviewer.ViewBox.OuterPosition(3:4);
+ERPwaviewer.FigOutpos=FigOutposition;
+assignin('base','ALLERPwaviewer',ERPwaviewer);
 f_plotviewerwave(OutputViewerpar{1},OutputViewerpar{2}, OutputViewerpar{3},OutputViewerpar{4},OutputViewerpar{5},OutputViewerpar{6},OutputViewerpar{9},OutputViewerpar{8},OutputViewerpar{10},OutputViewerpar{11},...
     OutputViewerpar{12},OutputViewerpar{13},OutputViewerpar{14},OutputViewerpar{15},OutputViewerpar{16},OutputViewerpar{17},OutputViewerpar{18},OutputViewerpar{19},OutputViewerpar{20},OutputViewerpar{21},OutputViewerpar{22},...
     OutputViewerpar{23},OutputViewerpar{24},OutputViewerpar{25},OutputViewerpar{26},OutputViewerpar{27},OutputViewerpar{28},OutputViewerpar{29},OutputViewerpar{31},OutputViewerpar{30},OutputViewerpar{32},OutputViewerpar{33},...
@@ -503,7 +505,7 @@ MessageViewer= char(strcat('Create Static/Exportable Plot'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
-    OutputViewerpar = f_preparms_erpwaviewer(ViewerName);
+    OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'script');
     viewer_ERPDAT.Process_messg =2;
 catch
     viewer_ERPDAT.Process_messg =3;
@@ -1557,6 +1559,21 @@ try
     y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);
 catch
 end
+
+
+
+%%remove the margins of a plot
+ax = hbig;
+outerpos = ax.OuterPosition;
+ti = ax.TightInset; 
+left = outerpos(1) + ti(1);
+bottom = outerpos(2) + ti(2);
+ax_width = outerpos(3) - ti(1) - ti(3);
+ax_height = outerpos(4) - ti(2) - ti(4);
+ax.Position = [left bottom ax_width ax_height];
+
+
+
 %%--------------Plot ERPwave-----------------
 stdalpha = qTransparency;
 countPlot = 0;

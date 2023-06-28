@@ -73,7 +73,7 @@ if PLOTORG(1) ==1 %% if  the selected Channel is "Grid"
         try
             plotArrayStrdef{Numofchan} = chanStr{plotArray(Numofchan)};
         catch
-            plotArrayStrdef{Numofchan} = 'none';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
@@ -82,7 +82,7 @@ elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
         try
             plotArrayStrdef{Numofchan} = binStr{plotArray(Numofchan)};
         catch
-            plotArrayStrdef{Numofchan} = 'none';
+            plotArrayStrdef{Numofchan} = ' ';
         end
     end
 elseif PLOTORG(1) == 3%% if the selected ERPset is "Grid"
@@ -91,7 +91,7 @@ elseif PLOTORG(1) == 3%% if the selected ERPset is "Grid"
         try
             plotArrayStrdef{Numofchan} = ALLERPIN(plotArray(Numofchan)).erpname;
         catch
-            plotArrayStrdef{Numofchan} = 'none';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 end
@@ -132,14 +132,14 @@ elseif  GridLayoutop==0
                 SingleStr =  char(DataDf{Numofrows,Numofcolumns});
                 [C,IA] = ismember_bc2(SingleStr,columFormat);
                 if C ==1
-                    if IA < length(columFormat)
+                    if IA <= length(columFormat)
                         try
                             GridposArray(Numofrows,Numofcolumns)   = plotArray(IA);
                         catch
                             GridposArray(Numofrows,Numofcolumns) =0;
                         end
-                    elseif IA == length(columFormat) %%%If the element is 'None'
-                        GridposArray(Numofrows,Numofcolumns)   = 0;
+%                     elseif IA == length(columFormat) %%%If the element is 'None'
+%                         GridposArray(Numofrows,Numofcolumns)   = 0;
                     end
                 else
                     GridposArray(Numofrows,Numofcolumns)   = 0;
@@ -678,11 +678,20 @@ if isempty(PagesIndex)
     PagesIndex=1;
 end
 
-for ii = 1:length(plotArrayStr)-1
+for ii = 1:length(plotArrayStr)
     plotArrayStr_tr{ii}   = plotArrayStr{ii};
 end
 plotArrayStr = '';
 plotArrayStr = plotArrayStr_tr;
+
+
+FigOutpos = [];
+try
+FigOutpos=ERPwaviewerIN.FigOutpos;
+catch
+
+end
+
 
 %%Main function
 if ~isempty(FigureName)
@@ -694,7 +703,8 @@ if ~isempty(FigureName)
         'Xlabelcolor',xlabelFontcolor,'Xunits',Xunits,'MinorTicksX',MinorticksX,...
         'YScales',Yscales,'Yticks',Yticks,'Yticklabel',yticklabel,'Ylabelfont',YlabelFont,'Ylabelfontsize',YlabelFontsize,...
         'Ylabelcolor',ylabelFontcolor,'Yunits',yunits,'MinorTicksY',MinorticksY,'LegtextColor',TextcolorLeg,'Legcolumns',Legcolumns,...
-        'FigureName',FigureName,'FigbgColor',figbgdColor,'Labelcolor',CBETcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdispFlag,'History', History);%
+        'FigureName',FigureName,'FigbgColor',figbgdColor,'Labelcolor',CBETcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdispFlag,...
+'FigOutpos',FigOutpos,'History', History);%
 else
     OutputViewerpar{1} =  ALLERPIN;
     OutputViewerpar{2} =  PagesIndex;

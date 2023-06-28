@@ -2718,7 +2718,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             timeArraydef(1) = ERPIN.times(1);
             timeArraydef(2) = ERPIN.times(end);
             [timeticksdef stepX]= default_time_ticks_studio(ERPIN, [timeArraydef(1),timeArraydef(2)]);
-            timeticksdef = str2num(timeticksdef);
+            timeticksdef = str2num(char(timeticksdef));
             if ~isempty(stepX) && numel(stepX) ==1
                 stepX = floor(stepX/2);
             end
@@ -2955,7 +2955,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%Y ticklabel minor
         yticksStr = str2num(char(gui_erpxyaxeset_waveviewer.yticks_edit.String));
         stepY = [];
-        yscaleRange =  (str2num(yRangeLabel));
+        yscaleRange =yRangeLabel;
         if ~isempty(yticksStr) && numel(yticksStr)>1
             if numel(yticksStr)>=2
                 for Numofxticks = 1:numel(yticksStr)-1

@@ -23,24 +23,18 @@ function ERP_layoutstringGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = [];
 
 try
-    plotArray = varargin{1};
+    plotArrayFormt = varargin{1};
 catch
     for ii = 1:100
-        plotArray{ii,1} = ['chan-',num2str(ii)];
+        plotArrayFormt{ii,1} = ['chan-',num2str(ii)];
     end
 end
-for jj = 1:length(plotArray)
-    plotArrayFormt(jj,1) = {char(plotArray{jj})};
-end
-plotArrayFormt(length(plotArrayFormt)+1) = {'None'};
 
-try
-    plotArrayFormtOlder = varargin{2};
-catch
-    plotArrayFormtOlder = plotArrayFormt;
+for jj = 1:length(plotArrayFormt)
+    plotArrayFormtnew(jj,1) = {char(plotArrayFormt{jj})};
 end
-
-handles.plotArrayFormtOlder = plotArrayFormtOlder;
+plotArrayFormt = plotArrayFormtnew;
+plotArray = plotArrayFormt;
 
 handles.plotArrayFormt = plotArrayFormt;
 
@@ -58,7 +52,7 @@ for Numofrows = 1:Numrows
     for Numofcolumns = 1:Numcolumns
         count = count +1;
         if count> numel(plotArray)
-            GridinforDatadef{Numofrows,Numofcolumns} = char('None');
+            GridinforDatadef{Numofrows,Numofcolumns} = '';
         else
             GridinforDatadef{Numofrows,Numofcolumns} = char(plotArray{count});
         end
@@ -66,28 +60,24 @@ for Numofrows = 1:Numrows
 end
 
 try
-    GridinforData = varargin{4};
+    GridinforData = varargin{2};
 catch
     GridinforData = GridinforDatadef;
 end
+handles.GridinforData = GridinforData;
+handles.GridinforData_def = GridinforData;
 if isempty(GridinforData)
-   GridinforData = GridinforDatadef; 
+    GridinforData = GridinforDatadef;
 end
-
 if size(GridinforData,1)~= Numrows || size(GridinforData,2)~= Numcolumns
     GridinforData = GridinforDatadef;
 end
 FonsizeDefault = f_get_default_fontsize();
 % tablePosition = handles.uitable1_layout.Position;
 for Numofcolumns = 1:Numcolumns
-    if size(plotArrayFormt,1) > size(plotArrayFormt,2)
-        columFormat{Numofcolumns} = plotArrayFormt';
-    else
-        columFormat{Numofcolumns} = plotArrayFormt;
-    end
+    columFormat{Numofcolumns} = 'char';
     ColumnEditable(Numofcolumns) =1;
     ColumnName{1,Numofcolumns} = char(['C',num2str(Numofcolumns)]);
-    %     ColumnWidth{Numofcolumns} =tablePosition(3)/(Numcolumns+0.2);
 end
 
 for Numofrows = 1:Numrows
@@ -95,17 +85,35 @@ for Numofrows = 1:Numrows
 end
 set(handles.uitable1_layout,'Data',GridinforData);
 handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
-% handles.uitable1_layout.ColumnWidth = ColumnWidth;
 handles.uitable1_layout.ColumnName = ColumnName;
 handles.uitable1_layout.RowName = RowName;
 handles.uitable1_layout.ColumnFormat = columFormat;
 handles.uitable1_layout.FontSize = FonsizeDefault;
+handles.uitable1_layout.CellEditCallback = {@MakerLabels,handles};
+% s = uistyle('BackgroundColor','yellow');
+% addStyle(handles.uitable1_layout,s,'cell',[3,3]);
+
+[plotArrayFormt] = f_MarkLabels_ERP_Waveiwer(GridinforData,plotArrayFormt);
+handles.listbox_Labels.String  = '';
+handles.listbox_Labels.String = plotArrayFormt;
 %
 % Color GUI
 %
 % handles = painterplab(handles);
 [version reldate,ColorBdef,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
 set(handles.gui_chassis, 'Color', ColorBviewer_def);
+handles.textrow5.BackgroundColor = ColorBviewer_def;
+handles.text6_columns.BackgroundColor = ColorBviewer_def;
+handles.text7_message.BackgroundColor = ColorBviewer_def;
+handles.listbox_Labels.Min = 0;
+handles.listbox_Labels.Max =1;
+% handles.listbox_Labels.Enable = 'off';
+handles.listbox_Labels.Value = 1;
+
+handles.text_rownum.String = num2str(Numrows);
+handles.edit1_columnsNum.String = num2str(Numcolumns);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+
 %
 % Set font size
 %
@@ -113,11 +121,9 @@ set(handles.gui_chassis, 'Color', ColorBviewer_def);
 
 % Update handles structure
 
-
-
 guidata(hObject, handles);
 
-set(handles.gui_chassis, 'Name', 'Plot Organinzation > Grid Layout', 'WindowStyle','modal');
+set(handles.gui_chassis, 'Name', 'Plot Organization > Customize Grid Layout', 'WindowStyle','modal');
 
 % UIWAIT makes ERP_layoutstringGUI wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
@@ -134,14 +140,7 @@ end
 delete(handles.gui_chassis);
 pause(0.1)
 
-%----------------------------------------------------------------------------------
-% function listbox_list_Callback(hObject, eventdata, handles)
-%
-% %----------------------------------------------------------------------------------
-% function listbox_list_CreateFcn(hObject, eventdata, handles)
-% if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-%         set(hObject,'BackgroundColor','white');
-% end
+
 
 %----------------------------------------------------------------------------------
 function pushbutton_cancel_Callback(hObject, eventdata, handles)
@@ -149,12 +148,13 @@ handles.output = [];
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
+
+
 %----------------------------------------------------------------------------------
 function pushbutton_ok_Callback(hObject, eventdata, handles)
-
-Data = get(handles.uitable1_layout, 'Data');
-plotArrayFormt = handles.plotArrayFormt;
-handles.output = {Data,plotArrayFormt};
+handles.text7_message.String = '';
+Data = handles.GridinforData;
+handles.output = Data;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -171,81 +171,248 @@ else
 end
 
 
-% --- Executes on button press in pushbutton_edit.
-function pushbutton_edit_Callback(hObject, eventdata, handles)
-plotArrayFormt = handles.plotArrayFormt;
-plotArrayFormtOld=handles.plotArrayFormtOlder;
-for ii = 1:length(plotArrayFormtOld)-1
-    plotArrayFormtOldin{ii,1} = plotArrayFormtOld{ii};
+% --- Executes on button press in pushbutton_clearall.
+function pushbutton_clearall_Callback(hObject, eventdata, handles)
+handles.text7_message.String = '';
+%%clear all labels
+Data = handles.uitable1_layout.Data;
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        Data{ii,jj} = '';
+    end
 end
-[Numrows,Numcolumns]= size(plotArrayFormt);
+handles.GridinforData = Data;
+handles.uitable1_layout.Data = Data;
+LabelStr=handles.plotArrayFormt;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr);
+handles.listbox_Labels.String=LabelStr;
+guidata(hObject, handles);
+% uiresume(handles.gui_chassis);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+guidata(hObject, handles);
 
-if Numrows ==1 && Numcolumns>=2
-    for Numofcolumns = 1:Numcolumns-1
-        plotArrayFormtin{Numofcolumns,1} =   char(plotArrayFormt{Numofcolumns});
+
+% --- Executes on selection change in listbox_Labels.
+function listbox_Labels_Callback(hObject, eventdata, handles)
+handles.text7_message.String = '';
+List_Label=handles.listbox_Labels.String;
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+
+% colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
+% Data = handles.GridinforData;
+% LabelStr=handles.plotArrayFormt;
+% try
+%     SingleCell = LabelStr{handles.listbox_Labels.Value};
+% catch
+%     SingleCell = LabelStr{1};
+% end
+% for ii = 1:size(Data,1)
+%     for jj = 1:size(Data,2)
+%         if strcmpi(Data{ii,jj},SingleCell)
+%             hex_color_here = ['#' dec2hex(255,2) dec2hex(255,2) dec2hex(0,2)];
+%             Data{ii,jj} = colergen(hex_color_here,Data{ii,jj});
+%         end
+%     end
+%     
+% end
+% handles.uitable1_layout.Data=Data;
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function listbox_Labels_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox_Labels (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function MakerLabels(~,~, handles)
+Data = handles.uitable1_layout.Data;
+LabelStr=handles.plotArrayFormt;
+%%check the changed labels
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        count = 0;
+        for kk = 1:length(LabelStr)
+            if strcmpi(LabelStr{kk},Data{ii,jj})
+                count = count +1;
+            end
+        end
+        if count==0
+            Data{ii,jj} = '';
+        end
     end
-elseif Numrows >=2 && Numcolumns==1
-    for Numofrows = 1:Numrows-1
-        plotArrayFormtin{Numofrows,1} =   char(plotArrayFormt{Numofrows});
-    end
-else
+end
+handles.GridinforData = Data;
+handles.uitable1_layout.Data = Data;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr);
+handles.listbox_Labels.String=LabelStr;
+
+
+
+% --- Executes on button press in pushbutton_default.
+function pushbutton_default_Callback(hObject, eventdata, handles)
+handles.text7_message.String = '';
+GridinforData = handles.GridinforData_def;
+[Numrows,Numcolumns] = size(GridinforData);
+for Numofcolumns = 1:Numcolumns
+    columFormat{Numofcolumns} = 'char';
+    ColumnEditable(Numofcolumns) =1;
+    ColumnName{1,Numofcolumns} = char(['C',num2str(Numofcolumns)]);
+end
+
+for Numofrows = 1:Numrows
+    RowName{1,Numofrows} = char(['R',num2str(Numofrows)]);
+end
+set(handles.uitable1_layout,'Data',GridinforData);
+handles.GridinforData = GridinforData;
+handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
+handles.uitable1_layout.ColumnName = ColumnName;
+handles.uitable1_layout.RowName = RowName;
+handles.uitable1_layout.ColumnFormat = columFormat;
+LabelStr=handles.plotArrayFormt;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(GridinforData,LabelStr);
+handles.listbox_Labels.String=LabelStr;
+handles.text_rownum.String = num2str(Numrows);
+handles.edit1_columnsNum.String = num2str(Numcolumns);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+guidata(hObject, handles);
+
+
+
+function edit1_columnsNum_Callback(hObject, eventdata, handles)
+handles.text7_message.String = '';
+columNum =  str2num(get(hObject,'String'));
+Data= handles.GridinforData;
+if isempty(columNum) || columNum<=0
+    handles.text7_message.String = '"Columns" should be a positive number.';
+    handles.edit1_columnsNum.String  = size(Data,2);
     return;
 end
-try
-    ERPwaviewerin = evalin('base','ALLERPwaviewer');
-    PLOTORG(1) =    ERPwaviewerin.plot_org.Grid;
-    PLOTORG(2) = ERPwaviewerin.plot_org.Overlay ;
-    PLOTORG(3) = ERPwaviewerin.plot_org.Pages;
-catch
-    PLOTORG = [1 2 3];
-end
-changedoutput = editlayoutstringGUI(plotArrayFormtOldin,plotArrayFormtin,PLOTORG);
-
-if isempty(changedoutput)
-    return;
-end
-try
-    for Numofrows = 1:size(changedoutput)
-        changeStr{Numofrows} = char(changedoutput{Numofrows,2});
-    end
-catch
-    for Numofrows = 1:size(changedoutput)
-        changeStr{Numofrows} = char(changedoutput{Numofrows,1});
+RowsNum = size(Data,1);
+cuntNum = 0;
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        cuntNum = cuntNum+1;
+        DataOld{cuntNum} = char(Data{ii,jj});
     end
 end
-
-if ~isempty(changeStr)
-    columFormat =  handles.uitable1_layout.ColumnFormat;
-    columFormatOld = columFormat{1};
-    GridinforDataOld = handles.uitable1_layout.Data;
-    [Numrows,Numcolumns] = size(GridinforDataOld);
-    for Numofrow = 1:Numrows
-        for Numofcolumn = 1:Numcolumns
-            SingleStr =  char(GridinforDataOld{Numofrow,Numofcolumn});
-            [C,IA] = ismember_bc2(SingleStr,columFormatOld);
-            if C ==1
-                if IA < length(columFormatOld)
-                    try
-                        GridinforDataOld{Numofrow,Numofcolumn} = char(changeStr{IA});
-                    catch
-                        GridinforDataOld{Numofrow,Numofcolumn} = char('');
-                    end
-                elseif IA == length(columFormatOld)
-                    GridinforDataOld{Numofrow,Numofcolumn}  = char('None');
-                end
-            else
-                GridinforDataOld{Numofrow,Numofcolumn}  = char('None');
+LabelStr=handles.plotArrayFormt;
+count1 = 0;
+for Numofrow = 1:RowsNum
+    for Numofcolumn = 1:columNum
+        count1 = count1+1;
+        try
+            DataNew{Numofrow,Numofcolumn} = DataOld{count1} ;
+        catch
+            try
+                DataNew{Numofrow,Numofcolumn} = char(LabelStr{count1});
+            catch
+                DataNew{Numofrow,Numofcolumn}='';
             end
         end
     end
-    handles.uitable1_layout.Data = GridinforDataOld;
-    changeStr{length(changeStr)+1} = char('None');
-    for Numofcolumns = 1:Numcolumns
-       handles.uitable1_layout.ColumnFormat{Numofcolumns} = changeStr;
-    end
-    handles.plotArrayFormt = changeStr;
 end
+for Numofcolumn = 1:columNum
+    columFormat{Numofcolumn} = 'char';
+    ColumnEditable(Numofcolumn) =1;
+    ColumnName{1,Numofcolumn} = char(['C',num2str(Numofcolumn)]);
+end
+handles.GridinforData = DataNew;
+handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
+handles.uitable1_layout.ColumnName = ColumnName;
+handles.uitable1_layout.ColumnFormat = columFormat;
+handles.uitable1_layout.Data=DataNew;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr);
+handles.listbox_Labels.String=LabelStr;
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
 guidata(hObject, handles);
-% uiresume(handles.gui_chassis);
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function edit1_columnsNum_CreateFcn(hObject, eventdata, handles)
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function text_rownum_Callback(hObject, eventdata, handles)
+handles.text7_message.String = '';
+RowsNum =  str2num(get(hObject,'String'));
+Data= handles.GridinforData;
+if isempty(RowsNum) || RowsNum<=0
+    handles.text7_message.String = '"Rows" should be a positive number.';
+    handles.text_rownum.String  = size(Data,1);
+    return;
+end
+
+columNum = size(Data,2);
+cuntNum = 0;
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        cuntNum = cuntNum+1;
+        DataOld{cuntNum} = char(Data{ii,jj});
+    end
+end
+LabelStr=handles.plotArrayFormt;
+count1 = 0;
+for Numofrow = 1:RowsNum
+    RowName{1,Numofrow} = char(['R',num2str(Numofrow)]);
+    for Numofcolumn = 1:columNum
+        count1 = count1+1;
+        try
+            DataNew{Numofrow,Numofcolumn} = DataOld{count1} ;
+        catch
+            try
+                DataNew{Numofrow,Numofcolumn} = char(LabelStr{count1});
+            catch
+                DataNew{Numofrow,Numofcolumn}='';
+            end
+        end
+    end
+end
+handles.GridinforData = DataNew;
+handles.uitable1_layout.RowName = RowName;
+handles.uitable1_layout.Data=DataNew;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr);
+handles.listbox_Labels.String=LabelStr;
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+guidata(hObject, handles);
+
+
+
+%%Mark the labels with different colors(blue: unused; black:used;  red:Repeated)
+function [LabelStr] = f_MarkLabels_ERP_Waveiwer(Gridata,LabelStr)
+LabelsFlag = [0 0 0];
+for ii = 1:length(LabelStr)
+    code1 = 0;
+    for jj = 1:size(Gridata,1)
+        for kk = 1:size(Gridata,2)
+            if strcmpi(LabelStr{ii},Gridata{jj,kk})
+                code1 = code1+1;
+            end
+        end
+    end
+    if code1 ==0
+        LabelStr{ii} =  ['<HTML><FONT color="blue">',num2str(ii),'.',32,LabelStr{ii},'</Font></html>'];
+        LabelsFlag(1) = 1;
+    elseif code1 >1
+        LabelStr{ii} =  ['<HTML><FONT color="red">',num2str(ii),'.',32,LabelStr{ii},'</Font></html>'];
+        LabelsFlag(3) = 1;
+    else
+        LabelStr{ii} =  ['<HTML><FONT color="black">',num2str(ii),'.',32,LabelStr{ii},'</Font></html>'];
+        LabelsFlag(2) = 1;
+    end
+end
+
 
 

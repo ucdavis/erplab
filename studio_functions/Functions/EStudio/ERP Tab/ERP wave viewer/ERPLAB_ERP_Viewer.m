@@ -214,6 +214,7 @@ ERPwaviewer.baselinecorr = 'none';
 ERPwaviewer.chanbinsetlabel = [];
 ERPwaviewer.figbackgdcolor = [];
 ERPwaviewer.figname = 'My Viewer';
+ERPwaviewer.FigOutpos=[];
 assignin('base','ALLERPwaviewer',ERPwaviewer);
 
 estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
@@ -307,14 +308,14 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
         %%-----------Setting------------------------------------------------
         %% Create tabs
-        context_tabs =  uix.VBox('Parent', gui_erp_waviewer.Window);
+        context_tabs =  uix.VBox('Parent', gui_erp_waviewer.Window,'SizeChangedFcn',@WAviewerResize);
         gui_erp_waviewer.tabERP = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorBviewer_def);
         %% Arrange the main interface for ERP panel (Tab3)
         gui_erp_waviewer.ViewBox = uix.VBox('Parent', gui_erp_waviewer.tabERP,'BackgroundColor',ColorBviewer_def);
         
         gui_erp_waviewer.Resize = 0;
         gui_erp_waviewer.ViewPanel = uix.BoxPanel('Parent', gui_erp_waviewer.ViewBox,'TitleColor',ColorBviewer_def,'ForegroundColor','k');%
-        gui_erp_waviewer.ViewContainer = uicontainer('Parent', gui_erp_waviewer.ViewPanel,'SizeChangedFcn',@WAviewerResize);
+        gui_erp_waviewer.ViewContainer = uicontainer('Parent', gui_erp_waviewer.ViewPanel);
         
         gui_erp_waviewer.panelscroll = uix.ScrollingPanel('Parent', gui_erp_waviewer.tabERP);
         set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
@@ -337,7 +338,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         gui_erp_waviewer.panelSizes(3) = 490;
         
         gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(4) = 405;
+        gui_erp_waviewer.panelSizes(4) = 385;
         
         gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(5) = 200;
@@ -380,7 +381,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         %% + Create the view
         p = gui_erp_waviewer.ViewContainer;
         gui_erp_waviewer.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorBviewer_def);
-        gui_erp_waviewer.Resize =1;
+        
+        gui_erp_waviewer.Resize=1;
     end % createInterface_ERPWave_viewer
 
 
@@ -434,9 +436,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
 
 %%Resize the GUI automatically as the user changes the size of the window at run-time.
     function WAviewerResize(~,~)
-        % global gui_erp_waviewer;
         if gui_erp_waviewer.Resize ~= 0
-%             set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
             f_redrawERP_viewer_test();
         end
     end
