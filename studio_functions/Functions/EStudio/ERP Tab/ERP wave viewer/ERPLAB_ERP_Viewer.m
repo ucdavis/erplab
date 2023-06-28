@@ -297,13 +297,30 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
             'HandleVisibility', 'off', 'tag', 'rollover');
+        ScreenPos = [];
         
-        
-        new_pos = [1 1 1000 1000];
+        new_pos= estudioworkingmemory('ERPWaveScreenPos');
+        if isempty(new_pos)
+            try
+                ScreenPos =  get( groot, 'Screensize' );
+            catch
+                ScreenPos =  get( groot, 'Screensize' );
+            end
+            if ~isempty(ScreenPos)
+                new_pos(1:2) = [1 1];
+                new_pos(3:4) = ScreenPos(3:4)*3/4;
+            else
+                new_pos = [1 1 1000 600];
+            end
+            estudioworkingmemory('ERPWaveScreenPos',new_pos);
+        end
         set(gui_erp_waviewer.Window, 'Position', new_pos);
         
         % + View menu
         gui_erp_waviewer.exit = uimenu( gui_erp_waviewer.Window, 'Label','Exit', 'Callback', @onExit);
+        gui_erp_waviewer.setting_title = uimenu( gui_erp_waviewer.Window, 'Label', 'Setting');
+        gui_erp_waviewer.setting_pos = uimenu(gui_erp_waviewer.setting_title, 'Label', 'Viewer Outposition', 'Callback', @Viewer_setting);
+        gui_erp_waviewer.screen_pos = new_pos;
         gui_erp_waviewer.help = uimenu( gui_erp_waviewer.Window, 'Label', 'Help', 'Callback', @onhelp);
         
         %%-----------Setting------------------------------------------------
@@ -441,6 +458,17 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         end
     end
 
+
+%%setting the screen size
+    function Viewer_setting(~,~)
+        new_pos = f_ERPwave_Viewer_pos(gui_erp_waviewer.screen_pos);
+        if ~isempty(new_pos)
+            set(gui_erp_waviewer.Window, 'Position', new_pos);
+            estudioworkingmemory('ERPWaveScreenPos',new_pos);
+            gui_erp_waviewer.screen_pos = new_pos;
+            %             f_redrawERP_viewer_test();
+        end
+    end
 
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function
