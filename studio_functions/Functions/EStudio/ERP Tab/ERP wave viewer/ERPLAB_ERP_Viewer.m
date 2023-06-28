@@ -330,7 +330,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         % + View menu
         gui_erp_waviewer.exit = uimenu( gui_erp_waviewer.Window, 'Label','Exit', 'Callback', @onExit);
         gui_erp_waviewer.setting_title = uimenu( gui_erp_waviewer.Window, 'Label', 'Setting');
-        gui_erp_waviewer.setting_pos = uimenu(gui_erp_waviewer.setting_title, 'Label', 'Viewer Outposition', 'Callback', @Viewer_setting);
+        gui_erp_waviewer.setting_pos = uimenu(gui_erp_waviewer.setting_title, 'Label', 'Viewer Position', 'Callback', @Viewer_setting);
         gui_erp_waviewer.screen_pos = new_pos;
         gui_erp_waviewer.help = uimenu( gui_erp_waviewer.Window, 'Label', 'Help', 'Callback', @onhelp);
         
