@@ -40,7 +40,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 
 drawui_plot_property(FonsizeDefault);
@@ -81,10 +81,13 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.parameters_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_labelset_waveviewer.labelauto = uicontrol('Style','radiobutton','Parent', gui_labelset_waveviewer.parameters_title,'String','Auto',...
             'callback',@labelauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',locationAuto); %
+        gui_labelset_waveviewer.labelauto.KeyPressFcn = @labels_presskey;
         gui_labelset_waveviewer.nolabel = uicontrol('Style','radiobutton','Parent', gui_labelset_waveviewer.parameters_title,'String','No labels',...
             'callback',@nolabel,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',locationno); %
+        gui_labelset_waveviewer.nolabel.KeyPressFcn = @labels_presskey;
         gui_labelset_waveviewer.customlabel = uicontrol('Style','radiobutton','Parent', gui_labelset_waveviewer.parameters_title,'String','Custom',...
             'callback',@customlabel,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',locationcustom); %
+        gui_labelset_waveviewer.customlabel.KeyPressFcn = @labels_presskey;
         if gui_labelset_waveviewer.labelauto.Value
             gui_labelset_waveviewer.nolabel.Value = ~gui_labelset_waveviewer.labelauto.Value;
             gui_labelset_waveviewer.customlabel.Value = ~gui_labelset_waveviewer.labelauto.Value;
@@ -110,12 +113,15 @@ varargout{1} = box_erplabelset_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~gui_labelset_waveviewer.labelauto.Value); %
         gui_labelset_waveviewer.xperc_edit = uicontrol('Style','edit','Parent', gui_labelset_waveviewer.labelloc_title,'String',xperDef,...
             'callback',@label_xperc, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customdefEnable); %
+       gui_labelset_waveviewer.xperc_edit.KeyPressFcn = @labels_presskey;
         gui_labelset_waveviewer.yperctitle = uicontrol('Style','text','Parent', gui_labelset_waveviewer.labelloc_title,'String','Y%',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         gui_labelset_waveviewer.yperc_edit = uicontrol('Style','edit','Parent', gui_labelset_waveviewer.labelloc_title,'String',yperDef,...
             'callback',@label_yperc, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customdefEnable); %
+        gui_labelset_waveviewer.yperc_edit.KeyPressFcn = @labels_presskey;
         gui_labelset_waveviewer.center = uicontrol('Style','checkbox','Parent', gui_labelset_waveviewer.labelloc_title,'String','Centered',...
             'callback',@label_center,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Enable',customdefEnable,'Value',CenDef); %
+        gui_labelset_waveviewer.center.KeyPressFcn = @labels_presskey;
         set(gui_labelset_waveviewer.labelloc_title,'Sizes',[30 45 30 45 80]);
         ERPwaviewer.chanbinsetlabel.location.xperc = str2num(char(gui_labelset_waveviewer.xperc_edit.String));
         ERPwaviewer.chanbinsetlabel.location.yperc = str2num(char(gui_labelset_waveviewer.yperc_edit.String));
@@ -137,12 +143,13 @@ varargout{1} = box_erplabelset_viewer_property;
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_labelset_waveviewer.font_custom_type = uicontrol('Style','popupmenu','Parent', gui_labelset_waveviewer.font_custom_title ,'String',fonttype,...
             'callback',@label_font,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',fontDef,'Enable',customdefEnable); %
-        
+        gui_labelset_waveviewer.font_custom_type.KeyPressFcn = @labels_presskey;
         uicontrol('Style','text','Parent', gui_labelset_waveviewer.font_custom_title ,'String','Size',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         
         gui_labelset_waveviewer.font_custom_size = uicontrol('Style','popupmenu','Parent', gui_labelset_waveviewer.font_custom_title ,'String',fontsize,...
             'callback',@label_fontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',customdefEnable); %
+        gui_labelset_waveviewer.font_custom_size.KeyPressFcn = @labels_presskey;
         set(gui_labelset_waveviewer.font_custom_title,'Sizes',[30 110 30 70]);
         ERPwaviewer.chanbinsetlabel.font = gui_labelset_waveviewer.font_custom_type.Value;
         ERPwaviewer.chanbinsetlabel.fontsize = labelfontsizeinum(gui_labelset_waveviewer.font_custom_size.Value);
@@ -155,6 +162,7 @@ varargout{1} = box_erplabelset_viewer_property;
         textColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
         gui_labelset_waveviewer.labelcolor = uicontrol('Style','popupmenu','Parent',gui_labelset_waveviewer.labelcolor_title,'String',textColor,...
             'callback',@label_color,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customdefEnable,'Value',Labelfontcolor); %
+        gui_labelset_waveviewer.labelcolor.KeyPressFcn = @labels_presskey;
         uiextras.Empty('Parent',gui_labelset_waveviewer.labelcolor_title);
         uiextras.Empty('Parent',gui_labelset_waveviewer.labelcolor_title);
         set(gui_labelset_waveviewer.labelcolor_title,'Sizes',[40 100 30 70]);
@@ -203,7 +211,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.yperc_edit.String = '100';
         gui_labelset_waveviewer.labelcolor.Enable = Enable;
         gui_labelset_waveviewer.label_customtable.Enable = Enable;
-         gui_labelset_waveviewer.labelcolor.Value = 1;
+        gui_labelset_waveviewer.labelcolor.Value = 1;
         %%----------------Update the label-----------------
         try
             ALLERPwaviewer = evalin('base','ALLERPwaviewer');
@@ -312,7 +320,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         if isempty(str2num(Source.String))
-          gui_labelset_waveviewer.xperc_edit.String ='50' ;  
+            gui_labelset_waveviewer.xperc_edit.String ='50' ;
         end
     end
 
@@ -327,7 +335,7 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
         if isempty(str2num(Source.String))
-          gui_labelset_waveviewer.yperc_edit.String = '100';  
+            gui_labelset_waveviewer.yperc_edit.String = '100';
         end
     end
 
@@ -636,5 +644,14 @@ varargout{1} = box_erplabelset_viewer_property;
         end
     end
 
+
+    function labels_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            label_apply();
+        else
+            return;
+        end
+    end
 
 end

@@ -1388,7 +1388,7 @@ for Numofrows = 1:Numrows
         end
         try
             if isxaxislabel==2
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1)/10),XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             else
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end

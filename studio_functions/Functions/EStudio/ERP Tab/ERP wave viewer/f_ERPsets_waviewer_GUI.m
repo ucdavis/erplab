@@ -121,10 +121,10 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaveview_erpsetops.opts_title = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox, 'Spacing', 5,'BackgroundColor',ColorBviewer_def);
         ERPwaveview_erpsetops.auto = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_erpsetops.opts_title,...
             'String',' ','callback',@erpselect_auto,'Value',Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-        
+        ERPwaveview_erpsetops.auto.KeyPressFcn = @ERPset_keypress;
         ERPwaveview_erpsetops.custom = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_erpsetops.opts_title,...
             'String','Custom','callback',@erpselect_custom,'Value',~Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-        
+        ERPwaveview_erpsetops.custom.KeyPressFcn = @ERPset_keypress;
         if strcmpi(ERPtooltype,'EStudio')
             ERPwaveview_erpsetops.auto.String = 'Same as EStudio';
         elseif  strcmpi(ERPtooltype,'ERPLAB')
@@ -155,6 +155,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ds_length = length(ERPdatasets);
         ERPwaveview_erpsetops.butttons_datasets = uicontrol('Parent', panelshbox, 'Style', 'listbox', 'min', 1,'max',...
             ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Enable_label);
+        ERPwaveview_erpsetops.butttons_datasets.KeyPressFcn = @ERPset_keypress;
         %%Help and apply
         ERPwaveview_erpsetops.help_apply_title = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
@@ -526,16 +527,18 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         
         if ERPwaveview_erpsetops.auto.Value ==1
             Geterpbinchan = estudioworkingmemory('geterpbinchan');
-            CurrentERPIndex = Geterpbinchan.Select_index;
-            chan_bin = Geterpbinchan.bins_chans(CurrentERPIndex);
-            if chan_bin ==1
-                ERPwaviewer_apply.plot_org.Grid =2;
-                ERPwaviewer_apply.plot_org.Overlay=1;
-                ERPwaviewer_apply.plot_org.Pages=3;
-            elseif chan_bin==0
-                ERPwaviewer_apply.plot_org.Grid =1;
-                ERPwaviewer_apply.plot_org.Overlay=2;
-                ERPwaviewer_apply.plot_org.Pages=3;
+            if ~isempty(Geterpbinchan)
+                CurrentERPIndex = Geterpbinchan.Select_index;
+                chan_bin = Geterpbinchan.bins_chans(CurrentERPIndex);
+                if chan_bin ==1
+                    ERPwaviewer_apply.plot_org.Grid =2;
+                    ERPwaviewer_apply.plot_org.Overlay=1;
+                    ERPwaviewer_apply.plot_org.Pages=3;
+                elseif chan_bin==0
+                    ERPwaviewer_apply.plot_org.Grid =1;
+                    ERPwaviewer_apply.plot_org.Overlay=2;
+                    ERPwaviewer_apply.plot_org.Pages=3;
+                end
             end
             %%% we may need to get the grid layout automatically
         end
@@ -927,5 +930,12 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         end
     end
 
-
+    function ERPset_keypress(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            ERPset_apply();
+        else
+            return;
+        end
+    end
 end

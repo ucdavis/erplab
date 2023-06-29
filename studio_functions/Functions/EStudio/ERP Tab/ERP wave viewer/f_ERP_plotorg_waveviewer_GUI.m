@@ -67,16 +67,22 @@ varargout{1} = box_erpwave_viewer_plotorg;
         uiextras.Empty('Parent',gui_plotorg_waveviewer.DataSelGrid);
         gui_plotorg_waveviewer.plotorg_c1 =  uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','',...
             'callback',@plotorg_c1,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',1); % 1B
+        gui_plotorg_waveviewer.plotorg_c1.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.plotorg_c2 = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','',...
             'callback',@plotorg_c2,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',0); % 1B
+        gui_plotorg_waveviewer.plotorg_c2.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.plotorg_c3 = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','',...
             'callback',@plotorg_c3,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',0); % 1B
+        gui_plotorg_waveviewer.plotorg_c3.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.plotorg_c4 =  uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','',...
             'callback',@plotorg_c4,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',0); % 1B
+        gui_plotorg_waveviewer.plotorg_c4.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.plotorg_c5 = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','',...
             'callback',@plotorg_c5,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',0); % 1B
+        gui_plotorg_waveviewer.plotorg_c5.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.plotorg_c6 = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','',...
             'callback',@plotorg_c6,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',0); % 1B
+        gui_plotorg_waveviewer.plotorg_c6.KeyPressFcn = @plotorg_presskey;
         % Second column:
         uicontrol('Style','text','Parent', gui_plotorg_waveviewer.DataSelGrid,'String','Grid',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); % 2A
@@ -145,8 +151,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         set(gui_plotorg_waveviewer.layout,'HorizontalAlignment','left');
         gui_plotorg_waveviewer.layout_auto = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.layout_title,'String','Auto',...
             'callback',@layout_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',gridlayoutValue); %
+        gui_plotorg_waveviewer.layout_auto.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.layout_custom = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.layout_title,'String','Custom',...
             'callback',@layout_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~gridlayoutValue); %
+        gui_plotorg_waveviewer.layout_custom.KeyPressFcn = @plotorg_presskey;
         set(gui_plotorg_waveviewer.layout_title, 'Sizes',[90 60 70]);
         ERPwaviewerin.plot_org.gridlayout.op = gui_plotorg_waveviewer.layout_auto.Value;
         
@@ -202,10 +210,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
             'FontSize',FonsizeDefault-2,'BackgroundColor',ColorBviewer_def); % 1B
         gui_plotorg_waveviewer.rownum = uicontrol('Style','popupmenu','Parent', gui_plotorg_waveviewer.row_column_title,'String',rowcolumnString,...
             'callback',@plotorg_rownum,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',Numrows,'Enable',rowcolumnEnable); % 1B
+        gui_plotorg_waveviewer.rownum.KeyPressFcn = @plotorg_presskey;
         uicontrol('Style','text','Parent', gui_plotorg_waveviewer.row_column_title,'String','Column(s)',...
             'FontSize',FonsizeDefault-2,'BackgroundColor',ColorBviewer_def); % 1B
         gui_plotorg_waveviewer.columnnum = uicontrol('Style','popupmenu','Parent', gui_plotorg_waveviewer.row_column_title,'String',rowcolumnString,...
             'callback',@plotorg_columnnum,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',Numcolumns,'Enable',rowcolumnEnable); % 1B
+        gui_plotorg_waveviewer.columnnum.KeyPressFcn = @plotorg_presskey;
         set(gui_plotorg_waveviewer.row_column_title, 'Sizes',[20 35 65 55 65]);
         ERPwaviewerin.plot_org.gridlayout.rows = gui_plotorg_waveviewer.rownum.Value;
         ERPwaviewerin.plot_org.gridlayout.columns =gui_plotorg_waveviewer.columnnum.Value;
@@ -244,8 +254,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         set(gui_plotorg_waveviewer.rowgap,'HorizontalAlignment','left');
         gui_plotorg_waveviewer.rowgap_auto = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.rowgap_title,'String','Gap (%)',...
             'callback',@rowgapgtpauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',rowgapgtpValue,'Enable',rowcolumnEnable); %
+       gui_plotorg_waveviewer.rowgap_auto.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.rowgapGTPcustom = uicontrol('Style','edit','Parent', gui_plotorg_waveviewer.rowgap_title,'String',RowGTPStr,...
             'callback',@rowgapgtpcustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',RowgapgtpEnable); %
+        gui_plotorg_waveviewer.rowgapGTPcustom.KeyPressFcn = @plotorg_presskey;
         if gui_plotorg_waveviewer.layout_auto.Value ==1
             gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
         end
@@ -262,8 +274,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         uiextras.Empty('Parent',gui_plotorg_waveviewer.rowgapcustom_title);
         gui_plotorg_waveviewer.rowoverlap = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.rowgapcustom_title,'String','Overlap (%)',...
             'callback',@rowoverlap, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Enable',rowcolumnEnable,'Value',~rowgapgtpValue); %
+       gui_plotorg_waveviewer.rowoverlap.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.rowgapoverlayedit = uicontrol('Style','edit','Parent', gui_plotorg_waveviewer.rowgapcustom_title,'String',RowoverlayStr,...
             'callback',@rowoverlapcustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',RowgapOVERLAPEnable); %
+        gui_plotorg_waveviewer.rowgapoverlayedit.KeyPressFcn = @plotorg_presskey;
         set(gui_plotorg_waveviewer.rowgapcustom_title, 'Sizes',[60 90  85]);
         ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayOP = gui_plotorg_waveviewer.rowoverlap.Value;
         ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayValue = str2num(gui_plotorg_waveviewer.rowgapoverlayedit.String);
@@ -278,8 +292,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         set(gui_plotorg_waveviewer.columngap,'HorizontalAlignment','left');
         gui_plotorg_waveviewer.columngapgtpop = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.columngap_title,'String','Gap (%)',...
             'callback',@columngapgtpop,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',columngapgtpValue,'Enable',rowcolumnEnable); %
+        gui_plotorg_waveviewer.columngapgtpop.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.columngapgtpcustom = uicontrol('Style','edit','Parent', gui_plotorg_waveviewer.columngap_title,'String',columnGTPStr,...
             'callback',@columngapGTPcustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',columngapgtpEnable); %
+        gui_plotorg_waveviewer.columngapgtpcustom.KeyPressFcn = @plotorg_presskey;
         if gui_plotorg_waveviewer.layout_auto.Value ==1
             gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
         end
@@ -296,8 +312,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         uiextras.Empty('Parent',gui_plotorg_waveviewer.columngapcustom_title);
         gui_plotorg_waveviewer.columnoverlay = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.columngapcustom_title,'String','Overlap (%)',...
             'callback',@columnoverlap, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Enable',rowcolumnEnable,'Value',~columngapgtpValue); %
+        gui_plotorg_waveviewer.columnoverlay.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.columngapoverlapedit = uicontrol('Style','edit','Parent', gui_plotorg_waveviewer.columngapcustom_title,'String',columnoverlayStr,...
             'callback',@columnoverlaycustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',columngapOVERLAPEnable); %
+        gui_plotorg_waveviewer.columngapoverlapedit.KeyPressFcn = @plotorg_presskey;
         set(gui_plotorg_waveviewer.columngapcustom_title, 'Sizes',[60 90  85]);
         ERPwaviewerin.plot_org.gridlayout.columngap.OverlayOP = gui_plotorg_waveviewer.columnoverlay.Value;
         ERPwaviewerin.plot_org.gridlayout.columngap.OverlayValue = str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
@@ -2820,4 +2838,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
     end%%end of reset
 
+
+    function plotorg_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress, 'enter')
+            plotorg_apply();
+        else
+            return;
+        end
+    end
 end

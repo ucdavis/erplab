@@ -65,8 +65,10 @@ varargout{1} = box_erplabelset_viewer_otherset;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %,'FontWeight','bold'
         gui_otherset_waveviewer.polarity_up = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.polarity_title,'String','Positive up',...
             'callback',@polarup,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',Polaritylabel); %,'FontWeight','bold'
+       gui_otherset_waveviewer.polarity_up.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.polarity_down = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.polarity_title,'String','Negative up',...
             'callback',@polardown, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~Polaritylabel); %,'FontWeight','bold'
+        gui_otherset_waveviewer.polarity_down.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.polarity_title,'Sizes',[50 90 90]);
         ERPwaviewer.polarity=gui_otherset_waveviewer.polarity_up.Value;
         
@@ -76,9 +78,11 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.SEM_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.show_SEM = uicontrol('Style','checkbox','Parent', gui_otherset_waveviewer.SEM_title ,'String','Show standard error',...
             'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',SEMlabel); %
+         gui_otherset_waveviewer.show_SEM.KeyPressFcn = @otherset_presskey;
         SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
         gui_otherset_waveviewer.SEM_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEM_title ,'String',SMEString,...
             'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMCustomValue+1); %
+         gui_otherset_waveviewer.SEM_custom.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.SEM_title,'Sizes',[160 80]);
         ERPwaviewer.SEM.active =gui_otherset_waveviewer.show_SEM.Value;
         ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
@@ -89,6 +93,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         gui_otherset_waveviewer.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEMtrans_title ,'String',SMEtransString,...
             'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMtransValue*10 +1); %
+        gui_otherset_waveviewer.SEMtrans_custom.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.SEMtrans_title,'Sizes',[160 80]);
         if SEMlabel
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
@@ -155,17 +160,23 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.bsl_title_1 = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.bsl_none = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','None',...
             'callback',@bsl_none,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',noneValue);
+        gui_otherset_waveviewer.bsl_none.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_pre = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Pre',...
             'callback',@bsl_pre,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',preValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_pre.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_post = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Post',...
             'callback',@bsl_post, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',postValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_post.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_whole = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Whole',...
             'callback',@bsl_whole, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',wholeValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_whole.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_title_3 = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.bsl_custom = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_3 ,'String','Custom',...
             'callback',@bsl_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',customValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_custom.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_customedit = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.bsl_title_3 ,'String',customString,...
             'callback',@bsl_customedit, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customEnable); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_customedit.KeyPressFcn = @otherset_presskey;
         set( gui_otherset_waveviewer.bsl_title_3,'Sizes',[80 155]);
         
         if gui_otherset_waveviewer.bsl_none.Value ==1
@@ -189,6 +200,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
             'FontSize',FonsizeDefault-1,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
         gui_otherset_waveviewer.figurebakcolor = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String',num2str(bgColor),...
             'callback',@figbackcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+        gui_otherset_waveviewer.figurebakcolor.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.figurebakcolor_title,'Sizes',[150 85]);
         ERPwaviewer.figbackgdcolor = str2num(gui_otherset_waveviewer.figurebakcolor.String);
         
@@ -800,5 +812,16 @@ varargout{1} = box_erplabelset_viewer_otherset;
             %             viewer_ERPDAT.Reset_Waviewer_panel=3;
         end
     end
+
+
+    function otherset_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            other_apply();
+        else
+            return;
+        end
+    end
+
 
 end

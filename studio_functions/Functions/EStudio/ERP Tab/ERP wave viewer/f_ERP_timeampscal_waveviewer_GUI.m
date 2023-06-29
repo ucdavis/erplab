@@ -99,8 +99,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
         xdispysecondValue = 1;
         gui_erpxyaxeset_waveviewer.xmillisecond = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.display_title,...
             'callback',@xmilsecond,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Millisecond','Value',xdispysecondValue); %
+        gui_erpxyaxeset_waveviewer.xmillisecond.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.xsecond = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.display_title,...
             'callback',@xsecond,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Second','Value',~xdispysecondValue); %
+        gui_erpxyaxeset_waveviewer.xsecond.KeyPressFcn = @xyaxis_presskey;
         set(gui_erpxyaxeset_waveviewer.display_title,'Sizes',[75 90 75]);
         ERPwaviewer.xaxis.tdis = 1;
         erpworkingmemory('MyViewer_xaxis_second',0);
@@ -111,9 +113,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Time Range','Max',10,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.timerange_edit = uicontrol('Style','edit','Parent', gui_erpxyaxeset_waveviewer.xtimerange_title,'String',num2str(timeArray),...
             'callback',@timerangecustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+        gui_erpxyaxeset_waveviewer.timerange_edit.KeyPressFcn = @xyaxis_presskey;
         
         gui_erpxyaxeset_waveviewer.xtimerangeauto = uicontrol('Style','checkbox','Parent', gui_erpxyaxeset_waveviewer.xtimerange_title,'String','Auto',...
             'callback',@xtimerangeauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',timerangeAuto); %
+        gui_erpxyaxeset_waveviewer.xtimerangeauto.KeyPressFcn = @xyaxis_presskey;
+        
         if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value ==1
             enableName = 'off';
         else
@@ -134,8 +139,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Time Ticks','HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.timeticks_edit = uicontrol('Style','edit','Parent',  gui_erpxyaxeset_waveviewer.xtimetick_title ,'String',timeticks,...
             'callback',@timetickscustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+        gui_erpxyaxeset_waveviewer.timeticks_edit.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.xtimetickauto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.xtimetick_title ,'String','Auto',...
             'callback',@xtimetickauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',timeticksAuto); %
+        gui_erpxyaxeset_waveviewer.xtimetickauto.KeyPressFcn = @xyaxis_presskey;
         if gui_erpxyaxeset_waveviewer.xtimetickauto.Value ==1
             enableName_tick = 'off';
         else
@@ -156,6 +163,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         xprecisoonName = {'0','1','2','3','4','5','6'};
         gui_erpxyaxeset_waveviewer.xticks_precision = uicontrol('Style','popupmenu','Parent',gui_erpxyaxeset_waveviewer.xtickprecision_title,'String',xprecisoonName,...
             'callback',@xticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',xtick_precision+1); %
+        gui_erpxyaxeset_waveviewer.xticks_precision.KeyPressFcn = @xyaxis_presskey;
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.xtickprecision_title,'String','# decimals',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         set(gui_erpxyaxeset_waveviewer.xtickprecision_title,'Sizes',[30 65 60 80]);
@@ -206,10 +214,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.xtimeminnortick_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.xtimeminorauto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.xtimeminnortick_title ,...
             'callback',@timeminortickslabel,'String','Minor ticks','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','Value',timeminorLabel); %
+        gui_erpxyaxeset_waveviewer.xtimeminorauto.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.timeminorticks_custom = uicontrol('Style','edit','Parent',  gui_erpxyaxeset_waveviewer.xtimeminnortick_title ,...
             'callback',@timeminorticks_custom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'String',num2str(stepX),'Enable',xminorEnable_custom); %
+        gui_erpxyaxeset_waveviewer.timeminorticks_custom.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.timeminorticks_auto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.xtimeminnortick_title,...
             'callback',@timeminortickscustom_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Auto','Value',timeminorstep, 'Enable',xminorEnable_auto); %
+        gui_erpxyaxeset_waveviewer.timeminorticks_auto.KeyPressFcn = @xyaxis_presskey;
         set(gui_erpxyaxeset_waveviewer.xtimeminnortick_title,'Sizes',[90 90 50]);
         ERPwaviewer.xaxis.tminor.disp = gui_erpxyaxeset_waveviewer.xtimeminorauto.Value;
         ERPwaviewer.xaxis.tminor.step = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
@@ -222,8 +233,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.xtimelabel_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimelabel_title,...
             'callback',@xtimelabelon,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',timetickLabel); %
+        gui_erpxyaxeset_waveviewer.xtimelabel_on.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.xtimelabel_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimelabel_title,...
             'callback',@xtimelabeloff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~timetickLabel); %
+        gui_erpxyaxeset_waveviewer.xtimelabel_off.KeyPressFcn = @xyaxis_presskey;
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.xtimelabel_title);
         set(gui_erpxyaxeset_waveviewer.xtimelabel_title,'Sizes',[50 50 50 80]);
         if gui_erpxyaxeset_waveviewer.xtimelabel_on.Value ==1
@@ -247,10 +260,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_erpxyaxeset_waveviewer.xtimefont_custom = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.xtimefont_title ,'String',fonttype,...
             'callback',@xtimefont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfont); %
+        gui_erpxyaxeset_waveviewer.xtimefont_custom.KeyPressFcn = @xyaxis_presskey;
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.xtimefont_title ,'String','Size',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.font_custom_size = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.xtimefont_title ,'String',fontsize,...
             'callback',@xtimefontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfontsizeV); %
+        gui_erpxyaxeset_waveviewer.font_custom_size.KeyPressFcn = @xyaxis_presskey;
         set(gui_erpxyaxeset_waveviewer.xtimefont_title,'Sizes',[30 100 30 80]);
         ERPwaviewer.xaxis.font = gui_erpxyaxeset_waveviewer.xtimefont_custom.Value;
         ERPwaviewer.xaxis.fontsize = xfontsizeinum(gui_erpxyaxeset_waveviewer.font_custom_size.Value);
@@ -262,6 +277,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         textColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
         gui_erpxyaxeset_waveviewer.xtimetextcolor = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.xtimelabelcolor_title ,'String',textColor,...
             'callback',@xtimecolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',fontenable,'Value',ttickLabelfontcolor); %
+        gui_erpxyaxeset_waveviewer.xtimetextcolor.KeyPressFcn = @xyaxis_presskey;
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtimelabelcolor_title);
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtimelabelcolor_title);
         set(gui_erpxyaxeset_waveviewer.xtimelabelcolor_title,'Sizes',[40 100 30 70]);
@@ -274,8 +290,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.xtimeunits_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title,...
             'callback',@xtimeunitson,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',timeunits); %
+        gui_erpxyaxeset_waveviewer.xtimeunits_on.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.xtimeunits_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title,...
             'callback',@xtimeunitsoff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~timeunits); %
+        gui_erpxyaxeset_waveviewer.xtimeunits_off.KeyPressFcn = @xyaxis_presskey;
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.xtimeunits_title);
         set(gui_erpxyaxeset_waveviewer.xtimeunits_title,'Sizes',[50 50 50 80]);
         ERPwaviewer.xaxis.units = gui_erpxyaxeset_waveviewer.xtimeunits_on.Value;
@@ -324,8 +342,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Y Scale','Max',10,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.yrange_edit = uicontrol('Style','edit','Parent', gui_erpxyaxeset_waveviewer.yrange_title,'String',yRangeLabel,...
             'callback',@yrangecustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+        gui_erpxyaxeset_waveviewer.yrange_edit.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.yrangeauto = uicontrol('Style','checkbox','Parent', gui_erpxyaxeset_waveviewer.yrange_title,'String','Auto',...
             'callback',@yrangeauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',yRangeauto); %
+        gui_erpxyaxeset_waveviewer.yrangeauto.KeyPressFcn = @xyaxis_presskey;
         if gui_erpxyaxeset_waveviewer.yrangeauto.Value ==1
             yenableName = 'off';
         else
@@ -362,8 +382,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Y Ticks','HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.yticks_edit = uicontrol('Style','edit','Parent',gui_erpxyaxeset_waveviewer.ytick_title,'String',yticksLabel,...
             'callback',@ytickscustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
+        gui_erpxyaxeset_waveviewer.yticks_edit.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.ytickauto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.ytick_title ,'String','Auto',...
             'callback',@ytickauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',yTickauto); %
+        gui_erpxyaxeset_waveviewer.ytickauto.KeyPressFcn = @xyaxis_presskey;
         if gui_erpxyaxeset_waveviewer.ytickauto.Value ==1
             yenableName_tick = 'off';
         else
@@ -382,6 +404,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         yprecisoonName = {'0','1','2','3','4','5','6'};
         gui_erpxyaxeset_waveviewer.yticks_precision = uicontrol('Style','popupmenu','Parent',gui_erpxyaxeset_waveviewer.ytickprecision_title,'String',yprecisoonName,...
             'callback',@yticksprecison,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',ytick_precision+1); %
+        gui_erpxyaxeset_waveviewer.yticks_precision.KeyPressFcn = @xyaxis_presskey;
         uicontrol('Style','text','Parent',  gui_erpxyaxeset_waveviewer.ytickprecision_title,'String','# decimals',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         set(gui_erpxyaxeset_waveviewer.ytickprecision_title,'Sizes',[30 65 60 80]);
@@ -432,10 +455,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.yminnortick_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_erpxyaxeset_waveviewer.yminortick = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.yminnortick_title ,'String','Minor Ticks',...
             'callback',@yminordisp,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','Value',yminorLabel); %
+        gui_erpxyaxeset_waveviewer.yminortick.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.yminorstepedit = uicontrol('Style','edit','Parent',gui_erpxyaxeset_waveviewer.yminnortick_title ,...
             'callback',@yminorstepedit,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'String',char(num2str(stepY)),'Enable',yminoreditEnable); %
+        gui_erpxyaxeset_waveviewer.yminorstepedit.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.yminorstep_auto = uicontrol('Style','checkbox','Parent',  gui_erpxyaxeset_waveviewer.yminnortick_title,...
             'callback',@yminorstepauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Auto','Value',yminorautoValue,'Enable',yminorautoLabel); %
+        gui_erpxyaxeset_waveviewer.yminorstep_auto.KeyPressFcn = @xyaxis_presskey;
         ERPwaviewer.yaxis.yminor.disp = gui_erpxyaxeset_waveviewer.yminortick.Value;
         ERPwaviewer.yaxis.yminor.step = str2num(char(gui_erpxyaxeset_waveviewer.yminorstepedit.String));
         ERPwaviewer.yaxis.yminor.auto = gui_erpxyaxeset_waveviewer.yminorstep_auto.Value;
@@ -448,8 +474,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.ylabel_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.ylabel_title,...
             'callback',@ylabelon,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',ytickLabel); %
+        gui_erpxyaxeset_waveviewer.ylabel_on.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.ylabel_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.ylabel_title,...
             'callback',@ylabeloff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~ytickLabel); %
+        gui_erpxyaxeset_waveviewer.ylabel_off.KeyPressFcn = @xyaxis_presskey;
         if gui_erpxyaxeset_waveviewer.ylabel_on.Value ==1
             yfontenable = 'on';
         else
@@ -469,12 +497,14 @@ varargout{1} = box_erpxtaxes_viewer_property;
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_erpxyaxeset_waveviewer.yfont_custom = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.yfont_title,'String',fonttype,...
             'callback',@yaxisfont, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfont); %
+        gui_erpxyaxeset_waveviewer.yfont_custom.KeyPressFcn = @xyaxis_presskey;
         uicontrol('Style','text','Parent', gui_erpxyaxeset_waveviewer.yfont_title ,'String','Size',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         yfontsize={'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         gui_erpxyaxeset_waveviewer.yfont_custom_size = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.yfont_title ,'String',yfontsize,...
             'callback',@yaxisfontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfontsize); %
+        gui_erpxyaxeset_waveviewer.yfont_custom_size.KeyPressFcn = @xyaxis_presskey;
         set(gui_erpxyaxeset_waveviewer.yfont_title,'Sizes',[30 100 30 80]);
         ERPwaviewer.yaxis.font = gui_erpxyaxeset_waveviewer.yfont_custom.Value;
         ERPwaviewer.yaxis.fontsize = xfontsizeinum(gui_erpxyaxeset_waveviewer.yfont_custom_size.Value);
@@ -486,6 +516,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         ytextColor = {'Black','Red','Blue','Green','Orange','Cyan','Magenla'};
         gui_erpxyaxeset_waveviewer.ytextcolor = uicontrol('Style','popupmenu','Parent', gui_erpxyaxeset_waveviewer.ylabelcolor_title ,'String',ytextColor,...
             'callback',@yaxisfontcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',yfontenable,'Value',ytickLabelfontcolor); %
+        gui_erpxyaxeset_waveviewer.ytextcolor.KeyPressFcn = @xyaxis_presskey;
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.ylabelcolor_title);
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.ylabelcolor_title);
         set(gui_erpxyaxeset_waveviewer.ylabelcolor_title,'Sizes',[40 100 30 70]);
@@ -498,8 +529,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erpxyaxeset_waveviewer.yunits_on = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.yunits_title,...
             'callback',@yunitson,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','On','Value',yunits); %
+        gui_erpxyaxeset_waveviewer.yunits_on.KeyPressFcn = @xyaxis_presskey;
         gui_erpxyaxeset_waveviewer.yunits_off = uicontrol('Style','radiobutton','Parent',  gui_erpxyaxeset_waveviewer.yunits_title,...
             'callback',@yunitsoff,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'String','Off','Value',~yunits); %
+        gui_erpxyaxeset_waveviewer.yunits_off.KeyPressFcn = @xyaxis_presskey;
         uiextras.Empty('Parent',  gui_erpxyaxeset_waveviewer.yunits_title);
         set(gui_erpxyaxeset_waveviewer.yunits_title,'Sizes',[50 50 50 80]);
         ERPwaviewer.yaxis.units = gui_erpxyaxeset_waveviewer.yunits_on.Value;
@@ -2903,7 +2936,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if YScalesAuto==1
             gui_erpxyaxeset_waveviewer.yrange_edit.Enable = 'off';
             YScales =yRangeLabel;
-             ERPwaviewer_apply.yaxis.scales= YScales;
+            ERPwaviewer_apply.yaxis.scales= YScales;
         else
             gui_erpxyaxeset_waveviewer.yrange_edit.Enable = 'on';
         end
@@ -3215,4 +3248,17 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
     end%% end of reset for the current panel
 
+
+    function xyaxis_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            xyaxis_apply();
+            estudioworkingmemory('MyViewer_xyaxis',0);
+            gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
+        else
+            return;
+        end
+    end
 end

@@ -329,14 +329,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
         % + View menu
         gui_erp_waviewer.exit = uimenu( gui_erp_waviewer.Window, 'Label','Exit', 'Callback', @onExit);
-        gui_erp_waviewer.setting_title = uimenu( gui_erp_waviewer.Window, 'Label', 'Setting');
-        gui_erp_waviewer.setting_pos = uimenu(gui_erp_waviewer.setting_title, 'Label', 'Viewer Position', 'Callback', @Viewer_setting);
         gui_erp_waviewer.screen_pos = new_pos;
         gui_erp_waviewer.help = uimenu( gui_erp_waviewer.Window, 'Label', 'Help', 'Callback', @onhelp);
         
         %%-----------Setting------------------------------------------------
         %% Create tabs
         gui_erp_waviewer.Window.Resize = 0;
+        
         context_tabs =  uix.VBox('Parent', gui_erp_waviewer.Window);%,'SizeChangedFcn',@WAviewerResize
         gui_erp_waviewer.tabERP = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorBviewer_def);
         %% Arrange the main interface for ERP panel (Tab3)
@@ -379,7 +378,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         gui_erp_waviewer.panelSizes(7) = 225;
         
         gui_erp_waviewer.panel{8} = f_ERP_property_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(8) = 90;
+        gui_erp_waviewer.panelSizes(8) = 110;
         
         set(gui_erp_waviewer.settingLayout, 'Heights', gui_erp_waviewer.panelSizes);
         gui_erp_waviewer.panelscroll.Heights = sum(gui_erp_waviewer.panelSizes);
@@ -474,17 +473,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
 %         end
 %     end
 
-
-%%setting the screen size
-    function Viewer_setting(~,~)
-        new_pos = f_ERPwave_Viewer_pos(gui_erp_waviewer.screen_pos);
-        if ~isempty(new_pos)
-            set(gui_erp_waviewer.Window, 'Position', new_pos);
-            estudioworkingmemory('ERPWaveScreenPos',new_pos);
-            gui_erp_waviewer.screen_pos = new_pos;
-            f_redrawERP_viewer_test();
-        end
-    end
 
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function

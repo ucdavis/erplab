@@ -90,9 +90,12 @@ handles.uitable1_layout.RowName = RowName;
 handles.uitable1_layout.ColumnFormat = columFormat;
 handles.uitable1_layout.FontSize = FonsizeDefault;
 handles.uitable1_layout.CellEditCallback = {@MakerLabels,handles};
-% s = uistyle('BackgroundColor','yellow');
-% addStyle(handles.uitable1_layout,s,'cell',[3,3]);
 
+
+% oldcolor1 = get(0,'DefaultUicontrolBackgroundColor');
+% BackERPLABcolor1 = [0.95 0.95 0.95]; 
+%  set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor1);
+%  handles.defbgc = oldcolor1;
 [plotArrayFormt] = f_MarkLabels_ERP_Waveiwer(GridinforData,plotArrayFormt);
 handles.listbox_Labels.String  = '';
 handles.listbox_Labels.String = plotArrayFormt;

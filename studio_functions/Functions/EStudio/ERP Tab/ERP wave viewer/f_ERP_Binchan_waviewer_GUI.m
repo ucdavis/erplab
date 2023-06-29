@@ -103,10 +103,11 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.opts_title = uiextras.HBox('Parent', ERPwaveview_binchan.vBox, 'Spacing', 5,'BackgroundColor',ColorBviewer_def);
         ERPwaveview_binchan.auto = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_binchan.opts_title,...
             'String','Same as EStudio','callback',@Chanbin_auto,'Value',Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-        
+        ERPwaveview_binchan.auto.KeyPressFcn = @setbinchan_presskey;
         
         ERPwaveview_binchan.custom = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_binchan.opts_title,...
             'String','Custom','callback',@Chanbin_custom,'Value',~Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+        ERPwaveview_binchan.custom.KeyPressFcn = @setbinchan_presskey;
         %
         %%---------------------Display channel and bin labels-----------------------------------------------------
         ERPwaveview_binchan.DataSelGrid = uiextras.HBox('Parent', ERPwaveview_binchan.vBox,'BackgroundColor',ColorBviewer_def);
@@ -129,6 +130,8 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         ERPwaveview_binchan.ElecRange = uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
             'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2B
+        
+        ERPwaveview_binchan.ElecRange.KeyPressFcn = @setbinchan_presskey;
         if  numel(Chan_sel) == numel(Chanlist)
             ERPwaveview_binchan.ElecRange.Value  =1;
         else
@@ -151,6 +154,7 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         ERPwaveview_binchan.BinRange =  uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','Min',1,'Max',BinNum+1,...
             'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2C
+        ERPwaveview_binchan.BinRange.KeyPressFcn = @setbinchan_presskey;
         if BinNum== numel(Bin_sel)
             ERPwaveview_binchan.BinRange.Value  =1;
         else
@@ -243,7 +247,6 @@ varargout{1} = Chanbin_waveviewer_box;
         if ~isempty(messgStr) && viewerpanelIndex~=2
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        
         estudioworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         ERPwaveview_binchan.apply.ForegroundColor = [1 1 1];
@@ -1038,5 +1041,14 @@ varargout{1} = Chanbin_waveviewer_box;
             viewer_ERPDAT.Reset_Waviewer_panel=3;
         end
     end%%reset end
+
+    function setbinchan_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            setbinchan_apply();
+        else
+            return;
+        end
+    end
 
 end

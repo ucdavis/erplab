@@ -73,9 +73,10 @@ varargout{1} = box_erplineset_viewer_property;
         
         gui_erplinset_waveviewer.linesauto = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.parameters_title,'String','Auto',...
             'callback',@lines_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',linAutoValue); %
+        gui_erplinset_waveviewer.linesauto.KeyPressFcn = @line_presskey;
         gui_erplinset_waveviewer.linescustom = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.parameters_title,'String','Custom',...
             'callback',@lines_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~linAutoValue); %
-        
+        gui_erplinset_waveviewer.linescustom.KeyPressFcn = @line_presskey;
         set(gui_erplinset_waveviewer.parameters_title,'Sizes',[60 70 70]);
         
         %%-----------Setting for line table-----------------------------
@@ -115,6 +116,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.line_customtable.RowName = [];
         gui_erplinset_waveviewer.line_customtable.ColumnWidth = {25 80 65 50};
         gui_erplinset_waveviewer.line_customtable.CellEditCallback  = @line_customtable;
+        gui_erplinset_waveviewer.line_customtable.KeyPressFcn = @line_presskey;
         %%setting for uitable: https://undocumentedmatlab.com/artiALLERPwaviewercles/multi-line-uitable-column-headers
         if gui_erplinset_waveviewer.linesauto.Value ==1
             gui_erplinset_waveviewer.line_customtable.Enable = 'off';
@@ -131,8 +133,10 @@ varargout{1} = box_erplineset_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left','FontWeight','bold'); %
         gui_erplinset_waveviewer.legendauto = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_title,'String','Auto',...
             'callback',@legend_auto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',legendAuto); %
+        gui_erplinset_waveviewer.legendauto.KeyPressFcn = @line_presskey;
         gui_erplinset_waveviewer.legendcustom = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_title,'String','Custom',...
             'callback',@legend_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~legendAuto); %
+        gui_erplinset_waveviewer.legendcustom.KeyPressFcn = @line_presskey;
         set( gui_erplinset_waveviewer.legend_title,'Sizes',[60 70 70]);
         
         
@@ -195,6 +199,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.legend_customtable.BackgroundColor = [1 1 1;1 1 1];
         gui_erplinset_waveviewer.legend_customtable.RowName = [];
         gui_erplinset_waveviewer.legend_customtable.ColumnWidth = {20 200};
+        gui_erplinset_waveviewer.legend_customtable.KeyPressFcn = @line_presskey;
         %         gui_erplinset_waveviewer.legend_customtable.CellEditCallback  = {@legend_customtable,ERPwaviewer_num};
         %%setting for uitable: https://undocumentedmatlab.com/artiALLERPwaviewercles/multi-line-uitable-column-headers
         if gui_erplinset_waveviewer.legendauto.Value ==1
@@ -221,10 +226,12 @@ varargout{1} = box_erplineset_viewer_property;
         fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
         gui_erplinset_waveviewer.font_custom_type = uicontrol('Style','popupmenu','Parent', gui_erplinset_waveviewer.labelfont_title ,'String',fonttype,...
             'callback',@legendfont,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',fontDef,'Enable',fontEnable); %
+        gui_erplinset_waveviewer.font_custom_type.KeyPressFcn = @line_presskey;
         uicontrol('Style','text','Parent', gui_erplinset_waveviewer.labelfont_title ,'String','Size',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         gui_erplinset_waveviewer.font_custom_size = uicontrol('Style','popupmenu','Parent', gui_erplinset_waveviewer.labelfont_title ,'String',fontsize,...
             'callback',@legendfontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',fontEnable); %
+        gui_erplinset_waveviewer.font_custom_size.KeyPressFcn = @line_presskey;
         set(gui_erplinset_waveviewer.labelfont_title,'Sizes',[30 110 30 70]);
         ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
         ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
@@ -237,8 +244,10 @@ varargout{1} = box_erplineset_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %
         gui_erplinset_waveviewer.legendtextauto = uicontrol('Style','radiobutton','Parent', gui_erplinset_waveviewer.legend_textitle,'String','Auto',...
             'callback',@legendtextauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',legendtextcolorAuto,'Enable',fontEnable); %
+        gui_erplinset_waveviewer.legendtextauto.KeyPressFcn = @line_presskey;
         gui_erplinset_waveviewer.legendtextcustom = uicontrol('Style','radiobutton','Parent',gui_erplinset_waveviewer.legend_textitle,'String','Same as lines',...
             'callback',@legendtextcustom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~legendtextcolorAuto,'Enable',fontEnable,'HorizontalAlignment','left'); %
+        gui_erplinset_waveviewer.legendtextcustom.KeyPressFcn = @line_presskey;
         set(gui_erplinset_waveviewer.legend_textitle,'Sizes',[70 60 150]);
         ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
         
@@ -252,6 +261,7 @@ varargout{1} = box_erplineset_viewer_property;
         end
         gui_erplinset_waveviewer.legendcolumns = uicontrol('Style','popupmenu','Parent', gui_erplinset_waveviewer.legend_columnstitle,'String',columnStr,...
             'callback',@legendcolumns,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',legendcolumns,'Enable',fontEnable); %
+        gui_erplinset_waveviewer.legendcolumns.KeyPressFcn = @line_presskey;
         uiextras.Empty('Parent', gui_erplinset_waveviewer.legend_columnstitle );
         set(gui_erplinset_waveviewer.legend_columnstitle,'Sizes',[60 100 70]);
         ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
@@ -1129,6 +1139,19 @@ varargout{1} = box_erplineset_viewer_property;
             gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
             viewer_ERPDAT.Reset_Waviewer_panel=7;
+        end
+    end
+
+    function line_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            LineLegend_apply();
+            estudioworkingmemory('MyViewer_linelegend',0);
+            gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
+        else
+            return;
         end
     end
 end
