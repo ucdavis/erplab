@@ -98,8 +98,14 @@ varargout{1} = box_erpwave_viewer_property;
             'callback',@Viewerpos,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.viewer_pos_title, 'Sizes',[70 165]);
         
+         gui_property_waveviewer.viewer_pos_title1 = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title1,'String','',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
+        uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(x, y, width, height)',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
+        set(gui_property_waveviewer.viewer_pos_title1, 'Sizes',[70 165]);
         
-        set(gui_property_waveviewer.DataSelBox ,'Sizes',[30 25 25])
+        set(gui_property_waveviewer.DataSelBox ,'Sizes',[30 25 25 25])
     end
 
 

@@ -322,9 +322,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         %%---------------help and apply the changed parameters-------------
         gui_plotorg_waveviewer.save_load_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        gui_plotorg_waveviewer.layout_custom_edit = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.save_load_title ,'String','Edit Grid Layout',...
+        gui_plotorg_waveviewer.layout_custom_edit = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.save_load_title ,'String','Custom Grid Layout',...
             'callback',@plotorg_edit,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',rowcolumnEnable); %,'HorizontalAlignment','left'
-        gui_plotorg_waveviewer.labels_custom_edit = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.save_load_title ,'String','Edit Chan Labels',...
+        gui_plotorg_waveviewer.labels_custom_edit = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.save_load_title ,'String','Custom Chan Labels',...
             'callback',@plotorg_label_edit,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',rowcolumnEnable); %,'HorizontalAlignment','left'
         
         gui_plotorg_waveviewer.help_run_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
@@ -420,7 +420,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-        gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+        gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
         chanArray = ERPwaviewerin.chan;
         plotArray = chanArray;
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
@@ -505,7 +505,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,1,0,0,0,0];
-        gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+        gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
         chanArray = ERPwaviewerin.chan;
         plotArray = chanArray;
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
@@ -564,7 +564,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
                 return;
             else
                 
@@ -588,7 +588,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,1,0,0,0];
-        gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+        gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
         plotArray = ERPwaviewerin.bin;
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         if gui_plotorg_waveviewer.layout_auto.Value==1
@@ -648,7 +648,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c4.Value = 0;
@@ -674,7 +674,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,0,1,0,0];
-        gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+        gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
         plotArray = ERPwaviewerin.bin;
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         if gui_plotorg_waveviewer.layout_auto.Value==1
@@ -734,7 +734,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
@@ -759,7 +759,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 1;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,1,0];
-        gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit ERPset Labels';
+        gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom ERPset Labels';
         plotArray = indexerp;
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         if gui_plotorg_waveviewer.layout_auto.Value==1
@@ -819,7 +819,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
@@ -845,7 +845,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 1;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,0,1];
-        gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit ERPset Labels';
+        gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom ERPset Labels';
         plotArray = indexerp;
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         if gui_plotorg_waveviewer.layout_auto.Value==1
@@ -1287,13 +1287,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
         if ERPwaviewerin.plot_org.Grid==1
-            MessageViewer= char(strcat('Plot Organization > Edit Chan Labels'));
+            MessageViewer= char(strcat('Plot Organization > Custom Chan Labels'));
         elseif ERPwaviewerin.plot_org.Grid==2
-            MessageViewer= char(strcat('Plot Organization > Edit Bin Labels'));
+            MessageViewer= char(strcat('Plot Organization > Custom Bin Labels'));
         elseif ERPwaviewerin.plot_org.Grid==3
-            MessageViewer= char(strcat('Plot Organization > Edit ERPset Labels'));
+            MessageViewer= char(strcat('Plot Organization > Custom ERPset Labels'));
         else
-            MessageViewer= char(strcat('Plot Organization > Edit Labels'));
+            MessageViewer= char(strcat('Plot Organization > Custom Labels'));
         end
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -1569,13 +1569,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormtdef = plotArrayStr;
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
         elseif GridValue == 2 %% if the selected Bin is "Grid"
             plotArray = binArray;
             plotArrayStr = binStr(binArray);
             plotArrayFormtdef = plotArrayStr;
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
         elseif GridValue == 3%% if the selected ERPset is "Grid"
             plotArray = ERPsetArray;
             for Numoferpset = 1:numel(ERPsetArray)
@@ -1583,13 +1583,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
             plotArrayFormtdef = plotArrayStr;
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit ERPset Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom ERPset Labels';
         else
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormtdef = plotArrayStr;
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Labels';
         end
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         
@@ -1940,13 +1940,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,0,1];
         end
         if GridValue==1
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
         elseif GridValue==2
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
         elseif GridValue==3
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit ERPset Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom ERPset Labels';
         else
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Labels';
         end
         gui_plotorg_waveviewer.layout_auto.Value = ERPwaviewer_apply.plot_org.gridlayout.op;
         gui_plotorg_waveviewer.layout_custom.Value = ~ERPwaviewer_apply.plot_org.gridlayout.op;
@@ -2204,13 +2204,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
             end
             if y_Flag==1
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
                 
             elseif y_Flag==3
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
             end
             
         else
@@ -2478,28 +2478,28 @@ varargout{1} = box_erpwave_viewer_plotorg;
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormtdef = plotArrayStr;
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
         elseif GridValue == 2 %% if the selected Bin is "Grid"
             plotArray = binArray;
             plotArrayStr = binStr(binArray);
             plotArrayFormtdef = plotArrayStr;
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
         elseif GridValue == 3%% if the selected ERPset is "Grid"
             plotArray = ERPsetArray;
             for Numoferpset = 1:numel(ERPsetArray)
                 plotArrayStr(Numoferpset,1) = {char(ALLERPIN(ERPsetArray(Numoferpset)).erpname)};
             end
             plotArrayFormtdef = plotArrayStr;
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit ERPset Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom ERPset Labels';
             %             plotArrayFormtdef(numel(plotArray)+1) = {'None'};
         else
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormtdef = plotArrayStr;
             %             plotArrayFormtdef(numel(chanArray)+1) = {'None'};
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Labels';
         end
         
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
@@ -2693,16 +2693,16 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
                 ERPwaviewerin.plot_org.Grid = 1;
                 ERPwaviewerin.plot_org.Overlay = 2;
                 ERPwaviewerin.plot_org.Pages = 3;
                 assignin('base','ALLERPwaviewer',ERPwaviewerin);
             end
             if y_Flag==1
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
             elseif y_Flag==3
-                gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Bin Labels';
+                gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Bin Labels';
             end
         else
             gui_plotorg_waveviewer.plotorg_c2.Enable = 'on';
@@ -2735,7 +2735,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value = 0;
             gui_plotorg_waveviewer.plotorg_c6.Value = 0;
             gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-            gui_plotorg_waveviewer.labels_custom_edit.String = 'Edit Chan Labels';
+            gui_plotorg_waveviewer.labels_custom_edit.String = 'Custom Chan Labels';
             ERPwaviewerin.plot_org.Grid = 1;
             ERPwaviewerin.plot_org.Overlay = 2;
             ERPwaviewerin.plot_org.Pages = 3;

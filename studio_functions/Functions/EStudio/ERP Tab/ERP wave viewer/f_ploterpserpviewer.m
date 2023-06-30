@@ -259,7 +259,7 @@ else
 end
 
 if nargin<49
-qFigOutpos =[];
+    qFigOutpos =[];
 end
 if nargin<48 || (qXdisFlag~=1 && qXdisFlag~=0)
     qXdisFlag =1;
@@ -999,10 +999,10 @@ if ~isempty(qFigureName)
     %     hbig= axes('Parent',fig_gui_wave);
 end
 try
-outerpos = fig_gui.OuterPosition;
-set(fig_gui,'outerposition',[outerpos(1),(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
+    outerpos = fig_gui.OuterPosition;
+    set(fig_gui,'outerposition',[outerpos(1),(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
 catch
-set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
+    set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
 end
 if ~isempty(extfig)
     set(fig_gui,'visible','off');
@@ -1017,7 +1017,7 @@ end
 %%remove the margins of a plot
 ax = hbig;
 outerpos = ax.OuterPosition;
-ti = ax.TightInset; 
+ti = ax.TightInset;
 left = outerpos(1) + ti(1);
 bottom = outerpos(2) + ti(2);
 ax_width = outerpos(3) - ti(1) - ti(3);
@@ -1387,8 +1387,12 @@ for Numofrows = 1:Numrows
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is empty!']);
         end
         try
-            if isxaxislabel==2
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+            if 2<Numcolumns && Numcolumns<5
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
+            elseif Numcolumns==1
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
+            elseif Numcolumns==2
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
             else
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end

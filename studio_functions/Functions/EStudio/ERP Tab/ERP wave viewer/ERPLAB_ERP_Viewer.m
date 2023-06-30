@@ -315,7 +315,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             try
                 ScreenPos =  get( groot, 'Screensize' );
             catch
-                ScreenPos =  get( groot, 'Screensize' );
+                ScreenPos =  get( 0, 'Screensize' );
             end
             if ~isempty(ScreenPos)
                 new_pos(1:2) = [1 1];
@@ -378,7 +378,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         gui_erp_waviewer.panelSizes(7) = 225;
         
         gui_erp_waviewer.panel{8} = f_ERP_property_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(8) = 110;
+        gui_erp_waviewer.panelSizes(8) = 130;
         
         set(gui_erp_waviewer.settingLayout, 'Heights', gui_erp_waviewer.panelSizes);
         gui_erp_waviewer.panelscroll.Heights = sum(gui_erp_waviewer.panelSizes);
