@@ -147,7 +147,7 @@ classdef Container < handle
             obj.reparent( eventData.OldFigure, eventData.NewFigure )
             
             % Redraw if possible and if dirty
-            if obj.Dirty_ && obj.isDrawable()
+            if obj.Dirty && obj.isDrawable()
                 obj.redraw()
                 obj.Dirty_ = false;
             end

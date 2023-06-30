@@ -29,8 +29,8 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             %  of o.
             
             % Check
-            assert( ispositionable( oRoot ) && ...
-                isequal( size( oRoot ), [1 1] ), 'uix.InvalidArgument', ...
+            assert( isscalar( oRoot ) && ispositionable( oRoot ), ...
+                'uix:InvalidArgument', ...
                 'Object must be a graphics object.' )
             
             % Create root node
@@ -110,7 +110,7 @@ classdef ( Hidden, Sealed ) ChildObserver < handle
             end
             
             % Add grandchildren
-            if positionable == false && isblacklisted( oChild ) == false
+            if positionable == false && isblocklisted( oChild ) == false
                 oGrandchildren = hgGetTrueChildren( oChild );
                 for ii = 1:numel( oGrandchildren )
                     obj.addChild( nChild, oGrandchildren(ii) )
@@ -213,11 +213,11 @@ tf = isgraphics( o ) && ~isempty( p ) && ...
 
 end % ispositionable
 
-function tf = isblacklisted( o )
-%isblacklisted  True for objects that never have positionable graphics
+function tf = isblocklisted( o )
+%isblocklisted  True for objects that never have positionable graphics
 
 tf = isa( o, 'matlab.ui.container.Menu' ) || ...
     isa( o, 'matlab.ui.container.Toolbar' ) || ...
     isa( o, 'matlab.graphics.shape.internal.AnnotationPane' );
 
-end % isblacklisted
+end % isblocklisted
