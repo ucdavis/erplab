@@ -26,7 +26,7 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     end
     
     %progress output to command window
-    fprintf('*** Currently Decoding Subject:\t%s ***\n ',sn); %is Decoding the word to use for crossnobis? 
+    fprintf('*** Currently Decoding (Crossnobis) Subject:\t%s ***\n ',sn); %is Decoding the word to use for crossnobis? 
     
      % grab EEG data from bin-list organized data 
     eegs = BEST.binwise_data;

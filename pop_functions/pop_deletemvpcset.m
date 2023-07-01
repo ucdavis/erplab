@@ -144,7 +144,7 @@ else
 end
 if issaveas
         updatemenumvpc(ALLMVPC, -1);
-        assignin('base','ALLBEST',ALLMVPC);  % save to workspace. Dec 5, 2012
+        assignin('base','ALLMVPC',ALLMVPC);  % save to workspace. Dec 5, 2012
 end
 % erpcom = sprintf('ALLERP = pop_deleterpset( ALLERP, [%s]);', num2str(erpindex));
 %

@@ -1,4 +1,7 @@
-function mvpc = avgconfusionCM(mvpc);
+function mvpc = avgconfusionCM(mvpc)
+
+
+
 
 mvpc.confusions = [];
 

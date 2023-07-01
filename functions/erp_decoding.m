@@ -53,7 +53,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     
     %progress output to command window
-    fprintf('*** Currently Decoding Subject:\t%s ***\n ',sn);
+    fprintf('*** Currently Decoding (SVM) Subject:\t%s ***\n ',sn);
     
     %% Data Loading/preallocation per subject 
 
