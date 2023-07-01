@@ -1,29 +1,14 @@
- % This is beta version for Decoding Toolbox
-% pipeline that utilizes a nested bin-epoched data structure.
-% Refer to OSF: https://osf.io/29wre/
+% ERP decoding algorithm for Decoding Toolbox
 
-% NOTE: low-pass filtering to 6hz was applied to continuous EEG (prior to
-% binning). % Code to be used on a bin-epoched dataset for one
-% class only (e.g. Orientation)
+%Function written by Aaron Simmons (UC Davis)
+%Original Algorithm Author: Gi-Yeul Bae (Arizona State University)
 
-% NOTE: This script requires the 'fitcecoc' Matlab function. This function is a
-% part of the Matlab Statistics and Machine Learning toolbox.
-
-%Edited by Aaron Simmons (UC Davis)
-%Original Author: Gi-Yeul Bae (Arizona State University)
 
 function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,classcoding,equalT,ParWorkers,method)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
 
-% if ParCompute == 1
-%     delete(gcp)
-%     par_profile = parpool;
-%     ParWorkers = par_profile.NumWorkers; 
-% else
-%     ParWorkers = 0; %makes parfor run without workers, even if pool is open. 
-% end
 
 %% Check presence of Matlab Statistics and Machine Learning Toolbox
 % This toolbox is required for the SVM classification
@@ -298,15 +283,10 @@ for s = 1:nSubs %decoding is performed within each subject independently
     %probably a better way
     if nSubs == 1
         
-        %function outputs single/all MVPA
-        %save(filepath,'mvpa','-v7.3');
-        
         MVPC = mvpc;
         ALLMVPC = mvpc;
     else
-        %function outputs single/all MVPA
-       % save(filepath{s},'mvpa','-v7.3');
-        
+
         MVPC = mvpc; 
         ALLMVPC(s) = mvpc; 
     end

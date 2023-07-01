@@ -1,21 +1,21 @@
-% PURPOSE  : 	Clears BESTset(s) for BESTset menu
+% PURPOSE  : 	Clears MVPCset(s) from MVPC menu
 %
 % FORMAT   :
 %
-% >> ALLBEST = pop_deletebestset( ALLBEST, index);
+% >> ALLMVPC = pop_deletemvpc( ALLMVPC, index);
 %
 % EXAMPLE  :
 %
-% >> ALLBEST = pop_deletbestset( ALLBEST, [3 5]);
+% >> ALLMVPC = pop_deletbestset( ALLMVPC, [3 5]);
 %
 % INPUTS   :
 %
-% ALLERP    - Includes all BESTsets in workspace
-% Index     - BESTset(s) that you want to clear from the workspace
+% ALLERP    - Includes all MVPCsets in workspace
+% Index     - MVPCset(s) that you want to clear from the workspace
 %
 % OUTPUTS  :
 %
-% - updated (output) ALLBEST. Will include all BESTsets, minus that deleted
+% - updated (output) ALLMVPC. Will include all MVPCsets, minus that deleted
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons
@@ -24,29 +24,29 @@
 % Davis, CA
 % 2023
 
-function [ALLBEST] = pop_deletebest(ALLBEST, varargin)
+function [ALLMVPC] = pop_deletemvpcset(ALLMVPC, varargin)
 
 %erpcom = '';
 if nargin<1
-        help pop_deletebestset
+        help pop_deletemvpcset
 end
 if nargin==1
         try
-                CURRENTBEST = evalin('base', 'CURRENTBEST');
+                CURRENTMVPC = evalin('base', 'CURRENTMVPC');
         catch
-                CURRENTBEST = 0;
+                CURRENTMVPC = 0;
         end
-        if  CURRENTBEST == 0
-                msgboxText =  'BESTsets menu is already empty...';
-                title      =  'ERPLAB: no BESTset(s)';
+        if  CURRENTMVPC == 0
+                msgboxText =  'MVPCsets menu is already empty...';
+                title      =  'ERPLAB: no MVPCset(s)';
                 errorfound(msgboxText, title);
                 return
         end
         
-        prompt    = {'BESTset(s) to clear:'};
-        dlg_title = 'Delete BESTset(s)';
+        prompt    = {'MVPCset(s) to clear:'};
+        dlg_title = 'Delete MVPCset(s)';
         num_lines = 1;
-        def = {num2str(CURRENTBEST)}; %01-13-2009
+        def = {num2str(CURRENTMVPC)}; %01-13-2009
         
         %
         % open window
@@ -58,25 +58,25 @@ if nargin==1
                 return
         end
         
-        bestindex =  str2num(answer{1});
-        nerpset  = length(ALLBEST);
-        bestindex = unique_bc2(bestindex);
+        mvpcindex = str2num(answer{1});
+        nmvpcset  = length(ALLMVPC);
+        mvpcindex = unique_bc2(mvpcindex);
         
-        if isempty(bestindex)
-                msgboxText =  'Wrong bestset index(es)';
-                title      =  'ERPLAB: unrecognizable bestset(s)';
+        if isempty(mvpcindex)
+                msgboxText =  'Wrong MVPCset index(es)';
+                title      =  'ERPLAB: unrecognizable MVPCset(s)';
                 errorfound(msgboxText, title);
                 return
         end
-        if max(bestindex)>nerpset || min(bestindex)<1
-                bestm     = findobj('tag', 'linbest');
-                bestmenu = length(bestm);
-                if max(bestindex)<=bestmenu && bestmenu>=1 && max(bestindex)>=1
+        if max(mvpcindex)>nmvpcset || min(mvpcindex)<1
+                mvpcm     = findobj('tag', 'linmvpc');
+                mvpcmenu = length(mvpcm);
+                if max(mvpcindex)<=mvpcmenu && mvpcmenu>=1 && max(mvpcindex)>=1
                         %...
                 else
-                        msgboxText = ['Wrong BESTset index(es)\n'...
-                                'Check your BESTset menu or write length(ALLBEST) at command window for comprobation'];
-                        title        =  'ERPLAB: pop_deletebestset not existing BESTset(s)';
+                        msgboxText = ['Wrong MVPCset index(es)\n'...
+                                'Check your MVPCset menu or write length(ALLMVPC) at command window for comprobation'];
+                        title        =  'ERPLAB: pop_deletemvpcset not existing MVPCset(s)';
                         errorfound(sprintf(msgboxText), title);
                         return
                 end
@@ -85,7 +85,7 @@ if nargin==1
         %
         % Somersault
         %
-        [ALLBEST] = pop_deletebestset(ALLBEST, 'BESTsets', bestindex, 'Saveas', 'on','History', 'gui');
+        [ALLMVPC] = pop_deletemvpcset(ALLMVPC, 'MVPCsets', mvpcindex, 'Saveas', 'on','History', 'gui');
         return
 end
 
@@ -95,16 +95,16 @@ end
 p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
-p.addRequired('ALLBEST');
+p.addRequired('ALLMVPC');
 % option(s)
-p.addParamValue('BESTsets', 1); % bestset index or input file
+p.addParamValue('MVPCsets', 1); % bestset index or input file
 p.addParamValue('Warning', 'off', @ischar); % history from scripting
 p.addParamValue('Saveas', 'off', @ischar); % 'on', 'off'
 p.addParamValue('History', 'script', @ischar); % history from scripting
-p.parse(ALLBEST, varargin{:});
+p.parse(ALLMVPC, varargin{:});
 
 
-bestindex = p.Results.BESTsets;
+mvpcindex = p.Results.MVPCsets;
 if strcmpi(p.Results.Warning,'on')
         warnop = 1;
 else
@@ -124,27 +124,27 @@ elseif strcmpi(p.Results.History,'gui')
 else
         shist = 0; % off
 end
-nerpset = length(ALLBEST);
-bestindex   = unique_bc2(bestindex);
+nmvpcset = length(ALLMVPC);
+mvpcindex   = unique_bc2(mvpcindex);
 
-if isempty(bestindex)
-        msgboxText =  'Wrong BESTset index(es)';
+if isempty(mvpcindex)
+        msgboxText =  'Wrong MVPCset index(es)';
         error(['ERPLAB says: ' msgboxText])
 end
-if max(bestindex)>nerpset || min(bestindex)<1
-        msgboxText = 'Wrong BESTset index(es)';
+if max(mvpcindex)>nmvpcset || min(mvpcindex)<1
+        msgboxText = 'Wrong MVPCset index(es)';
         error(['ERPLAB says: ' msgboxText])
 end
-detect   = ~ismember_bc2(1:nerpset,bestindex);
+detect   = ~ismember_bc2(1:nmvpcset,mvpcindex);
 newindex = find(detect);
 if isempty(newindex)
-        ALLBEST = [];
+        ALLMVPC = [];
 else
-        ALLBEST = ALLBEST(newindex);
+        ALLMVPC = ALLMVPC(newindex);
 end
 if issaveas
-        updatemenubest(ALLBEST, -1);
-        assignin('base','ALLBEST',ALLBEST);  % save to workspace. Dec 5, 2012
+        updatemenumvpc(ALLMVPC, -1);
+        assignin('base','ALLBEST',ALLMVPC);  % save to workspace. Dec 5, 2012
 end
 % erpcom = sprintf('ALLERP = pop_deleterpset( ALLERP, [%s]);', num2str(erpindex));
 %

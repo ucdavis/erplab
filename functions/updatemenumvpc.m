@@ -54,12 +54,12 @@ elseif overw == 0 || overw == -1
     if overw == 0 %add a new bestset to the bestset menu
         indexmvpc = nmvpcset + 1; 
     else %delete bestset from menu
-            menux = findobj(0, 'tag', 'bestsets');
+            menux = findobj(0, 'tag', 'mvpcsets');
             h = get(menux);
             delete(h.Children);
             indexmvpc = 1;
             if maxindexmvpc==0
-                  assignin('base','CURRENTBEST', 0);  % save to workspace
+                  assignin('base','CURRENTMVPC', 0);  % save to workspace
                   set(MVPCmenu, 'enable', 'off');
                   return
             end

@@ -1,21 +1,21 @@
-% PURPOSE  : 	Clears BESTset(s) for BESTset menu
+% PURPOSE  : 	Clears MVPCset(s) from MVPC menu
 %
 % FORMAT   :
 %
-% >> ALLBEST = pop_deletebestset( ALLBEST, index);
+% >> ALLMVPC = pop_deletemvpc( ALLMVPC, index);
 %
 % EXAMPLE  :
 %
-% >> ALLBEST = pop_deletbestset( ALLBEST, [3 5]);
+% >> ALLMVPC = pop_deletbestset( ALLMVPC, [3 5]);
 %
 % INPUTS   :
 %
-% ALLERP    - Includes all BESTsets in workspace
-% Index     - BESTset(s) that you want to clear from the workspace
+% ALLERP    - Includes all MVPCsets in workspace
+% Index     - MVPCset(s) that you want to clear from the workspace
 %
 % OUTPUTS  :
 %
-% - updated (output) ALLBEST. Will include all BESTsets, minus that deleted
+% - updated (output) ALLMVPC. Will include all MVPCsets, minus that deleted
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons
@@ -24,7 +24,7 @@
 % Davis, CA
 % 2023
 
-function [ALLBEST] = pop_deletebest(ALLBEST, varargin)
+function [ALLBEST] = pop_deletemvpc(ALLBEST, varargin)
 
 %erpcom = '';
 if nargin<1
@@ -128,11 +128,11 @@ nerpset = length(ALLBEST);
 bestindex   = unique_bc2(bestindex);
 
 if isempty(bestindex)
-        msgboxText =  'Wrong BESTset index(es)';
+        msgboxText =  'Wrong erpset index(es)';
         error(['ERPLAB says: ' msgboxText])
 end
 if max(bestindex)>nerpset || min(bestindex)<1
-        msgboxText = 'Wrong BESTset index(es)';
+        msgboxText = 'Wrong erpset index(es)';
         error(['ERPLAB says: ' msgboxText])
 end
 detect   = ~ismember_bc2(1:nerpset,bestindex);

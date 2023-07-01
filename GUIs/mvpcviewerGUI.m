@@ -130,30 +130,37 @@ if isempty(ALLMVPC)
     iset = 0; %empty file
     set(handles.edit_file, 'String', num2str(iset));
     
-    set(handles.checkbox_butterflyset,'Enable', 'off');
+    %set(handles.checkbox_butterflyset,'Enable', 'off');
     set(handles.checkbox_stderror,'Enable', 'off');
     
 
-    set(handles.checkbox_butterflyset, 'Enable', 'off')
+    %set(handles.checkbox_butterflyset, 'Enable', 'off')
     set(handles.pushbutton_right_file, 'Enable', 'off')
     set(handles.pushbutton_left_file, 'Enable', 'off')
 
     handles.datatype = '';
     
 else
-    set(handles.radiobutton1,'Value',1); 
-    set(handles.listbox_mvpcnames,'Enable','off'); 
-    set(handles.text3,'String','MVPCmenu Index'); 
     
-    if isfield(ALLMVPC(1), 'DecodingMethod')
-        datatype = ALLMVPC(1).DecodingMethod;
-        
-        if strcmpi(datatype,'SVM')
-            % here, treat SEM data like ERP data
-            datatype = 'SVM';
-            % datatype2 = 'SEM';
-        end
-        
+    iset = evalin('base','CURRENTMVPC'); 
+
+   % set(handles.radiobutton1,'Value',1); 
+    set(handles.listbox_mvpcnames,'Enable','on'); 
+    set(handles.text3,'String','MVPC Menu File Index'); 
+    
+    fnames = {ALLMVPC(:).mvpcname};
+    
+    for n = 1:numel(fnames)
+        fnames{n} = char(strcat(['File ' num2str(n) ': '], {' '},fnames{n}));
+    end
+    
+    
+    set(handles.listbox_mvpcnames,'String',fnames);
+    set(handles.listbox_mvpcnames,'Value',iset); 
+    
+    if isfield(ALLMVPC(iset), 'DecodingMethod')
+        datatype = ALLMVPC(iset).DecodingMethod;
+         
     else
         datatype = 'SVM';
     end
@@ -162,10 +169,11 @@ else
     if strcmpi(datatype, 'SVM')
         meamenu = 1;
     else
-        meamenu = 2
+        meamenu = 2;
     end
     
     handles.measurearray = measurearray;
+
     
     meacodes    =      {'avgdecodingacc' };
     
@@ -194,7 +202,7 @@ else
     handles.setArray   = setArray;
     %handles.ich        = 1;
     %handles.ibin       = 1;
-    handles.iset       = 1;
+    handles.iset       = iset;
     %handles.orilatency = latency;
     %handles.blc        = blc;
     %handles.moption    = moption;
@@ -206,20 +214,20 @@ else
     
     % ibin  = 1;
     % ich   = 1;
-    iset  = 1;
-    times = ALLMVPC(1).times;
+    
+    times = ALLMVPC(iset).times;
     if strcmpi(datatype, 'SVM')
         xlim  = [min(times) max(times)];
-        if ALLMVPC(1).chance*4 > 1
+        if ALLMVPC(iset).chance*4 > 1
             ylim = [0 1];
         else
-            ylim =  [0 ALLMVPC(1).chance*4];
+            ylim =  [0 ALLMVPC(iset).chance*4];
             
         end
         
     else
-        xlim  = [0 30];
-        ylim  = [0 15];
+        xlim  = [min(times) max(times)];;
+        ylim  = [abs(min(ALLMVPC(iset).average_score))*-1.10 max(ALLMVPC(iset).average_score)*1.10];
         
     end
     
@@ -229,11 +237,11 @@ else
     
     set(handles.edit_file, 'String', num2str(iset));
     
-    set(handles.checkbox_butterflyset,'Value', 0);
+    %set(handles.checkbox_butterflyset,'Value', 0);
     set(handles.checkbox_stderror,'Value', 0);
     
     if length(setArray)==1
-        set(handles.checkbox_butterflyset, 'Enable', 'off')
+       % set(handles.checkbox_butterflyset, 'Enable', 'off')
         %         if frdm; set(handles.edit_file, 'Enable', 'off');end
         set(handles.pushbutton_right_file, 'Enable', 'off')
         set(handles.pushbutton_left_file, 'Enable', 'off')
@@ -300,7 +308,6 @@ end
 version = geterplabversion;
 set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   VIEWER FOR MVPC GUI']); %, 'toolbar','figure')
 
-
 % Update handles structure
 guidata(hObject, handles);
 
@@ -315,19 +322,35 @@ uiwait(handles.gui_chassis);
 function mplotdata(hObject,handles,iset,xlim,ylim)
 
 setArray = handles.setArray;
+measurearray = handles.measurearray;
 
-setinput = []; 
-if get(handles.checkbox_butterflyset, 'Value')
-        jseta      = setArray;
-else
-        setinput = eval(get(handles.edit_file, 'String'));
-        
-        if length(setinput)>1
-                jseta = setinput;
-        else
-                jseta      = setArray(iset);
-        end
-end
+
+%% only one file
+% pervious version of this code plotted more than one file
+% if checkbox_butterflyset was enabled
+% For the first version of decoding toolbox, Steve
+% decided we only view one file at a time 
+
+%setinput = []; 
+% if get(handles.checkbox_butterflyset, 'Value')
+%         jseta      = setArray;
+%         
+%         
+% else
+setinput = eval(get(handles.edit_file, 'String'));
+
+% if length(setinput)>1
+%     jseta = setinput;
+% else
+ jseta      = setArray(iset);
+% end
+% end
+
+ALLMVPC = handles.ALLMVPA; 
+times = ALLMVPC(iset).times;
+
+%MVPC listbox
+
 fntsz = get(handles.edit_report, 'FontSize');
 set(handles.edit_report, 'FontSize', fntsz*1.5)
 set(handles.edit_report, 'String', sprintf('\nWorking...\n'))
@@ -336,15 +359,11 @@ linecols = ["red","green","blue","cyan","magenta","black"];
 linecols_max = repmat(linecols,size(setArray)); %set max amount of colors
 linecols = linecols_max(setArray); 
 
-    
 
 
-
-ALLMVPC = handles.ALLMVPA; 
-times = ALLMVPC(iset).times;
-p1 = times(1);
-p2 = times(end); 
-intfactor = 0; 
+% p1 = times(1);
+% p2 = times(end); 
+% intfactor = 0; 
 % if intfactor~=1
 %         timex = linspace(p1,p2,round(pnts*intfactor));
 % else
@@ -369,7 +388,33 @@ for i = 1:numel(jseta)
     
     seta = jseta(i); 
     
-    AverageAccuracy = ALLMVPC(seta).average_score; 
+    AverageAccuracy = ALLMVPC(seta).average_score; %index datum(or data)
+    
+    if isfield(ALLMVPC(seta), 'DecodingMethod')
+        datatype = ALLMVPC(seta).DecodingMethod;     
+    else
+        datatype = 'None';
+    end
+    
+    
+    if strcmpi(datatype, 'SVM')
+        meamenu = 1;
+    else
+        meamenu = 2;
+    end
+    
+    if numel(jseta) > 1      
+        set(handles.text_measurementv, 'String', 'Multiple');
+        set(handles.text11,'String','Multiple'); 
+    else
+        set(handles.text_measurementv, 'String', measurearray{meamenu});
+        if meamenu == 1
+            set(handles.text11,'String','Decoding Accuracy (proportion correct)'); 
+        elseif meamenu == 2
+             set(handles.text11,'String','Distance (uV)');
+        end
+    end
+
     
     %plot
     plot(timex,AverageAccuracy, 'LineWidth',1,'Color',linecols(seta));
@@ -398,6 +443,9 @@ for i = 1:numel(jseta)
     
 end
 
+%update scales 
+set(handles.edit_ylim, 'String', num2str(ylim));
+set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
 
 
 hold off
@@ -406,7 +454,7 @@ set(handles.edit_report, 'String', '');
 set(handles.edit_report, 'FontSize', fntsz);
 
 nsetinput = length(setinput);
-if ~get(handles.checkbox_butterflyset, 'Value') && nsetinput<=1
+if nsetinput<=1
         set(handles.edit_file, 'String', num2str(jseta))
         handles.iset = iset;
         % Update handles structure
@@ -414,29 +462,29 @@ if ~get(handles.checkbox_butterflyset, 'Value') && nsetinput<=1
 end
 
 setlabelx = '';
-if get(handles.checkbox_butterflyset, 'Value')
-        if length(setArray)>10
-                var1 = vect2colon(setArray, 'Delimiter', 'off');
-        else
-                var1 = num2str(setArray);
-        end
-        for i = 1:numel(jseta)
-            seta = jseta(i);
-            setlabelx{seta} = sprintf('(%s)', ALLMVPC(seta).mvpcname);
-            chancelabelx{seta} = ALLMVPC(seta).chance;
-            foldlabelx{seta} = ALLMVPC(seta).nCrossfolds;
-            methodlabelx{seta} = ALLMVPC(seta).DecodingMethod;
-        end
-        
-elseif nsetinput == 1
+% if get(handles.checkbox_butterflyset, 'Value')
+%         if length(setArray)>10
+%                 var1 = vect2colon(setArray, 'Delimiter', 'off');
+%         else
+%                 var1 = num2str(setArray);
+%         end
+%         for i = 1:numel(jseta)
+%             seta = jseta(i);
+%             setlabelx{seta} = sprintf('(%s)', ALLMVPC(seta).mvpcname);
+%             chancelabelx{seta} = ALLMVPC(seta).chance;
+%             foldlabelx{seta} = ALLMVPC(seta).nCrossfolds;
+%             methodlabelx{seta} = ALLMVPC(seta).DecodingMethod;
+%         end
+%         
+if nsetinput == 1
         if nsetinput>10
                 var1 = vect2colon(jseta, 'Delimiter', 'off');
         else
                 var1 = num2str(jseta);
                 if nsetinput==1
-                        setlabelx = sprintf('(%s)', ALLMVPC(jseta).mvpcname);
+                        setlabelx = sprintf('(%s)', ALLMVPC(seta).mvpcname);
                         chancelabelx = ALLMVPC(jseta).chance;
-                        foldlabelx = ALLMVPC(jseta).nCrossfolds; 
+                       % foldlabelx = ALLMVPC(jseta).nCrossfolds; 
                         methodlabelx = ALLMVPC(jseta).DecodingMethod; 
                 end
                 
@@ -470,27 +518,32 @@ end
 %         values2print = {var1, setlabelx, var2, binlabelx, var3,  chanlabelx, tittle, sprintf('%.2f\t', latency), sprintf('%.2f\t', truelat), val};
 % else
 
-if ~get(handles.checkbox_butterflyset,'Value')
-    strfrmt = ['File   : %s %s\nChance level: %.4f \nCrossfold Validation: %i \nDecoding Method: %s '];
-    values2print = {var1, setlabelx, chancelabelx, foldlabelx, methodlabelx};
-else
-    strfrmt = ['File   : %s'];
-    newL = repmat('\nFile %s: Color: %s',[1,numel(jseta)]); 
-    
-    strfrmt = [strfrmt newL]; 
-    
-    p = 1; 
-    for j = 1:numel(jseta)
-        if p == 1
-            values2print = {var1};
-        end
-        p = p + 1;
-        values2print{p} = setlabelx{j}; 
-        p = p + 1;
-        values2print{p} = linecols(j); 
-        
+% if ~get(handles.checkbox_butterflyset,'Value')
+%     strfrmt = ['File   : %s %s\nChance level: %.4f \nCrossfold Validation: %i \nDecoding Method: %s '];
+%     values2print = {var1, setlabelx, chancelabelx, foldlabelx, methodlabelx};
+% else
+%
+
+% Only one file at a time
+%strfrmt = ['File   : %s'];
+ 
+
+strfrmt = repmat('MVPC Details \nFile %s: %s \nChance: %.4f \nMethod: %s',[1,numel(jseta)]);
+
+p = 1;
+for j = 1:1
+    %only 1 file
+    if p == 1
+        values2print = {var1};
     end
+    p = p + 1;
+    values2print{p} = setlabelx;
+    p = p + 1;
+    values2print{p} = chancelabelx;
+    p = p + 1;
+    values2print{p} = methodlabelx; 
 end
+
 
 repo = sprintf(strfrmt, values2print{:});
 % if ~isempty(nanindxfile) && length(jseta)>1
@@ -504,7 +557,7 @@ set(handles.edit_report, 'String', repo)
 % hold off 
 drawnow
 
-nsetinput = length(setinput); 
+%nsetinput = length(setinput); 
 
 
 
@@ -541,53 +594,47 @@ function edit_file_Callback(hObject, eventdata, handles)
 try
     iset = eval(get(hObject,'String'));
 catch
-    error('You did not input valid file numbers'); 
+    msgboxText = 'You did not input a valid file number';
+    title_msg  = 'ERPLAB: MVPCviewer() error:';
+    errorfound(msgboxText, title_msg);
+    set(hObject,'String',handles.iset); 
     return
 end
 
 if max(iset) > max(handles.setArray)
-    error('You input an invalid file number'); 
+    msgboxText = 'You did not input a valid file number';
+    title_msg  = 'ERPLAB: MVPCviewer() error:';
+    errorfound(msgboxText, title_msg);
+    set(hObject,'String',handles.iset); 
     return
 end
 
-% setArray = handles.setArray;
-% if get(hObject, 'Value')
-%         set(handles.edit_file, 'String', vect2colon(setArray, 'Delimiter', 'off'))
-%         set(handles.edit_file, 'Enable', 'off');
-%         set(handles.pushbutton_right_file, 'Enable', 'off')
-%         set(handles.pushbutton_left_file, 'Enable', 'off')
-% 
-% else
-%         set(handles.edit_file, 'Enable', 'on');
-%         setinput  = str2num(get(handles.edit_file, 'String'));
-%         if length(setinput)>1 
-%                 setinput = setinput(1);
-%                 [xxx, iset] = closest(setArray, setinput);
-%                 handles.iset=iset;
-%                 set(handles.edit_file, 'String', num2str(setinput))
-%         end
-%         if length(setinput)<=1
-%                 set(handles.pushbutton_right_file, 'Enable', 'on')
-%                 set(handles.pushbutton_left_file, 'Enable', 'on')
-%         else
-%                 set(handles.pushbutton_right_file, 'Enable', 'off')
-%                 set(handles.pushbutton_left_file, 'Enable', 'off')
-%         end
-% end
+%update listbox
+set(handles.listbox_mvpcnames, 'Value', iset); 
 
-% tittle = handles.tittle;
-ylim   = str2num(get(handles.edit_ylim, 'String' ));
-xlim   = str2num(get(handles.edit_xlim, 'String' ));
-% 
-% if isempty(xlim) || isempty(ylim)
-%         return
-% end
+%query reasonable xlim & ylim
 
-% ich    = handles.ich;
-% ibin   = handles.ibin;
-iset   = handles.iset;
+ALLMVPC = handles.ALLMVPA;
+times = ALLMVPC(iset).times;
+datatype = ALLMVPC(iset).DecodingMethod; 
+if strcmpi(datatype, 'SVM')
+    xlim  = [min(times) max(times)];
+    if ALLMVPC(iset).chance*4 > 1
+        ylim = [0 1];
+    else
+        ylim =  [0 ALLMVPC(iset).chance*4];
+        
+    end
+    
+else
+    xlim  = [min(times) max(times)];
+    ylim  = [abs(min(ALLMVPC(iset).average_score))*-1.10 max(ALLMVPC(iset).average_score)*1.10];
+    
+end
 
-mplotdata(hObject, handles, iset, xlim, ylim)
+%ylim = str2num(get(handles.edit_ylim, 'String' ));
+%xlim = str2num(get(handles.edit_xlim, 'String' ));
+mplotdata(hObject, handles,iset, xlim, ylim)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -612,18 +659,43 @@ function pushbutton_left_file_Callback(hObject, eventdata, handles)
 % ich    = handles.ich;
 % ibin   = handles.ibin;
 iset   = handles.iset;
-iset   = iset-1;
+check_iset   = iset-1;
 
-if iset<1
+if check_iset<1
         return; %iset = 1;
-end
-handles.iset = iset;
+else
+    iset = check_iset;
+end    
+%handles.iset = iset;
+
+%update listbox
+set(handles.listbox_mvpcnames,'Value',iset); 
 
 % Update handles structure
 guidata(hObject, handles);
 
-ylim = str2num(get(handles.edit_ylim, 'String' ));
-xlim = str2num(get(handles.edit_xlim, 'String' ));
+%query reasonable xlim & ylim
+
+ALLMVPC = handles.ALLMVPA;
+times = ALLMVPC(iset).times;
+datatype = ALLMVPC(iset).DecodingMethod; 
+if strcmpi(datatype, 'SVM')
+    xlim  = [min(times) max(times)];
+    if ALLMVPC(iset).chance*4 > 1
+        ylim = [0 1];
+    else
+        ylim =  [0 ALLMVPC(iset).chance*4];
+        
+    end
+    
+else
+    xlim  = [min(times) max(times)];
+    ylim  = [abs(min(ALLMVPC(iset).average_score))*-1.10 max(ALLMVPC(iset).average_score)*1.10];
+    
+end
+
+%ylim = str2num(get(handles.edit_ylim, 'String' ));
+%xlim = str2num(get(handles.edit_xlim, 'String' ));
 mplotdata(hObject, handles,iset, xlim, ylim)
 
 
@@ -637,18 +709,40 @@ setArray = handles.setArray;
 % ich    = handles.ich;
 % ibin   = handles.ibin;
 iset   = handles.iset;
-iset   = iset+1;
+check_iset   = iset+1;
 
-if iset>length(setArray)
+if check_iset>length(setArray)
         return; %iset = length(setArray);
+else
+    iset = check_iset; 
 end
 handles.iset      = iset;
+
+set(handles.listbox_mvpcnames,'Value',iset); 
 
 % Update handles structure
 guidata(hObject, handles);
 
-ylim = str2num(get(handles.edit_ylim, 'String' ));
-xlim = str2num(get(handles.edit_xlim, 'String' ));
+ALLMVPC = handles.ALLMVPA;
+times = ALLMVPC(iset).times;
+datatype = ALLMVPC(iset).DecodingMethod; 
+if strcmpi(datatype, 'SVM')
+    xlim  = [min(times) max(times)];
+    if ALLMVPC(iset).chance*4 > 1
+        ylim = [0 1];
+    else
+        ylim =  [0 ALLMVPC(iset).chance*4];
+        
+    end
+    
+else
+    xlim  = [min(times) max(times)];
+    ylim  = [abs(min(ALLMVPC(iset).average_score))*-1.10 max(ALLMVPC(iset).average_score)*1.10];
+    
+end
+
+% ylim = str2num(get(handles.edit_ylim, 'String' ));
+% xlim = str2num(get(handles.edit_xlim, 'String' ));
 mplotdata(hObject, handles,iset,xlim,ylim)
 
 
@@ -1103,6 +1197,33 @@ function listbox_mvpcnames_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns listbox_mvpcnames contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from listbox_mvpcnames
+
+iset = get(hObject,'Value'); 
+
+%query reasonable xlim & ylim
+
+ALLMVPC = handles.ALLMVPA;
+times = ALLMVPC(iset).times;
+datatype = ALLMVPC(iset).DecodingMethod; 
+if strcmpi(datatype, 'SVM')
+    xlim  = [min(times) max(times)];
+    if ALLMVPC(iset).chance*4 > 1
+        ylim = [0 1];
+    else
+        ylim =  [0 ALLMVPC(iset).chance*4];
+        
+    end
+    
+else
+    xlim  = [min(times) max(times)];
+    ylim  = [abs(min(ALLMVPC(iset).average_score))*-1.10 max(ALLMVPC(iset).average_score)*1.10];
+    
+end
+
+%ylim = str2num(get(handles.edit_ylim, 'String' ));
+%xlim = str2num(get(handles.edit_xlim, 'String' ));
+mplotdata(hObject, handles,iset, xlim, ylim)
+
 
 
 % --- Executes during object creation, after setting all properties.

@@ -15,7 +15,7 @@ if nargin < 1
     mvpc.nCrossfolds = 0; %[] if tw.
     mvpc.srate = ALLBEST.srate; %updated fs
     mvpc.pnts = ALLBEST.pnts;
-    mvpc.classcoding = [];
+    mvpc.classcoding = 0;
     mvpc.DecodingUnit = 'None'; %Accuracy vs Distance vs None
     mvpc.DecodingMethod = '';
     mvpc.average_status = 'single_subject';
@@ -38,7 +38,11 @@ else
     mvpc.electrodes = relevantChans; 
     mvpc.chanlocs = ALLBEST.chanlocs(relevantChans); 
     mvpc.nClasses = ALLBEST.nbin; % # of bins
-    mvpc.chance = 1/mvpc.nClasses; %chance
+    if method == 1
+        mvpc.chance = 1/mvpc.nClasses; %chance
+    elseif method == 2
+        mvpc.chance = 0; %0 uV for crossnobis
+    end  
     mvpc.classlabels = ALLBEST.bindesc; 
     mvpc.nIter = nIter;
     mvpc.nCrossfolds = nCrossBlocks; %[] if tw. 
@@ -50,7 +54,7 @@ else
     elseif classcoding == 2
         mvpc.classcoding.OneVsOne ='no';
         mvpc.classcoding.OneVsAll='yes';
-    elseif isempty(classcoding)
+    else
         mvpc.classcoding.OneVsOne ='no';
         mvpc.classcoding.OneVsAll = 'no'; 
     end

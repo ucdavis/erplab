@@ -756,7 +756,7 @@ end
 if strcmpi(smethod,'SVM')
     method = 1;
 else
-    method = 2;
+    method = 2; %crossnobis
 end
 
 if strcmpi(strcoding,'OneVsOne')
@@ -764,13 +764,15 @@ if strcmpi(strcoding,'OneVsOne')
 elseif strcmpi(strcoding,'OneVsAll')
     classcoding = 2;
 else
-    classcoding = 0;
+    classcoding = 0; %any not-multinomial pattern classification (binary decoders, crossnobis, etc)
 end
 
 
 
 if method == 1 %SVM
     [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method);
+elseif method == 2 %crossnobis 
+    [MVPC, ALLMVPC] = crossnobis(ALLBEST,nIter,0,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method);
 end
 
 
