@@ -231,6 +231,8 @@ else
         
     end
     
+    handles.ylim_set = []; %for user set limits 
+    handles.xlim_set = []; %for user set limits
     
     set(handles.edit_ylim, 'String', num2str(ylim));
     set(handles.edit_xlim, 'String', sprintf('%g %g', round(xlim)));
@@ -323,6 +325,17 @@ function mplotdata(hObject,handles,iset,xlim,ylim)
 
 setArray = handles.setArray;
 measurearray = handles.measurearray;
+
+
+if ~isempty(handles.ylim_set)
+    %user's preference
+    ylim = handles.ylim_set; 
+   
+end
+if ~isempty(handles.xlim_set)
+    %users preference
+    xlim = handles.xlim_set;   
+end
 
 
 %% only one file
@@ -855,6 +868,11 @@ if length(xlim)~=2 || length(ylim)~=2 || any(isnan(xlim)) || any(isnan(ylim)) ||
         return
 end
 
+handles.ylim_set = ylim;
+handles.xlim_set = xlim; 
+
+guidata(hObject, handles); %maintain set limits
+
 iset   = handles.iset;
 
 mplotdata(hObject, handles, iset, xlim, ylim)
@@ -891,6 +909,11 @@ if length(xlim)~=2 || length(ylim)~=2 || any(isnan(xlim)) || any(isnan(ylim)) ||
         errorfound(sprintf(msgboxText), title);
         return
 end
+
+handles.ylim_set = ylim;
+handles.xlim_set = xlim; 
+
+guidata(hObject, handles); %maintain set limits
 
 iset   = handles.iset;
 

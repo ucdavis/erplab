@@ -2,7 +2,7 @@
 %
 % FORMAT   :
 %
-% >>  [MVPC] = pop_savemybest(MVPC, parameters);
+% >>  [MVPC] = pop_savemymvpc(MVPC, parameters);
 %
 % INPUTS   :
 %
@@ -28,9 +28,9 @@
 %
 % EXAMPLE  :
 %
-% pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep',  100 );
+% pop_savemymvpc( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep',  100 );
 %
-% See also;  [pop_artblink]
+% See also: savemymvpcGUI.m savemvpc
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons

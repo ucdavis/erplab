@@ -179,7 +179,7 @@ if nargin == 1 %GUI
             
         end
         
-        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 1 2 0};
+        def = {inp1 bestseti [] 100 3 1 [] 1 2 1 1 2 0 []};
       
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
         %def2 = bestset index (see above)
@@ -194,7 +194,8 @@ if nargin == 1 %GUI
         %def10 = Common  Floor Value (def: 1); 
         %def11 = classifer (1: SVM / 2: Crossnobis - def: SVM)
         %def12 = SVM coding (1: 1vs1 / 2: 1vsAll or empty - def: 1vsALL)
-        %def13 = parCompute (def = 0) 
+        %def13 = parCompute (def = 0)
+        %def14 = DecodeClasses ; 
 
         %DEFUNCT = output filename (def = filename.mvpa in pwd) *DEFUNCT
         %DEFUNCT = output path (def = cd); *DEFUNCT 
@@ -346,13 +347,14 @@ if nargin == 1 %GUI
     classcoding = decoding_res{13};
 %     file_out = decoding_res{13};
 %     path_out = decoding_res{14}; 
-    ParCompute = decoding_res{14}; 
+    ParCompute = decoding_res{14};
+    decodeClasses = decoding_res{15}; 
     
     %save in working memory
     
     def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
         decodeTimes, decode_every_Npoint, equalizeTrials, floorValue, ...
-        selected_method, classcoding, ParCompute}; 
+        selected_method, classcoding, ParCompute,decodeClasses}; 
     erpworkingmemory('pop_decoding',def); 
     
     %for input into sommersault, change decodeTimes to ms
@@ -394,11 +396,15 @@ if nargin == 1 %GUI
         spar = 'off';
     end
         
-        
+    if isempty(decodeClasses)
+        %across all classes in BESTset(s)
+        decodeClasses = 1:numel(ALLBEST(indexBEST).binwise_data);
+    end
         
    
     
-   [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'Channels', relevantChans, ...
+   [MVPC] = pop_decoding(ALLBEST,'BESTindex', indexBEST, 'Classes', decodeClasses, ...
+       'Channels', relevantChans, ...
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'DecodeTimes', decodeTimes, 'Decode_Every_Npoint',decode_every_Npoint,  ...
    'EqualizeTrials', seqtr, 'FloorValue',floorValue,'Method', smethod, ...
@@ -420,7 +426,8 @@ p.CaseSensitive = false;
 p.addRequired('ALLBEST');
 
 % option(s)
-p.addParamValue('BESTindex', [1],@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
+p.addParamValue('BESTindex', 1,@isnumeric); % erpset index or input file (default: first BESTset in ALLBEST)
+p.addParamValue('Classes',[],@isnumeric); 
 p.addParamValue('Channels',[], @isnumeric); %array of channel indicies (def: all channels)
 %p.addParamValue('nBins',0); %total number of bins/decoding labels/decoding levels
 p.addParamValue('nIter',100, @isnumeric); % total number of decoding iterations (def: 100 iters)
@@ -440,6 +447,7 @@ p.addParamValue('History','script');
 % Parsing
 p.parse(ALLBEST, varargin{:});
 idx_bestset = p.Results.BESTindex;
+decodeClasses = p.Results.Classes; 
 chanArray = p.Results.Channels;
 nIter = p.Results.nIter;
 nCrossblocks = p.Results.nCrossblocks;
@@ -625,13 +633,14 @@ for b = 1:k
     npnts_old = ALLBEST(b).pnts; 
     ALLBEST(b).pnts = ntimes;
     ALLBEST(b).times = original_times(decoding_times_index);
-    
-    %update fs
-    fs = ALLBEST(b).srate;
-    samps = 1/fs; 
-    epochtime = (samps*npnts_old) *1000;% ms
-    new_fs = (ntimes/epochtime) *1000; 
-    ALLBEST(b).srate = new_fs; 
+    if Decode_every_Npoint ~= 1
+        %update fs if not decoding every timepoint
+        fs = ALLBEST(b).srate;
+        samps = 1/fs;
+        epochtime = (samps*npnts_old) *1000;% ms
+        new_fs = (ntimes/epochtime) *1000;
+        ALLBEST(b).srate = new_fs;
+    end
     
     for i = 1:bins
         ALLBEST(b).binwise_data(i).data = ALLBEST(b).binwise_data(i).data(:,decoding_times_index,:);
@@ -721,21 +730,6 @@ else
 end
 
 
-%% delete any unnecessary paramters like nPerBinBlock (due to simplification in pop_decoding
-% p.parse(ALLBEST, varargin{:});
-% idx_bestset = p.Results.BESTindex;
-% chanArray = p.Results.chanArray;
-% nIter = p.Results.nIter;
-% nCrossblocks = p.Results.nCrossblocks;
-% decodeTimes = p.Results.decodeTimes; 
-% Decode_every_Npoint = p.Results.Decode_every_Npoint; 
-% equalize_trials = p.Results.equalizeTrials;
-% classifer = p.Results.classifier; 
-% SVMcoding = p.Results.SVMcoding;
-% fname = p.Results.filename_out; 
-% ParCompute = p.Results.ParCompute; 
-
-
 if ParCompute == 1
    % delete(gcp)
    try
@@ -767,6 +761,14 @@ else
     classcoding = 0; %any not-multinomial pattern classification (binary decoders, crossnobis, etc)
 end
 
+%% logic for choosing the classes and chance prior to feeding into algo
+if ~isempty(decodeClasses)
+   finalClasses = struct();
+   nbins;
+   %ALLBEST(b).binwise_data(i).data;
+end
+
+%% Enter algorithm
 
 
 if method == 1 %SVM
@@ -796,6 +798,12 @@ else
     end
     inputvari = inputname(1);
 end
+
+if method == 2 
+    %crossfolds don't matter in crossnobis
+     skipfields = [skipfields 'ALLBEST' 'BESTindex' 'nCrossblocks']; % SL
+end
+
 
 % if strcmpi(smethod,'Crossnobis')
 %     skipfields = [skipfields 'classcoding'];
