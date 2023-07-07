@@ -226,95 +226,7 @@ if nargin == 1 %GUI
     end
     
 
-%% continue with main logic 
-%     checking = checkmultiBEST(ALLBEST);
-%     
-%     if ~checking 
-%         disp('Sorry, your BEST files do not agree with each other in terms of bins and channels')
-%         return    
-%     end
-%      
-%     filename = {ALLBEST.filename}; 
-%     filepath = {ALLBEST.filepath}; 
-%         
-        
-        
-% 
-%       I'm not sure if these following checks are needed? 
-%
-%         [ERP, conti, serror] = olderpscan(ERP, popupwin);
-%         if conti==0
-%             break
-%         end
-%         if serror
-%             msgboxText = ['Your erpset %s is not compatible at all with the current ERPLAB version.\n'...
-%                 'Please, try upgrading your ERP structure.'];
-% 
-%             if shist==1
-%                 title = 'ERPLAB: pop_loaderp() Error';
-%                 errorfound(sprintf(msgboxText, ERP.filename), title);
-%                 errorf = 1;
-%                 break
-%             else
-%                 error(sprintf(msgboxText, ERP.filename))
-%             end
-%         end
-% 
-%         %
-%         % Check (and fix) ERP structure (basic)
-%         %
-%         checking = checkERP(ERP);
-%         file_ERPLAB_versions(nfile) = str2double(ERP.version);
-% 
-%         try
-% 
-% 
-%             if checking
-%                 if i==1 && isempty(ALLERP);
-%                     ALLERP = buildERPstruct([]);
-%                     ALLERP = ERP;
-%                 else
-%                     ALLERP(i+preindex) = ERP;
-%                 end
-%             else
-%                 msgboxText = ['Your erpset %s is not compatible at all with the current ERPLAB version.\n'...
-%                     'Please, try upgrading your ERP structure.'];
-% 
-%                 if shist==1
-%                     title = 'ERPLAB: pop_loaderp() Error';
-%                     errorfound(sprintf(msgboxText, ERP.filename), title);
-%                     errorf = 1;
-%                     break
-%                 else
-%                     error(sprintf(msgboxText, ERP.filename))
-%                 end
-%             end
-%         catch
-%             msgboxText = ['Your erpset %s is not compatible at all with the current ERPLAB version.\n'...
-%                 'Please, try upgrading your ERP structure.'];
-% 
-%             if shist==1
-%                 title = 'ERPLAB: pop_loaderp() Error';
-%                 errorfound(sprintf(msgboxText, ERP.filename), title);
-%                 errorf = 1;
-%                 break
-%             else
-%                 error(sprintf(msgboxText, ERP.filename))
-%             end
-%         end
-% 
-%         %
-%         % look for null bins
-%         %
-%         c = look4nullbin(ERP);
-%         if c>0
-%             msgnull = sprintf('bin #%g has flatlined ERPs.\n', c);
-%             msgnull = sprintf('WARNING:\n%s', msgnull);
-%             warningatcw(msgnull, [1 0 0]);
-%         end
-    
-
-    %Call GUI for decoding parameters parameters
+    %% Call GUI for decoding parameters parameters
     %app = feval('decodingGUI', ALLBEST, filename, filepath, cbesti); %cludgy way
     app = feval('decodingGUI', ALLBEST, def, cbesti); %cludgy way
     waitfor(app,'FinishButton',1);
@@ -351,9 +263,11 @@ if nargin == 1 %GUI
     decodeClasses = decoding_res{15}; 
     
     %save in working memory
+    %Steve decided that equalize trials should always be defaulted if using
+    %the GUI
     
     def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
-        decodeTimes, decode_every_Npoint, equalizeTrials, floorValue, ...
+        decodeTimes, decode_every_Npoint, 2, floorValue, ...
         selected_method, classcoding, ParCompute,decodeClasses}; 
     erpworkingmemory('pop_decoding',def); 
     
@@ -398,7 +312,7 @@ if nargin == 1 %GUI
         
     if isempty(decodeClasses)
         %across all classes in BESTset(s)
-        decodeClasses = 1:numel(ALLBEST(indexBEST).binwise_data);
+        decodeClasses = 1:numel(ALLBEST(indexBEST(1)).binwise_data);
     end
         
    
@@ -647,6 +561,15 @@ for b = 1:k
     end
 end
 
+%% logic for choosing the classes and chance prior to equalizing trials
+if ~isempty(decodeClasses)
+   finalClasses = struct();
+   nbins;
+   %ALLBEST(b).binwise_data(i).data;
+end
+
+
+
 %% reset the trial counts according to nperbinblock/Equalize Trials
 
 nbins = ALLBEST.nbin; 
@@ -725,8 +648,14 @@ elseif strcmpi(equalize_trials,'floor')
     
     
 else
-    disp('Trials are not equalized'); 
-   
+
+    fprintf('\n%s\n', repmat('*',1,60));
+    fprintf('WARNING: You have disabled the option for equating the number of trials across classes. \n');
+    fprintf('WARNING: This is almost always a very bad idea.  \n');
+    fprintf('WARNING: Disabling this option will almost certainly artificially inflate the decoding accuracy, creating bogus effects.  \n'); 
+    fprintf('WARNING:In addition, you should report that you disabled it in your Method section, which will likely cause your paper to be rejected  \n'); 
+    fprintf('%s\n\n', repmat('*',1,60));
+
 end
 
 
@@ -761,12 +690,6 @@ else
     classcoding = 0; %any not-multinomial pattern classification (binary decoders, crossnobis, etc)
 end
 
-%% logic for choosing the classes and chance prior to feeding into algo
-if ~isempty(decodeClasses)
-   finalClasses = struct();
-   nbins;
-   %ALLBEST(b).binwise_data(i).data;
-end
 
 %% Enter algorithm
 
