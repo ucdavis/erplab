@@ -17,6 +17,10 @@
 %                         must be equal to 1 or left unspecified.
 %                         Def: [1]
 %
+%        'Classes '     - Index of classes to decode across.
+%                       Classes are defined as the index of the bins
+%                       contained within the BESTset prior to decoding. 
+%
 %        'Channels'     - Index of channels to use. Def: all channels
 %
 %        'nIter'        - Amount of iterations to run decoding per BESTset.
@@ -179,6 +183,7 @@ if nargin == 1 %GUI
             
         end
         
+        %decodeClassInd = 1:numel(ALLBEST(indexBEST(1)).binwise_data)
         def = {inp1 bestseti [] 100 3 1 [] 1 2 1 1 2 0 []};
       
         %def1 = input mode (1 means from HD, 0 from bestsetmenu, 2 current bestset) 
