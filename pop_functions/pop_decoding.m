@@ -564,14 +564,21 @@ for b = 1:k
     for i = 1:bins
         ALLBEST(b).binwise_data(i).data = ALLBEST(b).binwise_data(i).data(:,decoding_times_index,:);
     end
+    
+    
+    %% logic for choosing the classes and chance prior to equalizing trials
+    
+
+    %select chosen classes
+    ALLBEST(b).binwise_data = ALLBEST(b).binwise_data(decodeClasses);
+    ALLBEST(b).bindesc = ALLBEST(b).bindesc(decodeClasses);
+    ALLBEST(b).original_bin = ALLBEST(b).original_bin(decodeClasses);
+    ALLBEST(b).n_trials_per_bin = ALLBEST(b).n_trials_per_bin(decodeClasses);
+    ALLBEST(b).nbin = numel(decodeClasses);
+
+    
 end
 
-%% logic for choosing the classes and chance prior to equalizing trials
-if ~isempty(decodeClasses)
-   finalClasses = struct();
-   nbins;
-   %ALLBEST(b).binwise_data(i).data;
-end
 
 
 
@@ -621,8 +628,12 @@ elseif strcmpi(equalize_trials,'floor')
     %use common floor_value
     for s = 1:nsubs
         
-        %check floor value validity 
-        test_val = floor(min(ALLBEST(s).n_trials_per_bin)/nCrossblocks);
+        %check floor value validity
+        if strcmpi(smethod,'SVM')
+            test_val = floor(min(ALLBEST(s).n_trials_per_bin)/nCrossblocks);
+        else
+            test_val = min(ALLBEST(s).n_trials_per_bin);
+        end
         
         if floor_value > test_val
             msgboxTest = sprintf('You selected an invalid floor %i. The value exceeds the max the number of trials within cross-validation blocks',floor_value);
@@ -643,8 +654,11 @@ elseif strcmpi(equalize_trials,'floor')
         
         
         for tr = 1:nbins
-               
-            ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks;
+             if strcmpi(smethod,'SVM')   
+                ALLBEST(s).n_trials_per_bin(tr) = floor_value * nCrossblocks;
+             else
+                ALLBEST(s).n_trials_per_bin(tr) = floor_value; %crossnobis
+             end
         end
     end
     
@@ -653,14 +667,14 @@ elseif strcmpi(equalize_trials,'floor')
     
     
 else
-
-    fprintf('\n%s\n', repmat('*',1,60));
-    fprintf('WARNING: You have disabled the option for equating the number of trials across classes. \n');
-    fprintf('WARNING: This is almost always a very bad idea.  \n');
-    fprintf('WARNING: Disabling this option will almost certainly artificially inflate the decoding accuracy, creating bogus effects.  \n'); 
-    fprintf('WARNING:In addition, you should report that you disabled it in your Method section, which will likely cause your paper to be rejected  \n'); 
-    fprintf('%s\n\n', repmat('*',1,60));
-
+    if strcmpi(smethod,'SVM')
+        fprintf('\n%s\n', repmat('*',1,60));
+        fprintf('WARNING: You have disabled the option for equating the number of trials across classes. \n');
+        fprintf('WARNING: This is almost always a very bad idea.  \n');
+        fprintf('WARNING: Disabling this option will almost certainly artificially inflate the decoding accuracy, creating bogus effects.  \n');
+        fprintf('WARNING:In addition, you should report that you disabled it in your Method section, which will likely cause your paper to be rejected  \n');
+        fprintf('%s\n\n', repmat('*',1,60));
+    end
 end
 
 
