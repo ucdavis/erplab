@@ -75,8 +75,8 @@
 %
 % EXAMPLE  :
 %
-% EEG  = pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep',  100 );
-%
+% MVPC = pop_decoding( BEST , 'Channels', [ 1:27], 'classcoding', 'OneVsAll', 'Classes', [ 7 8], 'Decode_Every_Npoint',...
+%    [ 1], 'DecodeTimes', [ -500 1496], 'EqualizeTrials', 'best', 'Method', 'SVM', 'nCrossblocks', [ 3], 'nIter', [ 10] );
 % See also;  [pop_artblink]
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -380,6 +380,11 @@ strcoding = p.Results.classcoding;
 % pathname_out = p.Results.path_out; 
 sParCompute = p.Results.ParCompute; 
 
+
+%if user is scripting command
+if isempty(decodeClasses) 
+    decodeClasses = 1:numel(ALLBEST(idx_bestset(1)).binwise_data);  
+end
 
 %history
 if strcmpi(p.Results.History,'implicit')

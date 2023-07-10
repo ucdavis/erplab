@@ -155,7 +155,7 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     avg_distance_scores =  squeeze(mean(avg_distance_iter,1)); 
     
     mvpc.average_score = avg_distance_scores;
-    mvpc = avgconfusionCM(mvpc);  
+    mvpc = avgconfusionCM(mvpc, final_xDist);  
     mvpc.stderror = std(avg_distance_iter)/sqrt(size(final_xDist,1)); 
     
     
