@@ -1007,7 +1007,7 @@ end
 if ~isempty(extfig)
     set(fig_gui,'visible','off');
 end
-
+set(fig_gui, 'Renderer', 'painters');%%vector figure
 try
     y_scale_def(1) = min([1.1*y_scale_def(1),1.1*qYScales(1)]);
     y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);

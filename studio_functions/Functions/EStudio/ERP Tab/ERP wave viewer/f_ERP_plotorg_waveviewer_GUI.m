@@ -254,7 +254,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         set(gui_plotorg_waveviewer.rowgap,'HorizontalAlignment','left');
         gui_plotorg_waveviewer.rowgap_auto = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.rowgap_title,'String','Gap (%)',...
             'callback',@rowgapgtpauto,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',rowgapgtpValue,'Enable',rowcolumnEnable); %
-       gui_plotorg_waveviewer.rowgap_auto.KeyPressFcn = @plotorg_presskey;
+        gui_plotorg_waveviewer.rowgap_auto.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.rowgapGTPcustom = uicontrol('Style','edit','Parent', gui_plotorg_waveviewer.rowgap_title,'String',RowGTPStr,...
             'callback',@rowgapgtpcustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',RowgapgtpEnable); %
         gui_plotorg_waveviewer.rowgapGTPcustom.KeyPressFcn = @plotorg_presskey;
@@ -274,7 +274,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         uiextras.Empty('Parent',gui_plotorg_waveviewer.rowgapcustom_title);
         gui_plotorg_waveviewer.rowoverlap = uicontrol('Style','radiobutton','Parent', gui_plotorg_waveviewer.rowgapcustom_title,'String','Overlap (%)',...
             'callback',@rowoverlap, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Enable',rowcolumnEnable,'Value',~rowgapgtpValue); %
-       gui_plotorg_waveviewer.rowoverlap.KeyPressFcn = @plotorg_presskey;
+        gui_plotorg_waveviewer.rowoverlap.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.rowgapoverlayedit = uicontrol('Style','edit','Parent', gui_plotorg_waveviewer.rowgapcustom_title,'String',RowoverlayStr,...
             'callback',@rowoverlapcustom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',RowgapOVERLAPEnable); %
         gui_plotorg_waveviewer.rowgapoverlayedit.KeyPressFcn = @plotorg_presskey;
@@ -2843,6 +2843,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress, 'enter')
             plotorg_apply();
+            estudioworkingmemory('MyViewer_plotorg',0);
+            gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
         else
             return;
         end

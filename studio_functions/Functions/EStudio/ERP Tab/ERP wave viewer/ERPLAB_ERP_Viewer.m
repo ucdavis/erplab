@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022 & 2023
 
 % ERPLAB Studio Toolbox
 %
@@ -73,6 +73,20 @@ if iserpmem==0
     p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
     save(fullfile(p1,'memoryerpstudiopanels.erpm'),'ERPtooltype')
 end
+
+
+
+if exist('memoryerpstudio.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('o_ERPDAT');
+    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+    save(fullfile(p1,'memoryerpstudio.erpm'),'ERPtooltype')
+end
+
 
 if nargin<1
     beep;
@@ -312,24 +326,21 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
         new_pos= estudioworkingmemory('ERPWaveScreenPos');
         if isempty(new_pos)
-            try
-                ScreenPos =  get( groot, 'Screensize' );
-            catch
-                ScreenPos =  get( 0, 'Screensize' );
-            end
-            if ~isempty(ScreenPos)
-                new_pos(1:2) = [1 1];
-                new_pos(3:4) = ScreenPos(3:4)*3/4;
-            else
-                new_pos = [1 1 1000 600];
-            end
+            new_pos = [0.01,0.01,75,75];
             estudioworkingmemory('ERPWaveScreenPos',new_pos);
         end
+        try
+            ScreenPos =  get( groot, 'Screensize' );
+        catch
+            ScreenPos =  get( 0, 'Screensize' );
+        end
+        gui_erp_waviewer.screen_pos = new_pos;
+        new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
         set(gui_erp_waviewer.Window, 'Position', new_pos);
         
         % + View menu
         gui_erp_waviewer.exit = uimenu( gui_erp_waviewer.Window, 'Label','Exit', 'Callback', @onExit);
-        gui_erp_waviewer.screen_pos = new_pos;
+        
         gui_erp_waviewer.help = uimenu( gui_erp_waviewer.Window, 'Label', 'Help', 'Callback', @onhelp);
         
         %%-----------Setting------------------------------------------------
@@ -409,7 +420,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         %% + Create the view
         p = gui_erp_waviewer.ViewContainer;
         gui_erp_waviewer.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorBviewer_def);
-        
         gui_erp_waviewer.Resize=1;
     end % createInterface_ERPWave_viewer
 
@@ -458,7 +468,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
 
 %%-------------Help for my Viewer------------------------------------------
     function onhelp(~,~)
-        
         
     end
 

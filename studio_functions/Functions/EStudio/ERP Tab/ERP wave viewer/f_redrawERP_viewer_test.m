@@ -34,6 +34,21 @@ catch
     return;
 end
 
+%%save figure size:width and height
+try
+    ScreenPos =  get( groot, 'Screensize' );
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+FigOutposition = gui_erp_waviewer.ViewBox.OuterPosition(3:4);
+FigOutposition(1) = 100*FigOutposition(1)/ScreenPos(3);
+FigOutposition(2) = 100*FigOutposition(2)/ScreenPos(4);
+ERPwaviewer.FigOutpos=FigOutposition;
+assignin('base','ALLERPwaviewer',ERPwaviewer);
+
+
+
+
 % We first clear the existing axes ready to build a new one
 if ishandle( gui_erp_waviewer.ViewAxes )
     delete( gui_erp_waviewer.ViewAxes );
@@ -225,9 +240,7 @@ if isempty(OutputViewerpar)
     disp('Please restart EStudio Wave Viewer');
     return;
 end
-FigOutposition = gui_erp_waviewer.ViewBox.OuterPosition(3:4);
-ERPwaviewer.FigOutpos=FigOutposition;
-assignin('base','ALLERPwaviewer',ERPwaviewer);
+
 f_plotviewerwave(OutputViewerpar{1},OutputViewerpar{2}, OutputViewerpar{3},OutputViewerpar{4},OutputViewerpar{5},OutputViewerpar{6},OutputViewerpar{9},OutputViewerpar{8},OutputViewerpar{10},OutputViewerpar{11},...
     OutputViewerpar{12},OutputViewerpar{13},OutputViewerpar{14},OutputViewerpar{15},OutputViewerpar{16},OutputViewerpar{17},OutputViewerpar{18},OutputViewerpar{19},OutputViewerpar{20},OutputViewerpar{21},OutputViewerpar{22},...
     OutputViewerpar{23},OutputViewerpar{24},OutputViewerpar{25},OutputViewerpar{26},OutputViewerpar{27},OutputViewerpar{28},OutputViewerpar{29},OutputViewerpar{31},OutputViewerpar{30},OutputViewerpar{32},OutputViewerpar{33},...
@@ -436,8 +449,6 @@ try
 catch
     viewer_ERPDAT.Process_messg =3;
 end
-
-
 end
 
 
@@ -547,6 +558,10 @@ end
 %%Reset each panel that using the default parameters
 function Panel_Reset(~,~)
 global viewer_ERPDAT;
+
+
+estudioworkingmemory('MERPWaveViewer_label',[]);
+estudioworkingmemory('MERPWaveViewer_others',[]);
 
 MessageViewer= char(strcat('Reset'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -665,7 +680,7 @@ elseif viewer_ERPDAT.Process_messg ==3
     gui_erp_waviewer.Process_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0 0];
 else
-    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',Processed_Method,'(see Command Window).');
+    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',32,Processed_Method,'.');
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
@@ -1924,7 +1939,7 @@ for Numofrows = 1:Numrows
         try
             if 2<Numcolumns && Numcolumns<5
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
-            elseif Numcolumns==1 
+            elseif Numcolumns==1
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
             elseif Numcolumns==2
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);

@@ -138,8 +138,8 @@ elseif  GridLayoutop==0
                         catch
                             GridposArray(Numofrows,Numofcolumns) =0;
                         end
-%                     elseif IA == length(columFormat) %%%If the element is 'None'
-%                         GridposArray(Numofrows,Numofcolumns)   = 0;
+                        %                     elseif IA == length(columFormat) %%%If the element is 'None'
+                        %                         GridposArray(Numofrows,Numofcolumns)   = 0;
                     end
                 else
                     GridposArray(Numofrows,Numofcolumns)   = 0;
@@ -684,12 +684,17 @@ end
 plotArrayStr = '';
 plotArrayStr = plotArrayStr_tr;
 
-
+try
+    ScreenPos =  get( groot, 'Screensize' );
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
 FigOutpos = [];
 try
-FigOutpos=ERPwaviewerIN.FigOutpos;
+    FigOutpos=ERPwaviewerIN.FigOutpos;
+    FigOutpos = [ScreenPos(3)*FigOutpos(1)/100,ScreenPos(4)*FigOutpos(2)/100];
 catch
-
+    FigOutpos = ScreenPos(3:4)*3/4;
 end
 
 
@@ -704,7 +709,7 @@ if ~isempty(FigureName)
         'YScales',Yscales,'Yticks',Yticks,'Yticklabel',yticklabel,'Ylabelfont',YlabelFont,'Ylabelfontsize',YlabelFontsize,...
         'Ylabelcolor',ylabelFontcolor,'Yunits',yunits,'MinorTicksY',MinorticksY,'LegtextColor',TextcolorLeg,'Legcolumns',Legcolumns,...
         'FigureName',FigureName,'FigbgColor',figbgdColor,'Labelcolor',CBETcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdispFlag,...
-'FigOutpos',FigOutpos,'History', History);%
+        'FigOutpos',FigOutpos,'History', History);%
 else
     OutputViewerpar{1} =  ALLERPIN;
     OutputViewerpar{2} =  PagesIndex;
