@@ -748,7 +748,7 @@ end
 
 if method == 2 
     %crossfolds don't matter in crossnobis
-     skipfields = [skipfields 'ALLBEST' 'BESTindex' 'nCrossblocks']; % SL
+     skipfields = [skipfields 'ALLBEST' 'nCrossblocks']; % SL
 end
 
 
@@ -812,26 +812,6 @@ bestcom = sprintf( '%s );', bestcom);
 
 
 
-%if saveas == 0, use pop_decoding per subject to output 1 MVPC file (even
-%though pop_decoding has the ability to do multiple decodings at one time (do through GUI). 
-if issaveas == 1
-  [MVPC,issave]  = pop_savemymvpc(MVPC,'ALLMVPC',ALLMVPC,'gui','erplab'); 
-  %since argument is 'erplab', will save as specified in MVPC fields, and
-  %update MVPC menu accordingly. 
-  if issave > 0 
-      if issave == 2 
-           msgwrng = '*** Your MVPCset was saved on your hard drive.***';
-      else
-           msgwrng = '*** Warning: Your MVPCset was only saved on the workspace.***';
-      end
-  else
-    msgwrng = 'ERPLAB Warning: Your changes were not saved';
-  end
-  
-    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
-end
-
-
 switch shist
     case 1 % from GUI
         % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
@@ -852,7 +832,24 @@ switch shist
 end
 
 
-
+%if saveas == 0, use pop_decoding per subject to output 1 MVPC file (even
+%though pop_decoding has the ability to do multiple decodings at one time (do through GUI). 
+if issaveas == 1
+  [MVPC,issave]  = pop_savemymvpc(MVPC,'ALLMVPC',ALLMVPC,'gui','erplab','History','erplab'); 
+  %since argument is 'erplab', will save as specified in MVPC fields, and
+  %update MVPC menu accordingly. 
+  if issave > 0 
+      if issave == 2 
+           msgwrng = '*** Your MVPCset was saved on your hard drive.***';
+      else
+           msgwrng = '*** Warning: Your MVPCset was only saved on the workspace.***';
+      end
+  else
+    msgwrng = 'ERPLAB Warning: Your changes were not saved';
+  end
+  
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+end
 
 
 

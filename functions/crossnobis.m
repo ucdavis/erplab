@@ -65,6 +65,23 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     % obtain timepoints of interest (resample)
     % (NChan x nTP x nTrials(ideally randomized) x Nlabels)
     
+    for b = 1:numel(nPerBin)
+        ntrial = size(eegs(b).data,3); 
+        shuff_list = randperm(ntrial); 
+        
+        %so we always allow the specified number of trials per bin
+        %(nPerBin) by choosing from a (potentially) larger set of trials
+        %within the bin
+        
+        idx_list = shuff_list(1:nPerBin(b)); 
+        
+        indexed_data = eegs(b).data(:,:,idx_list);
+        eegs(b).data = indexed_data; 
+    
+    end
+    
+    
+    
     xdata = cat(3, eegs.data); %pronounced "cross-data"
     xdata = xdata(:,tois,:); %resampled data
     
@@ -76,7 +93,7 @@ for s = 1:nSubs %crossnobis is performed within each subject independently
     for iter = 1:nIter
         fprintf('Subject: %s, Iteration: %i / %i \n', sn, iter, nIter);
         parfor (nTp = 1:nSamps,ParWorkers)
-            
+           
             % structs to hold shuffled data
             a_full_bin_label= struct();
             b_full_bin_label= struct();

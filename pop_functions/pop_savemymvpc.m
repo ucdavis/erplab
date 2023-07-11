@@ -85,7 +85,8 @@ p.addParamValue('filepath', '', @ischar);
 p.addParamValue('gui','no',@ischar); % or 'save', or 'saveas', or 'erplab'
 p.addParamValue('overwriteatmenu','no',@ischar); 
 p.addParamValue('Warning','on',@ischar); % on/off warning for existing file
-p.addParamValue('modegui',1,@isnumeric); 
+p.addParamValue('modegui',1,@isnumeric);
+p.addParamValue('History','script',@ischar); 
 
 
 p.parse(MVPC,varargin{:}); 
@@ -123,6 +124,17 @@ else
     warnop = 0;
 end
 
+if strcmpi(p.Results.History,'implicit')
+    shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+    shist = 2; % script
+elseif strcmpi(p.Results.History,'erplab')
+    shist = 1; % gui
+else
+    shist = 0; % off
+end
+
+
 if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset 
 
     if overw == 0 
@@ -131,10 +143,10 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset
        %Use ALLMVPC rather than MVPC since could be multiple saves
        
        filename = {ALLMVPC.filename};
-       filepath = {ALLMVPC.filepath}; 
+       filepathx = {ALLMVPC.filepath}; 
        
        if ~isempty([ALLMVPC(:).filename]) && ~isempty([ALLMVPC(:).filepath])
-            fullfilename = strcat(filepath(:),filesep,filename(:));
+            fullfilename = strcat(filepathx(:),filesep,filename(:));
        else
            fullfilename = '';
        end
@@ -213,7 +225,7 @@ elseif strcmpi(p.Results.gui,'saveas')
     end
     overw = 1; 
     modegui = 2;
-
+    shist = 1; % gui
 else
     overw = 0;
     modegui = 3; %savefrom script
@@ -233,7 +245,7 @@ end
 if modegui == 0 
     % "save-as" fullfilepath already been gathered from multifilesave erplab GUI
     if ~isempty(fullfilename)
-        [MVPC,serror] = savemvpc(ALLMVPC, fullfilename, 0, warnop);
+        [MVPC,fullfilename,serror] = savemvpc(ALLMVPC, fullfilename, 0, warnop);
         
         issave = 2; %saved on hard drive
         if serror == 1
@@ -251,7 +263,7 @@ elseif modegui == 1 %save directly
 
     if ~isempty(fullfilename)
         %disp(['Saving BESTset at ' fullfilename '...'] )
-        [MVPC, serror] = savemvpc(MVPC, fullfilename, 0, warnop);
+        [MVPC, ~, serror] = savemvpc(MVPC, fullfilename, 0, warnop);
         if serror==1
             return
         end
@@ -264,7 +276,7 @@ elseif modegui == 2
 
 
     %disp(['Saving BESTset at ' fullfilename '...'] )
-    [MVPC, serror] = savemvpc(MVPC, fullfilename, 1);
+    [MVPC, fullfilename, serror] = savemvpc(MVPC, fullfilename, 1);
     if serror==1
         return
     end
@@ -273,7 +285,7 @@ elseif modegui == 2
 elseif modegui == 3  % save from script 
     if ~isempty(fullfilename)
 
-        [MVPC, serror] = savemvpc(MVPC, fullfilename, 0, warnop);
+        [MVPC,~, serror] = savemvpc(MVPC, fullfilename, 0, warnop);
         if serror==1
             return
         end
@@ -298,6 +310,7 @@ if overw==1
     ALLMVPC(CURRENTMVPC) = MVPC;
     assignin('base','ALLERP',ALLMVPC);  % save to workspace
     updatemenumvpc(ALLMVPC,1)            % overwrite erpset at erpsetmenu
+      
     
 else
     if strcmpi(p.Results.gui,'erplab')
@@ -317,10 +330,57 @@ else
     
 end
 
+ 
+if isempty(fullfilename)
+    fname = '';
+    pname = '';
+else
+    [pname, fname, ext] = fileparts(fullfilename);
+end
+ext = '.mvpc';
+fname = [fname ext];
+mvpccom = sprintf('%s = pop_savemymvpc(%s', inputname(1), inputname(1));
+if ~isempty(mvpcname)
+    mvpccom = sprintf('%s, ''mvpcname'', ''%s''', mvpccom, mvpcname);
+end
+if ~isempty(fname)
+    mvpccom = sprintf('%s, ''filename'', ''%s''', mvpccom, fname);
+end
+if ~isempty(filepathx)
+    mvpccom = sprintf('%s, ''filepath'', ''%s''', mvpccom, pname);
+    if warnop==1
+        mvpccom = sprintf('%s, ''Warning'', ''on''', mvpccom);
+    end
+end
+mvpccom = sprintf('%s);', mvpccom);
+
+%
+% Completion statement
+%
+prefunc = dbstack;
+nf = length(unique_bc2({prefunc.name}));
+if nf==1
+        msg2end
+end
+% get history from script. ERP
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(mvpccom);
+        case 2 % from script
+                %ERP = erphistory(ERP, [], erpcom, 1);
+        case 3 % implicit
+                % just using erpcom
+        otherwise %off or none
+                mvpccom = '';
+                return
+end
+
+
+
 %only output the last MVPC set
 MVPC = MVPC(end); 
 
-end
+return
 
 
 

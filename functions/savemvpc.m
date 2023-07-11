@@ -1,4 +1,4 @@
-function [MVPC, serror] = savemvpc(MVPC,filenamex,modegui,warnop)
+function [MVPC, filenamex, serror] = savemvpc(MVPC,filenamex,modegui,warnop)
 
 serror  = 0; 
 
