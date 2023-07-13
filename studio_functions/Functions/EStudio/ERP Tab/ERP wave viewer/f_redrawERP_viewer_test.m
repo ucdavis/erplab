@@ -15,10 +15,7 @@ function f_redrawERP_viewer_test()
 global viewer_ERPDAT;
 global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'v_messg_change',@V_messg_change);
-
-
 FonsizeDefault = f_get_default_fontsize();
-
 
 if nargin>1
     help f_redrawERP_viewer;
@@ -45,10 +42,13 @@ FigOutposition(1) = 100*FigOutposition(1)/ScreenPos(3);
 FigOutposition(2) = 100*FigOutposition(2)/ScreenPos(4);
 ERPwaviewer.FigOutpos=FigOutposition;
 assignin('base','ALLERPwaviewer',ERPwaviewer);
-
-
-
-
+try
+    gui_erp_waviewer.ScrollVerticalOffsets = gui_erp_waviewer.ViewAxes.VerticalOffsets/gui_erp_waviewer.ViewAxes.Heights;
+    gui_erp_waviewer.ScrollHorizontalOffsets = gui_erp_waviewer.ViewAxes.HorizontalOffsets/gui_erp_waviewer.ViewAxes.Widths;
+catch
+    gui_erp_waviewer.ScrollVerticalOffsets=0;
+    gui_erp_waviewer.ScrollHorizontalOffsets=0;
+end
 % We first clear the existing axes ready to build a new one
 if ishandle( gui_erp_waviewer.ViewAxes )
     delete( gui_erp_waviewer.ViewAxes );
@@ -78,6 +78,7 @@ else
         zoomSpace =0;
     end
 end
+
 pb_height = 1*Res(4);
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;%%Get background color
@@ -137,6 +138,7 @@ uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','
 % gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
 gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
 
+
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
@@ -190,6 +192,7 @@ gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_bo
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
 % end
 
+
 if pageNum ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -241,6 +244,8 @@ if isempty(OutputViewerpar)
     return;
 end
 
+
+%%Plot the waves
 f_plotviewerwave(OutputViewerpar{1},OutputViewerpar{2}, OutputViewerpar{3},OutputViewerpar{4},OutputViewerpar{5},OutputViewerpar{6},OutputViewerpar{9},OutputViewerpar{8},OutputViewerpar{10},OutputViewerpar{11},...
     OutputViewerpar{12},OutputViewerpar{13},OutputViewerpar{14},OutputViewerpar{15},OutputViewerpar{16},OutputViewerpar{17},OutputViewerpar{18},OutputViewerpar{19},OutputViewerpar{20},OutputViewerpar{21},OutputViewerpar{22},...
     OutputViewerpar{23},OutputViewerpar{24},OutputViewerpar{25},OutputViewerpar{26},OutputViewerpar{27},OutputViewerpar{28},OutputViewerpar{29},OutputViewerpar{31},OutputViewerpar{30},OutputViewerpar{32},OutputViewerpar{33},...
@@ -272,8 +277,29 @@ else
     
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
-% gui_erp_waviewer.Resize =1;
+
+
+
+%%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
+if zoomSpace~=0 && zoomSpace>0
+    if gui_erp_waviewer.ScrollVerticalOffsets<=1
+        try
+            gui_erp_waviewer.ViewAxes.VerticalOffsets= gui_erp_waviewer.ScrollVerticalOffsets*gui_erp_waviewer.ViewAxes.Heights;
+        catch
+        end
+    end
+    if gui_erp_waviewer.ScrollHorizontalOffsets<=1
+        try
+            gui_erp_waviewer.ViewAxes.HorizontalOffsets =gui_erp_waviewer.ScrollHorizontalOffsets*gui_erp_waviewer.ViewAxes.Widths;
+        catch
+        end
+    end
+end
+% gui_erp_waviewer.ViewAxes.BackgroundColor = 'b';
 end % redrawDemo
+
+
+
 
 
 
@@ -558,7 +584,7 @@ end
 %%Reset each panel that using the default parameters
 function Panel_Reset(~,~)
 global viewer_ERPDAT;
-
+global gui_erp_waviewer
 
 estudioworkingmemory('MERPWaveViewer_label',[]);
 estudioworkingmemory('MERPWaveViewer_others',[]);
@@ -575,6 +601,18 @@ try
 catch
     viewer_ERPDAT.Process_messg =3;
 end
+
+%%Reset the window size and position
+new_pos = [0.01,0.01,75,75];
+erpworkingmemory('ERPWaveScreenPos',new_pos);
+try
+    ScreenPos =  get( groot, 'Screensize' );
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+gui_erp_waviewer.screen_pos = new_pos;
+new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+set(gui_erp_waviewer.Window, 'Position', new_pos);
 
 end
 

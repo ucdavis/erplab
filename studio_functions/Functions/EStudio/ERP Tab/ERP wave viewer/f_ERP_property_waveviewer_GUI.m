@@ -82,7 +82,7 @@ varargout{1} = box_erpwave_viewer_property;
         New_pos = gui_erp_waviewer.screen_pos;
         if isempty(New_pos)
             New_pos = [0.01,0.01,75,75];
-            estudioworkingmemory('ERPWaveScreenPos',New_pos);
+            erpworkingmemory('ERPWaveScreenPos',New_pos);
         end
         
         New_pos = roundn(New_pos,-3);
@@ -93,9 +93,9 @@ varargout{1} = box_erpwave_viewer_property;
         gui_property_waveviewer.viewer_pos_title1 = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title1,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
-        uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(x, y, width, height) in %',...
+        uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(left bottom width height) in %',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
-        set(gui_property_waveviewer.viewer_pos_title1, 'Sizes',[70 165]);
+        set(gui_property_waveviewer.viewer_pos_title1, 'Sizes',[68 165]);
         
         set(gui_property_waveviewer.DataSelBox ,'Sizes',[30 25 25 25])
     end
@@ -358,7 +358,7 @@ varargout{1} = box_erpwave_viewer_property;
             return;
         end
         
-        estudioworkingmemory('ERPWaveScreenPos',New_pos);
+        erpworkingmemory('ERPWaveScreenPos',New_pos);
         gui_erp_waviewer.screen_pos = New_pos;
         
         New_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
@@ -381,7 +381,7 @@ varargout{1} = box_erpwave_viewer_property;
         New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
         New_pos = roundn(New_pos,-3);
         gui_property_waveviewer.parameters_pos.String = num2str(New_pos);
-        %         estudioworkingmemory('ERPWaveScreenPos',New_pos);
+        %         erpworkingmemory('ERPWaveScreenPos',New_pos);
         gui_erp_waviewer.screen_pos = New_pos;
     end
 end

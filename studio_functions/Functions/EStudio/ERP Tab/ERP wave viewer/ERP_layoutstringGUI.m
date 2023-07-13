@@ -44,6 +44,8 @@ try
 catch
     plotBox = plotBoxdef;
 end
+
+
 Numrows = plotBox(1);
 Numcolumns = plotBox(2);
 % GridinforDatadef = cell(Numrows,Numcolumns);

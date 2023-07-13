@@ -92,9 +92,9 @@ elseif overw==0 || overw==-1
             assignin('base','CURRENTERP', 0);  % save to workspace
             set(erpmenu, 'enable', 'off');
             %%changed by GH Apr 2023
-            observe_ERPDAT.ALLERP = [];
-            observe_ERPDAT.Two_GUI = 1;
-            cprintf('red',['\n ERP Wave Viewer will be closed because ALLERP is empty.\n\n']);
+%             observe_ERPDAT.ALLERP = [];
+%             observe_ERPDAT.Two_GUI = 1;
+%             cprintf('red',['\n ERP Wave Viewer will be closed because ALLERP is empty.\n\n']);
             %%change end
             
             return
@@ -150,19 +150,19 @@ end
 
 
 %%changed GZ Mar. 2023
-CURRENTERP = maxindexerp;
-if ~isempty(ALLERP)%%if
-    observe_ERPDAT.ALLERP =ALLERP;
-    if isempty(CURRENTERP) || CURRENTERP<=0 || CURRENTERP> length(ALLERP)
-        CURRENTERP= length(ALLERP);
-    end
-    observe_ERPDAT.CURRENTERP = CURRENTERP;
-    observe_ERPDAT.ERP = ALLERP(CURRENTERP);
-    observe_ERPDAT.Two_GUI = 1;
-else
-    observe_ERPDAT.ALLERP = [];
-    observe_ERPDAT.Two_GUI = 1;
-end
+% CURRENTERP = maxindexerp;
+% if ~isempty(ALLERP)%%if
+%     observe_ERPDAT.ALLERP =ALLERP;
+%     if isempty(CURRENTERP) || CURRENTERP<=0 || CURRENTERP> length(ALLERP)
+%         CURRENTERP= length(ALLERP);
+%     end
+%     observe_ERPDAT.CURRENTERP = CURRENTERP;
+%     observe_ERPDAT.ERP = ALLERP(CURRENTERP);
+%     observe_ERPDAT.Two_GUI = 1;
+% else
+%     observe_ERPDAT.ALLERP = [];
+%     observe_ERPDAT.Two_GUI = 1;
+% end
 end
 
 

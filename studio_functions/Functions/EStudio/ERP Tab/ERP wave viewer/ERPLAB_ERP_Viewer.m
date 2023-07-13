@@ -220,7 +220,6 @@ ERPwaviewer.CURRENTERP =selectedERP_index(end);
 ERPwaviewer.SelectERPIdx =selectedERP_index;
 ERPwaviewer.bin = binArray;
 ERPwaviewer.chan = chanArray;
-ERPwaviewer.erp_binchan_op = 1;%% 1. Auto; 2.Custom
 ERPwaviewer.binchan_op = 1;%% 1. Auto; 2.Custom
 
 ERPwaviewer.plot_org.Grid = 1; %1.Channels; 2.Bins; 3. ERPsets; 4. None
@@ -324,10 +323,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             'HandleVisibility', 'off', 'tag', 'rollover');
         ScreenPos = [];
         
-        new_pos= estudioworkingmemory('ERPWaveScreenPos');
+        new_pos= erpworkingmemory('ERPWaveScreenPos');
         if isempty(new_pos)
             new_pos = [0.01,0.01,75,75];
-            estudioworkingmemory('ERPWaveScreenPos',new_pos);
+            erpworkingmemory('ERPWaveScreenPos',new_pos);
         end
         try
             ScreenPos =  get( groot, 'Screensize' );
@@ -368,7 +367,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         
         % + Create the settings window panels for ERP panel
         gui_erp_waviewer.panel{1} = f_ERPsets_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(1) = 280;
+        gui_erp_waviewer.panelSizes(1) = 255;
         
         gui_erp_waviewer.panel{2} = f_ERP_Binchan_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(2) = 280;
@@ -377,13 +376,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         gui_erp_waviewer.panelSizes(3) = 490;
         
         gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(4) = 385;
+        gui_erp_waviewer.panelSizes(4) = 410;
         
         gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(5) = 200;
         
         gui_erp_waviewer.panel{6} = f_ERP_lineset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(6) = 555;
+        gui_erp_waviewer.panelSizes(6) = 575;
         
         gui_erp_waviewer.panel{7} = f_ERP_otherset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(7) = 225;
@@ -403,7 +402,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         set( gui_erp_waviewer.panel{6}, 'MinimizeFcn', {@nMinimize, 6});
         set( gui_erp_waviewer.panel{7}, 'MinimizeFcn', {@nMinimize, 7});
         set( gui_erp_waviewer.panel{8}, 'MinimizeFcn', {@nMinimize, 8});
-        whichpanel = [4:8];
+        whichpanel = [3:8];
         for Numofpanel = 1:length(whichpanel)
             minned = gui_erp_waviewer.panel{whichpanel(Numofpanel)}.IsMinimized;
             szs = get( gui_erp_waviewer.settingLayout, 'Sizes' );
@@ -475,7 +474,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
 %     function WAviewerResize(~,~)
 %         if gui_erp_waviewer.Resize ~= 0
 %             new_pos = gui_erp_waviewer.Window.Position;
-%             estudioworkingmemory('ERPWaveScreenPos',new_pos);
+%             erpworkingmemory('ERPWaveScreenPos',new_pos);
 %             gui_erp_waviewer.screen_pos = new_pos;
 % %             set(gui_erp_waviewer.Window, 'Position', new_pos);
 %             f_redrawERP_viewer_test();

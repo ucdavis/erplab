@@ -58,7 +58,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         gui_otherset_waveviewer.DataSelBox = uiextras.VBox('Parent', box_erplabelset_viewer_otherset,'BackgroundColor',ColorBviewer_def);
         %%----------Polarity Setting---------------------------------------
-        MERPWaveViewer_others= estudioworkingmemory('MERPWaveViewer_others');%%call the memery for this panel
+        MERPWaveViewer_others= estudioworkingmemory('MERPWaveViewer_others');%%call the parameters for this panel
         try
             Polaritylabel= MERPWaveViewer_others{1};
         catch
