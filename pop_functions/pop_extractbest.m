@@ -406,24 +406,7 @@ for q=1:length(fn)
 end
 bestcom = sprintf( '%s );', bestcom);
 
-%
-% Save BESTset
-%
 
-if issaveas
-    [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
-    if issave>0
-        if issave==2
-          %  erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
-            msgwrng = '*** Your BESTset was saved on your hard drive.***';
-        else
-            msgwrng = '*** Warning: Your BESTset was only saved on the workspace.***';
-        end
-    else
-        msgwrng = 'ERPLAB Warning: Your changes were not saved';
-    end
-    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
-end
 
 switch shist
     case 1 % from GUI
@@ -442,6 +425,25 @@ switch shist
         % implicit
     otherwise % off or none
         bestcom = '';
+end
+
+%
+% Save BESTset
+%
+
+if issaveas
+    [BEST, issave] = pop_savemybest(BEST,'gui','erplab');
+    if issave>0
+        if issave==2
+          %  erpcom  = sprintf('%s\n%s', erpcom, erpcom_save);
+            msgwrng = '*** Your BESTset was saved on your hard drive.***';
+        else
+            msgwrng = '*** Warning: Your BESTset was only saved on the workspace.***';
+        end
+    else
+        msgwrng = 'ERPLAB Warning: Your changes were not saved';
+    end
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end
 
 

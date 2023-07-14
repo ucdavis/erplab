@@ -434,13 +434,16 @@ if issaveas == 1
        [res] = mvpc_save_multi_file(ALLBEST,1:numel(ALLBEST),''); 
 %             
             if isempty(res)
-                %user pressed cancel
+                disp('User selected cancel'); 
                 return
             end
 
           ALLBEST = res{1};
          % file_out = {ALLBEST.filename}; 
          % file_path = {ALLBEST.filepath}; 
+         
+         %after using the save multple files, 
+         %don't automaticaly assume they want to save
 
 end
 
@@ -738,7 +741,7 @@ fn      = fieldnames(p.Results);
 explica = 0;
 if length(idx_bestset)==1 && idx_bestset(1)==1
     inputvari  = 'BEST'; % Thanks to Felix Bacigalupo for this suggestion. Dic 12, 2011
-    skipfields = [skipfields 'ALLBEST' 'BESTindex']; % SL
+    skipfields = [skipfields 'BESTindex']; % SL
 else
     if length(idx_bestset)==1
         explica   = 1;

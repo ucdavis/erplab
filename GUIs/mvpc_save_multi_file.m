@@ -143,7 +143,7 @@ catch
     varargout{1} = [];
 end
 
-delete(handles.gui_chassis);
+%delete(handles.gui_chassis);
 pause(0.1)
 
 

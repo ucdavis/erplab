@@ -149,6 +149,7 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save MVPCset
             fullfilename = strcat(filepathx(:),filesep,filename(:));
        else
            fullfilename = '';
+           shist = 0; %they did not specify to save to harddisk 
        end
        overw = 0; %no option to overwrite mvpcset
     else

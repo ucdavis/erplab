@@ -77,7 +77,7 @@ for j = 1:nfile
             
             % basic test for data type (for now...)
             if ~strcmpi(pre_dtype, MVPCT.DecodingMethod)
-                msgwrng =  sprintf('MVPCsets #%g and #%g have different type of data (see ERP.datatype)', j-1, j);
+                msgwrng =  sprintf('MVPCsets #%g and #%g have different type of data (see ALLMVPC.datatype)', j-1, j);
                 cprintf([1 0.52 0.2], '%s\n\n', msgwrng);
                 %errorfound(msgboxText, title);
                 %return

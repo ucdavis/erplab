@@ -181,7 +181,7 @@ if strcmpi(p.Results.gui,'erplab') % open GUI to save BESTset
     BEST.saved = 'no'; 
     modegui = 0; % do not open GUI to save
     warnop = 1;
-    shist = 3; %change history to implicit beacuse called from pop_extractbest()
+    shist = 1; %change history to implicit beacuse called from pop_extractbest()
         
 elseif strcmpi(p.Results.gui, 'save') %just save, no ask
     if isempty(BEST.bestname)

@@ -15,12 +15,12 @@ npoints = size(avg_distance_itr,1) ;
 
 %confusion matrix empty
 nconditions = numel(conditions); 
-cf = zeros(npoints,nconditions,nconditions); 
+cf = zeros(nconditions,nconditions,npoints); %same order as in SVM dimensionwise
 
 %index lower square
 for t = 1:npoints
     %upper diagonal then lower diagonal
-    for i = 1:length(Permutations)
+    for i = 1:size(Permutations,1)
         loc = Permutations(i,:);
         x = loc(1);
         y = loc(2);
@@ -31,8 +31,8 @@ for t = 1:npoints
         w = loc_bottom(2); 
         
         %index 
-        cf(t,x,y) = avg_distance_itr(t,i);
-        cf(t,z,w) = avg_distance_itr(t,i);
+        cf(x,y,t) = avg_distance_itr(t,i);
+        cf(z,w,t) = avg_distance_itr(t,i);
     end
     
 

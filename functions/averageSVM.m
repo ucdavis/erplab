@@ -10,6 +10,7 @@ Nruns = Nblock*Nitr;
 %chancelvl = 1/Nclasses; 
 
 DecodingAccuracy = nan(Ntp,Nruns);
+Coded_Predictions = nan(Ntp,Nruns,Nclasses); 
 % We will compute decoding accuracy per subject in DecodingAccuracy,
 % enter DecodingAccuracy into AverageAccuray, then overwrite next subj.
 
@@ -29,14 +30,17 @@ if classcoding == 2 %1vAll
             prediction = squeeze(svmPrediction(tp,r,:));
             Err = TrueAnswer - prediction;
             ACC = mean(Err == 0);
+            coded = Err == 0; 
             DecodingAccuracy(tp,r) = ACC;
+            Coded_Predictions(tp,r,:) = coded; 
             
             
             
         end
     end
     
-    grandAvg = mean(DecodingAccuracy,2); %average across runs
+    grandAvg = mean(DecodingAccuracy,2); %average across runs (i.e. binomial sample estimate or probability of success)
+    qgrandAvg = 1-grandAvg; % (i.e. sample estimate of failure)
     % Perform temporal smoothing (5 point moving avg)
     if smoothing == 1
         smoothed = nan(1,Ntp);
@@ -67,6 +71,10 @@ end
 
 % Save smoothe data
 mvpc.average_score = smoothed; 
-mvpc.stderror = (std(DecodingAccuracy,1,2)/sqrt(Nruns))'; 
+%standard error (assume binomial distribution)
+mvpc.stderror =  sqrt((grandAvg.*qgrandAvg)/(Nblock*Nitr*Nclasses))'; 
+
+% se = sqrt((p*q*Nclasses)/Nruns);
+% mvpc.stderror =  repmat(se,[1,Ntp]);
 
 end
