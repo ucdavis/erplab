@@ -65,7 +65,7 @@ catch
 end
 
 [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
-
+plotArrayStrdef ='';
 plotArray = [];
 if PLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = chanArray;
@@ -677,7 +677,7 @@ PagesIndex = ERPwaviewerIN.PageIndex;
 if isempty(PagesIndex)
     PagesIndex=1;
 end
-
+plotArrayStr_tr ='';
 for ii = 1:length(plotArrayStr)
     plotArrayStr_tr{ii}   = plotArrayStr{ii};
 end

@@ -643,17 +643,17 @@ if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
     end
 else
     if isempty(zoomspaceEdit)
-        fprintf(2,['\n Zoom Editor:The input must be a numeric','.\n']);
+        fprintf(2,['\n Zoom Editor:The input must be a number','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
     if numel(zoomspaceEdit)>1
-        fprintf(2,['\n Zoom Editor:The input must be a single numeric','.\n']);
+        fprintf(2,['\n Zoom Editor:The input must be a single number','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
     if zoomspaceEdit<0
-        fprintf(2,['\n Zoom Editor:The input must be a positive numeric','.\n']);
+        fprintf(2,['\n Zoom Editor:The input must be a positive number','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
@@ -716,9 +716,11 @@ elseif viewer_ERPDAT.Process_messg ==2
     
 elseif viewer_ERPDAT.Process_messg ==3
     gui_erp_waviewer.Process_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
+    fprintf([Processed_Method,datestr(datetime('now')),'\n.']);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0 0];
 else
-    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',32,Processed_Method,'.');
+    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',32,Processed_Method,'(see Command Window).');
+    fprintf([Processed_Method,datestr(datetime('now')),'\n.']);
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
@@ -867,7 +869,7 @@ LineMarkerdef = {'none','none','none','none','+','o','*'};
 LineStyledef = {'-','--',':','-.','-','-','-',};
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ALLERP,[1:length(ALLERP)],qPLOTORG);
 %%%%%%%%%%%%%%%%%%%%--------------------------------------------------------
-
+plotArrayStrdef ='';
 if qPLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = qchanArray;
     for Numofchan = 1:numel(plotArray)
@@ -985,10 +987,18 @@ end
 datresh = squeeze(ERPdatadef(qchanArray,:,qbinArray,qERPArray));
 yymax   = max(datresh(:));
 yymin   = min(datresh(:));
+if ~isempty(yymax) && isempty(yymin)
 if abs(yymax)<1 && abs(yymin)<1
-    scalesdef(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
+    try
+        scalesdef(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
+    catch
+        scalesdef(1:2) = [-1 1];
+    end
 else
     scalesdef(1:2) = [floor(yymin*1.2) ceil(yymax*1.1)]; % JLC. Sept 26, 2012
+end
+else
+  scalesdef(1:2) = [-1 1];  
 end
 yylim_out = f_erpAutoYLim(ALLERP, qERPArray,qPLOTORG,qbinArray, qchanArray,qCURRENTPLOT);
 try
@@ -1472,6 +1482,9 @@ catch
 end
 if isempty( qYScales)
     qYScales = [floor(min(bindata(:))),ceil(max(bindata(:)))];
+end
+if isempty(y_scale_def)
+  y_scale_def = qYScales;  
 end
 if isyaxislabel==1 %% y axis GAP
     if  Ypert<0

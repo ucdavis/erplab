@@ -96,7 +96,7 @@ elseif overw==0 || overw==-1
 %             observe_ERPDAT.Two_GUI = 1;
 %             cprintf('red',['\n ERP Wave Viewer will be closed because ALLERP is empty.\n\n']);
             %%change end
-            
+            erpworkingmemory('ERPLAB_ERPWaviewer',1);
             return
         end
     end
@@ -147,7 +147,7 @@ else
     set(option2, 'enable', 'off');
     set(option3, 'enable', 'off');
 end
-
+erpworkingmemory('ERPLAB_ERPWaviewer',1);
 
 %%changed GZ Mar. 2023
 % CURRENTERP = maxindexerp;

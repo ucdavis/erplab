@@ -20,10 +20,11 @@ global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
+addlistener(viewer_ERPDAT,'ERPset_Chan_bin_label_change',@ERPset_Chan_bin_label_change);
 addlistener(observe_ERPDAT,'Two_GUI_change',@Two_GUI_change);
 ERPwaveview_erpsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
-
+% gui_erp_waviewer.Window.WindowButtonMotionFcn = {@erpselect_refresh};
 try
     [version reldate,ColorBviewer_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
 catch
@@ -140,7 +141,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %-----------------select the ERPset of interest--------------------------
-    function selectdata(source,EventData)
+    function selectdata(~,EventData)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -154,7 +155,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 
 %%---------------Setting for auto option-----------------------------------
     function erpselect_refresh(~,~)
-        
+%         Value = Source.Value;
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -162,14 +163,14 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPtooltype = erpgettoolversion('tooltype');
         
         %%load the parameters from workspace
-         try
+        try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
             viewer_ERPDAT.Process_messg =3;
             fprintf(2,'\n ERPsets > Refresh-f_ERPsets_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
             return;
-         end
-
+        end
+        
         MessageViewer= char(strcat('ERPsets>" Refresh'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -186,7 +187,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                     viewer_ERPDAT.Process_messg =3;
                     return;
                 end
-%                 estudioworkingmemory('PlotOrg_ERPLAB',1);
+                %                 estudioworkingmemory('PlotOrg_ERPLAB',1);
             end
             try
                 ALLERPin = evalin('base','ALLERP');
@@ -276,6 +277,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
         ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+        erpworkingmemory('ERPLAB_ERPWaviewer',0);
         ERPset_apply();
     end
 
@@ -360,7 +362,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             fprintf(2,'\n ERPsets > Cancel-f_ERPsets_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
             return;
         end
-
+        
         ERPwaveview_erpsetops.butttons_datasets.Enable = 'on';
         ALLERPin = ERPwaviewer_apply.ALLERP;
         ERPdatasets = getERPDatasets(ALLERPin); % Get datasets from ALLERP
@@ -435,7 +437,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaviewer_apply.CURRENTERP = CurrentERP;
         ERPwaviewer_apply.ERP = ERPwaviewer_apply.ALLERP(CurrentERP);
         ERPwaviewer_apply.SelectERPIdx = ERPsetArray;
-       ERPtooltype = erpgettoolversion('tooltype');
+        ERPtooltype = erpgettoolversion('tooltype');
         if strcmpi(ERPtooltype,'EStudio')
             Geterpbinchan = estudioworkingmemory('geterpbinchan');
             if ~isempty(Geterpbinchan)
@@ -524,7 +526,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %         if observe_ERPDAT.Two_GUI~=1
 %             return;
 %         end
-%         
+%
 %         if isempty(observe_ERPDAT.ALLERP)
 %             try
 %                 close(gui_erp_waviewer.Window);%%close previous GUI if exists
@@ -555,13 +557,13 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %             errorfound(sprintf(msgboxText), title_msg);
 %             return;
 %         end
-%         
+%
 %         try
 %             ERPAutoValue = ERPwaveview_erpsetops.auto.Value;
 %         catch
 %             return;
 %         end
-%         
+%
 %         if isempty(observe_ERPDAT.ALLERP)
 %             try
 %                 close(gui_erp_waviewer.Window);
@@ -573,7 +575,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %         MessageViewer= char(strcat('Update "ERP wave Viewer"'));
 %         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
 %         viewer_ERPDAT.Process_messg =1;
-%         
+%
 %         %%check ALLERP for EStudio
 %         if strcmpi(ERPtooltype,'EStudio')
 %             if (length(ALLERPStudio)==1&& strcmpi(ALLERPStudio(1).erpname,'No ERPset loaded')) || strcmpi(ALLERPStudio(length(ALLERPStudio)).erpname,'No ERPset loaded')
@@ -603,9 +605,9 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %             end
 %             CURRENTERPStudio = observe_ERPDAT.CURRENTERP;
 %             estudioworkingmemory('PlotOrg_ERPLAB',1);%%This is used to Grid, Overlay, and Pages if "same as ERPLAB"
-%             
+%
 %         end
-%         
+%
 %         %         else
 %         if ERPAutoValue ~=1
 %             ERPArrayStudio = ERPwaviewer_up.SelectERPIdx;
@@ -621,7 +623,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %         if isempty(y_index)
 %             y_index = numel(ERPArrayStudio);
 %         end
-%         
+%
 %         ERPwaviewer_up.ALLERP = ALLERPStudio;
 %         ERPwaviewer_up.ERP = ALLERPStudio(CURRENTERPStudio);
 %         ERPwaviewer_up.CURRENTERP = CURRENTERPStudio;
@@ -641,7 +643,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %                 dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
 %             end
 %         end
-%         
+%
 %         %             ERPwaveview_erpsetops.butttons_datasets.Enable = Enable_label;
 %         ds_length = length(ERPdatasets);
 %         if ds_length<=2
@@ -651,15 +653,15 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 %         end
 %         ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
 %         ERPwaveview_erpsetops.butttons_datasets.Value = ERPArrayStudio;
-%         
+%
 %         if strcmpi(ERPtooltype,'ERPLAB') && ERPAutoValue ==1
 %             ERPwaviewer_up.PageIndex = 1;
 %         end
-%         
+%
 %         assignin('base','ALLERPwaviewer',ERPwaviewer_up);
 %         viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;
 %         f_redrawERP_viewer_test();%%Plot the waves
-%         
+%
 %         MessageViewer= char(strcat('Update "ERP wave Viewer"'));
 %         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
 %         viewer_ERPDAT.Process_messg =2;
@@ -798,6 +800,30 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         end
     end
 
+
+%%change the ERPset indeces when they are changed in Plot organization panel
+    function ERPset_Chan_bin_label_change(~,~)
+        if viewer_ERPDAT.ERPset_Chan_bin_label~=1  %% 1 means ERPset indeces were changed
+            if viewer_ERPDAT.ERPset_Chan_bin_label==2%%Update Viewer based on the change in ERPLAB
+               erpselect_refresh(); 
+            end
+            return;
+        end
+        try
+            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
+        catch
+            viewer_ERPDAT.Process_messg =3;
+            fprintf(2,'\n ERPsets > f_ERPsets_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
+            return;
+        end
+        
+        ERPsetArray = ERPwaviewer_apply.SelectERPIdx;
+        if max(ERPsetArray(:)) <= length(ERPwaveview_erpsetops.butttons_datasets.String)
+            ERPwaveview_erpsetops.butttons_datasets.Value = ERPsetArray;
+        end
+    end
+
+%%execute this panel when press "return" or "Enter"
     function ERPset_keypress(hObject, eventdata)
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')

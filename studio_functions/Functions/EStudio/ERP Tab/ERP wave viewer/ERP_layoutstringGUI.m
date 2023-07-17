@@ -20,16 +20,17 @@ end
 
 %-----------------------------------------------------------------------------------
 function ERP_layoutstringGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+f = waitbar(0.1,'Loading Custtom Grid Layout GUI...');
 handles.output = [];
-
 try
     plotArrayFormt = varargin{1};
 catch
     for ii = 1:100
         plotArrayFormt{ii,1} = ['chan-',num2str(ii)];
+        %  plotArrayFormt{ii,1} = [num2str(ii)];
     end
 end
-
+plotArrayFormtnew =cell(1000000,1);
 for jj = 1:length(plotArrayFormt)
     plotArrayFormtnew(jj,1) = {char(plotArrayFormt{jj})};
 end
@@ -45,7 +46,13 @@ catch
     plotBox = plotBoxdef;
 end
 
-
+try
+    AllabelArray = varargin{4};
+catch
+    AllabelArray =plotArrayFormt;
+end
+handles.AllabelArray = AllabelArray;
+% f = waitbar(0.2,'Loading Custtom Grid Layout GUI...');
 Numrows = plotBox(1);
 Numcolumns = plotBox(2);
 % GridinforDatadef = cell(Numrows,Numcolumns);
@@ -93,12 +100,9 @@ handles.uitable1_layout.ColumnFormat = columFormat;
 handles.uitable1_layout.FontSize = FonsizeDefault;
 handles.uitable1_layout.CellEditCallback = {@MakerLabels,handles};
 
+% f = waitbar(0.7,'Loading Custtom Grid Layout GUI...');
 
-% oldcolor1 = get(0,'DefaultUicontrolBackgroundColor');
-% BackERPLABcolor1 = [0.95 0.95 0.95]; 
-%  set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor1);
-%  handles.defbgc = oldcolor1;
-[plotArrayFormt] = f_MarkLabels_ERP_Waveiwer(GridinforData,plotArrayFormt);
+[plotArrayFormt] = f_MarkLabels_ERP_Waveiwer(GridinforData,plotArrayFormt,AllabelArray);
 handles.listbox_Labels.String  = '';
 handles.listbox_Labels.String = plotArrayFormt;
 %
@@ -117,30 +121,36 @@ handles.listbox_Labels.Value = 1;
 
 handles.text_rownum.String = num2str(Numrows);
 handles.edit1_columnsNum.String = num2str(Numcolumns);
-handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused. Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. Items marked with "*" mean they were selected in main GUI.']);
 
 Data = handles.uitable1_layout.Data;
-LabelStr=handles.plotArrayFormt;
-Data = f_checktable(Data,LabelStr);
+
+Data = f_checktable(Data,AllabelArray);
 try
-    SingleCell = LabelStr{handles.listbox_Labels.Value};
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
 catch
-    SingleCell = LabelStr{1};
+    SingleCell = AllabelArray{1};
 end
 Data = f_add_bgcolor_cell(Data,SingleCell);
 handles.uitable1_layout.Data=Data;
 
+% handles = Datacreate(plotBox,GridinforData,plotArrayFormt,AllabelArray,handles);
+
 %
 % Set font size
 %
- handles = setfonterplab(handles);
+handles = setfonterplab(handles);
 
 % Update handles structure
 
 guidata(hObject, handles);
 
 set(handles.gui_chassis, 'Name', 'Plot Organization > Customize Grid Layout', 'WindowStyle','modal');
-
+waitbar(1,f,'Complete');
+try
+close(f);
+catch   
+end
 % UIWAIT makes ERP_layoutstringGUI wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
 
@@ -170,9 +180,37 @@ uiresume(handles.gui_chassis);
 function pushbutton_ok_Callback(hObject, eventdata, handles)
 handles.text7_message.String = '';
 Data = handles.uitable1_layout.Data;
-LabelStr=handles.plotArrayFormt;
-Data = f_checktable(Data,LabelStr);
-handles.output = Data;
+AllabelArray=handles.AllabelArray;
+Data = f_checktable(Data,AllabelArray);
+
+Labels_used = unique_str(Data);
+if ~isempty(Labels_used)
+    Labels_new ='';
+    count = 0;
+    for ii = 1:length(Labels_used)
+        if ~isempty(Labels_used{ii,1})
+            count = count+1;
+            Labels_new{count,1} = char(Labels_used{ii,1});
+            
+        end
+    end
+    Labels_used = Labels_new;
+end
+
+Labels_usedIndex = [];
+if ~isempty(Labels_used) && ~isempty(AllabelArray)
+    count = 0;
+    for ii = 1:length(AllabelArray)
+        for jj = 1:length(Labels_used)
+            if strcmp(AllabelArray{ii},Labels_used{jj})
+                count = count+1;
+                Labels_usedIndex(count) = ii;
+            end
+        end
+    end
+end
+
+handles.output = {Data,Labels_used,Labels_usedIndex};
 
 % Update handles structure
 guidata(hObject, handles);
@@ -202,38 +240,36 @@ end
 handles.GridinforData = Data;
 handles.uitable1_layout.Data = Data;
 LabelStr=handles.plotArrayFormt;
-[LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr);
+AllabelArray = handles.AllabelArray ;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr,AllabelArray);
 handles.listbox_Labels.String=LabelStr;
 guidata(hObject, handles);
 % uiresume(handles.gui_chassis);
-handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused. Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. Items marked with "*" mean they were selected in main GUI.']);
 guidata(hObject, handles);
 
 
 % --- Executes on selection change in listbox_Labels.
 function listbox_Labels_Callback(hObject, eventdata, handles)
 handles.text7_message.String = '';
-handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused. Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. Items marked with "*" mean they were selected in main GUI.']);
 Data = handles.uitable1_layout.Data;
-LabelStr=handles.plotArrayFormt;
-Data = f_checktable(Data,LabelStr);
+
+AllabelArray = handles.AllabelArray ;
+Data = f_checktable(Data,AllabelArray);
 try
-    SingleCell = LabelStr{handles.listbox_Labels.Value};
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
 catch
-    SingleCell = LabelStr{1};
+    SingleCell = AllabelArray{1};
 end
 Data = f_add_bgcolor_cell(Data,SingleCell);
 handles.uitable1_layout.Data=Data;
 guidata(hObject, handles);
 
+
+
 % --- Executes during object creation, after setting all properties.
 function listbox_Labels_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listbox_Labels (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
@@ -243,18 +279,19 @@ function MakerLabels(~,~, handles)
 Data = handles.uitable1_layout.Data;
 LabelStr=handles.plotArrayFormt;
 %%check the changed labels
-Data = f_checktable(Data,LabelStr);
+AllabelArray = handles.AllabelArray ;
+Data = f_checktable(Data,AllabelArray);
 
 handles.GridinforData = Data;
 handles.uitable1_layout.Data = Data;
-[LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr);
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(Data,LabelStr,AllabelArray);
 handles.listbox_Labels.String=LabelStr;
 Data = handles.GridinforData;
 LabelStr=handles.plotArrayFormt;
 try
-    SingleCell = LabelStr{handles.listbox_Labels.Value};
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
 catch
-    SingleCell = LabelStr{1};
+    SingleCell = AllabelArray{1};
 end
 Data = f_add_bgcolor_cell(Data,SingleCell);
 handles.uitable1_layout.Data=Data;
@@ -282,18 +319,19 @@ handles.uitable1_layout.ColumnName = ColumnName;
 handles.uitable1_layout.RowName = RowName;
 handles.uitable1_layout.ColumnFormat = columFormat;
 LabelStr=handles.plotArrayFormt;
-[LabelStr] = f_MarkLabels_ERP_Waveiwer(GridinforData,LabelStr);
+AllabelArray = handles.AllabelArray ;
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(GridinforData,LabelStr,AllabelArray);
 handles.listbox_Labels.String=LabelStr;
 handles.text_rownum.String = num2str(Numrows);
 handles.edit1_columnsNum.String = num2str(Numcolumns);
-handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused. Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. Items marked with "*" mean they were selected in main GUI.']);
 Data = handles.uitable1_layout.Data;
-LabelStr=handles.plotArrayFormt;
-Data = f_checktable(Data,LabelStr);
+
+Data = f_checktable(Data,AllabelArray);
 try
-    SingleCell = LabelStr{handles.listbox_Labels.Value};
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
 catch
-    SingleCell = LabelStr{1};
+    SingleCell = AllabelArray{1};
 end
 Data = f_add_bgcolor_cell(Data,SingleCell);
 handles.uitable1_layout.Data=Data;
@@ -323,7 +361,7 @@ for ii = 1:size(Data,1)
     end
 end
 
-LabelStr=handles.plotArrayFormt;
+AllabelArray = handles.AllabelArray;
 count1 = 0;
 for Numofrow = 1:RowsNum
     for Numofcolumn = 1:columNum
@@ -331,11 +369,8 @@ for Numofrow = 1:RowsNum
         try
             DataNew{Numofrow,Numofcolumn} = DataOld{count1} ;
         catch
-            try
-                DataNew{Numofrow,Numofcolumn} = char(LabelStr{count1});
-            catch
-                DataNew{Numofrow,Numofcolumn}='';
-            end
+            
+            DataNew{Numofrow,Numofcolumn}='';
         end
     end
 end
@@ -350,16 +385,17 @@ handles.uitable1_layout.ColumnName = ColumnName;
 handles.uitable1_layout.ColumnFormat = columFormat;
 handles.uitable1_layout.Data=DataNew;
 LabelStr=handles.plotArrayFormt;
-DataNew = f_checktable(DataNew,LabelStr);
-[LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr);
+DataNew = f_checktable(DataNew,AllabelArray);
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr,AllabelArray);
 handles.listbox_Labels.String=LabelStr;
-handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused. Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. Items marked with "*" mean they were selected in main GUI.']);
 
 LabelStr=handles.plotArrayFormt;
+
 try
-    SingleCell = LabelStr{handles.listbox_Labels.Value};
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
 catch
-    SingleCell = LabelStr{1};
+    SingleCell = AllabelArray{1};
 end
 Data = f_add_bgcolor_cell(DataNew,SingleCell);
 handles.uitable1_layout.Data=Data;
@@ -399,6 +435,7 @@ for ii = 1:size(Data,1)
 end
 
 LabelStr=handles.plotArrayFormt;
+AllabelArray = handles.AllabelArray;
 count1 = 0;
 for Numofrow = 1:RowsNum
     RowName{1,Numofrow} = char(['R',num2str(Numofrow)]);
@@ -407,11 +444,7 @@ for Numofrow = 1:RowsNum
         try
             DataNew{Numofrow,Numofcolumn} = DataOld{count1} ;
         catch
-            try
-                DataNew{Numofrow,Numofcolumn} = char(LabelStr{count1});
-            catch
-                DataNew{Numofrow,Numofcolumn}='';
-            end
+            DataNew{Numofrow,Numofcolumn}='';
         end
     end
 end
@@ -420,17 +453,18 @@ handles.uitable1_layout.RowName = RowName;
 handles.uitable1_layout.Data = [];
 handles.uitable1_layout.Data=DataNew;
 LabelStr=handles.plotArrayFormt;
-DataNew = f_checktable(DataNew,LabelStr);
-[LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr);
+DataNew = f_checktable(DataNew,AllabelArray);
+[LabelStr] = f_MarkLabels_ERP_Waveiwer(DataNew,LabelStr,AllabelArray);
 handles.listbox_Labels.String=LabelStr;
 
-handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused.\n Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. ']);
+handles.text7_message.String = sprintf([' In the righ panel:\n Items with blue color mean they are unused. Items with red color mean they are repeatedly used.\n Items with black color mean they are used one time. Items marked with "*" mean they were selected in main GUI.']);
 % Data = handles.uitable1_layout.Data;
+ 
 LabelStr=handles.plotArrayFormt;
 try
-    SingleCell = LabelStr{handles.listbox_Labels.Value};
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
 catch
-    SingleCell = LabelStr{1};
+    SingleCell = AllabelArray{1};
 end
 DataNew = f_add_bgcolor_cell(DataNew,SingleCell);
 handles.uitable1_layout.Data=DataNew;
@@ -439,25 +473,42 @@ guidata(hObject, handles);
 
 
 %%Mark the labels with different colors(blue: unused; black:used;  red:Repeated)
-function [LabelStr] = f_MarkLabels_ERP_Waveiwer(Gridata,LabelStr)
+function [LabelStrout] = f_MarkLabels_ERP_Waveiwer(Gridata,LabelStr,AllabelArray)
+usedIndex = zeros(length(AllabelArray),1);
+for jj = 1:length(AllabelArray)
+    for ii = 1:length(LabelStr)
+        if strcmp(AllabelArray{jj},LabelStr{ii})
+            usedIndex(jj) = 1;
+        end
+    end
+end
+
 LabelsFlag = [0 0 0];
-for ii = 1:length(LabelStr)
+for ii = 1:length(AllabelArray)
     code1 = 0;
     for jj = 1:size(Gridata,1)
         for kk = 1:size(Gridata,2)
-            if strcmp(LabelStr{ii},Gridata{jj,kk})
+            if strcmp(AllabelArray{ii},Gridata{jj,kk})
                 code1 = code1+1;
             end
         end
     end
+    
+    if usedIndex(ii)==1%% the item will be marked with * if the labels was selected
+        %         AllabelArray{ii} = strcat(AllabelArray{ii},'*');
+        Numstr = strcat('*',num2str(ii));
+    else
+        Numstr = strcat(num2str(ii));
+    end
+    
     if code1 ==0
-        LabelStr{ii} =  ['<HTML><FONT color="blue">',num2str(ii),'.',32,LabelStr{ii},'</Font></html>'];
+        LabelStrout{ii} =  ['<HTML><FONT color="blue">',Numstr,'.',32,AllabelArray{ii},'</Font></html>'];
         LabelsFlag(1) = 1;
     elseif code1 >1
-        LabelStr{ii} =  ['<HTML><FONT color="red">',num2str(ii),'.',32,LabelStr{ii},'</Font></html>'];
+        LabelStrout{ii} =  ['<HTML><FONT color="red">',Numstr,'.',32,AllabelArray{ii},'</Font></html>'];
         LabelsFlag(3) = 1;
     else
-        LabelStr{ii} =  ['<HTML><FONT color="black">',num2str(ii),'.',32,LabelStr{ii},'</Font></html>'];
+        LabelStrout{ii} =  ['<HTML><FONT color="black">',Numstr,'.',32,AllabelArray{ii},'</Font></html>'];
         LabelsFlag(2) = 1;
     end
 end
@@ -472,11 +523,12 @@ for ii = 1:size(Data,1)
             Data{ii,jj} = colergen(hex_color_here,Data{ii,jj});
         end
     end
-    
 end
 
 
-function Data = f_checktable(Data,LabelStr)
+function [Data, EPStr]= f_checktable(Data,LabelStr)
+countEp = 0;
+EPStr = '';
 for ii = 1:size(Data,1)
     for jj = 1:size(Data,2)
         count = 0;
@@ -484,13 +536,229 @@ for ii = 1:size(Data,1)
             Data1=  strrep(Data{ii,jj},'<html><table border=0 width=400 bgcolor=#FFFF00><TR><TD>','');
             Data1 = strrep(Data1,'</TD></TR> </table>','');
             Data{ii,jj} = char(Data1);
-            if strcmp(LabelStr{kk},Data{ii,jj})
+            if strcmp(strtrim(char(LabelStr{kk})),strtrim(char(Data{ii,jj})))
                 count = count +1;
             end
         end
         if count==0
+            countEp = countEp+1;
+            if countEp==1
+                if ischar(Data{ii,jj})
+                    EPStr = char(Data{ii,jj});
+                elseif isnumeric(Data{ii,jj})
+                    EPStr = num2str(Data{ii,jj});
+                end
+            else
+                if ischar(Data{ii,jj})
+                    EPStr = strcat(EPStr,',',char(Data{ii,jj}));
+                elseif isnumeric(Data{ii,jj})
+                    EPStr = strcat(EPStr,',',num2str(Data{ii,jj}));
+                end
+            end
             Data{ii,jj} = '';
         end
     end
 end
+% if ~isempty(EPStr)
+%     if countEp==1
+%         handles.text7_message.String = sprintf([EPStr,32,'doesnot match with items in the right panel.']);
+%     else
+%         handles.text7_message.String = sprintf([EPStr,32,'donot match with items in the right panel.']);
+%     end
+%     return;
+% end
+
+
+function Labels_used = unique_str(Data)
+
+Labels_used{1,1} = Data{1,1};
+for ii = 1:size(Data,1)
+    for jj = 1:size(Data,2)
+        if ismember_bc2(Data{ii,jj}, Labels_used)
+        else
+            if ~isempty(char(Data{ii,jj}))
+                Labels_used{length(Labels_used)+1,1} = Data{ii,jj};
+            end
+        end
+    end
+end
+
+
+% --- Executes on button press in pushbutton6_import.
+function pushbutton6_import_Callback(hObject, eventdata, handles)
+
+[filename, filepath] = uigetfile('*.txt', ...
+    'Load Gird Layout', ...
+    'MultiSelect', 'off');
+if isequal(filename,0)
+    disp('User selected Cancel');
+    return;
+end
+try
+    DataInput     = importdata([filepath,filename]);
+catch
+    handles.text7_message.String = sprintf(['Cannot import:',filepath,filename]);
+    return;
+end
+if isempty(DataInput)
+    handles.text7_message.String = sprintf(['The file is empty.']);
+    return;
+end
+
+if iscell(DataInput)
+    for ii =1:size(DataInput,1)
+        chanlabels=regexp(DataInput{ii,1},'.*?\s+', 'match');
+        % DataTrans{chanlabels} = chanlabels;
+        DataNum(ii) = length(chanlabels);
+    end
+    for  ii =1:size(DataInput,1)
+        for jj = 1:max(DataNum(:))
+            DataOutput{ii,jj} = '';
+        end
+    end
+    for ii =1:size(DataInput,1)
+        chanlabels=regexp(DataInput{ii,1},'.*?\s+', 'match');
+        for jj = 1:length(chanlabels)
+            if ischar(chanlabels{jj})
+                DataOutput{ii,jj} = strtrim(char(chanlabels{jj}));
+            elseif isnumeric(chanlabels{jj})
+                DataOutput{ii,jj} = num2str(chanlabels{jj});
+            else
+            end
+            
+        end
+    end
+end
+
+if isnumeric(DataInput)
+    for ii = 1:size(DataInput,1)
+        for jj = 1:size(DataInput,2)
+            DataOutput{ii,jj} = num2str(DataInput(ii,jj));
+        end
+    end
+end
+AllabelArray = handles.AllabelArray;
+[Data,EmptyStr] = f_checktable(DataOutput,AllabelArray);
+
+% Labels_used = unique_str(Data);
+%
+% handles.plotArrayFormt = Labels_used;
+try
+    SingleCell = AllabelArray{handles.listbox_Labels.Value};
+catch
+    SingleCell = AllabelArray{1};
+end
+DataNew = f_add_bgcolor_cell(Data,SingleCell);
+
+handles.uitable1_layout.Data = DataNew;
+handles.edit1_columnsNum.String = num2str(size(Data,2));
+handles.text_rownum.String  = num2str(size(Data,1));
+Numcolumns =size(Data,2);
+Numrows = size(Data,1);
+for Numofcolumns = 1:Numcolumns
+    columFormat{Numofcolumns} = 'char';
+    ColumnEditable(Numofcolumns) =1;
+    ColumnName{1,Numofcolumns} = char(['C',num2str(Numofcolumns)]);
+end
+
+for Numofrows = 1:Numrows
+    RowName{1,Numofrows} = char(['R',num2str(Numofrows)]);
+end
+handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
+handles.uitable1_layout.ColumnName = ColumnName;
+handles.uitable1_layout.RowName = RowName;
+handles.uitable1_layout.ColumnFormat = columFormat;
+if  ~strcmp(EmptyStr,',')
+    handles.text7_message.String = sprintf([EmptyStr,32,'do(es)not match with items in the right panel.']);
+end
+
+
+
+% --- Executes on button press in pushbutton8_Export.
+function pushbutton8_Export_Callback(hObject, eventdata, handles)
+
+pathstr = pwd;
+namedef ='GridLayout';
+[erpfilename, erppathname, indxs] = uiputfile({'*.txt'}, ...
+    ['Save Grid Layout as'],...
+    fullfile(pathstr,namedef));
+if isequal(erpfilename,0)
+    disp('User selected Cancel')
+    return
+end
+
+[pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+ext = '.txt';
+erpFilename = char(strcat(erppathname,erpfilename,ext));
+
+AllabelArray = handles.AllabelArray;
+fileID = fopen(erpFilename,'w');
+Data = handles.uitable1_layout.Data;
+Data = f_checktable(Data,AllabelArray);
+[nrows,ncols] = size(Data);
+for ii = 1:nrows
+    for jj = 1:ncols
+        labx =  Data{ii,jj};
+        labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_');
+        Data{ii,jj} = labx;
+    end
+end
+formatSpec ='';
+for jj = 1:ncols
+    formatSpec = strcat(formatSpec,'%s\t',32);
+end
+formatSpec = strcat(formatSpec,'\n');
+
+for row = 1:nrows
+    fprintf(fileID,formatSpec,Data{row,:});
+end
+fclose(fileID);
+
+
+
+
+
+% function handles = Datacreate(plotBox,GridinforData,plotArrayFormt,AllabelArray,handles)
+% Numrows = plotBox(1);
+% Numcolumns =  plotBox(2);
+% FonsizeDefault = f_get_default_fontsize();
+% 
+% % tablePosition = handles.uitable1_layout.Position;
+% for Numofcolumns = 1:Numcolumns
+%     columFormat{Numofcolumns} = 'char';
+%     ColumnEditable(Numofcolumns) =1;
+%     ColumnName{1,Numofcolumns} = char(['C',num2str(Numofcolumns)]);
+% end
+% 
+% for Numofrows = 1:Numrows
+%     RowName{1,Numofrows} = char(['R',num2str(Numofrows)]);
+% end
+% set(handles.uitable1_layout,'Data',GridinforData);
+% handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
+% handles.uitable1_layout.ColumnName = ColumnName;
+% handles.uitable1_layout.RowName = RowName;
+% handles.uitable1_layout.ColumnFormat = columFormat;
+% handles.uitable1_layout.FontSize = FonsizeDefault;
+% handles.uitable1_layout.CellEditCallback = {@MakerLabels,handles};
+% 
+% [plotArrayFormt] = f_MarkLabels_ERP_Waveiwer(GridinforData,plotArrayFormt,AllabelArray);
+% handles.listbox_Labels.String  = '';
+% handles.listbox_Labels.String = plotArrayFormt;
+% 
+% Data = handles.uitable1_layout.Data;
+% 
+% Data = f_checktable(Data,AllabelArray);
+% try
+%     SingleCell = AllabelArray{handles.listbox_Labels.Value};
+% catch
+%     SingleCell = AllabelArray{1};
+% end
+% Data = f_add_bgcolor_cell(Data,SingleCell);
+% handles.uitable1_layout.Data=Data;
+% handles.listbox_Labels.Min = 0;
+% handles.listbox_Labels.Max =1;
+% % handles.listbox_Labels.Enable = 'off';
+% handles.listbox_Labels.Value = 1;
+% 
+
 

@@ -21,6 +21,7 @@ addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
+addlistener(viewer_ERPDAT,'ERPset_Chan_bin_label_change',@ERPset_Chan_bin_label_change);
 addlistener(observe_ERPDAT,'ERP_chan_change',@ERP_chan_changed);
 addlistener(observe_ERPDAT,'ERP_bin_change',@ERP_bin_changed);
 addlistener(observe_ERPDAT,'Two_GUI_change',@Two_GUI_change);
@@ -221,7 +222,7 @@ varargout{1} = Chanbin_waveviewer_box;
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         set(ERPwaveview_binchan.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(ERPwaveview_binchan.vBox, 'Sizes', [20 190 25]);
-         assignin('base','ALLERPwaviewer',ERPwaviewer);
+        assignin('base','ALLERPwaviewer',ERPwaviewer);
         estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
     end
 
@@ -1120,6 +1121,49 @@ varargout{1} = Chanbin_waveviewer_box;
         end
     end%%reset end
 
+%%Update the change of label indeces
+    function ERPset_Chan_bin_label_change(~,~)
+        if viewer_ERPDAT.ERPset_Chan_bin_label~=1
+            return;
+        end
+        try
+            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
+        catch
+            beep;
+            disp('f_ERP_Binchan_waviewer_GUI error: Restart ERPwave Viewer');
+            return;
+        end
+        
+        if ERPwaveview_binchan.auto.Value ==0
+            BinArray = ERPwaviewerIN.bin;
+            ChanArray =  ERPwaviewerIN.chan;
+            ChaNum= length(ERPwaveview_binchan.ElecRange.String)-1;
+            if max(ChanArray(:)) <=ChaNum
+                if ChaNum== numel(ChanArray)
+                    ERPwaveview_binchan.ElecRange.Value=1;
+                else
+                    ERPwaveview_binchan.ElecRange.Value= ChanArray+1;
+                end
+            end
+            BiNum = length(ERPwaveview_binchan.BinRange.String)-1;
+            if max(BinArray(:)) <=BiNum
+                if numel(BinArray)==BiNum
+                    ERPwaveview_binchan.BinRange.Value=1;
+                else
+                    ERPwaveview_binchan.BinRange.Value=BinArray+1;
+                end
+            end
+            
+            %%save the parameters to memory file
+            MERPWaveViewer_chanbin{1} = ERPwaviewerIN.binchan_op;
+            MERPWaveViewer_chanbin{2} =ERPwaviewerIN.chan;
+            MERPWaveViewer_chanbin{3} =ERPwaviewerIN.bin;
+            estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin); 
+        end
+    end
+
+
+%%Execute the panel when press "Return" or "Enter"
     function setbinchan_presskey(hObject, eventdata)
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')

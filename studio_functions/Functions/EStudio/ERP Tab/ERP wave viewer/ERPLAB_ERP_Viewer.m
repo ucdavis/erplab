@@ -167,7 +167,7 @@ if nargin>6
     return;
 end
 
-
+erpworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB 
 % if ~strcmpi(ERPtooltype,'EStudio')
 %     addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 %     addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
@@ -188,7 +188,7 @@ viewer_ERPDAT.loadproper_count = 0;
 viewer_ERPDAT.Process_messg = 0;
 viewer_ERPDAT.count_twopanels = 0;%% Automaticlly saving the changes on the other panel if the current panel is changed
 viewer_ERPDAT.Reset_Waviewer_panel = 0;
-
+viewer_ERPDAT.ERPset_Chan_bin_label=0;
 viewer_ERPDAT.ALLERP = ALLERP;
 viewer_ERPDAT.ERP_bin =  binArray;
 viewer_ERPDAT.ERP_chan =  chanArray;
@@ -236,7 +236,7 @@ ERPwaviewer.SEM = [];
 ERPwaviewer.PageIndex = 1;
 ERPwaviewer.baselinecorr = 'none';
 ERPwaviewer.chanbinsetlabel = [];
-ERPwaviewer.figbackgdcolor = [];
+ERPwaviewer.figbackgdcolor = [1 1 1];
 ERPwaviewer.figname = 'My Viewer';
 ERPwaviewer.FigOutpos=[];
 assignin('base','ALLERPwaviewer',ERPwaviewer);
@@ -376,13 +376,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         gui_erp_waviewer.panelSizes(3) = 490;
         
         gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(4) = 410;
+        gui_erp_waviewer.panelSizes(4) = 385;
         
         gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(5) = 200;
         
         gui_erp_waviewer.panel{6} = f_ERP_lineset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
-        gui_erp_waviewer.panelSizes(6) = 575;
+        gui_erp_waviewer.panelSizes(6) = 375;
         
         gui_erp_waviewer.panel{7} = f_ERP_otherset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(7) = 225;

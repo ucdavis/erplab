@@ -13,6 +13,7 @@ classdef v_ERPDAT < handle
         loadproper_count
         count_twopanels
         Reset_Waviewer_panel
+        ERPset_Chan_bin_label
     end
     
     events
@@ -29,6 +30,7 @@ classdef v_ERPDAT < handle
         loadproper_change
         count_twopanels_change
         Reset_Waviewer_panel_change
+        ERPset_Chan_bin_label_change
     end
     
     methods
@@ -123,6 +125,13 @@ classdef v_ERPDAT < handle
         function set.Reset_Waviewer_panel(obj,value)
             obj.Reset_Waviewer_panel = value;
             notify(obj,'Reset_Waviewer_panel_change');
+        end
+        
+        
+        %%EXecute the changes of labels
+        function set.ERPset_Chan_bin_label(obj,value)
+            obj.ERPset_Chan_bin_label = value;
+            notify(obj,'ERPset_Chan_bin_label_change');
         end
         
     end

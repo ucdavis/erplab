@@ -358,6 +358,26 @@ varargout{1} = box_erpwave_viewer_property;
             return;
         end
         
+        if New_pos(1)>90 || New_pos(1)< -90
+            MessageViewer= char(strcat('Viewer Properties > Position: Left is better within [-90 90], otherwise, the main GUI will disappear.'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            new_pos = gui_erp_waviewer.Window.Position;
+            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
+            return;
+        end
+        
+        if  New_pos(2)< -90
+            MessageViewer= char(strcat('Viewer Properties > Position: Bottom should be larger than -90, otherwise, the main GUI will disappear.'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            new_pos = gui_erp_waviewer.Window.Position;
+            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
+            return;
+        end
+        
         erpworkingmemory('ERPWaveScreenPos',New_pos);
         gui_erp_waviewer.screen_pos = New_pos;
         
@@ -370,6 +390,12 @@ varargout{1} = box_erpwave_viewer_property;
 
 %%Update the Viewer position automatically
     function ViewerPos(~,~)
+        
+        ERPLAB_ERPWaviewer=  erpworkingmemory('ERPLAB_ERPWaviewer');
+        if ERPLAB_ERPWaviewer==1
+            viewer_ERPDAT.ERPset_Chan_bin_label=2;
+        end
+        
         try
             ScreenPos =  get( groot, 'Screensize' );
         catch
