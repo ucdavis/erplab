@@ -248,7 +248,7 @@ catch
 end
 
 
-createInterface_ERPWave_viewer();
+createInterface_ERPWave_viewer(ERPtooltype);
 
 f_redrawERP_viewer_test();
 if ~isempty( Parameterfile)%% update the panels based on the saved file
@@ -286,9 +286,7 @@ end
 timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\n\n']);
 
-    function  createInterface_ERPWave_viewer();
-        ERPtooltype = erpgettoolversion('tooltype');
-        
+    function  createInterface_ERPWave_viewer(ERPtooltype);
         if strcmpi(ERPtooltype,'EStudio')
             try
                 [version reldate] = geterplabstudioversion;

@@ -85,8 +85,10 @@ varargout{1} = box_erpwave_viewer_property;
             erpworkingmemory('ERPWaveScreenPos',New_pos);
         end
         
-        New_pos = roundn(New_pos,-3);
-        gui_property_waveviewer.parameters_pos = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_pos_title,'String',num2str(New_pos),...
+        New_pos1 = roundn(New_pos,-3);
+        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2)),32,num2str(New_pos1(3)),32,num2str(New_pos1(4))]);
+        
+        gui_property_waveviewer.parameters_pos = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_pos_title,'String',New_poStr,...
             'callback',@Viewerpos,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.viewer_pos_title, 'Sizes',[70 165]);
         
@@ -108,6 +110,11 @@ varargout{1} = box_erpwave_viewer_property;
 
 %%-------------------------Setting for load--------------------------------
     function parameters_load(~,~)
+        
+        MessageViewer= char(strcat('Viewer Properties > Load'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        
         [filename, filepath,indxs] = uigetfile({'*.mat'}, ...
             'Load parametrs for "My viewer"', ...
             'MultiSelect', 'off');
@@ -125,72 +132,84 @@ varargout{1} = box_erpwave_viewer_property;
             ext = '.mat';
         end
         erpFilename = char(strcat(erpfilename,ext));
-        MessageViewer= char(strcat('Viewer Properties > Load'));
-        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-        viewer_ERPDAT.Process_messg =1;
+        
         
         try
             ERPwaviewer = importdata([filepath,erpFilename]);
             ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
-            if isempty(ERPwaviewer.ALLERP)
-                BackERPLABcolor = [1 0.9 0.3];    % yellow
-                question = ['Do you want to use the default "ALLERP"? \n Because there is no "ALLERP" in the file'];
-                title = 'My Viewer>Viewer Properties';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-                if strcmpi(button,'Yes')
-                    ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
-                    ERPwaviewer.ERP = ERPwaviewerdef.ERP;
-                    ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
-                    ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
-                    ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
-                else
-                    if strcmpi(button,'No')
-                        beep;
-                        viewer_ERPDAT.Process_messg =3;
-                        fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n Cannot use the file because no ALLERP can be used.\n\n');
-                    else
-                        beep;
-                        viewer_ERPDAT.Process_messg =3;
-                        fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n User selected cancel.\n\n');
-                    end
-                    return;
-                end
+            BackERPLABcolor = [1 0.9 0.3];    % yellow
+            question = ['Do you want to use the default "ALLERP"? \n Because there is no "ALLERP" in the file'];
+            title = 'My Viewer>Viewer Properties';
+            oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+            set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+            button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
+            set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+            if strcmpi(button,'Yes')
+                ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
+                ERPwaviewer.ERP = ERPwaviewerdef.ERP;
+                ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
+                ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
+                ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
             else
-                if ~isempty(ERPwaviewer.ALLERP) && ~isempty(ERPwaviewerdef.ALLERP)
-                    BackERPLABcolor = [1 0.9 0.3];    % yellow
-                    question = ['Using the default "ALLERP" in the imported file or existing one?'];
-                    title = 'My Viewer>Viewer Properties';
-                    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                    button = questdlg(sprintf(question), title,'Cancel','Existing', 'Default','Default');
-                    set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-                    if strcmpi(button,'Existing') %%using the existing ALLERP
-                        ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
-                        ERPwaviewer.ERP = ERPwaviewerdef.ERP;
-                        ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
-                        ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
-                        ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
-                    elseif strcmpi(button,'Default')%%using the ALLERP from the imported file
-                    else%%cancel the selection
-                        beep;
-                        viewer_ERPDAT.Process_messg =3;
-                        fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n User selected cancel.\n\n');
-                        return;
-                    end
+                if strcmpi(button,'No')
+                    beep;
+                    viewer_ERPDAT.Process_messg =3;
+                    fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n Cannot use the file because no ALLERP can be used.\n\n');
+                else
+                    beep;
+                    viewer_ERPDAT.Process_messg =3;
+                    fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n User selected cancel.\n\n');
                 end
+                return;
             end
+            
             assignin('base','ALLERPwaviewer',ERPwaviewer);
         catch
             beep;
+            MessageViewer=['\n\n My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n Cannot load the saved parameters of My viewer.\n\n');
             return;
         end
+        
+        %%check current version
+        ERPtooltype = erpgettoolversion('tooltype');
+        if strcmpi(ERPtooltype,'EStudio')
+            try
+                [version1 reldate] = geterplabstudioversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        else
+            try
+                [version1 reldate] = geterplabversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        end
+        erplabstudioverNum = str2num(erplabstudiover);
+        try
+            erplabstudioverNumOld = str2num(ERPwaviewer.version);
+        catch
+            erplabstudioverNumOld = [];
+        end
+        if isempty(erplabstudioverNumOld) || erplabstudioverNumOld<erplabstudioverNum
+            if strcmpi(ERPtooltype,'EStudio')
+                MessageViewer= char(strcat('Viewer Properties > Load - This settings file was created using an older version of EStudio'));
+            elseif strcmpi(ERPtooltype,'ERPLAB')
+                MessageViewer= char(strcat('Viewer Properties > Load - This settings file was created using an older version of ERPLAB'));
+            end
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+        end
+        
         viewer_ERPDAT.loadproper_count = 1;
         f_redrawERP_viewer_test();
+        
+        MessageViewer= char(strcat('Viewer Properties > Load'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -211,6 +230,25 @@ varargout{1} = box_erpwave_viewer_property;
         namedef ='Viewer';
         erpFilename = char(strcat(namedef,'.mat'));
         
+        ERPtooltype = erpgettoolversion('tooltype');
+        if strcmpi(ERPtooltype,'EStudio')
+            try
+                [version1 reldate] = geterplabstudioversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        else
+            try
+                [version1 reldate] = geterplabversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        end
+        ERPwaviewer.version = erplabstudiover;
+        
+        
         ERPwaviewer.ALLERP = [];
         ERPwaviewer.ERP = [];
         ERPwaviewer.CURRENTERP = [];
@@ -218,14 +256,16 @@ varargout{1} = box_erpwave_viewer_property;
         ERPwaviewer.PageIndex = [];
         try
             save([pathstr,filesep,erpFilename],'ERPwaviewer','-v7.3');
-            viewer_ERPDAT.Process_messg =2;
         catch
             beep;
+            MessageViewer= char(strcat('Viewer Propoerties > Save: \n Cannot save the parameters of My viewer'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
             return;
         end
-        
+        MessageViewer= char(strcat('Viewer Properties > Save'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 %%-------------------------Setting for Save as--------------------------------
     function parameters_saveas(~,~)
@@ -266,6 +306,23 @@ varargout{1} = box_erpwave_viewer_property;
         end
         erpFilename = char(strcat(erpfilename,ext));
         
+        ERPtooltype = erpgettoolversion('tooltype');
+        if strcmpi(ERPtooltype,'EStudio')
+            try
+                [version1 reldate] = geterplabstudioversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        else
+            try
+                [version1 reldate] = geterplabversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        end
+        ERPwaviewer.version = erplabstudiover;
         ERPwaviewer.ALLERP = [];
         ERPwaviewer.ERP = [];
         ERPwaviewer.CURRENTERP = [];
@@ -273,13 +330,15 @@ varargout{1} = box_erpwave_viewer_property;
         ERPwaviewer.PageIndex = [];
         try
             save([erppathname,erpFilename],'ERPwaviewer','-v7.3');
-            viewer_ERPDAT.Process_messg =2;
         catch
             beep;
             viewer_ERPDAT.Process_messg =3;
             fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
             return;
         end
+        MessageViewer= char(strcat('Viewer Properties > Save as'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
         
     end
 
@@ -331,7 +390,6 @@ varargout{1} = box_erpwave_viewer_property;
             %             fprintf(2,['\n Warning: ',MessageViewer,'.\n']);
             viewer_ERPDAT.Process_messg =4;
             new_pos = gui_erp_waviewer.Window.Position;
-            
             new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
             gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
             return;
@@ -380,9 +438,12 @@ varargout{1} = box_erpwave_viewer_property;
         
         erpworkingmemory('ERPWaveScreenPos',New_pos);
         gui_erp_waviewer.screen_pos = New_pos;
+        New_pos1 = roundn(New_pos,-3);
+        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2)),32,num2str(New_pos1(3)),32,num2str(New_pos1(4))]);
+        gui_property_waveviewer.parameters_pos.String = New_poStr;
+        
         
         New_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
-        %         gui_property_waveviewer.parameters_pos.String = num2str(New_pos);
         gui_erp_waviewer.Window.Position= New_pos;
         viewer_ERPDAT.Process_messg =2;
         f_redrawERP_viewer_test();
@@ -401,12 +462,41 @@ varargout{1} = box_erpwave_viewer_property;
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
+        try
+            New_pos = gui_erp_waviewer.Window.Position;
+        catch
+            return;
+        end
+        New_pos1 = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
+        try
+            Old_pos = gui_erp_waviewer.screen_pos;
+            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),Old_pos(3),Old_pos(4)];
+        catch
+            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
+        end
         
-        New_pos = gui_erp_waviewer.Window.Position;
+        if New_pos1(1)>90 || New_pos1(1)< -90 || New_pos(2)< -90 || min(New_pos1(3:4))<-100 || max(New_pos1(3:4)) >100 %% from different size of monitor
+            New_pos = [0.01,0.01,75,75];
+            new_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
+            set(gui_erp_waviewer.Window, 'Position', new_pos);
+            
+            zoomSpace = 100*((gui_erp_waviewer.ViewAxes.Widths+240)-gui_erp_waviewer.Window.Position(3))/gui_erp_waviewer.Window.Position(3);
+            if isempty(zoomSpace) || zoomSpace<0
+                zoomSpace = 0;
+            end
+            if zoomSpace ==0
+                gui_erp_waviewer.ScrollVerticalOffsets=0;
+                gui_erp_waviewer.ScrollHorizontalOffsets=0;
+            end
+            estudioworkingmemory('zoomSpace',zoomSpace);
+            gui_erp_waviewer.zoom_edit.String = num2str(roundn(zoomSpace,-1));
+            
+        end
         
-        New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
         New_pos = roundn(New_pos,-3);
-        gui_property_waveviewer.parameters_pos.String = num2str(New_pos);
+        New_poStr = char([num2str(New_pos(1)),32,num2str(New_pos(2)),32,num2str(New_pos(3)),32,num2str(New_pos(4))]);
+        
+        gui_property_waveviewer.parameters_pos.String = New_poStr;
         %         erpworkingmemory('ERPWaveScreenPos',New_pos);
         gui_erp_waviewer.screen_pos = New_pos;
     end

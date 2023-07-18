@@ -123,7 +123,7 @@ end
 
 % mainerplab = findobj(W_MAIN, 'tag', submenu);
 % erpmenu = findobj('erpmenu','type', 'uimenu');
-erpworkingmemory('ERPLAB_ERPWaviewer',1);
+% erpworkingmemory('ERPLAB_ERPWaviewer',1);
 end
 
 

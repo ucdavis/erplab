@@ -179,8 +179,13 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         if strcmpi(ERPtooltype,'EStudio') || strcmpi(ERPtooltype,'ERPLAB')
             if strcmpi(ERPtooltype,'ERPLAB')
                 try
-                    Selected_erpset = evalin('base','CURRENTERP');
-                    CURRENTERPStudio = Selected_erpset;
+                    Selected_erpset = ERPwaveview_erpsetops.butttons_datasets.Value;
+                    try
+                    CURRENTERPStudio = Selected_erpset(ERPwaviewer_apply.PageIndex);
+                    catch
+                     CURRENTERPStudio = Selected_erpset(1); 
+                     ERPwaviewer_apply.PageIndex=1;  
+                    end
                 catch
                     messgStr =  strcat('Cannot get CURRENTERP from Workspace');
                     erpworkingmemory('ERPViewer_proces_messg',messgStr);
@@ -226,19 +231,16 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 Selected_erpset =  length(ALLERPin);
             end
             if isempty(CURRENTERPStudio) || CURRENTERPStudio> length(ALLERPin)
-                CURRENTERPStudio =  length(ALLERPin);
+                CURRENTERPStudio =  Selected_erpset(1);
+                ERPwaviewer_apply.PageIndex=1;  
             end
             
-            [x_index,y_index] = find(Selected_erpset==CURRENTERPStudio);
-            if isempty(y_index)
-                y_index = numel(Selected_erpset);
-            end
-            
+       
             ERPwaveview_erpsetops.ALLERP = ALLERPin;
             ERPwaveview_erpsetops.ERP = ALLERPin(CURRENTERPStudio);
             ERPwaveview_erpsetops.CURRENTERP = CURRENTERPStudio;
             ERPwaveview_erpsetops.SelectERPIdx = Selected_erpset;
-            ERPwaveview_erpsetops.PageIndex = y_index;
+            ERPwaveview_erpsetops.PageIndex = ERPwaviewer_apply.PageIndex;
             ERPwaveview_erpsetops.ERPLABFlag = 1;
             ERPdatasets = getERPDatasets(ALLERPin); % Get datasets from ALLERP
             ERPdatasets = sortdata(ERPdatasets);
@@ -271,7 +273,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaviewer_apply.ERP = ALLERPin(CURRENTERPStudio);
         ERPwaviewer_apply.SelectERPIdx =Selected_erpset;
         ERPwaviewer_apply.CURRENTERP = CURRENTERPStudio;
-        ERPwaviewer_apply.PageIndex = 1;
+%         ERPwaviewer_apply.PageIndex = 1;
         estudioworkingmemory('MyViewer_ERPsetpanel',0);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];

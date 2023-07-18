@@ -186,12 +186,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         ERPwaviewerin.plot_org.Pages =PageValue;
         gui_plotorg_waveviewer.LayoutFlag = plotorg_Value;
         
-        %%----------------------Setting for grid layout--------------------
-        %         gui_plotorg_waveviewer.gridlayput_title1 = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        %         uicontrol('Style','text','Parent', gui_plotorg_waveviewer.gridlayput_title1 ,'String','Grid Layout',...
-        %             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','center','FontWeight','bold');% %
-        
-        
+        %%----------------------Setting for grid layout-------------------
         gui_plotorg_waveviewer.layout_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         try
             gridlayoutValue=  MERPWaveViewer_plotorg{2};
@@ -229,12 +224,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormt = plotArrayStr;
-            ALLabelStr = chanStr;
         elseif GridValue == 2 %% if the selected Bin is "Grid"
             plotArray = binArray;
             plotArrayStr = binStr(binArray);
             plotArrayFormt = plotArrayStr;
-            ALLabelStr = binStr;
         elseif GridValue == 3%% if the selected ERPset is "Grid"
             plotArray = ERPsetArray;
             plotArrayStr = cell(numel(ERPsetArray),1);
@@ -242,17 +235,13 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 plotArrayStr(Numoferpset,1) = {char(ALLERPIN(ERPsetArray(Numoferpset)).erpname)};
             end
             plotArrayFormt = plotArrayStr;
-            for ii = 1:length(ALLERPIN)
-                ALLabelStr(ii,1) =   {char(ALLERPIN(ii).erpname)};
-            end
+            
         else
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormt = plotArrayStr;
-            ALLabelStr = chanStr;
         end
-        gui_plotorg_waveviewer.ALLabelStr = ALLabelStr;
-        %         gui_plotorg_waveviewer.ALLabelStrOld = ALLabelStr;
+        
         
         plotBoxdef = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         try
@@ -315,7 +304,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         %         ERPwaviewerin.plot_org.gridlayout.columFormatOrig = columFormat;
         
         %%---------------------Gap between rows----------------------------
-        
         try
             rowgapgtpValue= MERPWaveViewer_plotorg{4} ;
         catch
@@ -488,9 +476,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if isempty(layout_custom_editValue) || numel(layout_custom_editValue)~=1 || (layout_custom_editValue~=1 && layout_custom_editValue~=0)
             layout_custom_editValue=0;
         end
+        layout_custom_editValue =0;
         gui_plotorg_waveviewer.editgridlayout_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
-        gui_plotorg_waveviewer.layout_custom_edit_checkbox = uicontrol('Style','checkbox','Parent',  gui_plotorg_waveviewer.editgridlayout_title,'String','Custom Grid Layout',...
+        gui_plotorg_waveviewer.layout_custom_edit_checkbox = uicontrol('Style','checkbox','Parent',  gui_plotorg_waveviewer.editgridlayout_title,'String','Custom Grid Locations',...
             'callback',@plotorg_edit_checkbox,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',layout_custom_editValue); %,'HorizontalAlignment','left'
+        gui_plotorg_waveviewer.layout_custom_edit_checkbox.KeyPressFcn = @plotorg_presskey;
         
         gui_plotorg_waveviewer.layout_custom_edit = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.editgridlayout_title,'String','Edit',...
             'callback',@plotorg_edit,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
@@ -501,7 +491,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         set( gui_plotorg_waveviewer.editgridlayout_title,'Sizes',[150 60]);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
-        ERPwaviewerin.plot_org.gridlayout.GridLayputAuto=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
+        ERPwaviewerin.plot_org.gridlayout.GridLayoutAuto=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
+        
         gui_plotorg_waveviewer.help_run_title = uiextras.HBox('Parent', gui_plotorg_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         
         gui_plotorg_waveviewer.layout_custom_load = uicontrol('Style','pushbutton','Parent', gui_plotorg_waveviewer.help_run_title,'String','Load',...
@@ -511,8 +502,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         gui_plotorg_waveviewer.cancel = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.help_run_title,'String','Cancel',...
             'callback',@plotorg_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        %         gui_plotorg_waveviewer.apply.KeyPressFcn = @plotorg_presskey;
         gui_plotorg_waveviewer.apply = uicontrol('Style','pushbutton','Parent',  gui_plotorg_waveviewer.help_run_title,'String','Apply',...
             'callback',@plotorg_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+        gui_plotorg_waveviewer.apply.KeyPressFcn = @plotorg_presskey;
+        
         set(gui_plotorg_waveviewer.DataSelBox,'Sizes',[150 25 25 25 25 25 25 25 25]);
         gui_plotorg_waveviewer.columFormatStr = '';
         assignin('base','ALLERPwaviewer',ERPwaviewerin);
@@ -549,6 +543,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        try
+            GridValueOld =  ERPwaviewerin.plot_org.Grid;
+        catch
+            GridValueOld=1;
+        end
         LayoutFlag =  gui_plotorg_waveviewer.LayoutFlag;
         [~,y_Flag] = find(LayoutFlag==1);
         if length(unique(SrateNum_mp))~=1
@@ -567,6 +566,29 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+                if GridValueOld~=1
+                    gui_plotorg_waveviewer.layout_auto.Value =1;
+                    gui_plotorg_waveviewer.layout_custom.Value = 0;
+                    gui_plotorg_waveviewer.rownum.Enable = 'off';
+                    gui_plotorg_waveviewer.columnnum.Enable = 'off';
+                    
+                    gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+                    gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.rowoverlap.Value = 0;
+                    gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+                    gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+                    gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.columnoverlay.Value = 0;
+                    gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                end
                 return;
             else
                 
@@ -590,9 +612,37 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
-        chanArray = ERPwaviewerin.chan;
-        plotArray = chanArray;
-        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        try
+            chanArray = ERPwaviewerin.chan;
+            plotArray = chanArray;
+            plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        catch
+            plotBox = [1 1];
+        end
+        if GridValueOld~=1
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value = 0;
+            gui_plotorg_waveviewer.rownum.Enable = 'off';
+            gui_plotorg_waveviewer.columnnum.Enable = 'off';
+            
+            gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+            gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+            gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+            gui_plotorg_waveviewer.columnoverlay.Value = 0;
+            gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+            gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+            gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+        end
+        
         if gui_plotorg_waveviewer.layout_auto.Value==1
             try
                 gui_plotorg_waveviewer.rownum.Value = plotBox(1);
@@ -628,6 +678,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        try
+            GridValueOld =  ERPwaviewerin.plot_org.Grid;
+        catch
+            GridValueOld=1;
+        end
+        
         LayoutFlag =  gui_plotorg_waveviewer.LayoutFlag;
         [~,y_Flag] = find(LayoutFlag==1);
         if length(unique(SrateNum_mp))~=1
@@ -646,6 +702,30 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+                
+                if GridValueOld~=1
+                    gui_plotorg_waveviewer.layout_auto.Value =1;
+                    gui_plotorg_waveviewer.layout_custom.Value = 0;
+                    gui_plotorg_waveviewer.rownum.Enable = 'off';
+                    gui_plotorg_waveviewer.columnnum.Enable = 'off';
+                    
+                    gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+                    gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.rowoverlap.Value = 0;
+                    gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+                    gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+                    gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.columnoverlay.Value = 0;
+                    gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                end
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -671,8 +751,35 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,1,0,0,0,0];
         chanArray = ERPwaviewerin.chan;
-        plotArray = chanArray;
-        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        try
+            plotArray = chanArray;
+            plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        catch
+            plotBox = [1 1];
+        end
+        if GridValueOld~=1
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value = 0;
+            gui_plotorg_waveviewer.rownum.Enable = 'off';
+            gui_plotorg_waveviewer.columnnum.Enable = 'off';
+            
+            gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+            gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+            gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+            gui_plotorg_waveviewer.columnoverlay.Value = 0;
+            gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+            gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+            gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+        end
         if gui_plotorg_waveviewer.layout_auto.Value==1
             try
                 gui_plotorg_waveviewer.rownum.Value = plotBox(1);
@@ -680,6 +787,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
+        
         estudioworkingmemory('OverlayIndex',1);
     end
 
@@ -708,6 +816,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        try
+            GridValueOld =  ERPwaviewerin.plot_org.Grid;
+        catch
+            GridValueOld=1;
+        end
+        
         LayoutFlag =  gui_plotorg_waveviewer.LayoutFlag;
         [~,y_Flag] = find(LayoutFlag==1);
         if length(unique(SrateNum_mp))~=1
@@ -726,6 +840,29 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+                if GridValueOld~=1
+                    gui_plotorg_waveviewer.layout_auto.Value =1;
+                    gui_plotorg_waveviewer.layout_custom.Value = 0;
+                    gui_plotorg_waveviewer.rownum.Enable = 'off';
+                    gui_plotorg_waveviewer.columnnum.Enable = 'off';
+                    
+                    gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+                    gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.rowoverlap.Value = 0;
+                    gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+                    gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+                    gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.columnoverlay.Value = 0;
+                    gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                end
                 return;
             else
                 
@@ -749,8 +886,35 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,1,0,0,0];
-        plotArray = ERPwaviewerin.bin;
-        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        try
+            plotArray = ERPwaviewerin.bin;
+            plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        catch
+            plotBox = [1 1];
+        end
+        if GridValueOld~=2
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value = 0;
+            gui_plotorg_waveviewer.rownum.Enable = 'off';
+            gui_plotorg_waveviewer.columnnum.Enable = 'off';
+            
+            gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+            gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+            gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+            gui_plotorg_waveviewer.columnoverlay.Value = 0;
+            gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+            gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+            gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+        end
         if gui_plotorg_waveviewer.layout_auto.Value==1
             try
                 gui_plotorg_waveviewer.rownum.Value = plotBox(1);
@@ -758,6 +922,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             catch
             end
         end
+        
         estudioworkingmemory('OverlayIndex',1);
     end
 
@@ -788,6 +953,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        
+        try
+            GridValueOld =  ERPwaviewerin.plot_org.Grid;
+        catch
+            GridValueOld=1;
+        end
         LayoutFlag =  gui_plotorg_waveviewer.LayoutFlag;
         [~,y_Flag] = find(LayoutFlag==1);
         if length(unique(SrateNum_mp))~=1
@@ -806,6 +977,29 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+                if GridValueOld~=1
+                    gui_plotorg_waveviewer.layout_auto.Value =1;
+                    gui_plotorg_waveviewer.layout_custom.Value = 0;
+                    gui_plotorg_waveviewer.rownum.Enable = 'off';
+                    gui_plotorg_waveviewer.columnnum.Enable = 'off';
+                    
+                    gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+                    gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.rowoverlap.Value = 0;
+                    gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+                    gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+                    gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.columnoverlay.Value = 0;
+                    gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                end
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c4.Value = 0;
@@ -817,7 +1011,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Enable = 'on';
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'on';
         end
-        
         
         estudioworkingmemory('MyViewer_plotorg',1);
         gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
@@ -831,8 +1024,36 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,0,1,0,0];
-        plotArray = ERPwaviewerin.bin;
-        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        try
+            plotArray = ERPwaviewerin.bin;
+            plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        catch
+            plotBox = [1 1];
+        end
+        if GridValueOld~=2
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value = 0;
+            gui_plotorg_waveviewer.rownum.Enable = 'off';
+            gui_plotorg_waveviewer.columnnum.Enable = 'off';
+            
+            gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+            gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+            gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+            gui_plotorg_waveviewer.columnoverlay.Value = 0;
+            gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+            gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+            gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+        end
+        
         if gui_plotorg_waveviewer.layout_auto.Value==1
             try
                 gui_plotorg_waveviewer.rownum.Value = plotBox(1);
@@ -841,6 +1062,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         end
         estudioworkingmemory('OverlayIndex',1);
+        
+        
     end
 
 
@@ -870,6 +1093,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        try
+            GridValueOld =  ERPwaviewerin.plot_org.Grid;
+        catch
+            GridValueOld=1;
+        end
         LayoutFlag =  gui_plotorg_waveviewer.LayoutFlag;
         [~,y_Flag] = find(LayoutFlag==1);
         if length(unique(SrateNum_mp))~=1
@@ -888,6 +1116,29 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+                if GridValueOld~=1
+                    gui_plotorg_waveviewer.layout_auto.Value =1;
+                    gui_plotorg_waveviewer.layout_custom.Value = 0;
+                    gui_plotorg_waveviewer.rownum.Enable = 'off';
+                    gui_plotorg_waveviewer.columnnum.Enable = 'off';
+                    
+                    gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+                    gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.rowoverlap.Value = 0;
+                    gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+                    gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+                    gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.columnoverlay.Value = 0;
+                    gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                end
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
@@ -911,8 +1162,37 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c4.Value = 0;
         gui_plotorg_waveviewer.plotorg_c5.Value = 1;
         gui_plotorg_waveviewer.plotorg_c6.Value = 0;
-        gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,1,0];        plotArray = indexerp;
-        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,1,0];
+        try
+            plotArray = indexerp;
+            plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        catch
+            plotBox = [1 1];
+        end
+        if GridValueOld~=3
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value = 0;
+            gui_plotorg_waveviewer.rownum.Enable = 'off';
+            gui_plotorg_waveviewer.columnnum.Enable = 'off';
+            
+            gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+            gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+            gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+            gui_plotorg_waveviewer.columnoverlay.Value = 0;
+            gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+            gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+            gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+            
+        end
         if gui_plotorg_waveviewer.layout_auto.Value==1
             try
                 gui_plotorg_waveviewer.rownum.Value = plotBox(1);
@@ -921,6 +1201,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         end
         estudioworkingmemory('OverlayIndex',1);
+        
     end
 
 
@@ -950,6 +1231,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        try
+            GridValueOld =  ERPwaviewerin.plot_org.Grid;
+        catch
+            GridValueOld=1;
+        end
         LayoutFlag =  gui_plotorg_waveviewer.LayoutFlag;
         [~,y_Flag] = find(LayoutFlag==1);
         if length(unique(SrateNum_mp))~=1
@@ -968,6 +1254,31 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 gui_plotorg_waveviewer.plotorg_c5.Value = 0;
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
                 gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+                if GridValueOld~=1
+                    gui_plotorg_waveviewer.layout_auto.Value =1;
+                    gui_plotorg_waveviewer.layout_custom.Value = 0;
+                    gui_plotorg_waveviewer.rownum.Enable = 'off';
+                    gui_plotorg_waveviewer.columnnum.Enable = 'off';
+                    
+                    gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+                    gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+                    gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.rowoverlap.Value = 0;
+                    gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+                    gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+                    gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+                    gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+                    gui_plotorg_waveviewer.columnoverlay.Value = 0;
+                    gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+                    gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                    gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+                    gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+                end
                 return;
             else
                 gui_plotorg_waveviewer.plotorg_c6.Value = 0;
@@ -993,8 +1304,35 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.plotorg_c5.Value = 0;
         gui_plotorg_waveviewer.plotorg_c6.Value = 1;
         gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,0,1];
-        plotArray = indexerp;
-        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        if GridValueOld~=3
+            gui_plotorg_waveviewer.layout_auto.Value =1;
+            gui_plotorg_waveviewer.layout_custom.Value = 0;
+            gui_plotorg_waveviewer.rownum.Enable = 'off';
+            gui_plotorg_waveviewer.columnnum.Enable = 'off';
+            
+            gui_plotorg_waveviewer.rowgap_auto.Value = 1;
+            gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
+            gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
+            gui_plotorg_waveviewer.rowoverlap.Value = 0;
+            gui_plotorg_waveviewer.rowoverlap.Enable = 'off';
+            gui_plotorg_waveviewer.rowgapoverlayedit.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpop.Value = 1;
+            gui_plotorg_waveviewer.columngapgtpop.Enable = 'off';
+            gui_plotorg_waveviewer.columngapgtpcustom.String = '10';
+            gui_plotorg_waveviewer.columngapgtpcustom.Enable = 'off';
+            gui_plotorg_waveviewer.columnoverlay.Value = 0;
+            gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
+            gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+            gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value=0;
+            gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+        end
+        try
+            plotArray = indexerp;
+            plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        catch
+            plotBox = [1 1];
+        end
         if gui_plotorg_waveviewer.layout_auto.Value==1
             try
                 gui_plotorg_waveviewer.rownum.Value = plotBox(1);
@@ -1298,7 +1636,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         
         
         if Source.Value==0
-            
             try
                 ERPwaviewerin = evalin('base','ALLERPwaviewer');
             catch
@@ -1325,21 +1662,17 @@ varargout{1} = box_erpwave_viewer_plotorg;
             if GridValue ==1 %% if  the selected Channel is "Grid"
                 plotArray = chanArray;
                 plotArrayStr = chanStr(chanArray);
-                plotArrayFormt = plotArrayStr;
             elseif GridValue == 2 %% if the selected Bin is "Grid"
                 plotArray = binArray;
                 plotArrayStr = binStr(binArray);
-                plotArrayFormt = plotArrayStr;
             elseif GridValue == 3%% if the selected ERPset is "Grid"
                 plotArray = ERPsetArray;
                 for Numoferpset = 1:numel(ERPsetArray)
                     plotArrayStr(Numoferpset,1) = {char(ALLERPIN(ERPsetArray(Numoferpset)).erpname)};
                 end
-                plotArrayFormt = plotArrayStr;
             else
                 plotArray = chanArray;
                 plotArrayStr = chanStr(chanArray);
-                plotArrayFormt = plotArrayStr;
             end
             plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
             Numrows = plotBox(1);
@@ -1364,7 +1697,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
             ERPwaviewerin.plot_org.gridlayout.data = GridinforData;
             ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayStr';
-            ERPwaviewerin.plot_org.gridlayout.GridLayputAuto = 0;
+            ERPwaviewerin.plot_org.gridlayout.GridLayoutAuto = 0;
             assignin('base','ALLERPwaviewer',ERPwaviewerin);
         end
     end
@@ -1383,7 +1716,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
         
-        MessageViewer= char(strcat('Plot Organization > Edit Grid Layput'));
+        MessageViewer= char(strcat('Plot Organization > Custom Grid Locations > Edit'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         try
@@ -1404,7 +1737,26 @@ varargout{1} = box_erpwave_viewer_plotorg;
             GridinforData = [];
         end
         
-        AllabelArray= gui_plotorg_waveviewer.ALLabelStr;
+        
+        ERPsetArray = ERPwaviewerin.SelectERPIdx;
+        ALLERPIN = ERPwaviewerin.ALLERP;
+        if max(ERPsetArray) >length(ALLERPIN)
+            ERPsetArray =length(ALLERPIN);
+        end
+        GridValue= ERPwaviewerin.plot_org.Grid;
+        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+        if GridValue ==1 %% if  the selected Channel is "Grid"
+            AllabelArray = chanStr;
+        elseif GridValue == 2 %% if the selected Bin is "Grid"
+            AllabelArray = binStr;
+        elseif GridValue == 3%% if the selected ERPset is "Grid"
+            for ii = 1:length(ALLERPIN)
+                AllabelArray(ii,1) ={char(ALLERPIN(ii).erpname)};
+            end
+        else
+            AllabelArray = chanStr;
+        end
+        
         def =  ERP_layoutstringGUI(columFormat,GridinforData,plotBox,AllabelArray);
         if isempty(def)
             estudioworkingmemory('MyViewer_plotorg',0);
@@ -1478,6 +1830,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
 
 %%-------load the saved parameters for plotting organization---------------
     function layout_custom_load(~,~)
+        MessageViewer= char(strcat('Plot Organization > Load'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -1504,6 +1860,40 @@ varargout{1} = box_erpwave_viewer_plotorg;
             disp('f_ERP_plotorg_waveviewer_GUI() > layout_custom_load() error: Please run the ERP wave viewer again.');
             return;
         end
+        
+        %%check current version
+        ERPtooltype = erpgettoolversion('tooltype');
+        if strcmpi(ERPtooltype,'EStudio')
+            try
+                [version1 reldate] = geterplabstudioversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        else
+            try
+                [version1 reldate] = geterplabversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        end
+        erplabstudioverNum = str2num(erplabstudiover);
+        try
+            erplabstudioverNumOld = str2num(Plot_orgpar.version);
+        catch
+            erplabstudioverNumOld = [];
+        end
+        if isempty(erplabstudioverNumOld) || erplabstudioverNumOld<erplabstudioverNum
+            if strcmpi(ERPtooltype,'EStudio')
+                MessageViewer= char(strcat('Plot Organization > Load - This settings file was created using an older version of EStudio'));
+            elseif strcmpi(ERPtooltype,'ERPLAB')
+                MessageViewer= char(strcat('Plot Organization > Load - This settings file was created using an older version of ERPLAB'));
+            end
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+        end
+        
         try
             GridValue  = Plot_orgpar.Grid;
             OverlayValue = Plot_orgpar.Overlay;
@@ -1529,7 +1919,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Enable = 'off';
             gui_plotorg_waveviewer.plotorg_c6.Enable = 'off';
             if PageValue~= 3
-                MessageViewer= char(strcat('Warning: Sampling rate varies across ERPsets. We used the first option'));
+                MessageViewer= char(strcat('Plot Organization > Load - Sampling rate varies across ERPsets. We used the first option'));
                 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
                 GridValue  = 1;OverlayValue = 2;PageValue=3;
@@ -1549,6 +1939,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value =0;
             gui_plotorg_waveviewer.plotorg_c6.Value =0;
             gui_plotorg_waveviewer.LayoutFlag = [1,0,0,0,0,0];
+            MERPWaveViewer_plotorg{1}=1;
         elseif  GridValue==1 && OverlayValue == 3&& PageValue ==2
             gui_plotorg_waveviewer.plotorg_c1.Value =0;
             gui_plotorg_waveviewer.plotorg_c2.Value =1;
@@ -1557,6 +1948,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value =0;
             gui_plotorg_waveviewer.plotorg_c6.Value =0;
             gui_plotorg_waveviewer.LayoutFlag = [0,1,0,0,0,0];
+            MERPWaveViewer_plotorg{1}=2;
         elseif  GridValue==2 && OverlayValue == 1 && PageValue ==3
             gui_plotorg_waveviewer.plotorg_c1.Value =0;
             gui_plotorg_waveviewer.plotorg_c2.Value =0;
@@ -1565,6 +1957,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value =0;
             gui_plotorg_waveviewer.plotorg_c6.Value =0;
             gui_plotorg_waveviewer.LayoutFlag = [0,0,1,0,0,0];
+            MERPWaveViewer_plotorg{1}=3;
         elseif  GridValue==2 && OverlayValue == 3 && PageValue ==1
             gui_plotorg_waveviewer.plotorg_c1.Value =0;
             gui_plotorg_waveviewer.plotorg_c2.Value =0;
@@ -1573,6 +1966,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value =0;
             gui_plotorg_waveviewer.plotorg_c6.Value =0;
             gui_plotorg_waveviewer.LayoutFlag = [0,0,0,1,0,0];
+            MERPWaveViewer_plotorg{1}=4;
         elseif GridValue==3 && OverlayValue == 1 && PageValue ==2
             gui_plotorg_waveviewer.plotorg_c1.Value =0;
             gui_plotorg_waveviewer.plotorg_c2.Value =0;
@@ -1581,6 +1975,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value =1;
             gui_plotorg_waveviewer.plotorg_c6.Value =0;
             gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,1,0];
+            MERPWaveViewer_plotorg{1}=5;
         elseif GridValue==3 && OverlayValue == 2 && PageValue ==1
             gui_plotorg_waveviewer.plotorg_c1.Value =0;
             gui_plotorg_waveviewer.plotorg_c2.Value =0;
@@ -1589,6 +1984,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.plotorg_c5.Value =0;
             gui_plotorg_waveviewer.plotorg_c6.Value =1;
             gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,0,1];
+            MERPWaveViewer_plotorg{1}=6;
         end
         
         try
@@ -1626,8 +2022,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         
-        gui_plotorg_waveviewer.rownum.Value=Plot_orgpar.gridlayout.rows;
-        gui_plotorg_waveviewer.columnnum.Value=Plot_orgpar.gridlayout.columns;
+        
         try
             RowNum = Plot_orgpar.gridlayout.rows;
         catch
@@ -1640,73 +2035,18 @@ varargout{1} = box_erpwave_viewer_plotorg;
             ColumNum = plotBox(2);
             Plot_orgpar.gridlayout.columns= plotBox(2);
         end
-        plotArrayFormtimp =  Plot_orgpar.gridlayout.columFormatOrig;
-        
-        plotArrayFormtimpChag = Plot_orgpar.gridlayout.columFormat;
-        button='';
-        if numel(plotArrayFormtimp) ~= numel(plotArrayFormtdef)
-            button='OK';
-            plotArrayFormtimp = plotArrayFormtdef;
-            plotArrayFormtimpChag =plotArrayFormtdef;
-        else
-            code  =0;
-            for Numoflabel = 1:numel(plotArrayFormtimpChag)
-                if ~strcmpi(plotArrayFormtimp{Numoflabel},plotArrayFormtdef{Numoflabel})
-                    code = code+1;
-                end
-                if code~=0
-                    plotArrayFormtimp = plotArrayFormtdef;
-                    plotArrayFormtimpChag =plotArrayFormtdef;
-                    button='OK';
-                end
-            end
-        end
-        GridinforData = Plot_orgpar.gridlayout.data;
-        if ~isempty(button)
-            BackERPLABcolor = [1 0.9 0.3];    % yellow
-            question = ['Warning: Bin/Channel/ERPset labels in saved parameter file donot match with the default ones.\n\n See Command Window for details'];
-            title = 'Plot Organization > Load > layout_custom_load()';
-            oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-            set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-            button = questdlg(sprintf(question), title,'OK','OK');
-            set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-            
-            fileCheck{1,1} = 'Default labels';
-            fileCheck{1,2} = 'Imported labels';
-            plotArrayFormtimp1 = Plot_orgpar.gridlayout.columFormatOrig;
-            for Numoflist = 1:max([numel(plotArrayFormtimp1), numel(plotArrayFormtdef)])
-                if Numoflist <= numel(plotArrayFormtdef)
-                    fileCheck{Numoflist+1,1} = plotArrayFormtdef{Numoflist};
+        gui_plotorg_waveviewer.rownum.Value=Plot_orgpar.gridlayout.rows;
+        gui_plotorg_waveviewer.columnnum.Value=Plot_orgpar.gridlayout.columns;
+        NumrowsDef = plotBox(1);
+        NumcolumnsDef=plotBox(2);
+        count = 0;
+        for Numofrows = 1:NumrowsDef
+            for Numofcolumns = 1:NumcolumnsDef
+                count = count +1;
+                if count> numel(plotArray)
+                    GridinforDatadef{Numofrows,Numofcolumns} = '';
                 else
-                    fileCheck{Numoflist+1,1} =  '';
-                end
-                
-                if Numoflist <= numel(plotArrayFormtimp1)
-                    fileCheck{1+Numoflist,2} = plotArrayFormtimp1{Numoflist};
-                else
-                    fileCheck{1+Numoflist,2} ='';
-                end
-            end
-            
-            fprintf( [repmat('_',1,40) '\n']);
-            
-            for Numoflist = 1:size(fileCheck,1)
-                hdr{1} = fileCheck{Numoflist,1};
-                hdr{2} = fileCheck{Numoflist,2};
-                fprintf( '\n%5s %24s %20s\n\n', hdr{:});
-            end
-            fprintf( ['\n',repmat('_',1,40) '\n']);
-            
-            GridinforData = '';
-            count = 0;
-            for Numofrows = 1:RowNum
-                for Numofcolumns = 1:ColumNum
-                    count = count +1;
-                    if count> numel(plotArrayFormtimp)
-                        GridinforData{Numofrows,Numofcolumns} = '';
-                    else
-                        GridinforData{Numofrows,Numofcolumns} = char(plotArrayFormtimp(count));
-                    end
+                    GridinforDatadef{Numofrows,Numofcolumns} = char(plotArrayStr(count));
                 end
             end
         end
@@ -1717,14 +2057,12 @@ varargout{1} = box_erpwave_viewer_plotorg;
             LayOutauto = 'on';
         end
         try
-            ERPwaviewerin.plot_org.gridlayout.data= GridinforData;
             gui_plotorg_waveviewer.layoutinfor_table.Enable =LayOutauto;
             gui_plotorg_waveviewer.rownum.Enable=LayOutauto;
             gui_plotorg_waveviewer.columnnum.Enable=LayOutauto;
             ERPwaviewerin.plot_org.gridlayout.rows = Plot_orgpar.gridlayout.rows;
             ERPwaviewerin.plot_org.gridlayout.columns =Plot_orgpar.gridlayout.columns;
-            ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayFormtimpChag;
-            ERPwaviewerin.plot_org.gridlayout.columFormatOrig = plotArrayFormtimp;
+            %             ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayFormtimpChag;
         catch
             beep;
             disp('The imported parameters didnot match with those of "Plot Organization".')
@@ -1738,7 +2076,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.rowgapGTPcustom.String = num2str( Plot_orgpar.gridlayout.rowgap.GTPValue);
             gui_plotorg_waveviewer.rowoverlap.Value = ~rowgapAutoValue;
             gui_plotorg_waveviewer.rowgapoverlayedit.String = num2str(Plot_orgpar.gridlayout.rowgap.OverlayValue);
-            
             gui_plotorg_waveviewer.rowgap_auto.Enable = LayOutauto;
             gui_plotorg_waveviewer.rowgapGTPcustom.Enable = LayOutauto;
             gui_plotorg_waveviewer.rowoverlap.Enable = LayOutauto;
@@ -1783,14 +2120,19 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
         
-        if ERPwaviewerin.plot_org.gridlayout.GridLayputAuto.Value==0
+        if Plot_orgpar.gridlayout.GridLayoutAuto==0
             gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value = 0;
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
+            ERPwaviewerin.plot_org.gridlayout.data= GridinforDatadef;
         else
+            EmptyItemStr = '';
             gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value = 1;
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'on';
+            ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayFormtdef;
             plotArrayFormt=   ERPwaviewerin.plot_org.gridlayout.columFormat';
-            GridinforDataOrg =  ERPwaviewerin.plot_org.gridlayout.data;
+            GridinforDataOrg =  Plot_orgpar.gridlayout.data;
+            %             LabelUsedIndex = [];
+            %             countlabel=0;
             for ii = 1:size(GridinforDataOrg,1)
                 for jj = 1:size(GridinforDataOrg,2)
                     code = 0;
@@ -1800,23 +2142,84 @@ varargout{1} = box_erpwave_viewer_plotorg;
                         end
                     end
                     if code==0
+                        if ~isempty(GridinforDataOrg{ii,jj})
+                            if isnumeric(GridinforDataOrg{ii,jj})
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
+                            else
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
+                            end
+                        end
                         GridinforDataOrg{ii,jj} = '';
                     end
+                    %                     [C,IA] =ismember_bc2(GridinforDataOrg{ii,jj}, plotArrayFormt);
+                    %                     if C==1
+                    %                         countlabel=countlabel+1;
+                    %                         LabelUsedIndex(countlabel) = IA;
+                    %                     end
                 end
-                
             end
+            if ~isempty(EmptyItemStr)
+                MessageViewer= char(strcat('Plot Organization > Load - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
+                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                viewer_ERPDAT.Process_messg =4;
+            end
+            %             if ~isempty(LabelUsedIndex)
+            %                 Labeleft= setdiff(1:length(plotArrayFormt),LabelUsedIndex);
+            %                 LabeleftStr = '';
+            %                 for jjj = 1:numel(Labeleft)
+            %                     LabeleftStr = strcat(LabeleftStr,32,plotArrayFormt{Labeleft(jjj)});
+            %                 end
+            %                 if ~isempty(LabeleftStr)
+            %                     MessageViewer= char(strcat('Plot Organization > Load - Undefined items in grid locations: ',LabeleftStr));
+            %                     erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            %                     viewer_ERPDAT.Process_messg =4;
+            %                 end
+            %             end
+            
             ERPwaviewerin.plot_org.gridlayout.data =GridinforDataOrg;
             gui_plotorg_waveviewer.rownum.Value = size(GridinforDataOrg,1);
             gui_plotorg_waveviewer.columnnum.Value= size(GridinforDataOrg,2);
             ERPwaviewerin.plot_org.gridlayout.rows = gui_plotorg_waveviewer.rownum.Value;
             ERPwaviewerin.plot_org.gridlayout.columns =gui_plotorg_waveviewer.columnnum.Value;
         end
+        
+        
+        ERPwaviewerin.plot_org.gridlayout.op =gui_plotorg_waveviewer.layout_auto.Value;
+        ERPwaviewerin.plot_org.gridlayout.rows = gui_plotorg_waveviewer.rownum.Value;
+        ERPwaviewerin.plot_org.gridlayout.columns = gui_plotorg_waveviewer.columnnum.Value;
+        ERPwaviewerin.plot_org.gridlayout.rowgap.GTPOP = gui_plotorg_waveviewer.rowgap_auto.Value;
+        ERPwaviewerin.plot_org.gridlayout.rowgap.GTPValue = str2num(gui_plotorg_waveviewer.rowgapGTPcustom.String);
+        ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayOP = gui_plotorg_waveviewer.rowoverlap.Value;
+        ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayValue = str2num(gui_plotorg_waveviewer.rowgapoverlayedit.String);
+        ERPwaviewerin.plot_org.gridlayout.columngap.GTPOP = gui_plotorg_waveviewer.columngapgtpop.Value;
+        ERPwaviewerin.plot_org.gridlayout.columngap.GTPValue = str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
+        ERPwaviewerin.plot_org.gridlayout.columngap.OverlayOP = gui_plotorg_waveviewer.columnoverlay.Value;
+        ERPwaviewerin.plot_org.gridlayout.columngap.OverlayValue = str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
+        ERPwaviewerin.plot_org.gridlayout.GridLayoutAuto = gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
+        
+        
+        MERPWaveViewer_plotorg{2}=gui_plotorg_waveviewer.layout_auto.Value;
+        plotBox(1) = gui_plotorg_waveviewer.rownum.Value;
+        plotBox(2) = gui_plotorg_waveviewer.columnnum.Value;
+        MERPWaveViewer_plotorg{3}=plotBox;
+        MERPWaveViewer_plotorg{4}= gui_plotorg_waveviewer.rowgap_auto.Value;
+        MERPWaveViewer_plotorg{5}=str2num(gui_plotorg_waveviewer.rowgapGTPcustom.String);
+        MERPWaveViewer_plotorg{6}=str2num(gui_plotorg_waveviewer.rowgapoverlayedit.String);
+        MERPWaveViewer_plotorg{7} = gui_plotorg_waveviewer.columngapgtpop.Value;
+        MERPWaveViewer_plotorg{8}=str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
+        MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
+        MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
+        estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        
         assignin('base','ALLERPwaviewer',ERPwaviewerin);
         
         viewer_ERPDAT.page_xyaxis = viewer_ERPDAT.page_xyaxis+1;
         %%change the legend names based on the imported parameters
         viewer_ERPDAT.count_legend  = viewer_ERPDAT.count_legend+1;
         f_redrawERP_viewer_test();
+        MessageViewer= char(strcat('Plot Organization > Load'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 
@@ -1829,6 +2232,28 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.Process_messg =4;
             return;
         end
+        
+        MessageViewer= char(strcat('Plot Organization > Save as'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        
+        ERPtooltype = erpgettoolversion('tooltype');
+        if strcmpi(ERPtooltype,'EStudio')
+            try
+                [version1 reldate] = geterplabstudioversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        else
+            try
+                [version1 reldate] = geterplabversion;
+                erplabstudiover = version1;
+            catch
+                erplabstudiover = '';
+            end
+        end
+        
         
         try
             ERPwaviewerin  = evalin('base','ALLERPwaviewer');
@@ -1851,7 +2276,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         elseif gui_plotorg_waveviewer.plotorg_c6.Value ==1
             GridValue=3; OverlayValue = 2; PageValue =1;
         end
-        
+        Plot_orgpar.version = erplabstudiover;
         Plot_orgpar.Grid =GridValue;
         Plot_orgpar.Overlay = OverlayValue;
         Plot_orgpar.Pages = PageValue;
@@ -1860,7 +2285,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         Plot_orgpar.gridlayout.rows = gui_plotorg_waveviewer.rownum.Value;
         Plot_orgpar.gridlayout.columns = gui_plotorg_waveviewer.columnnum.Value;
         Plot_orgpar.gridlayout.columFormat = ERPwaviewerin.plot_org.gridlayout.columFormat;
-        Plot_orgpar.gridlayout.columFormatOrig = ERPwaviewerin.plot_org.gridlayout.columFormatOrig;
         Plot_orgpar.gridlayout.rowgap.GTPOP = ERPwaviewerin.plot_org.gridlayout.rowgap.GTPOP;
         Plot_orgpar.gridlayout.rowgap.GTPValue = ERPwaviewerin.plot_org.gridlayout.rowgap.GTPValue;
         Plot_orgpar.gridlayout.rowgap.OverlayOP = ERPwaviewerin.plot_org.gridlayout.rowgap.OverlayOP;
@@ -1870,7 +2294,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         Plot_orgpar.gridlayout.columngap.GTPValue = ERPwaviewerin.plot_org.gridlayout.columngap.GTPValue;
         Plot_orgpar.gridlayout.columngap.OverlayOP = ERPwaviewerin.plot_org.gridlayout.columngap.OverlayOP;
         Plot_orgpar.gridlayout.columngap.OverlayValue = ERPwaviewerin.plot_org.gridlayout.columngap.OverlayValue;
-        Plot_orgpar.gridlayout.GridLayputAuto= ERPwaviewerin.plot_org.gridlayout.GridLayputAuto;
+        Plot_orgpar.gridlayout.GridLayoutAuto= ERPwaviewerin.plot_org.gridlayout.GridLayoutAuto;
         pathstr = pwd;
         namedef ='LayoutInfor';
         [erpfilename, erppathname, indxs] = uiputfile({'*.mat'}, ...
@@ -1887,10 +2311,15 @@ varargout{1} = box_erpwave_viewer_plotorg;
         try
             save([erppathname,erpFilename],'Plot_orgpar','-v7.3');
         catch
-            beep;
-            disp('Cannot save the parameters for "Plot Organization", please try again');
+            MessageViewer = ['Plot Organization > Save as: Cannot save the parameters for "Plot Organization", please try again'];
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =3;
             return;
         end
+        MessageViewer= char(strcat('Plot Organization > Save as'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
+        
     end
 
 
@@ -2049,7 +2478,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         end
         
-        if ERPwaviewer_apply.plot_org.gridlayout.GridLayputAuto.Value==0
+        if ERPwaviewer_apply.plot_org.gridlayout.GridLayoutAuto.Value==0
             gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value = 0;
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
         else
@@ -2121,26 +2550,21 @@ varargout{1} = box_erpwave_viewer_plotorg;
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormt = plotArrayStr;
-            ALLabelStr = chanStr;
         elseif GridValue == 2 %% if the selected Bin is "Grid"
             plotArray = binArray;
             plotArrayStr = binStr(binArray);
             plotArrayFormt = plotArrayStr;
-            ALLabelStr = binStr;
         elseif GridValue == 3%% if the selected ERPset is "Grid"
             plotArray = ERPsetArray;
             for Numoferpset = 1:numel(ERPsetArray)
                 plotArrayStr(Numoferpset,1) = {char(ALLERPIN(ERPsetArray(Numoferpset)).erpname)};
             end
             plotArrayFormt = plotArrayStr;
-            for ii = 1:length(ALLERPIN)
-                ALLabelStr(ii,1) ={char(ALLERPIN(ii).erpname)};
-            end
+            
         else
             plotArray = chanArray;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormt = plotArrayStr;
-            ALLabelStr = chanStr;
         end
         
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
@@ -2165,11 +2589,14 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         if gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value ==0
+            gui_plotorg_waveviewer.rownum.Value = size(GridinforDatadef,1);
+            gui_plotorg_waveviewer.columnnum.Value = size(GridinforDatadef,2);
             ERPwaviewerin.plot_org.gridlayout.rows = gui_plotorg_waveviewer.rownum.Value;
             ERPwaviewerin.plot_org.gridlayout.columns =gui_plotorg_waveviewer.columnnum.Value;
             ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayFormt';
             ERPwaviewerin.plot_org.gridlayout.data =GridinforDatadef;
         else
+            EmptyItemStr = '';
             ERPwaviewerin.plot_org.gridlayout.columFormat=plotArrayFormt';
             GridinforDataOrg =  ERPwaviewerin.plot_org.gridlayout.data;
             for ii = 1:size(GridinforDataOrg,1)
@@ -2181,10 +2608,23 @@ varargout{1} = box_erpwave_viewer_plotorg;
                         end
                     end
                     if code==0
+                        if ~isempty(GridinforDataOrg{ii,jj})
+                            if isnumeric(GridinforDataOrg{ii,jj})
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
+                            else
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
+                            end
+                        end
                         GridinforDataOrg{ii,jj} = '';
                     end
                 end
             end
+            if ~isempty(EmptyItemStr)
+                MessageViewer= char(strcat('Plot Organization > Apply-Empty item(s):',EmptyItemStr,32,'because they donot match with the selected labels'));
+                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                viewer_ERPDAT.Process_messg =4;
+            end
+            
             ERPwaviewerin.plot_org.gridlayout.data =GridinforDataOrg;
             gui_plotorg_waveviewer.rownum.Value = size(GridinforDataOrg,1);
             gui_plotorg_waveviewer.columnnum.Value= size(GridinforDataOrg,2);
@@ -2204,7 +2644,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         ERPwaviewerin.plot_org.gridlayout.columngap.GTPValue = str2num(gui_plotorg_waveviewer.columngapgtpcustom.String);
         ERPwaviewerin.plot_org.gridlayout.columngap.OverlayOP = gui_plotorg_waveviewer.columnoverlay.Value;
         ERPwaviewerin.plot_org.gridlayout.columngap.OverlayValue = str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
-        ERPwaviewerin.plot_org.gridlayout.GridLayputAuto = gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
+        ERPwaviewerin.plot_org.gridlayout.GridLayoutAuto = gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
         
         
         MERPWaveViewer_plotorg{2}=gui_plotorg_waveviewer.layout_auto.Value;
@@ -2328,6 +2768,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             plotArrayStr = chanStr(chanArray);
             plotArrayFormt = plotArrayStr;
         end
+        
         plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
         if gui_plotorg_waveviewer.layout_auto.Value
             try
@@ -2357,6 +2798,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.columnnum.Value= size(GridinforData,2);
             ERPwaviewer_apply.plot_org.gridlayout.columFormat = plotArrayFormt';
         else
+            EmptyItemStr = '';
             ERPwaviewer_apply.plot_org.gridlayout.columFormat=plotArrayFormt';
             GridinforDataOrg =  ERPwaviewer_apply.plot_org.gridlayout.data;
             for ii = 1:size(GridinforDataOrg,1)
@@ -2368,10 +2810,24 @@ varargout{1} = box_erpwave_viewer_plotorg;
                         end
                     end
                     if code==0
+                        if ~isempty(GridinforDataOrg{ii,jj})
+                            if isnumeric(GridinforDataOrg{ii,jj})
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
+                            else
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
+                            end
+                        end
                         GridinforDataOrg{ii,jj} = '';
                     end
                 end
             end
+            
+            if ~isempty(EmptyItemStr)
+                MessageViewer= char(strcat('Plot Organization > v_currentERP_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
+                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                viewer_ERPDAT.Process_messg =4;
+            end
+            
             ERPwaviewer_apply.plot_org.gridlayout.data =GridinforDataOrg;
             gui_plotorg_waveviewer.rownum.Value = size(GridinforDataOrg,1);
             gui_plotorg_waveviewer.columnnum.Value= size(GridinforDataOrg,2);
@@ -2614,7 +3070,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             
         end
         try
-            GridLayoutAuto = ERPwaviewer_apply.plot_org.gridlayout.GridLayputAuto;
+            GridLayoutAuto = ERPwaviewer_apply.plot_org.gridlayout.GridLayoutAuto;
         catch
             GridLayoutAuto=0;
         end
@@ -2630,6 +3086,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
             Datanew = ERPwaviewer_apply.plot_org.gridlayout.data;
             ERPwaviewer_apply.plot_org.gridlayout.rows =size(Datanew,1);
             ERPwaviewer_apply.plot_org.gridlayout.columns = size(Datanew,2);
+            LabelUsedIndex = [];
+            countlabel=0;
+            EmptyItemStr ='';
             for ii = 1:size(Datanew,1)
                 for jj = 1:size(Datanew,2)
                     code1 = 0;
@@ -2639,11 +3098,26 @@ varargout{1} = box_erpwave_viewer_plotorg;
                         end
                     end
                     if code1==0
+                        if ~isempty(Datanew{ii,jj})
+                            if isnumeric(Datanew{ii,jj})
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(Datanew{ii,jj}));
+                            else
+                                EmptyItemStr = strcat(EmptyItemStr,32,num2str(Datanew{ii,jj}));
+                            end
+                        end
                         Datanew{ii,jj} = '';
                     end
                 end
             end
             ERPwaviewer_apply.plot_org.gridlayout.data = Datanew;
+            
+            if ~isempty(EmptyItemStr)
+                MessageViewer= char(strcat('Plot Organization > loadproper_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
+                erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                viewer_ERPDAT.Process_messg =4;
+            end
+            
+            
         end
         
         gui_plotorg_waveviewer.layout_auto.Enable ='on';

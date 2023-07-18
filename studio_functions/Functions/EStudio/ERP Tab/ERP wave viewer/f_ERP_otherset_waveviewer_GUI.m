@@ -700,26 +700,34 @@ varargout{1} = box_erplabelset_viewer_otherset;
         %
         %%SEM settings
         SEMValue =  ERPwaviewer_apply.SEM.active;
+        if isempty(SEMValue) || numel(SEMValue)~=1 || (SEMValue~=0 && SEMValue~=1)
+            SEMValue=0;
+            ERPwaviewer_apply.SEM.active=0;
+        end
         if SEMValue==1
+            gui_otherset_waveviewer.show_SEM.Value =1;
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'on';
             ERRORValue = ERPwaviewer_apply.SEM.error;
-            if isempty(ERRORValue) || ERRORValue<0 || ERRORValue>10
-                ERRORValue = 0;
-                ERPwaviewer_apply.SEM.error = 0;
+            if isempty(ERRORValue) || ERRORValue<=0 || ERRORValue>10
+                ERRORValue = 1;
+                ERPwaviewer_apply.SEM.error = 1;
             end
             gui_otherset_waveviewer.SEM_custom.Value =ERRORValue+1;
             SEMTrans = ERPwaviewer_apply.SEM.trans;
-            if isempty(SEMTrans) || SEMTrans<0 || SEMTrans>1
-                SEMTrans = 0;
-                ERPwaviewer_apply.SEM.trans = 0;
+            if isempty(SEMTrans) || SEMTrans<=0 || SEMTrans>1
+                SEMTrans = 2;
+                ERPwaviewer_apply.SEM.trans = 0.2;
             end
             gui_otherset_waveviewer.SEMtrans_custom.Value  = SEMTrans*10 +1;
         else
+            gui_otherset_waveviewer.show_SEM.Value =0;
             gui_otherset_waveviewer.SEM_custom.Enable = 'off';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
             gui_otherset_waveviewer.SEM_custom.Value =1;
             gui_otherset_waveviewer.SEMtrans_custom.Value =1;
+            ERPwaviewer_apply.SEM.error = 0;
+            ERPwaviewer_apply.SEM.trans = 0;
         end
         
         %

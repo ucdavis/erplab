@@ -375,7 +375,13 @@ try
     end
 catch
 end
-
+if ERPwaviewerIN.SEM.active==0
+    Standerr = 0;
+else
+    if Standerr<=0
+        Standerr=1;
+    end
+end
 %
 %%-------------------------------Transparency------------------------------
 Transparency = 0;
@@ -389,6 +395,14 @@ try
 catch
 end
 
+if ERPwaviewerIN.SEM.active==0
+    Transparency = 0;
+    
+else
+    if Transparency<=0
+        Transparency=0.2;
+    end
+end
 
 %
 %%------------------------------Grid space---------------------------------

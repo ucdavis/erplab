@@ -49,6 +49,7 @@ catch
     gui_erp_waviewer.ScrollVerticalOffsets=0;
     gui_erp_waviewer.ScrollHorizontalOffsets=0;
 end
+
 % We first clear the existing axes ready to build a new one
 if ishandle( gui_erp_waviewer.ViewAxes )
     delete( gui_erp_waviewer.ViewAxes );
@@ -78,7 +79,10 @@ else
         zoomSpace =0;
     end
 end
-
+if zoomSpace ==0
+    gui_erp_waviewer.ScrollVerticalOffsets=0;
+    gui_erp_waviewer.ScrollHorizontalOffsets=0;
+end
 pb_height = 1*Res(4);
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;%%Get background color
@@ -715,12 +719,17 @@ elseif viewer_ERPDAT.Process_messg ==2
     gui_erp_waviewer.Process_messg.ForegroundColor = [0 0.5 0];
     
 elseif viewer_ERPDAT.Process_messg ==3
+    if ~strcmp(gui_erp_waviewer.Process_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
+    fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
     gui_erp_waviewer.Process_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
-    fprintf([Processed_Method,datestr(datetime('now')),'\n.']);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0 0];
 else
-    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',32,Processed_Method,'(see Command Window).');
-    fprintf([Processed_Method,datestr(datetime('now')),'\n.']);
+    if ~strcmpi(gui_erp_waviewer.Process_messg.String,strcat('Warning:',32,Processed_Method,32,'(see Command Window).'))
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
+    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
+    
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
@@ -988,17 +997,17 @@ datresh = squeeze(ERPdatadef(qchanArray,:,qbinArray,qERPArray));
 yymax   = max(datresh(:));
 yymin   = min(datresh(:));
 if ~isempty(yymax) && isempty(yymin)
-if abs(yymax)<1 && abs(yymin)<1
-    try
-        scalesdef(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
-    catch
-        scalesdef(1:2) = [-1 1];
+    if abs(yymax)<1 && abs(yymin)<1
+        try
+            scalesdef(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
+        catch
+            scalesdef(1:2) = [-1 1];
+        end
+    else
+        scalesdef(1:2) = [floor(yymin*1.2) ceil(yymax*1.1)]; % JLC. Sept 26, 2012
     end
 else
-    scalesdef(1:2) = [floor(yymin*1.2) ceil(yymax*1.1)]; % JLC. Sept 26, 2012
-end
-else
-  scalesdef(1:2) = [-1 1];  
+    scalesdef(1:2) = [-1 1];
 end
 yylim_out = f_erpAutoYLim(ALLERP, qERPArray,qPLOTORG,qbinArray, qchanArray,qCURRENTPLOT);
 try
@@ -1484,7 +1493,7 @@ if isempty( qYScales)
     qYScales = [floor(min(bindata(:))),ceil(max(bindata(:)))];
 end
 if isempty(y_scale_def)
-  y_scale_def = qYScales;  
+    y_scale_def = qYScales;
 end
 if isyaxislabel==1 %% y axis GAP
     if  Ypert<0
