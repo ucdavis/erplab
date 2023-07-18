@@ -106,12 +106,13 @@ if nargin == 1 %GUI
 
         def  = erpworkingmemory('pop_plotconfusions');
         if isempty(def)
-            def = {1 1 1 []};
+            def = {1 1 1 [] 1};
             %def{1} = plot menu (1: tp confusion 2:mean confusion two
             %                           latency)
             %def{2} = colormap
             %def{3} = format (1: fig, 2: png); 
-            %def{4} = times in []; 
+            %def{4} = times in [];
+            %def{5} = save(1/def) or no save
         end
         
         
@@ -142,7 +143,8 @@ if nargin == 1 %GUI
         plot_cmap     = answer{2};%plot_colormap
         tp =   answer{3}; % 0;1
         pname = answer{4}; 
-        frmt = answer{5}; 
+        frmt = answer{5};
+        savec = answer{6}; 
         %warnon    = answer {4}; 
         cmaps = {'default','viridis','gray','parula','cool', 'jet','hsv', 'hot' };
         frmts = {'fig','png'}; 
@@ -156,7 +158,7 @@ if nargin == 1 %GUI
 %         end
         
         %def = {actualnset, optioni, mvpcset,stderror};
-        def = {plot_menu, plot_cmap,frmt, tp};
+        def = {plot_menu, plot_cmap,frmt, tp, savec};
         erpworkingmemory('pop_plotconfusions', def);
 %         if stderror==1
 %             stdsstr = 'on';
@@ -179,12 +181,18 @@ if nargin == 1 %GUI
             meas = 'average'; 
             
         end
+        
+        if savec == 1
+            savestr = 'on';
+        else
+            savestr = 'off';
+        end
             %
             % Somersault
             %
 
            pop_plotconfusions(ALLMVPC, 'Times',tp,'Type',meas, 'MVPCindex',currdata,...
-               'filepath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'Saveas','on','History', 'gui');
+               'filepath',pname, 'Colormap', cmaps{plot_cmap}, 'Format',frmts{frmt}, 'Saveas',savestr,'History', 'gui');
         pause(0.1)
         return
     else
@@ -478,10 +486,17 @@ end
 %% plot
 for pnt = 1:Npts 
     
+    figure; %new figure for every plot
     C = cf_scores(:,:,pnt); 
-    C = flipud(C); %flips element values in matrix to align with Bae&Luck 2018, but doesn't flip row labels
+    %C = flipud(C); %flips element values in matrix to align with Bae&Luck 2018, but doesn't flip row labels
+    %cf_string2 = fliplr(cf_strings); % flips row labels
+
+    %swap rows and columns of matrix as per Steve
+    Cnew = permute(C,[2 1]);
+    Cnew = flipud(Cnew);
     cf_string2 = fliplr(cf_strings); % flips row labels
-    h = heatmap(cf_strings,cf_string2,C);
+   
+    h = heatmap(cf_strings,cf_string2,Cnew);
     if ~strcmpi(cmap,'default')
         h.Colormap = eval(cmap);
     end
@@ -496,8 +511,8 @@ for pnt = 1:Npts
             
         end
         
-        h.YLabel = 'True Labels';
-        h.XLabel = 'Predicted Labels';
+        h.YLabel = 'Predicted Labels';
+        h.XLabel = 'True Labels';
     else 
         if avg_win == 1
             h.Title = ['Confusion Matrix across ', num2str(tp(1)),'ms-',num2str(tp(2)), 'ms (Average Distance)'];

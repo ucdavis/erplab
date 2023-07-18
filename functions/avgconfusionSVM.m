@@ -33,7 +33,7 @@ for tp = 1:Ntp
     tmat_tp = reshape(trues,[1 Nclasses*runs]);
     
     [C,c3] = confusionmat(tmat_tp, pmat_tp);
-    confusions(:,:,tp) = C/(unique(sum(C,2)));  % Y is true labels, x is predicted labels
+    confusions(:,:,tp) = C/(unique(sum(C,2)));  % row is true labels, column is predicted labels
     
 end
 

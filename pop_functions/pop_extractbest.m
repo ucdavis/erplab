@@ -111,6 +111,7 @@ if nargin ==1 %GUI case, ALLEEG is input
     def  = erpworkingmemory('pop_extractBEST');
     
     nbins = ALLEEG(currdata).EVENTLIST.nbin;
+
     
     if isempty(def) 
         def = {1:nbins,0,{'',''},1,1}; 
