@@ -423,7 +423,7 @@ comCALIERP   = ['[ERP, ERPCOM]         = pop_calibraterp(ERP);' '[ERP, ALLERPCOM
 comGAVG      = ['[ERP, ERPCOM]     = pop_gaverager(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comERPMT     = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comERPView   = ['[ALLERP, Amp, Lat, ERPCOM] = pop_geterpvalues(ALLERP,[],[],[],''Erpsets'', 0,''Viewer'', ''on'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
-
+comERPSL      = ['[ERP, ERPCOM] = pop_ERP_simulation(ALLERP);' ];%'[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'
 %% export figure
 comEXPPDF    = ['[ERP, ERPCOM] = pop_exporterplabfigure(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 
@@ -671,6 +671,7 @@ uimenu( submenu,'Label','ERP Viewer ','CallBack', comERPView,'userdata','startup
 %% GRAND AVERAGE
 %
 uimenu( submenu,'Label','Average across ERPsets (Grand Average) ','CallBack', comGAVG,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
+uimenu( submenu,'Label','Create Artificial ERP Waveform','CallBack', comERPSL,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
 
 
 
