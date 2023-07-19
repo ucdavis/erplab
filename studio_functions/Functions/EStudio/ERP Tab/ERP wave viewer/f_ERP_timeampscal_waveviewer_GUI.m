@@ -2558,10 +2558,17 @@ varargout{1} = box_erpxtaxes_viewer_property;
 
 
 %%------------change this panel based on the changed ERPsets---------------
-    function v_currentERP_change(~,~)
+    function v_currentERP_change(~,~) 
         if viewer_ERPDAT.Count_currentERP == 0
             return;
         end
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex==3
+            xyaxis_apply();
+            estudioworkingmemory('MyViewer_xyaxis',0);
+        end
+        
+       
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -2587,11 +2594,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
         xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
-        if isempty(xSecondflag) && isempty(xmSecondflag)
+%         if isempty(xSecondflag) && isempty(xmSecondflag)
             xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
-        end
-        if xSecondflag ==0 && xmSecondflag==1
-            xdispysecondValue =1;
+%         end
+%         if xSecondflag ==0 && xmSecondflag==1
+%             xdispysecondValue =1;
             if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
                 if xdispysecondValue==1
                     gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
@@ -2601,9 +2608,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
                     gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
                 end
             end
-        else
-            xdispysecondValue =0;
-        end
+%         else
+%             xdispysecondValue =0;
+%         end
         if xdispysecondValue==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
             if xtick_precision<0
@@ -2847,6 +2854,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if viewer_ERPDAT.page_xyaxis==0
             return;
         end
+        %%execute any changes in this panel
+        [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+        if ~isempty(messgStr) && viewerpanelIndex==3
+            xyaxis_apply();
+            estudioworkingmemory('MyViewer_xyaxis',0);
+        end
+        
         try
             ERPwaviewer_apply  = evalin('base','ALLERPwaviewer');
         catch
