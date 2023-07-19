@@ -52,6 +52,7 @@ addpath(genpath(p))
 try
     clearvars observe_ERPDAT;
     clearvars v_ERPDAT;
+    
 catch
 end
 
@@ -199,6 +200,9 @@ assignin('base','plotset', plotset);
 global ALLERP
 global ALLBEST
 global ALLMVPC
+
+ALLERP   = evalin('base', 'ALLERP');
+ALLERP = []; 
 
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
