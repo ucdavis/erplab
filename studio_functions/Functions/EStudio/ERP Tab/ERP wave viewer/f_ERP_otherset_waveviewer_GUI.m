@@ -5,13 +5,13 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022 && 2023
 
 
 function varargout = f_ERP_otherset_waveviewer_GUI(varargin)
 
 global viewer_ERPDAT;
-addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
+addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 % addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
@@ -40,7 +40,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_otherset_waviewer(FonsizeDefault);
 varargout{1} = box_erplabelset_viewer_otherset;
@@ -49,8 +49,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         
         try
-            ALLERPwaviewer = evalin('base','ALLERPwaviewer');
-            ERPwaviewer = ALLERPwaviewer;
+            ERPwaviewer = evalin('base','ALLERPwaviewer');
         catch
             beep;
             disp('f_ERP_lineset_waveviewer_GUI() error: Please run the ERP wave viewer again.');
@@ -59,36 +58,67 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         gui_otherset_waveviewer.DataSelBox = uiextras.VBox('Parent', box_erplabelset_viewer_otherset,'BackgroundColor',ColorBviewer_def);
         %%----------Polarity Setting---------------------------------------
-        Polaritylabel = 1;
+        MERPWaveViewer_others= estudioworkingmemory('MERPWaveViewer_others');%%call the parameters for this panel
+        try
+            Polaritylabel= MERPWaveViewer_others{1};
+        catch
+            Polaritylabel = 1;
+            MERPWaveViewer_others{1}=1;
+        end
+        if numel(Polaritylabel)~=1 || (Polaritylabel~=1 && Polaritylabel~=0)
+            MERPWaveViewer_others{1}=1;
+            Polaritylabel = 1;
+        end
+        
         gui_otherset_waveviewer.polarity_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.polarity_title,'String','Polarity',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','left'); %,'FontWeight','bold'
         gui_otherset_waveviewer.polarity_up = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.polarity_title,'String','Positive up',...
             'callback',@polarup,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',Polaritylabel); %,'FontWeight','bold'
+        gui_otherset_waveviewer.polarity_up.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.polarity_down = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.polarity_title,'String','Negative up',...
             'callback',@polardown, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',~Polaritylabel); %,'FontWeight','bold'
+        gui_otherset_waveviewer.polarity_down.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.polarity_title,'Sizes',[50 90 90]);
         ERPwaviewer.polarity=gui_otherset_waveviewer.polarity_up.Value;
         
         %%----------------SEM of wave--------------------------------------
-        SEMlabel = 0;
-        SEMCustomValue = 0;
+        try
+            SEMlabel = MERPWaveViewer_others{2};
+        catch
+            MERPWaveViewer_others{2}=0;
+            SEMlabel = 0;
+        end
+        try
+            SEMCustomValue = MERPWaveViewer_others{3};
+        catch
+            MERPWaveViewer_others{3}=1;
+            SEMCustomValue = 1;
+        end
         gui_otherset_waveviewer.SEM_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.show_SEM = uicontrol('Style','checkbox','Parent', gui_otherset_waveviewer.SEM_title ,'String','Show standard error',...
             'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',SEMlabel); %
+        gui_otherset_waveviewer.show_SEM.KeyPressFcn = @otherset_presskey;
         SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
         gui_otherset_waveviewer.SEM_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEM_title ,'String',SMEString,...
             'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMCustomValue+1); %
+        gui_otherset_waveviewer.SEM_custom.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.SEM_title,'Sizes',[160 80]);
         ERPwaviewer.SEM.active =gui_otherset_waveviewer.show_SEM.Value;
         ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
-        SEMtransValue = 0;
+        try
+            SEMtransValue=  MERPWaveViewer_others{4};
+        catch
+            MERPWaveViewer_others{4}=0.2;
+            SEMtransValue = 0.2;
+        end
         gui_otherset_waveviewer.SEMtrans_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.SEMtrans_title ,'String','transoarency',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'HorizontalAlignment','right'); %
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         gui_otherset_waveviewer.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', gui_otherset_waveviewer.SEMtrans_title ,'String',SMEtransString,...
             'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',SEMtransValue*10 +1); %
+        gui_otherset_waveviewer.SEMtrans_custom.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.SEMtrans_title,'Sizes',[160 80]);
         if SEMlabel
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
@@ -100,12 +130,14 @@ varargout{1} = box_erplabelset_viewer_otherset;
         ERPwaviewer.SEM.trans = (gui_otherset_waveviewer.SEMtrans_custom.Value-1)/10;
         
         %%----------------baseline correction------------------------------
-        blc_def = 'none';
         try
-            blc_def = ERPwaviewer.baselinecorr;
+            blc_def = MERPWaveViewer_others{5};
         catch
             blc_def = 'none';
+            MERPWaveViewer_others{5} = 'none';
         end
+        
+        
         if numel(blc_def) ==2
             noneValue =0;
             preValue =0;
@@ -155,17 +187,23 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.bsl_title_1 = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.bsl_none = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','None',...
             'callback',@bsl_none,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',noneValue);
+        gui_otherset_waveviewer.bsl_none.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_pre = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Pre',...
             'callback',@bsl_pre,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',preValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_pre.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_post = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Post',...
             'callback',@bsl_post, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',postValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_post.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_whole = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_1 ,'String','Whole',...
             'callback',@bsl_whole, 'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',wholeValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_whole.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_title_3 = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         gui_otherset_waveviewer.bsl_custom = uicontrol('Style','radiobutton','Parent', gui_otherset_waveviewer.bsl_title_3 ,'String','Custom',...
             'callback',@bsl_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Value',customValue); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_custom.KeyPressFcn = @otherset_presskey;
         gui_otherset_waveviewer.bsl_customedit = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.bsl_title_3 ,'String',customString,...
             'callback',@bsl_customedit, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',customEnable); %,'HorizontalAlignment','left','FontWeight','bold'
+        gui_otherset_waveviewer.bsl_customedit.KeyPressFcn = @otherset_presskey;
         set( gui_otherset_waveviewer.bsl_title_3,'Sizes',[80 155]);
         
         if gui_otherset_waveviewer.bsl_none.Value ==1
@@ -183,12 +221,22 @@ varargout{1} = box_erplabelset_viewer_otherset;
         end
         
         %%Figure background color: the default is white
-        bgColor = [1 1 1];
+        try
+            bgColor=  MERPWaveViewer_others{6};
+        catch
+            bgColor = [1 1 1];
+            MERPWaveViewer_others{6} = [1 1 1];
+        end
+        if numel(bgColor)~=3 || max(bgColor(:))>1 || min(bgColor(:))<0
+            bgColor = [1 1 1];
+            MERPWaveViewer_others{6} = [1 1 1];
+        end
         gui_otherset_waveviewer.figurebakcolor_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String','Figure Background Color:',...
             'FontSize',FonsizeDefault-1,'BackgroundColor',ColorBviewer_def,'FontWeight','bold'); %,'HorizontalAlignment','left'
         gui_otherset_waveviewer.figurebakcolor = uicontrol('Style','edit','Parent', gui_otherset_waveviewer.figurebakcolor_title,'String',num2str(bgColor),...
             'callback',@figbackcolor,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+        gui_otherset_waveviewer.figurebakcolor.KeyPressFcn = @otherset_presskey;
         set(gui_otherset_waveviewer.figurebakcolor_title,'Sizes',[150 85]);
         ERPwaviewer.figbackgdcolor = str2num(gui_otherset_waveviewer.figurebakcolor.String);
         
@@ -205,8 +253,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         set(gui_otherset_waveviewer.help_run_title,'Sizes',[40 70 20 70 20]);
         
         set(gui_otherset_waveviewer.DataSelBox,'Sizes',[25 25 25 20 20 25 25 25]);
-        ALLERPwaviewer=ERPwaviewer;
-        assignin('base','ALLERPwaviewer',ALLERPwaviewer);
+        assignin('base','ALLERPwaviewer',ERPwaviewer);
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
     end
 
 %%**************************************************************************%%
@@ -460,17 +508,17 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         bgColor = str2num(Str.String);
         if isempty(bgColor)
-            msgboxText =  strcat('Inputs are invalid and it should be,e.g., [1 1 1]');
-            title = 'EStudio>ERP Wave Viewer>Other: Figure Background Color';
-            errorfound(msgboxText, title);
+            viewer_ERPDAT.Process_messg =4;
+            msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
+            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
             return;
         end
         
         if max(bgColor)>1 || min(bgColor) <0 ||  numel(bgColor)~=3
-            msgboxText =  strcat('Inputs are invalid and it should be,e.g., [1 1 1]');
-            title = 'EStudio>ERP Wave Viewer>Other: Figure Background Color';
-            errorfound(msgboxText, title);
+            viewer_ERPDAT.Process_messg =4;
+            msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
+            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
             return;
         end
@@ -575,22 +623,26 @@ varargout{1} = box_erplabelset_viewer_otherset;
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         try
-            ALLERPwaviewer = evalin('base','ALLERPwaviewer');
-            ERPwaviewer_apply = ALLERPwaviewer;
+            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
             viewer_ERPDAT.Process_messg =3;
             fprintf(2,'\n Other > Apply-f_ERP_otherset_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
             return;
         end
         ERPwaviewer_apply.polarity = gui_otherset_waveviewer.polarity_up.Value;%% the polarity of wave
+        MERPWaveViewer_others{1} = ERPwaviewer_apply.polarity;
         %%SME
         ERPwaviewer_apply.SEM.active  = gui_otherset_waveviewer.show_SEM.Value;
         ERPwaviewer_apply.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
+        MERPWaveViewer_others{2} = ERPwaviewer_apply.SEM.active;
+        MERPWaveViewer_others{3} = ERPwaviewer_apply.SEM.error;
         %%trans
         ERPwaviewer_apply.SEM.trans = (gui_otherset_waveviewer.SEMtrans_custom.Value-1)/10;
-        %%MGFP
-        %         ERPwaviewer_apply.MGFP = gui_otherset_waveviewer.MGFP_on.Value;
+        MERPWaveViewer_others{4} = ERPwaviewer_apply.SEM.trans;
+        
+        %%baseline correction
         ERPwaviewer_apply.figbackgdcolor = str2num(gui_otherset_waveviewer.figurebakcolor.String);
+        MERPWaveViewer_others{6} = ERPwaviewer_apply.figbackgdcolor;
         %%baseline correction method
         if gui_otherset_waveviewer.bsl_none.Value ==1
             ERPwaviewer_apply.baselinecorr = 'none';
@@ -615,15 +667,17 @@ varargout{1} = box_erplabelset_viewer_otherset;
         else
             ERPwaviewer_apply.baselinecorr = 'none';
         end
-        ALLERPwaviewer=ERPwaviewer_apply;
-        assignin('base','ALLERPwaviewer',ALLERPwaviewer);
+        MERPWaveViewer_others{5} = ERPwaviewer_apply.baselinecorr;
+        
+        assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
         f_redrawERP_viewer_test();
         viewer_ERPDAT.Process_messg =2;
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
     end
 
 %%---------change this panel based on the loaded paras.--------------------
-    function count_loadproper_change(~,~)
-        if viewer_ERPDAT.count_loadproper ==0
+    function loadproper_change(~,~)
+        if viewer_ERPDAT.loadproper_count ~=7
             return;
         end
         try
@@ -646,26 +700,34 @@ varargout{1} = box_erplabelset_viewer_otherset;
         %
         %%SEM settings
         SEMValue =  ERPwaviewer_apply.SEM.active;
+        if isempty(SEMValue) || numel(SEMValue)~=1 || (SEMValue~=0 && SEMValue~=1)
+            SEMValue=0;
+            ERPwaviewer_apply.SEM.active=0;
+        end
         if SEMValue==1
+            gui_otherset_waveviewer.show_SEM.Value =1;
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'on';
             ERRORValue = ERPwaviewer_apply.SEM.error;
-            if isempty(ERRORValue) || ERRORValue<0 || ERRORValue>10
-                ERRORValue = 0;
-                ERPwaviewer_apply.SEM.error = 0;
+            if isempty(ERRORValue) || ERRORValue<=0 || ERRORValue>10
+                ERRORValue = 1;
+                ERPwaviewer_apply.SEM.error = 1;
             end
             gui_otherset_waveviewer.SEM_custom.Value =ERRORValue+1;
             SEMTrans = ERPwaviewer_apply.SEM.trans;
-            if isempty(SEMTrans) || SEMTrans<0 || SEMTrans>1
-                SEMTrans = 0;
-                ERPwaviewer_apply.SEM.trans = 0;
+            if isempty(SEMTrans) || SEMTrans<=0 || SEMTrans>1
+                SEMTrans = 2;
+                ERPwaviewer_apply.SEM.trans = 0.2;
             end
             gui_otherset_waveviewer.SEMtrans_custom.Value  = SEMTrans*10 +1;
         else
+            gui_otherset_waveviewer.show_SEM.Value =0;
             gui_otherset_waveviewer.SEM_custom.Enable = 'off';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
             gui_otherset_waveviewer.SEM_custom.Value =1;
             gui_otherset_waveviewer.SEMtrans_custom.Value =1;
+            ERPwaviewer_apply.SEM.error = 0;
+            ERPwaviewer_apply.SEM.trans = 0;
         end
         
         %
@@ -736,6 +798,16 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         ERPwaviewer_apply.figbackgdcolor = BackgroundColor;
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
+        viewer_ERPDAT.loadproper_count =0;
+        %%save the reset parameters for this panel
+        MERPWaveViewer_others{1} = ERPwaviewer_apply.polarity;
+        MERPWaveViewer_others{2} = ERPwaviewer_apply.SEM.active;
+        MERPWaveViewer_others{3} = ERPwaviewer_apply.SEM.error;
+        MERPWaveViewer_others{4} = ERPwaviewer_apply.SEM.trans;
+        MERPWaveViewer_others{6} = ERPwaviewer_apply.figbackgdcolor;
+        MERPWaveViewer_others{5} = ERPwaviewer_apply.baselinecorr;
+        estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        
     end
 
 
@@ -775,12 +847,12 @@ varargout{1} = box_erplabelset_viewer_otherset;
             %%SME
             gui_otherset_waveviewer.show_SEM.Value =0;
             ERPwaviewerin.SEM.active  = gui_otherset_waveviewer.show_SEM.Value;
-            gui_otherset_waveviewer.SEM_custom.Value =1;
+            gui_otherset_waveviewer.SEM_custom.Value =2;
             gui_otherset_waveviewer.SEM_custom.Enable = 'off';
             ERPwaviewerin.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
             %%trans
+            gui_otherset_waveviewer.SEMtrans_custom.Value =3;
             ERPwaviewerin.SEM.trans = (gui_otherset_waveviewer.SEMtrans_custom.Value-1)/10;
-            gui_otherset_waveviewer.SEMtrans_custom.Value =1;
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
             gui_otherset_waveviewer.bsl_none.Value =1;
             ERPwaviewerin.baselinecorr = 'none';
@@ -796,8 +868,29 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
-            %             viewer_ERPDAT.Reset_Waviewer_panel=3;
+            
+            %%save the reset parameters for this panel
+            MERPWaveViewer_others{1} = ERPwaviewerin.polarity;
+            MERPWaveViewer_others{2} = ERPwaviewerin.SEM.active;
+            MERPWaveViewer_others{3} = ERPwaviewerin.SEM.error;
+            MERPWaveViewer_others{4} = ERPwaviewerin.SEM.trans;
+            MERPWaveViewer_others{6} = ERPwaviewerin.figbackgdcolor;
+            MERPWaveViewer_others{5} = ERPwaviewerin.baselinecorr;
+            estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
         end
     end
 
+
+    function otherset_presskey(hObject, eventdata)
+        keypress = eventdata.Key;
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            other_apply();
+            estudioworkingmemory('MyViewer_other',0);
+            gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
+            gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
+            box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
+        else
+            return;
+        end
+    end
 end

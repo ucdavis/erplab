@@ -80,7 +80,8 @@
 %Xtickdecimal     -determine the nunmber of decimals of x tick labels
 %                 -e.g., -0.2 0.0 0.2 0.4 0.6 0.8 if Xtickdecimal is 1
 %XtickdisFlag     -the way is to display xticks: 1 is in millisecond, 0 is in second
-
+%FigOutpos        - The width and height for the figure. The default one is
+%                   the same to the monitor.
 
 
 % *** This function is part of ERPLAB Studio ***
@@ -271,12 +272,12 @@ if nargin==1  %with GUI to get other parameters
     end%% end of loop for number of line
     
     %%Font and fontsize for legend
-    FontLeg = 'Geneva';
+    FontLeg = 'Helvetica';
     FontSizeLeg =  10;
     
     %%Setting for Channel/Bin/ERP label
     CBELabels = [];%location 0 70 1
-    CBEFont = 'Geneva';%%font
+    CBEFont = 'Helvetica';%%font
     CBEFontsize=10;%% fontsize
     
     %%Polarity of wave
@@ -299,7 +300,7 @@ if nargin==1  %with GUI to get other parameters
     timeRange(2) = ERP.times(end);
     timeticks = str2num(char(default_time_ticks_studio(ERP, timeRange)));
     xticklabel = 'on';
-    xlabelFont = 'Geneva';
+    xlabelFont = 'Helvetica';
     xlabelFontsize = 10;
     xlabelFontcolor = [0 0 0];
     Xunits = 'on';
@@ -313,7 +314,7 @@ if nargin==1  %with GUI to get other parameters
         Yticks = [];
     end
     yticklabel = 'on';
-    YlabelFont = 'Geneva';
+    YlabelFont = 'Helvetica';
     YlabelFontsize = 10;
     ylabelFontcolor = [0 0 0];
     yunits = 'on';
@@ -331,7 +332,7 @@ if nargin==1  %with GUI to get other parameters
     Xtickprecision = 1;
     XdisFlag = 1;
     Parameterfile = '';
-    
+    FigOutpos = [];
     [ALLERP, erpcom] = pop_plotERPwaviewer(ALLERP,CURRENTPLOT,ERPsetArray,binArray, chanArray,'PLOTORG',PLOTORG,'GridposArray',GridposArray,'LabelsName',LabelsName, 'Blc', Blc,'Box',plotBox,'LineColor',LineColorspec,'LineStyle',LineStylespec,...
         'LineMarker',LineMarkerspec,'LineWidth',LineWidthspec,'LegendName',LegendName,'LegendFont',FontLeg,'LegendFontsize',FontSizeLeg,...
         'Labeloc',CBELabels,'Labelfont',CBEFont,'Labelfontsize',CBEFontsize,'YDir',PolarityWave,'SEM',Standerr,'Transparency', Transparency,...
@@ -339,7 +340,7 @@ if nargin==1  %with GUI to get other parameters
         'Xlabelcolor',xlabelFontcolor,'Xunits',Xunits,'MinorTicksX',MinorticksX,...
         'YScales',Yscales,'Yticks',Yticks,'Yticklabel',yticklabel,'Ylabelfont',YlabelFont,'Ylabelfontsize',YlabelFontsize,...
         'Ylabelcolor',ylabelFontcolor,'Yunits',yunits,'MinorTicksY',MinorticksY,'LegtextColor',TextcolorLeg,'Legcolumns',Legcolumns,'FigureName',FigureName,...
-        'FigbgColor',figbgdColor,'Labelcolor',Labelcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdisFlag,'Parameterfile',Parameterfile,'History', 'gui');
+        'FigbgColor',figbgdColor,'Labelcolor',Labelcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdisFlag,'FigOutpos',FigOutpos,'Parameterfile',Parameterfile,'History', 'gui');
     
     pause(0.1);
     return;
@@ -409,6 +410,7 @@ p.addParamValue('Labelcolor', [], @isnumeric);%%
 p.addParamValue('Ytickdecimal', [], @isnumeric);
 p.addParamValue('Xtickdecimal', [], @isnumeric);
 p.addParamValue('XtickdisFlag', [], @isnumeric);
+p.addParamValue('FigOutpos', [], @isnumeric);
 p.addParamValue('Parameterfile', '', @ischar);
 
 p.addParamValue('ErrorMsg', '', @ischar);
@@ -472,7 +474,9 @@ if ~isempty(qParameterfile)
     return;
 end
 
-if strcmpi(p_Results.History,'implicit')
+if strcmpi(p_Results.History,'command')
+    shist = 4;%%Show  Maltab command only and donot plot the wave
+elseif strcmpi(p_Results.History,'implicit')
     shist = 3; % implicit
 elseif strcmpi(p_Results.History,'script')
     shist = 2; % script
@@ -777,7 +781,7 @@ end
 %%Legend font
 qFontLeg = p_Results.LegendFont;
 if isempty(qFontLeg)
-    qFontLeg = 'Geneva';
+    qFontLeg = 'Helvetica';
 end
 
 %%legend fontsize
@@ -802,7 +806,7 @@ end
 
 qCBEFont = p_Results.Labelfont;
 if isempty(qCBEFont)
-    qCBEFont ='Geneva';
+    qCBEFont ='Helvetica';
 end
 
 qCBEFontsize = p_Results.Labelfontsize;
@@ -913,7 +917,7 @@ end
 
 qXlabelfont = p_Results.Xlabelfont;
 if isempty(qXlabelfont)
-    qXlabelfont = 'Geneva';
+    qXlabelfont = 'Helvetica';
 end
 qXlabelfontsize = p_Results.Xlabelfontsize;
 if isempty(qXlabelfontsize)
@@ -1000,7 +1004,7 @@ end
 qYlabelfont = p_Results.Ylabelfont;
 
 if isempty(qYlabelfont)
-    qYlabelfont = 'Geneva';
+    qYlabelfont = 'Helvetica';
 end
 
 qYlabelfontsize = p_Results.Ylabelfontsize;
@@ -1066,13 +1070,15 @@ end
 if isempty(qLabelsName)
     qCBELabels = [];
 end
+
+qFigOutpos = p_Results.FigOutpos;
 %
 %%-------------Plot the ERP wave based on the above parameters-------------
-if ~isempty(qFigureName)
+if ~isempty(qFigureName) && shist~=4
     f_ploterpserpviewer(ALLERP,qCURRENTPLOT, qPLOTORG,qbinArray,qchanArray,qGridposArray,qplotBox,qBlc,qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,...
         qLegendName,qFontLeg,qFontSizeLeg,qCBELabels,qCBEFont,qCBEFontsize,qPolarityWave,qStanderr,qTransparency,qGridspace,qtimeRange,qXticks,qxticklabel,...
         qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorticksX,qXunits,qYscales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,...
-        qLabelsName,qERPsetArray,qlegcolor,qlegcolumns,qFigureName,qFigbgColor,qLabelcolor,qYtickdecimal,qxtickprecision,qxdisFlag);
+        qLabelsName,qERPsetArray,qlegcolor,qlegcolumns,qFigureName,qFigbgColor,qLabelcolor,qYtickdecimal,qxtickprecision,qxdisFlag,qFigOutpos);
 end
 
 
@@ -1162,7 +1168,10 @@ switch shist
             ALLERP(i) = erphistory(ALLERP(i), [], erpcom, 1);
         end
     case 3
-        % implicit
+         % implicit 
+    case 4
+        displayEquiComERP(erpcom);
+       
     otherwise %off or none
         erpcom = '';
         return

@@ -389,6 +389,7 @@ comAVG       = ['[ERP, ERPCOM] = pop_averager(ALLEEG);' '[ERP, ALLERPCOM] = erph
 comBOP       = ['[ERP, ERPCOM] = pop_binoperator(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCHOP2     = ['[ERP, ERPCOM] = pop_erpchanoperator(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comPLOT      = ['[ERP, ERPCOM] = pop_ploterps(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
+comPLOTV      =['ERPLAB_ERP_Viewer(ALLERP,CURRENTERP);'];
 comSCALP     = ['[ERP, ERPCOM] = pop_scalplot(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCHLOCTABLE= ['[ERP] = chanloc(ERP);'];
 comCHLOC     = ['[ERP, ERPCOM] = pop_erpchanedit(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -628,6 +629,7 @@ uimenu( mERPOP,'Label','ERP Calibration ','CallBack', comCALIERP,'separator','on
 %
 mERPLOT = uimenu( submenu,'Label','Plot ERP','tag','ERPlot','separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP waveforms ','CallBack', comPLOT,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
+uimenu( mERPLOT,'Label','Advanced ERP Waveform Viewer (Beta Version) ','CallBack', comPLOTV,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Plot ERP scalp maps ','CallBack', comSCALP,'userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Print plotted figure(s) to a file','CallBack', comEXPPDF,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mERPLOT,'Label','Edit ERP channel location table','CallBack', comCHLOCTABLE,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');

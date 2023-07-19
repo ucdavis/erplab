@@ -71,10 +71,11 @@
 %qLabelcolor       -Channel/Bin/ERPset label color in RGB, e.g., [0 0 0]
 %qYtickdecimal     -determine the number of  decimals of y tick labels
 %                  - e.g., -6.0 -3.0 0.0 3.0 6.0 if qYtickdecimal is 1
-%qXtickdecimal   -determine the nunmber of decimals of x tick labels
+%qXtickdecimal     -determine the nunmber of decimals of x tick labels
 %                  -e.g., -0.2 0.0 0.2 0.4 0.6 0.8 if qXtickdecimal is 1
 %qXdisFlag         -the way is to display xticks: 1 is in millisecond, 0 is in second
-
+%qFigOutpos        - The width and height for the figure. The default one is
+%                   the same to the monitor.
 
 
 % *** This function is part of EStudio Toolbox ***
@@ -88,7 +89,7 @@
 function f_ploterpserpviewer(ALLERP,qCURRENTPLOT, qPLOTORG,qbinArray,qchanArray,qGridposArray,plotBox,qBlc,qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,...
     qLegendName,qLegendFont,qLegendFontsize,qCBELabels,qLabelfont,qLabelfontsize,qPolarityWave,qSEM,qTransparency,qGridspace,qtimeRange,qXticks,qXticklabel,...
     qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorTicksX,qXunits,qYScales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,...
-    qplotArrayStr,qERPArray,qlegcolor,qlegcolumns,qFigureName,qFigbgColor,qLabelcolor,qYtickdecimal,qXtickdecimal,qXdisFlag)
+    qplotArrayStr,qERPArray,qlegcolor,qlegcolumns,qFigureName,qFigbgColor,qLabelcolor,qYtickdecimal,qXtickdecimal,qXdisFlag,qFigOutpos)
 
 if nargin<1
     help f_ploterpserpviewer;
@@ -257,7 +258,9 @@ else
     end
 end
 
-
+if nargin<49
+    qFigOutpos =[];
+end
 if nargin<48 || (qXdisFlag~=1 && qXdisFlag~=0)
     qXdisFlag =1;
 end
@@ -995,17 +998,33 @@ if ~isempty(qFigureName)
     hold on;
     %     hbig= axes('Parent',fig_gui_wave);
 end
-
-set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
+try
+    outerpos = fig_gui.OuterPosition;
+    set(fig_gui,'outerposition',[outerpos(1),(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
+catch
+    set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
+end
 if ~isempty(extfig)
     set(fig_gui,'visible','off');
 end
-
+set(fig_gui, 'Renderer', 'painters');%%vector figure
 try
     y_scale_def(1) = min([1.1*y_scale_def(1),1.1*qYScales(1)]);
     y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);
 catch
 end
+
+%%remove the margins of a plot
+ax = hbig;
+outerpos = ax.OuterPosition;
+ti = ax.TightInset;
+left = outerpos(1) + ti(1);
+bottom = outerpos(2) + ti(2);
+ax_width = outerpos(3) - ti(1) - ti(3);
+ax_height = outerpos(4) - ti(2) - ti(4);
+ax.Position = [left bottom ax_width ax_height];
+
+
 
 %%--------------Plot ERPwave-----------------
 stdalpha = qTransparency;
@@ -1368,8 +1387,12 @@ for Numofrows = 1:Numrows
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is empty!']);
         end
         try
-            if isxaxislabel==2
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1)/10),XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+            if 2<Numcolumns && Numcolumns<5
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
+            elseif Numcolumns==1
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
+            elseif Numcolumns==2
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
             else
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end

@@ -133,7 +133,7 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
                 @obj.onTitleChanged );
             
             % Draw buttons
-            obj.redrawButtons()
+            obj.redrawButtons()            
             
             % Set properties
             try
@@ -291,9 +291,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.MaximizeTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''MaximizeTooltipString'' must be a string.' )
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'MaximizeTooltipString' );
             
             % Set
             obj.MaximizeTooltipString = value;
@@ -306,9 +305,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.MinimizeTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''MinimizeTooltipString'' must be a string.' )
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'MinimizeTooltipString' );
             
             % Set
             obj.MinimizeTooltipString = value;
@@ -321,9 +319,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.UndockTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''UndockTooltipString'' must be a string.' )
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'UndockTooltipString' );
             
             % Set
             obj.UndockTooltipString = value;
@@ -336,9 +333,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.DockTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''DockTooltipString'' must be a string.' )
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'DockTooltipString' );
             
             % Set
             obj.DockTooltipString = value;
@@ -351,9 +347,8 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         function set.HelpTooltipString( obj, value )
             
             % Check
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''HelpTooltipString'' must be a string.' )
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'HelpTooltipString' );
             
             % Set
             obj.HelpTooltipString = value;
@@ -365,11 +360,11 @@ classdef BoxPanel < uix.Panel & uix.mixin.Panel
         
         function set.CloseTooltipString( obj, value )
             
-            % assert that value is a char array
-            assert( ischar( value ), ...
-                'uix:InvalidPropertyValue', ...
-                'Property ''CloseTooltipString'' must be a string.' )
+            % Check
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'CloseTooltipString' );
             
+            % Set
             obj.CloseTooltipString = value;
             
             % Mark as dirty
