@@ -11,29 +11,19 @@
 %
 % The available parameters are as follows:
 %
-% 'mvpcsets'         - index(es) pointing to ERP structures within ALLMVPC (only valid when ALLMVPC is specified)
-% 'Weighted'        - 'on' means apply weighted-average, 'off' means classic average.
+% 'Mvpcsets'         - index(es) pointing to MVPC structures within ALLMVPC (only valid when ALLMVPC is specified)
 % 'SEM'             - Get standard error of the mean. 'on' or 'off'
-% 'ExcludeNullBin'  - Exclude any null bin from non-weighted averaging (Bin that has zero "epochs" when averaged)
-% 'Warning'         - Warning 'on' or 'off'
-% 'Criterion'       - Max allowed mean artifact detection proportion
-% 'DQ_Flag'         - Data Quality options 'on' or 'off'
-% 'DQ_Spec'         - Structure array of Data Quality specifications.
+% 'Warning'         - Warning 'on' or 'off' (def)
 %
 % OUTPUTS  :
 %
-% ERP               - data structure containing the average of all specified datasets.
+% MVPC               - data structure containing the average of all specified MVPC datasets.
 %
 %
 % EXAMPLE  :
 %
-% ERP = pop_gaverager( ALLMVPC , 'mvpcsets',1:4, 'Criterion',100, 'SEM',...
-% 'on', 'Warning', 'on', 'Weighted', 'on' );
+% MVPC = pop_mvpcaverager( ALLMVPC , 'Mvpcsets', [1  2], 'SEM',  'on' );
 %
-% or
-%
-% ERP = pop_gaverager('C:\Users\Work\Documents\MATLAB\ERP_List.txt', 'Criterion',100,...
-% 'SEM', 'on', 'Warning', 'on', 'Weighted', 'on');
 %
 %
 % See also mvpcaveragerGUI.m mvpcaverager.m pop_mvpcaverager.m 
@@ -158,7 +148,7 @@ p.FunctionName  = mfilename;
 p.CaseSensitive = false;
 p.addRequired('ALLMVPC');
 % option(s)
-p.addParamValue('MVPCindex', []);               % same as Erpsets
+p.addParamValue('MVPCindex', 1);               % same as Erpsets
 p.addParamValue('Mvpcsets', []);
 p.addParamValue('SEM', 'off', @ischar);        % 'on', 'off'
 p.addParamValue('Saveas', 'off', @ischar);     % 'on', 'off'
@@ -230,6 +220,18 @@ else
     warnon = 0;
 end
 
+if strcmpi(p.Results.History,'implicit')
+    shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+    shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+    shist = 1; % gui
+else
+    shist = 0; % off
+end
+
+
+
 %
 %subroutine
 %
@@ -247,6 +249,79 @@ end
 % Completion statement
 %
 msg2end
+
+
+% Construct the History string
+% load with the appropriate input args
+skipfields = {'ALLMVPC', 'Saveas', 'Warning','History'};
+if isstruct(ALLMVPC) && optioni~=1 % from files
+    DATIN =  inputname(1);
+else
+    %DATIN = ['''' ALLERP ''''];
+    DATIN = sprintf('''%s''', filelist);
+    skipfields = [skipfields, 'Mvpcsets'];
+end
+
+fn     = fieldnames(p.Results);
+mvpccom = sprintf( 'MVPC = pop_mvpcaverager( %s ', DATIN);
+for q=1:length(fn)
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        % Examine the variable type for the argument used, load that in to
+        % the History string appropriately
+        arg_value_here = fn2res;
+        if isempty(arg_value_here)
+            write_this_one = 0;
+        else
+            if ischar(arg_value_here)
+                if strcmpi(fn2res,'off')
+                    write_this_one = 0;
+                end
+            else
+                write_this_one = 1;
+            end
+        end
+        
+        if write_this_one  % if an argument value is not empty
+            
+            if ischar(fn2res)
+                fnformat = '''%s'''; fn2resstr = fn2res;
+            elseif isnumeric(fn2res)
+                fn2resstr = num2str(fn2res); fnformat = '%s';
+            elseif isstruct(fn2res)
+                fn2resstr = 'DQ_spec_structure'; fnformat = '%s';
+            elseif iscell(fn2res)
+                if ischar([fn2res{:}])
+                    fn2resstr = sprintf('''%s'' ', fn2res{:});
+                else
+                    fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
+                end
+                fnformat = '{%s}';
+            else
+                fn2resstr = vect2colon(fn2res, 'Sort','on');
+                fnformat = '%s';
+            end
+            
+            
+            if strcmpi(fn2com,'Criterion')
+                if p.Results.Criterion<100
+                    mvpccom = sprintf( ['%s, ''%s'', ' fnformat], mvpccom, fn2com, fn2resstr);
+                end
+            else
+                if strcmpi(fn2com,'Mvpcsets') %ams fixed for Erpsets str
+                    mvpccom = sprintf( ['%s, ''%s'', [', fnformat,']'], mvpccom, fn2com, fn2resstr);
+                else
+                    mvpccom = sprintf( ['%s, ''%s'',  '  fnformat ], mvpccom, fn2com, fn2resstr);
+                end
+            end
+        end
+    end
+end
+
+mvpccom = sprintf( '%s );', mvpccom);
+
+
 if issaveas
     
 
@@ -265,5 +340,17 @@ if issaveas
     try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
 end
 
+% get history from script. ERP
+switch shist
+    case 1 % from GUI
+        displayEquiComERP(mvpccom);
+    case 2 % from script
+        %ERP = erphistory(ERP, [], erpcom, 1);
+    case 3
+        % implicit
+    otherwise %off or none
+        erpcom = '';
+        return
+end
 
 return

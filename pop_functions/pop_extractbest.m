@@ -15,6 +15,8 @@
 %                          For a single bin-epoched dataset using EEG structure this value must be equal to 1 or
 %                          left unspecified.
 %        'Bins'        -    Bin index array as indicated in binlister file. Example: [1:4]
+%                            - If not supplied, all bins will be included
+%                            in BESTset. 
 %        'Criterion'   - Inclusion/exclusion of marked epochs during
 %                           artifact detection:
 % 		                   'all'   - include all epochs (ignore artifact detections)
@@ -25,7 +27,7 @@
 %                           'on'(def)/'off'
 %        'BandPass'    -  If desired, bandpass filtering: [Low_edge_freq High_edge_freq], e.g [8 12];
 %        'SaveAs'      -  (optional) open GUI for saving BESTset. Not
-%                       useful if scripting; use separate pop_savemybest(). 
+%                       useful if scripting; use separate call to pop_savemybest(). 
 %                           'on'/'off' (Default: off)
 %                           - (if "off", will not update in BESTset menu)
 %

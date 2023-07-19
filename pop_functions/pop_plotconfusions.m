@@ -17,7 +17,7 @@
 %                         each at 200ms, 220ms, and 240ms.
 %                       
 %                         If 'Type' is 'Average', then output will be one
-%                         plot averaged across the times in Times. For
+%                         plot averaged across the times in 'Times'. For
 %                         example, [200 240] will draw one plot that shows
 %                         the confusion matrix average across 200ms-240ms.
 %
@@ -25,7 +25,8 @@
 % Type                  - string 'Timepoint' OR 'Average'
 %                       
 %                        -Timepoint: Confusion matrix at a timepoint (specified in 'Times'). 
-%                        -Average: Confusion matrix across timepoint
+%                        -Average: Confusion matrix averaged across
+%                        timepoints
 %                        (specified in 'Times'). 
 %                       
 %
@@ -53,8 +54,7 @@
 %
 % EXAMPLE  :
 %
-% MVPC = pop_decoding( BEST , 'Channels', [ 1:27], 'classcoding', 'OneVsAll', 'Classes', [ 7 8], 'Decode_Every_Npoint',...
-%    [ 1], 'DecodeTimes', [ -500 1496], 'EqualizeTrials', 'best', 'Method', 'SVM', 'nCrossblocks', [ 3], 'nIter', [ 10] );
+% pop_plotconfusions( ALLMVPC, 'Times', [ 200], 'Type', 'timepoint', 'MVPCindex', [ 11], 'Format', 'fig', 'Colormap', 'default');
 %
 % See also: plotconfusions.mlapp
 %
@@ -554,6 +554,10 @@ else
         explica   = 1;
     end
     inputvari = inputname(1);
+end
+
+if issaveas ~= 1
+    skipfields = [skipfields 'Filepath']; 
 end
 
 

@@ -31,9 +31,9 @@
 %
 % EXAMPLE  :
 %
-% pop_artmwppth( EEG , 'Channel',  1:16, 'Flag',  1, 'Threshold', 100, 'Twindow', [ -200 798], 'Windowsize', 200, 'Windowstep',  100 );
 %
-% See also;  [pop_artblink]
+%
+% See also: savemybestGUI.m savebest.m
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons

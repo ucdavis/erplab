@@ -1,9 +1,10 @@
-% Author: Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
+% Author: Aaron Matthew Simmons, Guanghui Zhang, Andrew X Stewart, 
+% Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
 % 2007-2020
-% Version 9.10
+% Version 10.0
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %

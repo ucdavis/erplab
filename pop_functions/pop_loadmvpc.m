@@ -2,44 +2,33 @@
 %
 % FORMAT   :
 %
-% ERP = pop_loadmvpc(parameters);
+% MVPC = pop_loadmvpc(parameters);
 %
 % PARAMETERS     :
 %
-% 'filename'        - ERPset filename
-% 'filepath'        - ERPset's filepath
-% 'overwrite'       - overwrite current erpset. 'on'/'off'
-% 'Warning'         - 'on'/'off'
-% 'multiload'       - load multiple ERPset using a single output variable (see example 2). 'on'/'off'
-% 'UpdateMainGui'   - 'on'/'off'
+% 'filename'        - MVPCset filename
+% 'filepath'        - MVPCset's filepath
+% 'Warning'         - 'on'/'off' (def)
+% 'UpdateMainGui'   - 'on'/'off' (def)
 %
 %
 % OUTPUTS  :
 %
-% ERP	- output ERPset
+% MVPC	- output MVPCset
 %
 %
 % EXAMPLE 1  : Load a single ERPset
 %
-% ERP = pop_loaderp('filename','S1_ERPS.erp','filepath','/Users/etfoo/Documents/MATLAB/','overwrite','off','Warning','on');
+% MVPC = pop_loadmvpc( 'filename', 'Face_Emotion_302_ICA_removed.mvpc', 'filepath',...
+%  pwd );
 %
-% EXAMPLE 2  : Load multiple ERPsets using a single output variable
-%
-% ERP = pop_loaderp('filename',{'S1_ERPS.erp' 'S2_ERPS.erp' 'S3_ERPS.erp'},'filepath','/Users/etfoo/Documents/MATLAB/','multiload','on');
-%
-% EXAMPLE 3  : Load multiple ERPsets using two output variable (ERP ALLERP). ALLERP will store all. ERP will store the last ERPset.
-%
-% [ERP ALLERP] = pop_loaderp('filename',{'S1_ERPS.erp' 'S2_ERPS.erp' 'S3_ERPS.erp'},'filepath','/Users/etfoo/Documents/MATLAB/');
-%
-%
-% See also olderpscan.m
 %
 % *** This function is part of ERPLAB Toolbox ***
-% Author: Javier Lopez-Calderon
+% Author: Aaron Matthew Simmons
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009
+% 2023
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -112,7 +101,7 @@ if nargin == 1
         % Somersault
         %
         
-        [MVPC, ALLMVPC] = pop_loadmvpc('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off');
+        [MVPC, ALLMVPC] = pop_loadmvpc('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off','History','gui');
         return
     
     
@@ -131,7 +120,7 @@ p.addParamValue('overwrite', 'off', @ischar);
 p.addParamValue('Warning', 'off', @ischar);
 p.addParamValue('multiload', 'off', @ischar); % ERP stores ALLERP's contain (ERP = ...), otherwise [ERP ALLERP] = ... must to be specified.
 p.addParamValue('UpdateMainGui', 'off', @ischar);
-%p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(varargin{:});
 
@@ -167,6 +156,16 @@ if strcmpi(p.Results.multiload,'on')
         multiload = 1;
 else
         multiload = 0;
+end
+
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
 end
 
 if loadfrom==1
@@ -254,6 +253,58 @@ if updatemaingui % update erpset menu at main gui
     assignin('base','ALLMVPC',ALLMVPC);  % save to workspace
     updatemenumvpc(ALLMVPC); % add a new bestset to the bestset menu
 end
+
+
+fn         = fieldnames(p.Results);
+mvpccom     = sprintf( '%s = pop_loadmvpc(', outv);
+skipfields = {'UpdateMainGui', 'Warning','History', 'multiload'};
+for q=1:length(fn)
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if iscell(fn2res) % 10-21-11
+            nc = length(fn2res);
+            xfn2res = sprintf('{''%s''', fn2res{1} );
+            for f=2:nc
+                xfn2res = sprintf('%s, ''%s''', xfn2res, fn2res{f} );
+            end
+            fn2res = sprintf('%s}', xfn2res);
+        else
+            if ~strcmpi(fn2res,'off') %&& ~strcmpi(fn2res,'on')
+                fn2res = ['''' fn2res ''''];
+            end
+        end
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    if q==1
+                        mvpccom = sprintf( '%s ''%s'', %s', mvpccom, fn2com, fn2res);
+                    else
+                        mvpccom = sprintf( '%s, ''%s'', %s', mvpccom, fn2com, fn2res);
+                    end
+                end
+            else
+                mvpccom = sprintf( '%s, ''%s'', %s', mvpccom, fn2com, vect2colon(fn2res,'Repeat','on'));
+            end
+        end
+    end
+end
+mvpccom = sprintf( '%s );', mvpccom);
+
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(mvpccom);
+        case 2 % from script
+               % ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+                % ERP = erphistory(ERP, [], erpcom, 1);
+                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        otherwise %off or none
+                %erpcom = '';
+                return
+end
+
 
 
 prefunc = dbstack;

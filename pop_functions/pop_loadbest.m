@@ -15,6 +15,43 @@
 % OUTPUTS  :
 %
 % BEST	- output BESTset
+%
+%
+% Example :
+%
+% BEST = pop_loadbest( 'filename', 'Face_Emotion_302_ICA_removed.best', 'filepath',...
+% pwd); 
+
+
+% *** This function is part of ERPLAB Toolbox ***
+% Author: Aaron Matthew Simmons
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% 2023
+
+%b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
+%
+% ERPLAB Toolbox
+% Copyright © 2007 The Regents of the University of California
+% Created by Javier Lopez-Calderon and Steven Luck
+% Center for Mind and Brain, University of California, Davis,
+% javlopez@ucdavis.edu, sjluck@ucdavis.edu
+%
+% This program is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 
 function [BEST, ALLBEST] = pop_loadbest(varargin)
 BEST = preloadBEST; 
@@ -64,7 +101,7 @@ if nargin == 1
         % Somersault
         %
         
-        [BEST, ALLBEST] = pop_loadbest('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on');
+        [BEST, ALLBEST] = pop_loadbest('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on','History','gui');
         return
     
     
@@ -83,7 +120,7 @@ p.addParamValue('overwrite', 'off', @ischar);
 p.addParamValue('Warning', 'off', @ischar);
 %p.addParamValue('multiload', 'off', @ischar); % ERP stores ALLERP's contain (ERP = ...), otherwise [ERP ALLERP] = ... must to be specified.
 p.addParamValue('UpdateMainGui', 'off', @ischar);
-%p.addParamValue('History', 'script', @ischar); % history from scripting
+p.addParamValue('History', 'script', @ischar); % history from scripting
 
 p.parse(varargin{:});
 
@@ -107,6 +144,16 @@ if strcmpi(p.Results.UpdateMainGui,'on')
         updatemaingui = 1;
 else
         updatemaingui = 0;
+end
+
+if strcmpi(p.Results.History,'implicit')
+        shist = 3; % implicit
+elseif strcmpi(p.Results.History,'script')
+        shist = 2; % script
+elseif strcmpi(p.Results.History,'gui')
+        shist = 1; % gui
+else
+        shist = 0; % off
 end
 
 % if strcmpi(p.Results.multiload,'on')
@@ -193,41 +240,58 @@ if updatemaingui % update erpset menu at main gui
     assignin('base','ALLBEST',ALLBEST);  % save to workspace
     updatemenubest(ALLBEST); % add a new bestset to the bestset menu
 end
-% fn         = fieldnames(p.Results);
-% erpcom     = sprintf( '%s = pop_loaderp(', outv);
-% skipfields = {'UpdateMainGui', 'Warning','History'};
 
-% for q=1:length(fn)
-%     fn2com = fn{q};
-%     if ~ismember_bc2(fn2com, skipfields)
-%         fn2res = p.Results.(fn2com);
-%         if iscell(fn2res) % 10-21-11
-%             nc = length(fn2res);
-%             xfn2res = sprintf('{''%s''', fn2res{1} );
-%             for f=2:nc
-%                 xfn2res = sprintf('%s, ''%s''', xfn2res, fn2res{f} );
-%             end
-%             fn2res = sprintf('%s}', xfn2res);
-%         else
-%             if ~strcmpi(fn2res,'off') %&& ~strcmpi(fn2res,'on')
-%                 fn2res = ['''' fn2res ''''];
-%             end
-%         end
-%         if ~isempty(fn2res)
-%             if ischar(fn2res)
-%                 if ~strcmpi(fn2res,'off')
-%                     if q==1
-%                         erpcom = sprintf( '%s ''%s'', %s', erpcom, fn2com, fn2res);
-%                     else
-%                         erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, fn2res);
-%                     end
-%                 end
-%             else
-%                 erpcom = sprintf( '%s, ''%s'', %s', erpcom, fn2com, vect2colon(fn2res,'Repeat','on'));
-%             end
-%         end
-%     end
-% end
+fn         = fieldnames(p.Results);
+bestcom     = sprintf( '%s = pop_loadbest(', outv);
+skipfields = {'UpdateMainGui', 'Warning','History','overwrite'};
+
+for q=1:length(fn)
+    fn2com = fn{q};
+    if ~ismember_bc2(fn2com, skipfields)
+        fn2res = p.Results.(fn2com);
+        if iscell(fn2res) % 10-21-11
+            nc = length(fn2res);
+            xfn2res = sprintf('{''%s''', fn2res{1} );
+            for f=2:nc
+                xfn2res = sprintf('%s, ''%s''', xfn2res, fn2res{f} );
+            end
+            fn2res = sprintf('%s}', xfn2res);
+        else
+            if ~strcmpi(fn2res,'off') %&& ~strcmpi(fn2res,'on')
+                fn2res = ['''' fn2res ''''];
+            end
+        end
+        if ~isempty(fn2res)
+            if ischar(fn2res)
+                if ~strcmpi(fn2res,'off')
+                    if q==1
+                        bestcom = sprintf( '%s ''%s'', %s', bestcom, fn2com, fn2res);
+                    else
+                        bestcom = sprintf( '%s, ''%s'', %s', bestcom, fn2com, fn2res);
+                    end
+                end
+            else
+                bestcom = sprintf( '%s, ''%s'', %s', bestcom, fn2com, vect2colon(fn2res,'Repeat','on'));
+            end
+        end
+    end
+end
+bestcom = sprintf( '%s );', bestcom);
+
+switch shist
+        case 1 % from GUI
+                displayEquiComERP(bestcom);
+        case 2 % from script
+                %ERP = erphistory(ERP, [], erpcom, 1);
+        case 3
+                % implicit
+                % ERP = erphistory(ERP, [], erpcom, 1);
+                % fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+        otherwise %off or none
+               % erpcom = '';
+                return
+end
+
 
 prefunc = dbstack;
 nf = length(unique_bc2({prefunc.name}));

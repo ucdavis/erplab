@@ -17,7 +17,7 @@
 %                         must be equal to 1 or left unspecified.
 %                         Def: [1]
 %
-%        'Classes '     - Index of classes to decode across.
+%        'Classes '     - Index array of classes to decode across.
 %                       Classes are defined as the index of the bins
 %                       contained within the BESTset prior to decoding. 
 %
@@ -75,9 +75,11 @@
 %
 % EXAMPLE  :
 %
-% MVPC = pop_decoding( BEST , 'Channels', [ 1:27], 'classcoding', 'OneVsAll', 'Classes', [ 7 8], 'Decode_Every_Npoint',...
-%    [ 1], 'DecodeTimes', [ -500 1496], 'EqualizeTrials', 'best', 'Method', 'SVM', 'nCrossblocks', [ 3], 'nIter', [ 10] );
-% See also;  [pop_artblink]
+%  MVPC = pop_decoding(BEST,'Classes',[1:4],'Channels',[1:27 33:64], 'nIter', 10, 'nCrossblocks',3, ...
+%         'DecodeTimes',[-500,1496], 'Decode_Every_Npoint',5,'EqualizeTrials','classes',...
+%         'Method','SVM', 'classcoding','OneVsAll', ...
+%         'ParCompute','on');
+%
 %
 % *** This function is part of ERPLAB Toolbox ***
 % Author: Aaron Matthew Simmons

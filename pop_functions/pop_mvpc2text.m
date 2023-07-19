@@ -1,3 +1,4 @@
+
 % PURPOSE  :	Exports MVPC set to text
 %
 % FORMAT   :
@@ -27,8 +28,8 @@
 %
 % EXAMPLE :
 %
-% ERP = pop_export2text( ERP, '/Users/etfoo/Documents/MATLAB/test.txt', [ 1 2],'time','on','timeunit',1,'electrodes','on',...
-%                       'transpose','off','precision',4);
+% MVPC = pop_mvpc2text( MVPC, '/Users/amsimmon/Documents/filename.txt',  
+% 'time', 'on', 'timeunit',  0.001 )
 %
 %
 % See also mvpc2textGUI.m   mvpc2text.m
