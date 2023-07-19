@@ -200,10 +200,11 @@ assignin('base','plotset', plotset);
 global ALLERP
 global ALLBEST
 global ALLMVPC
-
-ALLERP   = evalin('base', 'ALLERP');
-ALLERP = []; 
-
+try
+    ALLERP   = evalin('base', 'ALLERP');
+    ALLERP = [];
+catch
+end
 %---------------------------------------------------------------------------------------------------
 %                                                                                                   |
 %
