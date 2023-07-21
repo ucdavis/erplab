@@ -64,10 +64,15 @@ for s = 1:nSubs %decoding is performed within each subject independently
     % Preallocate Matrices
     svm_predict = nan(nIter,nBlocks, nSamps,nBins); % a matrix to save prediction from SVM
     tst_target = nan(nIter,nBlocks,nSamps,nBins);  % a matrix to save true target values
-    if classcoding == 1
-        nDecoders = nchoosek(nBins,2); %onevsone (SVM only)
-    elseif classcoding == 2
-        nDecoders = nchoosek(nBins,1); %onevsall (SVM only)
+    if nBins > 2    
+        if classcoding == 1
+            nDecoders = nchoosek(nBins,2); %onevsone (SVM only)
+        elseif classcoding == 2
+            nDecoders = nchoosek(nBins,1); %onevsall (SVM only)
+        end
+    else
+        %binary decoder 
+        nDecoders = 1; 
     end
     BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nDecoders,nElectrodes);
     %BetaWeights_Corr = BetaWeights_Raw;
@@ -250,8 +255,15 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 
                 tst_target(iter,i,t,:) = tstl;             % save true target labels
                 
-                for d = 1:nDecoders
-                    BetaWeights_Raw(iter,t,i,d,:) = mdl.BinaryLearners{d}.Beta;% SVM weights uncorrected
+                if nBins > 2      
+                    for d = 1:nDecoders
+                        BetaWeights_Raw(iter,t,i,d,:) = mdl.BinaryLearners{d}.Beta;% SVM weights uncorrected
+                    end  
+                else
+                    %binary decoder
+                    for d = 1:nDecoders
+                        BetaWeights_Raw(iter,t,i,d,:) = mdl.Beta;% SVM weights uncorrected
+                    end
                 end
                 %BetaWeights_Corr(iter,t,i,:) = double(cov(trnD))*mdl.Beta;% SVM weights after correction
                 

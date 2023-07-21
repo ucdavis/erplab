@@ -16,7 +16,11 @@ function checking = checkmultiBEST(BEST)
         
         if bins_in_data1 < 2 
             %needs to be at least 2 bins 
-            error();
+            msgText = 'Must have at least two classes for decoding!';
+            title = 'ERPLAB: Invalid number of classes';
+            errorfound(msgText,title);
+            checking = 0; 
+            return
         end
             
         
@@ -47,7 +51,9 @@ function checking = checkmultiBEST(BEST)
             
             bins_in_data1 = numel(BEST(1).binwise_data);
             if bins_in_data1 < 2
-                %needs to be at least 2 bins
+                msgText = 'Must have at least two classes for decoding!';
+                title = 'ERPLAB: Invalid number of classes';
+                errorfound(msgText,title);
                 checking = 0;
             else
                 checking = 1;
