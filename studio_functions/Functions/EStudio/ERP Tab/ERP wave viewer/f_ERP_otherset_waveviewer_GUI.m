@@ -171,7 +171,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
                 customValue = 0;
                 customString = '';
                 customEnable = 'off';
-            elseif  strcmpi(blc_def,'whole')
+            elseif  strcmpi(blc_def,'whole') || strcmpi(blc_def,'all')
                 noneValue =0;
                 preValue =0;
                 postValue = 0;
@@ -215,7 +215,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         elseif gui_otherset_waveviewer.bsl_whole.Value ==1
             ERPwaviewer.baselinecorr = 'whole';
         elseif gui_otherset_waveviewer.bsl_custom.Value ==1
-            ERPwaviewer.baselinecorr = str2num(char(gui_otherset_waveviewer.bsl_customedit));
+            ERPwaviewer.baselinecorr = str2num(char(gui_otherset_waveviewer.bsl_customedit.String));
         else
             ERPwaviewer.baselinecorr = 'none';
         end
@@ -583,7 +583,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
                 gui_otherset_waveviewer.bsl_pre.Value=0;
                 gui_otherset_waveviewer.bsl_post.Value=1;
                 gui_otherset_waveviewer.bsl_whole.Value=0;
-            elseif strcmpi(BslMethod,'whole')
+            elseif strcmpi(BslMethod,'whole') || strcmpi(BslMethod,'all')
                 gui_otherset_waveviewer.bsl_custom.Value =0;
                 gui_otherset_waveviewer.bsl_none.Value=0;
                 gui_otherset_waveviewer.bsl_pre.Value=0;
@@ -767,7 +767,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
                 gui_otherset_waveviewer.bsl_whole.Value =0;
                 gui_otherset_waveviewer.bsl_custom.Value = 0;
                 gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-            elseif strcmpi(BalineCorrection,'all')
+            elseif strcmpi(BalineCorrection,'all') || strcmpi(BalineCorrection,'whole')
                 gui_otherset_waveviewer.bsl_none.Value =0;
                 gui_otherset_waveviewer.bsl_pre.Value =0;
                 gui_otherset_waveviewer.bsl_post.Value =0;

@@ -241,7 +241,7 @@ ERPwaviewer.figname = 'My Viewer';
 ERPwaviewer.FigOutpos=[];
 assignin('base','ALLERPwaviewer',ERPwaviewer);
 
-estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
+% estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
 try
     close(gui_erp_waviewer.Window);%%close previous GUI if exists
 catch

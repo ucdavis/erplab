@@ -1309,7 +1309,7 @@ if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
             elseif strcmpi(qBlc,'post')
                 indxtimelock = length(ERP.times);
                 aa = find(ERP.times==0);
-            elseif strcmpi(qBlc,'all')
+            elseif strcmpi(qBlc,'all') || strcmpi(qBlc,'whole')
                 indxtimelock = length(ERP.times);
                 aa = 1;
             else

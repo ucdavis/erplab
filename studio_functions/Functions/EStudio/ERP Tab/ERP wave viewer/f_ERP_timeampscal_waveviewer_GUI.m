@@ -363,7 +363,12 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.timeminorticks_auto.KeyPressFcn = @xyaxis_presskey;
         set(gui_erpxyaxeset_waveviewer.xtimeminnortick_title,'Sizes',[90 90 50]);
         ERPwaviewer.xaxis.tminor.disp = gui_erpxyaxeset_waveviewer.xtimeminorauto.Value;
-        ERPwaviewer.xaxis.tminor.step = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
+        if xdispysecondValue==1
+            ERPwaviewer.xaxis.tminor.step = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
+        else
+            ERPwaviewer.xaxis.tminor.step = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String))*1000;
+        end
+        
         ERPwaviewer.xaxis.tminor.auto = gui_erpxyaxeset_waveviewer.timeminorticks_auto.Value;
         
         %%-----time ticks label--------------------------------------------
@@ -2558,7 +2563,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
 
 
 %%------------change this panel based on the changed ERPsets---------------
-    function v_currentERP_change(~,~) 
+    function v_currentERP_change(~,~)
         if viewer_ERPDAT.Count_currentERP == 0
             return;
         end
@@ -2568,7 +2573,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             estudioworkingmemory('MyViewer_xyaxis',0);
         end
         
-       
+        
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -2594,23 +2599,23 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
         xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
-%         if isempty(xSecondflag) && isempty(xmSecondflag)
-            xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
-%         end
-%         if xSecondflag ==0 && xmSecondflag==1
-%             xdispysecondValue =1;
-            if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
-                if xdispysecondValue==1
-                    gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
-                    gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
-                else
-                    gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
-                    gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
-                end
+        %         if isempty(xSecondflag) && isempty(xmSecondflag)
+        xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
+        %         end
+        %         if xSecondflag ==0 && xmSecondflag==1
+        %             xdispysecondValue =1;
+        if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
+            if xdispysecondValue==1
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+            else
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
+                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
             end
-%         else
-%             xdispysecondValue =0;
-%         end
+        end
+        %         else
+        %             xdispysecondValue =0;
+        %         end
         if xdispysecondValue==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
             if xtick_precision<0

@@ -397,7 +397,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             MERPWaveViewer_plotorg{7}=1;
         end
         try
-            columnGTPStr = MERPWaveViewer_plotorg{7};
+            columnGTPStr = MERPWaveViewer_plotorg{8};
         catch
             columnGTPStr = 10;
             MERPWaveViewer_plotorg{8} = 10;
@@ -2589,8 +2589,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         if gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value ==0
-            gui_plotorg_waveviewer.rownum.Value = size(GridinforDatadef,1);
-            gui_plotorg_waveviewer.columnnum.Value = size(GridinforDatadef,2);
             ERPwaviewerin.plot_org.gridlayout.rows = gui_plotorg_waveviewer.rownum.Value;
             ERPwaviewerin.plot_org.gridlayout.columns =gui_plotorg_waveviewer.columnnum.Value;
             ERPwaviewerin.plot_org.gridlayout.columFormat = plotArrayFormt';
