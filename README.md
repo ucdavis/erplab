@@ -28,9 +28,11 @@ We anticipate that ERPLAB will work with most recent OSs, Matlab versions and EE
 - The [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html) is required.
 - [EEGLAB v2021 or later](https://sccn.ucsd.edu/eeglab/download.php) is almost always necessary.
 
-However, in order to use the latest MVPC routines (see [here](https://github.com/ucdavis/erplab/wiki/Decoding-Tutorial)), Matlab versions and EEGLAB versions must be recent:
+However, in order to use the latest MVPC routines (see [here](https://github.com/ucdavis/erplab/wiki/Decoding-Tutorial)), Matlab versions and EEGLAB versions must be recent. In addition, some MATLAB toolboxes are required. 
 - Matlab 2020b + is REQUIRED for MVPC routines.
 - EEGLAB 2023.1 + is REQUIRED for MVPC routines.
+- The [Matlab Statistics and Machine Learning Toolbox](https://www.mathworks.com/products/statistics.html)
+- The [Matlab Parallel Processing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (recommended)
 
 Find [more ERPLAB installation help here](http://erpinfo.org/erplab).
 
@@ -64,9 +66,11 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 ### ERPLAB v10.0 Release Notes
 Now Includes:
 
-ERP Decoding routine: Users can now apply multivariate-pattern classification routines to binned and epoched ERP data. See [here](https://github.com/ucdavis/erplab/wiki/Decoding-Tutorial) for more information. NOTE: These routines require at least MATLAB 2020a+ & EEGLAB 2023.1+ in order to work as expected.
+ERP Decoding routine: Users can now apply multivariate-pattern classification routines to binned and epoched ERP data. See [here](https://github.com/ucdavis/erplab/wiki/Decoding-Tutorial) for more information. 
+- NOTE: These routines require at least MATLAB 2020a+ & EEGLAB 2023.1+ in order to work as expected.
+- NOTE: These routines also require the following toolboxes: Matlab Statistics and Machine Learning Toolbox, Matlab Parallel Processing Toolbox (recommended)
 
-ERP Wave Viewer: Plotting ERP waveforms are easier than ever using "ERP Wave Viewer". See:  ERPLAB > Plot ERPs > Advanced ERP Waveform Viewer (Beta) 
+Advanced ERP Wave Viewer: Plotting ERP waveforms are easier than ever using "ERP Wave Viewer". See:  ERPLAB > Plot ERPs > Advanced ERP Waveform Viewer (Beta) 
 
 
 ## ERPLABv9.20 Release Notes
