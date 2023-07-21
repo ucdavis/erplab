@@ -82,17 +82,11 @@ function cdata = convertToDouble( cdata )
 
 switch lower( class( cdata ) )
     case 'double'
-        % do nothing
-    case 'single'
-        cdata = double( cdata );
+        % do nothing    
     case 'uint8'
         cdata = double( cdata ) / 255;
     case 'uint16'
-        cdata = double( cdata ) / 65535;
-    case 'int8'
-        cdata = ( double( cdata ) + 128 ) / 255;
-    case 'int16'
-        cdata = ( double( cdata ) + 32768 ) / 65535;
+        cdata = double( cdata ) / 65535;    
     otherwise
         error( 'uix:InvalidArgument', ...
             'Image data of type ''%s'' is not supported.', class( cdata ) )

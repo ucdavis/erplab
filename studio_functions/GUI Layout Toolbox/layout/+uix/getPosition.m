@@ -1,7 +1,7 @@
 function p = getPosition( o, u )
 %getPosition  Get position of graphics object
 %
-%  p = getPosition(o,u) sets the position of a graphics object o with units
+%  p = getPosition(o,u) gets the position of a graphics object o with units
 %  u.
 %
 %  In contrast to getting the Position property directly, this function

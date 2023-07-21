@@ -92,7 +92,7 @@ classdef Grid < uix.Box
                     obj.MinimumHeights_(end+1:r,:) = 1;
                 end
             elseif c > b % number of columns increasing
-                obj.MinimumWidths_(end+1:c,:) = -1;
+                obj.MinimumWidths_(end+1:c,:) = 1;
                 if r < q % number of rows decreasing
                     obj.Heights_(r+1:end,:) = [];
                     obj.MinimumHeights_(r+1:end,:) = [];

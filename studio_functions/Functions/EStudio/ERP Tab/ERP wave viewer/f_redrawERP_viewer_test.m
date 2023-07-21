@@ -15,10 +15,7 @@ function f_redrawERP_viewer_test()
 global viewer_ERPDAT;
 global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'v_messg_change',@V_messg_change);
-
-
 FonsizeDefault = f_get_default_fontsize();
-
 
 if nargin>1
     help f_redrawERP_viewer;
@@ -32,6 +29,25 @@ catch
     beep;
     disp('Please re-run ERP wave viewer.');
     return;
+end
+
+%%save figure size:width and height
+try
+    ScreenPos =  get( groot, 'Screensize' );
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+FigOutposition = gui_erp_waviewer.ViewBox.OuterPosition(3:4);
+FigOutposition(1) = 100*FigOutposition(1)/ScreenPos(3);
+FigOutposition(2) = 100*FigOutposition(2)/ScreenPos(4);
+ERPwaviewer.FigOutpos=FigOutposition;
+assignin('base','ALLERPwaviewer',ERPwaviewer);
+try
+    gui_erp_waviewer.ScrollVerticalOffsets = gui_erp_waviewer.ViewAxes.VerticalOffsets/gui_erp_waviewer.ViewAxes.Heights;
+    gui_erp_waviewer.ScrollHorizontalOffsets = gui_erp_waviewer.ViewAxes.HorizontalOffsets/gui_erp_waviewer.ViewAxes.Widths;
+catch
+    gui_erp_waviewer.ScrollVerticalOffsets=0;
+    gui_erp_waviewer.ScrollHorizontalOffsets=0;
 end
 
 % We first clear the existing axes ready to build a new one
@@ -62,6 +78,10 @@ else
     if zoomSpace<0
         zoomSpace =0;
     end
+end
+if zoomSpace ==0
+    gui_erp_waviewer.ScrollVerticalOffsets=0;
+    gui_erp_waviewer.ScrollHorizontalOffsets=0;
 end
 pb_height = 1*Res(4);
 try
@@ -116,8 +136,12 @@ gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plo
 % gui_erp_waviewer.ViewAxes_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',ColorBviewer_def);
 
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-gui_erp_waviewer.Resize = 0;
-gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
+% gui_erp_waviewer.Resize = 0;
+
+
+% gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
+gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
+
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
@@ -132,6 +156,10 @@ gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
+gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
+
+
 gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
 
@@ -143,7 +171,7 @@ gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'S
 
 
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 70 70 -1 100 170 70 20]);
+set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 5]);
 
 
 %%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
@@ -167,6 +195,7 @@ gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_bo
 % if S_ws_getbinchan.Select_index == numel(S_ws_geterpset)
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
 % end
+
 
 if pageNum ==1
     Enable_minus = 'off';
@@ -219,6 +248,8 @@ if isempty(OutputViewerpar)
     return;
 end
 
+
+%%Plot the waves
 f_plotviewerwave(OutputViewerpar{1},OutputViewerpar{2}, OutputViewerpar{3},OutputViewerpar{4},OutputViewerpar{5},OutputViewerpar{6},OutputViewerpar{9},OutputViewerpar{8},OutputViewerpar{10},OutputViewerpar{11},...
     OutputViewerpar{12},OutputViewerpar{13},OutputViewerpar{14},OutputViewerpar{15},OutputViewerpar{16},OutputViewerpar{17},OutputViewerpar{18},OutputViewerpar{19},OutputViewerpar{20},OutputViewerpar{21},OutputViewerpar{22},...
     OutputViewerpar{23},OutputViewerpar{24},OutputViewerpar{25},OutputViewerpar{26},OutputViewerpar{27},OutputViewerpar{28},OutputViewerpar{29},OutputViewerpar{31},OutputViewerpar{30},OutputViewerpar{32},OutputViewerpar{33},...
@@ -250,18 +281,40 @@ else
     
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
-gui_erp_waviewer.Resize =1;
+
+
+
+%%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
+if zoomSpace~=0 && zoomSpace>0
+    if gui_erp_waviewer.ScrollVerticalOffsets<=1
+        try
+            gui_erp_waviewer.ViewAxes.VerticalOffsets= gui_erp_waviewer.ScrollVerticalOffsets*gui_erp_waviewer.ViewAxes.Heights;
+        catch
+        end
+    end
+    if gui_erp_waviewer.ScrollHorizontalOffsets<=1
+        try
+            gui_erp_waviewer.ViewAxes.HorizontalOffsets =gui_erp_waviewer.ScrollHorizontalOffsets*gui_erp_waviewer.ViewAxes.Widths;
+        catch
+        end
+    end
+end
+% gui_erp_waviewer.ViewAxes.BackgroundColor = 'b';
 end % redrawDemo
 
 
 
+
+
+
 %%Resize the GUI automatically as the user changes the size of the window at run-time.
-function WAviewerResize(~,~)
-global gui_erp_waviewer;
-if gui_erp_waviewer.Resize ~= 0
-    f_redrawERP_viewer_test();
-end
-end
+% function WAviewerResize(~,~)
+% global gui_erp_waviewer;
+% if gui_erp_waviewer.Resize ~= 0
+%     set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
+%     f_redrawERP_viewer_test();
+% end
+% end
 
 
 %%-------------------------------Page Editor-------------------------------
@@ -406,6 +459,29 @@ end
 
 end
 
+function Show_command(~,~)
+global viewer_ERPDAT;
+[messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
+if ~isempty(messgStr)
+    viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
+end
+
+ViewerName = estudioworkingmemory('viewername');
+if isempty(ViewerName)
+    ViewerName = char('My Viewer');
+end
+MessageViewer= char(strcat('Show Command'));
+erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+try
+    viewer_ERPDAT.Process_messg =1;
+    OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'command');
+    viewer_ERPDAT.Process_messg =2;
+catch
+    viewer_ERPDAT.Process_messg =3;
+end
+end
+
+
 
 %%-------------------------Save figure as----------------------------------
 function figure_saveas(~,~)
@@ -470,7 +546,7 @@ MessageViewer= char(strcat('Create Static/Exportable Plot'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
 try
     viewer_ERPDAT.Process_messg =1;
-    OutputViewerpar = f_preparms_erpwaviewer(ViewerName);
+    OutputViewerpar = f_preparms_erpwaviewer(ViewerName,'script');
     viewer_ERPDAT.Process_messg =2;
 catch
     viewer_ERPDAT.Process_messg =3;
@@ -512,6 +588,10 @@ end
 %%Reset each panel that using the default parameters
 function Panel_Reset(~,~)
 global viewer_ERPDAT;
+global gui_erp_waviewer
+
+estudioworkingmemory('MERPWaveViewer_label',[]);
+estudioworkingmemory('MERPWaveViewer_others',[]);
 
 MessageViewer= char(strcat('Reset'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -525,6 +605,18 @@ try
 catch
     viewer_ERPDAT.Process_messg =3;
 end
+
+%%Reset the window size and position
+new_pos = [0.01,0.01,75,75];
+erpworkingmemory('ERPWaveScreenPos',new_pos);
+try
+    ScreenPos =  get( groot, 'Screensize' );
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+gui_erp_waviewer.screen_pos = new_pos;
+new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+set(gui_erp_waviewer.Window, 'Position', new_pos);
 
 end
 
@@ -555,17 +647,17 @@ if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
     end
 else
     if isempty(zoomspaceEdit)
-        fprintf(2,['\n Zoom Editor:The input must be a numeric','.\n']);
+        fprintf(2,['\n Zoom Editor:The input must be a number','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
     if numel(zoomspaceEdit)>1
-        fprintf(2,['\n Zoom Editor:The input must be a single numeric','.\n']);
+        fprintf(2,['\n Zoom Editor:The input must be a single number','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
     if zoomspaceEdit<0
-        fprintf(2,['\n Zoom Editor:The input must be a positive numeric','.\n']);
+        fprintf(2,['\n Zoom Editor:The input must be a positive number','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
@@ -627,10 +719,17 @@ elseif viewer_ERPDAT.Process_messg ==2
     gui_erp_waviewer.Process_messg.ForegroundColor = [0 0.5 0];
     
 elseif viewer_ERPDAT.Process_messg ==3
+    if ~strcmp(gui_erp_waviewer.Process_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
+    fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
     gui_erp_waviewer.Process_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0 0];
 else
-    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',Processed_Method,'(see Command Window).');
+    if ~strcmpi(gui_erp_waviewer.Process_messg.String,strcat('Warning:',32,Processed_Method,32,'(see Command Window).'))
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
+    gui_erp_waviewer.Process_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
+    
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
@@ -779,7 +878,7 @@ LineMarkerdef = {'none','none','none','none','+','o','*'};
 LineStyledef = {'-','--',':','-.','-','-','-',};
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ALLERP,[1:length(ALLERP)],qPLOTORG);
 %%%%%%%%%%%%%%%%%%%%--------------------------------------------------------
-
+plotArrayStrdef ='';
 if qPLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = qchanArray;
     for Numofchan = 1:numel(plotArray)
@@ -885,7 +984,7 @@ end
 
 %%ylable font
 if nargin <34
-    qYlabelfont = 'Geneva';
+    qYlabelfont = 'Helvetica';
 end
 
 %%display ylabels?
@@ -897,10 +996,18 @@ end
 datresh = squeeze(ERPdatadef(qchanArray,:,qbinArray,qERPArray));
 yymax   = max(datresh(:));
 yymin   = min(datresh(:));
-if abs(yymax)<1 && abs(yymin)<1
-    scalesdef(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
+if ~isempty(yymax) && isempty(yymin)
+    if abs(yymax)<1 && abs(yymin)<1
+        try
+            scalesdef(1:2) = [yymin*1.2 yymax*1.1]; % JLC. Mar 11, 2015
+        catch
+            scalesdef(1:2) = [-1 1];
+        end
+    else
+        scalesdef(1:2) = [floor(yymin*1.2) ceil(yymax*1.1)]; % JLC. Sept 26, 2012
+    end
 else
-    scalesdef(1:2) = [floor(yymin*1.2) ceil(yymax*1.1)]; % JLC. Sept 26, 2012
+    scalesdef(1:2) = [-1 1];
 end
 yylim_out = f_erpAutoYLim(ALLERP, qERPArray,qPLOTORG,qbinArray, qchanArray,qCURRENTPLOT);
 try
@@ -943,7 +1050,7 @@ end
 
 %%xlabel font
 if nargin <26
-    qXlabelfont= 'Geneva';
+    qXlabelfont= 'Helvetica';
 end
 
 %%disply xtick labels ?
@@ -1033,7 +1140,7 @@ end
 
 %%font of channel/bin/erpset label
 if nargin <17
-    qLabelfont= 'Geneva';
+    qLabelfont= 'Helvetica';
 end
 
 %%location of channel/bin/erpset label
@@ -1048,7 +1155,7 @@ end
 
 %%font of legend name
 if nargin <14
-    qLegendFont  = 'Geneva';
+    qLegendFont  = 'Helvetica';
 end
 
 %%legend name
@@ -1202,7 +1309,7 @@ if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
             elseif strcmpi(qBlc,'post')
                 indxtimelock = length(ERP.times);
                 aa = find(ERP.times==0);
-            elseif strcmpi(qBlc,'all')
+            elseif strcmpi(qBlc,'all') || strcmpi(qBlc,'whole')
                 indxtimelock = length(ERP.times);
                 aa = 1;
             else
@@ -1385,6 +1492,9 @@ end
 if isempty( qYScales)
     qYScales = [floor(min(bindata(:))),ceil(max(bindata(:)))];
 end
+if isempty(y_scale_def)
+    y_scale_def = qYScales;
+end
 if isyaxislabel==1 %% y axis GAP
     if  Ypert<0
         Ypert = 100;
@@ -1524,6 +1634,21 @@ try
     y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);
 catch
 end
+
+
+
+%%remove the margins of a plot
+ax = hbig;
+outerpos = ax.OuterPosition;
+ti = ax.TightInset;
+left = outerpos(1) + ti(1);
+bottom = outerpos(2) + ti(2);
+ax_width = outerpos(3) - ti(1) - ti(3);
+ax_height = outerpos(4) - ti(2) - ti(4);
+ax.Position = [left bottom ax_width ax_height];
+
+
+
 %%--------------Plot ERPwave-----------------
 stdalpha = qTransparency;
 countPlot = 0;
@@ -1872,8 +1997,12 @@ for Numofrows = 1:Numrows
             %             disp(['Data at',32,'R',num2str(Numofrows),',','C',num2str(Numofcolumns), 32,'is not defined!']);
         end
         try
-            if isxaxislabel==2
-                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1)/10),XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
+            if 2<Numcolumns && Numcolumns<5
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
+            elseif Numcolumns==1
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
+            elseif Numcolumns==2
+                set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
             else
                 set(hbig,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end

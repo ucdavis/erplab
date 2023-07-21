@@ -1561,7 +1561,7 @@ else
         checknan(handles, val)
 end
 hold off
-drawnow
+%drawnow
 
 nbinput   = length(binput);
 nchinput  = length(chinput);

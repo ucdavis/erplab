@@ -65,7 +65,7 @@ catch
 end
 
 [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
-
+plotArrayStrdef ='';
 plotArray = [];
 if PLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = chanArray;
@@ -73,6 +73,7 @@ if PLOTORG(1) ==1 %% if  the selected Channel is "Grid"
         try
             plotArrayStrdef{Numofchan} = chanStr{plotArray(Numofchan)};
         catch
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
@@ -81,6 +82,7 @@ elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
         try
             plotArrayStrdef{Numofchan} = binStr{plotArray(Numofchan)};
         catch
+            plotArrayStrdef{Numofchan} = ' ';
         end
     end
 elseif PLOTORG(1) == 3%% if the selected ERPset is "Grid"
@@ -89,7 +91,7 @@ elseif PLOTORG(1) == 3%% if the selected ERPset is "Grid"
         try
             plotArrayStrdef{Numofchan} = ALLERPIN(plotArray(Numofchan)).erpname;
         catch
-            plotArrayStrdef{Numofchan} = 'none';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 end
@@ -130,14 +132,14 @@ elseif  GridLayoutop==0
                 SingleStr =  char(DataDf{Numofrows,Numofcolumns});
                 [C,IA] = ismember_bc2(SingleStr,columFormat);
                 if C ==1
-                    if IA < length(columFormat)
+                    if IA <= length(columFormat)
                         try
                             GridposArray(Numofrows,Numofcolumns)   = plotArray(IA);
                         catch
                             GridposArray(Numofrows,Numofcolumns) =0;
                         end
-                    elseif IA == length(columFormat) %%%If the element is 'None'
-                        GridposArray(Numofrows,Numofcolumns)   = 0;
+                        %                     elseif IA == length(columFormat) %%%If the element is 'None'
+                        %                         GridposArray(Numofrows,Numofcolumns)   = 0;
                     end
                 else
                     GridposArray(Numofrows,Numofcolumns)   = 0;
@@ -285,7 +287,7 @@ end%% end of loop for number of line
 %
 %%-----------------------------Setting for legend--------------------------
 FontSizeLeg=  10;
-FontLeg=  'Geneva';
+FontLeg=  'Helvetica';
 fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
 TextcolorLeg = 1;
 Legcolumns = 1;
@@ -306,7 +308,7 @@ end
 %
 %%--------------Chan/Bin/ERPset Labels, font, and fontsize-----------------
 CBELabels = [50 100 1];
-CBEFont = 'Geneva';
+CBEFont = 'Helvetica';
 CBEFontsize=10;
 try
     if ERPwaviewerIN.chanbinsetlabel.location.no ==1
@@ -373,7 +375,13 @@ try
     end
 catch
 end
-
+if ERPwaviewerIN.SEM.active==0
+    Standerr = 0;
+else
+    if Standerr<=0
+        Standerr=1;
+    end
+end
 %
 %%-------------------------------Transparency------------------------------
 Transparency = 0;
@@ -387,6 +395,14 @@ try
 catch
 end
 
+if ERPwaviewerIN.SEM.active==0
+    Transparency = 0;
+    
+else
+    if Transparency<=0
+        Transparency=0.2;
+    end
+end
 
 %
 %%------------------------------Grid space---------------------------------
@@ -478,7 +494,7 @@ try
 catch
 end
 
-xlabelFont = 'Geneva';
+xlabelFont = 'Helvetica';
 try
     xFontlabelValue =  ERPwaviewerIN.xaxis.font;
     xlabelFont = fonttype{xFontlabelValue};
@@ -591,7 +607,7 @@ try
 catch
 end
 
-YlabelFont = 'Geneva';
+YlabelFont = 'Helvetica';
 try
     YFontlabelValue =  ERPwaviewerIN.yaxis.font;
     YlabelFont = fonttype{YFontlabelValue};
@@ -675,12 +691,26 @@ PagesIndex = ERPwaviewerIN.PageIndex;
 if isempty(PagesIndex)
     PagesIndex=1;
 end
-
-for ii = 1:length(plotArrayStr)-1
+plotArrayStr_tr ='';
+for ii = 1:length(plotArrayStr)
     plotArrayStr_tr{ii}   = plotArrayStr{ii};
 end
 plotArrayStr = '';
 plotArrayStr = plotArrayStr_tr;
+
+try
+    ScreenPos =  get( groot, 'Screensize' );
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+FigOutpos = [];
+try
+    FigOutpos=ERPwaviewerIN.FigOutpos;
+    FigOutpos = [ScreenPos(3)*FigOutpos(1)/100,ScreenPos(4)*FigOutpos(2)/100];
+catch
+    FigOutpos = ScreenPos(3:4)*3/4;
+end
+
 
 %%Main function
 if ~isempty(FigureName)
@@ -692,7 +722,8 @@ if ~isempty(FigureName)
         'Xlabelcolor',xlabelFontcolor,'Xunits',Xunits,'MinorTicksX',MinorticksX,...
         'YScales',Yscales,'Yticks',Yticks,'Yticklabel',yticklabel,'Ylabelfont',YlabelFont,'Ylabelfontsize',YlabelFontsize,...
         'Ylabelcolor',ylabelFontcolor,'Yunits',yunits,'MinorTicksY',MinorticksY,'LegtextColor',TextcolorLeg,'Legcolumns',Legcolumns,...
-        'FigureName',FigureName,'FigbgColor',figbgdColor,'Labelcolor',CBETcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdispFlag,'History', History);%
+        'FigureName',FigureName,'FigbgColor',figbgdColor,'Labelcolor',CBETcolor,'Ytickdecimal',Ytickprecision,'Xtickdecimal',Xtickprecision,'XtickdisFlag',XdispFlag,...
+        'FigOutpos',FigOutpos,'History', History);%
 else
     OutputViewerpar{1} =  ALLERPIN;
     OutputViewerpar{2} =  PagesIndex;

@@ -1,4 +1,4 @@
-classdef Flex < handle
+classdef( Abstract ) Flex < handle
     %uix.mixin.Flex  Flex mixin
     %
     %  uix.mixin.Flex is a mixin class used by flex containers to provide

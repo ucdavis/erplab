@@ -83,7 +83,8 @@ else
         end
         observe_ERPDAT.CURRENTERP = CURRENTERP;
         observe_ERPDAT.ERP = ALLERP(CURRENTERP);
-        observe_ERPDAT.Two_GUI = 1;
+%         observe_ERPDAT.Two_GUI = 1;
+         
     end
     
     
@@ -122,7 +123,7 @@ end
 
 % mainerplab = findobj(W_MAIN, 'tag', submenu);
 % erpmenu = findobj('erpmenu','type', 'uimenu');
-
+% erpworkingmemory('ERPLAB_ERPWaviewer',1);
 end
 
 

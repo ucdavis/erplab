@@ -10,9 +10,10 @@ classdef v_ERPDAT < handle
         count_legend
         page_xyaxis
         Process_messg
-        count_loadproper
+        loadproper_count
         count_twopanels
         Reset_Waviewer_panel
+        ERPset_Chan_bin_label
     end
     
     events
@@ -26,9 +27,10 @@ classdef v_ERPDAT < handle
         legend_change
         page_xyaxis_change
         v_messg_change
-        count_loadproper_change
+        loadproper_change
         count_twopanels_change
         Reset_Waviewer_panel_change
+        ERPset_Chan_bin_label_change
     end
     
     methods
@@ -104,9 +106,9 @@ classdef v_ERPDAT < handle
         
         %%%m11
         %Modified bins of the selected ERP
-        function set.count_loadproper(obj,value)
-            obj.count_loadproper = value;
-            notify(obj,'count_loadproper_change');
+        function set.loadproper_count(obj,value)
+            obj.loadproper_count = value;
+            notify(obj,'loadproper_change');
         end
         
         
@@ -123,6 +125,13 @@ classdef v_ERPDAT < handle
         function set.Reset_Waviewer_panel(obj,value)
             obj.Reset_Waviewer_panel = value;
             notify(obj,'Reset_Waviewer_panel_change');
+        end
+        
+        
+        %%EXecute the changes of labels
+        function set.ERPset_Chan_bin_label(obj,value)
+            obj.ERPset_Chan_bin_label = value;
+            notify(obj,'ERPset_Chan_bin_label_change');
         end
         
     end
