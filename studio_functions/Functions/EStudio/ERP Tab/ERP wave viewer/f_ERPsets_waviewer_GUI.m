@@ -155,7 +155,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 
 %%---------------Setting for auto option-----------------------------------
     function erpselect_refresh(~,~)
-%         Value = Source.Value;
+        %         Value = Source.Value;
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -181,10 +181,10 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 try
                     Selected_erpset = ERPwaveview_erpsetops.butttons_datasets.Value;
                     try
-                    CURRENTERPStudio = Selected_erpset(ERPwaviewer_apply.PageIndex);
+                        CURRENTERPStudio = Selected_erpset(ERPwaviewer_apply.PageIndex);
                     catch
-                     CURRENTERPStudio = Selected_erpset(1); 
-                     ERPwaviewer_apply.PageIndex=1;  
+                        CURRENTERPStudio = Selected_erpset(1);
+                        ERPwaviewer_apply.PageIndex=1;
                     end
                 catch
                     messgStr =  strcat('Cannot get CURRENTERP from Workspace');
@@ -232,10 +232,10 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             end
             if isempty(CURRENTERPStudio) || CURRENTERPStudio> length(ALLERPin)
                 CURRENTERPStudio =  Selected_erpset(1);
-                ERPwaviewer_apply.PageIndex=1;  
+                ERPwaviewer_apply.PageIndex=1;
             end
             
-       
+            
             ERPwaveview_erpsetops.ALLERP = ALLERPin;
             ERPwaveview_erpsetops.ERP = ALLERPin(CURRENTERPStudio);
             ERPwaveview_erpsetops.CURRENTERP = CURRENTERPStudio;
@@ -273,7 +273,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaviewer_apply.ERP = ALLERPin(CURRENTERPStudio);
         ERPwaviewer_apply.SelectERPIdx =Selected_erpset;
         ERPwaviewer_apply.CURRENTERP = CURRENTERPStudio;
-%         ERPwaviewer_apply.PageIndex = 1;
+        %         ERPwaviewer_apply.PageIndex = 1;
         estudioworkingmemory('MyViewer_ERPsetpanel',0);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
@@ -405,7 +405,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
         ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
-           MessageViewer= char(strcat('ERPsets > Cancel'));
+        MessageViewer= char(strcat('ERPsets > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
@@ -528,153 +528,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
 
 
 
-%%change this panel based on the chaneges of main EStudio
-%     function Two_GUI_change(~,~)
-%         ERPtooltype = erpgettoolversion('tooltype');
-%         if observe_ERPDAT.Two_GUI~=1
-%             return;
-%         end
-%
-%         if isempty(observe_ERPDAT.ALLERP)
-%             try
-%                 close(gui_erp_waviewer.Window);%%close previous GUI if exists
-%             catch
-%             end
-%             return;
-%         end
-%         ALLERPNew = observe_ERPDAT.ALLERP;
-%         %%checking datatype
-%         counterp = 0;
-%         datatypeFlag = [];
-%         for Numoferpset = 1:length(ALLERPNew)
-%             if ~strcmpi(ALLERPNew(Numoferpset).datatype, 'ERP') && ~strcmpi(ALLERPNew(Numoferpset).datatype, 'CSD')
-%                 counterp =   counterp+1;
-%                 datatypeFlag(counterp) = Numoferpset;
-%             end
-%         end
-%         if ~isempty(datatypeFlag)
-%             msgboxText =  ['ERP Wave Viewer donot support to plot the wave for the data that donot belong to "ERP" or "CSD".\n'...
-%                 'Please remove the following ERPset with index(es):',32,num2str(datatypeFlag),'.'];
-%             if strcmpi(ERPtooltype,'ERPLAB')
-%                 title_msg = 'ERPLAB: ERPLAB_ERP_Viewer() datatype error:';
-%             elseif strcmpi(ERPtooltype,'EStudio')
-%                 title_msg = 'EStudio: ERPLAB_ERP_Viewer() datatype error:';
-%             else
-%                 title_msg = ' ERPLAB_ERP_Viewer() datatype error:';
-%             end
-%             errorfound(sprintf(msgboxText), title_msg);
-%             return;
-%         end
-%
-%         try
-%             ERPAutoValue = ERPwaveview_erpsetops.auto.Value;
-%         catch
-%             return;
-%         end
-%
-%         if isempty(observe_ERPDAT.ALLERP)
-%             try
-%                 close(gui_erp_waviewer.Window);
-%             catch
-%             end
-%             assignin('base','ALLERPwaviewer',[]);
-%             return;
-%         end
-%         MessageViewer= char(strcat('Update "ERP wave Viewer"'));
-%         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-%         viewer_ERPDAT.Process_messg =1;
-%
-%         %%check ALLERP for EStudio
-%         if strcmpi(ERPtooltype,'EStudio')
-%             if (length(ALLERPStudio)==1&& strcmpi(ALLERPStudio(1).erpname,'No ERPset loaded')) || strcmpi(ALLERPStudio(length(ALLERPStudio)).erpname,'No ERPset loaded')
-%                 try
-%                     %                     cprintf('red',['\n ERP Wave viewer will be closed because ALLERP is empty.\n\n']);
-%                     close(gui_erp_waviewer.Window);
-%                 catch
-%                 end
-%                 assignin('base','ALLERPwaviewer',[]);
-%                 return;
-%             end
-%         end
-%         try
-%             ERPwaviewer_up = evalin('base','ALLERPwaviewer');
-%         catch
-%             beep;
-%             disp('f_ERPsets_waviewer_GUI() error: Restart ERPwave Viewer');
-%             return;
-%         end
-%         if ERPAutoValue ==1
-%             if strcmpi(ERPtooltype,'ERPLAB')
-%                 ERPArrayStudio= observe_ERPDAT.CURRENTERP;
-%             elseif strcmpi(ERPtooltype,'EStudio')
-%                 ERPArrayStudio= estudioworkingmemory('selectederpstudio');
-%             else
-%                 ERPArrayStudio= observe_ERPDAT.CURRENTERP;
-%             end
-%             CURRENTERPStudio = observe_ERPDAT.CURRENTERP;
-%             estudioworkingmemory('PlotOrg_ERPLAB',1);%%This is used to Grid, Overlay, and Pages if "same as ERPLAB"
-%
-%         end
-%
-%         %         else
-%         if ERPAutoValue ~=1
-%             ERPArrayStudio = ERPwaviewer_up.SelectERPIdx;
-%             CURRENTERPStudio=ERPwaviewer_up.CURRENTERP;
-%             %                     ALLERPStudio = evalin('base','ALLERP');
-%         end
-%         ALLERPStudio = observe_ERPDAT.ALLERP;
-%         if max(ERPArrayStudio(:))> length(ALLERPStudio) || min(ERPArrayStudio(:))<=0
-%             ERPArrayStudio = length(ALLERPStudio);
-%             CURRENTERPStudio = length(ALLERPStudio);
-%         end
-%         [x_index,y_index] = find(ERPArrayStudio==CURRENTERPStudio);
-%         if isempty(y_index)
-%             y_index = numel(ERPArrayStudio);
-%         end
-%
-%         ERPwaviewer_up.ALLERP = ALLERPStudio;
-%         ERPwaviewer_up.ERP = ALLERPStudio(CURRENTERPStudio);
-%         ERPwaviewer_up.CURRENTERP = CURRENTERPStudio;
-%         ERPwaviewer_up.SelectERPIdx = ERPArrayStudio;
-%         ERPwaviewer_up.PageIndex = y_index;
-%         ERPdatasets = getERPDatasets(ALLERPStudio); % Get datasets from ALLERP
-%         ERPdatasets = sortdata(ERPdatasets);
-%         dsnames = {};
-%         if size(ERPdatasets,1)==1
-%             if strcmp(ERPdatasets{1},'No ERPset loaded')
-%                 dsnames = {''};
-%             else
-%                 dsnames{1} = strcat(num2str(cell2mat(ERPdatasets(1,2))),'.',32,ERPdatasets{1,1});
-%             end
-%         else
-%             for Numofsub = 1:size(ERPdatasets,1)
-%                 dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
-%             end
-%         end
-%
-%         %             ERPwaveview_erpsetops.butttons_datasets.Enable = Enable_label;
-%         ds_length = length(ERPdatasets);
-%         if ds_length<=2
-%             ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
-%         else
-%             ERPwaveview_erpsetops.butttons_datasets.Max = ds_length;
-%         end
-%         ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
-%         ERPwaveview_erpsetops.butttons_datasets.Value = ERPArrayStudio;
-%
-%         if strcmpi(ERPtooltype,'ERPLAB') && ERPAutoValue ==1
-%             ERPwaviewer_up.PageIndex = 1;
-%         end
-%
-%         assignin('base','ALLERPwaviewer',ERPwaviewer_up);
-%         viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;
-%         f_redrawERP_viewer_test();%%Plot the waves
-%
-%         MessageViewer= char(strcat('Update "ERP wave Viewer"'));
-%         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-%         viewer_ERPDAT.Process_messg =2;
-%         observe_ERPDAT.Two_GUI =2;
-%     end
 
 %%-------------------------------------------------------------------------
 %%Automatically saving the changed parameters for the current panel if the
@@ -813,7 +666,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
     function ERPset_Chan_bin_label_change(~,~)
         if viewer_ERPDAT.ERPset_Chan_bin_label~=1  %% 1 means ERPset indeces were changed
             if viewer_ERPDAT.ERPset_Chan_bin_label==2%%Update Viewer based on the change in ERPLAB
-               erpselect_refresh(); 
+                erpselect_refresh();
             end
             return;
         end

@@ -133,36 +133,14 @@ varargout{1} = box_erpwave_viewer_property;
         end
         erpFilename = char(strcat(erpfilename,ext));
         
-        
         try
             ERPwaviewer = importdata([filepath,erpFilename]);
             ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
-            BackERPLABcolor = [1 0.9 0.3];    % yellow
-            question = ['Do you want to use the default "ALLERP"? \n Because there is no "ALLERP" in the file'];
-            title = 'My Viewer>Viewer Properties';
-            oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-            set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-            button = questdlg(sprintf(question), title,'Cancel','No', 'Yes','Yes');
-            set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-            if strcmpi(button,'Yes')
-                ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
-                ERPwaviewer.ERP = ERPwaviewerdef.ERP;
-                ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
-                ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
-                ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
-            else
-                if strcmpi(button,'No')
-                    beep;
-                    viewer_ERPDAT.Process_messg =3;
-                    fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n Cannot use the file because no ALLERP can be used.\n\n');
-                else
-                    beep;
-                    viewer_ERPDAT.Process_messg =3;
-                    fprintf(2,'\n\n My viewer > Viewer Propoerties > Load: \n User selected cancel.\n\n');
-                end
-                return;
-            end
-            
+            ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
+            ERPwaviewer.ERP = ERPwaviewerdef.ERP;
+            ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
+            ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
+            ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
             assignin('base','ALLERPwaviewer',ERPwaviewer);
         catch
             beep;

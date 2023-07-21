@@ -746,7 +746,7 @@ varargout{1} = Chanbin_waveviewer_box;
         if strcmpi(ERPtooltype,'EStudio')
             ERPwaveview_binchan.auto.String = 'Same as EStudio';
         elseif  strcmpi(ERPtooltype,'ERPLAB')
-            ERPwaveview_binchan.auto.String = 'Same as ERPLAB';
+            ERPwaveview_binchan.auto.String = '';
             ERPwaveview_binchan.BinRange.Enable = 'on';
             ERPwaveview_binchan.ElecRange.Enable = 'on';
             ERPwaveview_binchan.auto.Enable = 'off';
