@@ -351,7 +351,9 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         
         function set.MouseWheelEnabled( obj, value )
             
-            assert( ischar( value ) && any( strcmp( value, {'on','off'} ) ), ...
+            value = uix.validateScalarStringOrCharacterArray( value, ...
+                'MouseWheelEnabled' );
+            assert( any( strcmp( value, {'on','off'} ) ), ...
                 'uix:InvalidArgument', ...
                 'Property ''MouseWheelEnabled'' must ''on'' or ''off''.' )
             listener = obj.MouseWheelListener;
@@ -605,7 +607,7 @@ classdef ScrollingPanel < uix.Container & uix.mixin.Panel
         
     end % template methods
     
-    methods( Access = private )
+    methods( Access = ?matlab.unittest.TestCase )
         
         function onSliderScrolling( obj, ~, ~ )
             %onSliderScrolling  Event handler

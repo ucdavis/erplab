@@ -102,12 +102,11 @@ end % switch
         %track  Do tracking
         
         a = sprintf( '%s/%s (%s)', MATLAB, v, OS );
+        ds = 'unknown';
         if isdeployed()
             ds = 'deployed';
         elseif strcmp( DOMAIN, 'mathworks' )
-            ds = DOMAIN;
-        else
-            ds = 'unknown';
+            ds = DOMAIN;        
         end
         pv = {'v', '1', 'tid', p, 'ua', escape( a ), 'ul', LANGUAGE, ...
             'cid', CLIENT, 'ht', 'pageview', ...
@@ -165,6 +164,7 @@ end % randomMatlab
 function s = os()
 %os  Operating system string
 
+s = 'unknown';
 if ispc()
     s = sprintf( 'Windows NT %s', ...
         char( java.lang.System.getProperty( 'os.version' ) ) );
@@ -173,8 +173,6 @@ elseif isunix()
 elseif ismac()
     s = sprintf( 'Macintosh; Intel OS X %s', ...
         strrep( char( java.lang.System.getProperty( 'os.version' ) ), ' ', '_' ) );
-else
-    s = 'unknown';
 end
 
 end % os

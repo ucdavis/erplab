@@ -133,10 +133,10 @@ try
     if yylim(1)<1E-6 && yylim(2)<1E-6
         if strcmpi(datatype, 'ERP')
             yylim(1:2) = [-1 1];
-            fprintf('WARNING: It seems like erpAutoYLim() found flatlined ERPs. So auto Y-limit was set to [-1 1].\n');
+%             fprintf('WARNING: It seems like erpAutoYLim() found flatlined ERPs. So auto Y-limit was set to [-1 1].\n');
         else
             yylim(1:2) = [0 1];
-            fprintf('WARNING: It seems like erpAutoYLim() found flatlined Spectrum. So auto Y-limit was set to [0 1].\n');
+%             fprintf('WARNING: It seems like erpAutoYLim() found flatlined Spectrum. So auto Y-limit was set to [0 1].\n');
         end
     end
 catch

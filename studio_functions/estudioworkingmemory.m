@@ -76,8 +76,8 @@ if nargin==1 % read
         end
     else % file for storing/reading memory
         try
-            p = which('EStudio');
-            p = p(1:findstr(p,'EStudio.m')-1);
+            p = which('o_ERPDAT');
+            p = p(1:findstr(p,'o_ERPDAT.m')-1);
             v = load(fullfile(p,'memoryerpstudiopanels.erpm'), '-mat');
             
         catch
@@ -117,8 +117,8 @@ elseif nargin==2 % write
     else % file for storing/reading memory
         try
             eval([field '=input2store;'])
-            p = which('EStudio');
-            p = p(1:findstr(p,'EStudio.m')-1);
+            p = which('o_ERPDAT');
+            p = p(1:findstr(p,'o_ERPDAT.m')-1);
             save(fullfile(p,'memoryerpstudiopanels.erpm'), field,'-append');
         catch
             msgboxText = ['EStudio could not find "memoryerpstudiopanels.erpm" or does not have permission for writting on it.\n'...
