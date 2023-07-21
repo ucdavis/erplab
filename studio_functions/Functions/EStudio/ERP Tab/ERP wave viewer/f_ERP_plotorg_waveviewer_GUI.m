@@ -2597,6 +2597,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             EmptyItemStr = '';
             ERPwaviewerin.plot_org.gridlayout.columFormat=plotArrayFormt';
             GridinforDataOrg =  ERPwaviewerin.plot_org.gridlayout.data;
+            countEmp = 0;
             for ii = 1:size(GridinforDataOrg,1)
                 for jj = 1:size(GridinforDataOrg,2)
                     code = 0;
@@ -2612,15 +2613,28 @@ varargout{1} = box_erpwave_viewer_plotorg;
                             else
                                 EmptyItemStr = strcat(EmptyItemStr,32,num2str(GridinforDataOrg{ii,jj}));
                             end
+                        else
+                            countEmp = countEmp+1;
                         end
                         GridinforDataOrg{ii,jj} = '';
                     end
                 end
             end
             if ~isempty(EmptyItemStr)
-                MessageViewer= char(strcat('Plot Organization > Apply-Empty item(s):',EmptyItemStr,32,'because they donot match with the selected labels'));
+                MessageViewer= char(strcat('Plot Organization > Apply-Undefined item(s) in grid locations:',EmptyItemStr,32,'because they donot match with the selected labels'));
                 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
+            end
+            if countEmp == size(GridinforDataOrg,1)*size(GridinforDataOrg,2) || isempty(EmptyItemStr)
+                EmptyItemStr = '';
+                for kk = 1:length(plotArrayFormt)
+                    EmptyItemStr = strcat(EmptyItemStr,32,char(plotArrayFormt(kk)));
+                end
+                if ~isempty(EmptyItemStr)
+                    MessageViewer= char(strcat('Plot Organization > Apply-Undefined item(s) in grid locations:',EmptyItemStr,32,'because they donot match with the selected labels'));
+                    erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+                    viewer_ERPDAT.Process_messg =4;
+                end
             end
             
             ERPwaviewerin.plot_org.gridlayout.data =GridinforDataOrg;
