@@ -2151,11 +2151,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
                         end
                         GridinforDataOrg{ii,jj} = '';
                     end
-                    %                     [C,IA] =ismember_bc2(GridinforDataOrg{ii,jj}, plotArrayFormt);
-                    %                     if C==1
-                    %                         countlabel=countlabel+1;
-                    %                         LabelUsedIndex(countlabel) = IA;
-                    %                     end
                 end
             end
             if ~isempty(EmptyItemStr)
@@ -2163,18 +2158,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
             end
-            %             if ~isempty(LabelUsedIndex)
-            %                 Labeleft= setdiff(1:length(plotArrayFormt),LabelUsedIndex);
-            %                 LabeleftStr = '';
-            %                 for jjj = 1:numel(Labeleft)
-            %                     LabeleftStr = strcat(LabeleftStr,32,plotArrayFormt{Labeleft(jjj)});
-            %                 end
-            %                 if ~isempty(LabeleftStr)
-            %                     MessageViewer= char(strcat('Plot Organization > Load - Undefined items in grid locations: ',LabeleftStr));
-            %                     erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            %                     viewer_ERPDAT.Process_messg =4;
-            %                 end
-            %             end
+         
             
             ERPwaviewerin.plot_org.gridlayout.data =GridinforDataOrg;
             gui_plotorg_waveviewer.rownum.Value = size(GridinforDataOrg,1);
@@ -2333,6 +2317,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if changeFlag~=1
             return;
         end
+         MessageViewer= char(strcat('Plot Organization > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -2491,6 +2479,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
+          MessageViewer= char(strcat('Plot Organization > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 

@@ -530,9 +530,15 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
+        MessageViewer= char(strcat('Other > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
         
         changeFlag =  estudioworkingmemory('MyViewer_other');
         if changeFlag~=1
+            MessageViewer= char(strcat('Other > Cancel'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =2;
             return;
         end
         
@@ -604,7 +610,9 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
-        
+        MessageViewer= char(strcat('Other > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 

@@ -446,9 +446,14 @@ varargout{1} = box_erplabelset_viewer_property;
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        
+        MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
         changeFlag =  estudioworkingmemory('MyViewer_labels');
         if changeFlag~=1
+            MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Cancel'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =2;
             return;
         end
         
@@ -501,6 +506,9 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
         gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
+        MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 %%------------------------------Apply--------------------------------------

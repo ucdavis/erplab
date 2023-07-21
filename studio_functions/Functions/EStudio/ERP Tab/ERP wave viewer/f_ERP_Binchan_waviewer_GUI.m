@@ -427,11 +427,14 @@ varargout{1} = Chanbin_waveviewer_box;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
+        
         changeFlag =  estudioworkingmemory('MyViewer_chanbin');
         if changeFlag~=1
             return;
         end
-        
+        MessageViewer= char(strcat('Channels and Bins > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
         catch
@@ -474,6 +477,9 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
         ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
+         MessageViewer= char(strcat('Channels and Bins > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 %%------------------------------Apply--------------------------------------

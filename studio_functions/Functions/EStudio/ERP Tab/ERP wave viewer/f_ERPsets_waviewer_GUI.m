@@ -356,6 +356,9 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         if changeFlag~=1
             return;
         end
+        MessageViewer= char(strcat('ERPsets > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
         
         try
             ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
@@ -402,6 +405,9 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
         ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
+           MessageViewer= char(strcat('ERPsets > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 %%------------------------------Apply--------------------------------------

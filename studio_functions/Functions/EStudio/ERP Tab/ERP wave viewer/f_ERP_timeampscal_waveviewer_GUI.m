@@ -2154,6 +2154,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         
+        
+        MessageViewer= char(strcat('Time and Amplitude Scales > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =1;
+        
         changeFlag =  estudioworkingmemory('MyViewer_xyaxis');
         if changeFlag~=1%% Donot reset this panel if there is no change
             return;
@@ -2348,10 +2353,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         gui_erpxyaxeset_waveviewer.yunits_on.Value = ERPwaviewer_apply.yaxis.units;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = ~ERPwaviewer_apply.yaxis.units;
-        estudioworkingmemory('MyViewer_xyaxis',0);
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
+        estudioworkingmemory('MyViewer_xyaxis',0);
+        MessageViewer= char(strcat('Time and Amplitude Scales > Cancel'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =2;
     end
 
 %%-----------------------------Apply---------------------------------------
