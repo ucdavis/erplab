@@ -2478,7 +2478,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             end
         end
         
-        if ERPwaviewer_apply.plot_org.gridlayout.GridLayoutAuto.Value==0
+        if ERPwaviewer_apply.plot_org.gridlayout.GridLayoutAuto ==0
             gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value = 0;
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'off';
         else
