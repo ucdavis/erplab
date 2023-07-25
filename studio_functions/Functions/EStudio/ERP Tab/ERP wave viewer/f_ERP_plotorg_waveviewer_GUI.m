@@ -2743,11 +2743,11 @@ varargout{1} = box_erpwave_viewer_plotorg;
         ERPwaviewer_apply.plot_org.Pages = PageValue;
         
         [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
-        if numel(binArray)> length(binStr)
+        if numel(binArray)> length(binStr) || min(binArray(:)) > length(binStr) || max(binArray(:)) > length(binStr) || min(binArray(:)) <=0
             binArray = [1:length(binStr)];
             ERPwaviewer_apply.bin = binArray;
         end
-        if numel(chanArray)> length(chanStr)
+        if numel(chanArray)> length(chanStr) ||  min(chanArray(:))> length(chanStr) ||  min(chanArray(:)) <=0 ||  max(chanArray(:))> length(chanStr)
             chanArray = [1:length(chanStr)];
             ERPwaviewer_apply.chan = chanArray;
         end
