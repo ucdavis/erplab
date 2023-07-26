@@ -35,7 +35,7 @@
 
 function [] = EStudio()
 
-EStudioversion = 9.0;
+EStudioversion = 10.0;
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 
 
@@ -50,6 +50,29 @@ pathName= pathName(1:findstr(pathName,'EStudio.m')-1);
 addpath(genpath(pathName));
 SignalProcessingToolboxCheck;
 
+if exist('memoryerpstudiopanels.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('o_ERPDAT');
+    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'EStudioversion')
+end
+
+
+
+if exist('memoryerpstudio.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('o_ERPDAT');
+    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
+end
 
 
 Count_ERP = 1;
