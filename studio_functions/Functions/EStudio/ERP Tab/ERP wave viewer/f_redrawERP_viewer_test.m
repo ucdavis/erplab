@@ -300,21 +300,40 @@ if zoomSpace~=0 && zoomSpace>0
     end
 end
 % gui_erp_waviewer.ViewAxes.BackgroundColor = 'b';
+
+
+
+
+%%display the names of channels and bins if they diff across the selected
+%%ERPsets
+LabelsdiffFlag = OutputViewerpar{48};
+ALLERPIN = OutputViewerpar{1};
+PLOTORG =   OutputViewerpar{3};
+ERPsetArray=   OutputViewerpar{43};
+[chanStr,binStr,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+
+if (diff_mark(1) ==1 || diff_mark(2)==1) && LabelsdiffFlag==1 && PLOTORG(1)~=3
+    if diff_mark(1) ==1 && diff_mark(2) ==0
+        MessageViewer= char(strcat('Some grid Location Labels will be empty because CHANNELS differ across the selected ERPsets'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =4;
+    elseif diff_mark(1) ==0 && diff_mark(2) ==1
+        MessageViewer= char(strcat('Some grid Location Labels will be empty because BINS differ across the selected ERPsets'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =4;
+        
+    elseif  diff_mark(1) ==1 && diff_mark(2) ==1
+        MessageViewer= char(strcat('Some grid Location Labels will be empty because CHANNELS and BINS differ across the selected ERPsets'));
+        erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        viewer_ERPDAT.Process_messg =4;
+    end
+    f_display_binstr_chanstr(ALLERPIN, ERPsetArray,diff_mark)
+end
+
+
 end % redrawDemo
 
 
-
-
-
-
-%%Resize the GUI automatically as the user changes the size of the window at run-time.
-% function WAviewerResize(~,~)
-% global gui_erp_waviewer;
-% if gui_erp_waviewer.Resize ~= 0
-%     set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]);
-%     f_redrawERP_viewer_test();
-% end
-% end
 
 
 %%-------------------------------Page Editor-------------------------------
@@ -720,7 +739,7 @@ elseif viewer_ERPDAT.Process_messg ==2
     
 elseif viewer_ERPDAT.Process_messg ==3
     if ~strcmp(gui_erp_waviewer.Process_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
-    fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
     end
     gui_erp_waviewer.Process_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0 0];
@@ -746,7 +765,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function f_plotviewerwave(ALLERP,qCURRENTPLOT, qPLOTORG,qbinArray,qchanArray,qGridposArray,plotBox,qBlc,qLineColorspec,qLineStylespec,qLineMarkerspec,qLineWidthspec,...
     qLegendName,qLegendFont,qLegendFontsize,qCBELabels,qLabelfont,qLabelfontsize,qPolarityWave,qSEM,qTransparency,qGridspace,qtimeRange,qXticks,qXticklabel,...
-    qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorTicksX,qXunits,qYScales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,qplotArrayStr,...
+    qXlabelfont,qXlabelfontsize,qXlabelcolor,qMinorTicksX,qXunits,qYScales,qYticks,qYticklabel,qYlabelfont,qYlabelfontsize,qYlabelcolor,qYunits,qMinorTicksY,qlabelsName,...
     ERPsetArray,qlegcolor,qlegcolumns,qlabelcolor,qytickprecision,qxtickprecision,qxdisFlag,myerpviewer,myerpviewerlegend)
 
 hbig = myerpviewer;
@@ -765,9 +784,10 @@ end
 if max(ERPsetArray)>length(ALLERP)
     ERPsetArray=length(ALLERP);
 end
-
-[chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
 qERPArray = ERPsetArray;
+
+[chanStrdef,binStrdef,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERP,ERPsetArray);
+
 
 
 if nargin<5
@@ -845,16 +865,22 @@ plotBoxdef = f_getrow_columnautowaveplot(plotArray);
 if isempty(qPLOTORG) || numel(qPLOTORG)~=3 ||  numel(unique(qPLOTORG)) ~=3 || min(qPLOTORG)<0 || max(qPLOTORG)>3
     qPLOTORG = [1 2 3];
 end
-
+LegenddispFlag = 1;
 if qPLOTORG(2) ==1 %% if  the selected Channel is "Grid"
     OverlayArraydef = qchanArray;
     for Numofchan = 1:numel(qchanArray)
         LegendNamedef{Numofchan,1} =char(chanStrdef(qchanArray(Numofchan)));
     end
+    if diff_mark(1)==1
+        LegenddispFlag =0;
+    end
 elseif qPLOTORG(2) == 2 %% if the selected Bin is "Grid"
     OverlayArraydef = qbinArray;
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStrdef(qbinArray(Numofbin)));
+    end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
     end
 elseif qPLOTORG(2) == 3%% if the selected ERPset is "Grid"
     OverlayArraydef = qERPArray;
@@ -870,6 +896,9 @@ else
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStr(qbinArray(Numofbin)));
     end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
+    end
 end
 
 LineColordef = [0 0 0;1 0 0;0 0 1;0 1 0;1,0.65 0;0 1 1;1 0 1;0.5 0.5 0.5;0.94 0.50 0.50;0 0.75 1;0.57 0.93 0.57;1 0.55 0;1 0.75 0.80;1 0.84 0];%% get from:https://htmlcolorcodes.com/color-names/
@@ -883,18 +912,18 @@ if qPLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = qchanArray;
     for Numofchan = 1:numel(plotArray)
         try
-            plotArrayStrdef{Numofchan} = chanStrdef{plotArray(Numofchan)};
+            plotArrayStrdef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
-            plotArrayStrdef{Numofchan} = 'no';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 elseif qPLOTORG(1) == 2 %% if the selected Bin is "Grid"
     plotArray = qbinArray;
     for Numofbin = 1:numel(plotArray)
         try
-            plotArrayStrdef{Numofbin} = binStrdef{plotArray(Numofbin)};
+            plotArrayStrdef{Numofbin} = binStremp{plotArray(Numofbin)};
         catch
-            plotArrayStrdef{Numofbin} = 'no';
+            plotArrayStrdef{Numofbin} = '';
         end
     end
 elseif qPLOTORG(1) == 3%% if the selected ERPset is "Grid"
@@ -903,16 +932,16 @@ elseif qPLOTORG(1) == 3%% if the selected ERPset is "Grid"
         try
             plotArrayStrdef{Numoferp} = ALLERP(plotArray(Numoferp)).erpname;
         catch
-            plotArrayStrdef{Numoferp} = 'no';
+            plotArrayStrdef{Numoferp} = '';
         end
     end
 else
     plotArray = qchanArray;
     for Numofchan = 1:numel(chanArray)
         try
-            plotArrayStrdef{Numofchan} = chanStrdef{plotArray(Numofchan)};
+            plotArrayStrdef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
-            plotArrayStrdef{Numofchan} = 'no';
+            plotArrayStrdef{Numofchan} = '';
         end
     end
 end
@@ -957,8 +986,8 @@ if isempty(qlegcolor) || (qlegcolor~=1 && qlegcolor~=0)
     qlegcolor=1;
 end
 
-if nargin <39 || isempty(qplotArrayStr)
-    qplotArrayStr  = plotArrayStrdef;
+if nargin <39 || isempty(qlabelsName)
+    qlabelsName  = plotArrayStrdef;
 end
 
 
@@ -1657,9 +1686,9 @@ for Numofrows = 1:Numrows
         plotdatalabel = qGridposArray(Numofrows,Numofcolumns);
         
         try
-            labelcbe = qplotArrayStr{plotdatalabel};
+            labelcbe = qlabelsName{plotdatalabel};
         catch
-            labelcbe = 'no';
+            labelcbe = '';
         end
         try
             plotbindata =  bindata(plotdatalabel,:,:,:);
@@ -2018,28 +2047,39 @@ set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','
 %%------------------------------legend name------------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 try
-    for Numofoverlay = 1:numel(hplot)
-        qLegendName1 = strrep(qLegendName{Numofoverlay},'_','\_');
-        %         qLegendName1 = qLegendName{Numofoverlay};
-        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',qLegendName1));
-    end
-    p  = get(myerpviewerlegend,'position');
-    if qlegcolor ~=1
-        try
-            h_legend = legend(myerpviewerlegend, hplot,LegendName);%,'interpreter','none'
-        catch
+    if LegenddispFlag==1
+        for Numofoverlay = 1:numel(hplot)
+            qLegendName1 = strrep(qLegendName{Numofoverlay},'_','\_');
+            %         qLegendName1 = qLegendName{Numofoverlay};
+            LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',qLegendName1));
+        end
+        p  = get(myerpviewerlegend,'position');
+        if qlegcolor ~=1
+            try
+                h_legend = legend(myerpviewerlegend, hplot,LegendName);%,'interpreter','none'
+            catch
+                h_legend = legend(myerpviewerlegend, hplot,qLegendName,'interpreter','none');
+            end
+        else
             h_legend = legend(myerpviewerlegend, hplot,qLegendName,'interpreter','none');
         end
+        set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
+        set(h_legend, 'position', p);
+        set(h_legend,'FontName',qLegendFont);%%legend name font
+        set(h_legend,'NumColumns',qlegcolumns);
+        
+        legend(myerpviewerlegend,'boxoff');
+        set(myerpviewerlegend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
     else
-        h_legend = legend(myerpviewerlegend, hplot,qLegendName,'interpreter','none');
+        if qPLOTORG(2) ==1
+            legendstr = char('The channel labels are not the same across the selected ERPsets, so no channel labels are shown.; If you want to see the channel labels, please select only one ERPset (or multiple ERPsets with matching channel labels).');
+        else
+            legendstr = char('The bin labels are not the same across the selected ERPsets, so no bin labels are shown.; If you want to see the bin labels, please select only one ERPset (or multiple ERPsets with matching bin labels).');
+        end
+        legendstr = regexp(legendstr, '\;', 'split');
+        text(myerpviewerlegend,0.5,0.8,legendstr ,...
+            'FontSize',qLabelfontsize+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);%'FontWeight', 'bold',
     end
-    set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
-    set(h_legend, 'position', p);
-    set(h_legend,'FontName',qLegendFont);%%legend name font
-    set(h_legend,'NumColumns',qlegcolumns);
-    
-    legend(myerpviewerlegend,'boxoff');
-    set(myerpviewerlegend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 catch
 end
 

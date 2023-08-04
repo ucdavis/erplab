@@ -57,21 +57,16 @@ catch
 end
 
 
-GridLayoutop =1;%% need to further edit after discussed with Steve
-try
-    GridLayoutop =  ERPwaviewerIN.plot_org.gridlayout.op ;
-catch
-    GridLayoutop =1;
-end
+[chanStr,binStr,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERPIN,ERPsetArray);
 
-[chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+
 plotArrayStrdef ='';
 plotArray = [];
 if PLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = chanArray;
     for Numofchan = 1:numel(chanArray)
         try
-            plotArrayStrdef{Numofchan} = chanStr{plotArray(Numofchan)};
+            plotArrayStrdef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
             plotArrayStrdef{Numofchan} = '';
         end
@@ -80,7 +75,7 @@ elseif PLOTORG(1) == 2 %% if the selected Bin is "Grid"
     plotArray = binArray;
     for Numofchan = 1:numel(plotArray)
         try
-            plotArrayStrdef{Numofchan} = binStr{plotArray(Numofchan)};
+            plotArrayStrdef{Numofchan} = binStremp{plotArray(Numofchan)};
         catch
             plotArrayStrdef{Numofchan} = ' ';
         end
@@ -96,19 +91,13 @@ elseif PLOTORG(1) == 3%% if the selected ERPset is "Grid"
     end
 end
 GridLayoutop=0;
-try
-    plotArrayStr =  ERPwaviewerIN.plot_org.gridlayout.columFormat;
-catch
-    plotArrayStr = '';
-end
-if isempty(plotArrayStr)
-    plotArrayStr =  plotArrayStrdef;
-end
+LabelsName =  plotArrayStrdef;
 
 %
 %%Getting the specific setting of each position for Grid
 plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
 GridposArray = [];
+LabelsdiffFlag = 0;
 if GridLayoutop==1
     count = 0;
     for Numofrow = 1:plotBox(1) %%organization of Grid
@@ -135,11 +124,16 @@ elseif  GridLayoutop==0
                     if IA <= length(columFormat)
                         try
                             GridposArray(Numofrows,Numofcolumns)   = plotArray(IA);
+                            try
+                                if isempty(plotArrayStrdef{IA})
+                                    LabelsdiffFlag =1;
+                                end
+                            catch
+                            end
+                            
                         catch
                             GridposArray(Numofrows,Numofcolumns) =0;
                         end
-                        %                     elseif IA == length(columFormat) %%%If the element is 'None'
-                        %                         GridposArray(Numofrows,Numofcolumns)   = 0;
                     end
                 else
                     GridposArray(Numofrows,Numofcolumns)   = 0;
@@ -303,8 +297,6 @@ try
 catch
 end
 
-
-
 %
 %%--------------Chan/Bin/ERPset Labels, font, and fontsize-----------------
 CBELabels = [50 100 1];
@@ -351,9 +343,6 @@ try
     end
 catch
 end
-
-
-
 
 %
 %%-----------------------------Polarity------------------------------------
@@ -691,12 +680,6 @@ PagesIndex = ERPwaviewerIN.PageIndex;
 if isempty(PagesIndex)
     PagesIndex=1;
 end
-plotArrayStr_tr ='';
-for ii = 1:length(plotArrayStr)
-    plotArrayStr_tr{ii}   = plotArrayStr{ii};
-end
-plotArrayStr = '';
-plotArrayStr = plotArrayStr_tr;
 
 try
     ScreenPos =  get( groot, 'Screensize' );
@@ -715,7 +698,7 @@ end
 %%Main function
 if ~isempty(FigureName)
     [ALLERP, erpcom] = pop_plotERPwaviewer(ALLERPIN,PagesIndex,ERPsetArray, binArray, chanArray,...
-        'PLOTORG',PLOTORG,'GridposArray',GridposArray,'LabelsName',plotArrayStr, 'Blc', Blc,'Box',plotBox,'LineColor',LineColorspec,'LineStyle',LineStylespec,...
+        'PLOTORG',PLOTORG,'GridposArray',GridposArray,'LabelsName',LabelsName, 'Blc', Blc,'Box',plotBox,'LineColor',LineColorspec,'LineStyle',LineStylespec,...
         'LineMarker',LineMarkerspec,'LineWidth',LineWidthspec,'LegendName',LegendName,'LegendFont',FontLeg,'LegendFontsize',FontSizeLeg,...
         'Labeloc',CBELabels,'Labelfont',CBEFont,'Labelfontsize',CBEFontsize,'YDir',PolarityWave,'SEM',Standerr,'Transparency', Transparency,...
         'GridSpace',Gridspace,'TimeRange',timeRange,'Xticks',timeticks,'Xticklabel',xticklabel,'Xlabelfont',xlabelFont,'Xlabelfontsize',xlabelFontsize,...
@@ -731,7 +714,7 @@ else
     OutputViewerpar{4} =  binArray;
     OutputViewerpar{5} =  chanArray;
     OutputViewerpar{6} =  GridposArray;
-    OutputViewerpar{7} =  plotArrayStr;
+    OutputViewerpar{7} =  LabelsName;
     OutputViewerpar{8} =  Blc;
     OutputViewerpar{9} =  plotBox;
     OutputViewerpar{10} =  LineColorspec;
@@ -772,6 +755,7 @@ else
     OutputViewerpar{45} = Ytickprecision;
     OutputViewerpar{46} = Xtickprecision;
     OutputViewerpar{47} = XdispFlag;
+    OutputViewerpar{48} =LabelsdiffFlag;
 end
 
 end

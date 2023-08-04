@@ -541,7 +541,7 @@ if numel(qCURRENTPLOT)~=1 || isempty(qCURRENTPLOT)
 end
 
 % qERPArray = [1:length(ALLERP)];
-[chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,qERPsetArray);%%get the bin strings and channel strings across the selected ERPsets
+[chanStrdef,binStrdef,diff_mark,chanStremp,binStremp] = f_geterpschanbin(ALLERP,qERPsetArray);%%get the bin strings and channel strings across the selected ERPsets
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ALLERP,qERPsetArray,qPLOTORG,CURRENTPLOT);
 
 if min(qbinArray)<0 || min(qbinArray)==0
@@ -588,7 +588,7 @@ if qPLOTORG(1) ==1 %% if  the selected Channel is "Grid"
     plotArray = qchanArray;
     for Numofchan = 1:numel(chanArray)
         try
-            LabelsNamedef{Numofchan} = chanStrdef{plotArray(Numofchan)};
+            LabelsNamedef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
             LabelsNamedef{Numofchan} = 'none';
         end
@@ -597,9 +597,9 @@ elseif qPLOTORG(1) == 2 %% if the selected Bin is "Grid"
     plotArray = qbinArray;
     for Numofbin = 1:numel(plotArray)
         try
-            LabelsNamedef{Numofbin} = binStrdef{plotArray(Numofbin)};
+            LabelsNamedef{Numofbin} = binStremp{plotArray(Numofbin)};
         catch
-            LabelsNamedef{Numofbin} = 'none';
+            LabelsNamedef{Numofbin} = '';
         end
     end
 elseif qPLOTORG(1) == 3%% if the selected ERPset is "Grid"
@@ -608,16 +608,16 @@ elseif qPLOTORG(1) == 3%% if the selected ERPset is "Grid"
         try
             LabelsNamedef{Numoferp} = ALLERP(plotArray(Numoferp)).erpname;
         catch
-            LabelsNamedef{Numoferp} = 'none';
+            LabelsNamedef{Numoferp} = '';
         end
     end
 else
     plotArray = qchanArray;
     for Numofchan = 1:numel(chanArray)
         try
-            LabelsNamedef{Numofchan} = chanStrdef{plotArray(Numofchan)};
+            LabelsNamedef{Numofchan} = chanStremp{plotArray(Numofchan)};
         catch
-            LabelsNamedef{Numofchan} = 'none';
+            LabelsNamedef{Numofchan} = '';
         end
     end
 end

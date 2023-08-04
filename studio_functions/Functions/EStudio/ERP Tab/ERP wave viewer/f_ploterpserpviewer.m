@@ -112,7 +112,7 @@ if max(qERPArray)>length(ALLERP)
     qERPArray=length(ALLERP);
 end
 
-[chanStrdef,binStrdef] = f_geterpschanbin(ALLERP,[1:length(ALLERP)]);
+[chanStrdef,binStrdef,diff_mark] = f_geterpschanbin(ALLERP,qERPArray);
 
 if nargin<5
     qchanArray = 1:length(chanStrdef);
@@ -187,16 +187,22 @@ plotBoxdef = f_getrow_columnautowaveplot(plotArray);
 if isempty(qPLOTORG) || numel(qPLOTORG)~=3 ||  numel(unique(qPLOTORG)) ~=3 || min(qPLOTORG)<0 || max(qPLOTORG)>3
     qPLOTORG = [1 2 3];
 end
-
+LegenddispFlag = 1;
 if qPLOTORG(2) ==1 %% if  the selected Channel is "Grid"
     OverlayArraydef = qchanArray;
     for Numofchan = 1:numel(qchanArray)
         LegendNamedef{Numofchan,1} =char(chanStrdef(qchanArray(Numofchan)));
     end
+    if diff_mark(1)==1
+        LegenddispFlag =0;
+    end
 elseif qPLOTORG(2) == 2 %% if the selected Bin is "Grid"
     OverlayArraydef = qbinArray;
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStrdef(qbinArray(Numofbin)));
+    end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
     end
 elseif qPLOTORG(2) == 3%% if the selected ERPset is "Grid"
     OverlayArraydef = qERPArray;
@@ -211,6 +217,9 @@ else
     OverlayArraydef = qbinArray;
     for Numofbin = 1:numel(qbinArray)
         LegendNamedef{Numofbin,1} = char(binStr(qbinArray(Numofbin)));
+    end
+    if diff_mark(2)==1
+        LegenddispFlag =0;
     end
 end
 
@@ -1410,35 +1419,49 @@ set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','
 %%------------------------------legend name------------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 try
-    for Numofoverlay = 1:numel(hplot)
-        qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
-        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',32,qLegendName{Numofoverlay}));
-    end
-    sh = subplot(ceil(Numrows*5)+1, 1, 1,'align');
-    p  = get(sh,'position');
-    if qlegcolor ~=1
-        try
-            h_legend = legend(sh,hplot,LegendName);%%,'Interpreter','none'
-        catch
+    if LegenddispFlag==1
+        for Numofoverlay = 1:numel(hplot)
+            qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
+            LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str(qLineColorspec(Numofoverlay,:)),'}',32,qLegendName{Numofoverlay}));
+        end
+        sh = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+        p  = get(sh,'position');
+        if qlegcolor ~=1
+            try
+                h_legend = legend(sh,hplot,LegendName);%%,'Interpreter','none'
+            catch
+                h_legend = legend(sh,hplot,qLegendName);
+            end
+        else
             h_legend = legend(sh,hplot,qLegendName);
         end
+        set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
+        set(h_legend,'FontName',qLegendFont);%%legend name font
+        set(h_legend, 'position', p);
+        set(h_legend,'NumColumns',qlegcolumns);
+        
+        %%increase height of the legend
+        HeightScaleFactor = 1;
+        NewHeight = h_legend.Position(4) * HeightScaleFactor;
+        h_legend.Position(2) = h_legend.Position(2) - (NewHeight - h_legend.Position(4));
+        h_legend.Position(4) = NewHeight;
+        
+        
+        legend(sh,'boxoff');
+        axis(sh,'off');
     else
-        h_legend = legend(sh,hplot,qLegendName);
+        h_legend = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+        set(h_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
+        if qPLOTORG(2) ==1
+            legendstr = char('The channel labels are not the same across the selected ERPsets, so no channel labels are shown.; If you want to see the channel labels, please select only one ERPset (or multiple ERPsets with matching channel labels).');
+        else
+            legendstr = char('The bin labels are not the same across the selected ERPsets, so no bin labels are shown.; If you want to see the bin labels, please select only one ERPset (or multiple ERPsets with matching bin labels).');
+        end
+        legendstr = regexp(legendstr, '\;', 'split');
+        text(h_legend,0.5,0.8,legendstr ,...
+            'FontSize',qLabelfontsize+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);%'FontWeight', 'bold',
     end
-    set(h_legend,'FontSize',qLegendFontsize);%% legend name fontsize
-    set(h_legend,'FontName',qLegendFont);%%legend name font
-    set(h_legend, 'position', p);
-    set(h_legend,'NumColumns',qlegcolumns);
     
-    %%increase height of the legend
-    HeightScaleFactor = 1;
-    NewHeight = h_legend.Position(4) * HeightScaleFactor;
-    h_legend.Position(2) = h_legend.Position(2) - (NewHeight - h_legend.Position(4));
-    h_legend.Position(4) = NewHeight;
-    
-    
-    legend(sh,'boxoff');
-    axis(sh,'off');
 catch
     beep;
     disp('Cannot display the legend names, please check "qGridposArray" or other parameters!');

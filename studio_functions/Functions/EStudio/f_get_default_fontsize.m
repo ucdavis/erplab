@@ -1,3 +1,5 @@
+%%This function is to set the default fontsize for ERP wave viewer on different platforms
+
 
 
 
