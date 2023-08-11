@@ -26,12 +26,22 @@ catch
 end
 % end
 if SelectedIndex ==0
-    
     disp('f_ERP_bin_channel_GUI error: No ERPset is imported');
     return;
 end
-if SelectedIndex>length(observe_ERPDAT.ALLERP)
+if isempty(observe_ERPDAT.ALLERP)
+    filepath =  which('dummy.erp');
+    [pathstr, fname, ext] = fileparts(filepath);
+    [ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
+    assignin('base','ALLERP',ALLERP);
+    observe_ERPDAT.ALLERP = ALLERP;
+    observe_ERPDAT.CURRENTERP=1;
+    observe_ERPDAT.ERP = ERP;
+    SelectedIndex=1;
+end
+if isempty(SelectedIndex) || SelectedIndex>length(observe_ERPDAT.ALLERP)
     SelectedIndex =1;
+     observe_ERPDAT.ERP =observe_ERPDAT.ALLERP(1);
 end
 
 S_erpbinchan = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,SelectedIndex);
@@ -63,7 +73,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 
 drawui_bin_chan(FonsizeDefault)
@@ -316,7 +326,7 @@ varargout{1} = EStudio_box_bin_chan;
 %----------displayed channel label will be midified after channels was selected--------
     function ERP_chan_changed(~,~)
         if observe_ERPDAT.Process_messg==0
-           return; 
+            return;
         end
         chanString = EStduio_gui_erp_bin_chan.ElecRange.String;
         chanArray = observe_ERPDAT.ERP_chan;
@@ -342,7 +352,7 @@ varargout{1} = EStudio_box_bin_chan;
 %----------displayed bin label will be midified after different channels was selected--------
     function ERP_bin_changed(~,~)
         if observe_ERPDAT.Process_messg==0
-           return; 
+            return;
         end
         binArray =  observe_ERPDAT.ERP_bin;
         binString = EStduio_gui_erp_bin_chan.BinRange.String;

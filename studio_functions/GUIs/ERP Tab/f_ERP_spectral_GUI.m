@@ -330,6 +330,12 @@ varargout{1} = ERP_filtering_box;
 
 %%-----------------Setting for save option---------------------------------
     function spectral_save(~,~)
+        
+        erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
+        observe_ERPDAT.Process_messg =1;
+        
+        
+        
         pathName =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName)
             pathName =  cd;
@@ -504,12 +510,16 @@ varargout{1} = ERP_filtering_box;
                     export2csv_spectranl_analysis(ERP_FFT,fullfile(pathx,filename), binArray,istime, electrodes,transpose,  decimal_num);
                 catch
                     beep;
+                    observe_ERPDAT.Process_messg =3;
                     disp('Fail to save selected ERPset as ".csv"!!!');
                     return;
                 end
             end
             
         end
+        erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
+        observe_ERPDAT.Process_messg =2;
+        
     end
 
 

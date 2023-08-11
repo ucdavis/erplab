@@ -65,8 +65,10 @@ if strcmp(ext,'')
 end
 
 binfilename = [ prefname1   ext ]; % ...and add ext
+binfilename_save = fullfile(pathstr,binfilename);
 fid = fopen(fullfile(pathstr,binfilename), 'w');
-
+disp(['To save spectral results, user selected',32,binfilename_save]);
+disp('Your specified ERPset has been into the following file:')
 try
     %         disp('Your specified bins have been separated into the following files:')fprintf(fid_text, '\n');
     nbin = ERP.nbin;
@@ -212,7 +214,7 @@ try
         
     end
     fclose(fid);
-    
+    disp([ '<a href="matlab: open(''' binfilename_save ''')">' binfilename_save '</a>']);
     
 catch
     serror = 1; %something went wrong

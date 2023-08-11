@@ -141,10 +141,10 @@ varargout{1} = box_erpset_gui;
         ds_length = length(datasets);
         if selectedData == 0
             ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-                ds_length,'String', dsnames,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault);
+                ds_length,'String', dsnames,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
         else
             ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-                ds_length,'String', dsnames,'Value', SelectedERP,'Callback',@selectdata,'FontSize',FonsizeDefault);
+                ds_length,'String', dsnames,'Value', SelectedERP,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
         end
         set(vBox, 'Sizes', 150);
         
@@ -1468,7 +1468,7 @@ varargout{1} = box_erpset_gui;
     end
 
 %----------------------Get the information of the updated ERPsets----------
-    function getDatasets()
+    function  getDatasets()
         if isempty(datasets)
             datasets = {};
         end

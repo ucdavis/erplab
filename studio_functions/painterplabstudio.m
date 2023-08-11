@@ -50,8 +50,8 @@ elseif type==1
         ColorF = [0 0 0];
 end
 if isempty(ColorB)
-        ColorB = [0.95 0.95 0.95];
-        %ColorB = [0.83 0.82 0.79];
+%         ColorB = [0.7020 0.7647 0.8392];
+        ColorB = [0.7020 0.7647 0.8392];
 end
 if isempty(ColorF)
         ColorF = [0 0 0];

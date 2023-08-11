@@ -52,7 +52,14 @@ addpath(genpath(p))
 try
     clearvars observe_ERPDAT;
     clearvars v_ERPDAT;
-    
+catch
+end
+
+
+%%close EStudio if it launched
+try
+    global EStudio_gui_erp_totl
+    close(EStudio_gui_erp_totl.Window);
 catch
 end
 

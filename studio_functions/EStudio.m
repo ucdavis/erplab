@@ -38,6 +38,15 @@ function [] = EStudio()
 EStudioversion = 10.0;
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 
+clearvars observe_ERPDAT;
+clearvars observe_EEGDAT;
+% global CURRENTERP;
+global observe_ERPDAT;
+global observe_EEGDAT;
+global viewer_ERPDAT;
+global EStudio_gui_erp_totl
+viewer_ERPDAT = v_ERPDAT;
+
 
 %%---------------ADD FOLDER TO PATH-------------------
 pathName = which('EStudio','-all');
@@ -75,8 +84,6 @@ if iserpmem==0
 end
 
 
-Count_ERP = 1;
-Count_currentERP =0;
 % Sanity checks
 try
     test = uix.HBoxFlex();
@@ -90,47 +97,69 @@ end
 try
     W_MAIN = findobj('tag', 'EEGLAB');
     close(W_MAIN);
-    clearvars observe_ERPDAT;
+%     clearvars observe_ERPDAT;
 catch
 end
 
-% global CURRENTERP;
-global observe_ERPDAT;
-global viewer_ERPDAT;
-global EStudio_gui_erp_totl
-viewer_ERPDAT = v_ERPDAT;
-% global ERP;
+%%Try to close existing GUI
+% global EStudio_gui_erp_totl_Window
+try
+    close(EStudio_gui_erp_totl.Window);
+catch
+end
+
+%%close EStudio if it launched
+try
+    global EStudio_gui_erp_totl
+    close(EStudio_gui_erp_totl.Window);
+catch
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%-------------------------------EEG-------------------------------------%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+EEG = [];
+ALLEEG = [];
+CURRENTSET = 0;
+assignin('base','EEG',EEG);
+assignin('base','ALLEEG', ALLEEG);
+assignin('base','CURRENTSET', CURRENTSET);
+assignin('base','ALLCOM', []);
+observe_EEGDAT = o_EEGDAT;
+observe_EEGDAT.ALLEEG = ALLEEG;
+observe_EEGDAT.CURRENTSET = CURRENTSET;
+observe_EEGDAT.EEG = EEG;
+observe_EEGDAT.Count_EEG = 0;
+observe_EEGDAT.Count_currentEEG = 1;
+observe_EEGDAT.Process_messg_EEG = 0;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%---------------------For ERP-------------------------------------------%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ERP              = [];  % Start ERP Structure on workspace
 ALLERP           = [];    %Start ALLERP Structure on workspace
 % ALLERPCOM        = [];
 CURRENTERP       = 1;
 
-estudioworkingmemory('EStudioColumnNum',1);
-
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
-% assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
-
-
 filepath =  which('dummy.erp');
 [pathstr, fname, ext] = fileparts(filepath);
 [ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
 assignin('base','ALLERP',ALLERP);
-% clc;
-
 observe_ERPDAT = o_ERPDAT;
 observe_ERPDAT.ALLERP = ALLERP;
 observe_ERPDAT.CURRENTERP = CURRENTERP;
 observe_ERPDAT.ERP = ERP;
-observe_ERPDAT.Count_ERP = Count_ERP;
-observe_ERPDAT.Count_currentERP = Count_currentERP;
+observe_ERPDAT.Count_ERP = 0;
+observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg = 0;%0 is the default means there is no message for processing procedure;
 %1 means the processign procedure is running
 %2 means the processign procedure is done
 %3 means there are some errors for processing procedure
 observe_ERPDAT.Two_GUI = 0;
-
 
 addlistener(observe_ERPDAT,'cerpchange',@indexERP);
 addlistener(observe_ERPDAT,'drawui_CB',@onErpChanged);
@@ -141,25 +170,19 @@ addlistener(observe_ERPDAT,'Messg_change',@Process_messg_change_main);
 
 
 
-% Initialize data and interface
+estudioworkingmemory('EStudioColumnNum',1);
 
 
-%%Try to close existing GUI
-% global EStudio_gui_erp_totl_Window
-try
-    close(EStudio_gui_erp_totl.Window);
-catch
-end
 EStudio_gui_erp_totl = struct();
 
-EStudio_gui_erp_totl = createInterface(observe_ERPDAT.ERP);
+EStudio_gui_erp_totl = createInterface();
 
 % Update the GUI with current data
 % updateInterface();
 
 f_redrawERP();
 
-    function EStudio_gui_erp_totl = createInterface(ERP)
+    function EStudio_gui_erp_totl = createInterface()
         
         try
             [version reldate] = geterplabstudioversion;
@@ -208,19 +231,23 @@ f_redrawERP();
         %% Create tabs
         context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',14);
         %          context_tabs = uix.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def);
-        tab1 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
-        tab2 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
+        EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );
+        %         tab2 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);
-        tab4 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
+        tab3 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
         
-        context_tabs.TabNames = {'Continuous EEG','Epoched EEG','ERP', 'MVPA'};
-        context_tabs.SelectedChild = 3;
+        context_tabs.TabNames = {'EEG','ERP', 'MVPA'};
+        context_tabs.SelectedChild = 1;
         context_tabs.HighlightColor = [0 0 0];
         context_tabs.FontWeight = 'bold';
-        context_tabs.TabSize = (new_pos(3)-20)/4;
+        context_tabs.TabSize = (new_pos(3)-20)/3;
         context_tabs.BackgroundColor = ColorB_def;
-        %%set the layput for ERP Tab.
-        EStudio_gui_erp_totl = ERPLAB_ERP_Tab(EStudio_gui_erp_totl,ColorB_def);
+        
+        %%EEG tab for continous EEG and epoched EEG
+        EStudio_gui_erp_totl = EStudio_EEG_Tab(EStudio_gui_erp_totl,ColorB_def);
+        
+        %%set the layouts for ERP Tab.
+        EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def);
         
         %
         

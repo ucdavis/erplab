@@ -1048,6 +1048,9 @@ for Numofrows = 1:Numrows
         
         try
             labelcbe = qplotArrayStr{plotdatalabel};
+            if isempty(labelcbe)
+                labelcbe  = 'Label varies across ERPsets';
+            end
         catch
             labelcbe = 'no';
         end

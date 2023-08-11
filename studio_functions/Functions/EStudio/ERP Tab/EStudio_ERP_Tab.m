@@ -9,7 +9,7 @@
 
 
 
-function EStudio_gui_erp_totl = ERPLAB_ERP_Tab(EStudio_gui_erp_totl,ColorB_def)
+function EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def)
 % global observe_ERPDAT;
 % global viewer_ERPDAT;
 % global EStudio_gui_erp_totl;

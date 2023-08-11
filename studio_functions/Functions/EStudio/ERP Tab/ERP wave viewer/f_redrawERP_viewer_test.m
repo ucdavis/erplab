@@ -1687,6 +1687,9 @@ for Numofrows = 1:Numrows
         
         try
             labelcbe = qlabelsName{plotdatalabel};
+            if isempty(labelcbe)
+               labelcbe  = 'Label varies across ERPsets'; 
+            end
         catch
             labelcbe = '';
         end

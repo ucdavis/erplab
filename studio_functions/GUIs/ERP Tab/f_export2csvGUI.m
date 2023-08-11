@@ -1,9 +1,9 @@
 %
-% Author: Javier Lopez-Calderon & Steven Luck & Guanghui ZHANG
+% Author: Javier Lopez-Calderon & Steven Luck & Guanghui Zhang
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2009 & 2022
+% 2009 & 2022  & 2023
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
