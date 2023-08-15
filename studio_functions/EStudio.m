@@ -130,7 +130,7 @@ observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
 observe_EEGDAT.EEG = EEG;
 observe_EEGDAT.Count_EEG = 0;
-observe_EEGDAT.Count_currentEEG = 1;
+observe_EEGDAT.Count_currentEEG = 0;
 observe_EEGDAT.Process_messg_EEG = 0;
 
 

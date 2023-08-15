@@ -335,7 +335,7 @@ varargout{1} = box_erpset_gui;
                 end
                 ERPsetops.butttons_datasets.String = dsnames;
                 ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(datasets);
+                ERPsetops.butttons_datasets.Max = length(datasets)+1;
                 observe_ERPDAT.Process_messg =2;
             catch
                 datasets = sortdata(datasets);
@@ -345,7 +345,7 @@ varargout{1} = box_erpset_gui;
                 end
                 ERPsetops.butttons_datasets.String = dsnames;
                 ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(datasets);
+                ERPsetops.butttons_datasets.Max = length(datasets)+1;
                 observe_ERPDAT.Process_messg =3;
             end
         end
@@ -401,7 +401,7 @@ varargout{1} = box_erpset_gui;
         end
         ERPsetops.butttons_datasets.String = dsnames;
         ERPsetops.butttons_datasets.Min = 1;
-        ERPsetops.butttons_datasets.Max = size(datasets,1);
+        ERPsetops.butttons_datasets.Max = size(datasets,1)+1;
     end
 
 

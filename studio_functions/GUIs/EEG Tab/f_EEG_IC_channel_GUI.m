@@ -44,10 +44,10 @@ if isempty(FonsizeDefault)
     FonsizeDefault = f_get_default_fontsize();
 end
 
-drawui_bin_chan(FonsizeDefault)
+drawui_ic_chan_eeg(FonsizeDefault)
 varargout{1} = EStudio_box_bin_chan;
 
-    function drawui_bin_chan(FonsizeDefault)
+    function drawui_ic_chan_eeg(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         EStduio_gui_EEG_IC_chan.DataSelBox = uiextras.VBox('Parent', EStudio_box_bin_chan,'BackgroundColor',ColorB_def);
@@ -156,7 +156,7 @@ varargout{1} = EStudio_box_bin_chan;
             ChanArray = [1:length(src.String)-1];
         end
         estudioworkingmemory('EEG_ChanArray',ChanArray);
-        observe_EEGDAT.ERP_chan = ChanArray;
+        observe_EEGDAT.EEG_chan = ChanArray;
         observe_EEGDAT.Process_messg_EEG =2;
         %%Plot waves
         %         try
@@ -220,10 +220,10 @@ varargout{1} = EStudio_box_bin_chan;
             return;
         end
         chanString = EStduio_gui_EEG_IC_chan.ElecRange.String;
-        chanArray = observe_EEGDAT.ERP_chan;
+        chanArray = observe_EEGDAT.EEG_chan;
         if max(chanArray)> length(chanString)-1
             EStduio_gui_EEG_IC_chan.ElecRange.Value =1;
-            observe_EEGDAT.ERP_chan = [1:length(chanString)-1];
+            observe_EEGDAT.EEG_chan = [1:length(chanString)-1];
         else
             if max(chanArray)>length(chanString)-1
                 EStduio_gui_EEG_IC_chan.ElecRange.Value =1;
@@ -268,28 +268,13 @@ varargout{1} = EStudio_box_bin_chan;
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentEEG_change(~,~)
-        try
-            ERPloadIndex = estudioworkingmemory('ERPloadIndex');
-        catch
-            ERPloadIndex =0;
+        if observe_EEGDAT.Count_currentEEG ~=2
+            return;
         end
-        if ERPloadIndex==1
-            ALLEEGIN = evalin('base','ALLEEG');
-            CURRENTEEGIN = evalin('base','CURRENTSET');
-            observe_EEGDAT.ALLEEG = ALLEEGIN;
-            observe_EEGDAT.CURRENTSET =CURRENTEEGIN;
-            if isempty(ALLEEGIN)
-                observe_EEGDAT.EEG = [];
-            else
-                try
-                    observe_EEGDAT.EEG = ALLEEGIN(CURRENTEEGIN);
-                catch
-                    observe_EEGDAT.EEG = ALLEEGIN(end);
-                    observe_EEGDAT.CURRENTSET =length(ALLEEGIN);
-                    assignin('base','CURRENTSET',length(ALLEEGIN));
-                end
-            end
-        end
+        
+        ALLEEGIN = observe_EEGDAT.ALLEEG;
+        CURRENTEEGIN= observe_EEGDAT.CURRENTSET;
+        
         if ~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)
             %The channels and bins will be modified if the ERPset is changed
             ChannelValue =  EStduio_gui_EEG_IC_chan.ElecRange.Value-1;
@@ -304,17 +289,20 @@ varargout{1} = EStudio_box_bin_chan;
             if min(ChannelValue(:)) >length(Chanlist_name) || max(ChannelValue(:))> length(Chanlist_name) || numel(ChannelValue) == length(Chanlist_name)
                 EStduio_gui_EEG_IC_chan.ElecRange.Value = 1;
                 observe_EEGDAT.EEG_chan = [1:length(Chanlist_name)];
+                ChanArray = [1:length(Chanlist_name)];
             else
                 EStduio_gui_EEG_IC_chan.ElecRange.Value =ChannelValue+1;
                 observe_EEGDAT.EEG_chan = ChannelValue;
+                ChanArray = ChannelValue;
             end
-            EStduio_gui_EEG_IC_chan.ElecRange.Enabel = 'on';
+            EStduio_gui_EEG_IC_chan.ElecRange.Enable = 'on';
         else
             Chanlist_name = 'No EEG is available';
             observe_EEGDAT.EEG_chan = [];
             EStduio_gui_EEG_IC_chan.ElecRange.String = Chanlist_name;
             EStduio_gui_EEG_IC_chan.ElecRange.Value=1;
-            EStduio_gui_EEG_IC_chan.ElecRange.Enabel = 'off';
+            EStduio_gui_EEG_IC_chan.ElecRange.Enable = 'off';
+            ChanArray = [];
         end
         
         
@@ -325,7 +313,7 @@ varargout{1} = EStudio_box_bin_chan;
                 ICNamestrs{ii+1,1} = char(strcat(num2str(ii),'.',32,'IC',32,num2str(ii)));
             end
             EStduio_gui_EEG_IC_chan.ICRange.String = ICNamestrs;
-            ICValue = EStduio_gui_EEG_IC_chan.ICRange.Value;
+            ICValue = EStduio_gui_EEG_IC_chan.ICRange.Value-1;
             
             if numel(ICValue) == numel(observe_EEGDAT.EEG.icachansind) || min(ICValue(:))>numel(observe_EEGDAT.EEG.icachansind) ||  max(ICValue(:))>numel(observe_EEGDAT.EEG.icachansind)
                 EStduio_gui_EEG_IC_chan.ICRange.Value =1;
@@ -338,6 +326,7 @@ varargout{1} = EStudio_box_bin_chan;
             EStduio_gui_EEG_IC_chan.ICRange.Min = 1;
             EStduio_gui_EEG_IC_chan.ICRange.Max = numel(observe_EEGDAT.EEG.icachansind)+1;
         else
+            %%ICs
             ICNamestrs = 'No IC is available';
             EStduio_gui_EEG_IC_chan.ICRange.String = ICNamestrs;
             EStduio_gui_EEG_IC_chan.ICRange.Value = 1;
@@ -346,7 +335,7 @@ varargout{1} = EStudio_box_bin_chan;
             ICValue = [];
         end
         estudioworkingmemory('EEG_ICArray',ICValue);
-        
+        estudioworkingmemory('EEG_ChanArray',ChanArray);
     end
 
 end

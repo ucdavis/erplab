@@ -227,7 +227,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 end
             end
             
-            if isempty(Selected_erpset) || Selected_erpset> length(ALLERPin)
+            if isempty(Selected_erpset) || min(Selected_erpset(:))> length(ALLERPin) ||  max(Selected_erpset(:))> length(ALLERPin)
                 Selected_erpset =  length(ALLERPin);
             end
             if isempty(CURRENTERPStudio) || CURRENTERPStudio> length(ALLERPin)
@@ -393,7 +393,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         end
         ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
         Selected_erpset =  ERPwaviewer_apply.SelectERPIdx;
-        if min(Selected_erpset(:))<=0 || max(Selected_erpset(:)) > length(ALLERPin)
+        if isempty(Selected_erpset)|| min(Selected_erpset(:))<=0 || max(Selected_erpset(:)) > length(ALLERPin)
             Selected_erpset =  length(ALLERPin);
             ERPwaviewer_apply.SelectERPIdx = Selected_erpset;
             assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
@@ -593,7 +593,7 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                     end
                 end
                 
-                if isempty(Selected_erpset) || Selected_erpset> length(ALLERPin)
+                if isempty(Selected_erpset) || min(Selected_erpset(:))> length(ALLERPin) || max(Selected_erpset(:))> length(ALLERPin)
                     Selected_erpset =  length(ALLERPin);
                 end
                 if isempty(CURRENTERPStudio) || CURRENTERPStudio> length(ALLERPin)
