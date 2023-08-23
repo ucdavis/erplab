@@ -15,7 +15,7 @@ function f_redrawERP()
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 % addlistener(observe_ERPDAT,'Messg_change',@Count_Process_messg_change);
-
+FonsizeDefault = f_get_default_fontsize();
 
 S_ws_geterpset= estudioworkingmemory('selectederpstudio');
 if isempty(S_ws_geterpset)
@@ -144,23 +144,23 @@ EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_to
 
 %%Changed by Guanghui Zhang 2 August 2022-------panel for display the processing procedure for some functions, e.g., filtering
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',20,'FontWeight','bold','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
 
 % erpworkingmemory('EStudio_proces_messg',EStudio_gui_erp_totl);
 
 %%Setting title
-EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', '<','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',30,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 if S_ws_getbinchan.Select_index ==1
     EStudio_gui_erp_totl.pageinfo_minus.Enable = 'off';
 end
 
-EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(S_ws_getbinchan.Select_index),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',20,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(S_ws_getbinchan.Select_index),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
 
 if S_ws_getbinchan.Select_index ==1
     EStudio_gui_erp_totl.pageinfo_edit.Enable = 'on';
 end
 
-EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', '>','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',30,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 if S_ws_getbinchan.Select_index == numel(S_ws_geterpset)
     EStudio_gui_erp_totl.pageinfo_plus.Enable = 'off';
 end

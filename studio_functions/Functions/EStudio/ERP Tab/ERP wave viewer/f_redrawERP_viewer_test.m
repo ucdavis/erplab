@@ -156,7 +156,7 @@ gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
-gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
+gui_erp_waviewer.show_command = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
 
 

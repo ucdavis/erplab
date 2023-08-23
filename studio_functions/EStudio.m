@@ -97,7 +97,7 @@ end
 try
     W_MAIN = findobj('tag', 'EEGLAB');
     close(W_MAIN);
-%     clearvars observe_ERPDAT;
+    %     clearvars observe_ERPDAT;
 catch
 end
 
@@ -118,6 +118,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%-------------------------------EEG-------------------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+observe_EEGDAT = o_EEGDAT;
 EEG = [];
 ALLEEG = [];
 CURRENTSET = 0;
@@ -125,13 +126,21 @@ assignin('base','EEG',EEG);
 assignin('base','ALLEEG', ALLEEG);
 assignin('base','CURRENTSET', CURRENTSET);
 assignin('base','ALLCOM', []);
-observe_EEGDAT = o_EEGDAT;
+
 observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
 observe_EEGDAT.EEG = EEG;
-observe_EEGDAT.Count_EEG = 0;
 observe_EEGDAT.Count_currentEEG = 0;
-observe_EEGDAT.Process_messg_EEG = 0;
+observe_EEGDAT.EEG_messg = 0;
+observe_EEGDAT.eeg_twopanels = 0;
+observe_EEGDAT.Reset_eeg_panel = 0;
+
+addlistener(observe_EEGDAT,'ALLEEG_change',@ALLEEG_change);
+addlistener(observe_EEGDAT,'EEG_change',@EEG_change);
+addlistener(observe_EEGDAT,'ceegchange',@ceegchange);
+addlistener(observe_EEGDAT,'Count_currentEEG_change',@Count_currentEEG_change);
+addlistener(observe_EEGDAT,'eeg_twopanels_change',@EEG_Messg_change);
+addlistener(observe_EEGDAT,'EEG_Process_messg_change',@EEG_Messg_change);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,7 +189,8 @@ EStudio_gui_erp_totl = createInterface();
 % Update the GUI with current data
 % updateInterface();
 
-f_redrawERP();
+f_redrawEEG_Wave_Viewer();%%Draw EEG waves
+f_redrawERP();%%Draw ERP waves
 
     function EStudio_gui_erp_totl = createInterface()
         
@@ -230,9 +240,7 @@ f_redrawERP();
         
         %% Create tabs
         context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',14);
-        %          context_tabs = uix.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );
-        %         tab2 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);
         tab3 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
         
@@ -249,13 +257,12 @@ f_redrawERP();
         %%set the layouts for ERP Tab.
         EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def);
         
-        %
-        
         
     end % createInterface
 
 
-%------------------------------------
+
+%------------------------------------ERP-----------------------------------
     function onErpChanged( ~, ~ )
         assignin('base','ERP',observe_ERPDAT.ERP);
     end
@@ -361,6 +368,8 @@ f_redrawERP();
 
 
 
+
+
 % %%%Display the processing procedure for some panels (e.g., Filter)------------------------
     function Process_messg_change_main(~,~)
         
@@ -399,7 +408,6 @@ f_redrawERP();
         pause(0.1);
         EStudio_gui_erp_totl.Process_messg.String = '';
         EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
-        
     end
 
 %%--------------------Function to close the toolbox------------------------

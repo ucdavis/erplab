@@ -417,7 +417,13 @@ if dq_flag == 1
             end
             
             if s==1
-                dim_data = [size(ERPT.dataquality(where_dqm_indx).data),nfile]; % Dimensions can change, so match dimensions here. Final dim is number of files in this Grand Avg
+                if ndims( ERPT.dataquality(where_dqm_indx).data )==1
+                    dim_data = [size(ERPT.dataquality(where_dqm_indx).data),1,1,nfile]; % Dimensions can change, so match dimensions here. Final dim is number of files in this Grand Avg
+                elseif ndims( ERPT.dataquality(where_dqm_indx).data )==2
+                    dim_data = [size(ERPT.dataquality(where_dqm_indx).data),1,nfile];
+                elseif ndims( ERPT.dataquality(where_dqm_indx).data ) == 3
+                    dim_data = [size(ERPT.dataquality(where_dqm_indx).data),nfile];
+                end
                 dq_data_here = zeros(dim_data);
                 dq.times = ERPT.dataquality(where_dqm_indx).times;
                 if isfield(ERPT.dataquality(where_dqm_indx),'time_window_labels')

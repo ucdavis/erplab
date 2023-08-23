@@ -37,46 +37,9 @@ EStudio_gui_erp_totl.eegsettingLayout = uiextras.VBox('Parent', EStudio_gui_erp_
 EStudio_gui_erp_totl.eegpanel{1} = f_EEG_eeg_sets_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(1) = 320;
 EStudio_gui_erp_totl.eegpanel{2} = f_EEG_IC_channel_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(2) = 250;
-% EStudio_gui_erp_totl.panel{3} = f_ERP_plot_setting_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(3) = 230;
-% 
-% EStudio_gui_erp_totl.panel{4} = f_ERP_plot_scalp_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(4) = 365;
-% 
-% EStudio_gui_erp_totl.panel{5} =  f_ERP_baselinecorr_detrend_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(5) = 220;
-% EStudio_gui_erp_totl.panel{6} = f_ERP_filtering_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(6) = 245;
-% 
-% EStudio_gui_erp_totl.panel{7} = f_ERP_chanoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(7) = 350;
-% 
-% EStudio_gui_erp_totl.panel{8} = f_ERP_binoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(8) = 310;
-% 
-% EStudio_gui_erp_totl.panel{9} = f_ERP_CSD_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(9) = 450;
-% 
-% EStudio_gui_erp_totl.panel{10} = f_ERP_spectral_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(10) = 125;
-% EStudio_gui_erp_totl.panel{11} = f_ERP_measurement_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(11) = 240;
-% EStudio_gui_erp_totl.panel{12} = f_ERP_grandaverageGUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(12) = 260;
-% 
-% EStudio_gui_erp_totl.panel{13} = f_ERP_append_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(13) = 120;
-% 
-% EStudio_gui_erp_totl.panel{14} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(14) = 250;
-% EStudio_gui_erp_totl.panel{15} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(15) = 170;
-% EStudio_gui_erp_totl.panel{16} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(16) = 160;
-% 
-% EStudio_gui_erp_totl.panel{17} = f_ERP_simulation_panel(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-% EStudio_gui_erp_totl.panelSizes(17) = 820;
+EStudio_gui_erp_totl.eegpanelSizes(2) = 320;
+EStudio_gui_erp_totl.eegpanel{3} = f_EEG_Plot_setting_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(3) = 160;
 
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
@@ -84,7 +47,7 @@ EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelS
 %% Hook up the minimize callback and IsMinimized
 set( EStudio_gui_erp_totl.eegpanel{1}, 'MinimizeFcn', {@nMinimize, 1} );
 set( EStudio_gui_erp_totl.eegpanel{2}, 'MinimizeFcn', {@nMinimize, 2} );
-% set( EStudio_gui_erp_totl.panel{3}, 'MinimizeFcn', {@nMinimize, 3} );
+set( EStudio_gui_erp_totl.eegpanel{3}, 'MinimizeFcn', {@nMinimize, 3} );
 % set( EStudio_gui_erp_totl.panel{4}, 'MinimizeFcn', {@nMinimize, 4} );
 % set( EStudio_gui_erp_totl.panel{5}, 'MinimizeFcn', {@nMinimize, 5} );
 % set( EStudio_gui_erp_totl.panel{6}, 'MinimizeFcn', {@nMinimize, 6} );
@@ -100,7 +63,7 @@ set( EStudio_gui_erp_totl.eegpanel{2}, 'MinimizeFcn', {@nMinimize, 2} );
 % set( EStudio_gui_erp_totl.panel{16}, 'MinimizeFcn', {@nMinimize, 16} );
 % set( EStudio_gui_erp_totl.panel{17}, 'MinimizeFcn', {@nMinimize, 17} );
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [2:2];
+whichpanel = [3:3];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes' );

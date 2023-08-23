@@ -3,23 +3,20 @@ classdef o_EEGDAT < handle
         ALLEEG
         EEG
         CURRENTSET
-        Count_EEG
-        EEG_chan
-        EEG_IC
         Count_currentEEG
-        Process_messg_EEG
+        EEG_messg
+        eeg_twopanels
+        Reset_eeg_panel
     end
-    
     
     events
         ALLEEG_change
         EEG_change
         ceegchange
-        Count_EEG_change
-        EEG_chan_change
-        EEG_IC_change
         Count_currentEEG_change
-        Messg_EEG_change
+        EEG_Process_messg_change
+        eeg_twopanels_change
+        Reset_eeg_panel_change
     end
     
     
@@ -37,21 +34,6 @@ classdef o_EEGDAT < handle
             obj.CURRENTSET = value;
             notify(obj,'ceegchange');
         end
-        %%ERP Plotting panel
-        function set.Count_EEG(obj,value)
-            obj.Count_EEG = value;
-            notify(obj,'Count_EEG_change');
-        end
-        %Modified channels of the selected ERP
-        function set.EEG_chan(obj,value)
-            obj.EEG_chan = value;
-            notify(obj,'EEG_chan_change');
-        end
-        %Modified ICs of the selected ERP
-        function set.EEG_IC(obj,value)
-            obj.EEG_IC = value;
-            notify(obj,'EEG_IC_change');
-        end
         
         %Modified bins of the selected ERP
         function set.Count_currentEEG(obj,value)
@@ -59,11 +41,22 @@ classdef o_EEGDAT < handle
             notify(obj,'Count_currentEEG_change');
         end
         
+        %message
+        function set.EEG_messg(obj,value)
+            obj.EEG_messg = value;
+            notify(obj,'EEG_Process_messg_change');
+        end
         
-        %Modified bins of the selected ERP
-        function set.Process_messg_EEG(obj,value)
-            obj.Process_messg_EEG = value;
-            notify(obj,'Messg_EEG_change');
+        %%Two panels
+        function set.eeg_twopanels(obj,value)
+            obj.eeg_twopanels = value;
+            notify(obj,'eeg_twopanels_change');
+        end
+        
+        %%reset each panel (default prameters)
+        function set.Reset_eeg_panel(obj,value)
+            obj.Reset_eeg_panel = value;
+            notify(obj,'Reset_eeg_panel_change');
         end
         
     end
