@@ -54,7 +54,7 @@ EEG_plotset = estudioworkingmemory('EEG_plotset');
 if isempty(EEG_plotset)
     EEGdisp = 1;
     ICdisp = 0;
-    TimeRange = 5;%%in second
+    Winlength = 5;%%in second
     ScaleV = 50;
     channeLabel = 1;
     RemoveDC=0;
@@ -84,12 +84,12 @@ else
     
     %%Time range?
     try
-        TimeRange = EEG_plotset{3};
+        Winlength = EEG_plotset{3};
     catch
-        TimeRange = 5;
+        Winlength = 5;
     end
-    if isempty(TimeRange) || numel(TimeRange)~=1 || min(TimeRange(:))<=0
-        TimeRange=5;
+    if isempty(Winlength) || numel(Winlength)~=1 || min(Winlength(:))<=0
+        Winlength=5;
     end
     
     
@@ -158,7 +158,19 @@ end
 
 %%Start time to display
 EEG_startime = estudioworkingmemory('EEG_startime');
-if isempty(EEG_startime) || numel(EEG_startime)~=1 || EEG_startime<0 ||EEG_startime>EEG.xmax
+[chaNum,sampleNum,trialNum]=size(EEG.data);
+Frames = sampleNum*trialNum;
+if EEG.trials>1 % time in second or in trials
+    multiplier = size(EEG.data,2);
+else
+    multiplier = EEG.srate;
+end
+
+EEG_startimeMax = max(0,ceil((Frames-1)/multiplier)-Winlength);
+if ndims(EEG.data)==3
+   EEG_startime=EEG_startime-1; 
+end
+if isempty(EEG_startime) || numel(EEG_startime)~=1 || EEG_startime<0 ||EEG_startime>EEG_startimeMax
     EEG_startime=0;
     estudioworkingmemory('EEG_startime',EEG_startime);
 end
@@ -173,7 +185,7 @@ else
     OutputViewerpareeg{2} = ICArray;
     OutputViewerpareeg{3} =EEGdisp;
     OutputViewerpareeg{4} =ICdisp;
-    OutputViewerpareeg{5} =TimeRange;
+    OutputViewerpareeg{5} =Winlength;
     OutputViewerpareeg{6} =ScaleV;
     OutputViewerpareeg{7} =channeLabel;
     OutputViewerpareeg{8} =RemoveDC;

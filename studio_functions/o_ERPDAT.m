@@ -1,5 +1,6 @@
 classdef o_ERPDAT < handle
     properties
+        %%ERP
         ALLERP
         ERP
         CURRENTERP
@@ -9,10 +10,12 @@ classdef o_ERPDAT < handle
         Count_currentERP
         Process_messg
         Two_GUI
+        
     end
     
     
     events
+        %%ERP
         erpschange
         drawui_CB
         cerpchange
@@ -68,12 +71,10 @@ classdef o_ERPDAT < handle
             notify(obj,'Messg_change');
         end
         
-         %capture the change from main EStudio
+        %capture the change from main EStudio
         function set.Two_GUI(obj,value)
             obj.Two_GUI = value;
             notify(obj,'Two_GUI_change');
         end
-        
-        
     end
 end

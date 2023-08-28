@@ -52,6 +52,7 @@ addpath(genpath(p))
 try
     clearvars observe_ERPDAT;
     clearvars v_ERPDAT;
+    clearvars observe_EEGDAT;
 catch
 end
 
@@ -67,6 +68,18 @@ erplab_default_values; % script
 currvers  = ['erplab' erplabver];
 
 erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+global observe_EEGDAT;
+observe_EEGDAT = o_EEGDATA;
+
+
+observe_EEGDAT.ALLEEG = [];
+observe_EEGDAT.CURRENTSET = 1;
+observe_EEGDAT.EEG = [];
+observe_EEGDAT.count_current_eeg = 0;
+observe_EEGDAT.eeg_message_panel = 0;
+observe_EEGDAT.eeg_two_panels = 0;
+observe_EEGDAT.eeg_reset_def_paras = 0;
+
 %global needed for ERPLAB viewer
 global observe_ERPDAT;
 observe_ERPDAT = o_ERPDAT;

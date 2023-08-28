@@ -12,9 +12,9 @@
 function varargout = f_EEG_Plot_setting_GUI(varargin)
 
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'EEG_Process_messg_change',@EEG_Process_messg_change);
-addlistener(observe_EEGDAT,'eeg_twopanels_change',@eeg_twopanels_change);
-addlistener(observe_EEGDAT,'Count_currentEEG_change',@Count_currentEEG_change);
+addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
 %---------------------------Initialize parameters------------------------------------
 
@@ -143,7 +143,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -159,7 +159,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -176,7 +176,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -212,7 +212,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('EEGTab_plotset',1);
@@ -236,7 +236,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -253,7 +253,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -272,7 +272,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -292,7 +292,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -309,7 +309,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         estudioworkingmemory('EEGTab_plotset',1);
@@ -326,7 +326,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_plotset',1);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -341,7 +341,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         ChangeFlag =  estudioworkingmemory('EEGTab_plotset');
@@ -359,7 +359,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.disp_orgdata.Value = OrigFlag;
         
         %%display IC?
-        try ICFlag = EEG_plotset{2};catch ICFlag= 1; end
+        try ICFlag = EEG_plotset{2};catch ICFlag= 0; end
         if isempty(ICFlag) || numel(ICFlag)~=1 || (ICFlag~=0 && ICFlag~=1)
             ICFlag=0;
         end
@@ -453,10 +453,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%-------------------------------Apply-------------------------------------
     function eeg_plotset_apply(~,~)
+        if isempty(observe_EEGDAT.EEG) %%if current eeg is empty
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         ChangeFlag =  estudioworkingmemory('EEGTab_plotset');
         if ChangeFlag~=1
@@ -465,7 +468,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         MessageViewer= char(strcat('Plot Setting > Apply'));
         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        observe_EEGDAT.EEG_messg=1;
+        observe_EEGDAT.eeg_message_panel=1;
         
         %%display original data?
         EEG_plotset{1}= EStduio_gui_EEG_plotset.disp_orgdata.Value;
@@ -520,17 +523,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [0 0 0];
         
-        
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.EEG_messg=2;
+        observe_EEGDAT.eeg_message_panel=2;
     end
 
 
 
 
 %%--------Settting will be modified if the selected was changed------------
-    function Count_currentEEG_change(~,~)
-        if observe_EEGDAT.Count_currentEEG ~=3
+    function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=3 || isempty(observe_EEGDAT.EEG)
             return;
         end
         EEGIN = observe_EEGDAT.EEG;
@@ -553,8 +555,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
 %%Automatically saving the changed parameters for the current panel if the
 %%user change parameters for the other panels.
 %%-------------------------------------------------------------------------
-    function eeg_twopanels_change(~,~)
-        if observe_EEGDAT.eeg_twopanels==0
+    function eeg_two_panels_change(~,~)
+        if observe_EEGDAT.eeg_two_panels==0
             return;
         end
         ChangeFlag =  estudioworkingmemory('EEGTab_plotset');

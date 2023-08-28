@@ -1,7 +1,7 @@
 
 
 
-function  [AllStr,chanName,ICName] = f_eeg_read_chan_IC_names(chanlocs,ChanArray,ICArray)
+function  [AllStr,chanName,ICName] = f_eeg_read_chan_IC_names(chanlocs,ChanArray,ICArray,channeLabel)
 chanName = '';
 ICName = '';
 AllStr = '';
@@ -9,7 +9,8 @@ if isempty(chanlocs) && isempty(ChanArray)
     return;
 end
 
-if ~isempty(chanlocs)
+
+if ~isempty(chanlocs) && channeLabel==1
     if isempty(ChanArray) || min(ChanArray(:))>length(chanlocs) || max(ChanArray(:))>length(chanlocs)
         ChanArray = [1:length(chanlocs)];
     end
@@ -18,15 +19,15 @@ if ~isempty(chanlocs)
     chanName = { tmplocs.labels };
     chanName = strrep(chanName,'_','\_');
     %     chanName = strvcat(chanName);
-elseif isempty(chanlocs) && ~isempty(ChanArray)
+elseif (isempty(chanlocs) || channeLabel==0) && ~isempty(ChanArray)
     count = 0;
     for ii = ChanArray
         count = count +1;
         chanName{count,1} = ['chan',32,num2str(ii)];
     end
-    chanName = char(chanName);
 end
 AllStr = chanName;
+chanName = char(chanName);
 %%IC names
 if isempty(ICArray)
     AllStr = char(AllStr);

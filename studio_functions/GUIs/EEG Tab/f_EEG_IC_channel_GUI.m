@@ -12,10 +12,10 @@
 function varargout = f_EEG_IC_channel_GUI(varargin)
 
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'Count_currentEEG_change',@Count_currentEEG_change);
-addlistener(observe_EEGDAT,'EEG_Process_messg_change',@EEG_Process_messg_change);
-addlistener(observe_EEGDAT,'eeg_twopanels_change',@eeg_twopanels_change);
-
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
+addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
 
 EStduio_gui_EEG_IC_chan = struct();
@@ -157,7 +157,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         
@@ -190,7 +190,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         
@@ -220,7 +220,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         
@@ -261,10 +261,13 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 %%------------------Apply the changed parameters---------------------------
     function plot_eeg_apply(~,~)
+        if isempty(observe_EEGDAT.EEG) %%if the current EEG is empty
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
-            observe_EEGDAT.eeg_twopanels = observe_EEGDAT.eeg_twopanels+1;%%call the functions from the other panel
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         ChangeFlag =  estudioworkingmemory('EEGTab_chanic');
         if ChangeFlag~=1
@@ -272,7 +275,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         end
         MessageViewer= char(strcat('Channel and IC Selection > Apply'));
         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        observe_EEGDAT.EEG_messg=1;
+        observe_EEGDAT.eeg_message_panel=1;
         
         
         new_chans= EStduio_gui_EEG_IC_chan.ElecRange.Value;
@@ -305,14 +308,14 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         EStduio_gui_EEG_IC_chan.plot_reset.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_IC_chan.plot_reset.ForegroundColor = [0 0 0];
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.EEG_messg=2;
+        observe_EEGDAT.eeg_message_panel=2;
     end
 
 
 
 %----------displayed channel label will be midified after channels was selected--------
     function EEG_chan_change(~,~)
-        if observe_EEGDAT.EEG_messg==0
+        if observe_EEGDAT.eeg_message_panel==0
             return;
         end
         chanString = EStduio_gui_EEG_IC_chan.ElecRange.String;
@@ -338,7 +341,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 %----------displayed bin label will be midified after different channels was selected--------
     function EEG_IC_change(~,~)
-        if observe_EEGDAT.EEG_messg==0 ||  isempty(observe_EEGDAT.EEG_IC)
+        if observe_EEGDAT.eeg_message_panel==0 ||  isempty(observe_EEGDAT.EEG_IC)
             return;
         end
         binArray =  observe_EEGDAT.EEG_IC;
@@ -363,8 +366,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 
 %%--------Settting will be modified if the selected was changed------------
-    function Count_currentEEG_change(~,~)
-        if observe_EEGDAT.Count_currentEEG ~=2
+    function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=2 || isempty(observe_EEGDAT.EEG)
             return;
         end
         
@@ -383,11 +386,11 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.ElecRange.Max = length(Chanlist_name)+1;
             if min(ChannelValue(:)) >length(Chanlist_name) || max(ChannelValue(:))> length(Chanlist_name) || numel(ChannelValue) == length(Chanlist_name)
                 EStduio_gui_EEG_IC_chan.ElecRange.Value = 1;
-%                 observe_EEGDAT.EEG_chan = [1:length(Chanlist_name)];
+                %                 observe_EEGDAT.EEG_chan = [1:length(Chanlist_name)];
                 ChanArray = [1:length(Chanlist_name)];
             else
                 EStduio_gui_EEG_IC_chan.ElecRange.Value =ChannelValue+1;
-%                 observe_EEGDAT.EEG_chan = ChannelValue;
+                %                 observe_EEGDAT.EEG_chan = ChannelValue;
                 ChanArray = ChannelValue;
             end
             EStduio_gui_EEG_IC_chan.ElecRange.Enable = 'on';
@@ -395,7 +398,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.plot_apply.Enable = 'on';
         else
             Chanlist_name = 'No EEG is available';
-%             observe_EEGDAT.EEG_chan = [];
+            %             observe_EEGDAT.EEG_chan = [];
             EStduio_gui_EEG_IC_chan.ElecRange.String = Chanlist_name;
             EStduio_gui_EEG_IC_chan.ElecRange.Value=1;
             EStduio_gui_EEG_IC_chan.ElecRange.Enable = 'off';
@@ -419,7 +422,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             else
                 EStduio_gui_EEG_IC_chan.ICRange.Value =ICValue+1;
             end
-%             observe_EEGDAT.EEG_IC = ICValue;
+            %             observe_EEGDAT.EEG_IC = ICValue;
             EStduio_gui_EEG_IC_chan.ICRange.Enable = 'on';
             EStduio_gui_EEG_IC_chan.ICRange.Min = 1;
             EStduio_gui_EEG_IC_chan.ICRange.Max = numel(observe_EEGDAT.EEG.icachansind)+1;
@@ -429,12 +432,12 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.ICRange.String = ICNamestrs;
             EStduio_gui_EEG_IC_chan.ICRange.Value = 1;
             EStduio_gui_EEG_IC_chan.ICRange.Enable = 'off';
-%             observe_EEGDAT.EEG_IC = [];
+            %             observe_EEGDAT.EEG_IC = [];
             ICValue = [];
         end
         estudioworkingmemory('EEG_ICArray',ICValue);
         estudioworkingmemory('EEG_ChanArray',ChanArray);
-        observe_EEGDAT.Count_currentEEG=3;
+        observe_EEGDAT.count_current_eeg=3;
     end
 
 
@@ -442,8 +445,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 %%Automatically saving the changed parameters for the current panel if the
 %%user change parameters for the other panels.
 %%-------------------------------------------------------------------------
-    function eeg_twopanels_change(~,~)
-        if observe_EEGDAT.eeg_twopanels==0
+    function eeg_two_panels_change(~,~)
+        if observe_EEGDAT.eeg_two_panels==0
             return;
         end
         ChangeFlag =  estudioworkingmemory('EEGTab_chanic');

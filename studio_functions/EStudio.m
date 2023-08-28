@@ -38,11 +38,13 @@ function [] = EStudio()
 EStudioversion = 10.0;
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 
+% clearvars observe_ERPDAT;
 clearvars observe_ERPDAT;
-clearvars observe_EEGDAT;
+clearvars viewer_ERPDAT;
+
 % global CURRENTERP;
-global observe_ERPDAT;
 global observe_EEGDAT;
+global observe_ERPDAT;
 global viewer_ERPDAT;
 global EStudio_gui_erp_totl
 viewer_ERPDAT = v_ERPDAT;
@@ -118,7 +120,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%-------------------------------EEG-------------------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-observe_EEGDAT = o_EEGDAT;
+observe_ERPDAT = o_ERPDAT;
+observe_EEGDAT = o_EEGDATA;
 EEG = [];
 ALLEEG = [];
 CURRENTSET = 0;
@@ -130,18 +133,17 @@ assignin('base','ALLCOM', []);
 observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
 observe_EEGDAT.EEG = EEG;
-observe_EEGDAT.Count_currentEEG = 0;
-observe_EEGDAT.EEG_messg = 0;
-observe_EEGDAT.eeg_twopanels = 0;
-observe_EEGDAT.Reset_eeg_panel = 0;
+observe_EEGDAT.count_current_eeg = 0;
+observe_EEGDAT.eeg_message_panel = 0;
+observe_EEGDAT.eeg_two_panels = 0;
+observe_EEGDAT.eeg_reset_def_paras = 0;
 
-addlistener(observe_EEGDAT,'ALLEEG_change',@ALLEEG_change);
-addlistener(observe_EEGDAT,'EEG_change',@EEG_change);
-addlistener(observe_EEGDAT,'ceegchange',@ceegchange);
-addlistener(observe_EEGDAT,'Count_currentEEG_change',@Count_currentEEG_change);
-addlistener(observe_EEGDAT,'eeg_twopanels_change',@EEG_Messg_change);
-addlistener(observe_EEGDAT,'EEG_Process_messg_change',@EEG_Messg_change);
-
+addlistener(observe_EEGDAT,'alleeg_change',@alleeg_change);
+addlistener(observe_EEGDAT,'eeg_change',@eeg_change);
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%---------------------For ERP-------------------------------------------%%
@@ -150,7 +152,6 @@ ERP              = [];  % Start ERP Structure on workspace
 ALLERP           = [];    %Start ALLERP Structure on workspace
 % ALLERPCOM        = [];
 CURRENTERP       = 1;
-
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
 assignin('base','CURRENTERP', CURRENTERP);
@@ -158,13 +159,14 @@ filepath =  which('dummy.erp');
 [pathstr, fname, ext] = fileparts(filepath);
 [ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
 assignin('base','ALLERP',ALLERP);
-observe_ERPDAT = o_ERPDAT;
+
 observe_ERPDAT.ALLERP = ALLERP;
 observe_ERPDAT.CURRENTERP = CURRENTERP;
 observe_ERPDAT.ERP = ERP;
 observe_ERPDAT.Count_ERP = 0;
 observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg = 0;%0 is the default means there is no message for processing procedure;
+
 %1 means the processign procedure is running
 %2 means the processign procedure is done
 %3 means there are some errors for processing procedure
@@ -191,6 +193,8 @@ EStudio_gui_erp_totl = createInterface();
 
 f_redrawEEG_Wave_Viewer();%%Draw EEG waves
 f_redrawERP();%%Draw ERP waves
+
+% observe_ERPDAT.Count_currentERP = 1;
 
     function EStudio_gui_erp_totl = createInterface()
         

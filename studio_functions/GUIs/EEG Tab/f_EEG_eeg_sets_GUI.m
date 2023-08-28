@@ -13,9 +13,9 @@
 
 function varargout = f_EEG_eeg_sets_GUI(varargin)
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'Count_currentEEG_change',@Count_currentERPChanged);
-addlistener(observe_EEGDAT,'EEG_Process_messg_change',@EEG_Messg_change);
-% addlistener(observe_EEGDAT,'EEG_Process_messg_change',@EEG_Messg_change);
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_message_panel_change',@EEG_Messg_change);
 EStduio_gui_EEG_set = struct();
 %---------Setting the parameter which will be used in the other panels-----------
 
@@ -177,7 +177,7 @@ varargout{1} = box_eegset_gui;
                 assignin('base','CURRENTSET',CURRENTSET);
             end
         end
-        observe_EEGDAT.Count_currentEEG =2;
+        observe_EEGDAT.count_current_eeg =2;
     end
 
 %%--------------------------epoched EEG--------------------------------------
@@ -228,14 +228,14 @@ varargout{1} = box_eegset_gui;
                 assignin('base','CURRENTSET',CURRENTSET);
             end
         end
-        observe_EEGDAT.Count_currentEEG=2;
+        observe_EEGDAT.count_current_eeg=2;
     end
 
 
 %------------------duplicate the selected EEGsets--------------------------
     function duplicateSelected(~,~)%%The defualt channels and bins that come from "bin and channel" panel but user can select bins and channels.
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Duplicate');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         
         SelectedERP= EStduio_gui_EEG_set.butttons_datasets.Value;
         if isempty(SelectedERP)
@@ -288,12 +288,12 @@ varargout{1} = box_eegset_gui;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            observe_EEGDAT.Count_currentEEG=2;%%to channel & IC panel
-            observe_EEGDAT.EEG_messg =2;
+            observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
+            observe_EEGDAT.eeg_message_panel =2;
             %             observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
         catch
             
-            observe_EEGDAT.EEG_messg =3;
+            observe_EEGDAT.eeg_message_panel =3;
             %             observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
             return;
         end
@@ -305,7 +305,7 @@ varargout{1} = box_eegset_gui;
 %%-------------------Rename the selcted files------------------------------
     function renamedata(~,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Rename');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         
         SelectedEEG= EStduio_gui_EEG_set.butttons_datasets.Value;
         if isempty(SelectedEEG)
@@ -334,16 +334,16 @@ varargout{1} = box_eegset_gui;
                 EStduio_gui_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
                 assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             catch
-                observe_EEGDAT.EEG_messg =3;
+                observe_EEGDAT.eeg_message_panel =3;
             end
         end
-        observe_EEGDAT.EEG_messg =2;
+        observe_EEGDAT.eeg_message_panel =2;
     end
 
 %%--------------------------------Add Suffix---------------------------------
     function add_suffix(~,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Add Suffix');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         
         SelectedEEG= EStduio_gui_EEG_set.butttons_datasets.Value;
         if isempty(SelectedEEG)
@@ -370,7 +370,7 @@ varargout{1} = box_eegset_gui;
                 EStduio_gui_EEG_set.butttons_datasets.Min = 1;
                 EStduio_gui_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
             end
-            observe_EEGDAT.EEG_messg =2;
+            observe_EEGDAT.eeg_message_panel =2;
         else
             beep;
             disp('User selected Cancel');
@@ -383,12 +383,12 @@ varargout{1} = box_eegset_gui;
 %----------------------- Import-----------------------------------
     function imp_eeg( ~, ~ )
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Import');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         %-----------Setting for import-------------------------------------
         
         ALLEEG =   f_EEG_import_GUI(observe_EEGDAT.ALLEEG);
         if isempty(ALLEEG)
-            observe_EEGDAT.EEG_messg =4;
+            observe_EEGDAT.eeg_message_panel =4;
             return;
         end
         
@@ -445,7 +445,7 @@ varargout{1} = box_eegset_gui;
         EStduio_gui_EEG_set.dotstoggle.Enable=Edit_label;
         EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_gui_EEG_set.appendbutton.Enable= Edit_label;
-        observe_EEGDAT.Count_currentEEG =2;
+        observe_EEGDAT.count_current_eeg =2;
     end
 
 
@@ -454,7 +454,7 @@ varargout{1} = box_eegset_gui;
 %%---------------------Load EEG--------------------------------------------
     function load(~,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Load');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
        
         ALLEEG = observe_EEGDAT.ALLEEG;
         try
@@ -525,7 +525,7 @@ varargout{1} = box_eegset_gui;
         EStduio_gui_EEG_set.dotstoggle.Enable=Edit_label;
         EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_gui_EEG_set.appendbutton.Enable= Edit_label;
-        observe_EEGDAT.Count_currentEEG =2;
+        observe_EEGDAT.count_current_eeg =2;
         
     end
 
@@ -582,7 +582,7 @@ varargout{1} = box_eegset_gui;
             EStduio_gui_EEG_set.butttons_datasets.String = EEGlistName;
             EStduio_gui_EEG_set.butttons_datasets.Value =observe_EEGDAT.CURRENTSET ;
             EStduio_gui_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
-            observe_EEGDAT.Count_currentEEG =2;
+            observe_EEGDAT.count_current_eeg =2;
         end
     end
 
@@ -591,7 +591,7 @@ varargout{1} = box_eegset_gui;
 %%----------------------Clear the selected EEGsets-------------------------
     function cleardata(source,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Clear');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         
         %         global ERPCOM;
         SelectedERP = EStduio_gui_EEG_set.butttons_datasets.Value;
@@ -660,14 +660,14 @@ varargout{1} = box_eegset_gui;
         EStduio_gui_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
         EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_gui_EEG_set.appendbutton.Enable = Edit_label;
-        observe_EEGDAT.Count_currentEEG =2;
+        observe_EEGDAT.count_current_eeg =2;
     end
 
 
 %-------------------------- Save selected EEGsets-------------------------------------------
     function savechecked(source,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets > Save');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         pathName =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
         pathName =  [pathName,filesep];
         if isempty(pathName)
@@ -711,10 +711,10 @@ varargout{1} = box_eegset_gui;
                 disp(['Saved to',32,pathName,filename]);
                 assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG_messg =2;
+            observe_EEGDAT.eeg_message_panel =2;
         catch
             beep;
-            observe_EEGDAT.EEG_messg =3;
+            observe_EEGDAT.eeg_message_panel =3;
             disp(['EEGsets > Save: Cannot save the selected EEGsets.']);
             return;
             
@@ -725,7 +725,7 @@ varargout{1} = box_eegset_gui;
 %------------------------- Save as-----------------------------------------
     function savecheckedas(~,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Save As');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
@@ -777,7 +777,7 @@ varargout{1} = box_eegset_gui;
             disp(['Saved to',32,erppathname,filename]);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
-        observe_EEGDAT.EEG_messg =2;
+        observe_EEGDAT.eeg_message_panel =2;
         
     end
 
@@ -803,7 +803,7 @@ varargout{1} = box_eegset_gui;
 %-----------------select the ERPset of interest--------------------------
     function selectdata(source,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
-        observe_EEGDAT.EEG_messg =1;
+        observe_EEGDAT.eeg_message_panel =1;
         Selected_ERPsetlabel = source.Value;
         [~,~,EEGtypeFlag] =  getDatasets();
         EEGArraydef =  estudioworkingmemory('EEGArray');
@@ -843,7 +843,7 @@ varargout{1} = box_eegset_gui;
         %         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
-        observe_EEGDAT.Count_currentEEG =2;
+        observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
         %        Current_ERP_selected=Selected_ERPsetlabel(1);
         %        observe_EEGDAT.CURRENTSET = Current_ERP_selected;
@@ -911,7 +911,7 @@ varargout{1} = box_eegset_gui;
         %             end
         %         end
         
-        %         observe_EEGDAT.EEG_messg =2;
+        %         observe_EEGDAT.eeg_message_panel =2;
         %         observe_EEGDAT.Count_ERP = observe_EEGDAT.Count_ERP+1;
         %         observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
         %         if numel(source.Value)==1
@@ -945,8 +945,8 @@ varargout{1} = box_eegset_gui;
 
 
 %%%--------------Up this panel--------------------------------------
-    function Count_currentERPChanged(~,~)
-        if observe_EEGDAT.Count_currentEEG ~=1
+    function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=1
             return;
         end
         Selected_ERP= estudioworkingmemory('selectederpstudio');
