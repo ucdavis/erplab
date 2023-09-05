@@ -23,9 +23,9 @@ if nargin>1
 end
 
 % We first clear the existing axes ready to build a new one
-% if ishandle( EStudio_gui_erp_totl.eegViewAxes )
-%     delete( EStudio_gui_erp_totl.eegViewAxes );
-% end
+if ishandle( EStudio_gui_erp_totl.eegViewAxes )
+    delete( EStudio_gui_erp_totl.eegViewAxes );
+end
 
 %Sets the units of your root object (screen) to pixels
 set(0,'units','pixels')
@@ -120,15 +120,14 @@ else
     PageStr = 'No EEG was loaded';
 end
 
-% EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
 %%-----------------panel is to dispaly the EEGset names--------------------
+EStudio_gui_erp_totl.eegpageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
-EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
-
-EStudio_gui_erp_totl.eegpageinfo_minus.Callback=@page_minus;
-EStudio_gui_erp_totl.eegpageinfo_edit.String=num2str(pagecurrentNum);
-EStudio_gui_erp_totl.eegpageinfo_edit.Callback=@page_edit;
-EStudio_gui_erp_totl.eegpageinfo_plus.Callback=@page_plus;
+EStudio_gui_erp_totl.eegpageinfo_text = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style','text','String',EStudio_gui_erp_totl.eegpageinfo_str,'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eegpageinfo_minus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',@page_minus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'FontWeight','bold');
+EStudio_gui_erp_totl.eegpageinfo_edit = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.eegpageinfo_plus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',@page_plus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'FontWeight','bold');
 
 
 if pageNum ==1
@@ -161,41 +160,61 @@ EStudio_gui_erp_totl.eegpageinfo_minus.ForegroundColor = Enable_minus_Background
 set(EStudio_gui_erp_totl.eegpageinfo_box, 'Sizes', [-1 70 50 70] );
 
 
-EStudio_gui_erp_totl.eeg_zoom_in_large.Callback=@zoomin_large;
-EStudio_gui_erp_totl.eeg_zoom_in_fivesmall.Callback=@zoomin_fivesmall;
-EStudio_gui_erp_totl.eeg_zoom_in_small.Callback=@zoomin_small;
+EStudio_gui_erp_totl.eeg_plot_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
+%%panel is to dispaly the EEG wave
+EStudio_gui_erp_totl.eegViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.eeg_plot_title,'BackgroundColor',figbgdColor);
 
-EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
-EStudio_gui_erp_totl.eeg_zoom_edit.Callback=@zoomedit;
+%%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
+EStudio_gui_erp_totl.eeg_plot_button_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
+uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.eeg_zoom_in_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','<<',...
+    'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'Callback',@zoomin_large);
+
+EStudio_gui_erp_totl.eeg_zoom_in_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','<',...
+    'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'Callback',@zoomin_small);
+
+EStudio_gui_erp_totl.eeg_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','edit','String',num2str(Startimes),...
+    'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'Callback',@zoomedit);
+
+EStudio_gui_erp_totl.eeg_zoom_out_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>',...
+    'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'Callback',@zoomout_small);
+
+EStudio_gui_erp_totl.eeg_zoom_out_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>>',...
+    'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'Callback',@zoomout_large);
+uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+
+EStudio_gui_erp_totl.eeg_figurecommand = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Show Command',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
 
 
-EStudio_gui_erp_totl.eeg_zoom_out_small.Callback = @zoomout_small;
-EStudio_gui_erp_totl.eeg_zoom_out_fivelarge.Callback =@zoomout_fivelarge;
-EStudio_gui_erp_totl.eeg_zoom_out_large.Callback =@zoomout_large;
+EStudio_gui_erp_totl.eeg_figuresaveas = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Save Figure as',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
 
-EStudio_gui_erp_totl.eeg_figurecommand.Callback=@Show_command;
+EStudio_gui_erp_totl.eeg_figureout = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_out);
 
-
-EStudio_gui_erp_totl.eeg_figuresaveas.Callback=@figure_saveas;
-
-EStudio_gui_erp_totl.eeg_figureout.Callback = @figure_out;
-
-EStudio_gui_erp_totl.eeg_Reset.Callback =@Panel_Reset;
+EStudio_gui_erp_totl.eeg_Reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
 
 
-set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 60 5]);
+uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 50 50 50 50 50 -1 100 100 170 70 5]);
 
+
+%%Changed by Guanghui Zhang Dec. 2022-------panel for display the processing procedure for some functions, e.g., filtering
+EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorB_def);
 
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
-hold(EStudio_gui_erp_totl.myeegviewer,'on');
-
+% myerpviewer = EStudio_gui_erp_totl.myeegviewe;
 EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 40; % set the first element (pageinfo) to 30px high
+% EStudio_gui_erp_totl.eegplotgrid.Heights(2) = -1; % set the first element (pageinfo) to 30px high
 pause(0.1);
 EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
 EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
 Pos = EStudio_gui_erp_totl.myeegviewer.Position;
-EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
+EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.95,Pos(3)*1.15,Pos(4)*0.95];
 estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     EEG = observe_EEGDAT.EEG;
@@ -230,7 +249,7 @@ if isempty(observe_EEGDAT.EEG)
     return;
 end
 if observe_EEGDAT.EEG.trials==1
-    MessageViewer= char(strcat('Changing the start time of EEG to be 0s (|<)'));
+    MessageViewer= char(strcat('Changing the start time of EEG to be 0s (<<)'));
 else
     MessageViewer= char(strcat('Start the EEG from the first epoch (<<)'));
 end
@@ -245,61 +264,6 @@ EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 estudioworkingmemory('Startimes',Startimes);
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_message_panel=2;
-end
-
-
-%%reduce the start time of the displayed EEG
-function zoomin_fivesmall(~,~)
-global observe_EEGDAT;
-global EStudio_gui_erp_totl;%%Global variable
-if isempty(observe_EEGDAT.EEG)
-    return;
-end
-MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<<)'));
-EEG_plotset = estudioworkingmemory('EEG_plotset');
-try
-    Winlength =   EEG_plotset{3};
-catch
-    Winlength = 5;
-    EEG_plotset{3} = 5;
-end
-[chaNum,sampleNum,trialNum]=size(observe_EEGDAT.EEG.data);
-Frames = sampleNum*trialNum;
-if observe_EEGDAT.EEG.trials>1 % time in second or in trials
-    multiplier_winleg = size(observe_EEGDAT.EEG.data,2);
-else
-    multiplier_winleg = observe_EEGDAT.EEG.srate;
-end
-if isempty(Winlength)|| Winlength<0 || Winlength>floor(Frames/multiplier_winleg)
-    Winlength = 5;
-    EEG_plotset{3} = 5;
-end
-estudioworkingmemory('EEG_plotset',EEG_plotset);
-Startimesdef = str2num(EStudio_gui_erp_totl.eeg_zoom_edit.String);
-if ~isempty(Startimesdef) && isnumeric(Startimesdef) && numel(Startimesdef)==1 && Startimesdef>=0
-else
-    Startimesdef = 0;
-    EStudio_gui_erp_totl.eeg_zoom_edit.String = '0';
-end
-
-% if Startimesdef>0
-Startimes = Startimesdef-fastif(Winlength>=5, round(5*Winlength), 5*Winlength);
-% end
-if Startimes<0
-    if observe_EEGDAT.EEG.trials>1
-        Startimes=1;
-    else
-        Startimes=0;
-    end
-end
-
-estudioworkingmemory('Startimes',Startimes);
-erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
-EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
-f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
-
 end
 
 
@@ -339,7 +303,7 @@ else
 end
 
 % if Startimesdef>0
-Startimes = Startimesdef-fastif(Winlength>=5, round(Winlength), Winlength);
+Startimes = Startimesdef-fastif(Winlength>=5, round(Winlength/5), Winlength/5);
 % end
 if Startimes<0
     if observe_EEGDAT.EEG.trials>1
@@ -460,7 +424,7 @@ else
     Startimesdef = 0;
 end
 
-Startimes = Startimesdef+fastif(Winlength>=5, round(Winlength), Winlength); %%> add one second
+Startimes = Startimesdef+fastif(Winlength>=5, round(Winlength/5), Winlength/5); %%> add one second
 if Startimes<0
     Startimes=0;
 end
@@ -493,78 +457,6 @@ erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 observe_EEGDAT.eeg_message_panel=1;
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_message_panel=2;
-end
-
-
-function zoomout_fivelarge(~,~)
-global observe_EEGDAT;
-global EStudio_gui_erp_totl;%%Global variable
-MessageViewer= char(strcat('Increasing start time for the displayed EEG (>>)'));
-EEG_plotset = estudioworkingmemory('EEG_plotset');
-try
-    Winlength =   EEG_plotset{3};
-catch
-    Winlength = 5;
-    EEG_plotset{3} = 5;
-end
-if isempty(observe_EEGDAT.EEG)
-    return;
-end
-[chaNum,sampleNum,trialNum]=size(observe_EEGDAT.EEG.data);
-Frames = sampleNum*trialNum;
-if observe_EEGDAT.EEG.trials>1 % time in second or in trials
-    multiplier = size(observe_EEGDAT.EEG.data,2);
-    multiplier_winleg = size(observe_EEGDAT.EEG.data,2);
-else
-    multiplier = observe_EEGDAT.EEG.srate;
-    multiplier_winleg = multiplier;
-end
-
-if isempty(Winlength)|| Winlength<0 || Winlength>floor(Frames/multiplier_winleg)
-    Winlength = 5;
-    EEG_plotset{3} = 5;
-end
-estudioworkingmemory('EEG_plotset',EEG_plotset);
-Startimesdef = str2num(EStudio_gui_erp_totl.eeg_zoom_edit.String);
-if ~isempty(Startimesdef) && isnumeric(Startimesdef) && numel(Startimesdef)==1 && Startimesdef>=0
-else
-    Startimesdef = 0;
-end
-
-Startimes = Startimesdef+fastif(Winlength>=5, round(5*Winlength), 5*Winlength); %%> add one second
-if Startimes<0
-    Startimes=0;
-end
-
-EEG_plotset = estudioworkingmemory('EEG_plotset');
-try
-    Winlength =   EEG_plotset{3};
-catch
-    Winlength = 5;
-    EEG_plotset{3} = 5;
-end
-
-if isempty(Winlength)|| Winlength<0 ||  (Winlength>floor(Frames/multiplier_winleg))
-    Winlength = floor(Frames/multiplier_winleg);
-    EEG_plotset{3} = floor(Frames/multiplier_winleg);
-end
-estudioworkingmemory('EEG_plotset',EEG_plotset);
-if ndims(observe_EEGDAT.EEG.data)==3
-    Startimes = max(1,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-    if Startimes== max(1,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-        Startimes = Startimes+1;
-    end
-else
-    Startimes = max(0,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-end
-EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
-
-estudioworkingmemory('Startimes',Startimes);
-erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
-f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
-
 end
 
 
@@ -576,7 +468,7 @@ global EStudio_gui_erp_totl;%%Global variable
 if isempty(observe_EEGDAT.EEG)
     return;
 end
-MessageViewer= char(strcat('Changing the start time to be maximal (>|)'));
+MessageViewer= char(strcat('Changing the start time to be maximal (>>)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
 try
     Winlength =   EEG_plotset{3};
@@ -651,9 +543,6 @@ if ~isempty(Pagecurrent) && Pagecurrent>0 && Pagecurrent<= pageNum%%
 end
 
 end
-
-
-
 
 %------------------Display the waveform for proir ERPset--------------------
 function page_minus(~,~)
@@ -1177,7 +1066,6 @@ if ICdispFlag==1
             dataica = tmpdata(ICArray,:);
         catch
             dataica = tmpdata(:,:);
-            ICArray = [1:size(tmpdata,1)];
         end
         switch Submean % subtract the mean ?
             case 1
@@ -1380,8 +1268,8 @@ DEFAULT_GRID_SPACING =Winlength/5;
 tmpcolor = [ 0 0 0.4 ];
 if ndims(EEG.data)==2
     if ~isempty(data) && PlotNum~=0
-        
-        if isempty(dataica) && ~isempty(dataeeg)%%only EEG data
+ 
+         if isempty(dataica) && ~isempty(dataeeg)%%only EEG data
             plot(myeegviewer, bsxfun(@plus, data(end:-1:1,lowlim:highlim), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
         elseif ~isempty(dataica) && isempty(dataeeg)%%only IC data
@@ -1395,9 +1283,9 @@ if ndims(EEG.data)==2
             %%plot eeg
             plot(myeegviewer, bsxfun(@plus, data(tvmid-1:-1:1,lowlim:highlim), AmpScale*[size(dataica,1)+1:PlotNum]'-meandata(tvmid-1:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
-        end
+         end
         
-        
+         
         set(myeegviewer,'TickDir', 'in','LineWidth',1);
         %%xtick
         AmpScale = OldAmpScale;

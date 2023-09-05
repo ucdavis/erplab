@@ -7,7 +7,7 @@
 % Davis, CA
 % August 2023
 
-function OutputViewerpareeg = f_preparms_eegwaviewer(EEG,FigureName)
+function OutputViewerpareeg = f_preparms_eegwaviewer(EEG,matlabfig,History,figureName)
 
 
 OutputViewerpareeg = '';
@@ -15,15 +15,21 @@ if nargin<1
     help f_preparms_eegwaviewer();
     return
 end
-if nargin<2
-    FigureName = '';
-end
 if isempty(EEG)
     disp('f_preparms_eegwaviewer(): EEG is empty');
     return;
 end
 
+if nargin<3
+    History = 'gui';
+end
 
+if nargin <2
+    matlabfig=1;
+end
+if nargin <4
+   figureName = ''; 
+end
 
 %%channel array and IC array
 %channels
@@ -42,7 +48,7 @@ if isempty(EEG.icachansind)
 else
     nIC = numel(EEG.icachansind);
     if isempty(ICArray) || min(ICArray(:))>nIC || max(ICArray(:)) >  nIC ||  min(ICArray(:))<=0
-        ICArray = 1:nIC;
+        ICArray = [];
         estudioworkingmemory('EEG_ICArray',ICArray);
     end
 end
@@ -55,10 +61,10 @@ if isempty(EEG_plotset)
     EEGdisp = 1;
     ICdisp = 0;
     Winlength = 5;%%in second
-    ScaleV = 50;
-    channeLabel = 1;
-    RemoveDC=0;
-    EventFlag = 1;
+    AmpScale = 50;
+    ChanLabel = 1;
+    Submean=0;
+    EventOnset = 1;
     StackFlag = 0;
     NormFlag = 0;
 else
@@ -95,42 +101,42 @@ else
     
     %%Vertical scale?
     try
-        ScaleV = EEG_plotset{4};
+        AmpScale = EEG_plotset{4};
     catch
-        ScaleV = 50;
+        AmpScale = 50;
     end
-    if isempty(ScaleV) || numel(ScaleV)~=1 || ScaleV==0
-        ScaleV = 50;
+    if isempty(AmpScale) || numel(AmpScale)~=1 || AmpScale==0
+        AmpScale = 50;
     end
     
     %%Channel labels? (1 is name, 0 is number)
     try
-        channeLabel = EEG_plotset{5};
+        ChanLabel = EEG_plotset{5};
     catch
-        channeLabel = 1;
+        ChanLabel = 1;
     end
-    if isempty(channeLabel) || numel(channeLabel)~=1 || (channeLabel~=0 && channeLabel~=1)
-        channeLabel = 1;
+    if isempty(ChanLabel) || numel(ChanLabel)~=1 || (ChanLabel~=0 && ChanLabel~=1)
+        ChanLabel = 1;
     end
     
     %%Remove DC? (1 is "Yes", 0 is "no")
     try
-        RemoveDC = EEG_plotset{6};
+        Submean = EEG_plotset{6};
     catch
-        RemoveDC = 0;
+        Submean = 0;
     end
-    if isempty(RemoveDC) || numel(RemoveDC)~=1 || (RemoveDC~=0 && RemoveDC~=1)
-        RemoveDC = 0;
+    if isempty(Submean) || numel(Submean)~=1 || (Submean~=0 && Submean~=1)
+        Submean = 0;
     end
     
     %%Display events?
     try
-        EventFlag = EEG_plotset{7};
+        EventOnset = EEG_plotset{7};
     catch
-        EventFlag = 1;
+        EventOnset = 1;
     end
-    if isempty(EventFlag) ||  numel(EventFlag)~=1 || (EventFlag~=0 && EventFlag~=1)
-        EventFlag = 1;
+    if isempty(EventOnset) ||  numel(EventOnset)~=1 || (EventOnset~=0 && EventOnset~=1)
+        EventOnset = 1;
     end
     
     
@@ -157,7 +163,7 @@ end
 
 
 %%Start time to display
-EEG_startime = estudioworkingmemory('EEG_startime');
+Startimes = estudioworkingmemory('Startimes');
 [chaNum,sampleNum,trialNum]=size(EEG.data);
 Frames = sampleNum*trialNum;
 if EEG.trials>1 % time in second or in trials
@@ -166,19 +172,27 @@ else
     multiplier = EEG.srate;
 end
 
-EEG_startimeMax = max(0,ceil((Frames-1)/multiplier)-Winlength);
+StartimesMax = max(0,ceil((Frames-1)/multiplier)-Winlength);
 if ndims(EEG.data)==3
-   EEG_startime=EEG_startime-1; 
+    Startimes=Startimes-1;
 end
-if isempty(EEG_startime) || numel(EEG_startime)~=1 || EEG_startime<0 ||EEG_startime>EEG_startimeMax
-    EEG_startime=0;
-    estudioworkingmemory('EEG_startime',EEG_startime);
+if isempty(Startimes) || numel(Startimes)~=1 || Startimes<0 ||Startimes>StartimesMax
+    Startimes=0;
+    estudioworkingmemory('Startimes',Startimes);
 end
 
+figSize = estudioworkingmemory('egfigsize');
+if isempty(figSize)
+    figSize = [];
+end
+if ICdisp==0
+    ICArray = [];
+end
 
-
-if ~isempty(FigureName)
-    
+if matlabfig==1
+    [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
+        'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
+        'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);
     
 else
     OutputViewerpareeg{1} = ChanArray;
@@ -186,13 +200,13 @@ else
     OutputViewerpareeg{3} =EEGdisp;
     OutputViewerpareeg{4} =ICdisp;
     OutputViewerpareeg{5} =Winlength;
-    OutputViewerpareeg{6} =ScaleV;
-    OutputViewerpareeg{7} =channeLabel;
-    OutputViewerpareeg{8} =RemoveDC;
-    OutputViewerpareeg{9} = EventFlag;
+    OutputViewerpareeg{6} =AmpScale;
+    OutputViewerpareeg{7} =ChanLabel;
+    OutputViewerpareeg{8} =Submean;
+    OutputViewerpareeg{9} = EventOnset;
     OutputViewerpareeg{10} =StackFlag;
     OutputViewerpareeg{11} =NormFlag;
-    OutputViewerpareeg{12} =EEG_startime;
+    OutputViewerpareeg{12} =Startimes;
     %  OutputViewerpareeg{12} =
     %  OutputViewerpareeg{12} =
     %  OutputViewerpareeg{12} =
@@ -202,8 +216,6 @@ else
     %  OutputViewerpareeg{12} =
     %  OutputViewerpareeg{12} =
     %  OutputViewerpareeg{12} =
-    
-    
 end
 
 end

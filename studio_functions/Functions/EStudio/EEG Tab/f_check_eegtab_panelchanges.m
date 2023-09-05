@@ -3,6 +3,12 @@ function [messgStr,eegpanelIndex]= f_check_eegtab_panelchanges()
 messgStr = '';
 eegpanelIndex = 0;
 
+MyViewer_eegset = estudioworkingmemory('EEGTab_eegset');
+if ~isempty(MyViewer_eegset) && MyViewer_eegset==1
+    messgStr  = char( 'Changes on "EEGsets" have not been applied');
+    eegpanelIndex =100;
+end
+
 
 MyViewer_chanic = estudioworkingmemory('EEGTab_chanic');
 if ~isempty(MyViewer_chanic) && MyViewer_chanic==1

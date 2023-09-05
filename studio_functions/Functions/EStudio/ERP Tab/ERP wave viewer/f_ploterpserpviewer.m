@@ -1009,7 +1009,7 @@ if ~isempty(qFigureName)
 end
 try
     outerpos = fig_gui.OuterPosition;
-    set(fig_gui,'outerposition',[outerpos(1),(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
+    set(fig_gui,'outerposition',[outerpos(1),outerpos(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
 catch
     set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
 end

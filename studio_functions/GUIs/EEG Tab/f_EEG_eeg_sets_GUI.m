@@ -13,6 +13,7 @@
 
 function varargout = f_EEG_eeg_sets_GUI(varargin)
 global observe_EEGDAT;
+global observe_ERPDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
 % addlistener(observe_EEGDAT,'eeg_message_panel_change',@EEG_Messg_change);
@@ -122,6 +123,7 @@ varargout{1} = box_eegset_gui;
             'Callback', @curr_folder,'Enable',Edit_label,'FontSize',FonsizeDefault);
         set(buttons4,'Sizes',[70 70 115]);
         set(vBox, 'Sizes', [20 170 25 25 25]);
+        estudioworkingmemory('EEGTab_eegset',0);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,6 +132,20 @@ varargout{1} = box_eegset_gui;
 
 %%-----------------------continuous EEG------------------------------------
     function continuous_eeg(~,~)
+        
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
+        estudioworkingmemory('EEGTab_eegset',0);
+        %         box_eegset_gui.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
+        MessageViewer= char(strcat('EEGsets > Continuous EEG'));
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        observe_EEGDAT.eeg_message_panel=1;
+        
         EStduio_gui_EEG_set.eeg_contns.Value=1;
         EStduio_gui_EEG_set.eeg_epoch.Value = 0;
         
@@ -178,10 +194,25 @@ varargout{1} = box_eegset_gui;
             end
         end
         observe_EEGDAT.count_current_eeg =2;
+        f_redrawEEG_Wave_Viewer();
+        observe_EEGDAT.eeg_message_panel=2;
     end
 
 %%--------------------------epoched EEG--------------------------------------
     function epoch_eeg(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
+        estudioworkingmemory('EEGTab_eegset',0);
+        MessageViewer= char(strcat('EEGsets > Epoched EEG'));
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        observe_EEGDAT.eeg_message_panel=1;
+        
+        
         EStduio_gui_EEG_set.eeg_contns.Value=0;
         EStduio_gui_EEG_set.eeg_epoch.Value = 1;
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
@@ -229,6 +260,8 @@ varargout{1} = box_eegset_gui;
             end
         end
         observe_EEGDAT.count_current_eeg=2;
+        f_redrawEEG_Wave_Viewer();
+        observe_EEGDAT.eeg_message_panel=2;
     end
 
 
@@ -453,9 +486,15 @@ varargout{1} = box_eegset_gui;
 
 %%---------------------Load EEG--------------------------------------------
     function load(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('EEGTab_eegset',0);
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Load');
         observe_EEGDAT.eeg_message_panel =1;
-       
+        
         ALLEEG = observe_EEGDAT.ALLEEG;
         try
             [filename, filepath] = uigetfile({'*.set','ERP (*.set)'}, ...
@@ -526,20 +565,22 @@ varargout{1} = box_eegset_gui;
         EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_gui_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
+        f_redrawEEG_Wave_Viewer();
+        observe_EEGDAT.eeg_message_panel=2;
         
     end
 
-
+%%----------------------------Append two or more files---------------------
     function append_eeg(~,~)
-        erpworkingmemory('f_EEG_proces_messg','EEGsets > Append');
-        
-        if isempty(observe_EEGDAT.ALLEEG)
-            
+        if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
             return;
         end
+        erpworkingmemory('f_EEG_proces_messg','EEGsets > Append');
+        
+        erpworkingmemory('f_EEG_proces_messg','EEGsets > Append');
         EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray)
-          EEGArray = '';  
+            EEGArray = '';
         end
         
         %%Popup the selection
@@ -553,11 +594,8 @@ varargout{1} = box_eegset_gui;
             disp('User selected Cancel');
             return;
         end
-        
         INEEG2  = eval( [ '[' res{1} ']' ] );
         keepall = res{2};
-        
-        
         [EEG,LASTCOM]= pop_mergeset( observe_EEGDAT.ALLEEG,INEEG2,keepall);
         if isempty(LASTCOM)
             beep;
@@ -582,7 +620,12 @@ varargout{1} = box_eegset_gui;
             EStduio_gui_EEG_set.butttons_datasets.String = EEGlistName;
             EStduio_gui_EEG_set.butttons_datasets.Value =observe_EEGDAT.CURRENTSET ;
             EStduio_gui_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
+            EEGArray= EStduio_gui_EEG_set.butttons_datasets.Value;
+            estudioworkingmemory('EEGArray',EEGArray);
+            
             observe_EEGDAT.count_current_eeg =2;
+            f_redrawEEG_Wave_Viewer();
+            observe_EEGDAT.eeg_message_panel=2;
         end
     end
 
@@ -590,10 +633,12 @@ varargout{1} = box_eegset_gui;
 
 %%----------------------Clear the selected EEGsets-------------------------
     function cleardata(source,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Clear');
         observe_EEGDAT.eeg_message_panel =1;
         
-        %         global ERPCOM;
         SelectedERP = EStduio_gui_EEG_set.butttons_datasets.Value;
         ERPset_remained = setdiff(1:length(EStduio_gui_EEG_set.butttons_datasets.String),SelectedERP);
         
@@ -660,7 +705,12 @@ varargout{1} = box_eegset_gui;
         EStduio_gui_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
         EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_gui_EEG_set.appendbutton.Enable = Edit_label;
+        
+        EEGArray= EStduio_gui_EEG_set.butttons_datasets.Value;
+        estudioworkingmemory('EEGArray',EEGArray);
         observe_EEGDAT.count_current_eeg =2;
+        f_redrawEEG_Wave_Viewer();
+        observe_EEGDAT.eeg_message_panel=2;
     end
 
 
@@ -830,7 +880,6 @@ varargout{1} = box_eegset_gui;
                 else
                     EStduio_gui_EEG_set.butttons_datasets.Value =EEGArraydef;
                     CURRENTSET = EEGArraydef(1);
-                    %                     return;
                 end
             end
         else%%included in the continuous EEG
@@ -845,80 +894,6 @@ varargout{1} = box_eegset_gui;
         assignin('base','CURRENTSET',CURRENTSET);
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
-        %        Current_ERP_selected=Selected_ERPsetlabel(1);
-        %        observe_EEGDAT.CURRENTSET = Current_ERP_selected;
-        %         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(Current_ERP_selected);
-        
-        %         checked_ERPset_Index_bin_chan = S_erpplot.geterpbinchan.checked_ERPset_Index;
-        %
-        %         msgboxText = {};
-        %         if checked_ERPset_Index_bin_chan(1) ==1
-        %             msgboxText =  ['Number of bins across EEGsets is different!'];
-        %         elseif checked_ERPset_Index_bin_chan(2)==2
-        %             msgboxText =  ['Number of channels across EEGsets is different!'];
-        %         elseif checked_ERPset_Index_bin_chan(3) ==3
-        %             msgboxText =  ['Type of data across EEGsets is different!'];
-        %         elseif checked_ERPset_Index_bin_chan(4)==4
-        %             msgboxText =  ['Number of samples across EEGsets is different!'];
-        %         elseif checked_ERPset_Index_bin_chan(5)==5
-        %             msgboxText =  ['Start time of epoch across EEGsets is different!'];
-        %         end
-        %         if ischar(msgboxText)
-        %             if checked_ERPset_Index_bin_chan(1) ==1 && checked_ERPset_Index_bin_chan(2) ==0
-        %                 question = [  '%s\n See details at command window.\n\n',...
-        %                     ' (a). "Bins" will be deactive on "Bins and Channel Selection".\n\n',...
-        %                     ' (b). "Plot Scalp Maps" panel will be deactive.\n\n',...
-        %                     ' (c). "Selected bin and chan" will be deactive on "Baseline correction & Linear detrend".\n\n',...
-        %                     ' (d). "ERP Channel Operations" panel will be deactive.\n\n',...
-        %                     ' (e). "ERP Bin Operations" panel will be deactive.\n\n',...
-        %                     ' (f). "Covert Voltage to CSD" panel will be deactive.\n\n',...
-        %                     ' (g). "Save values" will be deactive on "ERP Measurement Tool".\n\n',...
-        %                     ' (h). "Average across EEGsets" will be deactive.\n\n'];
-        %             elseif checked_ERPset_Index_bin_chan(1) ==0 && checked_ERPset_Index_bin_chan(2) ==2
-        %
-        %                 question = [  '%s\n See details at command window.\n\n',...
-        %                     ' (a). "Channels" will be deactive on "Bins and Channel Selection".\n\n',...
-        %                     ' (b). "Plot Scalp Maps" panel will be deactive.\n\n',...
-        %                     ' (c). "Selected bin and chan" will be deactive on "Baseline correction & Linear detrend".\n\n',...
-        %                     ' (d). "ERP Channel Operations" panel will be deactive.\n\n',...
-        %                     ' (e). "ERP Bin Operations" panel will be deactive.\n\n',...
-        %                     ' (f). "Covert Voltage to CSD" panel will be deactive.\n\n',...
-        %                     ' (g). "Save values" will be deactive on "ERP Measurement Tool".\n\n',...
-        %                     ' (h). "Average across EEGsets" will be deactive.\n\n'];
-        %             elseif checked_ERPset_Index_bin_chan(1) ==1 && checked_ERPset_Index_bin_chan(2) ==2
-        %                 msgboxText =  ['Both the number of channels and the number of bins vary across EEGsets!'];
-        %                 question = [  '%s\n See details at command window.\n\n',...
-        %                     ' (a). "Channels" and "Bins" will be deactive on "Bins and Channel Selection".\n\n',...
-        %                     ' (b). "Plot Scalp Maps" panel will be deactive.\n\n',...
-        %                     ' (c). "Selected bin and chan" will be deactive on "Baseline correction & Linear detrend".\n\n',...
-        %                     ' (d). "ERP Channel Operations" panel will be deactive.\n\n',...
-        %                     ' (e). "ERP Bin Operations" panel will be deactive.\n\n',...
-        %                     ' (f). "Covert Voltage to CSD" panel will be deactive.\n\n',...
-        %                     ' (g). "Save values" will be deactive on "ERP Measurement Tool".\n\n',...
-        %                     ' (h). "Average across EEGsets" will be deactive.\n\n'];
-        %             else
-        %                 msgboxText =  [];
-        %                 question = [  ];
-        %
-        %             end
-        %             if ~isempty(question)
-        %                 BackERPLABcolor = [1 0.9 0.3];
-        %                 title       = 'EStudio: EEGsets';
-        %                 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        %                 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        %                 button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
-        %                 set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-        %             end
-        %         end
-        
-        %         observe_EEGDAT.eeg_message_panel =2;
-        %         observe_EEGDAT.Count_ERP = observe_EEGDAT.Count_ERP+1;
-        %         observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
-        %         if numel(source.Value)==1
-        %             observe_EEGDAT.EEG_chan = [1:observe_EEGDAT.EEG.nchan];
-        %             observe_EEGDAT.EEG_IC = [1:observe_EEGDAT.EEG.nbin];
-        %         end
-        %         observe_EEGDAT.Two_GUI = observe_EEGDAT.Two_GUI+1;
     end
 
 

@@ -8,6 +8,7 @@ classdef o_EEGDATA < handle
         eeg_message_panel
         eeg_two_panels
         eeg_reset_def_paras
+        
     end
     
     
@@ -19,52 +20,54 @@ classdef o_EEGDATA < handle
         eeg_message_panel_change
         eeg_two_panels_change
         eeg_reset_def_paras_change
+        
+        
     end
     
     
     methods
         %%alleeg
-        function set.ALLEEG(obj,values)
-            obj.ALLEEG = values;
-            notify(obj,'alleeg_change');
+        function set.ALLEEG(obj_eeg,values_eeg)
+            obj_eeg.ALLEEG = values_eeg;
+            notify(obj_eeg,'alleeg_change');
         end
         
         %%eeg
-        function set.EEG(obj,values)
-            obj.EEG = values;
-            notify(obj,'eeg_change');
+        function set.EEG(obj_eeg,values_eeg)
+            obj_eeg.EEG = values_eeg;
+            notify(obj_eeg,'eeg_change');
         end
         
         %%current eeg
-        function set.CURRENTSET(obj,values)
-            obj.CURRENTSET = values;
-            notify(obj,'current_change');
+        function set.CURRENTSET(obj_eeg,values_eeg)
+            obj_eeg.CURRENTSET = values_eeg;
+            notify(obj_eeg,'current_change');
         end
         
         %%count current eeg change
-        function set.count_current_eeg(obj,values)
-            obj.count_current_eeg = values;
-            notify(obj,'count_current_eeg_change');
+        function set.count_current_eeg(obj_eeg,values_eeg)
+            obj_eeg.count_current_eeg = values_eeg;
+            notify(obj_eeg,'count_current_eeg_change');
         end
         
         
         %%message
-        function set.eeg_message_panel(obj,values)
-            obj.eeg_message_panel = values;
-            notify(obj,'eeg_message_panel_change');
+        function set.eeg_message_panel(obj_eeg,values_eeg)
+            obj_eeg.eeg_message_panel = values_eeg;
+            notify(obj_eeg,'eeg_message_panel_change');
         end
         
         %%two panels
-        function set.eeg_two_panels(obj,values)
-            obj.eeg_two_panels = values;
-            notify(obj,'eeg_two_panels_change');
+        function set.eeg_two_panels(obj_eeg,values_eeg)
+            obj_eeg.eeg_two_panels = values_eeg;
+            notify(obj_eeg,'eeg_two_panels_change');
         end
         
         
         %%reset for the default parameters
-        function set.eeg_reset_def_paras(obj,values)
-            obj.eeg_reset_def_paras = values;
-            notify(obj,'eeg_reset_def_paras_change');
+        function set.eeg_reset_def_paras(obj_eeg,values_eeg)
+            obj_eeg.eeg_reset_def_paras = values_eeg;
+            notify(obj_eeg,'eeg_reset_def_paras_change');
         end
     end
     

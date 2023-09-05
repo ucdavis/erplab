@@ -17,7 +17,7 @@ function EStudio_gui_erp_totl = EStudio_EEG_Tab(EStudio_gui_erp_totl,ColorB_def)
 if isempty(ColorB_def)
     ColorB_def = [0.7020 0.77 0.85];
 end
-
+FonsizeDefault = f_get_default_fontsize();
 %% Arrange the main interface for ERP panel (Tab3)
 EStudio_gui_erp_totl.eegViewBox = uix.VBox('Parent', EStudio_gui_erp_totl.tabEEG,'BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.eegViewPanel = uix.BoxPanel('Parent', EStudio_gui_erp_totl.eegViewBox,'TitleColor',ColorB_def,'ForegroundColor','k');%
@@ -29,6 +29,8 @@ set(EStudio_gui_erp_totl.eegpanelscroll,'BackgroundColor',ColorB_def);
 set( EStudio_gui_erp_totl.tabEEG, 'Widths', [-4, 300]); % Viewpanel and settings panel
 
 
+
+%%-------------------------function panels---------------------------------
 EStudio_gui_erp_totl.eegpanel_fonts  = f_get_default_fontsize();
 
 EStudio_gui_erp_totl.eegsettingLayout = uiextras.VBox('Parent', EStudio_gui_erp_totl.eegpanelscroll,'BackgroundColor',ColorB_def);
@@ -44,24 +46,12 @@ EStudio_gui_erp_totl.eegpanelSizes(3) = 190;
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
 
+
 %% Hook up the minimize callback and IsMinimized
 set( EStudio_gui_erp_totl.eegpanel{1}, 'MinimizeFcn', {@nMinimize, 1} );
 set( EStudio_gui_erp_totl.eegpanel{2}, 'MinimizeFcn', {@nMinimize, 2} );
 set( EStudio_gui_erp_totl.eegpanel{3}, 'MinimizeFcn', {@nMinimize, 3} );
-% set( EStudio_gui_erp_totl.panel{4}, 'MinimizeFcn', {@nMinimize, 4} );
-% set( EStudio_gui_erp_totl.panel{5}, 'MinimizeFcn', {@nMinimize, 5} );
-% set( EStudio_gui_erp_totl.panel{6}, 'MinimizeFcn', {@nMinimize, 6} );
-% set( EStudio_gui_erp_totl.panel{7}, 'MinimizeFcn', {@nMinimize, 7} );
-% set( EStudio_gui_erp_totl.panel{8}, 'MinimizeFcn', {@nMinimize, 8} );
-% set( EStudio_gui_erp_totl.panel{9}, 'MinimizeFcn', {@nMinimize, 9} );
-% set( EStudio_gui_erp_totl.panel{10}, 'MinimizeFcn', {@nMinimize, 10} );
-% set( EStudio_gui_erp_totl.panel{11}, 'MinimizeFcn', {@nMinimize, 11} );
-% set( EStudio_gui_erp_totl.panel{12}, 'MinimizeFcn', {@nMinimize, 12} );
-% set( EStudio_gui_erp_totl.panel{13}, 'MinimizeFcn', {@nMinimize, 13} );
-% set( EStudio_gui_erp_totl.panel{14}, 'MinimizeFcn', {@nMinimize, 14} );
-% set( EStudio_gui_erp_totl.panel{15}, 'MinimizeFcn', {@nMinimize, 15} );
-% set( EStudio_gui_erp_totl.panel{16}, 'MinimizeFcn', {@nMinimize, 16} );
-% set( EStudio_gui_erp_totl.panel{17}, 'MinimizeFcn', {@nMinimize, 17} );
+
 %%shrinking Panels 4-17 to just their title-bar
 whichpanel = [3:3];
 for Numofpanel = 1:length(whichpanel)
@@ -79,8 +69,8 @@ for Numofpanel = 1:length(whichpanel)
 end %% End for shrinking panels 4-10
 
 %% + Create the view
-p = EStudio_gui_erp_totl.eegViewContainer;
-EStudio_gui_erp_totl.eegViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorB_def);
+peeg = EStudio_gui_erp_totl.eegViewContainer;
+EStudio_gui_erp_totl.eegViewAxes = uiextras.HBox( 'Parent', peeg,'BackgroundColor',ColorB_def);
 
 end
 

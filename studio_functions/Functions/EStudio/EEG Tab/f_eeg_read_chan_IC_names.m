@@ -23,7 +23,7 @@ elseif (isempty(chanlocs) || channeLabel==0) && ~isempty(ChanArray)
     count = 0;
     for ii = ChanArray
         count = count +1;
-        chanName{count,1} = ['chan',32,num2str(ii)];
+        chanName{count,1} = ['Chan',32,num2str(ii)];
     end
 end
 AllStr = chanName;
