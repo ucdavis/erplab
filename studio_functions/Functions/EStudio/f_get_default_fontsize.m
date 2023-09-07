@@ -1,7 +1,10 @@
 %%This function is to set the default fontsize for ERP wave viewer on different platforms
 
-
-
+%Author: Guanghui ZHANG && Steve Luck
+%Center for Mind and Brain
+%University of California, Davis
+%Davis, CA, USA
+% 2023
 
 
 function FonsizeDefault = f_get_default_fontsize()

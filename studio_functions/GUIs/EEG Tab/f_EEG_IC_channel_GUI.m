@@ -175,10 +175,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         end
         [~,y_chan_index_select] = find(new_chans==1);
         if isempty(y_chan_index_select) && numel(new_chans) < numel(src.String)-1 %% 'All' is not slected
-            %             ChanArray = new_chans-1;
         else%% 'All' is selected and included or all channels are slected except 'ALL'
             EStduio_gui_EEG_IC_chan.ElecRange.Value = 1;
-            %             ChanArray = [1:length(src.String)-1];
         end
     end
 
@@ -192,7 +190,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         if ~isempty(messgStr) && eegpanelIndex~=1
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         
         estudioworkingmemory('EEGTab_chanic',1);
         EStduio_gui_EEG_IC_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
@@ -349,11 +346,11 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         if max(binArray)> length(binString)-1
             EStduio_gui_EEG_IC_chan.ICRange.Value =1;
-            observe_EEGDAT.ERP_bin = [1:length(binString)-1];
+%             observe_EEGDAT.ERP_bin = [1:length(binString)-1];
         else
             if max(binArray)>length(binString)-1
                 EStduio_gui_EEG_IC_chan.ICRange.Value =1;
-                observe_EEGDAT.ERP_bin = [1:length(binString)-1];
+%                 observe_EEGDAT.ERP_bin = [1:length(binString)-1];
             else
                 if numel(binArray) == length(binString)-1
                     EStduio_gui_EEG_IC_chan.ICRange.Value =1;

@@ -210,7 +210,11 @@ assymerr = 0;
 
 for t=1:nformulas
         pleft  = regexpi(parts{t}{1}, exp04, 'tokens');
+        try
         pright = regexpi(parts{t}{2}, exp04, 'tokens');
+        catch
+         pright = [];   
+        end
         if ~isempty(pright) && isempty(pleft)
                 assymerr = 1;
                 indexf = t;

@@ -1,8 +1,8 @@
-%Author: Guanghui ZHANG--zhang.guanghui@foxmail.com
+%Author: Guanghui ZHANG & Steve LUCK
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Feb. 2023
+%Sep. 2023
 
 % ERPLAB Studio
 
@@ -873,7 +873,6 @@ varargout{1} = EEG_filtering_box;
                 ALLEEG_advance = observe_EEGDAT.ALLEEG;
             end
             
-            BinArray = [];
             for Numofeeg = 1:numel(EEGArray)
                 if EEGArray(Numofeeg)> length(observe_EEGDAT.ALLEEG)
                     msgboxText =  ['Filtering - No corresponding EEG exists in ALLEEG'];
@@ -1507,9 +1506,6 @@ varargout{1} = EEG_filtering_box;
             return;
         end
     end
-
-
-
 
 end
 %Progem end: ERP Measurement tool
