@@ -367,7 +367,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=2 || isempty(observe_EEGDAT.EEG)
+        if observe_EEGDAT.count_current_eeg ~=2 
             return;
         end
         
@@ -386,11 +386,9 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.ElecRange.Max = length(Chanlist_name)+1;
             if min(ChannelValue(:)) >length(Chanlist_name) || max(ChannelValue(:))> length(Chanlist_name) || numel(ChannelValue) == length(Chanlist_name)
                 EStduio_gui_EEG_IC_chan.ElecRange.Value = 1;
-                %                 observe_EEGDAT.EEG_chan = [1:length(Chanlist_name)];
                 ChanArray = [1:length(Chanlist_name)];
             else
                 EStduio_gui_EEG_IC_chan.ElecRange.Value =ChannelValue+1;
-                %                 observe_EEGDAT.EEG_chan = ChannelValue;
                 ChanArray = ChannelValue;
             end
             EStduio_gui_EEG_IC_chan.ElecRange.Enable = 'on';
@@ -398,7 +396,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.plot_apply.Enable = 'on';
         else
             Chanlist_name = 'No EEG is available';
-            %             observe_EEGDAT.EEG_chan = [];
             EStduio_gui_EEG_IC_chan.ElecRange.String = Chanlist_name;
             EStduio_gui_EEG_IC_chan.ElecRange.Value=1;
             EStduio_gui_EEG_IC_chan.ElecRange.Enable = 'off';
@@ -422,7 +419,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             else
                 EStduio_gui_EEG_IC_chan.ICRange.Value =ICValue+1;
             end
-            %             observe_EEGDAT.EEG_IC = ICValue;
             EStduio_gui_EEG_IC_chan.ICRange.Enable = 'on';
             EStduio_gui_EEG_IC_chan.ICRange.Min = 1;
             EStduio_gui_EEG_IC_chan.ICRange.Max = numel(observe_EEGDAT.EEG.icachansind)+1;

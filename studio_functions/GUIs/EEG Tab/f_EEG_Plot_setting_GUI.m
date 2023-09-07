@@ -59,6 +59,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.disp_IC = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title, 'Style', 'checkbox', 'String', 'Display ICs',...
             'Callback', @disp_IC,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',0);
         EStduio_gui_EEG_plotset.disp_IC.KeyPressFcn = @eeg_plotset_presskey;
+        set(EStduio_gui_EEG_plotset.datatype_title,'Sizes',[150 90]);
+        
         EEG_plotset{1} = EStduio_gui_EEG_plotset.disp_orgdata.Value;
         EEG_plotset{2} = EStduio_gui_EEG_plotset.disp_IC.Value;
         %%-----------------General settings--------------------------------
@@ -537,16 +539,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         EEGIN = observe_EEGDAT.EEG;
         if isempty(EEGIN.icachansind)
-            EStduio_gui_EEG_plotset.disp_ic_on.Value=0;
-            EStduio_gui_EEG_plotset.disp_ic_off.Value=1;
-            EStduio_gui_EEG_plotset.disp_ic_on.Enable = 'off';
-            EStduio_gui_EEG_plotset.disp_ic_off.Enable = 'off';
+            EStduio_gui_EEG_plotset.disp_IC.Value=0;
+            EStduio_gui_EEG_plotset.disp_IC.Enable = 'off';
             %%<Insert warning message here>
         else
-            EStduio_gui_EEG_plotset.disp_ic_on.Enable = 'on';
-            EStduio_gui_EEG_plotset.disp_ic_off.Enable = 'on';
-            
+            EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
         end
+        observe_EEGDAT.count_current_eeg=4;
     end
 
 

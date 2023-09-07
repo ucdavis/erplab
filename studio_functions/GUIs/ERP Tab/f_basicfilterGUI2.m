@@ -156,8 +156,6 @@ handles.indxlistb = def{9}; % channel array
 
 
 
-
-
 % Update handles structure
 guidata(hObject, handles);
 

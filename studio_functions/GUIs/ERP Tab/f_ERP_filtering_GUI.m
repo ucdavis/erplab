@@ -11,9 +11,6 @@ function varargout = f_ERP_filtering_GUI(varargin)
 gui_erp_filtering = struct();
 % global gui_erp_filtering;
 global observe_ERPDAT;
-% addlistener(observe_ERPDAT,'ALLERP_change',@erpschange);
-% addlistener(observe_ERPDAT,'ERP_change',@drawui_CB);
-% addlistener(observe_ERPDAT,'CURRENTERP_change',@cerpchange);
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 
 %%---------------------------gui-------------------------------------------
@@ -39,7 +36,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 erp_filtering_gui(FonsizeDefault);
 
@@ -387,7 +384,7 @@ varargout{1} = ERP_filtering_box;
         valueh = str2num(Source.String);
         if length(valueh)~=1
             beep;
-            msgboxText =  ['Filtring - Invalid input for high-pass filter cutoff'];
+            msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -396,7 +393,7 @@ varargout{1} = ERP_filtering_box;
         
         if valueh>=fs/2
             beep;
-            msgboxText =  ['Filtring - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
+            msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -405,7 +402,7 @@ varargout{1} = ERP_filtering_box;
         
         if valueh<0.001
             beep;
-            msgboxText =  ['Filtring - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
+            msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -439,7 +436,7 @@ varargout{1} = ERP_filtering_box;
         valuel = str2num(Source.String);
         if length(valuel)~=1 || isempty(valuel)
             beep;
-            msgboxText =  ['Filtring - Invalid input for low-pass filter cutoff'];
+            msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -448,7 +445,7 @@ varargout{1} = ERP_filtering_box;
         
         if valuel>=fs/2
             beep;
-            msgboxText =  ['Filtring - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
+            msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -457,7 +454,7 @@ varargout{1} = ERP_filtering_box;
         
         if valuel<0.001
             beep;
-            msgboxText =  ['Filtring - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
+            msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -495,7 +492,7 @@ varargout{1} = ERP_filtering_box;
             
             if length(valuel)~=1 || isempty(valuel)
                 beep;
-                msgboxText =  ['Filtring - Invalid input for low-pass filter cutoff'];
+                msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -503,7 +500,7 @@ varargout{1} = ERP_filtering_box;
             end
             if valuel>=fs/2
                 beep;
-                msgboxText =  ['Filtring - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
+                msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -513,7 +510,7 @@ varargout{1} = ERP_filtering_box;
             if gui_erp_filtering.hp_tog.Value ==0
                 if valuel<0.001
                     beep;
-                    msgboxText =  ['Filtring - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
+                    msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -526,7 +523,7 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1
             if length(valueh)~=1
                 beep;
-                msgboxText =  ['Filtring - Invalid input for high-pass filter cutoff'];
+                msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -535,7 +532,7 @@ varargout{1} = ERP_filtering_box;
             
             if valueh>=fs/2
                 beep;
-                msgboxText =  ['Filtring - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
+                msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -545,7 +542,7 @@ varargout{1} = ERP_filtering_box;
             if gui_erp_filtering.lp_tog.Value ==0
                 if valueh<0.001
                     beep;
-                    msgboxText =  ['Filtring - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
+                    msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -558,7 +555,7 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1 && gui_erp_filtering.lp_tog.Value ==1
             if valueh >0 && valueh >0 && valueh >=valuel
                 beep;
-                msgboxText =  ['Filtring - The lowest bandpass cuttoff is the highest bandpass cuttoff'];
+                msgboxText =  ['Filtering - The lowest bandpass cuttoff is the highest bandpass cuttoff'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -566,7 +563,7 @@ varargout{1} = ERP_filtering_box;
             end
             if valueh==0 && valuel==0
                 beep;
-                msgboxText =  ['Filtring - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
+                msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -625,7 +622,7 @@ varargout{1} = ERP_filtering_box;
             
             if length(hicutoff)~=1 || isempty(hicutoff)
                 beep;
-                msgboxText =  ['Filtring - Invalid input for low-pass filter cutoff'];
+                msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -633,7 +630,7 @@ varargout{1} = ERP_filtering_box;
             end
             if hicutoff>=fs/2
                 beep;
-                msgboxText =  ['Filtring - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
+                msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -643,7 +640,7 @@ varargout{1} = ERP_filtering_box;
             if gui_erp_filtering.hp_tog.Value ==0
                 if hicutoff<0.001
                     beep;
-                    msgboxText =  ['Filtring - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
+                    msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -656,7 +653,7 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1
             if length(locutoff)~=1
                 beep;
-                msgboxText =  ['Filtring - Invalid input for high-pass filter cutoff'];
+                msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -665,7 +662,7 @@ varargout{1} = ERP_filtering_box;
             
             if locutoff>=fs/2
                 beep;
-                msgboxText =  ['Filtring - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
+                msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -675,7 +672,7 @@ varargout{1} = ERP_filtering_box;
             if gui_erp_filtering.lp_tog.Value ==0
                 if locutoff<0.001
                     beep;
-                    msgboxText =  ['Filtring - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
+                    msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -688,7 +685,7 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1 && gui_erp_filtering.lp_tog.Value ==1
             if locutoff==0 && hicutoff==0
                 beep;
-                msgboxText =  ['Filtring - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
+                msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -728,7 +725,7 @@ varargout{1} = ERP_filtering_box;
             return;
         else
             beep;
-            msgboxText =  ['Filtring - Invalid type of filter'];
+            msgboxText =  ['Filtering - Invalid type of filter'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -782,7 +779,7 @@ varargout{1} = ERP_filtering_box;
             for Numoferp = 1:numel(Selected_erpset)
                 if Selected_erpset(Numoferp)> length(observe_ERPDAT.ALLERP)
                     beep;
-                    msgboxText =  ['Filtring - No corresponding ERP exists in ALLEERP'];
+                    msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -1132,7 +1129,7 @@ varargout{1} = ERP_filtering_box;
             return;
         else
             beep;
-            msgboxText =  ['Filtring - Invalid type of filter'];
+            msgboxText =  ['Filtering - Invalid type of filter'];
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -1143,7 +1140,7 @@ varargout{1} = ERP_filtering_box;
         if strcmpi(fdesign, 'notch') && locutoff==hicutoff
             if 3*filterorder>=length(observe_ERPDAT.ERP.times)
                 beep;
-                msgboxText =  ['Filtring -The length of the data must be more than three times the filter order'];
+                msgboxText =  ['Filtering -The length of the data must be more than three times the filter order'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
@@ -1181,7 +1178,7 @@ varargout{1} = ERP_filtering_box;
                 
                 if Selected_erpset(Numoferp)> length(observe_ERPDAT.ALLERP)
                     beep;
-                    msgboxText =  ['Filtring - No corresponding ERP exists in ALLEERP'];
+                    msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -1392,21 +1389,12 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.hp_tog.Enable = 'on';
             gui_erp_filtering.lp_tog.Enable = 'on';
             
-            try
-                S_ws = evalin('base','S');
-                Selected_erpset = S_ws.geterpset.selectederp;
-            catch
-                Selected_erpset = observe_ERPDAT.CURRENTERP;
-            end
+            
+            Selected_erpset = observe_ERPDAT.CURRENTERP;
             
             Check_Selected_erpset = [0 0 0 0 0 0 0];
             if numel(Selected_erpset)>1
-                try
-                    S_ws = evalin('base','S');
-                    Check_Selected_erpset = S_binchan.checked_ERPset_Index;
-                catch
-                    Check_Selected_erpset = f_checkerpsets(observe_ERPDAT.ALLERP,Selected_erpset);
-                end
+                Check_Selected_erpset = f_checkerpsets(observe_ERPDAT.ALLERP,Selected_erpset);
             end
             if Check_Selected_erpset(1) ==1 || Check_Selected_erpset(2) == 2
                 gui_erp_filtering.Selected_bin_chan.Value =0;

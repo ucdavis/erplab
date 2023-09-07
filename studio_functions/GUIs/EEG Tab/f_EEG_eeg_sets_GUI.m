@@ -206,7 +206,6 @@ varargout{1} = box_eegset_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        
         estudioworkingmemory('EEGTab_eegset',0);
         MessageViewer= char(strcat('EEGsets > Epoched EEG'));
         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
@@ -240,7 +239,6 @@ varargout{1} = box_eegset_gui;
             EStduio_gui_EEG_set.eeg_contns.Enable='off';
             EStduio_gui_EEG_set.eeg_epoch.Enable='on';
             EStduio_gui_EEG_set.butttons_datasets.String = EEGlistName;
-            %             return;
         end
         
         %%contains the both continuous and epoched EEG
@@ -253,8 +251,6 @@ varargout{1} = box_eegset_gui;
                 CURRENTSET = ypos(end);
                 observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
                 observe_EEGDAT.CURRENTSET = CURRENTSET;
-                %%save to workspace
-                %         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
                 assignin('base','EEG',observe_EEGDAT.EEG);
                 assignin('base','CURRENTSET',CURRENTSET);
             end
@@ -327,7 +323,6 @@ varargout{1} = box_eegset_gui;
         catch
             
             observe_EEGDAT.eeg_message_panel =3;
-            %             observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
             return;
         end
         %         observe_EEGDAT.Two_GUI = observe_EEGDAT.Two_GUI+1;
@@ -532,13 +527,10 @@ varargout{1} = box_eegset_gui;
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
             EStduio_gui_EEG_set.eeg_contns.Enable='on';
             EStduio_gui_EEG_set.eeg_epoch.Enable='on';
-            
-            for ii = 1:length(ALLEEG)
-                if  EStduio_gui_EEG_set.eeg_contns.Value==1%%continuous EEG
-                    [~, ypos] =  find(EEGtypeFlag==1);
-                else
-                    [~, ypos] =  find(EEGtypeFlag==0);
-                end
+            if  EStduio_gui_EEG_set.eeg_contns.Value==1%%continuous EEG
+                [~, ypos] =  find(EEGtypeFlag==1);
+            else
+                [~, ypos] =  find(EEGtypeFlag==0);
             end
             CURRENTSET = ypos(end);
         end
@@ -724,10 +716,10 @@ varargout{1} = box_eegset_gui;
             pathName =  [cd,filesep];
         end
         
-        Selected_erpset= EStduio_gui_EEG_set.butttons_datasets.Value;
-        if isempty(Selected_erpset)
-            Selected_erpset =observe_EEGDAT.CURRENTSET;
-            if isempty(Selected_erpset)
+        Selected_eegset= EStduio_gui_EEG_set.butttons_datasets.Value;
+        if isempty(Selected_eegset)
+            Selected_eegset =observe_EEGDAT.CURRENTSET;
+            if isempty(Selected_eegset)
                 msgboxText =  'No EEGset was selected!!!';
                 title = 'EStudio: EEGsets';
                 errorfound(msgboxText, title);
@@ -742,13 +734,13 @@ varargout{1} = box_eegset_gui;
         end
         
         try
-            for Numoferpset = 1:length(Selected_erpset)
-                if Selected_erpset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
+            for Numoferpset = 1:length(Selected_eegset)
+                if Selected_eegset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
                     beep;
                     disp(['Index of selected ERP is lager than the length of ALLEEG!!!']);
                     return;
                 end
-                EEG = observe_EEGDAT.ALLEEG(Selected_erpset(Numoferpset));
+                EEG = observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset));
                 FileName = EEG.filename;
                 
                 if isempty(FileName)
@@ -757,7 +749,7 @@ varargout{1} = box_eegset_gui;
                 [pathx, filename, ext] = fileparts(FileName);
                 filename = [filename '.set'];
                 [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
-                observe_EEGDAT.ALLEEG(Selected_erpset(Numoferpset)) = eegh(LASTCOM, EEG);
+                observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
                 disp(['Saved to',32,pathName,filename]);
                 assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             end
@@ -782,11 +774,10 @@ varargout{1} = box_eegset_gui;
             pathName =  [cd,filesep];
         end
         
-        
-        Selected_erpset= EStduio_gui_EEG_set.butttons_datasets.Value;
-        if isempty(Selected_erpset)
-            Selected_erpset =observe_EEGDAT.CURRENTSET;
-            if isempty(Selected_erpset)
+        Selected_eegset= EStduio_gui_EEG_set.butttons_datasets.Value;
+        if isempty(Selected_eegset)
+            Selected_eegset =observe_EEGDAT.CURRENTSET;
+            if isempty(Selected_eegset)
                 msgboxText =  'No EEGset was selected!!!';
                 title = 'EStudio: EEGsets';
                 errorfound(msgboxText, title);
@@ -801,14 +792,14 @@ varargout{1} = box_eegset_gui;
             assignin('base','ALLCOM',ALLCOM);
         end
         
-        for Numoferpset = 1:length(Selected_erpset)
-            if Selected_erpset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
+        for Numoferpset = 1:length(Selected_eegset)
+            if Selected_eegset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
                 beep;
                 disp('Index of selected ERP is lager than the length of ALLEEG!!!');
                 return;
             end
             
-            EEG = observe_EEGDAT.ALLEEG(Selected_erpset(Numoferpset));
+            EEG = observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset));
             [pathstr, namedef, ext] = fileparts(char(EEG.filename));
             [erpfilename, erppathname, indxs] = uiputfile({'*.set'}, ...
                 ['Save "',EEG.setname,'" as'],...
@@ -823,7 +814,7 @@ varargout{1} = box_eegset_gui;
             [pathx, filename, ext] = fileparts(erpfilename);
             filename = [filename '.set'];
             [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',erppathname);
-            observe_EEGDAT.ALLEEG(Selected_erpset(Numoferpset)) = eegh(LASTCOM, EEG);
+            observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
             disp(['Saved to',32,erppathname,filename]);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
@@ -854,7 +845,7 @@ varargout{1} = box_eegset_gui;
     function selectdata(source,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
         observe_EEGDAT.eeg_message_panel =1;
-        Selected_ERPsetlabel = source.Value;
+        Selected_eegsetlabel = source.Value;
         [~,~,EEGtypeFlag] =  getDatasets();
         EEGArraydef =  estudioworkingmemory('EEGArray');
         if  EStduio_gui_EEG_set.eeg_contns.Value==1 %%continuous EEG
@@ -864,7 +855,7 @@ varargout{1} = box_eegset_gui;
         end
         
         [xpos, ypos] =  find(EEGtypeFlag==EEGtypeFlag1);
-        Diffnum = setdiff(Selected_ERPsetlabel,ypos);
+        Diffnum = setdiff(Selected_eegsetlabel,ypos);
         if ~isempty(Diffnum)
             if isempty(EEGArraydef)
                 EStduio_gui_EEG_set.butttons_datasets.Value =ypos(end);
@@ -883,13 +874,13 @@ varargout{1} = box_eegset_gui;
                 end
             end
         else%%included in the continuous EEG
-            estudioworkingmemory('EEGArray',Selected_ERPsetlabel);
-            CURRENTSET = Selected_ERPsetlabel(1);
+            estudioworkingmemory('EEGArray',Selected_eegsetlabel);
+            CURRENTSET = Selected_eegsetlabel(1);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
         observe_EEGDAT.CURRENTSET = CURRENTSET;
         %%save to workspace
-        %         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
         observe_EEGDAT.count_current_eeg =2;
@@ -924,102 +915,94 @@ varargout{1} = box_eegset_gui;
         if observe_EEGDAT.count_current_eeg ~=1
             return;
         end
-        Selected_ERP= estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_ERP)
-            Selected_ERP =observe_EEGDAT.CURRENTSET;
-            if isempty(Selected_ERP)
-                msgboxText =  'No ERPset was selected!!!';
-                title = 'EStudio: EEGsets';
-                errorfound(msgboxText, title);
-                return;
-            end
-            S_erpplot = f_ERPplot_Parameter(observe_EEGDAT.ALLEEG,Selected_ERP);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-        end
         
-        [chk, msgboxText] = f_ERP_chckerpindex(observe_EEGDAT.ALLEEG, Selected_ERP);
-        if chk==1
-            Selected_ERP =observe_EEGDAT.CURRENTSET;
-            if isempty(Selected_ERP)
-                msgboxText =  'No ERPset was imported!!!';
-                title = 'EStudio: f_ERP_binoperation_GUI error.';
-                errorfound(msgboxText, title);
-                return;
+        if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
+            ALLEEG = observe_EEGDAT.ALLEEG;
+            EEGArray=   estudioworkingmemory('EEGArray');
+            CURRENTSET = observe_EEGDAT.CURRENTSET;
+            ALLEEGArray = [1:length(ALLEEG)];
+            [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();%%all EEGset
+            %%Only continuous EEG
+            if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
+                EStduio_gui_EEG_set.eeg_contns.Enable='on';
+                EStduio_gui_EEG_set.eeg_epoch.Enable='off';
+                EStduio_gui_EEG_set.eeg_contns.Value=1;
+                EStduio_gui_EEG_set.eeg_epoch.Value = 0;
             end
-            S_erpplot = f_ERPplot_Parameter(observe_EEGDAT.ALLEEG,Selected_ERP);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-            estudioworkingmemory('selectederpstudio',Selected_ERP);
-            observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
-            return;
-        end
-        ERPfilter_label =  erpworkingmemory('ERPfilter');
-        def_baseline =  erpworkingmemory('f_ERP_BLS_Detrend');
-        ERP_bin_opertion =  erpworkingmemory('f_ERP_bin_opt');
-        ERP_simulation = erpworkingmemory('ERP_simulation');
-        if isempty(ERPfilter_label)
-            ERPfilter_label =1;
-        end
-        if isempty(def_baseline)
-            def_baseline{3} =1;
-        end
-        if isempty(ERP_bin_opertion)
-            ERP_bin_opertion =1;
-        end
-        if isempty(ERP_simulation)
-            ERP_simulation =1;
-        end
-        if ERPfilter_label ==1 || def_baseline{3}==1 || ERP_bin_opertion==1 || ERP_simulation==1
-            erpworkingmemory('ERPfilter',0);
-            def_baseline{3} = 0;
-            erpworkingmemory('f_ERP_BLS_Detrend',def_baseline);
-            erpworkingmemory('f_ERP_bin_opt',0);
-            erpworkingmemory('ERP_simulation',0);
-            datasets = {};
-            getDatasets()
-            datasets = sortdata(datasets);
-            dsnames = {};
-            if size(datasets,1)==1
-                if strcmp(datasets{1},'No ERPset loaded')
-                    dsnames = {''};
-                    Edit_label = 'off';
+            %%Only epoched EEG
+            if EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1
+                EStduio_gui_EEG_set.eeg_contns.Enable='off';
+                EStduio_gui_EEG_set.eeg_epoch.Enable='on';
+                EStduio_gui_EEG_set.eeg_contns.Value=0;
+                EStduio_gui_EEG_set.eeg_epoch.Value = 1;
+            end
+            EStduio_gui_EEG_set.butttons_datasets.String = EEGlistName;
+            if (EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0) || (EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1)
+                if isempty(setdiff(EEGArray,ALLEEGArray)) %%
+                    if isempty(setdiff(CURRENTSET,EEGArray)) %%
+                        CURRENTSET = EEGArray(1);
+                    end
                 else
-                    dsnames{1} =    strcat(num2str(cell2mat(datasets(1,2))),'.',32,datasets{1,1});
-                    Edit_label = 'on';
+                    CURRENTSET = length(ALLEEG);
+                    EEGArray = CURRENTSET;
+                    estudioworkingmemory('EEGArray',CURRENTSET);
                 end
-            else
-                for Numofsub = 1:size(datasets,1)
-                    dsnames{Numofsub} =    strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1});
+            end
+            
+            %%contains the both continuous and epoched EEG
+            if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
+                EStduio_gui_EEG_set.eeg_contns.Enable='on';
+                EStduio_gui_EEG_set.eeg_epoch.Enable='on';
+                if  EStduio_gui_EEG_set.eeg_contns.Value==1%%continuous EEG
+                    [~, ypos] =  find(EEGtypeFlag==1);
+                else
+                    [~, ypos] =  find(EEGtypeFlag==0);
                 end
-                Edit_label = 'on';
+                if isempty(setdiff(EEGArray,ypos)) %%
+                    if isempty(setdiff(CURRENTSET,EEGArray)) %%
+                        CURRENTSET = EEGArray(1);
+                    end
+                else
+                    CURRENTSET = ypos(end);
+                    EEGArray = CURRENTSET;
+                    estudioworkingmemory('EEGArray',CURRENTSET);
+                end
             end
-            EStduio_gui_EEG_set.butttons_datasets.String = dsnames;
-            EStduio_gui_EEG_set.butttons_datasets.Value = Selected_ERP;
-            if strcmp(datasets{1},'No ERPset loaded')
-                Edit_label = 'off';
-            else
-                Edit_label = 'on';
-            end
-            EStduio_gui_EEG_set.dupeselected.Enable=Edit_label;
-            EStduio_gui_EEG_set.renameselected.Enable=Edit_label;
-            EStduio_gui_EEG_set.suffix.Enable= Edit_label;
-            EStduio_gui_EEG_set.clearselected.Enable=Edit_label;
-            EStduio_gui_EEG_set.savebutton.Enable= Edit_label;
-            EStduio_gui_EEG_set.saveasbutton.Enable=Edit_label;
-            EStduio_gui_EEG_set.dotstoggle.Enable=Edit_label;
-            EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
-            %             EStduio_gui_EEG_set.export.Enable = Edit_label;
-            estudioworkingmemory('selectederpstudio',Selected_ERP);
-            S_erpplot = f_ERPplot_Parameter(observe_EEGDAT.ALLEEG,Selected_ERP);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-            EStduio_gui_EEG_set.butttons_datasets.Min=1;
-            EStduio_gui_EEG_set.butttons_datasets.Max=size(datasets,1)+1;
+            EStduio_gui_EEG_set.butttons_datasets.Min = 1;
+            EStduio_gui_EEG_set.butttons_datasets.Max = length(observe_EEGDAT.ALLEEG)+1;
+            EStduio_gui_EEG_set.butttons_datasets.Value = EEGArray;
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
+            observe_EEGDAT.CURRENTSET = CURRENTSET;
+            Edit_label = 'on';
+        else
+            observe_EEGDAT.ALLEEG = [];
+            observe_EEGDAT.EEG = [];
+            observe_EEGDAT.CURRENTSET  = 0;
+            Edit_label = 'off';
+            CURRENTSET=1;
+            EStduio_gui_EEG_set.eeg_contns.Enable='off';
+            EStduio_gui_EEG_set.eeg_epoch.Enable='off';
+            EStduio_gui_EEG_set.butttons_datasets.Enable = 'off';
+            [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
+            EStduio_gui_EEG_set.butttons_datasets.String = EEGlistName;
         end
-        EStduio_gui_EEG_set.butttons_datasets.Value = Selected_ERP;
-        observe_EEGDAT.Count_ERP = observe_EEGDAT.Count_ERP+1;
-        observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
+        %%save to workspace
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',CURRENTSET);
+
+        EStduio_gui_EEG_set.dupeselected.Enable=Edit_label;
+        EStduio_gui_EEG_set.renameselected.Enable=Edit_label;
+        EStduio_gui_EEG_set.suffix.Enable= Edit_label;
+        EStduio_gui_EEG_set.clearselected.Enable=Edit_label;
+        EStduio_gui_EEG_set.savebutton.Enable= Edit_label;
+        EStduio_gui_EEG_set.saveasbutton.Enable=Edit_label;
+        EStduio_gui_EEG_set.dotstoggle.Enable=Edit_label;
+        EStduio_gui_EEG_set.butttons_datasets.Enable = Edit_label;
+        EStduio_gui_EEG_set.appendbutton.Enable= Edit_label;
+        observe_EEGDAT.count_current_eeg =2;
+        f_redrawEEG_Wave_Viewer();
+        observe_EEGDAT.eeg_message_panel=2;
     end
 
 %----------------------Get the information of the updated EEGsets----------
