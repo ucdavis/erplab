@@ -437,11 +437,10 @@ varargout{1} = box_eegset_gui;
         end
         EStduio_gui_EEG_set.butttons_datasets.String = EEGlistName;
         CURRENTSET = length(ALLEEG);
-        %%contains the both continuous and epoched EEG
+        %%contains both continuous and epoched EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
             EStduio_gui_EEG_set.eeg_contns.Enable='on';
             EStduio_gui_EEG_set.eeg_epoch.Enable='on';
-            
             for ii = 1:length(ALLEEG)
                 if  EStduio_gui_EEG_set.eeg_contns.Value==1%%continuous EEG
                     [~, ypos] =  find(EEGtypeFlag==1);
@@ -674,7 +673,7 @@ varargout{1} = box_eegset_gui;
                 end
                 CURRENTSET = ypos(end);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(end);
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
             observe_EEGDAT.CURRENTSET  = CURRENTSET;
             Edit_label = 'on';
             EStduio_gui_EEG_set.butttons_datasets.Enable = 'on';

@@ -317,13 +317,6 @@ table_events(filter_events2delete, :) = [];
 numEventsDeleted = size(deleteOriginalorder_numArray, 1);
 
 
-
-
-
-
-
-
-
 %% Printing Detailed Feedback
 
 if(strcmpi(displayFeedback, 'detailed') || strcmpi(displayFeedback,'both'))
@@ -418,10 +411,6 @@ if(strcmpi(displayFeedback, 'summary') || strcmpi(displayFeedback, 'both'))
     fprintf('\t%9d event codes that were shifted were subsequently deleted because they crossed a boundary\n\n', ...
         numEventsDeleted);
 end
-
-
-
-
 
 
 %% Save the shifted events/latencies back into the EEGLAB EEG dataset

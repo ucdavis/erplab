@@ -161,8 +161,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
         
-        
-        
+       
         def  = erpworkingmemory('pop_eegchanoperator');
         if isempty(def)
             def = { [], 1};
@@ -696,7 +695,7 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(observe_EEGDAT.EEG)
             Enable_label = 'off';
         end
-        if observe_EEGDAT.count_current_eeg ~=4
+        if observe_EEGDAT.count_current_eeg ~=5
             return;
         end
         if ~isempty(observe_EEGDAT.EEG)
@@ -745,6 +744,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_chan_optn_eeg.ref_asst.Enable = Enable_label;
         gui_chan_optn_eeg.locaInfor.Enable = Enable_label;
         gui_chan_optn_eeg.cancel.Enable = Enable_label;
+        observe_EEGDAT.count_current_eeg =6;
     end
 
 

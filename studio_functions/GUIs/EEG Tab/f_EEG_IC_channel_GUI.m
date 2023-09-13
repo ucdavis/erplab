@@ -220,7 +220,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        
         ChangeFlag =  estudioworkingmemory('EEGTab_chanic');
         if ChangeFlag~=1
             return;
@@ -241,6 +240,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.ElecRange.Value = ChanArray+1;
         end
         estudioworkingmemory('EEG_ChanArray',ChanArray);
+        
         if ~isempty(observe_EEGDAT.EEG.icachansind)
             ICArray=  estudioworkingmemory('EEG_ICArray');
             ICNum = length(EStduio_gui_EEG_IC_chan.ICRange.String);
@@ -346,11 +346,11 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         if max(binArray)> length(binString)-1
             EStduio_gui_EEG_IC_chan.ICRange.Value =1;
-%             observe_EEGDAT.ERP_bin = [1:length(binString)-1];
+            %             observe_EEGDAT.ERP_bin = [1:length(binString)-1];
         else
             if max(binArray)>length(binString)-1
                 EStduio_gui_EEG_IC_chan.ICRange.Value =1;
-%                 observe_EEGDAT.ERP_bin = [1:length(binString)-1];
+                %                 observe_EEGDAT.ERP_bin = [1:length(binString)-1];
             else
                 if numel(binArray) == length(binString)-1
                     EStduio_gui_EEG_IC_chan.ICRange.Value =1;
@@ -364,7 +364,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=2 
+        if observe_EEGDAT.count_current_eeg ~=2
             return;
         end
         
@@ -425,7 +425,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_gui_EEG_IC_chan.ICRange.String = ICNamestrs;
             EStduio_gui_EEG_IC_chan.ICRange.Value = 1;
             EStduio_gui_EEG_IC_chan.ICRange.Enable = 'off';
-            %             observe_EEGDAT.EEG_IC = [];
             ICValue = [];
         end
         estudioworkingmemory('EEG_ICArray',ICValue);

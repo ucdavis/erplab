@@ -251,7 +251,7 @@ varargout{1} = EEG_filtering_box;
         
         gui_eeg_filtering.REMOVE_DC = uiextras.HBox('Parent', gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
         gui_eeg_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_eeg_filtering.REMOVE_DC,...
-            'String','Remove DC Offset','Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);%,'callback',@remove_dc
+            'String','Remove DC Offset (Strongly recommended)','Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);%,'callback',@remove_dc
         gui_eeg_filtering.DC_remove.KeyPressFcn =@eeg_filter_presskey;
         
         gui_eeg_filtering.filt_buttons = uiextras.HBox('Parent', gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
@@ -293,7 +293,6 @@ varargout{1} = EEG_filtering_box;
         def{1} = locutoff;
         def{2} = hicutoff;
         erpworkingmemory('pop_basicfilter',def);
-        
     end
 
 
@@ -314,7 +313,6 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
         gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
-        
         
         gui_eeg_filtering.all_chan.Value = 1;
         gui_eeg_filtering.Selected_chan.Value = 0;
@@ -605,7 +603,7 @@ varargout{1} = EEG_filtering_box;
         Source_value = Source.Value;
         filterorder = 2*Source_value;
         typef = 0;
-        fs = observe_EEGDAT.EEG.srate
+        fs = observe_EEGDAT.EEG.srate;
         valuel  = str2num(gui_eeg_filtering.lp_halfamp.String);%% for low-pass filter
         valueh  = str2num(gui_eeg_filtering.hp_halfamp.String);%%for high-pass filter
         if gui_eeg_filtering.lp_tog.Value ==1
@@ -1157,7 +1155,7 @@ varargout{1} = EEG_filtering_box;
         end
         
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
-        erpworkingmemory('f_EEG_proces_messg','Filtering<Advanced');
+        erpworkingmemory('f_EEG_proces_messg','Filtering>Advanced');
         observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
         try
             Suffix_label = 1;
@@ -1355,7 +1353,15 @@ varargout{1} = EEG_filtering_box;
             gui_eeg_filtering.hp_tog.Enable = 'on';
             gui_eeg_filtering.lp_tog.Enable = 'on';
             gui_eeg_filtering.cancel.Enable = 'on';
+            if ndims(observe_EEGDAT.EEG.data)==3
+                gui_eeg_filtering.DC_remove.Enable = 'off';
+                gui_eeg_filtering.DC_remove.Value = 0;
+            else
+                gui_eeg_filtering.DC_remove.Enable = 'on';
+            end
         end
+        
+        observe_EEGDAT.count_current_eeg=5;
     end
 
 
@@ -1462,6 +1468,42 @@ varargout{1} = EEG_filtering_box;
         gui_eeg_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eeg_filtering.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_filter',0);
+        
+        if ndims(observe_EEGDAT.EEG.data)==3
+            gui_eeg_filtering.DC_remove.Enable = 'off';
+            gui_eeg_filtering.DC_remove.Value = 0;
+        else
+            gui_eeg_filtering.DC_remove.Enable = 'on';
+        end
+        
+        defx = {0 30 2 1:nchan 1 'butter' 0 []};
+        def  = erpworkingmemory('pop_basicfilter');
+        if isempty(def)
+            def = defx;
+        end
+        if gui_eeg_filtering.all_chan.Value ==1
+            def{5} =   1;
+        else
+            def{5} =   0;
+        end
+        remove_dc =  gui_eeg_filtering.DC_remove.Value;
+        def{7} = remove_dc;
+        
+        filterorder = 2*gui_eeg_filtering.roll_off.Value;
+        def{3} = filterorder;
+        locutoff = str2num(gui_eeg_filtering.hp_halfamp.String);%%
+        hicutoff = str2num(gui_eeg_filtering.lp_halfamp.String);
+        
+        if isempty(locutoff)
+            locutoff =0;
+        end
+        if isempty(hicutoff)
+            hicutoff =0;
+        end
+        def{1} = locutoff;
+        def{2} = hicutoff;
+        erpworkingmemory('pop_basicfilter',def);
+        
     end
 
 

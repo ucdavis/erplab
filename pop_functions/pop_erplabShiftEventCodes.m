@@ -207,16 +207,6 @@ EEG = eeg_checkset( EEG ); % ensure EEG structure is well-formed
 
 
 
-
-
-
-
-
-
-
-
-
-
 %% Generate equivalent command (for history)
 %
 skipfields  = {'EEG', 'History'};
