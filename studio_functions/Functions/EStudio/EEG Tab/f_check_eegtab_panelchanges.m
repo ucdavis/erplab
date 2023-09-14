@@ -23,13 +23,26 @@ if ~isempty(MyViewer_plotset) && MyViewer_plotset==1
     eegpanelIndex =2;
 end
 
-
-MyViewer_plotset = estudioworkingmemory('EEGTab_filter');
-if ~isempty(MyViewer_plotset) && MyViewer_plotset==1
+%%filtering
+MyViewer_filter = estudioworkingmemory('EEGTab_filter');
+if ~isempty(MyViewer_filter) && MyViewer_filter==1
     messgStr  = char( 'Changes on "Filtering" have not been applied');
     eegpanelIndex =3;
 end
 
+%%Channel operations
+MyViewer_chanop = estudioworkingmemory('EEGTab_chanop');
+if ~isempty(MyViewer_chanop) && MyViewer_chanop==1
+    messgStr  = char( 'Changes on "EEG Channel Operations" have not been applied');
+    eegpanelIndex =4;
+end
+
+%%Assign events to bins
+MyViewer_event2bin = estudioworkingmemory('EEGTab_event2bin');
+if ~isempty(MyViewer_event2bin) && MyViewer_event2bin==1
+    messgStr  = char( 'Changes on "Assign Events to Bins" have not been applied');
+    eegpanelIndex =5;
+end
 
 
 return;

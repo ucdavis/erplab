@@ -933,7 +933,7 @@ varargout{1} = EEG_filtering_box;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             end
             
             try
@@ -1233,7 +1233,7 @@ varargout{1} = EEG_filtering_box;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             end
             try
                 Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];

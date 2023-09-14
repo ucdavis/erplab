@@ -647,7 +647,7 @@ varargout{1} = EEG_chan_operation_gui;
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                     observe_EEGDAT.EEG= observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
                 elseif gui_chan_optn_eeg.mode_create.Value %% If select "Create New EEGset (independent transformations)"
-                    observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                    [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                     if Save_file_label==1
                         [pathstr, file_name, ext] = fileparts(EEG.filename);
                         EEG.filename = [file_name,'.set'];

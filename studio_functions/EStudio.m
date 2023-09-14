@@ -309,8 +309,8 @@ f_redrawERP();%%Draw ERP waves
         
         
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-%         set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 50 50 50 50 50 -1 100 100 170 70 5]);
-       
+        %         set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 50 50 50 50 50 -1 100 100 170 70 5]);
+        
         EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
         EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorB_def);
         
@@ -325,6 +325,20 @@ f_redrawERP();%%Draw ERP waves
         
     end % createInterface
 
+
+%%---------------------------------allEEG-------------------------------------
+    function alleeg_change(~,~)
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+    end
+
+%%---------------------------------EEG-------------------------------------
+    function eeg_change(~,~)
+        assignin('base','EEG',observe_EEGDAT.EEG);
+    end
+
+    function count_current_eeg_change(~,~)
+        return;
+    end
 
 
 %------------------------------------ERP-----------------------------------
@@ -434,48 +448,7 @@ f_redrawERP();%%Draw ERP waves
 
 %%------------------------Message panel------------------------------------
     function eeg_message_panel_change(~,~)
-        % global observe_EEGDAT;
-        % global EStudio_gui_erp_totl;
-        FonsizeDefault = f_get_default_fontsize();
-        
-        try
-            [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
-        catch
-            ColorB_def = [0.7020 0.77 0.85];
-        end
-        if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
-            ColorB_def = [0.7020 0.77 0.85];
-        end
-        EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
-        EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
-        Processed_Method=erpworkingmemory('f_EEG_proces_messg');
-        if observe_EEGDAT.eeg_message_panel==1
-            EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
-            EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
-        elseif observe_EEGDAT.eeg_message_panel==2
-            EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('2- ',Processed_Method,': Complete');
-            EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0.5 0];
-            
-        elseif observe_EEGDAT.eeg_message_panel==3
-            if ~strcmp(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
-                fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
-            end
-            EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
-            EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0 0];
-        else
-            if ~strcmpi(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('Warning:',32,Processed_Method,32,'(see Command Window).'))
-                fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
-            end
-            EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
-            
-            pause(0.5);
-            EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
-        end
-        if observe_EEGDAT.eeg_message_panel==1 || observe_EEGDAT.eeg_message_panel==2 || observe_EEGDAT.eeg_message_panel==3
-            pause(0.01);
-            EStudio_gui_erp_totl.eegProcess_messg.String = '';
-            EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
-        end
+      return;
     end
 
 

@@ -158,7 +158,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-         %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -284,7 +284,7 @@ varargout{1} = EStudio_eeg_events_box;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             end
             
             try
@@ -329,7 +329,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-         %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -449,7 +449,9 @@ varargout{1} = EStudio_eeg_events_box;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                %                 [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                
             end
             
             try
@@ -494,7 +496,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-         %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -502,6 +504,13 @@ varargout{1} = EStudio_eeg_events_box;
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs');
         observe_EEGDAT.eeg_message_panel =1;
+        
+        
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
+            erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs: No EVETLIST, please create one first');
+            observe_EEGDAT.eeg_message_panel =4;
+            return;
+        end
         
         def  = erpworkingmemory('pop_rt2text');
         
@@ -585,7 +594,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-          %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -597,7 +606,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-       
+        
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Import eventlist');
         observe_EEGDAT.eeg_message_panel =1;
@@ -657,7 +666,7 @@ varargout{1} = EStudio_eeg_events_box;
                         EEG = eegh(LASTCOM, EEG);
                     end
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             end
             
             try
@@ -697,7 +706,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-          %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -781,7 +790,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-          %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -939,7 +948,7 @@ varargout{1} = EStudio_eeg_events_box;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             end
             
             try
@@ -979,7 +988,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-          %%first checking if the changes on the other panels have been applied
+        %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -1108,7 +1117,7 @@ varargout{1} = EStudio_eeg_events_box;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = EEG;
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             end
             
             try
@@ -1138,17 +1147,26 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
             return;
         end
-        
-        
     end
-
-
 
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
+            EStduio_gui_EEG_events.summarize_code.Enable=EnableFlag;
+            %%Shift EEG event codes
+            EStduio_gui_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
+            %%Create and RTs
+            EStduio_gui_EEG_events.create_eventlist.Enable=EnableFlag;
+            %%export reaction times
+            EStduio_gui_EEG_events.exp_rt.Enable=EnableFlag;
+            %%Import and export eventlist
+            EStduio_gui_EEG_events.imp_eventlist.Enable=EnableFlag;
+            %%export evetnlist to text file
+            EStduio_gui_EEG_events.exp_eventlist.Enable='off';
+            EStduio_gui_EEG_events.eeg_shuffle.Enable=EnableFlag;
+            EStduio_gui_EEG_events.transfer_event.Enable=EnableFlag;
         end
         if observe_EEGDAT.count_current_eeg ~=6
             return;
@@ -1179,10 +1197,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         EStduio_gui_EEG_events.eeg_shuffle.Enable=EnableFlag;
         EStduio_gui_EEG_events.transfer_event.Enable=EnableFlag;
-        %         observe_EEGDAT.count_current_eeg=7;
-        
+        observe_EEGDAT.count_current_eeg=7;
     end
-
-
 
 end

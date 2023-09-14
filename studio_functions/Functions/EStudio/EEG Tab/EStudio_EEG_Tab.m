@@ -1,11 +1,11 @@
-%%This function is to create ERP Tab
+%%This function is to create EEG Tab
 
 
 % Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis
 % Davis, CA
-% 2023
+% Aug. 2023
 
 
 
@@ -48,7 +48,8 @@ EStudio_gui_erp_totl.eegpanel{5} = f_EEG_chanoperation_GUI(EStudio_gui_erp_totl.
 EStudio_gui_erp_totl.eegpanelSizes(5) = 350;
 EStudio_gui_erp_totl.eegpanel{6} = f_EEG_events_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(6) = 190;
-
+EStudio_gui_erp_totl.eegpanel{7} = f_EEG_event2bin_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(7) = 100;
 
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
@@ -61,8 +62,10 @@ set( EStudio_gui_erp_totl.eegpanel{3}, 'MinimizeFcn', {@nMinimize, 3} );
 set( EStudio_gui_erp_totl.eegpanel{4}, 'MinimizeFcn', {@nMinimize, 4} );
 set( EStudio_gui_erp_totl.eegpanel{5}, 'MinimizeFcn', {@nMinimize, 5} );
 set( EStudio_gui_erp_totl.eegpanel{6}, 'MinimizeFcn', {@nMinimize, 6} );
+set( EStudio_gui_erp_totl.eegpanel{7}, 'MinimizeFcn', {@nMinimize, 7} );
+
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [4:6];
+whichpanel = [4:7];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes' );

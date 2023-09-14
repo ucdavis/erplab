@@ -14,7 +14,7 @@ function f_redrawEEG_Wave_Viewer()
 
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
-% addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
 FonsizeDefault = f_get_default_fontsize();
 
 if nargin>1
@@ -873,6 +873,7 @@ end
 
 
 
+
 %%Reset each panel that using the default parameters
 function Panel_Reset(~,~)
 global observe_EEGDAT;
@@ -917,50 +918,50 @@ end
 
 
 % %%------------------------Message panel------------------------------------
-% function eeg_message_panel_change(~,~)
-% global observe_EEGDAT;
-% global EStudio_gui_erp_totl;
-% FonsizeDefault = f_get_default_fontsize();
-%
-% try
-%     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
-% catch
-%     ColorB_def = [0.7020 0.77 0.85];
-% end
-% if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
-%     ColorB_def = [0.7020 0.77 0.85];
-% end
-% EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
-% EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
-% Processed_Method=erpworkingmemory('f_EEG_proces_messg');
-% if observe_EEGDAT.eeg_message_panel==1
-%     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
-%     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
-% elseif observe_EEGDAT.eeg_message_panel==2
-%     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('2- ',Processed_Method,': Complete');
-%     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0.5 0];
-%
-% elseif observe_EEGDAT.eeg_message_panel==3
-%     if ~strcmp(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
-%         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
-%     end
-%     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
-%     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0 0];
-% else
-%     if ~strcmpi(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('Warning:',32,Processed_Method,32,'(see Command Window).'))
-%         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
-%     end
-%     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
-%
-%     pause(0.5);
-%     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
-% end
-% if observe_EEGDAT.eeg_message_panel==1 || observe_EEGDAT.eeg_message_panel==2 || observe_EEGDAT.eeg_message_panel==3
-%     pause(0.01);
-%     EStudio_gui_erp_totl.eegProcess_messg.String = '';
-%     EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
-% end
-% end
+function eeg_message_panel_change(~,~)
+global observe_EEGDAT;
+global EStudio_gui_erp_totl;
+FonsizeDefault = f_get_default_fontsize();
+
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
+EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
+Processed_Method=erpworkingmemory('f_EEG_proces_messg');
+if observe_EEGDAT.eeg_message_panel==1
+    EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
+    EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
+elseif observe_EEGDAT.eeg_message_panel==2
+    EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('2- ',Processed_Method,': Complete');
+    EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0.5 0];
+    
+elseif observe_EEGDAT.eeg_message_panel==3
+    if ~strcmp(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
+    EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('3- ',Processed_Method,': Error (see Command Window)');
+    EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0 0];
+else
+    if ~strcmpi(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('Warning:',32,Processed_Method,32,'(see Command Window).'))
+        fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
+    end
+    EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
+    
+    pause(0.5);
+    EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
+end
+if observe_EEGDAT.eeg_message_panel==1 || observe_EEGDAT.eeg_message_panel==2 || observe_EEGDAT.eeg_message_panel==3
+    pause(0.01);
+    EStudio_gui_erp_totl.eegProcess_messg.String = '';
+    EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
+end
+end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
