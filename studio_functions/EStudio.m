@@ -182,7 +182,7 @@ addlistener(observe_ERPDAT,'Messg_change',@Process_messg_change_main);
 
 
 estudioworkingmemory('EStudioColumnNum',1);
-
+erpworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
 
 EStudio_gui_erp_totl = struct();
 

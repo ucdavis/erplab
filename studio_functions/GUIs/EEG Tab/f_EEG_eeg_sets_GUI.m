@@ -914,7 +914,14 @@ varargout{1} = box_eegset_gui;
         if observe_EEGDAT.count_current_eeg ~=1
             return;
         end
-        
+        Change2epocheeg= erpworkingmemory('Change2epocheeg');
+        if isempty(Change2epocheeg) || Change2epocheeg==0
+           
+        else
+           EStduio_gui_EEG_set.eeg_epoch.Value =1;  
+           EStduio_gui_EEG_set.eeg_contns.Value=0;
+        end
+          erpworkingmemory('Change2epocheeg',0);  
         if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
             ALLEEG = observe_EEGDAT.ALLEEG;
             EEGArray=   estudioworkingmemory('EEGArray');

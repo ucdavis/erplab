@@ -45,4 +45,12 @@ if ~isempty(MyViewer_event2bin) && MyViewer_event2bin==1
 end
 
 
+%%Bin-based epoch
+MyViewer_binepoch = estudioworkingmemory('EEGTab_binepoch');
+if ~isempty(MyViewer_binepoch) && MyViewer_binepoch==1
+    messgStr  = char( 'Changes on "Extract Bin-based Epochs" have not been applied');
+    eegpanelIndex =6;
+end
+
+
 return;
