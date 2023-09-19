@@ -880,19 +880,15 @@ varargout{1} = EStudio_eeg_events_box;
                 if ~isfield(EEG, 'event')
                     msgboxText =  ['pop_eventshuffler did not find EEG.event field at dataset',32,num2str(EEGArray(Numofeeg))];
                 end
-                
                 if ~isfield(EEG.event, 'type')
                     msgboxText =  ['pop_eventshuffler did not find EEG.event.type field at dataset',32,num2str(EEGArray(Numofeeg))];
                 end
-                
                 if ~isfield(EEG.event, 'latency')
                     msgboxText =  ['pop_eventshuffler did not find EEG.event.latency field at dataset',32,num2str(EEGArray(Numofeeg))];
-                    
                 end
                 if ischar(EEG.event(1).type) && ~isfield(EEG, 'EVENTLIST')
                     msgboxText =  ['pop_eventshuffler found alphanumeric codes at dataset',32,num2str(EEGArray(Numofeeg)),...
                         'We recommend to use Create EEG Eventlist to convert them into numeric ones.'];
-                    
                 elseif ischar(EEG.event(1).type) && isfield(EEG, 'EVENTLIST')
                     msgboxText =  ['pop_eventshuffler found alphanumeric codes at dataset',32,num2str(EEGArray(Numofeeg)),...
                         'We recommend to use Create EEG Eventlist Advance first.'];
@@ -903,9 +899,10 @@ varargout{1} = EStudio_eeg_events_box;
                     EEG = eegh(LASTCOM, EEG);
                 else
                     msgboxText =  ['EEG Events >  Shuffle events/bins/samples:', msgboxText];
-                    fprintf(2,['EEG Events >  Shuffle events/bins/samples:\n', msgboxText]);
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
                     observe_EEGDAT.eeg_message_panel =4;
+                    fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                    break;
                 end
                 
                 if numel(EEGArray) ==1
@@ -1046,7 +1043,6 @@ varargout{1} = EStudio_eeg_events_box;
                 serror = erplab_eegscanner(EEG, 'pop_overwritevent', 0, 0, 0, 2, 1);
                 msgboxText ='';
                 if serror
-                    %                     msgboxText  = 'no codes';
                     return;
                 end
                 %%check current eeg data
@@ -1067,14 +1063,18 @@ varargout{1} = EStudio_eeg_events_box;
                     end
                     
                     if isempty(msgboxText)
-                        %% Run pop_ command again with the inputs from the GUI
                         [EEG, LASTCOM] = pop_overwritevent(EEG, mainfield, 'RemoveRemCodes', rrcstr,'History', 'gui');
+                        if  isempty(LASTCOM)
+                            fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                            break;
+                        end
                         EEG = eegh(LASTCOM, EEG);
                     else
                         msgboxText =  ['EEG Events >  Transfer event to EEG.event:', msgboxText];
-                        fprintf(2,['EEG Events >  Transfer event to EEG.event:\n', msgboxText]);
                         erpworkingmemory('f_EEG_proces_messg',msgboxText);
                         observe_EEGDAT.eeg_message_panel =4;
+                        fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                        break;
                     end
                 end
                 if numel(EEGArray) ==1

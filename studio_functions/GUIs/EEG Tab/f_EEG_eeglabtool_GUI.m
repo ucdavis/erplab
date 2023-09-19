@@ -1,0 +1,819 @@
+%%This function is to assin eventlist to one specific bin
+
+
+% *** This function is part of ERPLAB Studio Toolbox ***
+% Author: Guanghui Zhang & Steven Luck
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% Sep. 2023
+
+
+function varargout = f_EEG_eeglabtool_GUI(varargin)
+
+global observe_EEGDAT;
+addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+
+%---------------------------Initialize parameters------------------------------------
+
+EStduio_gui_eeglab_tool = struct();
+
+%-----------------------------Name the title----------------------------------------------
+% global EStudio_box_eeglab_tool;
+[version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
+if nargin == 0
+    fig = figure(); % Parent figure
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB Tools', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+elseif nargin == 1
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools', 'Padding', 5,'BackgroundColor',ColorB_def);
+else
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+end
+
+%-----------------------------Draw the panel-------------------------------------
+try
+    FonsizeDefault = varargin{2};
+catch
+    FonsizeDefault = [];
+end
+if isempty(FonsizeDefault)
+    FonsizeDefault = f_get_default_fontsize();
+end
+
+drawui_event2bin_eeg(FonsizeDefault)
+varargout{1} = EStudio_box_eeglab_tool;
+
+    function drawui_event2bin_eeg(FonsizeDefault)
+        [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
+        %%--------------------channel and bin setting----------------------
+        EStduio_gui_eeglab_tool.DataSelBox = uiextras.VBox('Parent', EStudio_box_eeglab_tool,'BackgroundColor',ColorB_def);
+        
+        if isempty(observe_EEGDAT.EEG)
+            EnableFlag = 'off';
+        else
+            EnableFlag = 'on';
+        end
+        %%About this dataset and dataset information
+        EStduio_gui_eeglab_tool.datainfo_title = uiextras.HBox('Parent', EStduio_gui_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        
+        EStduio_gui_eeglab_tool.about_eegdata = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.datainfo_title,...
+            'String','About this dataset','callback',@about_eegdata,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        EStduio_gui_eeglab_tool.edit_eeginfor = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.datainfo_title,...
+            'String','Dataset information','callback',@edit_eeginfor,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        
+        
+        %%Edit eeg events and channel locations
+        EStduio_gui_eeglab_tool.event_chanlocs_title = uiextras.HBox('Parent', EStduio_gui_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        EStduio_gui_eeglab_tool.edit_eegevent = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.event_chanlocs_title,...
+            'String','Event values','callback',@edit_eegevent,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        EStduio_gui_eeglab_tool.edit_eegchanlocs = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.event_chanlocs_title,...
+            'String','Chan locations','callback',@edit_eegchanlocs,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        
+        EStduio_gui_eeglab_tool.edit_samplerate = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.event_chanlocs_title,...
+            'String','Sampling rate','callback',@edit_samplerate,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        
+        
+        %%Reject data using Clean Rawdata and ASR
+        EStduio_gui_eeglab_tool.eeg_ASR_title = uiextras.HBox('Parent', EStduio_gui_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        EStduio_gui_eeglab_tool.eeg_asr = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.eeg_ASR_title,...
+            'String','Reject data using clean rawdata and ASR','callback',@eeg_asr,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        
+        %%Plot channel function
+        EStduio_gui_eeglab_tool.plotchan_title1 = uiextras.HBox('Parent', EStduio_gui_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', EStduio_gui_eeglab_tool.plotchan_title1,...
+            'String','Plot channel function:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        
+        EStduio_gui_eeglab_tool.plotchan_title2 = uiextras.HBox('Parent', EStduio_gui_eeglab_tool.DataSelBox, 'BackgroundColor',ColorB_def);
+        EStduio_gui_eeglab_tool.eeg_spcetra_map = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.plotchan_title2,...
+            'String','Spectra & maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        EStduio_gui_eeglab_tool.eeg_chanprop = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.plotchan_title2,...
+            'String','Chan prop.','callback',@eeg_chanprop,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        
+        EStduio_gui_eeglab_tool.eeg_tfr = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_eeglab_tool.plotchan_title2,...
+            'String','Time-frequency','callback',@eeg_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+        set(EStduio_gui_eeglab_tool.DataSelBox,'Sizes',[30 30 30 20 30])
+    end
+
+
+
+%%**************************************************************************%%
+%%--------------------------Sub function------------------------------------%%
+%%**************************************************************************%%
+
+%%-----------------------About the current EEG-----------------------------
+    function about_eegdata(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+        for Numofeeg = 1:numel(EEGArray)%%loop for subjects
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            if ~isempty(EEG.comments)
+                titleName = ['EEGset',32,num2str(EEGArray(Numofeeg)),':',EEG.setname];
+                EEG.comments = pop_comments(EEG.comments,titleName);
+            else
+                erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > EEG.comments is empty for',32,EEG.setname);
+                observe_EEGDAT.eeg_message_panel =4; %%Marking for the procedure has been started.
+            end
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
+        observe_EEGDAT.eeg_message_panel =2; %%Marking for the procedure has been started.
+    end
+
+
+%%---------------------EEG datasets information----------------------------
+    function edit_eeginfor(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Dataset information');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+        try
+            Editsetsuffix = 'eeginfo';
+            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            Save_file_label =0;
+            if ~isempty(Answer{1})
+                ALLEEG_advance = Answer{1};
+                Save_file_label = Answer{2};
+            end
+            
+            
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_advance(EEGArray(Numofeeg));
+                fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+                
+                %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
+                [EEG, LASTCOM] = pop_editset(EEG);
+                fprintf(LASTCOM,'\n');
+                if isempty(LASTCOM)
+                    disp('User selected cancel');
+                    fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                    break;
+                end
+                EEG = eegh(LASTCOM, EEG);
+                if Save_file_label
+                    [pathstr, file_name, ext] = fileparts(EEG.filename);
+                    EEG.filename = [file_name,'.set'];
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                    EEG.filepath = '';
+                end
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+            end
+            
+            try
+                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+            catch
+                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            end
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            assignin('base','EEG',observe_EEGDAT.EEG);
+            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+            
+            observe_EEGDAT.count_current_eeg=1;
+            observe_EEGDAT.eeg_message_panel =2;
+        catch
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
+            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            assignin('base','EEG',observe_EEGDAT.EEG);
+            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+            
+            observe_EEGDAT.count_current_eeg=1;
+            observe_EEGDAT.eeg_message_panel =3;%%There is erros in processing procedure
+            return;
+        end
+        
+    end
+
+%%--------------------Event values-----------------------------------------
+    function edit_eegevent(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Event values');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+        Editsetsuffix = '_evetvalue';
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        Save_file_label =0;
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        %%loop for subjects
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Event values*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+            
+            %%Edit events contained in EEG dataset structure
+            [EEG, LASTCOM] =  pop_editeventvals(EEG);
+            if isempty(LASTCOM)
+                disp('User selected cancel');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                break;
+            end
+            fprintf(LASTCOM,'\n');
+            EEG = eegh(LASTCOM, EEG);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end%%end loop for subject
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_message_panel =2;
+    end
+
+
+%%--------------------Edit channel location--------------------------------
+    function edit_eegchanlocs(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan locations');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        %%CHECK THE DATA FIRST is two or more eegsets were selected
+        if numel(EEGArray)>1
+            fprintf( [repmat('-',1,100) '\n']);
+            fprintf(['Edit the channel locations for eegset(s):',32,num2str(EEGArray),'\n']);
+            ALLEEG_advance = observe_EEGDAT.ALLEEG(EEGArray);
+            sameAsFirst = arrayfun(@(x)isequaln(ALLEEG_advance(1).chanlocs, x.chanlocs), ALLEEG_advance(2:end));
+            if ~all(sameAsFirst)
+                beep;
+                fprintf( [ 'All datasets need to have the exact same channel structure.\n', 'If you want to look up channel location for all datasets,\n', 'do so for the first one and write a loop\n' ] );
+                fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_message_panel =3;
+                return;
+            end
+        end
+        
+        Editsetsuffix = 'chanlos';
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        Save_file_label =0;
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        ALLEEG_advance = ALLEEG_advance(EEGArray);
+        %%Edit the channel locations
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['Edit the channel locations for eegset(s):',32,num2str(EEGArray),'\n']);
+        ALLEEG_advance =pop_chanedit(ALLEEG_advance);
+        if Save_file_label
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_advance(Numofeeg);
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                ALLEEG_advance(Numofeeg) = EEG;
+            end
+        else
+            for Numofeeg = 1:numel(EEGArray)
+                ALLEEG_advance(Numofeeg).filename = '';
+                ALLEEG_advance(Numofeeg).saved = 'no';
+                ALLEEG_advance(Numofeeg).filepath = '';
+            end
+        end
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = ALLEEG_advance;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_message_panel =2;
+    end
+
+
+
+%%----------------------Change sampling rate-------------------------------
+    function edit_samplerate(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        % popup window parameters
+        % -----------------------
+        promptstr    = {['New sampling rate']};
+        inistr       = { num2str(observe_EEGDAT.EEG.srate) };
+        result       = inputdlg2( promptstr, 'EStudio: EEGLAB Tools > Sampling rate -- pop_resample()', 1,  inistr, 'pop_resample');
+        if length(result) == 0
+            return;
+        end
+        freq         = eval( result{1} );
+        if isempty(freq) || ischar(freq) || freq<=0
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate: New sampling rate should be  positive number');
+            observe_EEGDAT.eeg_message_panel =1;
+            return;
+        end
+        if isnumeric(freq)  && numel(freq)==2
+            freq = freq(1);
+        end
+        
+        Editsetsuffix = '_resampled';
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        Save_file_label =0;
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
+            [EEG, LASTCOM] = pop_resample( EEG, freq);
+            if isempty(LASTCOM)
+                disp('User selected cancel');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                break;
+            end
+            fprintf(LASTCOM,'\n');
+            EEG = eegh(LASTCOM, EEG);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end
+        
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_message_panel =2;
+        
+        
+    end
+
+%%----------------Reject data using clean rawdata and ASR------------------
+    function eeg_asr(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+        Editsetsuffix = '_asr';
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        Save_file_label =0;
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        ALLEEG_advance = ALLEEG_advance(EEGArray);
+        
+        %%Edit the channel locations
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['Reject data using clean rawdata and ASR for eegset(s):',32,num2str(EEGArray),'\n']);
+        [ALLEEG_advance,LASTCOM] =pop_clean_rawdata(ALLEEG_advance);
+        
+        if isempty(LASTCOM)
+            disp('User selected cancel');
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            return;
+        end
+        fprintf(LASTCOM,'\n');
+        if Save_file_label
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_advance(Numofeeg);
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                ALLEEG_advance(Numofeeg) = EEG;
+            end
+        else
+            for Numofeeg = 1:numel(EEGArray)
+                ALLEEG_advance(Numofeeg).filename = '';
+                ALLEEG_advance(Numofeeg).saved = 'no';
+                ALLEEG_advance(Numofeeg).filepath = '';
+            end
+        end
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        
+        observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = ALLEEG_advance;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_message_panel =2;
+    end
+
+
+%%----------------------Spectra and maps-----------------------------------
+    function eeg_spcetra_map(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Spectra and maps');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Channel spectra and maps*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+            chanlocs_present = 0;
+            if ~isempty(EEG.chanlocs)
+                if isfield(EEG.chanlocs, 'theta')
+                    tmpchanlocs = EEG.chanlocs;
+                    if any(~cellfun(@isempty, { tmpchanlocs.theta }))
+                        chanlocs_present = 1;
+                    end
+                end
+            end
+            dataflag = 1;
+            geometry = { [2 1] [2 1] [2 1] [2 1] [2 1] [2 1]};
+            scalp_freq = fastif(chanlocs_present, { '6 10 22' }, { '' 'enable' 'off' });
+            promptstr    = { { 'style' 'text' 'string' 'Epoch time range to analyze [min_ms max_ms]:' }, ...
+                { 'style' 'edit' 'string' [num2str( EEG.xmin*1000) ' ' num2str(EEG.xmax*1000)] }, ...
+                { 'style' 'text' 'string' 'Percent data to sample (1 to 100):'}, ...
+                { 'style' 'edit' 'string' '100' }, ...
+                { 'style' 'text' 'string' 'Frequencies to plot as scalp maps (Hz):'}, ...
+                { 'style' 'edit' 'string'  scalp_freq{:} }, ...
+                { 'style' 'text' 'string' 'Apply to EEG|ERP|BOTH:'}, ...
+                { 'style' 'edit' 'string' 'EEG' }, ...
+                { 'style' 'text' 'string' 'Plotting frequency range [lo_Hz hi_Hz]:'}, ...
+                { 'style' 'edit' 'string' '2 25' }, ...
+                { 'style' 'text' 'string' 'Spectral and scalp map options (see topoplot):' } ...
+                { 'style' 'edit' 'string' '''electrodes'',''off''' } };
+            if EEG.trials == 1
+                geometry(3) = [];
+                promptstr(7:8) = [];
+            end
+            result       = inputgui( geometry, promptstr, 'pophelp(''pop_spectopo'')', ['Channel spectra and maps for eegset:',num2str(EEGArray(Numofeeg))]);
+            if size(result,1) == 0 return; end
+            timerange    = eval( [ '[' result{1} ']' ] );
+            options = [];
+            if isempty(EEG.chanlocs)
+                disp('Topographic plot options ignored. First import a channel location file');
+                disp('To plot a single channel, use channel property menu or the following call');
+                disp('  >> figure; chan = 1; spectopo(EEG.data(chan,:,:), EEG.pnts, EEG.srate);');
+            end
+            
+            Electrodelabel = result{5};
+            Newfile = split(Electrodelabel,',');
+            if strcmpi( Newfile{2},'on')
+                Electrodelabel = 'on';
+            elseif strcmpi( Newfile{2},'off')
+                Electrodelabel = 'off';
+            elseif strcmpi( Newfile{2},'labels')
+                Electrodelabel = 'labels';
+            elseif strcmpi( Newfile{2},'numbers')
+                Electrodelabel = 'numbers';
+            elseif strcmpi( Newfile{2},'ptslabels')
+                Electrodelabel = 'ptslabels';
+            elseif strcmpi( Newfile{2},'ptsnumbers')
+                Electrodelabel = 'ptsnumbers';
+            else
+                Electrodelabel = 'off';
+            end
+            figspec= figure('tag', 'spectopo');
+            set(figspec,'Name',['Channel spectra and maps for',32,EEG.setname]);
+            pop_spectopo(EEG, 1, str2num(result{1}), 'EEG' ,'percent',str2num(result{2}),...
+                'freq', str2num(result{3}), 'freqrange',str2num(result{4}),'electrodes',Electrodelabel);
+            if eval(result{2}) ~= 100, options = [ options ', ''percent'', '  result{2} ]; end
+            if ~isempty(result{3}) && ~isempty(EEG.chanlocs), options = [ options ', ''freq'', ['  result{3} ']' ]; end
+            if EEG.trials ~= 1
+                processflag = result{4};
+                if ~isempty(result{5}),    options = [ options ', ''freqrange'',[' result{5} ']' ]; end
+                if ~isempty(result{6}),    options = [ options ',' result{6} ]; end
+            else
+                processflag = 'EEG';
+                if ~isempty(result{4}),    options = [ options ', ''freqrange'',[' result{4} ']' ]; end
+                if ~isempty(result{5}),    options = [ options ',' result{5} ]; end
+            end
+            
+            %%History
+            LASTCOM = sprintf('pop_spectopo(EEG, %d, [%s], ''%s'' %s);', 1, num2str(timerange), processflag, options);
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
+            fprintf(LASTCOM,'\n');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end%%end loop for subject
+        observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
+        %         wave in the main GUI
+        observe_EEGDAT.eeg_message_panel =2;
+    end
+
+
+%%---------------------Channel properties----------------------------------
+    function eeg_chanprop(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        EEG = observe_EEGDAT.EEG;
+        typecomp = 1;    % defaults
+        chanorcomp = 1;
+        commandchan = 'tmpchanlocs = EEG(1).chanlocs; [tmp tmpval] = pop_chansel({tmpchanlocs.labels}, ''withindex'', ''on'', ''selectionmode'', ''single''); set(findobj(gcbf, ''tag'', ''chan''), ''string'',tmpval); clear tmp tmpchanlocs tmpval';
+        uitext = { { 'style' 'text' 'string' fastif(typecomp,'Channel index(ices) to plot:','Component index(ices) to plot:') } ...
+            { 'style' 'edit' 'string' '1', 'tag', 'chan' } ...
+            { 'style' 'pushbutton' 'string'  '...', 'enable' fastif(~isempty(EEG(1).chanlocs) && typecomp, 'on', 'off') 'callback' commandchan } ...
+            { 'style' 'text' 'string' 'Spectral options (see spectopo() help):' } ...
+            { 'style' 'edit' 'string' '''freqrange'', [2 50]' } {} };
+        uigeom = { [2 1 0.5 ] [2 1 0.5] };
+        result = inputgui('geometry', uigeom, 'uilist', uitext, 'helpcom', 'pophelp(''pop_prop'');', ...
+            'title', fastif( typecomp, 'Channel properties - pop_prop()', 'Component properties - pop_prop()'));
+        if size( result, 1 ) == 0 return; end
+        
+        chanoristr = result{1};
+        chanorcomp   = eeg_decodechan(EEG.chanlocs, result{1} );
+        spec_opt     = eval( [ '{' result{2} '}' ] );
+        for Numofeeg = 1:numel(EEGArray)
+            
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Chan properties*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+            
+            LASTCOM =  pop_prop( EEG, 1, 1, NaN, spec_opt);
+            set(gcf,'Name',['Channel properties for',32,EEG.setname]);
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
+            fprintf(LASTCOM,'\n');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end%%end loop for subject
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
+        observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
+        %         wave in the main GUI
+        observe_EEGDAT.eeg_message_panel =2;
+    end
+
+
+%%------------------------Time-frequency-----------------------------------
+    function eeg_tfr(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
+        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Chan time-frequency*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+            
+            LASTCOM =  pop_newtimef(EEG,1);
+            if isempty(LASTCOM)
+                disp('User selected cancel');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return;
+            end
+            set(gcf,'Name',['Time-frequency for',32,EEG.setname]);
+            LASTCOM =LASTCOM(8:end);
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
+            fprintf(LASTCOM,'\n');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end%%end loop for subject
+        observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
+        %         wave in the main GUI
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
+        observe_EEGDAT.eeg_message_panel =2;
+    end
+
+
+%%--------Settting will be modified if the selected was changed------------
+    function count_current_eeg_change(~,~)
+        if  isempty(observe_EEGDAT.EEG)
+            EStduio_gui_eeglab_tool.about_eegdata.Enable =  'off';
+            EStduio_gui_eeglab_tool.edit_eeginfor.Enable=  'off';
+            EStduio_gui_eeglab_tool.edit_eegevent.Enable=  'off';
+            EStduio_gui_eeglab_tool.edit_eegchanlocs.Enable=  'off';
+            EStduio_gui_eeglab_tool.edit_samplerate.Enable=  'off';
+            EStduio_gui_eeglab_tool.eeg_asr.Enable=  'off';
+            EStduio_gui_eeglab_tool.eeg_spcetra_map.Enable=  'off';
+            EStduio_gui_eeglab_tool.eeg_chanprop.Enable=  'off';
+            EStduio_gui_eeglab_tool.eeg_tfr.Enable=  'off';
+            return;
+        end
+        
+        if observe_EEGDAT.count_current_eeg ~=8
+            return;
+        end
+        EStduio_gui_eeglab_tool.about_eegdata.Enable =  'on';
+        EStduio_gui_eeglab_tool.edit_eeginfor.Enable=  'on';
+        EStduio_gui_eeglab_tool.edit_eegevent.Enable=  'on';
+        EStduio_gui_eeglab_tool.edit_eegchanlocs.Enable=  'on';
+        EStduio_gui_eeglab_tool.edit_samplerate.Enable=  'on';
+        EStduio_gui_eeglab_tool.eeg_asr.Enable=  'on';
+        EStduio_gui_eeglab_tool.eeg_spcetra_map.Enable=  'on';
+        EStduio_gui_eeglab_tool.eeg_chanprop.Enable=  'on';
+        EStduio_gui_eeglab_tool.eeg_tfr.Enable=  'on';
+        observe_EEGDAT.count_current_eeg=9;
+    end
+
+%%-------------------------------------------------------------------------
+%%Automatically saving the changed parameters for the current panel if the
+%%user change parameters for the other panels.
+%%-------------------------------------------------------------------------
+%     function eeg_two_panels_change(~,~)
+%         if observe_EEGDAT.eeg_two_panels==0
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_event2bin');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         eeg_bdf_apply();
+%         estudioworkingmemory('EEGTab_event2bin',0);
+%         EStduio_gui_eeglab_tool.bdf_apply.BackgroundColor =  [1 1 1];
+%         EStduio_gui_eeglab_tool.bdf_apply.ForegroundColor = [0 0 0];
+%         EStudio_box_eeglab_tool.TitleColor= [0.0500    0.2500    0.5000];
+%         EStduio_gui_eeglab_tool.bdf_cancel.BackgroundColor =  [1 1 1];
+%         EStduio_gui_eeglab_tool.bdf_cancel.ForegroundColor = [0 0 0];
+%     end
+
+
+end

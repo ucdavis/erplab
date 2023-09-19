@@ -478,13 +478,12 @@ if isempty(Winlength)|| Winlength<0 ||  (Winlength>floor(Frames/multiplier_winle
     EEG_plotset{3} = floor(Frames/multiplier_winleg);
 end
 estudioworkingmemory('EEG_plotset',EEG_plotset);
+StartimesMax = max(0,ceil((Frames-1)/multiplier)-Winlength);
 if ndims(observe_EEGDAT.EEG.data)==3
-    Startimes = max(1,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-    if Startimes== max(1,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-        Startimes = Startimes+1;
-    end
-else
-    Startimes = max(0,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
+    StartimesMax = StartimesMax+1;
+end
+if Startimes>StartimesMax
+    Startimes=StartimesMax;
 end
 EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
@@ -549,13 +548,12 @@ if isempty(Winlength)|| Winlength<0 ||  (Winlength>floor(Frames/multiplier_winle
     EEG_plotset{3} = floor(Frames/multiplier_winleg);
 end
 estudioworkingmemory('EEG_plotset',EEG_plotset);
+StartimesMax = max(0,ceil((Frames-1)/multiplier)-Winlength);
 if ndims(observe_EEGDAT.EEG.data)==3
-    Startimes = max(1,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-    if Startimes== max(1,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
-        Startimes = Startimes+1;
-    end
-else
-    Startimes = max(0,min(Startimes,ceil((Frames-1)/multiplier)-Winlength));
+    StartimesMax = StartimesMax+1;
+end
+if Startimes>StartimesMax
+    Startimes=StartimesMax;
 end
 EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
@@ -757,7 +755,6 @@ else
     return;
 end
 
-
 end
 
 
@@ -922,7 +919,6 @@ function eeg_message_panel_change(~,~)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;
 FonsizeDefault = f_get_default_fontsize();
-
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
@@ -931,9 +927,16 @@ end
 if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
     ColorB_def = [0.7020 0.77 0.85];
 end
+
+Processed_Method=erpworkingmemory('f_EEG_proces_messg');
+EEGMessagepre = erpworkingmemory('f_EEG_proces_messg_pre');
+if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_message_panel == EEGMessagepre{2}
+    return;
+end
+erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_message_panel}); 
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
 EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
-Processed_Method=erpworkingmemory('f_EEG_proces_messg');
+
 if observe_EEGDAT.eeg_message_panel==1
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
@@ -956,7 +959,7 @@ else
     pause(0.5);
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
 end
-if observe_EEGDAT.eeg_message_panel==1 || observe_EEGDAT.eeg_message_panel==2 || observe_EEGDAT.eeg_message_panel==3
+if  observe_EEGDAT.eeg_message_panel==2 || observe_EEGDAT.eeg_message_panel==3
     pause(0.01);
     EStudio_gui_erp_totl.eegProcess_messg.String = '';
     EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];

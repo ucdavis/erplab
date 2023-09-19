@@ -844,7 +844,7 @@ varargout{1} = box_eegset_gui;
     function selectdata(source,~)
         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
         observe_EEGDAT.eeg_message_panel =1;
-        Selected_eegsetlabel = source.Value;
+        Selected_eegsetlabel = sort(source.Value);
         [~,~,EEGtypeFlag] =  getDatasets();
         EEGArraydef =  estudioworkingmemory('EEGArray');
         if  EStduio_gui_EEG_set.eeg_contns.Value==1 %%continuous EEG
@@ -882,6 +882,7 @@ varargout{1} = box_eegset_gui;
         
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
+        observe_EEGDAT.eeg_message_panel =2;
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
     end

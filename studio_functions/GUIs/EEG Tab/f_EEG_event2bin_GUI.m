@@ -205,9 +205,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Advanced');
         observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        
         
         estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_gui_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
@@ -219,52 +219,170 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        if numel(EEGArray)>1
-            EStduio_gui_EEG_event2bin.event2bin_advanced.Enable = 'off';
-            erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Advanced:doesnot support for multi-eegsets,please select one');
-            observe_EEGDAT.eeg_message_panel =4; %%Marking for the procedure has been started.
-            return;
-        end
-        bdfileName =  EStduio_gui_EEG_event2bin.BDF_edit.String;
-        %%check is the file name is a string
-        if isempty(bdfileName) || ~ischar(bdfileName)
-            bdfileName = '';
-        end
-        %%check if the specified file exists
-        if ~isfile(bdfileName)
-            bdfileName ='';
-            erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Advanced:Such bdfile doesnot exist');
-            observe_EEGDAT.eeg_message_panel =4;
-        end
-        def  = erpworkingmemory('pop_binlister');
-        if isempty(def)
-            def = {'' '' '' 0 [] [] 0 0 0 1 0};
-        end
-        def{1} = bdfileName;
-        erpworkingmemory('pop_binlister',def);
+ 
         
-        EEG = observe_EEGDAT.ALLEEG(EEGArray);
-        [EEG, LASTCOM] = pop_binlister(EEG);
-        if isempty(LASTCOM)
-            return;
-        end
-        EEG = eegh(LASTCOM, EEG);
-        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
         try
-            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+                fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+                
+                
+                def  = erpworkingmemory('pop_binlister');
+                if isempty(def)
+                    def = {'' '' '' 0 [] [] 0 0 0 1 0};
+                end
+                
+                %%get defined BDfile
+                bdfileName =  EStduio_gui_EEG_event2bin.BDF_edit.String;
+                %%check is the file name is a string
+                if isempty(bdfileName) || ~ischar(bdfileName)
+                    bdfileName = '';
+                end
+                %%check if the specified file exists
+                if ~isfile(bdfileName)
+                    bdfileName ='';
+                    erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Advanced:Such bdfile doesnot exist');
+                    observe_EEGDAT.eeg_message_panel =4;
+                end
+                def{1} = bdfileName;
+                
+                packarray = menuBinListGUI(EEG, [], def);
+                
+                if isempty(packarray)
+                    disp('User selected Cancel')
+                    return
+                end
+                
+                file1      = packarray{1};         % bin descriptor file
+                file2      = packarray{2};         % external eventlist (read event list from)
+                file3      = packarray{3};         % text file containing the updated EVENTLIST (Write resulting eventlist to)
+                flagrst    = packarray{4};         % 1 means reset flags
+                forbiddenCodeArray = packarray{5};
+                ignoreCodeArray    = packarray{6};
+                updevent   = packarray{7};
+                option2do  = packarray{8};         % See  option2do below
+                reportable = packarray{9};         % 1 means create a report about binlister work.
+                iswarning  = packarray{10};        % 1 means create a report about binlister work.
+                getfromerp = 0;
+                indexEL    = packarray{12};
+                EStduio_gui_EEG_event2bin.BDF_edit.String = file1;
+                if isempty(file2) || strcmpi(file2,'no') || strcmpi(file2,'none')
+                    
+                    if isfield(EEG, 'EVENTLIST')
+                        if isfield(EEG.EVENTLIST, 'eventinfo')
+                            if isempty(EEG.EVENTLIST(indexEL).eventinfo)
+                                msgboxText = ['Assign Events to Bins > Advanced: EVENTLIST.eventinfo structure is empty!\n'...
+                                    'Use Create EVENTLIST before BINLISTER'];
+                                erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                                observe_EEGDAT.eeg_message_panel =4;
+                                return
+                            end
+                        else
+                            msgboxText =  ['Assign Events to Bins > Advanced: EVENTLIST.eventinfo structure was not found, please Create EVENTLIST before BINLISTER'];
+                            erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                            observe_EEGDAT.eeg_message_panel =4;
+                            return
+                        end
+                    else
+                        msgboxText =  ['Assign Events to Bins > Advanced: EVENTLIST structure was not found, Please Create EVENTLIST before BINLISTER'];
+                        erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                        observe_EEGDAT.eeg_message_panel =4;
+                        return
+                    end
+                    logfilename = 'no';
+                    logpathname = '';
+                    file2 = [logpathname logfilename];
+                    disp('For LOGFILE, user selected INTERNAL')
+                end
+                erpworkingmemory('pop_binlister', {file1, file2, file3, flagrst, forbiddenCodeArray, ignoreCodeArray,...
+                    updevent, option2do, reportable, iswarning, getfromerp, indexEL});
+                
+                
+                if flagrst==1
+                    strflagrst = 'on';
+                else
+                    strflagrst = 'off';
+                end
+                if updevent==1
+                    strupdevent = 'on';
+                else
+                    strupdevent = 'off';
+                end
+                switch option2do
+                    case 0
+                        msgboxText = 'Assign Events to Bins > Advanced: Where should I send the update EVENTLIST???\n Pick an option.';
+                        erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                        observe_EEGDAT.eeg_message_panel =4;
+                        return
+                    case 1
+                        stroption2do = 'Text';
+                    case 2
+                        stroption2do = 'EEG';
+                    case 3
+                        stroption2do = 'EEG&Text';
+                    case 4
+                        stroption2do = 'Workspace';
+                    case 5
+                        stroption2do = 'Workspace&Text';
+                    case 6
+                        stroption2do = 'Workspace&EEG';
+                    case 7
+                        stroption2do = 'All';
+                end
+                if reportable==1
+                    strreportable = 'on';
+                else
+                    strreportable = 'off';
+                end
+                if iswarning==1
+                    striswarning = 'on';
+                else
+                    striswarning = 'off';
+                end
+                if ~getfromerp
+                    EEG.setname = [EEG.setname '_bins']; %suggest a new name
+                end
+                
+                %% Run pop_ command again with the inputs from the GUI
+                [EEG, LASTCOM]   = pop_binlister(EEG, 'BDF', file1, 'ImportEL', file2, 'ExportEL', file3, 'Resetflag', strflagrst, 'Forbidden', forbiddenCodeArray,...
+                    'Ignore', ignoreCodeArray, 'UpdateEEG', strupdevent, 'SendEL2', stroption2do,'Report', strreportable, 'Warning', striswarning,...
+                    'Saveas', 'on', 'IndexEL', indexEL, 'History', 'gui');
+                if isempty(LASTCOM)
+                    return;
+                end
+                EEG = eegh(LASTCOM, EEG);
+                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            end
+            
+            try
+                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+            catch
+                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            end
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            assignin('base','EEG',observe_EEGDAT.EEG);
+            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+            
+            observe_EEGDAT.count_current_eeg=1;
+            observe_EEGDAT.eeg_message_panel =2;
         catch
-            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
+            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            assignin('base','EEG',observe_EEGDAT.EEG);
+            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.count_current_eeg=1;
+            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            return;
         end
-        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
-        assignin('base','EEG',observe_EEGDAT.EEG);
-        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
-        observe_EEGDAT.count_current_eeg=1;
-        observe_EEGDAT.eeg_message_panel =2;
+
     end
 
 %%---------------------------Apply-----------------------------------------
@@ -339,7 +457,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             for Numofeeg = 1:numel(EEGArray)
                 EEG = ALLEEG_advance(EEGArray(Numofeeg));
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['Your current EEGset:',32,EEG.setname,'\n\n']);
+                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
                 
                 %% Run pop_ command again with the inputs from the GUI
                 [EEG, LASTCOM]   = pop_binlister( EEG , 'BDF',bdfileName, 'IndexEL',  1, 'SendEL2', 'EEG', 'UpdateEEG', 'on', 'Voutput', 'EEG', 'History', 'gui' );
@@ -439,13 +557,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_gui_EEG_event2bin.bdf_cancel.Enable = 'on';
         EStduio_gui_EEG_event2bin.event2bin_advanced.Enable = 'on';
         EStduio_gui_EEG_event2bin.bdf_apply.Enable = 'on';
-        EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
-            EEGArray = observe_EEGDAT.CURRENTSET;
-        end
-        if ~isempty(EEGArray) && numel(EEGArray)>1
-            EStduio_gui_EEG_event2bin.event2bin_advanced.Enable = 'off';
-        end
         observe_EEGDAT.count_current_eeg=8;
     end
 
