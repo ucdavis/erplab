@@ -13,7 +13,7 @@ addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change)
 addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
-gui_eeg_filtering = struct();
+gui_eegtab_filtering = struct();
 %%---------------------------gui-------------------------------------------
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -157,113 +157,113 @@ varargout{1} = EEG_filtering_box;
             hp_halfpow_string ='--';
             lp_halfpow_string ='---';
         end
-        gui_eeg_filtering.filtering = uiextras.VBox('Parent',EEG_filtering_box,'BackgroundColor',ColorB_def);
+        gui_eegtab_filtering.filtering = uiextras.VBox('Parent',EEG_filtering_box,'BackgroundColor',ColorB_def);
         
         %%-----------------------------Setting for bin and chan--------------------
-        gui_eeg_filtering.bin_chan_title = uiextras.HBox('Parent',gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_eeg_filtering.bin_chan_title,'String','Channel Selection:','FontWeight','bold',...
+        gui_eegtab_filtering.bin_chan_title = uiextras.HBox('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.bin_chan_title,'String','Channel Selection:','FontWeight','bold',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
-        gui_eeg_filtering.filter_bin_chan_option = uiextras.HBox('Parent',  gui_eeg_filtering.filtering,'Spacing',1,'BackgroundColor',ColorB_def);
+        gui_eegtab_filtering.filter_bin_chan_option = uiextras.HBox('Parent',  gui_eegtab_filtering.filtering,'Spacing',1,'BackgroundColor',ColorB_def);
         
-        gui_eeg_filtering.all_chan = uicontrol('Style', 'radiobutton','Parent', gui_eeg_filtering.filter_bin_chan_option,...
+        gui_eegtab_filtering.all_chan = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_filtering.filter_bin_chan_option,...
             'String','All (Recommended)','callback',@All_chan,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        gui_eeg_filtering.all_chan.KeyPressFcn =@eeg_filter_presskey;
-        gui_eeg_filtering.Selected_chan = uicontrol('Style', 'radiobutton','Parent', gui_eeg_filtering.filter_bin_chan_option,...
+        gui_eegtab_filtering.all_chan.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.Selected_chan = uicontrol('Style', 'radiobutton','Parent', gui_eegtab_filtering.filter_bin_chan_option,...
             'String','Selected channels','callback',@Selected_chan,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        gui_eeg_filtering.all_chan.KeyPressFcn =@eeg_filter_presskey;
-        set(gui_eeg_filtering.filter_bin_chan_option, 'Sizes',[130  170]);
+        gui_eegtab_filtering.all_chan.KeyPressFcn =@eeg_filter_presskey;
+        set(gui_eegtab_filtering.filter_bin_chan_option, 'Sizes',[130  170]);
         
         
         %%--------------------------Setting for IIR filter------------------------------
-        gui_eeg_filtering.IIR_title = uiextras.HBox('Parent',gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_eeg_filtering.IIR_title,'String','Setting for IIR Butterworth:',...
+        gui_eegtab_filtering.IIR_title = uiextras.HBox('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.IIR_title,'String','Setting for IIR Butterworth:',...
             'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         
-        gui_eeg_filtering.filt_grid = uiextras.Grid('Parent',gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
+        gui_eegtab_filtering.filt_grid = uiextras.Grid('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
         % first column
-        uiextras.Empty('Parent',gui_eeg_filtering.filt_grid); % 1A
-        gui_eeg_filtering.hp_tog = uicontrol('Style','checkbox','Parent',gui_eeg_filtering.filt_grid,'String','High Pass',...
+        uiextras.Empty('Parent',gui_eegtab_filtering.filt_grid); % 1A
+        gui_eegtab_filtering.hp_tog = uicontrol('Style','checkbox','Parent',gui_eegtab_filtering.filt_grid,'String','High Pass',...
             'callback',@highpass_toggle,'Value',0,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
-        gui_eeg_filtering.hp_tog.KeyPressFcn =@eeg_filter_presskey;
-        gui_eeg_filtering.lp_tog = uicontrol('Style','checkbox','Parent',gui_eeg_filtering.filt_grid,'String','Low Pass',...
+        gui_eegtab_filtering.hp_tog.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.lp_tog = uicontrol('Style','checkbox','Parent',gui_eegtab_filtering.filt_grid,'String','Low Pass',...
             'callback',@lowpass_toggle,'Value',1,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1C
-        gui_eeg_filtering.lp_tog.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.lp_tog.KeyPressFcn =@eeg_filter_presskey;
         
         % second column
-        uicontrol('Style','text','Parent',gui_eeg_filtering.filt_grid,'String','Half Amp.','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2A
-        gui_eeg_filtering.hp_halfamp = uicontrol('Style','edit','Parent',gui_eeg_filtering.filt_grid,...
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,'String','Half Amp.','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2A
+        gui_eegtab_filtering.hp_halfamp = uicontrol('Style','edit','Parent',gui_eegtab_filtering.filt_grid,...
             'callback',@hp_halfamp,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2B
-        gui_eeg_filtering.hp_halfamp.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.hp_halfamp.KeyPressFcn =@eeg_filter_presskey;
         if strcmp(hp_halfamp_enable,'off');
             if typef<2
-                gui_eeg_filtering.hp_halfamp.String = '0';
+                gui_eegtab_filtering.hp_halfamp.String = '0';
             else
-                gui_eeg_filtering.hp_halfamp.String = '60';
+                gui_eegtab_filtering.hp_halfamp.String = '60';
             end
             
         else
-            gui_eeg_filtering.hp_halfamp.String =  num2str(locutoff);
+            gui_eegtab_filtering.hp_halfamp.String =  num2str(locutoff);
         end
-        gui_eeg_filtering.lp_halfamp = uicontrol('Style','edit','Parent',gui_eeg_filtering.filt_grid,...
+        gui_eegtab_filtering.lp_halfamp = uicontrol('Style','edit','Parent',gui_eegtab_filtering.filt_grid,...
             'callback',@lp_halfamp,'Enable',lp_halfamp_Enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2C
-        gui_eeg_filtering.lp_halfamp.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.lp_halfamp.KeyPressFcn =@eeg_filter_presskey;
         if strcmp(lp_halfamp_Enable,'off')
-            gui_eeg_filtering.lp_halfamp.String = '20';
+            gui_eegtab_filtering.lp_halfamp.String = '20';
         else
-            gui_eeg_filtering.lp_halfamp.String =  num2str(hicutoff);
+            gui_eegtab_filtering.lp_halfamp.String =  num2str(hicutoff);
         end
         % third column
-        uicontrol('Style','text','Parent',gui_eeg_filtering.filt_grid,'String','Half Power','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3A
-        gui_eeg_filtering.hp_halfpow = uicontrol('Style','text','Parent',gui_eeg_filtering.filt_grid,...
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,'String','Half Power','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3A
+        gui_eegtab_filtering.hp_halfpow = uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,...
             'String',hp_halfpow_string,'Enable','off','BackgroundColor','y','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 3B
         
-        gui_eeg_filtering.lp_halfpow = uicontrol('Style','text','Parent',gui_eeg_filtering.filt_grid,...
+        gui_eegtab_filtering.lp_halfpow = uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,...
             'String',lp_halfpow_string,'Enable','off','BackgroundColor','y','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 3C
         
         % fourth column
-        uiextras.Empty('Parent',gui_eeg_filtering.filt_grid); % 4A
-        uicontrol('Style','text','Parent',gui_eeg_filtering.filt_grid,'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 4B
-        uicontrol('Style','text','Parent',gui_eeg_filtering.filt_grid,'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 4C
-        set(gui_eeg_filtering.filt_grid, 'ColumnSizes',[90 70 70 40],'RowSizes',[20 -1 -1]);
+        uiextras.Empty('Parent',gui_eegtab_filtering.filt_grid); % 4A
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 4B
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.filt_grid,'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 4C
+        set(gui_eegtab_filtering.filt_grid, 'ColumnSizes',[90 70 70 40],'RowSizes',[20 -1 -1]);
         
         
-        gui_eeg_filtering.rolloff_row = uiextras.HBox('Parent', gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_eeg_filtering.rolloff_row,'String','Roll-Off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1D
+        gui_eegtab_filtering.rolloff_row = uiextras.HBox('Parent', gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.rolloff_row,'String','Roll-Off','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1D
         Roll_off = {'12','24','36','48'};
-        gui_eeg_filtering.roll_off = uicontrol('Style','popupmenu','Parent',gui_eeg_filtering.rolloff_row,'String',Roll_off,...
+        gui_eegtab_filtering.roll_off = uicontrol('Style','popupmenu','Parent',gui_eegtab_filtering.rolloff_row,'String',Roll_off,...
             'callback',@EEG_filtering_rolloff,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2D
-        gui_eeg_filtering.roll_off.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.roll_off.KeyPressFcn =@eeg_filter_presskey;
         if filterorder ==2
-            gui_eeg_filtering.roll_off.Value = 1;
+            gui_eegtab_filtering.roll_off.Value = 1;
         elseif filterorder ==4
-            gui_eeg_filtering.roll_off.Value = 2;
+            gui_eegtab_filtering.roll_off.Value = 2;
             
         elseif filterorder ==6
-            gui_eeg_filtering.roll_off.Value = 3;
+            gui_eegtab_filtering.roll_off.Value = 3;
             
         elseif filterorder ==8
-            gui_eeg_filtering.roll_off.Value = 4;
+            gui_eegtab_filtering.roll_off.Value = 4;
         end
-        uicontrol('Style','text','Parent',gui_eeg_filtering.rolloff_row,'String','dB/Octave','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3D
+        uicontrol('Style','text','Parent',gui_eegtab_filtering.rolloff_row,'String','dB/Octave','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3D
         
         
-        gui_eeg_filtering.REMOVE_DC = uiextras.HBox('Parent', gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
-        gui_eeg_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_eeg_filtering.REMOVE_DC,...
+        gui_eegtab_filtering.REMOVE_DC = uiextras.HBox('Parent', gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
+        gui_eegtab_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_eegtab_filtering.REMOVE_DC,...
             'String','Remove DC Offset (Strongly recommended)','Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);%,'callback',@remove_dc
-        gui_eeg_filtering.DC_remove.KeyPressFcn =@eeg_filter_presskey;
+        gui_eegtab_filtering.DC_remove.KeyPressFcn =@eeg_filter_presskey;
         
-        gui_eeg_filtering.filt_buttons = uiextras.HBox('Parent', gui_eeg_filtering.filtering,'BackgroundColor',ColorB_def);
+        gui_eegtab_filtering.filt_buttons = uiextras.HBox('Parent', gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
         
-        gui_eeg_filtering.cancel = uicontrol('Style','pushbutton','Parent',gui_eeg_filtering.filt_buttons,'String','Cancel',...
+        gui_eegtab_filtering.cancel = uicontrol('Style','pushbutton','Parent',gui_eegtab_filtering.filt_buttons,'String','Cancel',...
             'callback',@EEG_filter_Cancel,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        gui_eeg_filtering.advanced = uicontrol('Style','pushbutton','Parent',gui_eeg_filtering.filt_buttons,'String','Advanced',...
+        gui_eegtab_filtering.advanced = uicontrol('Style','pushbutton','Parent',gui_eegtab_filtering.filt_buttons,'String','Advanced',...
             'callback',@advanced_EEG_filter,'Enable',Advance_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
-        gui_eeg_filtering.apply = uicontrol('Style','pushbutton','Parent',gui_eeg_filtering.filt_buttons,'String','Run',...
+        gui_eegtab_filtering.apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_filtering.filt_buttons,'String','Run',...
             'callback',@EEG_filter_apply,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set( gui_eeg_filtering.filtering,'Sizes',[20 20 20 80 20 20 30]);
+        set( gui_eegtab_filtering.filtering,'Sizes',[20 20 20 80 20 20 30]);
         
         
         defx = {0 30 2 1:nchan 1 'butter' 0 []};
@@ -271,18 +271,18 @@ varargout{1} = EEG_filtering_box;
         if isempty(def)
             def = defx;
         end
-        if gui_eeg_filtering.all_chan.Value ==1
+        if gui_eegtab_filtering.all_chan.Value ==1
             def{5} =   1;
         else
             def{5} =   0;
         end
-        remove_dc =  gui_eeg_filtering.DC_remove.Value;
+        remove_dc =  gui_eegtab_filtering.DC_remove.Value;
         def{7} = remove_dc;
         
-        filterorder = 2*gui_eeg_filtering.roll_off.Value;
+        filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         def{3} = filterorder;
-        locutoff = str2num(gui_eeg_filtering.hp_halfamp.String);%%
-        hicutoff = str2num(gui_eeg_filtering.lp_halfamp.String);
+        locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%
+        hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);
         
         if isempty(locutoff)
             locutoff =0;
@@ -308,14 +308,14 @@ varargout{1} = EEG_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
-        gui_eeg_filtering.all_chan.Value = 1;
-        gui_eeg_filtering.Selected_chan.Value = 0;
+        gui_eegtab_filtering.all_chan.Value = 1;
+        gui_eegtab_filtering.Selected_chan.Value = 0;
         estudioworkingmemory('EEGTab_filter',1);
     end
 
@@ -327,14 +327,14 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
-        gui_eeg_filtering.all_chan.Value = 0;
-        gui_eeg_filtering.Selected_chan.Value = 1;
+        gui_eegtab_filtering.all_chan.Value = 0;
+        gui_eegtab_filtering.Selected_chan.Value = 1;
         estudioworkingmemory('EEGTab_filter',1);
     end
 
@@ -344,8 +344,8 @@ varargout{1} = EEG_filtering_box;
     function  highpass_toggle(source,~)
         if isempty(observe_EEGDAT.EEG)
             source.Enable = 'off';
-            gui_eeg_filtering.hp_halfamp.Enable ='off';
-            gui_eeg_filtering.hp_halfpow.Enable ='off';
+            gui_eegtab_filtering.hp_halfamp.Enable ='off';
+            gui_eegtab_filtering.hp_halfpow.Enable ='off';
             return;
         end
         
@@ -355,11 +355,11 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
         
         try
@@ -369,30 +369,30 @@ varargout{1} = EEG_filtering_box;
         end
         locutoff = 0.1;
         try
-            filterorder = 2*gui_eeg_filtering.roll_off.Value;
+            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         catch
             filterorder =2;
-            gui_eeg_filtering.roll_off.Value=1;
+            gui_eegtab_filtering.roll_off.Value=1;
         end
         typef = 0;
         
         if source.Value == 0
-            gui_eeg_filtering.hp_halfamp.Enable ='off';
-            gui_eeg_filtering.hp_halfpow.Enable ='off';
-            gui_eeg_filtering.hp_halfamp.String = '0';
-            gui_eeg_filtering.hp_halfpow.String = '---';
-            if gui_eeg_filtering.lp_tog.Value ==0
-                gui_eeg_filtering.roll_off.Enable = 'off';
+            gui_eegtab_filtering.hp_halfamp.Enable ='off';
+            gui_eegtab_filtering.hp_halfpow.Enable ='off';
+            gui_eegtab_filtering.hp_halfamp.String = '0';
+            gui_eegtab_filtering.hp_halfpow.String = '---';
+            if gui_eegtab_filtering.lp_tog.Value ==0
+                gui_eegtab_filtering.roll_off.Enable = 'off';
             end
         else
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder,0,locutoff,fs);
-            gui_eeg_filtering.hp_tog.Value =1;
-            gui_eeg_filtering.hp_halfamp.Enable ='on';
-            gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-            gui_eeg_filtering.hp_halfpow.String = num2str(frec3dB(1));
-            gui_eeg_filtering.hp_halfpow.Enable ='off';
-            gui_eeg_filtering.hp_halfpow.String = num2str(frec3dB);
-            gui_eeg_filtering.roll_off.Enable = 'on';
+            gui_eegtab_filtering.hp_tog.Value =1;
+            gui_eegtab_filtering.hp_halfamp.Enable ='on';
+            gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+            gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB(1));
+            gui_eegtab_filtering.hp_halfpow.Enable ='off';
+            gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB);
+            gui_eegtab_filtering.roll_off.Enable = 'on';
         end
         estudioworkingmemory('EEGTab_filter',1);
     end
@@ -402,8 +402,8 @@ varargout{1} = EEG_filtering_box;
     function  lowpass_toggle(source,~)
         if isempty(observe_EEGDAT.EEG)
             source.Enable = 'off';
-            gui_eeg_filtering.lp_halfamp.Enable ='off';
-            gui_eeg_filtering.lp_halfpow.Enable ='off';
+            gui_eegtab_filtering.lp_halfamp.Enable ='off';
+            gui_eegtab_filtering.lp_halfpow.Enable ='off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -411,11 +411,11 @@ varargout{1} = EEG_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
         try
             fs = observe_EEGDAT.EEG.srate;
@@ -424,28 +424,28 @@ varargout{1} = EEG_filtering_box;
         end
         typef = 0;
         try
-            filterorder = 2*gui_eeg_filtering.roll_off.Value;
+            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         catch
             filterorder =2;
-            gui_eeg_filtering.roll_off.Value=1;
+            gui_eegtab_filtering.roll_off.Value=1;
         end
         hicutoff = floor((fs/2-1)*5/10);
         if source.Value == 0
-            gui_eeg_filtering.lp_halfamp.Enable ='off';
-            gui_eeg_filtering.lp_halfpow.Enable ='off';
-            gui_eeg_filtering.lp_halfamp.String = '0';
-            gui_eeg_filtering.lp_halfpow.String = '---';
-            if gui_eeg_filtering.hp_tog.Value ==0
-                gui_eeg_filtering.roll_off.Enable = 'off';
+            gui_eegtab_filtering.lp_halfamp.Enable ='off';
+            gui_eegtab_filtering.lp_halfpow.Enable ='off';
+            gui_eegtab_filtering.lp_halfamp.String = '0';
+            gui_eegtab_filtering.lp_halfpow.String = '---';
+            if gui_eegtab_filtering.hp_tog.Value ==0
+                gui_eegtab_filtering.roll_off.Enable = 'off';
             end
         else
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,0, fs);
-            gui_eeg_filtering.lp_tog.Value =1;
-            gui_eeg_filtering.lp_halfamp.Enable ='on';
-            gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-            gui_eeg_filtering.lp_halfpow.String = num2str(frec3dB);
-            gui_eeg_filtering.lp_halfpow.Enable ='off';
-            gui_eeg_filtering.roll_off.Enable = 'on';
+            gui_eegtab_filtering.lp_tog.Value =1;
+            gui_eegtab_filtering.lp_halfamp.Enable ='on';
+            gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+            gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB);
+            gui_eegtab_filtering.lp_halfpow.Enable ='off';
+            gui_eegtab_filtering.roll_off.Enable = 'on';
         end
         estudioworkingmemory('EEGTab_filter',1);
     end
@@ -455,9 +455,9 @@ varargout{1} = EEG_filtering_box;
 %%---------------------Half amplitude for high pass filtering--------------
     function hp_halfamp(Source,~)
         if isempty(observe_EEGDAT.EEG)
-            gui_eeg_filtering.hp_tog.Enable = 'off';
-            gui_eeg_filtering.hp_halfamp.Enable ='off';
-            gui_eeg_filtering.hp_halfpow.Enable ='off';
+            gui_eegtab_filtering.hp_tog.Enable = 'off';
+            gui_eegtab_filtering.hp_halfamp.Enable ='off';
+            gui_eegtab_filtering.hp_halfpow.Enable ='off';
             return;
         end
         
@@ -467,11 +467,11 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
         try
             fs = observe_EEGDAT.EEG.srate;
@@ -481,10 +481,10 @@ varargout{1} = EEG_filtering_box;
         
         typef = 0;
         try
-            filterorder = 2*gui_eeg_filtering.roll_off.Value;
+            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         catch
             filterorder =2;
-            gui_eeg_filtering.roll_off.Value=1;
+            gui_eegtab_filtering.roll_off.Value=1;
         end
         
         valueh = str2num(Source.String);
@@ -509,10 +509,10 @@ varargout{1} = EEG_filtering_box;
         
         valuel = 0;
         [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, valuel, valueh, fs);
-        gui_eeg_filtering.hp_halfamp.Enable ='on';
-        gui_eeg_filtering.hp_halfamp.String = num2str(valueh);
-        gui_eeg_filtering.hp_halfpow.String = num2str(frec3dB);
-        gui_eeg_filtering.hp_halfpow.Enable ='off';
+        gui_eegtab_filtering.hp_halfamp.Enable ='on';
+        gui_eegtab_filtering.hp_halfamp.String = num2str(valueh);
+        gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB);
+        gui_eegtab_filtering.hp_halfpow.Enable ='off';
         estudioworkingmemory('EEGTab_filter',1);
     end
 
@@ -521,9 +521,9 @@ varargout{1} = EEG_filtering_box;
 %%---------------------Half amplitude for low pass filtering---------------
     function lp_halfamp(Source,~)
         if isempty(observe_EEGDAT.EEG)
-            gui_eeg_filtering.lp_tog.Enable = 'off';
-            gui_eeg_filtering.lp_halfamp.Enable ='off';
-            gui_eeg_filtering.lp_halfpow.Enable ='off';
+            gui_eegtab_filtering.lp_tog.Enable = 'off';
+            gui_eegtab_filtering.lp_halfamp.Enable ='off';
+            gui_eegtab_filtering.lp_halfpow.Enable ='off';
             return;
         end
         
@@ -533,11 +533,11 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
         try
             fs = observe_EEGDAT.EEG.srate;
@@ -545,10 +545,10 @@ varargout{1} = EEG_filtering_box;
             return;
         end
         try
-            filterorder = 2*gui_eeg_filtering.roll_off.Value;
+            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         catch
             filterorder =2;
-            gui_eeg_filtering.roll_off.Value=1;
+            gui_eegtab_filtering.roll_off.Value=1;
         end
         valuel = str2num(Source.String);
         if length(valuel)~=1 || isempty(valuel)
@@ -574,10 +574,10 @@ varargout{1} = EEG_filtering_box;
         typef = 0;
         valueh = 0;
         [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, valuel, valueh, fs);
-        gui_eeg_filtering.lp_halfamp.Enable ='on';
-        gui_eeg_filtering.lp_halfamp.String = num2str(valuel);
-        gui_eeg_filtering.lp_halfpow.String = num2str(frec3dB(1));
-        gui_eeg_filtering.lp_halfpow.Enable ='off';
+        gui_eegtab_filtering.lp_halfamp.Enable ='on';
+        gui_eegtab_filtering.lp_halfamp.String = num2str(valuel);
+        gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB(1));
+        gui_eegtab_filtering.lp_halfpow.Enable ='off';
         estudioworkingmemory('EEGTab_filter',1);
     end
 
@@ -594,19 +594,19 @@ varargout{1} = EEG_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        gui_eeg_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.apply.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_eeg_filtering.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
         
         Source_value = Source.Value;
         filterorder = 2*Source_value;
         typef = 0;
         fs = observe_EEGDAT.EEG.srate;
-        valuel  = str2num(gui_eeg_filtering.lp_halfamp.String);%% for low-pass filter
-        valueh  = str2num(gui_eeg_filtering.hp_halfamp.String);%%for high-pass filter
-        if gui_eeg_filtering.lp_tog.Value ==1
+        valuel  = str2num(gui_eegtab_filtering.lp_halfamp.String);%% for low-pass filter
+        valueh  = str2num(gui_eegtab_filtering.hp_halfamp.String);%%for high-pass filter
+        if gui_eegtab_filtering.lp_tog.Value ==1
             if isempty(valuel)|| length(valuel)~=1
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -620,7 +620,7 @@ varargout{1} = EEG_filtering_box;
                 return;
             end
             
-            if gui_eeg_filtering.hp_tog.Value ==0
+            if gui_eegtab_filtering.hp_tog.Value ==0
                 if valuel<0.001
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -630,7 +630,7 @@ varargout{1} = EEG_filtering_box;
             end
         end
         
-        if gui_eeg_filtering.hp_tog.Value ==1
+        if gui_eegtab_filtering.hp_tog.Value ==1
             if length(valueh)~=1
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -645,7 +645,7 @@ varargout{1} = EEG_filtering_box;
                 observe_EEGDAT.eeg_message_panel =4;
                 return;
             end
-            if gui_eeg_filtering.lp_tog.Value ==0
+            if gui_eegtab_filtering.lp_tog.Value ==0
                 if valueh<0.001
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -655,7 +655,7 @@ varargout{1} = EEG_filtering_box;
             end
         end
         
-        if gui_eeg_filtering.hp_tog.Value ==1 && gui_eeg_filtering.lp_tog.Value ==1
+        if gui_eegtab_filtering.hp_tog.Value ==1 && gui_eegtab_filtering.lp_tog.Value ==1
             if valueh >0 && valueh >0 && valueh >=valuel
                 msgboxText =  ['Filtering - The lowest bandpass cuttoff is the highest bandpass cuttoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -672,14 +672,14 @@ varargout{1} = EEG_filtering_box;
         
         if valuel> 0 && valueh ==0
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, valuel, 0, fs);
-            gui_eeg_filtering.lp_halfpow.String = num2str(frec3dB);
+            gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB);
         elseif valuel== 0 && valueh > 0
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder,0, valueh,fs);
-            gui_eeg_filtering.hp_halfpow.String = num2str(frec3dB);
+            gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB);
         elseif valuel> 0 && valueh > 0
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder,valuel, valueh,fs);
-            gui_eeg_filtering.lp_halfpow.String = num2str(frec3dB(1));
-            gui_eeg_filtering.hp_halfpow.String = num2str(frec3dB(2));
+            gui_eegtab_filtering.lp_halfpow.String = num2str(frec3dB(1));
+            gui_eegtab_filtering.hp_halfpow.String = num2str(frec3dB(2));
         end
         estudioworkingmemory('EEGTab_filter',1);
     end
@@ -697,11 +697,11 @@ varargout{1} = EEG_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        gui_eeg_filtering.apply.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.apply.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
-        gui_eeg_filtering.cancel.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_filter',0);
         
         try
@@ -716,19 +716,19 @@ varargout{1} = EEG_filtering_box;
         if isempty(def)
             def = defx;
         end
-        if gui_eeg_filtering.all_chan.Value ==1
+        if gui_eegtab_filtering.all_chan.Value ==1
             def{5} =   1;
         else
             def{5} =   0;
         end
         
-        remove_dc =  gui_eeg_filtering.DC_remove.Value;
+        remove_dc =  gui_eegtab_filtering.DC_remove.Value;
         def{7} = remove_dc;
         
-        filterorder = 2*gui_eeg_filtering.roll_off.Value;
+        filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         def{3} = filterorder;
-        locutoff = str2num(gui_eeg_filtering.hp_halfamp.String);%%
-        hicutoff = str2num(gui_eeg_filtering.lp_halfamp.String);
+        locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%
+        hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);
         
         if isempty(locutoff)
             locutoff =0;
@@ -740,7 +740,7 @@ varargout{1} = EEG_filtering_box;
         def{2} = hicutoff;
         erpworkingmemory('pop_basicfilter',def);
         
-        if gui_eeg_filtering.lp_tog.Value ==1
+        if gui_eegtab_filtering.lp_tog.Value ==1
             if length(hicutoff)~=1 || isempty(hicutoff)
                 beep;
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
@@ -757,7 +757,7 @@ varargout{1} = EEG_filtering_box;
                 observe_EEGDAT.eeg_message_panel =4;
                 return;
             end
-            if gui_eeg_filtering.hp_tog.Value ==0
+            if gui_eegtab_filtering.hp_tog.Value ==0
                 if hicutoff<0.001
                     beep;
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
@@ -769,7 +769,7 @@ varargout{1} = EEG_filtering_box;
             end
         end
         
-        if gui_eeg_filtering.hp_tog.Value ==1
+        if gui_eegtab_filtering.hp_tog.Value ==1
             if length(locutoff)~=1
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -783,7 +783,7 @@ varargout{1} = EEG_filtering_box;
                 return;
             end
             
-            if gui_eeg_filtering.lp_tog.Value ==0
+            if gui_eegtab_filtering.lp_tog.Value ==0
                 if locutoff<0.001
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -793,7 +793,7 @@ varargout{1} = EEG_filtering_box;
             end
         end
         
-        if gui_eeg_filtering.hp_tog.Value ==1 && gui_eeg_filtering.lp_tog.Value ==1
+        if gui_eegtab_filtering.hp_tog.Value ==1 && gui_eegtab_filtering.lp_tog.Value ==1
             if locutoff==0 && hicutoff==0
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -881,7 +881,7 @@ varargout{1} = EEG_filtering_box;
                 
                 
                 EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                if gui_eeg_filtering.all_chan.Value == 1
+                if gui_eegtab_filtering.all_chan.Value == 1
                     chanArray = [1:EEG.nbchan];
                 else
                     if isempty(chanArray) ||  min(chanArray(:)) > EEG.nbchan || max(chanArray(:)) > EEG.nbchan || min(chanArray(:)) <=0
@@ -980,11 +980,11 @@ varargout{1} = EEG_filtering_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        gui_eeg_filtering.apply.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.apply.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
-        gui_eeg_filtering.cancel.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_filter',0);
         
         try
@@ -1003,27 +1003,27 @@ varargout{1} = EEG_filtering_box;
             def{4} = def{4}(ismember_bc2(def{4},1:nchan));
         end
         
-        def{1} = str2num(gui_eeg_filtering.hp_halfamp.String);
-        def{2} = str2num(gui_eeg_filtering.lp_halfamp.String);
-        if gui_eeg_filtering.hp_tog.Value ==1
+        def{1} = str2num(gui_eegtab_filtering.hp_halfamp.String);
+        def{2} = str2num(gui_eegtab_filtering.lp_halfamp.String);
+        if gui_eegtab_filtering.hp_tog.Value ==1
             if isempty(def{1}) || def{1} ==0
                 def{1} = 0.01;
             end
         end
-        if gui_eeg_filtering.lp_tog.Value ==1
+        if gui_eegtab_filtering.lp_tog.Value ==1
             if isempty(def{2}) || def{2} ==0
                 def{2} = floor((fs/2-1)*5/10);
             end
         end
         
-        def{7} =  gui_eeg_filtering.DC_remove.Value;
+        def{7} =  gui_eegtab_filtering.DC_remove.Value;
         def{8} = [];
         fdesign = 'butter';
-        def{3} = 2*gui_eeg_filtering.roll_off.Value;
+        def{3} = 2*gui_eegtab_filtering.roll_off.Value;
         def{6} = fdesign;
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if gui_eeg_filtering.all_chan.Value == 1
+        if gui_eegtab_filtering.all_chan.Value == 1
             chanArray = 1:nchan;
             def{5} =1;
         else
@@ -1066,49 +1066,49 @@ varargout{1} = EEG_filtering_box;
         %%-----------setting for IIR butter----------------------
         if strcmpi(fdesign,'butter')
             typef = 0;
-            gui_eeg_filtering.roll_off.Value =  filterorder/2;
-            gui_eeg_filtering.roll_off.String = {'12','24','36','48'}';
-            gui_eeg_filtering.roll_off.Enable = 'on';
-            gui_eeg_filtering.DC_remove.Value =  remove_dc;
+            gui_eegtab_filtering.roll_off.Value =  filterorder/2;
+            gui_eegtab_filtering.roll_off.String = {'12','24','36','48'}';
+            gui_eegtab_filtering.roll_off.Enable = 'on';
+            gui_eegtab_filtering.DC_remove.Value =  remove_dc;
             %%High-pass filtering
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
             if locutoff > 0 && (isempty(hicutoff) || hicutoff ==0 )
-                gui_eeg_filtering.hp_tog.Value = 1;
-                gui_eeg_filtering.hp_tog.Enable ='on';
-                gui_eeg_filtering.lp_tog.Value = 0;
-                gui_eeg_filtering.lp_tog.Enable ='on';
-                gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-                gui_eeg_filtering.hp_halfamp.Enable = 'on';
-                gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-                gui_eeg_filtering.lp_halfamp.Enable = 'off';
-                gui_eeg_filtering.hp_halfpow.String = num2str(roundn(frec3dB(1),-2));
-                gui_eeg_filtering.lp_halfpow.String = '---';
+                gui_eegtab_filtering.hp_tog.Value = 1;
+                gui_eegtab_filtering.hp_tog.Enable ='on';
+                gui_eegtab_filtering.lp_tog.Value = 0;
+                gui_eegtab_filtering.lp_tog.Enable ='on';
+                gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+                gui_eegtab_filtering.hp_halfamp.Enable = 'on';
+                gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+                gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+                gui_eegtab_filtering.hp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+                gui_eegtab_filtering.lp_halfpow.String = '---';
             end
             %%Low pass filtering
             if hicutoff > 0 && (isempty(locutoff) || locutoff ==0)
-                gui_eeg_filtering.lp_tog.Value = 1;
-                gui_eeg_filtering.lp_tog.Enable ='on';
-                gui_eeg_filtering.hp_tog.Value = 0;
-                gui_eeg_filtering.hp_tog.Enable ='on';
-                gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-                gui_eeg_filtering.lp_halfamp.Enable = 'on';
-                gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-                gui_eeg_filtering.hp_halfamp.Enable = 'off';
-                gui_eeg_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
-                gui_eeg_filtering.hp_halfpow.String = '---';
+                gui_eegtab_filtering.lp_tog.Value = 1;
+                gui_eegtab_filtering.lp_tog.Enable ='on';
+                gui_eegtab_filtering.hp_tog.Value = 0;
+                gui_eegtab_filtering.hp_tog.Enable ='on';
+                gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+                gui_eegtab_filtering.lp_halfamp.Enable = 'on';
+                gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+                gui_eegtab_filtering.hp_halfamp.Enable = 'off';
+                gui_eegtab_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+                gui_eegtab_filtering.hp_halfpow.String = '---';
             end
             %%Band pass filtering or notch filtering
             if locutoff >0 && hicutoff>0
-                gui_eeg_filtering.hp_tog.Value = 1;
-                gui_eeg_filtering.hp_tog.Enable ='on';
-                gui_eeg_filtering.lp_tog.Value = 1;
-                gui_eeg_filtering.lp_tog.Enable ='on';
-                gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-                gui_eeg_filtering.hp_halfamp.Enable = 'on';
-                gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-                gui_eeg_filtering.lp_halfamp.Enable = 'on';
-                gui_eeg_filtering.hp_halfpow.String = num2str(roundn(frec3dB(2),-2));
-                gui_eeg_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+                gui_eegtab_filtering.hp_tog.Value = 1;
+                gui_eegtab_filtering.hp_tog.Enable ='on';
+                gui_eegtab_filtering.lp_tog.Value = 1;
+                gui_eegtab_filtering.lp_tog.Enable ='on';
+                gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+                gui_eegtab_filtering.hp_halfamp.Enable = 'on';
+                gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+                gui_eegtab_filtering.lp_halfamp.Enable = 'on';
+                gui_eegtab_filtering.hp_halfpow.String = num2str(roundn(frec3dB(2),-2));
+                gui_eegtab_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
             end
         end%%setting end for IIR butter filter
         %%*************Filter the selected ERPsets***************************
@@ -1275,36 +1275,36 @@ varargout{1} = EEG_filtering_box;
         end
         
         if  isempty(observe_EEGDAT.EEG)
-            gui_eeg_filtering.apply.Enable = 'off';
-            gui_eeg_filtering.advanced.Enable = 'off';
-            gui_eeg_filtering.roll_off.Enable = 'off';
-            gui_eeg_filtering.hp_halfamp.Enable = 'off';
-            gui_eeg_filtering.lp_halfamp.Enable = 'off';
-            gui_eeg_filtering.hp_tog.Enable = 'off';
-            gui_eeg_filtering.lp_tog.Enable = 'off';
-            gui_eeg_filtering.all_chan.Enable = 'off';
-            gui_eeg_filtering.Selected_chan.Enable = 'off';
-            gui_eeg_filtering.cancel.Enable = 'off';
+            gui_eegtab_filtering.apply.Enable = 'off';
+            gui_eegtab_filtering.advanced.Enable = 'off';
+            gui_eegtab_filtering.roll_off.Enable = 'off';
+            gui_eegtab_filtering.hp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.hp_tog.Enable = 'off';
+            gui_eegtab_filtering.lp_tog.Enable = 'off';
+            gui_eegtab_filtering.all_chan.Enable = 'off';
+            gui_eegtab_filtering.Selected_chan.Enable = 'off';
+            gui_eegtab_filtering.cancel.Enable = 'off';
             return;
         else
-            gui_eeg_filtering.all_chan.Enable = 'on';
-            gui_eeg_filtering.Selected_chan.Enable = 'on';
-            locutoff = str2num(gui_eeg_filtering.hp_halfamp.String);%%for high pass filter
-            hicutoff = str2num(gui_eeg_filtering.lp_halfamp.String);%% for low pass filter
+            gui_eegtab_filtering.all_chan.Enable = 'on';
+            gui_eegtab_filtering.Selected_chan.Enable = 'on';
+            locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%for high pass filter
+            hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);%% for low pass filter
             if isempty(locutoff)
                 locutoff =0;
-                gui_eeg_filtering.hp_halfamp.String = '0';
+                gui_eegtab_filtering.hp_halfamp.String = '0';
             end
             if isempty(hicutoff)
                 hicutoff = 0;
-                gui_eeg_filtering.lp_halfamp.String = '0';
+                gui_eegtab_filtering.lp_halfamp.String = '0';
             end
             fs = observe_EEGDAT.EEG.srate;
             if fs <=0
                 fs = 256;
             end
             typef = 0;
-            filterorder = 2*gui_eeg_filtering.roll_off.Value;
+            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
             if locutoff > 0 && hicutoff ==0
                 highpass_toggle_value = 1;
@@ -1341,23 +1341,23 @@ varargout{1} = EEG_filtering_box;
                 lp_halfamp_Enable = 'off';
                 lp_halfpow_string ='0';
             end
-            gui_eeg_filtering.apply.Enable = 'on';
-            gui_eeg_filtering.advanced.Enable = 'on';
-            gui_eeg_filtering.roll_off.Enable = 'on';
-            gui_eeg_filtering.hp_halfpow.String = hp_halfpow_string;
-            gui_eeg_filtering.lp_halfpow.String = lp_halfpow_string;
-            gui_eeg_filtering.hp_halfamp.Enable = hp_halfamp_enable;
-            gui_eeg_filtering.lp_halfamp.Enable = lp_halfamp_Enable;
-            gui_eeg_filtering.hp_tog.Value = highpass_toggle_value;
-            gui_eeg_filtering.lp_tog.Value = lowpass_toggle_value;
-            gui_eeg_filtering.hp_tog.Enable = 'on';
-            gui_eeg_filtering.lp_tog.Enable = 'on';
-            gui_eeg_filtering.cancel.Enable = 'on';
+            gui_eegtab_filtering.apply.Enable = 'on';
+            gui_eegtab_filtering.advanced.Enable = 'on';
+            gui_eegtab_filtering.roll_off.Enable = 'on';
+            gui_eegtab_filtering.hp_halfpow.String = hp_halfpow_string;
+            gui_eegtab_filtering.lp_halfpow.String = lp_halfpow_string;
+            gui_eegtab_filtering.hp_halfamp.Enable = hp_halfamp_enable;
+            gui_eegtab_filtering.lp_halfamp.Enable = lp_halfamp_Enable;
+            gui_eegtab_filtering.hp_tog.Value = highpass_toggle_value;
+            gui_eegtab_filtering.lp_tog.Value = lowpass_toggle_value;
+            gui_eegtab_filtering.hp_tog.Enable = 'on';
+            gui_eegtab_filtering.lp_tog.Enable = 'on';
+            gui_eegtab_filtering.cancel.Enable = 'on';
             if ndims(observe_EEGDAT.EEG.data)==3
-                gui_eeg_filtering.DC_remove.Enable = 'off';
-                gui_eeg_filtering.DC_remove.Value = 0;
+                gui_eegtab_filtering.DC_remove.Enable = 'off';
+                gui_eegtab_filtering.DC_remove.Value = 0;
             else
-                gui_eeg_filtering.DC_remove.Enable = 'on';
+                gui_eegtab_filtering.DC_remove.Enable = 'on';
             end
         end
         
@@ -1369,16 +1369,16 @@ varargout{1} = EEG_filtering_box;
 %%this function is to cancel the changed parameters
     function EEG_filter_Cancel(~,~)
         if isempty(observe_EEGDAT.EEG)
-            gui_eeg_filtering.cancel.Enable = 'off';
-            gui_eeg_filtering.apply.Enable = 'off';
-            gui_eeg_filtering.advanced.Enable = 'off';
-            gui_eeg_filtering.roll_off.Enable = 'off';
-            gui_eeg_filtering.hp_halfamp.Enable = 'off';
-            gui_eeg_filtering.lp_halfamp.Enable = 'off';
-            gui_eeg_filtering.hp_tog.Enable = 'off';
-            gui_eeg_filtering.lp_tog.Enable = 'off';
-            gui_eeg_filtering.all_chan.Enable = 'off';
-            gui_eeg_filtering.Selected_chan.Enable = 'off';
+            gui_eegtab_filtering.cancel.Enable = 'off';
+            gui_eegtab_filtering.apply.Enable = 'off';
+            gui_eegtab_filtering.advanced.Enable = 'off';
+            gui_eegtab_filtering.roll_off.Enable = 'off';
+            gui_eegtab_filtering.hp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.hp_tog.Enable = 'off';
+            gui_eegtab_filtering.lp_tog.Enable = 'off';
+            gui_eegtab_filtering.all_chan.Enable = 'off';
+            gui_eegtab_filtering.Selected_chan.Enable = 'off';
             return;
         end
         
@@ -1411,69 +1411,69 @@ varargout{1} = EEG_filtering_box;
             hicutoff = 0;
         end
         if filterallch==1
-            gui_eeg_filtering.all_chan.Value = 1;
-            gui_eeg_filtering.Selected_chan.Value = 0;
+            gui_eegtab_filtering.all_chan.Value = 1;
+            gui_eegtab_filtering.Selected_chan.Value = 0;
         else
-            gui_eeg_filtering.all_chan.Value = 0;
-            gui_eeg_filtering.Selected_chan.Value = 1;
+            gui_eegtab_filtering.all_chan.Value = 0;
+            gui_eegtab_filtering.Selected_chan.Value = 1;
         end
         typef = 0;
-        gui_eeg_filtering.roll_off.Value =  filterorder/2;
-        gui_eeg_filtering.roll_off.String = {'12','24','36','48'}';
-        gui_eeg_filtering.roll_off.Enable = 'on';
-        gui_eeg_filtering.DC_remove.Value =  remove_dc;
+        gui_eegtab_filtering.roll_off.Value =  filterorder/2;
+        gui_eegtab_filtering.roll_off.String = {'12','24','36','48'}';
+        gui_eegtab_filtering.roll_off.Enable = 'on';
+        gui_eegtab_filtering.DC_remove.Value =  remove_dc;
         %%High-pass filtering
         [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
         if locutoff > 0 && (isempty(hicutoff) || hicutoff ==0 )
-            gui_eeg_filtering.hp_tog.Value = 1;
-            gui_eeg_filtering.hp_tog.Enable ='on';
-            gui_eeg_filtering.lp_tog.Value = 0;
-            gui_eeg_filtering.lp_tog.Enable ='on';
-            gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-            gui_eeg_filtering.hp_halfamp.Enable = 'on';
-            gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-            gui_eeg_filtering.lp_halfamp.Enable = 'off';
-            gui_eeg_filtering.hp_halfpow.String = num2str(roundn(frec3dB(1),-2));
-            gui_eeg_filtering.lp_halfpow.String = '---';
+            gui_eegtab_filtering.hp_tog.Value = 1;
+            gui_eegtab_filtering.hp_tog.Enable ='on';
+            gui_eegtab_filtering.lp_tog.Value = 0;
+            gui_eegtab_filtering.lp_tog.Enable ='on';
+            gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+            gui_eegtab_filtering.hp_halfamp.Enable = 'on';
+            gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+            gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.hp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+            gui_eegtab_filtering.lp_halfpow.String = '---';
         end
         %%Low pass filtering
         if hicutoff > 0 && (isempty(locutoff) || locutoff ==0)
-            gui_eeg_filtering.lp_tog.Value = 1;
-            gui_eeg_filtering.lp_tog.Enable ='on';
-            gui_eeg_filtering.hp_tog.Value = 0;
-            gui_eeg_filtering.hp_tog.Enable ='on';
-            gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-            gui_eeg_filtering.lp_halfamp.Enable = 'on';
-            gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-            gui_eeg_filtering.hp_halfamp.Enable = 'off';
-            gui_eeg_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
-            gui_eeg_filtering.hp_halfpow.String = '---';
+            gui_eegtab_filtering.lp_tog.Value = 1;
+            gui_eegtab_filtering.lp_tog.Enable ='on';
+            gui_eegtab_filtering.hp_tog.Value = 0;
+            gui_eegtab_filtering.hp_tog.Enable ='on';
+            gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+            gui_eegtab_filtering.lp_halfamp.Enable = 'on';
+            gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+            gui_eegtab_filtering.hp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+            gui_eegtab_filtering.hp_halfpow.String = '---';
         end
         %%Band pass filtering or notch filtering
         if locutoff >0 && hicutoff>0
-            gui_eeg_filtering.hp_tog.Value = 1;
-            gui_eeg_filtering.hp_tog.Enable ='on';
-            gui_eeg_filtering.lp_tog.Value = 1;
-            gui_eeg_filtering.lp_tog.Enable ='on';
-            gui_eeg_filtering.hp_halfamp.String = num2str(locutoff);
-            gui_eeg_filtering.hp_halfamp.Enable = 'on';
-            gui_eeg_filtering.lp_halfamp.String = num2str(hicutoff);
-            gui_eeg_filtering.lp_halfamp.Enable = 'on';
-            gui_eeg_filtering.hp_halfpow.String = num2str(roundn(frec3dB(2),-2));
-            gui_eeg_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
+            gui_eegtab_filtering.hp_tog.Value = 1;
+            gui_eegtab_filtering.hp_tog.Enable ='on';
+            gui_eegtab_filtering.lp_tog.Value = 1;
+            gui_eegtab_filtering.lp_tog.Enable ='on';
+            gui_eegtab_filtering.hp_halfamp.String = num2str(locutoff);
+            gui_eegtab_filtering.hp_halfamp.Enable = 'on';
+            gui_eegtab_filtering.lp_halfamp.String = num2str(hicutoff);
+            gui_eegtab_filtering.lp_halfamp.Enable = 'on';
+            gui_eegtab_filtering.hp_halfpow.String = num2str(roundn(frec3dB(2),-2));
+            gui_eegtab_filtering.lp_halfpow.String = num2str(roundn(frec3dB(1),-2));
         end
-        gui_eeg_filtering.apply.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.apply.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
-        gui_eeg_filtering.cancel.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_filter',0);
         
         if ndims(observe_EEGDAT.EEG.data)==3
-            gui_eeg_filtering.DC_remove.Enable = 'off';
-            gui_eeg_filtering.DC_remove.Value = 0;
+            gui_eegtab_filtering.DC_remove.Enable = 'off';
+            gui_eegtab_filtering.DC_remove.Value = 0;
         else
-            gui_eeg_filtering.DC_remove.Enable = 'on';
+            gui_eegtab_filtering.DC_remove.Enable = 'on';
         end
         
         defx = {0 30 2 1:nchan 1 'butter' 0 []};
@@ -1481,18 +1481,18 @@ varargout{1} = EEG_filtering_box;
         if isempty(def)
             def = defx;
         end
-        if gui_eeg_filtering.all_chan.Value ==1
+        if gui_eegtab_filtering.all_chan.Value ==1
             def{5} =   1;
         else
             def{5} =   0;
         end
-        remove_dc =  gui_eeg_filtering.DC_remove.Value;
+        remove_dc =  gui_eegtab_filtering.DC_remove.Value;
         def{7} = remove_dc;
         
-        filterorder = 2*gui_eeg_filtering.roll_off.Value;
+        filterorder = 2*gui_eegtab_filtering.roll_off.Value;
         def{3} = filterorder;
-        locutoff = str2num(gui_eeg_filtering.hp_halfamp.String);%%
-        hicutoff = str2num(gui_eeg_filtering.lp_halfamp.String);
+        locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%
+        hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);
         
         if isempty(locutoff)
             locutoff =0;
@@ -1520,11 +1520,11 @@ varargout{1} = EEG_filtering_box;
             return;
         end
         EEG_filter_apply();
-        gui_eeg_filtering.apply.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.apply.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
-        gui_eeg_filtering.cancel.BackgroundColor =  [1 1 1];
-        gui_eeg_filtering.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
     end
 
 
@@ -1539,11 +1539,11 @@ varargout{1} = EEG_filtering_box;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             EEG_filter_apply();
             estudioworkingmemory('EEGTab_filter',0);
-            gui_eeg_filtering.apply.BackgroundColor =  [1 1 1];
-            gui_eeg_filtering.apply.ForegroundColor = [0 0 0];
+            gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
+            gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
             EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
-            gui_eeg_filtering.cancel.BackgroundColor =  [1 1 1];
-            gui_eeg_filtering.cancel.ForegroundColor = [0 0 0];
+            gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
+            gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         else
             return;
         end

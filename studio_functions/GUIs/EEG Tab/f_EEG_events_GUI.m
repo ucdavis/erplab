@@ -17,7 +17,7 @@ addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_cha
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
 
-EStduio_gui_EEG_events = struct();
+EStduio_eegtab_EEG_events = struct();
 
 %-----------------------------Name the title----------------------------------------------
 % global EStudio_eeg_events_box;
@@ -47,51 +47,51 @@ varargout{1} = EStudio_eeg_events_box;
     function drawui_eeg_events(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
-        EStduio_gui_EEG_events.DataSelBox = uiextras.VBox('Parent', EStudio_eeg_events_box,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.DataSelBox = uiextras.VBox('Parent', EStudio_eeg_events_box,'BackgroundColor',ColorB_def);
         if isempty(observe_EEGDAT.EEG)
             EnableFlag= 'off';
         else
             EnableFlag= 'on';
         end
         %%Summarize EEG event codes
-        EStduio_gui_EEG_events.summarize_code_title = uiextras.HBox('Parent',EStduio_gui_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_events.summarize_code = uicontrol('Style', 'pushbutton','Parent', EStduio_gui_EEG_events.summarize_code_title,...
+        EStduio_eegtab_EEG_events.summarize_code_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.summarize_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.summarize_code_title,...
             'String','Summarize event code','callback',@summarize_code,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         %%Shift EEG event codes
-        EStduio_gui_EEG_events.shift_code = uicontrol('Style', 'pushbutton','Parent', EStduio_gui_EEG_events.summarize_code_title,...
+        EStduio_eegtab_EEG_events.shift_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.summarize_code_title,...
             'String','Shift event code','callback',@shift_code,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         
         %%Create and RTs
-        EStduio_gui_EEG_events.create_rt_title = uiextras.HBox('Parent',EStduio_gui_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_events.create_eventlist = uicontrol('Style', 'pushbutton','Parent',   EStduio_gui_EEG_events.create_rt_title ,...
+        EStduio_eegtab_EEG_events.create_rt_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.create_eventlist = uicontrol('Style', 'pushbutton','Parent',   EStduio_eegtab_EEG_events.create_rt_title ,...
             'String','Create eventlist','callback',@create_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         %%export reaction times
-        EStduio_gui_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',   EStduio_gui_EEG_events.create_rt_title ,...
+        EStduio_eegtab_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',   EStduio_eegtab_EEG_events.create_rt_title ,...
             'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         
         %%Import and export eventlist
-        EStduio_gui_EEG_events.imp_exp_title = uiextras.HBox('Parent',EStduio_gui_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent',  EStduio_gui_EEG_events.imp_exp_title ,...
+        EStduio_eegtab_EEG_events.imp_exp_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.imp_exp_title ,...
             'String','Import eventlist','callback',@imp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         %%export evetnlist to text file
-        EStduio_gui_EEG_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent',  EStduio_gui_EEG_events.imp_exp_title ,...
+        EStduio_eegtab_EEG_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.imp_exp_title ,...
             'String','Export eventlist','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         
         %%Shuffle events/bins/samples/
-        EStduio_gui_EEG_events.shuffle_title = uiextras.HBox('Parent',EStduio_gui_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_events.eeg_shuffle = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_EEG_events.shuffle_title ,...
+        EStduio_eegtab_EEG_events.shuffle_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.eeg_shuffle = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.shuffle_title ,...
             'String','Shuffle events/bins/samples','callback',@eeg_shuffle,'FontSize',FonsizeDefault,'Enable',EnableFlag);
-        uiextras.Empty('Parent',EStduio_gui_EEG_events.shuffle_title); % 1A
-        set(EStduio_gui_EEG_events.shuffle_title,'Sizes',[190 30]);
+        uiextras.Empty('Parent',EStduio_eegtab_EEG_events.shuffle_title); % 1A
+        set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[190 30]);
         
         %%transfer event info to EEG.event
-        EStduio_gui_EEG_events.transfer_event_title = uiextras.HBox('Parent',EStduio_gui_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_gui_EEG_events.transfer_event_title ,...
+        EStduio_eegtab_EEG_events.transfer_event_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.transfer_event_title ,...
             'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FonsizeDefault,'Enable',EnableFlag);
-        uiextras.Empty('Parent',EStduio_gui_EEG_events.transfer_event_title); % 1A
-        set(EStduio_gui_EEG_events.transfer_event_title,'Sizes',[190 30]);
+        uiextras.Empty('Parent',EStduio_eegtab_EEG_events.transfer_event_title); % 1A
+        set(EStduio_eegtab_EEG_events.transfer_event_title,'Sizes',[190 30]);
         
-        set(EStduio_gui_EEG_events.DataSelBox,'Sizes',[30 30 30 30 30]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[30 30 30 30 30]);
     end
 
 %%**************************************************************************%%
@@ -1154,19 +1154,19 @@ varargout{1} = EStudio_eeg_events_box;
     function count_current_eeg_change(~,~)
         if isempty(observe_EEGDAT.EEG)
             EnableFlag = 'off';
-            EStduio_gui_EEG_events.summarize_code.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
             %%Shift EEG event codes
-            EStduio_gui_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
+            EStduio_eegtab_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
             %%Create and RTs
-            EStduio_gui_EEG_events.create_eventlist.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.create_eventlist.Enable=EnableFlag;
             %%export reaction times
-            EStduio_gui_EEG_events.exp_rt.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.exp_rt.Enable=EnableFlag;
             %%Import and export eventlist
-            EStduio_gui_EEG_events.imp_eventlist.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.imp_eventlist.Enable=EnableFlag;
             %%export evetnlist to text file
-            EStduio_gui_EEG_events.exp_eventlist.Enable='off';
-            EStduio_gui_EEG_events.eeg_shuffle.Enable=EnableFlag;
-            EStduio_gui_EEG_events.transfer_event.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
+            EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
         end
         if observe_EEGDAT.count_current_eeg ~=6
             return;
@@ -1180,23 +1180,23 @@ varargout{1} = EStudio_eeg_events_box;
             end
         end
         %%Summarize EEG event codes
-        EStduio_gui_EEG_events.summarize_code.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
         %%Shift EEG event codes
-        EStduio_gui_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
+        EStduio_eegtab_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
         %%Create and RTs
-        EStduio_gui_EEG_events.create_eventlist.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.create_eventlist.Enable=EnableFlag;
         %%export reaction times
-        EStduio_gui_EEG_events.exp_rt.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.exp_rt.Enable=EnableFlag;
         %%Import and export eventlist
-        EStduio_gui_EEG_events.imp_eventlist.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.imp_eventlist.Enable=EnableFlag;
         %%export evetnlist to text file
         if ~isempty(observe_EEGDAT.EEG)
-            EStduio_gui_EEG_events.exp_eventlist.Enable='on';
+            EStduio_eegtab_EEG_events.exp_eventlist.Enable='on';
         else
-            EStduio_gui_EEG_events.exp_eventlist.Enable='off';
+            EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
         end
-        EStduio_gui_EEG_events.eeg_shuffle.Enable=EnableFlag;
-        EStduio_gui_EEG_events.transfer_event.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
         observe_EEGDAT.count_current_eeg=7;
     end
 

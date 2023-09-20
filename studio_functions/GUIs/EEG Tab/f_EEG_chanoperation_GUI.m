@@ -17,7 +17,7 @@ addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 
 
 
-gui_chan_optn_eeg = struct();
+gui_eegtab_chan_optn = struct();
 
 %-----------------------------Name the title----------------------------------------------
 % global EEG_chan_operation_gui;
@@ -63,70 +63,70 @@ varargout{1} = EEG_chan_operation_gui;
             Enable_label = 'on';
         end
         %%--------------------channel and bin setting----------------------
-        gui_chan_optn_eeg.DataSelBox = uiextras.VBox('Parent', EEG_chan_operation_gui);
+        gui_eegtab_chan_optn.DataSelBox = uiextras.VBox('Parent', EEG_chan_operation_gui);
         for ii = 1:100
             dsnames{ii,1} = '';
         end
-        gui_chan_optn_eeg.erp_history_table = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.edit_bineq = uitable(  ...
-            'Parent'        , gui_chan_optn_eeg.erp_history_table,...
+        gui_eegtab_chan_optn.erp_history_table = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.edit_bineq = uitable(  ...
+            'Parent'        , gui_eegtab_chan_optn.erp_history_table,...
             'Data'          , dsnames, ...
             'ColumnWidth'   , {1000}, ...
             'ColumnName'    , [], ...
             'RowName'       , []);
-        set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
-        gui_chan_optn_eeg.edit_bineq.KeyPressFcn=  @eeg_chanop_presskey;
-        gui_chan_optn_eeg.equation_selection = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.eq_editor = uicontrol('Style','pushbutton','Parent',gui_chan_optn_eeg.equation_selection,...
+        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
+        gui_eegtab_chan_optn.edit_bineq.KeyPressFcn=  @eeg_chanop_presskey;
+        gui_eegtab_chan_optn.equation_selection = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
             'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
-        gui_chan_optn_eeg.eq_load = uicontrol('Style','pushbutton','Parent',gui_chan_optn_eeg.equation_selection,...
+        gui_eegtab_chan_optn.eq_load = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
             'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
-        gui_chan_optn_eeg.eq_clear = uicontrol('Style','pushbutton','Parent',gui_chan_optn_eeg.equation_selection,...
+        gui_eegtab_chan_optn.eq_clear = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
             'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
         
-        gui_chan_optn_eeg.asst_locaInfo = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.ref_asst = uicontrol('Style','pushbutton','Parent',gui_chan_optn_eeg.asst_locaInfo,...
+        gui_eegtab_chan_optn.asst_locaInfo = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.ref_asst = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
             'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
-        gui_chan_optn_eeg.locaInfor = uicontrol('Style','checkbox','Parent',gui_chan_optn_eeg.asst_locaInfo,...
+        gui_eegtab_chan_optn.locaInfor = uicontrol('Style','checkbox','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
             'String','Load Eq.','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_chan_optn_eeg.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
-        set(gui_chan_optn_eeg.asst_locaInfo,'Sizes',[105 180]);
+        gui_eegtab_chan_optn.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
+        set(gui_eegtab_chan_optn.asst_locaInfo,'Sizes',[105 180]);
         %%%----------------Mode-----------------------------------
-        gui_chan_optn_eeg.mode_1 = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.mode_modify_title = uicontrol('Style','text','Parent',gui_chan_optn_eeg.mode_1 ,...
+        gui_eegtab_chan_optn.mode_1 = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.mode_modify_title = uicontrol('Style','text','Parent',gui_eegtab_chan_optn.mode_1 ,...
             'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        gui_chan_optn_eeg.mode_modify = uicontrol('Style','radiobutton','Parent',gui_chan_optn_eeg.mode_1 ,...
+        gui_eegtab_chan_optn.mode_modify = uicontrol('Style','radiobutton','Parent',gui_eegtab_chan_optn.mode_1 ,...
             'String','Modify Existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_chan_optn_eeg.mode_modify.KeyPressFcn=  @eeg_chanop_presskey;
-        gui_chan_optn_eeg.mode_modify.String =  '<html>Modify Existing dataset<br />(recursive updating)</html>';
-        set(gui_chan_optn_eeg.mode_1,'Sizes',[55 -1]);
+        gui_eegtab_chan_optn.mode_modify.KeyPressFcn=  @eeg_chanop_presskey;
+        gui_eegtab_chan_optn.mode_modify.String =  '<html>Modify Existing dataset<br />(recursive updating)</html>';
+        set(gui_eegtab_chan_optn.mode_1,'Sizes',[55 -1]);
         %%--------------For create a new ERPset----------------------------
-        gui_chan_optn_eeg.mode_2 = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_chan_optn_eeg.mode_2,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.mode_create = uicontrol('Style','radiobutton','Parent',gui_chan_optn_eeg.mode_2 ,...
+        gui_eegtab_chan_optn.mode_2 = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  gui_eegtab_chan_optn.mode_2,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.mode_create = uicontrol('Style','radiobutton','Parent',gui_eegtab_chan_optn.mode_2 ,...
             'String',{'', ''},'callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-        gui_chan_optn_eeg.mode_create.KeyPressFcn=  @eeg_chanop_presskey;
-        gui_chan_optn_eeg.mode_create.String =  '<html>Create New dataset<br />(independent transformations)</html>';
-        set(gui_chan_optn_eeg.mode_2,'Sizes',[55 -1]);
+        gui_eegtab_chan_optn.mode_create.KeyPressFcn=  @eeg_chanop_presskey;
+        gui_eegtab_chan_optn.mode_create.String =  '<html>Create New dataset<br />(independent transformations)</html>';
+        set(gui_eegtab_chan_optn.mode_2,'Sizes',[55 -1]);
         
         
         
         %%-----------------Run---------------------------------------------
-        gui_chan_optn_eeg.run_title = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_chan_optn_eeg.run_title,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.cancel = uicontrol('Style','pushbutton','Parent',gui_chan_optn_eeg.run_title,...
+        gui_eegtab_chan_optn.run_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.cancel = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.run_title,...
             'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable',Enable_label);
-        uiextras.Empty('Parent',  gui_chan_optn_eeg.run_title,'BackgroundColor',ColorB_def);
-        gui_chan_optn_eeg.chanop_apply = uicontrol('Style','pushbutton','Parent',gui_chan_optn_eeg.run_title,...
+        uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
+        gui_eegtab_chan_optn.chanop_apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.run_title,...
             'String','Run','callback',@chanop_eeg_apply,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
-        uiextras.Empty('Parent',  gui_chan_optn_eeg.run_title,'BackgroundColor',ColorB_def);
-        set(gui_chan_optn_eeg.run_title,'Sizes',[15 105  30 105 15]);
+        uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
+        set(gui_eegtab_chan_optn.run_title,'Sizes',[15 105  30 105 15]);
         
-        gui_chan_optn_eeg.note_title = uiextras.HBox('Parent', gui_chan_optn_eeg.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_chan_optn_eeg.note_title,...
+        gui_eegtab_chan_optn.note_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',gui_eegtab_chan_optn.note_title,...
             'String','Note: Operates on channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         
-        set(gui_chan_optn_eeg.DataSelBox,'Sizes',[130,30,35,35,35,30 30]);
+        set(gui_eegtab_chan_optn.DataSelBox,'Sizes',[130,30,35,35,35,30 30]);
     end
 
 
@@ -155,11 +155,11 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         estudioworkingmemory('EEGTab_chanop',1);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
        
         def  = erpworkingmemory('pop_eegchanoperator');
@@ -167,14 +167,14 @@ varargout{1} = EEG_chan_operation_gui;
             def = { [], 1};
         end
         chanopGUI = erpworkingmemory('chanopGUI');
-        if  gui_chan_optn_eeg.mode_modify.Value==1
+        if  gui_eegtab_chan_optn.mode_modify.Value==1
             chanopGUI.emode=0;
         else
             chanopGUI.emode=1;
         end
         chanopGUI.hmode = 0;
         chanopGUI.listname = [];
-        localInfor = gui_chan_optn_eeg.locaInfor.Value;
+        localInfor = gui_eegtab_chan_optn.locaInfor.Value;
         chanopGUI.keeplocs = localInfor;
         erpworkingmemory('chanopGUI',chanopGUI);
         
@@ -187,26 +187,26 @@ varargout{1} = EEG_chan_operation_gui;
         chanopGUI = erpworkingmemory('chanopGUI');
         ModeValue = chanopGUI.emode;
         if ModeValue==0
-            gui_chan_optn_eeg.mode_modify.Value=1 ;
-            gui_chan_optn_eeg.mode_create.Value = 0;
+            gui_eegtab_chan_optn.mode_modify.Value=1 ;
+            gui_eegtab_chan_optn.mode_create.Value = 0;
         else
-            gui_chan_optn_eeg.mode_modify.Value=0 ;
-            gui_chan_optn_eeg.mode_create.Value = 1;
+            gui_eegtab_chan_optn.mode_modify.Value=0 ;
+            gui_eegtab_chan_optn.mode_create.Value = 1;
         end
         localInfor = chanopGUI.keeplocs;
         if localInfor==1
-            gui_chan_optn_eeg.locaInfor.Value=1;
+            gui_eegtab_chan_optn.locaInfor.Value=1;
         else
-            gui_chan_optn_eeg.locaInfor.Value=0;
+            gui_eegtab_chan_optn.locaInfor.Value=0;
         end
         
         formulas = answer{1};
         wbmsgon  = answer{2};
         keeplocs = answer{3};
         if keeplocs ==1
-            gui_chan_optn_eeg.locaInfor.Value = 1;
+            gui_eegtab_chan_optn.locaInfor.Value = 1;
         else
-            gui_chan_optn_eeg.locaInfor.Value = 0;
+            gui_eegtab_chan_optn.locaInfor.Value = 0;
         end
         
         def = {formulas, wbmsgon};
@@ -220,8 +220,8 @@ varargout{1} = EEG_chan_operation_gui;
             for ii = 1:length(def{1,1})
                 dsnames{ii,1}  = Eqs{ii};
             end
-            gui_chan_optn_eeg.edit_bineq.Data = dsnames;
-            set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+            gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
+            set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
         
     end
@@ -237,11 +237,11 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_chanop',1);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
@@ -272,8 +272,8 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
         fclose(fid_formula);
-        gui_chan_optn_eeg.edit_bineq.Data = formcell{1,1};
-        set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+        gui_eegtab_chan_optn.edit_bineq.Data = formcell{1,1};
+        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
 
 %%-------------------Equation Clear---------------------------------------
@@ -281,8 +281,8 @@ varargout{1} = EEG_chan_operation_gui;
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
-        gui_chan_optn_eeg.edit_bineq.Data = dsnames;
-        set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+        gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
+        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
 
 %%-------------------Reference assist--------------------------------------
@@ -297,15 +297,15 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_chanop',1);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
         
-        gui_chan_optn_eeg.mode_modify.Value = 0;
-        gui_chan_optn_eeg.mode_create.Value = 1;
+        gui_eegtab_chan_optn.mode_modify.Value = 0;
+        gui_eegtab_chan_optn.mode_create.Value = 1;
         
         try
             EEG =  observe_EEGDAT.EEG;
@@ -330,12 +330,12 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(formulalist)
             return;
         end
-        formulas  = char(gui_chan_optn_eeg.edit_bineq.Data);
+        formulas  = char(gui_eegtab_chan_optn.edit_bineq.Data);
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
         
-        if gui_chan_optn_eeg.mode_create.Value
+        if gui_eegtab_chan_optn.mode_create.Value
             formulalist = cellstr([formulalist{:}]);
             for t=1:length(formulalist)
                 [expspliter parts] = regexp(formulalist, '=','match','split');
@@ -347,7 +347,7 @@ varargout{1} = EEG_chan_operation_gui;
             for ii = 1:length(formulalist)
                 dsnames{ii,1}  = formulalist{ii};
             end
-            gui_chan_optn_eeg.edit_bineq.Data =dsnames;
+            gui_eegtab_chan_optn.edit_bineq.Data =dsnames;
         else
             formulas = cellstr(formulas);
             count = 0;
@@ -362,9 +362,9 @@ varargout{1} = EEG_chan_operation_gui;
                 dsnames{count+ii,1}  = formulalist{ii};
             end
             clear count;
-            gui_chan_optn_eeg.edit_bineq.Data =dsnames;
+            gui_eegtab_chan_optn.edit_bineq.Data =dsnames;
         end
-        set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+        set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         
     end
 
@@ -379,15 +379,15 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_chanop',1);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
         
         Value = source.Value;
-        gui_chan_optn_eeg.locaInfor.Value = Value;
+        gui_eegtab_chan_optn.locaInfor.Value = Value;
     end
 
 
@@ -403,17 +403,17 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_chanop',1);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
         
-        gui_chan_optn_eeg.mode_modify.Value = 1;
-        gui_chan_optn_eeg.mode_create.Value = 0;
+        gui_eegtab_chan_optn.mode_modify.Value = 1;
+        gui_eegtab_chan_optn.mode_create.Value = 0;
         
-        FormulaArrayIn = gui_chan_optn_eeg.edit_bineq.Data;
+        FormulaArrayIn = gui_eegtab_chan_optn.edit_bineq.Data;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  erpworkingmemory('pop_eegchanoperator');
@@ -435,8 +435,8 @@ varargout{1} = EEG_chan_operation_gui;
                     formulaArray{ii,1}  = '';
                 end
             end
-            gui_chan_optn_eeg.edit_bineq.Data =formulaArray;
-            set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+            gui_eegtab_chan_optn.edit_bineq.Data =formulaArray;
+            set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  erpworkingmemory('pop_eegchanoperator');
             def{1} = formulaArray;
             erpworkingmemory('pop_eegchanoperator',def);
@@ -455,16 +455,16 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('EEGTab_chanop',1);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
         EEG_chan_operation_gui.TitleColor= [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [1 1 1];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
         
-        gui_chan_optn_eeg.mode_modify.Value = 0;
-        gui_chan_optn_eeg.mode_create.Value = 1;
-        FormulaArrayIn = char(gui_chan_optn_eeg.edit_bineq.Data);
+        gui_eegtab_chan_optn.mode_modify.Value = 0;
+        gui_eegtab_chan_optn.mode_create.Value = 1;
+        FormulaArrayIn = char(gui_eegtab_chan_optn.edit_bineq.Data);
         if isempty(FormulaArrayIn)
             val = 0;
             def =  erpworkingmemory('pop_eegchanoperator');
@@ -489,8 +489,8 @@ varargout{1} = EEG_chan_operation_gui;
                     formulaArray{ii,1}  = '';
                 end
             end
-            gui_chan_optn_eeg.edit_bineq.Data =formulaArray;
-            set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+            gui_eegtab_chan_optn.edit_bineq.Data =formulaArray;
+            set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             def =  erpworkingmemory('pop_eegchanoperator');
             def{1} = formulaArray;
             erpworkingmemory('pop_eegchanoperator',def);
@@ -510,11 +510,11 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         estudioworkingmemory('EEGTab_chanop',0);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [1 1 1];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [0 0 0];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [1 1 1];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
         
         pathName_def =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName_def)
@@ -538,7 +538,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         
-        Eq_Data =  gui_chan_optn_eeg.edit_bineq.Data;
+        Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
         Formula_str = {};
         count = 0;
         for ii = 1:length(Eq_Data)
@@ -556,7 +556,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         %%check the format of equations
-        if gui_chan_optn_eeg.mode_modify.Value
+        if gui_eegtab_chan_optn.mode_modify.Value
             editormode = 0;
         else
             editormode = 1;
@@ -572,7 +572,7 @@ varargout{1} = EEG_chan_operation_gui;
         
         %%%Create a new ERPset for the bin-operated ERPsets
         Save_file_label = [];
-        if gui_chan_optn_eeg.mode_create.Value
+        if gui_eegtab_chan_optn.mode_create.Value
             
             if numel(EEGArray) > 1
                 Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_chop');
@@ -620,7 +620,7 @@ varargout{1} = EEG_chan_operation_gui;
                 end
                 ALLEEG_out(EEGArray) = EEG;clear EEG;
             end
-        elseif   gui_chan_optn_eeg.mode_modify.Value
+        elseif   gui_eegtab_chan_optn.mode_modify.Value
             ALLEEG_out = observe_EEGDAT.ALLEEG;
         end
         
@@ -628,7 +628,7 @@ varargout{1} = EEG_chan_operation_gui;
             Save_file_label =0;
         end
         
-        if gui_chan_optn_eeg.locaInfor.Value==1
+        if gui_eegtab_chan_optn.locaInfor.Value==1
             keeplocs ='on';
         else
             keeplocs ='off';
@@ -642,11 +642,11 @@ varargout{1} = EEG_chan_operation_gui;
                 EEG = ALLEEG_out(EEGArray(Numofeeg));
                 [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
                 EEG = eegh(LASTCOM, EEG);
-                if gui_chan_optn_eeg.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
+                if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
                     EEG.setname = strcat(EEG.setname,'_chop');
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                     observe_EEGDAT.EEG= observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-                elseif gui_chan_optn_eeg.mode_create.Value %% If select "Create New EEGset (independent transformations)"
+                elseif gui_eegtab_chan_optn.mode_create.Value %% If select "Create New EEGset (independent transformations)"
                     [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                     if Save_file_label==1
                         [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -657,7 +657,7 @@ varargout{1} = EEG_chan_operation_gui;
                 end
             end
             
-            if gui_chan_optn_eeg.mode_create.Value%%Save the labels of the selected ERPsets
+            if gui_eegtab_chan_optn.mode_create.Value%%Save the labels of the selected ERPsets
                 try
                     Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
                     observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
@@ -718,11 +718,11 @@ varargout{1} = EEG_chan_operation_gui;
                         dsnames{ii,1} = '';
                     end
                 end
-                gui_chan_optn_eeg.edit_bineq.Data = dsnames;
-                set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+                gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
+                set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             else
                 Enable_label = 'on';
-                chanopDataor =  gui_chan_optn_eeg.edit_bineq.Data;
+                chanopDataor =  gui_eegtab_chan_optn.edit_bineq.Data;
                 for ii = 1:100
                     chanopDataorcell = char(chanopDataor{ii,1});
                     if isempty(chanopDataorcell)
@@ -731,19 +731,19 @@ varargout{1} = EEG_chan_operation_gui;
                         dsnames{ii,1} = chanopDataorcell;
                     end
                 end
-                gui_chan_optn_eeg.edit_bineq.Data = dsnames;
-                set(gui_chan_optn_eeg.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+                gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
+                set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             end
         end
-        gui_chan_optn_eeg.mode_modify.Enable=Enable_label;
-        gui_chan_optn_eeg.mode_create.Enable=Enable_label;
-        gui_chan_optn_eeg.eq_editor.Enable = Enable_label;
-        gui_chan_optn_eeg.eq_load.Enable = Enable_label;
-        gui_chan_optn_eeg.eq_clear.Enable = Enable_label;
-        gui_chan_optn_eeg.chanop_apply.Enable = Enable_label;
-        gui_chan_optn_eeg.ref_asst.Enable = Enable_label;
-        gui_chan_optn_eeg.locaInfor.Enable = Enable_label;
-        gui_chan_optn_eeg.cancel.Enable = Enable_label;
+        gui_eegtab_chan_optn.mode_modify.Enable=Enable_label;
+        gui_eegtab_chan_optn.mode_create.Enable=Enable_label;
+        gui_eegtab_chan_optn.eq_editor.Enable = Enable_label;
+        gui_eegtab_chan_optn.eq_load.Enable = Enable_label;
+        gui_eegtab_chan_optn.eq_clear.Enable = Enable_label;
+        gui_eegtab_chan_optn.chanop_apply.Enable = Enable_label;
+        gui_eegtab_chan_optn.ref_asst.Enable = Enable_label;
+        gui_eegtab_chan_optn.locaInfor.Enable = Enable_label;
+        gui_eegtab_chan_optn.cancel.Enable = Enable_label;
         observe_EEGDAT.count_current_eeg =6;
     end
 
@@ -763,11 +763,11 @@ varargout{1} = EEG_chan_operation_gui;
         end
         chanop_eeg_apply();
         estudioworkingmemory('EEGTab_chanop',0);
-        gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [1 1 1];
-        gui_chan_optn_eeg.chanop_apply.ForegroundColor = [0 0 0];
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
-        gui_chan_optn_eeg.cancel.BackgroundColor =  [1 1 1];
-        gui_chan_optn_eeg.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
     end
 
 
@@ -784,11 +784,11 @@ varargout{1} = EEG_chan_operation_gui;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
             chanop_eeg_apply();
             estudioworkingmemory('EEGTab_chanop',0);
-            gui_chan_optn_eeg.chanop_apply.BackgroundColor =  [1 1 1];
-            gui_chan_optn_eeg.chanop_apply.ForegroundColor = [0 0 0];
+            gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
+            gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
             EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
-            gui_chan_optn_eeg.cancel.BackgroundColor =  [1 1 1];
-            gui_chan_optn_eeg.cancel.ForegroundColor = [0 0 0];
+            gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
+            gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
         else
             return;
         end

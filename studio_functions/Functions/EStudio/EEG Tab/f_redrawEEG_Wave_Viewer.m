@@ -15,6 +15,7 @@ function f_redrawEEG_Wave_Viewer()
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
 addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 FonsizeDefault = f_get_default_fontsize();
 
 if nargin>1
@@ -918,6 +919,11 @@ end
 function eeg_message_panel_change(~,~)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;
+addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+
+if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
+    return;
+end
 FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
@@ -928,12 +934,41 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
     ColorB_def = [0.7020 0.77 0.85];
 end
 
+%%Update the current EEGset after Inspect/label IC
+eegicinspectFlag = erpworkingmemory('eegicinspectFlag');
+if ~isempty(eegicinspectFlag)  && eegicinspectFlag==1
+    EEGArray =  estudioworkingmemory('EEGArray');
+    if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        EEGArray = observe_EEGDAT.CURRENTSET;
+    end
+    if numel(EEGArray) ==1
+        try
+            observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
+            observe_EEGDAT.count_current_eeg=1;
+            fprintf(['\n *Update eegset',32,num2str(EEGArray),32,'* : Because you may label the ICs that will be removed.','\n']);
+            erpworkingmemory('eegicinspectFlag',0);
+        catch
+            erpworkingmemory('eegicinspectFlag',0);
+        end
+    end
+end
+
+
+
+
 Processed_Method=erpworkingmemory('f_EEG_proces_messg');
 EEGMessagepre = erpworkingmemory('f_EEG_proces_messg_pre');
-if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_message_panel == EEGMessagepre{2}
-    return;
+if isempty(EEGMessagepre)
+    EEGMessagepre = {'',0};
 end
-erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_message_panel}); 
+try
+    if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_message_panel == EEGMessagepre{2}
+        return;
+    end
+catch
+    
+end
+erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_message_panel});
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
 EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
 
