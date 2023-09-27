@@ -32,11 +32,11 @@ function varargout = chanloc(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @chanloc_OpeningFcn, ...
-                   'gui_OutputFcn',  @chanloc_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @chanloc_OpeningFcn, ...
+    'gui_OutputFcn',  @chanloc_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -59,6 +59,7 @@ function chanloc_OpeningFcn(hObject, eventdata, handles, varargin)
 
 
 
+
 axis(handles.hp_axes, 'off');
 
 % Initialise some gui defaults
@@ -70,6 +71,23 @@ end
 
 EEG = varargin{1};
 handles.output = [];
+try
+    Currentdataset = varargin{2};
+catch
+    Currentdataset = [];
+end
+
+if ~isempty(Currentdataset)
+    if isfield(EEG,'data')
+        handles.figure1.Name = ['EEG dataset',32,num2str(Currentdataset),': ERPLAB Channel Location Editor'];
+    elseif isfield(EEG,'bindata')
+        handles.figure1.Name = ['ERP dataset',32,num2str(Currentdataset),': ERPLAB Channel Location Editor'];
+    else
+        handles.figure1.Name = ['ERPLAB Channel Location Editor'];
+    end
+end
+
+
 
 try
     assert(isstruct(EEG)==1)
@@ -155,7 +173,7 @@ end
 [nchl] = pop_chanedit(nchl, 'convert','cart2topo');
 
 
-%handles.locformat = {'channum','X','Y','Z','labels'};	
+%handles.locformat = {'channum','X','Y','Z','labels'};
 handles.locformat = 'sph';
 handles.tformat = 'xyz';
 
@@ -191,7 +209,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = chanloc_OutputFcn(hObject, eventdata, handles) 
+function varargout = chanloc_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -347,10 +365,10 @@ end
 
 lnchl = readlocs([lpath lfile],'filetype',handles.locformat);
 %try
-    %lnchl = pop_chanedit(handles.nchl,'load',[lpath lfile],'format',handles.locformat);
-    %lnchl = readlocs(handles.nchl,[lpath lfile],'format',handles.locformat);
+%lnchl = pop_chanedit(handles.nchl,'load',[lpath lfile],'format',handles.locformat);
+%lnchl = readlocs(handles.nchl,[lpath lfile],'format',handles.locformat);
 %catch
-    %disp('Location file loading problems?')
+%disp('Location file loading problems?')
 %end
 
 % Sanity check
@@ -412,7 +430,7 @@ guidata(hObject, handles);
 
 refreshtable(hObject, handles);
 refreshhp(hObject, handles);
-    
+
 
 
 

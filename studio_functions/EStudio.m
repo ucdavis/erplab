@@ -134,7 +134,7 @@ observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
 observe_EEGDAT.EEG = EEG;
 observe_EEGDAT.count_current_eeg = 0;
-observe_EEGDAT.eeg_message_panel = 0;
+observe_EEGDAT.eeg_panel_message = 0;
 observe_EEGDAT.eeg_two_panels = 0;
 observe_EEGDAT.eeg_reset_def_paras = 0;
 
@@ -142,7 +142,7 @@ addlistener(observe_EEGDAT,'alleeg_change',@alleeg_change);
 addlistener(observe_EEGDAT,'eeg_change',@eeg_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -448,7 +448,7 @@ f_redrawERP();%%Draw ERP waves
 
 
 %%------------------------Message panel------------------------------------
-    function eeg_message_panel_change(~,~)
+    function eeg_panel_change_message(~,~)
       return;
     end
 

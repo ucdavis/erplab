@@ -14,7 +14,7 @@ function f_redrawEEG_Wave_Viewer()
 
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 FonsizeDefault = f_get_default_fontsize();
 
@@ -236,7 +236,7 @@ else
     MessageViewer= char(strcat('Start the EEG from the first epoch (<<)'));
 end
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
+observe_EEGDAT.eeg_panel_message=1;
 if observe_EEGDAT.EEG.trials>1 % time in second or in trials
     Startimes =1;
 else
@@ -245,7 +245,7 @@ end
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 estudioworkingmemory('Startimes',Startimes);
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 end
 
 
@@ -296,10 +296,10 @@ end
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
+observe_EEGDAT.eeg_panel_message=1;
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 
 end
 
@@ -352,10 +352,10 @@ end
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
+observe_EEGDAT.eeg_panel_message=1;
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 end
 
 
@@ -376,7 +376,7 @@ if isempty(Startimes)
     Source.String = '0';
     MessageViewer= char(strcat('Start time for the displayed EEG should be a number'));
     erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-    observe_EEGDAT.eeg_message_panel=4;
+    observe_EEGDAT.eeg_panel_message=4;
 end
 if numel(Startimes)~=1
     Startimes = Startimes(1);
@@ -419,7 +419,7 @@ estudioworkingmemory('Startimes',Startimes);
 MessageViewer= char(strcat('Editing start time for the displayed EEG'));
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 end
 
 
@@ -490,9 +490,9 @@ EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
+observe_EEGDAT.eeg_panel_message=1;
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 end
 
 
@@ -560,9 +560,9 @@ EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
+observe_EEGDAT.eeg_panel_message=1;
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 
 end
 
@@ -607,10 +607,10 @@ Startimes = StartimesMax;
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_message_panel=1;
+observe_EEGDAT.eeg_panel_message=1;
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 f_redrawEEG_Wave_Viewer();
-observe_EEGDAT.eeg_message_panel=2;
+observe_EEGDAT.eeg_panel_message=2;
 
 end
 
@@ -696,10 +696,10 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     MessageViewer= char(strcat('Plot wave for the previous EEGset'));
     erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-    observe_EEGDAT.eeg_message_panel=1;
+    observe_EEGDAT.eeg_panel_message=1;
     observe_EEGDAT.count_current_eeg =2;
     f_redrawEEG_Wave_Viewer();
-    observe_EEGDAT.eeg_message_panel=2;
+    observe_EEGDAT.eeg_panel_message=2;
 else
     return;
 end
@@ -748,10 +748,10 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
     MessageViewer= char(strcat('Plot wave for the next EEGset'));
     erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-    observe_EEGDAT.eeg_message_panel=1;
+    observe_EEGDAT.eeg_panel_message=1;
     observe_EEGDAT.count_current_eeg =2;
     f_redrawEEG_Wave_Viewer();
-    observe_EEGDAT.eeg_message_panel=2;
+    observe_EEGDAT.eeg_panel_message=2;
 else
     return;
 end
@@ -776,11 +776,11 @@ end
 MessageViewer= char(strcat('Show Command'));
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 try
-    observe_EEGDAT.eeg_message_panel=1;
+    observe_EEGDAT.eeg_panel_message=1;
     OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,'command');
-    observe_EEGDAT.eeg_message_panel=2;
+    observe_EEGDAT.eeg_panel_message=2;
 catch
-    observe_EEGDAT.eeg_message_panel=3;
+    observe_EEGDAT.eeg_panel_message=3;
 end
 end
 
@@ -812,7 +812,7 @@ pathstr = pwd;
 
 if isequal(figurename,0)
     beep;
-    observe_EEGDAT.eeg_message_panel=3;
+    observe_EEGDAT.eeg_panel_message=3;
     disp('User selected Cancel')
     return
 end
@@ -827,11 +827,11 @@ else
 end
 
 try
-    observe_EEGDAT.eeg_message_panel=1;
+    observe_EEGDAT.eeg_panel_message=1;
     OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,History,figurename);
-    observe_EEGDAT.eeg_message_panel=2;
+    observe_EEGDAT.eeg_panel_message=2;
 catch
-    observe_EEGDAT.eeg_message_panel=3;
+    observe_EEGDAT.eeg_panel_message=3;
 end
 
 end
@@ -861,11 +861,11 @@ catch
 end
 History = 'off';
 try
-    observe_EEGDAT.eeg_message_panel=1;
+    observe_EEGDAT.eeg_panel_message=1;
     OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,History,figurename);
-    observe_EEGDAT.eeg_message_panel=2;
+    observe_EEGDAT.eeg_panel_message=2;
 catch
-    observe_EEGDAT.eeg_message_panel=3;
+    observe_EEGDAT.eeg_panel_message=3;
 end
 end
 
@@ -888,13 +888,13 @@ MessageViewer= char(strcat('Reset'));
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 
 try
-    observe_EEGDAT.eeg_message_panel=1;
+    observe_EEGDAT.eeg_panel_message=1;
     %     observe_EEGDAT.Reset_Waviewer_panel=1;
     estudioworkingmemory('zoomSpace',0);
     f_redrawEEG_Wave_Viewer();
-    observe_EEGDAT.eeg_message_panel=2;
+    observe_EEGDAT.eeg_panel_message=2;
 catch
-    observe_EEGDAT.eeg_message_panel=3;
+    observe_EEGDAT.eeg_panel_message=3;
 end
 
 %%Reset the window size and position
@@ -916,10 +916,10 @@ end
 
 
 % %%------------------------Message panel------------------------------------
-function eeg_message_panel_change(~,~)
+function eeg_panel_change_message(~,~)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;
-addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+% addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
 if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
     return;
@@ -962,24 +962,24 @@ if isempty(EEGMessagepre)
     EEGMessagepre = {'',0};
 end
 try
-    if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_message_panel == EEGMessagepre{2}
+    if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_panel_message == EEGMessagepre{2}
         return;
     end
 catch
     
 end
-erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_message_panel});
+erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_panel_message});
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
 EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
 
-if observe_EEGDAT.eeg_message_panel==1
+if observe_EEGDAT.eeg_panel_message==1
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
-elseif observe_EEGDAT.eeg_message_panel==2
+elseif observe_EEGDAT.eeg_panel_message==2
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('2- ',Processed_Method,': Complete');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0.5 0];
     
-elseif observe_EEGDAT.eeg_message_panel==3
+elseif observe_EEGDAT.eeg_panel_message==3
     if ~strcmp(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
     end
@@ -994,7 +994,7 @@ else
     pause(0.5);
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
 end
-if  observe_EEGDAT.eeg_message_panel==2 || observe_EEGDAT.eeg_message_panel==3
+if  observe_EEGDAT.eeg_panel_message==2 || observe_EEGDAT.eeg_panel_message==3
     pause(0.01);
     EStudio_gui_erp_totl.eegProcess_messg.String = '';
     EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];

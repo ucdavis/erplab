@@ -53,4 +53,14 @@ if ~isempty(MyViewer_binepoch) && MyViewer_binepoch==1
 end
 
 
+%%edit chan
+%%Bin-based epoch
+MyViewer_editchan = estudioworkingmemory('EEGTab_editchan');
+if ~isempty(MyViewer_editchan) && MyViewer_editchan==1
+    messgStr  = char( 'Changes on "Edit Channels" have not been applied');
+    eegpanelIndex =7;
+end
+
+
+
 return;

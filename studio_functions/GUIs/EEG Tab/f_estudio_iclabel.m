@@ -96,9 +96,24 @@ if length(chanorcomp) > PLOTPERFIG
         'this function will pop-up several windows'), 'Confirmation', 'Cancel', 'OK','OK');
     if  ~isempty( strmatch(lower(ButtonName), 'cancel')), return; end;
 end;
-
-
-LASTCOM1 = pop_viewprops( EEG, 0, chanorcomp, spec_opt, erp_opt, scroll_event, classifier_name);
+if ~exist('ICLabel','dir') && ~exist('eegplugin_iclabel', 'file')
+    fprintf(2, 'Warning: ICLabel default plugin missing (probably due to downloading zip file from Github). Install manually.\n');
+    EEG = [];
+    return;
+end
+try
+    LASTCOM1 = pop_viewprops( EEG, 0, chanorcomp, spec_opt, erp_opt, scroll_event, classifier_name);
+catch
+    pathName = which ('eegplugin_iclabel');
+    pathName = pathName(1:findstr(pathName,'eegplugin_iclabel.m')-1);
+    % add all ERPLAB subfolders
+    addpath(genpath(pathName));
+    try
+        LASTCOM1 = pop_viewprops( EEG, 0, chanorcomp, spec_opt, erp_opt, scroll_event, classifier_name);
+    catch
+        EEG = [];
+    end
+end
 EEG = eegh(LASTCOM1, EEG);
 fprintf([LASTCOM1,'\n']);
 

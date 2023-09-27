@@ -12,7 +12,7 @@
 function varargout = f_EEG_Plot_setting_GUI(varargin)
 
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
@@ -470,7 +470,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         MessageViewer= char(strcat('Plot Setting > Apply'));
         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        observe_EEGDAT.eeg_message_panel=1;
+        observe_EEGDAT.eeg_panel_message=1;
         
         %%display original data?
         EEG_plotset{1}= EStduio_gui_EEG_plotset.disp_orgdata.Value;
@@ -526,7 +526,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [0 0 0];
         
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.eeg_message_panel=2;
+        observe_EEGDAT.eeg_panel_message=2;
     end
 
 

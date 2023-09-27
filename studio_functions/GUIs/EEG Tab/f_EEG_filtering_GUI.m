@@ -10,7 +10,7 @@ function varargout = f_EEG_filtering_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 gui_eegtab_filtering = struct();
@@ -491,19 +491,19 @@ varargout{1} = EEG_filtering_box;
         if length(valueh)~=1
             MessageViewer =  ['Filtering - Invalid input for high-pass filter cutoff'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if valueh>=fs/2
             MessageViewer =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if valueh<0.001
             msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -554,20 +554,20 @@ varargout{1} = EEG_filtering_box;
         if length(valuel)~=1 || isempty(valuel)
             msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if valuel>=fs/2
             msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
         if valuel<0.001
             msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         %if the valueh is between 0.1 and fs/2 Hz
@@ -610,13 +610,13 @@ varargout{1} = EEG_filtering_box;
             if isempty(valuel)|| length(valuel)~=1
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if valuel>=fs/2
                 msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             
@@ -624,7 +624,7 @@ varargout{1} = EEG_filtering_box;
                 if valuel<0.001
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     return;
                 end
             end
@@ -634,7 +634,7 @@ varargout{1} = EEG_filtering_box;
             if length(valueh)~=1
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if valueh>=fs/2
@@ -642,14 +642,14 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if gui_eegtab_filtering.lp_tog.Value ==0
                 if valueh<0.001
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     return;
                 end
             end
@@ -659,13 +659,13 @@ varargout{1} = EEG_filtering_box;
             if valueh >0 && valueh >0 && valueh >=valuel
                 msgboxText =  ['Filtering - The lowest bandpass cuttoff is the highest bandpass cuttoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if valueh==0 && valuel==0
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
         end
@@ -746,7 +746,7 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if hicutoff>=fs/2
@@ -754,7 +754,7 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if gui_eegtab_filtering.hp_tog.Value ==0
@@ -763,7 +763,7 @@ varargout{1} = EEG_filtering_box;
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     return;
                 end
             end
@@ -773,13 +773,13 @@ varargout{1} = EEG_filtering_box;
             if length(locutoff)~=1
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if locutoff>=fs/2
                 msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             
@@ -787,7 +787,7 @@ varargout{1} = EEG_filtering_box;
                 if locutoff<0.001
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     return;
                 end
             end
@@ -797,7 +797,7 @@ varargout{1} = EEG_filtering_box;
             if locutoff==0 && hicutoff==0
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
         end
@@ -836,7 +836,7 @@ varargout{1} = EEG_filtering_box;
         else
             msgboxText =  ['Filtering - Invalid type of filter'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         %%save changed parameters to the memory file
@@ -844,7 +844,7 @@ varargout{1} = EEG_filtering_box;
         
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_EEG_proces_messg','Filtering>Apply');
-        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
@@ -875,7 +875,7 @@ varargout{1} = EEG_filtering_box;
                 if EEGArray(Numofeeg)> length(observe_EEGDAT.ALLEEG)
                     msgboxText =  ['Filtering - No corresponding EEG exists in ALLEEG'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     break;
                 end
                 
@@ -950,7 +950,7 @@ varargout{1} = EEG_filtering_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -961,7 +961,7 @@ varargout{1} = EEG_filtering_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is erros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
         end
         
@@ -1136,12 +1136,12 @@ varargout{1} = EEG_filtering_box;
         elseif ~strcmpi(fdesign, 'notch') && locutoff==0 && hicutoff==0 % Butter (IIR) and FIR
             msgboxText =  'I beg your pardon?';
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         else
             msgboxText =  ['Filtering - Invalid type of filter'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -1149,14 +1149,14 @@ varargout{1} = EEG_filtering_box;
             if 3*filterorder>=length(observe_EEGDAT.EEG.times)
                 msgboxText =  ['Filtering -The length of the data must be more than three times the filter order'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
         end
         
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_EEG_proces_messg','Filtering>Advanced');
-        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         try
             Suffix_label = 1;
             FilterMethod = 'filtered';
@@ -1180,7 +1180,7 @@ varargout{1} = EEG_filtering_box;
                 if EEGArray(Numofeeg)> length(observe_EEGDAT.ALLEEG)
                     msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     break;
                 end
                 EEG = ALLEEG_advance(EEGArray(Numofeeg));
@@ -1249,7 +1249,7 @@ varargout{1} = EEG_filtering_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -1261,7 +1261,7 @@ varargout{1} = EEG_filtering_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is erros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
         end
     end

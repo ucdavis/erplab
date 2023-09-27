@@ -76,7 +76,7 @@ observe_EEGDAT.ALLEEG = [];
 observe_EEGDAT.CURRENTSET = 1;
 observe_EEGDAT.EEG = [];
 observe_EEGDAT.count_current_eeg = 0;
-observe_EEGDAT.eeg_message_panel = 0;
+observe_EEGDAT.eeg_panel_message = 0;
 observe_EEGDAT.eeg_two_panels = 0;
 observe_EEGDAT.eeg_reset_def_paras = 0;
 

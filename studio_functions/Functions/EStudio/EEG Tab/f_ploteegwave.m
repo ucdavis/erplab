@@ -1,3 +1,7 @@
+
+
+
+
 function errmeg = f_ploteegwave(EEG,ChanArray,ICArray,Winlength,...
     AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,...
     FigOutpos,FigureName)

@@ -58,6 +58,9 @@ EStudio_gui_erp_totl.eegpanelSizes(9) = 170;
 EStudio_gui_erp_totl.eegpanel{10} = f_EEG_eeglabica_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(10) = 170;
 
+EStudio_gui_erp_totl.eegpanel{11} = f_EEG_edit_channel_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(11) = 240;
+
 
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
@@ -74,6 +77,7 @@ set( EStudio_gui_erp_totl.eegpanel{7}, 'MinimizeFcn', {@nMinimize, 7} );
 set( EStudio_gui_erp_totl.eegpanel{8}, 'MinimizeFcn', {@nMinimize, 8} );
 set( EStudio_gui_erp_totl.eegpanel{9}, 'MinimizeFcn', {@nMinimize, 9} );
 set( EStudio_gui_erp_totl.eegpanel{10}, 'MinimizeFcn', {@nMinimize, 10} );
+set( EStudio_gui_erp_totl.eegpanel{11}, 'MinimizeFcn', {@nMinimize, 11} );
 %%shrinking Panels 4-17 to just their title-bar
 whichpanel = [2 4];
 for Numofpanel = 1:length(whichpanel)

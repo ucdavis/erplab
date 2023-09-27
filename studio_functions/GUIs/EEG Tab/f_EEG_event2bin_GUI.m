@@ -12,7 +12,7 @@
 function varargout = f_EEG_event2bin_GUI(varargin)
 
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
@@ -123,7 +123,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~ischar(BDFileName) || isempty(BDFileName)
             MessageViewer =  ['Assign Events to Bins - bdfile should be a string.'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
         end
         estudioworkingmemory('EEGTab_event2bin',1);
@@ -206,7 +206,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Advanced');
-        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         
         estudioworkingmemory('EEGTab_event2bin',0);
@@ -243,7 +243,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 if ~isfile(bdfileName)
                     bdfileName ='';
                     erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Advanced:Such bdfile doesnot exist');
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                 end
                 def{1} = bdfileName;
                 
@@ -275,19 +275,19 @@ varargout{1} = EStudio_box_EEG_event2bin;
                                 msgboxText = ['Assign Events to Bins > Advanced: EVENTLIST.eventinfo structure is empty!\n'...
                                     'Use Create EVENTLIST before BINLISTER'];
                                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                                observe_EEGDAT.eeg_message_panel =4;
+                                observe_EEGDAT.eeg_panel_message =4;
                                 return
                             end
                         else
                             msgboxText =  ['Assign Events to Bins > Advanced: EVENTLIST.eventinfo structure was not found, please Create EVENTLIST before BINLISTER'];
                             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                            observe_EEGDAT.eeg_message_panel =4;
+                            observe_EEGDAT.eeg_panel_message =4;
                             return
                         end
                     else
                         msgboxText =  ['Assign Events to Bins > Advanced: EVENTLIST structure was not found, Please Create EVENTLIST before BINLISTER'];
                         erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                        observe_EEGDAT.eeg_message_panel =4;
+                        observe_EEGDAT.eeg_panel_message =4;
                         return
                     end
                     logfilename = 'no';
@@ -313,7 +313,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
                     case 0
                         msgboxText = 'Assign Events to Bins > Advanced: Where should I send the update EVENTLIST???\n Pick an option.';
                         erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                        observe_EEGDAT.eeg_message_panel =4;
+                        observe_EEGDAT.eeg_panel_message =4;
                         return
                     case 1
                         stroption2do = 'Text';
@@ -369,7 +369,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -379,7 +379,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
 
@@ -392,7 +392,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Apply');
-        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
@@ -406,7 +406,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if isempty(bdfileName) || ~ischar(bdfileName)
             MessageViewer =  ['Assign Events to Bins - bdfile should be a string'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
             return;
         end
@@ -414,7 +414,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~isfile(bdfileName)
             MessageViewer =  ['Assign Events to Bins - Cannot find the specified bdfile'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
             return;
         end
@@ -427,7 +427,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if eventlistFlag==1
             MessageViewer =  ['Assign Events to Bins - No Eventlist or it is empty for some eegsets'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -526,7 +526,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -536,7 +536,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
     end

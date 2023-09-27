@@ -8,9 +8,6 @@
 
 
 
-
-
-
 % *** This function is part of ERPLAB Studio ***
 % Author: Guanghui Zhang & Steven Luck
 % ghzhang@ucdavis.edu, sjluck@ucdavis.edu
@@ -283,9 +280,9 @@ end
 %%%%%%%%%%%%%%%
 % insert the function that is to plot the EEG
 if ~isempty(qfigureName) && shist~=4
-   f_ploteegwave(EEG,qchanArray,qICArray,qWinlength,...
-    qAmpScale,qChanLabel,qSubmean,qEventOnset,qStackFlag,qNormFlag,qStartimes,...
-    qfigSize,qfigureName) ;
+    f_ploteegwave(EEG,qchanArray,qICArray,qWinlength,...
+        qAmpScale,qChanLabel,qSubmean,qEventOnset,qStackFlag,qNormFlag,qStartimes,...
+        qfigSize,qfigureName) ;
     
 end
 

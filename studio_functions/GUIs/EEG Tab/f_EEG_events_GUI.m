@@ -12,7 +12,7 @@ function varargout = f_EEG_events_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
@@ -111,7 +111,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Summarize event code');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -124,12 +124,12 @@ varargout{1} = EStudio_eeg_events_box;
                 CheckFlag = 0;
                 msgboxText = ['EEG Events >  Summarize event code:EEG.event is empty for',32,EEG.setname];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
             elseif isempty([EEG(1).event.type])
                 CheckFlag = 0;
                 msgboxText = ['EEG Events >  Summarize event code:EEG.event.type is empty for',32,EEG.setname];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
             else
                 CheckFlag=1;
             end
@@ -142,7 +142,7 @@ varargout{1} = EStudio_eeg_events_box;
             end
         end
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Summarize event code');
-        observe_EEGDAT.eeg_message_panel =2;
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 
@@ -166,7 +166,7 @@ varargout{1} = EStudio_eeg_events_box;
         
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shift event code');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -238,7 +238,7 @@ varargout{1} = EStudio_eeg_events_box;
                         '\n Previously Created ERPLAB EVENTLIST Detected.\n Running this function changes your event codes, and so your prior Eventlist will be deleted.\n Re-create a new ERPLAB Eventlist afterwards.\n'];
                     fprintf(2,WanMessage);
                     %                erpworkingmemory('f_EEG_proces_messg',WanMessage);
-                    %                observe_EEGDAT.eeg_message_panel =4;
+                    %                observe_EEGDAT.eeg_panel_message =4;
                 end
                 
                 %% Run pop_ command again with the inputs from the GUI
@@ -301,7 +301,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -312,7 +312,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
         
@@ -336,7 +336,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Create eventlist');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -468,7 +468,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -479,7 +479,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
         
@@ -503,12 +503,12 @@ varargout{1} = EStudio_eeg_events_box;
         end
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
             erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs: No EVETLIST, please create one first');
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -556,7 +556,7 @@ varargout{1} = EStudio_eeg_events_box;
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             if ~isfield(EEG, 'EVENTLIST')
                 erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs:EVENTLIST structure is empty');
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
             else
                 filenameeeg = EEG.filename;
                 [pathxeeg, filenameeeg, ext] = fileparts(filenameeeg);
@@ -582,7 +582,7 @@ varargout{1} = EStudio_eeg_events_box;
             end
         end
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs');
-        observe_EEGDAT.eeg_message_panel =2;
+        observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
 
@@ -609,7 +609,7 @@ varargout{1} = EStudio_eeg_events_box;
         
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Import eventlist');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -683,7 +683,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -693,7 +693,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
         
@@ -717,7 +717,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export eventlist');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         
         [fname, pathname] = uiputfile({'*.*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
@@ -769,14 +769,14 @@ varargout{1} = EStudio_eeg_events_box;
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG;
             else
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 fprintf(2,['Cannot export eventlist for:',32,EEG.setname,'\n']);
                 fprintf( [repmat('-',1,100) '\n']);
             end
         end
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export eventlist');
-        observe_EEGDAT.eeg_message_panel =2;
+        observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
 
@@ -802,7 +802,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shuffle events/bins/samples');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -849,7 +849,7 @@ varargout{1} = EStudio_eeg_events_box;
             valueatfield = 'off';
         else
             erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shuffle events/bins/samples: invalid field');
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -858,7 +858,7 @@ varargout{1} = EStudio_eeg_events_box;
             if isempty(valueatfield)
                 msgboxText =  'EEG Events >  Shuffle events/bins/samples:Invalid value for "codes to shuffle"';
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
         end
@@ -900,7 +900,7 @@ varargout{1} = EStudio_eeg_events_box;
                 else
                     msgboxText =  ['EEG Events >  Shuffle events/bins/samples:', msgboxText];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_message_panel =4;
+                    observe_EEGDAT.eeg_panel_message =4;
                     fprintf( ['\n',repmat('-',1,100) '\n\n']);
                     break;
                 end
@@ -962,7 +962,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -972,7 +972,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
         
@@ -996,7 +996,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Transfer event to EEG.event');
-        observe_EEGDAT.eeg_message_panel =1;
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -1072,7 +1072,7 @@ varargout{1} = EStudio_eeg_events_box;
                     else
                         msgboxText =  ['EEG Events >  Transfer event to EEG.event:', msgboxText];
                         erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                        observe_EEGDAT.eeg_message_panel =4;
+                        observe_EEGDAT.eeg_panel_message =4;
                         fprintf( ['\n',repmat('-',1,100) '\n\n']);
                         break;
                     end
@@ -1134,7 +1134,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -1144,7 +1144,7 @@ varargout{1} = EStudio_eeg_events_box;
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is errros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
     end

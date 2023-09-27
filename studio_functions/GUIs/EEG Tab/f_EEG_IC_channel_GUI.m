@@ -13,7 +13,7 @@ function varargout = f_EEG_IC_channel_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
@@ -272,7 +272,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         end
         MessageViewer= char(strcat('Channel and IC Selection > Apply'));
         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        observe_EEGDAT.eeg_message_panel=1;
+        observe_EEGDAT.eeg_panel_message=1;
         
         
         new_chans= EStduio_eegtab_EEG_IC_chan.ElecRange.Value;
@@ -305,14 +305,14 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         EStduio_eegtab_EEG_IC_chan.plot_reset.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_reset.ForegroundColor = [0 0 0];
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.eeg_message_panel=2;
+        observe_EEGDAT.eeg_panel_message=2;
     end
 
 
 
 %----------displayed channel label will be midified after channels was selected--------
     function EEG_chan_change(~,~)
-        if observe_EEGDAT.eeg_message_panel==0
+        if observe_EEGDAT.eeg_panel_message==0
             return;
         end
         chanString = EStduio_eegtab_EEG_IC_chan.ElecRange.String;
@@ -338,7 +338,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 %----------displayed bin label will be midified after different channels was selected--------
     function EEG_IC_change(~,~)
-        if observe_EEGDAT.eeg_message_panel==0 ||  isempty(observe_EEGDAT.EEG_IC)
+        if observe_EEGDAT.eeg_panel_message==0 ||  isempty(observe_EEGDAT.EEG_IC)
             return;
         end
         binArray =  observe_EEGDAT.EEG_IC;

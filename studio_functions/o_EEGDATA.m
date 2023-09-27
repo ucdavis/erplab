@@ -5,10 +5,9 @@ classdef o_EEGDATA < handle
         EEG
         CURRENTSET
         count_current_eeg
-        eeg_message_panel
+        eeg_panel_message
         eeg_two_panels
         eeg_reset_def_paras
-        
     end
     
     
@@ -17,11 +16,9 @@ classdef o_EEGDATA < handle
         eeg_change
         current_change
         count_current_eeg_change
-        eeg_message_panel_change
+        eeg_panel_change_message
         eeg_two_panels_change
         eeg_reset_def_paras_change
-        
-        
     end
     
     
@@ -52,9 +49,9 @@ classdef o_EEGDATA < handle
         
         
         %%message
-        function set.eeg_message_panel(obj_eeg,values_eeg)
-            obj_eeg.eeg_message_panel = values_eeg;
-            notify(obj_eeg,'eeg_message_panel_change');
+        function set.eeg_panel_message(obj_eeg,values_eeg)
+            obj_eeg.eeg_panel_message = values_eeg;
+            notify(obj_eeg,'eeg_panel_change_message');
         end
         
         %%two panels

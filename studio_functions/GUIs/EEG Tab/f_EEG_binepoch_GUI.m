@@ -9,7 +9,7 @@
 function varargout = f_EEG_binepoch_GUI(varargin)
 
 global observe_EEGDAT;
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
@@ -196,14 +196,14 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - Invalid input for "Time range"'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if numel(lat_osci) ~=2
             beep;
             msgboxText =  ['Extract Bin-based Epochs - Wrong time range for the epoch. Please, enter two values'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -212,7 +212,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - The first value must be smaller than the second one for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -220,7 +220,7 @@ varargout{1} = EEG_binepoch_box;
         if lat_osci(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-based Epochs - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -395,7 +395,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - Invalid input for "Time range"'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -403,7 +403,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - Wrong time range for the epoch. Please, enter two values'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -412,7 +412,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - The first value must be smaller than the second one for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -420,7 +420,7 @@ varargout{1} = EEG_binepoch_box;
         if EpochRange(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-based Epochs - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -431,7 +431,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - Invalid input for "baseline period"'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
             return;
         end
@@ -439,7 +439,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - Wrong baseline period for the epoch. Please, enter two values'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
             return;
         end
@@ -448,7 +448,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs - The first value must be smaller than the second one for "baseline period"'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
             return;
         end
@@ -456,14 +456,14 @@ varargout{1} = EEG_binepoch_box;
         if Baselineperiod(2) > EpochRange(2)
             msgboxText =  ['Extract Bin-based Epochs - Second value must be smaller than',32,num2str(EpochRange(2)),32,"baseline period"];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
             return;
         end
         if Baselineperiod(1) < EpochRange(1)
             msgboxText =  ['Extract Bin-based Epochs - First value must be larger than',32,num2str(EpochRange(1)),32,"baseline period"];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
             return;
         end
@@ -482,7 +482,7 @@ varargout{1} = EEG_binepoch_box;
         end
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_EEG_proces_messg','Extract Bin-based Epochs > Apply');
-        observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
         gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
@@ -498,7 +498,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs > Apply - Invalid input for "Time range"'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -506,7 +506,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs >  Apply - Wrong time range for the epoch. Please, enter two values'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -515,7 +515,7 @@ varargout{1} = EEG_binepoch_box;
             beep;
             msgboxText =  ['Extract Bin-based Epochs > Apply - The first value must be smaller than the second one for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -523,7 +523,7 @@ varargout{1} = EEG_binepoch_box;
         if EpochRange(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-based Epochs > Apply - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -536,7 +536,7 @@ varargout{1} = EEG_binepoch_box;
                 beep;
                 msgboxText =  ['Extract Bin-based Epochs > Apply - Invalid input for "baseline period"'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 return;
             end
@@ -544,7 +544,7 @@ varargout{1} = EEG_binepoch_box;
                 beep;
                 msgboxText =  ['Extract Bin-based Epochs > Apply - Wrong baseline period for the epoch. Please, enter two values'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 return;
             end
@@ -552,21 +552,21 @@ varargout{1} = EEG_binepoch_box;
                 beep;
                 msgboxText =  ['Extract Bin-based Epochs > Apply - The first value must be smaller than the second one for "baseline period"'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 return;
             end
             if Baselineperiod(2) > EpochRange(2)
                 msgboxText =  ['Extract Bin-based Epochs > Apply - Second value must be smaller than',32,num2str(EpochRange(2)),32,"baseline period"];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 return;
             end
             if Baselineperiod(1) < EpochRange(1)
                 msgboxText =  ['Extract Bin-based Epochs Apply - First value must be larger than',32,num2str(EpochRange(1)),32,"baseline period"];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
                 return;
             end
@@ -618,12 +618,14 @@ varargout{1} = EEG_binepoch_box;
             
             for Numofeeg = 1:numel(EEGArray)
                 EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                fprintf(['\n\n **Your current EEGset(No.',num2str(EEGArray(Numofeeg)),')**\n',32,EEG.setname,'\n']);
+                fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                fprintf(['**Your current EEGset(No.',num2str(EEGArray(Numofeeg)),')**\n',32,EEG.setname,'\n']);
                 %%epoch EEG data
-                [EEG, LASTCOM] = pop_epochbin( EEG , EpochRange, BaselineMethod, 'History', 'gui');
+                [EEG, LASTCOM] = pop_epochbin( EEG , EpochRange, BaselineMethod, 'History', 'implicit');
                 if isempty(LASTCOM)
                     return;
                 end
+                fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
                 erpworkingmemory('Change2epocheeg',1);%%force the option to be Epoched EEG in "EEGsets" panel
                 if numel(EEGArray) ==1
@@ -667,6 +669,7 @@ varargout{1} = EEG_binepoch_box;
                     EEG.filepath = '';
                 end
                 [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                fprintf( [repmat('-',1,100) '\n']);
             end
             
             try
@@ -683,7 +686,7 @@ varargout{1} = EEG_binepoch_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -694,10 +697,10 @@ varargout{1} = EEG_binepoch_box;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%There is erros in processing procedure
+            observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
+            fprintf( [repmat('-',1,100) '\n']);
             return;
         end
-        
         
     end
 

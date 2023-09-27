@@ -11,7 +11,7 @@
 function varargout = f_EEG_chanoperation_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-addlistener(observe_EEGDAT,'eeg_message_panel_change',@eeg_message_panel_change);
+% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 
@@ -261,14 +261,14 @@ varargout{1} = EEG_chan_operation_gui;
             msgboxText =  ['EEG Channel Operations - Please, check your file:\n '...
                 fullname '\n'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if size(formulas,2)>256
             msgboxText =  ['EEG Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         fclose(fid_formula);
@@ -532,7 +532,7 @@ varargout{1} = EEG_chan_operation_gui;
             if isempty(EEGArray)
                 msgboxText =  ['EEG Channel Operations - No EEGset was selected'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_message_panel =4;
+                observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
         end
@@ -551,7 +551,7 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(Formula_str)
             msgboxText =  ['EEG Channel Operations - You have not yet written a formula'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -565,7 +565,7 @@ varargout{1} = EEG_chan_operation_gui;
         if goeson==0
             msgboxText =  ['EEG Channel Operations - See Command Window'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_message_panel =4;
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -636,7 +636,7 @@ varargout{1} = EEG_chan_operation_gui;
         
         try
             erpworkingmemory('f_EEG_proces_messg','EEG Channel Operations > Apply');
-            observe_EEGDAT.eeg_message_panel =1; %%Marking for the procedure has been started.
+            observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
             
             for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
                 EEG = ALLEEG_out(EEGArray(Numofeeg));
@@ -673,7 +673,7 @@ varargout{1} = EEG_chan_operation_gui;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =2;
+            observe_EEGDAT.eeg_panel_message =2;
         catch
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -684,7 +684,7 @@ varargout{1} = EEG_chan_operation_gui;
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_message_panel =3;%%
+            observe_EEGDAT.eeg_panel_message =3;%%
         end
         
     end
