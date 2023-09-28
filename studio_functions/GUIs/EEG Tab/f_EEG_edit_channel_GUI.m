@@ -785,74 +785,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             return;
         end
         
-        histoflags = summary_rejectflags(EEG);
-        %check currently activated flags
-        flagcheck = sum(histoflags);
-        [~,active_flags] = find(flagcheck>1);
-        if isempty(active_flags)
-            erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Interpolate marked epochs:None of epochs was marked');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-            return;
-        end
-        
-        
-        dlg_title = {'EStudio:Interpolate Marked Epochs'};
-        %defaults
-        defx = {0, 'spherical',[],[],[],0,10};
-        def = erpworkingmemory('pop_artinterp');
-        
-        if isempty(def)
-            def = defx;
-        else
-            %make sure that electrode number exists in current list of
-            %available channels
-            %def{1} = def{1}(ismember_bc2(def{1},1:EEG(1).nbchan));
-            def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
-        end
-        
-        try
-            chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
-        catch
-            chanlabels = [];
-        end
-        histoflags = summary_rejectflags(EEG);
-        %check currently activated flags
-        flagcheck = sum(histoflags);
-        active_flags = (flagcheck>1);
-        if ChanArray==1
-            def{3} = ChanArray;
-        end
-        if numel(ChanArray)== numel(EEG.nbchan)
-            def{6} = 1;
-        end
-        %
-        % Call GUI
-        %
-        answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
-        
-        if isempty(answer)
-            disp('User selected Cancel')
-            return
-        end
-        replaceFlag =  answer{1};
-        interpolationMethod      =  answer{2};
-        replaceChannelInd     =  answer{3};
-        replaceChannelLabel     =  answer{4};
-        ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
-        many_electrodes = answer{6};
-        threshold_perc = answer{7};
-        
-        viewer = 0; % no viewer
-        viewstr = 'off';
-        
-        if ~isempty(find(replaceFlag<1 | replaceFlag>16, 1))
-            msgboxText  ='Edit Channels >  Interpolate marked epochs: flag cannot be greater than 16 nor lesser than 1';
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-            return;
-        end
-        erpworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
-            answer{6}, answer{7}});
         
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
         
@@ -861,7 +793,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
-        
         %%loop for the selected EEGsets
         try
             for Numofeeg = 1:numel(EEGArray)
@@ -869,6 +800,69 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 fprintf(['*Interpolate marked epochs*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+                
+                dlg_title = {['Dataset',32,num2str(EEGArray(Numofeeg)),32,': Interpolate Marked Epochs']};
+                %defaults
+                defx = {0, 'spherical',[],[],[],0,10};
+                def = erpworkingmemory('pop_artinterp');
+                
+                if isempty(def)
+                    def = defx;
+                else
+                    def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
+                end
+                
+                try
+                    chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
+                catch
+                    chanlabels = [];
+                end
+                histoflags = summary_rejectflags(EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                active_flags = (flagcheck>1);
+                
+                if isempty(active_flags)
+                    erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Interpolate marked epochs:None of epochs was marked');
+                    observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                    return;
+                end
+                
+                if ChanArray==1
+                    def{3} = ChanArray;
+                end
+                if numel(ChanArray)== numel(EEG.nbchan)
+                    def{6} = 1;
+                end
+                %
+                % Call GUI
+                %
+                answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
+                
+                if isempty(answer)
+                    disp('User selected Cancel')
+                    return
+                end
+                replaceFlag =  answer{1};
+                interpolationMethod      =  answer{2};
+                replaceChannelInd     =  answer{3};
+                replaceChannelLabel     =  answer{4};
+                ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
+                many_electrodes = answer{6};
+                threshold_perc = answer{7};
+                
+                viewer = 0; % no viewer
+                viewstr = 'off';
+                
+                if ~isempty(find(replaceFlag<1 | replaceFlag>16, 1))
+                    msgboxText  ='Edit Channels >  Interpolate marked epochs: flag cannot be greater than 16 nor lesser than 1';
+                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                    observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                    return;
+                end
+                erpworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
+                    answer{6}, answer{7}});
+                
                 
                 if  replaceChannelInd > EEG.nbchan && many_electrodes==0
                     replaceChannelInd = [];
@@ -941,7 +935,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -971,20 +964,61 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
+        ChanArray =  estudioworkingmemory('EEG_ChanArray');
         
         %%loop for the selected EEGsets
         try
             for Numofeeg = 1:numel(EEGArray)
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                fprintf(['*Edit Selected  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
                 
                 %%edit channel locations
-                EEG = chanloc(EEG,EEGArray(Numofeeg));
+                if isempty(ChanArray) || min(ChanArray(:)) > EEG.nbchan || max(ChanArray(:)) > EEG.nbchan
+                    ChanArray = [1:EEG.nbchan];
+                end
+                
+                
+                titleName= ['Dataset',32,num2str(EEGArray(Numofeeg)),': Add/Edit Channel locations'];
+                EEGInput = EEG;
+                EEGInput.chanlocs = EEG.chanlocs(ChanArray);
+                
+                app = feval('f_editchan_gui',EEGInput,titleName);
+                waitfor(app,'Finishbutton',1);
+                try
+                    EEGoutput = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+                    app.delete; %delete app from view
+                    pause(0.5); %wait for app to leave
+                catch
+                    disp('User selected Cancel');
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                    break;
+                end
+                
+                if isempty(EEGoutput)
+                    disp('User selected Cancel');
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                    break;
+                end
+                Chanlocs = EEGoutput.chanlocs;
+                
+                [EEG, LASTCOM] = pop_editdatachanlocs(observe_EEGDAT.ALLEEG,EEGArray(Numofeeg),...
+                    'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'implicit');
+                
+                if isempty(LASTCOM)
+                    erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Interpolate marked epochs: Please check you data or you selected cancel');
+                    observe_EEGDAT.eeg_panel_message =4;
+                    return;
+                end
+                EEG = eegh(LASTCOM, EEG);
+                fprintf(['\n',LASTCOM,'\n']);
+                
+                
                 if CreateeegFlag==0
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                 else
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_interp')),EEG.filename,EEGArray(Numofeeg));
+                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_editchan')),EEG.filename,EEGArray(Numofeeg));
                     if isempty(Answer)
                         disp('User selected cancel.');
                         return;
@@ -1038,10 +1072,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             return;
         end
-        
     end
-
-
 
 
 %%--------Settting will be modified if the selected was changed------------
@@ -1066,7 +1097,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if observe_EEGDAT.count_current_eeg ~=11
             return;
         end
-        
         EStduio_eegtab_EEG_edit_chan.mode_modify.Enable ='on';
         EStduio_eegtab_EEG_edit_chan.mode_create.Enable = 'on';
         EStduio_eegtab_EEG_edit_chan.delete_chan.Enable='on';

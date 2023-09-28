@@ -416,7 +416,7 @@ comCHOP2     = ['[ERP, ERPCOM] = pop_erpchanoperator(ERP);' '[ERP, ALLERPCOM] = 
 comPLOT      = ['[ERP, ERPCOM] = pop_ploterps(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comPLOTV      =['ERPLAB_ERP_Viewer(ALLERP,CURRENTERP);'];
 comSCALP     = ['[ERP, ERPCOM] = pop_scalplot(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
-comCHLOCTABLE= ['[ERP] = chanloc(ERP);'];
+comCHLOCTABLE= ['[ERP] = pop_editdatachanlocs(ALLERP,CURRENTERP);'];%%GH Sep 2023
 comCHLOC     = ['[ERP, ERPCOM] = pop_erpchanedit(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCHLOCEEGLAB = ['[ERP ERPCOM] = pop_getChanInfoFromEeglab(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSAVE      = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''save'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];

@@ -1,30 +1,30 @@
-% PURPOSE:  pop_rename2chan.m is to change the channel names
+% PURPOSE:  pop_editdatachanlocs.m is to edit the channel locations
 %
 %
 
 % FORMAT   :
 %
-% pop_rename2chan(ALLEEG, CURRENTSET, parameters);
+% pop_editdatachanlocs(ALLEEG, CURRENTSET, parameters);
 %
 
-% ALLEEG        - structure array of EEG structures
-% CURRENTSET    - Index for current EEGset
+% ALLEEG        - structure array of ALLEEG/ERP structures
+% CURRENTSET    - Index for current EEGset/ERPset
 
 
 
 % The available parameters are as follows:
 %
 %ChanArray      -index(es) for the selected channels
-%Chanlabels     - new names for the selected channels
+%Chanlocs       - channel locations for the selected channels
 
 
 
 %%Output
-%%EEG         -EEG structure with the changed names of the selected channels
+%%EEG         -EEG/ERP structure with the changed chan locations of the selected channels
 
 
 %%Example:
-%EEG =  pop_rename2chan( ALLEEG, 2, 'ChanArray', [1  2  3], 'Chanlabels', {'FP1-1' , 'F3-2' , 'F7-3' }, 'History', 'implicit' );
+%EEG =  pop_editdatachanlocs( ALLEEG, 2, 'ChanArray', [1  2  3], 'Chanlocs', chanlocs, 'History', 'implicit' );
 
 
 
@@ -38,11 +38,11 @@
 
 
 
-function [EEG,eegcom] = pop_rename2chan(ALLEEG,CURRENTSET,varargin)
+function [EEG,eegcom] = pop_editdatachanlocs(ALLEEG,CURRENTSET,varargin)
 
 eegcom = '';
 if nargin < 1
-    help pop_rename2chan
+    help pop_editdatachanlocs
     return;
 end
 
@@ -73,30 +73,34 @@ if nargin< 3
     end
     
     ChanArray = [1:length(EEG.chanlocs)];
-    [eloc, Chanlabelsold, theta, radius, indices] = readlocs( chanlocs);
     
     
-    def =  erpworkingmemory('pop_rename2chan');
-    if isempty(def)
-        def = Chanlabelsold;
-    end
-    erplab_studio_default_values;
-    version = erplabstudiover;
-    titleName= ['Dataset',32,num2str(CURRENTSET),': ERPLAB',32,num2str(version), 32,'Change Channel Name'];
-    Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
-    
-    if isempty(Chanlabelsnew)
+    titleName= ['Dataset',32,num2str(CURRENTSET),': Add/Edit Channel locations'];
+    EEGIN = EEG;
+    EEGIN.chanlocs = EEG.chanlocs(ChanArray);
+    app = feval('f_editchan_gui',EEGIN,titleName);
+    waitfor(app,'Finishbutton',1);
+    try
+        EEGINOUT = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+        app.delete; %delete app from view
+        pause(0.5); %wait for app to leave
+    catch
         disp('User selected Cancel')
         return
     end
-    erpworkingmemory('pop_rename2chan',Chanlabelsnew);
+    if isempty(EEGINOUT)
+        disp('User selected Cancel')
+        return
+    end
+    
+    Chanlocs = EEGINOUT.chanlocs;
     %%add suffix
     try
-        ALLEEG(CURRENTSET).setname = [ALLEEG(CURRENTSET).setname,'_rnchan'];
+        ALLEEG(CURRENTSET).setname = [ALLEEG(CURRENTSET).setname,'_editchan'];
     catch
-        ALLEEG(CURRENTSET).erpname = [ALLEEG(CURRENTSET).erpname,'_rnchan'];
+        ALLEEG(CURRENTSET).erpname = [ALLEEG(CURRENTSET).erpname,'_editchan'];
     end
-    [EEG, eegcom] = pop_rename2chan(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
+    [EEG, eegcom] = pop_editdatachanlocs(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
     pause(0.1);
     return;
 end
@@ -114,7 +118,7 @@ p.addRequired('CURRENTSET');
 
 %Option(s)
 p.addParamValue('ChanArray',[],@isnumeric);
-p.addParamValue('Chanlabels','', @iscell);
+p.addParamValue('Chanlocs','', @isstruct);
 
 p.addParamValue('History', '', @ischar); % history from scripting
 
@@ -170,9 +174,9 @@ end
 
 
 %%IC array (the default is empty, that is, donot display ICs)
-qChanlabelsnew = p_Results.Chanlabels;
-if isempty(qChanlabelsnew)
-    disp('Chanlabels is empty');
+qChanlocsnew = p_Results.Chanlocs;
+if isempty(qChanlocsnew)
+    disp('Chanlocs is empty');
     return;
 end
 
@@ -180,23 +184,19 @@ end
 %%adjust the number of channels and channel names
 for Numofchan = 1:numel(qchanArray)
     try
-        if isempty(char(qChanlabelsnew{Numofchan}))
-            qChanlabelsnew{Numofchan,1}  = EEG.chanlocs(qchanArray(Numofchan)).labels;
-            fprintf(2,['\n Warning: name for channel ',32,num2str(qchanArray(Numofchan)),32,' was empty, we threfore used its original name',32,qChanlabelsnew{Numofchan,1},'.\n']);
-        else
-            qChanlabelsnew{Numofchan,1}  = char(qChanlabelsnew{Numofchan});
-        end
+        
+        qChanlocsnew(Numofchan)  = qChanlocsnew(Numofchan);
     catch
-        qChanlabelsnew{Numofchan,1}  = EEG.chanlocs(qchanArray(Numofchan)).labels;
-        fprintf(2,['\n Warning: name for channel ',32,num2str(qchanArray(Numofchan)),32,'was not defined, we threfore used its original name',32,qChanlabelsnew{Numofchan,1},'.\n']);
+        qChanlocsnew(Numofchan)  = EEG.chanlocs(qchanArray(Numofchan));
+        fprintf(2,['\n Warning: Location for channel ',32,num2str(qchanArray(Numofchan)),32,'was not defined, we threfore used its original one.\n']);
     end
 end
 
 
 %%--------------change the channel names-----------------------------------
 for Numofchan = 1:numel(qchanArray)
-    fprintf(['Chan',32,num2str(qchanArray(Numofchan)),':',32,EEG.chanlocs(qchanArray(Numofchan)).labels,32,'was changed to',32,qChanlabelsnew{Numofchan,1},'.\n']);
-    EEG.chanlocs(qchanArray(Numofchan)).labels = char(qChanlabelsnew{Numofchan,1});
+    fprintf(['Chan',32,num2str(qchanArray(Numofchan)),': Location was edited.\n']);
+    EEG.chanlocs(qchanArray(Numofchan)) = qChanlocsnew(Numofchan);
 end
 
 
@@ -204,17 +204,15 @@ end
 %%history
 fn = fieldnames(p.Results);
 skipfields = {'ALLEEG','CURRENTSET'};
-eegcom     = sprintf( 'EEG = pop_rename2chan( %s %s', 'ALLEEG,',num2str(CURRENTSET));
+eegcom     = sprintf( 'EEG = pop_editdatachanlocs( %s %s', 'ALLEEG,',num2str(CURRENTSET));
 
 for q=1:length(fn)
     fn2com = fn{q}; % inputname
     if ~ismember_bc2(fn2com, skipfields)
         fn2res = p.Results.(fn2com); %  input value
         if ~isempty(fn2res)
-            if ischar(fn2res)
-                if ~strcmpi(fn2res,'off')
-                    eegcom = sprintf( '%s, ''%s'', ''%s''', eegcom, fn2com, fn2res);
-                end
+            if isstruct(fn2res)
+                eegcom = sprintf( '%s, ''%s'', %s', eegcom, fn2com, fn2com);
             elseif iscell(fn2res)
                 nn = length(fn2res);
                 eegcom = sprintf( '%s, ''%s'', {''%s'' ', eegcom, fn2com, fn2res{1});

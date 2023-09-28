@@ -268,7 +268,7 @@ for i = 1:ntrial
         flagx = [EEG.epoch(i).eventflag]; 
         
         if iscell(flagx) 
-            flagx = cell2mat(flagx)
+            flagx = cell2mat(flagx);
         end
         
         oldflag(i) = flagx;

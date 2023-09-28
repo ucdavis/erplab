@@ -251,7 +251,11 @@ handles.dq_table.ColumnName = tw_labels;
 
 % Set font size of DQ Table
 desired_fontsize = erpworkingmemory('fontsizeGUI');
+try
 handles.dq_table.FontSize = desired_fontsize;
+catch
+ handles.dq_table.FontSize =11;   
+end
 handles.heatmap_on = 0;
 
 %
