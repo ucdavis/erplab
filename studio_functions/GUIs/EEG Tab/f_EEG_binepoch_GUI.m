@@ -688,14 +688,6 @@ varargout{1} = EEG_binepoch_box;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             fprintf( [repmat('-',1,100) '\n']);
@@ -864,7 +856,7 @@ varargout{1} = EEG_binepoch_box;
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
-            eeg_bdf_apply();
+            apply_blc_dt();
             estudioworkingmemory('EEGTab_binepoch',0);
             gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
             gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
@@ -886,7 +878,7 @@ varargout{1} = EEG_binepoch_box;
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
-            eeg_bdf_apply();
+            apply_blc_dt();
             estudioworkingmemory('EEGTab_binepoch',0);
             gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
             gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];

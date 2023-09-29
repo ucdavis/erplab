@@ -444,7 +444,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 2-D');
-        try observe_EEGDAT.eeg_panel_message =1; catch end; %%Marking for the procedure has been started.
+        observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
@@ -500,6 +500,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC maps in 3-D');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
@@ -725,8 +726,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         
         try
-            
-            
             for Numofeeg = 1:numel(EEGArray)
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);

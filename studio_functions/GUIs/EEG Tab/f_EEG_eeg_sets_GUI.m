@@ -214,7 +214,7 @@ varargout{1} = box_eegset_gui;
         EStduio_eegtab_EEG_set.eeg_contns.Value=0;
         EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
-        if isempty(EEGtypeFlag);
+        if isempty(EEGtypeFlag)
             EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
             return;

@@ -125,8 +125,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             return;
         end
-        
-        
+
         try
             for Numofeeg = 1:numel(EEGArray)%%loop for subjects
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -230,13 +229,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
@@ -327,13 +319,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
@@ -435,14 +420,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
+          
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
@@ -542,14 +520,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
@@ -642,14 +612,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
@@ -899,7 +861,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             Source.Enable = 'off';
             return;
         end
-        
         
         try
             for Numofeeg = 1:numel(EEGArray)

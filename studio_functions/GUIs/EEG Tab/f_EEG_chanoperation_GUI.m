@@ -508,7 +508,10 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
+        erpworkingmemory('f_EEG_proces_messg','EEG Channel Operations > Apply');
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+            
+            
         estudioworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
@@ -635,9 +638,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         try
-            erpworkingmemory('f_EEG_proces_messg','EEG Channel Operations > Apply');
-            observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-            
+          
             for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
                 EEG = ALLEEG_out(EEGArray(Numofeeg));
                 [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');

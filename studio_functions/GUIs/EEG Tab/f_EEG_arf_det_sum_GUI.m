@@ -144,6 +144,10 @@ varargout{1} = Eegtab_box_art_det_sum;
             disp('Current dataset is empty or continuous EEG.');
             return;
         end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
         
         erpworkingmemory('f_EEG_proces_messg','Artifact detection & summarizartion >  Clear artifact detection marks on EEG');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
@@ -259,6 +263,11 @@ varargout{1} = Eegtab_box_art_det_sum;
             return;
         end
         
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
         erpworkingmemory('f_EEG_proces_messg','Artifact detection & summarizartion >  Syn. artifact info in EEG and EVENTLIST');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
@@ -355,7 +364,6 @@ varargout{1} = Eegtab_box_art_det_sum;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             fprintf( [repmat('-',1,100) '\n']);
@@ -370,6 +378,10 @@ varargout{1} = Eegtab_box_art_det_sum;
             Source.Enable = 'off';
             disp('Current dataset is empty or continuous EEG.');
             return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         erpworkingmemory('f_EEG_proces_messg','Artifact detection & summarizartion >  Post artifact dection epoch interpolation');
@@ -540,6 +552,10 @@ varargout{1} = Eegtab_box_art_det_sum;
             disp('Current dataset is empty or continuous EEG.');
             return;
         end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
         
         erpworkingmemory('f_EEG_proces_messg','Artifact detection & summarizartion >  Summarize EEG artifact in one value');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
@@ -592,6 +608,10 @@ varargout{1} = Eegtab_box_art_det_sum;
             Source.Enable = 'off';
             disp('Current dataset is empty or continuous EEG.');
             return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         erpworkingmemory('f_EEG_proces_messg','Artifact detection & summarizartion >  Summarize EEG artifact in a table');
@@ -649,6 +669,10 @@ varargout{1} = Eegtab_box_art_det_sum;
             Source.Enable = 'off';
             disp('Current dataset is empty or continuous EEG.');
             return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
         erpworkingmemory('f_EEG_proces_messg','Artifact detection & summarizartion >  Summarize EEG artifact in a graphic');
