@@ -72,8 +72,8 @@ end
 
 ColumnEditable =[0,1];
 ColumnWidth = {300 300};
-ColumnName{1,1} = char(['Default Name']);
-ColumnName{1,2} = char(['Custom Name']);
+ColumnName{1,1} = char(['Current Name']);
+ColumnName{1,2} = char(['New Name']);
 columFormat = {'char','char'};
 
 for Numofrow = 1:Numrows

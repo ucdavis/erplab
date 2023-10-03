@@ -50,7 +50,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%--------------------channel and bin setting----------------------
         EStduio_gui_EEG_plotset.DataSelBox = uiextras.VBox('Parent', EStudio_box_EEG_plot_set,'BackgroundColor',ColorB_def);
         
-        
         %%display original data?
         EStduio_gui_EEG_plotset.datatype_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_gui_EEG_plotset.disp_orgdata = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title, 'Style', 'checkbox', 'String', 'Display original data',...
@@ -169,7 +168,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-        
     end
 
 
@@ -229,8 +227,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
             Source.String = '50';
             %%insert warning message here if needed.
         end
-        
-        
     end
 
 %%------------------------Remove DC on-------------------------------------

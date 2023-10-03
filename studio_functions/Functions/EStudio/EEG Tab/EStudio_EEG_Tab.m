@@ -54,16 +54,16 @@ EStudio_gui_erp_totl.eegpanel{8} = f_EEG_binepoch_GUI(EStudio_gui_erp_totl.eegse
 EStudio_gui_erp_totl.eegpanelSizes(8) = 160;
 EStudio_gui_erp_totl.eegpanel{9} = f_EEG_eeglabtool_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(9) = 170;
-
 EStudio_gui_erp_totl.eegpanel{10} = f_EEG_eeglabica_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(10) = 170;
-
 EStudio_gui_erp_totl.eegpanel{11} = f_EEG_edit_channel_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(11) = 240;
-
-EStudio_gui_erp_totl.eegpanel{12} = f_EEG_arf_det_sum_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(11) = 170;
+EStudio_gui_erp_totl.eegpanel{12} = f_EEG_arf_det_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(12) = 240;
-
+EStudio_gui_erp_totl.eegpanel{13} = f_EEG_arf_sumop_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(13) = 190;
+EStudio_gui_erp_totl.eegpanel{14} = f_EEG_interpolate_chan_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(14) = 270;
 
 
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
@@ -83,8 +83,10 @@ set( EStudio_gui_erp_totl.eegpanel{9}, 'MinimizeFcn', {@nMinimize, 9} );
 set( EStudio_gui_erp_totl.eegpanel{10}, 'MinimizeFcn', {@nMinimize, 10} );
 set( EStudio_gui_erp_totl.eegpanel{11}, 'MinimizeFcn', {@nMinimize, 11} );
 set( EStudio_gui_erp_totl.eegpanel{12}, 'MinimizeFcn', {@nMinimize, 12} );
+set( EStudio_gui_erp_totl.eegpanel{13}, 'MinimizeFcn', {@nMinimize, 13} );
+set( EStudio_gui_erp_totl.eegpanel{14}, 'MinimizeFcn', {@nMinimize, 14} );
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [2 4];
+whichpanel = [4:14];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes' );

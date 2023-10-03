@@ -63,4 +63,13 @@ end
 
 
 
+%%interpolate
+MyViewer_interpolatechan = estudioworkingmemory('EEGTab_interpolated_chan_epoch');
+if ~isempty(MyViewer_interpolatechan) && MyViewer_interpolatechan==1
+    messgStr  = char( 'Changes on "Interpolate chan for epoched EEG" have not been applied');
+    eegpanelIndex =8;
+end
+
+
+
 return;
