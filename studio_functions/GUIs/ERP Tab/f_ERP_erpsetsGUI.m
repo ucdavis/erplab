@@ -237,8 +237,6 @@ varargout{1} = box_erpset_gui;
                 datasets = {};
                 getDatasets()
                 datasets = sortdata(datasets);
-                
-                
                 dsnames = {};
                 for Numofsub = 1:size(datasets,1)
                     dsnames{Numofsub} =    char(strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1}));
@@ -315,7 +313,6 @@ varargout{1} = box_erpset_gui;
                             disp(['User selected cancel']);
                             return;
                         end
-                        
                         datasets{Numofsub,1} = new{1,1};
                         clear k
                         [~,cerp] = size(observe_ERPDAT.ALLERP);
@@ -331,7 +328,6 @@ varargout{1} = box_erpset_gui;
                 dsnames = {};
                 for Numofsub = 1:size(datasets,1)
                     dsnames{Numofsub} =    char(strcat(num2str(datasets{Numofsub,2}),'.',32,datasets{Numofsub,1}));
-                    
                 end
                 ERPsetops.butttons_datasets.String = dsnames;
                 ERPsetops.butttons_datasets.Min = 1;
@@ -924,9 +920,7 @@ varargout{1} = box_erpset_gui;
                 dsnames = {''};
                 Edit_label = 'off';
             else
-                
                 dsnames{1} =    strcat(num2str(cell2mat(datasets(1,2))),'.',32,datasets{1,1});
-                
                 Edit_label = 'on';
             end
         else

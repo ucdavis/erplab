@@ -381,7 +381,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.ElecRange.String=Chanlist_name;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Min = 1;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Max = length(Chanlist_name)+1;
-            if min(ChannelValue(:)) >length(Chanlist_name) || max(ChannelValue(:))> length(Chanlist_name) || numel(ChannelValue) == length(Chanlist_name)
+            if min(ChannelValue(:)) >length(Chanlist_name)-1 || max(ChannelValue(:))> length(Chanlist_name)-1 || numel(ChannelValue) == length(Chanlist_name)-1
                 EStduio_eegtab_EEG_IC_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)];
             else

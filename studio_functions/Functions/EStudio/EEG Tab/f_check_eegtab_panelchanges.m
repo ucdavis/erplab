@@ -70,6 +70,15 @@ if ~isempty(MyViewer_interpolatechan) && MyViewer_interpolatechan==1
     eegpanelIndex =8;
 end
 
+%%detect artifact for epoched EEG
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detect_arts_epoch');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Artifact Detection for Epoched EEG" have not been applied');
+    eegpanelIndex =9;
+end
+
+
+
 
 
 return;

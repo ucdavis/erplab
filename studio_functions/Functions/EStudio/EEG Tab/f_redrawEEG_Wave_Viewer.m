@@ -934,19 +934,42 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
     ColorB_def = [0.7020 0.77 0.85];
 end
 
-%%Update the current EEGset after Inspect/label IC
+%%Update the current EEGset after Inspect/label IC and update artifact marks
 eegicinspectFlag = erpworkingmemory('eegicinspectFlag');
-if ~isempty(eegicinspectFlag)  && eegicinspectFlag==1
+if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
     EEGArray =  estudioworkingmemory('EEGArray');
     if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
         EEGArray = observe_EEGDAT.CURRENTSET;
     end
     if numel(EEGArray) ==1
+        
+        %%set a reminder that can give the users second chance to update
+        %%current EEGset
+        if  eegicinspectFlag==2
+            question = ['We strongly recommend your to label ICs before any further analyses. Otherwise, there may be some bugs.\n\n',...
+                'Have you Labelled ICs? \n\n',...
+                'Please select "No" if you didnot. \n\n'];
+            title       = 'EStudio: Label ICs';
+        elseif eegicinspectFlag==1
+            question = ['We strongly recommend your to update artifact marks before any further analyses. Otherwise, there may be some bugs.\n\n',...
+                'Have you updated artifact marks? \n\n',...
+                'Please select "No" if you didnot. \n\n'];
+            title       = 'EStudio: Update artifact marks';
+        end
+        
+        BackERPLABcolor = [1 0.9 0.3];
+        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        button      = questdlg(sprintf(question,''), title,'No','Yes','Yes');
+        set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
+        if isempty(button) ||   strcmpi(button,'No');
+            return;
+        end
         try
             observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
-            observe_EEGDAT.count_current_eeg=1;
-            fprintf(['\n *Update eegset',32,num2str(EEGArray),32,'* : Because you may label the ICs that will be removed.','\n']);
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
             erpworkingmemory('eegicinspectFlag',0);
+            observe_EEGDAT.count_current_eeg=1;
         catch
             erpworkingmemory('eegicinspectFlag',0);
         end

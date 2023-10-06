@@ -114,8 +114,8 @@ if nargin==1
         winms      =  answer{3};
         stepms     =  answer{4};
         chanArray  =  unique_bc2(answer{5}); % avoids repeated channels
-        lpfilt     =  answer{6}
-        lppot      =  answer{7}
+        lpfilt     =  answer{6};
+        lppot      =  answer{7};
         flag       =  answer{8};
         viewer     =  answer{end};
         

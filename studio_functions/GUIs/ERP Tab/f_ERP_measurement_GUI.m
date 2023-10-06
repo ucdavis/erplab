@@ -326,7 +326,7 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.m_t_chan = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,'String',[],'callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault);
             end
         else
-            ERPMTops.m_t_chan = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,'String',num2str(vect2colon(EStudio_erp_m_t_p.chanArray,'Sort','on')),'callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            ERPMTops.m_t_chan = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,'String',vect2colon(EStudio_erp_m_t_p.chanArray,'Sort','on'),'callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault);
         end
         %%2E
         if isempty(EStudio_erp_m_t_p.latency)

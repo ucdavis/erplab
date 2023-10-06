@@ -71,7 +71,7 @@ varargout{1} = Eegtab_box_art_sumop;
             'String','Syn. artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.syn_arfinfo_title, 'Sizes',[15 -1 15]);
-       
+        
         
         %%Summarize EEG artifact in one value
         Eegtab_EEG_art_sumop.art_onevalue_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -525,8 +525,12 @@ varargout{1} = Eegtab_box_art_sumop;
             Eegtab_EEG_art_sumop.art_onevalue.Enable = 'off';
             Eegtab_EEG_art_sumop.art_table.Enable = 'off';
             Eegtab_EEG_art_sumop.art_graphic.Enable= 'off';
-            if observe_EEGDAT.EEG.trials ==1
-             observe_EEGDAT.count_current_eeg=14;   
+            if observe_EEGDAT.count_current_eeg ~=13
+                return;
+            else
+                if observe_EEGDAT.EEG.trials ==1
+                    observe_EEGDAT.count_current_eeg=14;
+                end
             end
             return;
         end

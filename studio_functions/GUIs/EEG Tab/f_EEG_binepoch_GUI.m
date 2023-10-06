@@ -877,17 +877,13 @@ varargout{1} = EEG_binepoch_box;
         if ChangeFlag~=1
             return;
         end
-        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
-            apply_blc_dt();
-            estudioworkingmemory('EEGTab_binepoch',0);
-            gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
-            gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
-            EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
-            gui_eegtab_binepoch.cancel.BackgroundColor =  [1 1 1];
-            gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
-        else
-            return;
-        end
+        apply_blc_dt();
+        estudioworkingmemory('EEGTab_binepoch',0);
+        gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
+        EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
+        gui_eegtab_binepoch.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
     end
 
 

@@ -285,7 +285,7 @@ EEG = eeg_checkset( EEG );
 
 if eprev==1
         namefig = 'Extreme Values detection view';
-        pop_plotepoch4erp(EEG, namefig)
+        pop_plotepoch4erp(EEG, namefig);
 end
 
 skipfields = {'EEG', 'Review', 'History'};

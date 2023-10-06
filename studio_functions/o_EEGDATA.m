@@ -42,16 +42,25 @@ classdef o_EEGDATA < handle
         end
         
         %%count current eeg change
+      
         function set.count_current_eeg(obj_eeg,values_eeg)
+            try
             obj_eeg.count_current_eeg = values_eeg;
             notify(obj_eeg,'count_current_eeg_change');
+            catch
+            end
         end
+        
         
         
         %%message
         function set.eeg_panel_message(obj_eeg,values_eeg)
+            try
             obj_eeg.eeg_panel_message = values_eeg;
             notify(obj_eeg,'eeg_panel_change_message');
+            catch
+                
+            end
         end
         
         %%two panels
