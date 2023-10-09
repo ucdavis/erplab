@@ -79,6 +79,15 @@ end
 
 
 
+%%detect artifact for continuous EEG
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detect_arts_conus');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Artifact Detection for Continuous EEG" have not been applied');
+    eegpanelIndex =10;
+end
+
+
+
 
 
 return;

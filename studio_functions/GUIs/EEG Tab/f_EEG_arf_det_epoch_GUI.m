@@ -1165,8 +1165,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.mflag8.Enable= 'off';
             Eegtab_EEG_art_det_epoch.periods_edit.Enable= 'off';
             Eegtab_EEG_art_det_epoch.voltage_edit.Enable= 'off';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.Enable= 'off';
+            Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'off';
+            
             if observe_EEGDAT.count_current_eeg ~=12
                 return;
             else
@@ -1193,6 +1196,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.mflag8.Enable= 'on';
         Eegtab_EEG_art_det_epoch.periods_edit.Enable= 'on';
         Eegtab_EEG_art_det_epoch.voltage_edit.Enable= 'on';
+        Eegtab_EEG_art_det_epoch.movewindow_edit.Enable= 'on';
+        Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'on';
         Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'on';
         Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'on';
         

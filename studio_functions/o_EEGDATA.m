@@ -58,8 +58,7 @@ classdef o_EEGDATA < handle
             try
             obj_eeg.eeg_panel_message = values_eeg;
             notify(obj_eeg,'eeg_panel_change_message');
-            catch
-                
+            catch 
             end
         end
         

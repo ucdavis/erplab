@@ -435,7 +435,7 @@ else
      
     
     %% Added in option for skipping EEGPLOT GUI when scripting
-    if(    strcmp(p.Results.History, 'gui') || strcmp(p.Results.review, 'on') )
+    if(strcmp(p.Results.History, 'gui') || strcmp(p.Results.review, 'on') )
         
         colormatrej = repmat(colorseg, size(WinRej,1),1);
         matrixrej   = [WinRej colormatrej chanrej];
@@ -443,19 +443,18 @@ else
         eegplot(EEG.data ...
             , 'winrej'      , matrixrej     ...
             , 'srate'       , EEG.srate     ...
-            ... %, 'butlabel'    , 'REJECT'  
-            ... %, 'command'     , commrej  
+             ... , 'butlabel'    , 'REJECT'  
+            ... , 'command'     , commrej  
             , 'events'      , EEG.event     ...
             , 'winlength'   , 10            ...
+            ,'title', ['eegplot() -- ', EEG.setname] ...
             , 'spacing'     , 100           ); % call EEGPLOT GUI
 
         
         EEG = eeg_eegrej(EEG, WinRej);
         
     elseif(strcmp(p.Results.History, 'script'))   % from script
-        
         EEG = eeg_eegrej(EEG, WinRej);   % automatically reject found data-segments
-        
     else       % off or none
         
     end

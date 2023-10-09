@@ -64,7 +64,8 @@ EStudio_gui_erp_totl.eegpanel{13} = f_EEG_arf_sumop_GUI(EStudio_gui_erp_totl.eeg
 EStudio_gui_erp_totl.eegpanelSizes(13) = 190;
 EStudio_gui_erp_totl.eegpanel{14} = f_EEG_interpolate_chan_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(14) = 270;
-
+EStudio_gui_erp_totl.eegpanel{15} = f_EEG_arf_det_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(15) = 200;
 
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
 EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(EStudio_gui_erp_totl.eegpanelSizes);
@@ -85,8 +86,10 @@ set( EStudio_gui_erp_totl.eegpanel{11}, 'MinimizeFcn', {@nMinimize, 11} );
 set( EStudio_gui_erp_totl.eegpanel{12}, 'MinimizeFcn', {@nMinimize, 12} );
 set( EStudio_gui_erp_totl.eegpanel{13}, 'MinimizeFcn', {@nMinimize, 13} );
 set( EStudio_gui_erp_totl.eegpanel{14}, 'MinimizeFcn', {@nMinimize, 14} );
+set( EStudio_gui_erp_totl.eegpanel{15}, 'MinimizeFcn', {@nMinimize, 15} );
+
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [4:14];
+whichpanel = [4:15];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes' );
