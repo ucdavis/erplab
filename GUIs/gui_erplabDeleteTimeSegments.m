@@ -277,7 +277,7 @@ ec = colonrange2num(ec);
 editString               = regexprep(ec, '[\D]', ' ');
 
 
-handles.ignoreUseEventcodes = str2num(editString)  %#ok<ST2NM>
+handles.ignoreUseEventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Display corrected eventcode string back to GUI
 set(handles.editbox_ignoreEventCodes, 'String', editString);

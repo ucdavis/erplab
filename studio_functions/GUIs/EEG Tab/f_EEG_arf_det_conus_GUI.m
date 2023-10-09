@@ -479,6 +479,23 @@ varargout{1} = Eegtab_box_art_det_conus;
         if isempty(colorseg) || numel(colorseg)~=3 || max(colorseg(:))>1 || min(colorseg(:))<0
             colorseg = [ 0.83 0.82 0.79];
         end
+        try
+            def   = memoryCARTGUI.def;
+        catch
+            def = [];
+        end
+        
+        %%update parameters for current panel
+        if ~isempty(def)
+            Volthreshold = def{1};
+            WindowLength = def{2};
+            windowStep = def{3};
+            ChanArray = def{4};
+            Eegtab_EEG_art_det_conus.chan_edit.String = vect2colon(ChanArray);
+            Eegtab_EEG_art_det_conus.voltage_edit.String = num2str(Volthreshold);
+            Eegtab_EEG_art_det_conus.movewindow_edit.String = num2str(WindowLength);
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = num2str(windowStep);
+        end
         
         
         
@@ -569,7 +586,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             fprintf( [repmat('-',1,100) '\n']);
             return;
         end
-        
         
     end
 
@@ -696,7 +712,6 @@ varargout{1} = Eegtab_box_art_det_conus;
         fprintf( [repmat('-',1,100) '\n']);
         erpworkingmemory('f_EEG_proces_messg','Artifact Detection for Continuous EEG > Preview');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
-        
     end
 
 
@@ -727,7 +742,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        
         
         %%chans
         ChanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
@@ -795,7 +809,6 @@ varargout{1} = Eegtab_box_art_det_conus;
         if isempty(colorseg) || numel(colorseg)~=3 || max(colorseg(:))>1 || min(colorseg(:))<0
             colorseg = [ 0.83 0.82 0.79];
         end
-        
         
         try
             for Numofeeg = 1:numel(EEGArray)
