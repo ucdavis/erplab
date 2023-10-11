@@ -236,7 +236,7 @@ switch shist
         case 1 % from GUI
                 displayEquiComERP(mvpccom);
         case 2 % from script
-                MVPC = erphistory(MVPC, [], mvpccom, 1);
+                %MVPC = erphistory(MVPC, [], mvpccom, 1);
         case 3
                 % implicit
                 %ERP = erphistory(ERP, [], erpcom, 1);
