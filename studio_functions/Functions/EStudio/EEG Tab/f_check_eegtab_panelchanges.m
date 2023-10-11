@@ -88,11 +88,20 @@ end
 
 
 %%delete time segements
-%%detect artifact for continuous EEG
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detect_segmt_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     messgStr  = char( 'Changes on "Delete Time Segments for Continuous EEG" have not been applied');
     eegpanelIndex =11;
 end
+
+
+
+%%Shift Event Codes for Continuous EEG
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_shiftcodes_conus');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Shift Event Codes for Continuous EEG" have not been applied');
+    eegpanelIndex =12;
+end
+
 
 return;

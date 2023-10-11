@@ -934,6 +934,20 @@ if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(Co
     ColorB_def = [0.7020 0.77 0.85];
 end
 
+Processed_Method=erpworkingmemory('f_EEG_proces_messg');
+EEGMessagepre = erpworkingmemory('f_EEG_proces_messg_pre');
+if isempty(EEGMessagepre)
+    EEGMessagepre = {'',0};
+end
+try
+    if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_panel_message == EEGMessagepre{2}
+        return;
+    end
+catch 
+end
+erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_panel_message});
+
+
 %%Update the current EEGset after Inspect/label IC and update artifact marks
 eegicinspectFlag = erpworkingmemory('eegicinspectFlag');
 if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
@@ -945,13 +959,13 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
         
         %%set a reminder that can give the users second chance to update
         %%current EEGset
-        if  eegicinspectFlag==2
+        if  eegicinspectFlag==1
             question = ['We strongly recommend your to label ICs before any further analyses. Otherwise, there may be some bugs.\n\n',...
                 'Have you Labelled ICs? \n\n',...
                 'Please select "No" if you didnot. \n\n'];
             title       = 'EStudio: Label ICs';
-        elseif eegicinspectFlag==1
-            question = ['We strongly recommend your to update artifact marks before any further analyses. Otherwise, there may be some bugs.\n\n',...
+        elseif eegicinspectFlag==2
+            question = ['We strongly recommend your to update artifact marks for epoched EEG before any further analyses. Otherwise, there may be some bugs.\n\n',...
                 'Have you updated artifact marks? \n\n',...
                 'Please select "No" if you didnot. \n\n'];
             title       = 'EStudio: Update artifact marks';
@@ -962,9 +976,10 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
         button      = questdlg(sprintf(question,''), title,'No','Yes','Yes');
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
-        if isempty(button) ||   strcmpi(button,'No');
+        if isempty(button) ||   strcmpi(button,'No')
             return;
         end
+        close all; %%close all opened figures
         try
             observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
@@ -975,23 +990,10 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
         end
     end
 end
-
-
-
-
-Processed_Method=erpworkingmemory('f_EEG_proces_messg');
-EEGMessagepre = erpworkingmemory('f_EEG_proces_messg_pre');
-if isempty(EEGMessagepre)
-    EEGMessagepre = {'',0};
+if eegicinspectFlag~=0
+    return;
 end
-try
-    if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_panel_message == EEGMessagepre{2}
-        return;
-    end
-catch
-    
-end
-erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_panel_message});
+
 EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = [0.95 0.95 0.95];
 EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
 

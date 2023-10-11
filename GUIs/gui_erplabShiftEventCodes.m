@@ -252,7 +252,6 @@ need_to_flat = 0;
 for ec = 1:length(editString);
     
     try 
-       
         temp_nums = num2cell(eval(num2str(editString{ec}))); %evaluate & flatten any numeric expression
         editString{ec} = cellfun(@num2str,temp_nums,'UniformOutput',false); %change to string
         need_to_flat = 1; 
