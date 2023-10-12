@@ -32,8 +32,6 @@ switch nargin
     otherwise
         warning('Please check remove_response_mistakes(EEG, Stim_code_array, Response_code_array)');
         return
-        
-        
 end
 
 

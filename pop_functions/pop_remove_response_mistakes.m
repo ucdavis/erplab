@@ -13,7 +13,7 @@ end
 
 EEG = remove_response_mistakes(EEG,stim_codes,resp_codes,1);
 
-[ALLEEG,EEG] = pop_newset(ALLEEG,EEG,CURRENTSET);
+% % % % [ALLEEG,EEG] = pop_newset(ALLEEG,EEG,CURRENTSET);%%GH Oct 2023
 
-hist_com = ['[ALLEEG EEG] = pop_remove_response_mistakes(ALLEEG, EEG, CURRENTSET, ' num2str(stim_codes) ',' num2str(resp_codes) ];
+hist_com = ['[ALLEEG EEG] = pop_remove_response_mistakes(ALLEEG, EEG, CURRENTSET, ' num2str(stim_codes) ',' num2str(resp_codes),');' ];
 

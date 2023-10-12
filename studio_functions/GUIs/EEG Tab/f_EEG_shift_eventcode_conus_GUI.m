@@ -149,7 +149,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.detar_run_title = uiextras.HBox('Parent', EEG_shift_eventcode_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EEG_shift_eventcode_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.shiftcodes_cancel = uicontrol('Style', 'pushbutton','Parent',EEG_shift_eventcode_conus.detar_run_title,...
-            'String','Preview','callback',@shiftcodes_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@shiftcodes_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  EEG_shift_eventcode_conus.detar_run_title,'BackgroundColor',ColorB_def);
         EEG_shift_eventcode_conus.shiftcodes_run = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.detar_run_title,...
             'String','Shift Events','callback',@shiftcodes_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
@@ -225,10 +225,16 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             Eventcodeold = Eventcodeold(~cellfun('isempty',Eventcodeold));
         end
         
-        [C,IA] = ismember_bc2(Eventcodeold,eventtypes);
-        if min(IA(:))~=0
+        
+        try
+            [C,IA] = ismember_bc2(Eventcodeold,eventtypes);
             indxlistb = IA;
-        else
+            if any(IA==0)
+                indxlistb=1;
+            else
+                indxlistb=IA;
+            end
+        catch
             indxlistb=1;
         end
         evnetcodes_select = browsechanbinGUI(eventtypes, indxlistb, titlename);
@@ -491,7 +497,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         
         erpworkingmemory('pop_erplabShiftEventCodes', ...
             {Eventcodes, timeshift, rounding, displayEEG, displayFeedback});
-        
         try
             for Numofeeg = 1:numel(EEGArray)
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -612,19 +617,34 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG = observe_EEGDAT.EEG;
         
         if   ~isempty(EEG(1).event) && ~isempty([EEG(1).event.type])
-            [eventtypes histo] = squeezevents(EEG.event);
-            Eventcodeold =  EEG_shift_eventcode_conus.event_codes_edit.String;
-            try
-                Eventcodeold = eval(num2str(Eventcodeold)); %if numeric
-            catch
-                Eventcodeold = regexp(Eventcodeold,'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
-                Eventcodeold = Eventcodeold(~cellfun('isempty',Eventcodeold));
+            %             [eventtypes histo] = squeezevents(EEG.event);
+            % Check numeric or string type
+            if ischar(EEG.event(1).type)
+                ec_type_is_str = 0;
+            else
+                ec_type_is_str = 1;
+            end
+            evT = struct2table(EEG.event);
+            if ec_type_is_str
+                all_ev = str2double(evT.type);
+            else
+                all_ev = evT.type;
             end
             
-            [C,IA] = ismember_bc2(Eventcodeold,eventtypes,'legacy');
-            if min(IA(:)) ==0
-                EEG_shift_eventcode_conus.event_codes_edit.String = '';
-            end
+            %         eventtypes = unique(all_ev);
+            % %         eventtypes(isnan(eventtypes)) = [];
+            %             Eventcodeold =  EEG_shift_eventcode_conus.event_codes_edit.String;
+            %             try
+            %                 Eventcodeold = eval(num2str(Eventcodeold)); %if numeric
+            %             catch
+            %                 Eventcodeold = regexp(Eventcodeold,'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
+            %                 Eventcodeold = Eventcodeold(~cellfun('isempty',Eventcodeold));
+            %             end
+            %
+            %             [C,IA] = ismember_bc2(Eventcodeold,eventtypes,'legacy');
+            %             if min(IA(:)) ==0
+            %                 EEG_shift_eventcode_conus.event_codes_edit.String = '';
+            %             end
         else
             fprintf(['Shift Event Codes for Continuous EEG > Event for current EEG is empty',32,32,32,32,datestr(datetime('now')),'\n']);
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';

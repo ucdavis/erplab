@@ -148,7 +148,7 @@ stim_codes_entered = str2double(split_str);
 % are these valid?
 stim_codes_match = ismember(stim_codes_entered,handles.all_ev_unique);
 
-if any(stim_codes_match) == 0
+if any(stim_codes_match == 0) 
     beep
     warning('Please check stim codes -- some not found in this EEG set')
 end

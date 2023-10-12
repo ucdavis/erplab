@@ -104,4 +104,14 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
 end
 
 
+
+%%Remove response mistakes for Continuous EEG
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_rmresposmistak_conus');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Remove Response Mistakes for Continuous EEG" have not been applied');
+    eegpanelIndex =13;
+end
+
+
+
 return;
