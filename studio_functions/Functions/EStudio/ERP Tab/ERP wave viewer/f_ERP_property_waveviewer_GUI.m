@@ -446,6 +446,7 @@ varargout{1} = box_erpwave_viewer_property;
             return;
         end
         New_pos1 = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
+       
         try
             Old_pos = gui_erp_waviewer.screen_pos;
             New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),Old_pos(3),Old_pos(4)];

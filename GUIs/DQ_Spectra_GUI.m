@@ -156,7 +156,7 @@ handles.orig_ColName = fft_labels;
 
 % Set font size of DQ Table
 desired_fontsize = erpworkingmemory('fontsizeGUI');
-handles.dq_table.FontSize = desired_fontsize;
+try handles.dq_table.FontSize = desired_fontsize; catch end;
 handles.heatmap_on = 0;
 
 % Set outliers text window off
@@ -177,7 +177,7 @@ handles.yout_lab = yout_lab;
 % else
 %     handles.ALLERP = ALLERP;
 % end
-
+% handles = painterplab(handles);
 guidata(hObject, handles);
 
 % UIWAIT makes DQ_Spectra_GUI wait for user response (see UIRESUME)

@@ -219,10 +219,22 @@ f_redrawERP();%%Draw ERP waves
             'HandleVisibility', 'off', 'tag', 'rollover');
         
         % set the window size
-        %old_pos = get(EStudio_gui_erp_totl.Window, 'Position');
-        new_pos = [1 1 1200 1200];
-        set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        %%screen size
+        ScreenPos = [];
+        new_pos= erpworkingmemory('ERPWaveScreenPos');
+        if isempty(new_pos) || numel(new_pos)~=4
+            new_pos = [0.01,0.01,75,75];
+            erpworkingmemory('EStudioScreenPos',new_pos);
+        end
+        try
+            ScreenPos =  get( groot, 'Screensize' );
+        catch
+            ScreenPos =  get( 0, 'Screensize' );
+        end
         
+        new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+        set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        EStudio_gui_erp_totl.Window.Resize = 0;
         
         % + File menu
         EStudio_gui_erp_totl.FileMenu = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'File');
@@ -241,19 +253,22 @@ f_redrawERP();%%Draw ERP waves
         comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
         
+        %%guo position
+        uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'EStudio Position', 'Callback', @EStudiopos);
+        
         
         %% Create tabs
-        context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',14);
-        EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );
-        EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);
-        tab3 = uix.HBoxFlex( 'Parent', context_tabs, 'Spacing', 10 );
+        EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',14);
+        EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );
+        EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);
+        tab3 = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10 );
         
-        context_tabs.TabNames = {'EEG','ERP', 'MVPA'};
-        context_tabs.SelectedChild = 1;
-        context_tabs.HighlightColor = [0 0 0];
-        context_tabs.FontWeight = 'bold';
-        context_tabs.TabSize = (new_pos(3)-20)/3;
-        context_tabs.BackgroundColor = ColorB_def;
+        EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP', 'MVPA'};
+        EStudio_gui_erp_totl.context_tabs.SelectedChild = 1;
+        EStudio_gui_erp_totl.context_tabs.HighlightColor = [0 0 0];
+        EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
+        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+        EStudio_gui_erp_totl.context_tabs.BackgroundColor = ColorB_def;
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%------------EEG tab for continous EEG and epoched EEG------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -308,7 +323,7 @@ f_redrawERP();%%Draw ERP waves
         
         
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-       
+        
         EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
         EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorB_def);
         
@@ -443,7 +458,7 @@ f_redrawERP();%%Draw ERP waves
 
 %%------------------------Message panel------------------------------------
     function eeg_panel_change_message(~,~)
-      return;
+        return;
     end
 
 
@@ -510,7 +525,48 @@ f_redrawERP();%%Draw ERP waves
         end
     end
 
-
+%%--------------------Setting for EStudio position-------------------------
+    function EStudiopos(~,~)
+        try
+            ScreenPos =  get( groot, 'Screensize' );
+        catch
+            ScreenPos =  get( 0, 'Screensize' );
+        end
+        try
+            New_pos = EStudio_gui_erp_totl.Window.Position;
+        catch
+            return;
+        end
+        try
+            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
+        catch
+            New_pos = [0.01,0.01,75,75];
+        end
+        
+        app = feval('EStudio_pos_gui',New_pos);
+        waitfor(app,'Finishbutton',1);
+        try
+            New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.5); %wait for app to leave
+        catch
+            disp('User selected Cancel');
+            return;
+        end
+        if isempty(New_pos1) || numel(New_pos1)~=4
+            return;
+        end
+        erpworkingmemory('ERPWaveScreenPos',New_pos1);
+        new_pos =[ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100,ScreenPos(3)*New_pos1(3)/100,ScreenPos(4)*New_pos1(4)/100];
+        set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        try
+            f_redrawEEG_Wave_Viewer();%%Draw EEG waves
+            f_redrawERP();%%Draw ERP waves
+        catch
+        end
+        
+        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+    end
 
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function

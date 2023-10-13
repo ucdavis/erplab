@@ -87,16 +87,16 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             'String','Browse','FontSize',FontSize_defualt,'callback',@chans_browse,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         set( EEG_dq_fre_conus.chan_title,'Sizes',[60 -1,60]);
         
-        EEG_dq_fre_conus.stimulusall_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
-        EEG_dq_fre_conus.stimulusall = uitable(  ...
-            'Parent'        , EEG_dq_fre_conus.stimulusall_title,...
+        EEG_dq_fre_conus.bandtable_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        EEG_dq_fre_conus.bandtable = uitable(  ...
+            'Parent'        , EEG_dq_fre_conus.bandtable_title,...
             'Data'          , data_tab, ...
             'ColumnName'    , {'Lable','Low Hz','High Hz'});
-        EEG_dq_fre_conus.stimulusall.CellSelectionCallback = @selectedrow;
-        EEG_dq_fre_conus.sel_row = size(EEG_dq_fre_conus.stimulusall.Data,1); % set to max on load
-        
-        
-        EEG_dq_fre_conus.stimulusall.Enable = 'off';
+        EEG_dq_fre_conus.bandtable.CellSelectionCallback = @selectedrow;
+        EEG_dq_fre_conus.sel_row = size(EEG_dq_fre_conus.bandtable.Data,1); % set to max on load
+        EEG_dq_fre_conus.bandtable.ColumnEditable = [true,true,true];
+        EEG_dq_fre_conus.bandtable.CellEditCallback = @checkcellchanged;
+        EEG_dq_fre_conus.bandtable.Enable = 'off';
         %%Round to later time sample
         EEG_dq_fre_conus.eventcode_title = uiextras.HBox('Parent', EEG_dq_fre_conus.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_fre_conus.add_rows = uicontrol('Style','pushbutton','Parent',EEG_dq_fre_conus.eventcode_title,'HorizontalAlignment','left',...
@@ -126,6 +126,40 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%----------------------check changed cell(s)------------------------------
+    function checkcellchanged(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=14
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_dq_fre_conus.TitleColor= [0.5137    0.7569    0.9176];
+        EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [1 1 1];
+        EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_dq_fre_conus',1);
+        
+        
+        Data = EEG_dq_fre_conus.bandtable.Data;
+        [rowNum,columNum] = size(Data);
+        for Numofrow = 1:rowNum
+            for Numofcolumn = 2:columNum
+                datacell = Data{Numofrow,Numofcolumn};
+                if ~isnumeric(datacell)
+                    Data{Numofrow,Numofcolumn} = str2num(char(datacell));
+                end
+            end
+        end
+        EEG_dq_fre_conus.bandtable.Data = Data;
+        %         EEG_dq_fre_conus.bandtable.DisplayData= Data;
+    end
+
+
 
 
 %%----------------------edit chans-----------------------------------------
@@ -227,13 +261,13 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         estudioworkingmemory('EEGTab_dq_fre_conus',1);
         EEG_dq_fre_conus.add_rows.Value = 1;
         
-        curr_rows = size(EEG_dq_fre_conus.stimulusall.Data,1);
+        curr_rows = size(EEG_dq_fre_conus.bandtable.Data,1);
         new_rows = curr_rows + 1;
-        old_fqout = EEG_dq_fre_conus.stimulusall.Data;
+        old_fqout = EEG_dq_fre_conus.bandtable.Data;
         new_row_str = ['Custom Band' num2str(new_rows)];
         new_row_cell = {new_row_str,[],[]};
         new_fqout = [old_fqout;new_row_cell];
-        set(EEG_dq_fre_conus.stimulusall,'Data',new_fqout);
+        set(EEG_dq_fre_conus.bandtable,'Data',new_fqout);
     end
 
 
@@ -255,7 +289,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_dq_fre_conus',1);
         
-        curr_rows = size(EEG_dq_fre_conus.stimulusall.Data,1);
+        curr_rows = size(EEG_dq_fre_conus.bandtable.Data,1);
         row_del = EEG_dq_fre_conus.sel_row;
         if curr_rows <= 1
             beep
@@ -263,9 +297,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             observe_EEGDAT.eeg_panel_message =4;
         else
             new_rows = curr_rows - 1;
-            new_Tout = EEG_dq_fre_conus.stimulusall.Data;
+            new_Tout = EEG_dq_fre_conus.bandtable.Data;
             new_Tout(row_del,:) = []; % pop the selected row out
-            set(EEG_dq_fre_conus.stimulusall,'Data',new_Tout)
+            set(EEG_dq_fre_conus.bandtable,'Data',new_Tout)
             pause(0.3);
             EEG_dq_fre_conus.sel_row = new_rows;
         end
@@ -294,7 +328,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         def_bands = [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 fqnyq];
         %make table
         data_tab = [def_labels' num2cell(def_bands)];
-        EEG_dq_fre_conus.stimulusall.Data = data_tab;
+        EEG_dq_fre_conus.bandtable.Data = data_tab;
     end
 
 
@@ -312,6 +346,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             row_here = eventdata.Indices(1);
             EEG_dq_fre_conus.sel_row = row_here;
         end
+        EEG_dq_fre_conus.bandtable.ColumnEditable = [true,true,true];
     end
 
 
@@ -343,7 +378,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         def_bands = [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 fqnyq];
         %make table
         data_tab = [def_labels' num2cell(def_bands)];
-        EEG_dq_fre_conus.stimulusall.Data = data_tab;
+        EEG_dq_fre_conus.bandtable.Data = data_tab;
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -382,8 +417,8 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             return;
         end
         
-        fqbands = [EEG_dq_fre_conus.stimulusall.Data{:,2}; EEG_dq_fre_conus.stimulusall.Data{:,3}]';
-        fqlabels = {EEG_dq_fre_conus.stimulusall.Data{:,1}}' ;
+        fqbands = [EEG_dq_fre_conus.bandtable.Data{:,2}; EEG_dq_fre_conus.bandtable.Data{:,3}]';
+        fqlabels = {EEG_dq_fre_conus.bandtable.Data{:,1}}' ;
         for ii = 1:size(fqbands,1)
             fqlabelsNew{ii,1} = fqlabels{ii};
         end
@@ -431,7 +466,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
             EEG_dq_fre_conus.chans_edit.Enable= 'off';
             EEG_dq_fre_conus.chans_browse.Enable= 'off';
-            EEG_dq_fre_conus.stimulusall.Enable = 'off';
+            EEG_dq_fre_conus.bandtable.Enable = 'off';
             EEG_dq_fre_conus.add_rows.Enable= 'off';
             EEG_dq_fre_conus.remove_rows.Enable= 'off';
             EEG_dq_fre_conus.resetable.Enable= 'off';
@@ -449,9 +484,13 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if observe_EEGDAT.count_current_eeg ~=19
             return;
         end
+        chanOld = str2num(EEG_dq_fre_conus.chans_edit.String);
+        if isempty(chanOld)
+            EEG_dq_fre_conus.chans_edit.String= vect2colon(1:observe_EEGDAT.EEG.nbchan);
+        end
         EEG_dq_fre_conus.chans_edit.Enable= 'on';
         EEG_dq_fre_conus.chans_browse.Enable= 'on';
-        EEG_dq_fre_conus.stimulusall.Enable = 'on';
+        EEG_dq_fre_conus.bandtable.Enable = 'on';
         EEG_dq_fre_conus.add_rows.Enable= 'on';
         EEG_dq_fre_conus.remove_rows.Enable= 'on';
         EEG_dq_fre_conus.resetable.Enable= 'on';
