@@ -338,15 +338,26 @@ f_redrawERP();%%Draw ERP waves
 
 %%---------------------------------allEEG-------------------------------------
     function alleeg_change(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
     end
 
 %%---------------------------------EEG-------------------------------------
     function eeg_change(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
         assignin('base','EEG',observe_EEGDAT.EEG);
     end
 
     function count_current_eeg_change(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
+        
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         return;
     end
 

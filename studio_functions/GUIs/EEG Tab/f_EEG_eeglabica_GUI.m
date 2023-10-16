@@ -91,9 +91,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         set(EStduio_eegtab_eeglab_ica.DataSelBox,'Sizes',[30 30 20 30 30])
     end
 
-
-
-
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
@@ -535,12 +532,10 @@ varargout{1} = EStudio_box_eeglab_ica;
             %         wave in the main GUI
             observe_EEGDAT.eeg_panel_message =2;
         catch
-            
             %             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
         end
-        
     end
 
 
@@ -569,8 +564,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         try
-            
-            
             for Numofeeg = 1:numel(EEGArray)
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -597,8 +590,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             %             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
-        end
-        
+        end 
     end
 
 
@@ -626,7 +618,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         try
-            
             EEG = observe_EEGDAT.EEG;
             typecomp = 0;    % defaults
             chanorcomp = 0;
@@ -697,7 +688,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
         end
-        
     end
 
 
@@ -822,6 +812,4 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         observe_EEGDAT.count_current_eeg=11;
     end
-
-
 end

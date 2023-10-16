@@ -927,8 +927,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview: Only work for single EEG, and we threfore gray it out');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+%             erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview: Only work for single EEG, and we threfore gray it out');
+%             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_art_det_conus.detectar_preview.String = 'Only for single EEG';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable = 'off';
         else

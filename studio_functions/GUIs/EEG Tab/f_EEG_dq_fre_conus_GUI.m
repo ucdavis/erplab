@@ -128,7 +128,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 %%**************************************************************************%%
 
 %%----------------------check changed cell(s)------------------------------
-    function checkcellchanged(~,~)
+    function checkcellchanged(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
             Source.Enable= 'off';
             return;
@@ -143,8 +143,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_dq_fre_conus',1);
-        
-        
+
         Data = EEG_dq_fre_conus.bandtable.Data;
         [rowNum,columNum] = size(Data);
         for Numofrow = 1:rowNum
@@ -156,10 +155,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             end
         end
         EEG_dq_fre_conus.bandtable.Data = Data;
-        %         EEG_dq_fre_conus.bandtable.DisplayData= Data;
     end
-
-
 
 
 %%----------------------edit chans-----------------------------------------
@@ -370,7 +366,6 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_dq_fre_conus',0);
         
-        
         chan_label_select = [1:observe_EEGDAT.EEG.nbchan];
         EEG_dq_fre_conus.chans_edit.String  = vect2colon(chan_label_select);
         fqnyq = observe_EEGDAT.EEG.srate/2;
@@ -433,8 +428,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                 
                 fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
                 
-                if any(chanArray(:)>EEG.nbchan)
+                if isempty(chanArray) || any(chanArray(:)>EEG.nbchan)
                     chanArray = [1:EEG.nbchan];
+                    fprintf(['We have changed chans as below:\n']);
                     fprintf(['Chans:',num2str(chanArray),'\n']);
                 end
                 

@@ -302,7 +302,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         % Strip any non-numeric token and replace w/ whitespace (' ')
         editString               = regexprep(evntcodes, '[\D]', ' ');
         Source.String = editString;
-        
     end
 
 
@@ -526,7 +525,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             displayEEG,                                   ...
             ignoreBoundary});
         
-        
         try
             for Numofeeg = 1:numel(EEGArray)
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -546,8 +544,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                     'displayEEG'                , displayEEG,                   ...
                     'ignoreBoundary'            , ignoreBoundary,               ...
                     'History'                   , 'implicit');
-                
-                
                 
                 if isempty(LASTCOM)
                     disp('User selected cancel or errors occur.');

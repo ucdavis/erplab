@@ -943,10 +943,9 @@ try
     if strcmpi(EEGMessagepre{1},Processed_Method) && observe_EEGDAT.eeg_panel_message == EEGMessagepre{2}
         return;
     end
-catch 
+catch
 end
 erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_panel_message});
-
 
 %%Update the current EEGset after Inspect/label IC and update artifact marks
 eegicinspectFlag = erpworkingmemory('eegicinspectFlag');
@@ -979,7 +978,20 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
         if isempty(button) ||   strcmpi(button,'No')
             return;
         end
-        close all; %%close all opened figures
+        %%close the figures for inspect/label ICs or artifact detection for
+        %%epoched eeg (preview)
+        try
+            for Numofig = 1:1000
+                fig = gcf;
+                if strcmpi(fig.Tag,'EEGPLOT') || strcmpi(fig.Tag(1:7),'selcomp')
+                    close(fig.Name);
+                else
+                    break;
+                end
+            end
+        catch 
+        end
+        
         try
             observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);

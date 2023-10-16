@@ -262,6 +262,13 @@ varargout{1} = box_eegset_gui;
 
 %------------------duplicate the selected EEGsets--------------------------
     function duplicateSelected(~,~)%%The defualt channels and bins that come from "bin and channel" panel but user can select bins and channels.
+        
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Duplicate');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -278,16 +285,18 @@ varargout{1} = box_eegset_gui;
                 return;
             end
         end
-        
-        try
+         ChanArray=estudioworkingmemory('EEG_ChanArray');
+                 
+%         try
             for Numofselecterp = 1:numel(SelectedERP)
                 New_EEG = observe_EEGDAT.ALLEEG(SelectedERP(Numofselecterp));
                 
                 New_EEG.filename = '';
                 New_EEG.setname = char(strcat(New_EEG.setname, '_Duplicated'));
-                ChanArray = observe_EEGDAT.EEG_chan;
-                if isempty(ChanArray)
+                
+                if isempty(ChanArray) || any(ChanArray(:)>New_EEG.nbchan) || any(ChanArray(:)<=0)
                     ChanArray = [1:New_EEG.nbchan];
+                    estudioworkingmemory('EEG_ChanArray',ChanArray);
                 end
                 New_EEG = f_EEG_duplicate_GUI(New_EEG,length(observe_EEGDAT.ALLEEG),ChanArray);
                 if isempty(New_EEG)
@@ -297,7 +306,6 @@ varargout{1} = box_eegset_gui;
                 end
                 
                 observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = New_EEG;
-                
                 EEGlistName =  getDatasets(observe_EEGDAT.ALLEEG);
                 %%Reset the display in ERPset panel
                 EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
@@ -319,11 +327,10 @@ varargout{1} = box_eegset_gui;
             observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
             observe_EEGDAT.eeg_panel_message =2;
             %             observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
-        catch
-            
-            observe_EEGDAT.eeg_panel_message =3;
-            return;
-        end
+%         catch
+%             observe_EEGDAT.eeg_panel_message =3;
+%             return;
+%         end
         %         observe_EEGDAT.Two_GUI = observe_EEGDAT.Two_GUI+1;
     end
 
@@ -331,6 +338,13 @@ varargout{1} = box_eegset_gui;
 
 %%-------------------Rename the selcted files------------------------------
     function renamedata(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Rename');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -369,6 +383,13 @@ varargout{1} = box_eegset_gui;
 
 %%--------------------------------Add Suffix---------------------------------
     function add_suffix(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Add Suffix');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -409,6 +430,13 @@ varargout{1} = box_eegset_gui;
 
 %----------------------- Import-----------------------------------
     function imp_eeg( ~, ~ )
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Import');
         observe_EEGDAT.eeg_panel_message =1;
         %-----------Setting for import-------------------------------------
@@ -472,6 +500,8 @@ varargout{1} = box_eegset_gui;
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
+        f_redrawEEG_Wave_Viewer();
+        observe_EEGDAT.eeg_panel_message=2;
     end
 
 
@@ -498,7 +528,12 @@ varargout{1} = box_eegset_gui;
                 return;
             end
             EEG = pop_loadset('filename',filename,'filepath',filepath);
-            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, 0,'study',0);
+            if isempty(observe_EEGDAT.EEG)
+                OLDSET  =0;
+            else
+                OLDSET = length(ALLEEG);
+            end
+            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, OLDSET,'study',0);
         catch
             %%insert warning message here.
             return;
@@ -565,7 +600,11 @@ varargout{1} = box_eegset_gui;
         if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGsets > Append');
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
         
         erpworkingmemory('f_EEG_proces_messg','EEGsets > Append');
         EEGArray= estudioworkingmemory('EEGArray');
@@ -600,10 +639,41 @@ varargout{1} = box_eegset_gui;
             else
                 OLDSET = length(observe_EEGDAT.ALLEEG);
             end
-            [observe_EEGDAT.ALLEEG, EEG] = pop_newset( observe_EEGDAT.ALLEEG, EEG,OLDSET);
+            
+            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_append')),EEG.filename,OLDSET);
+            if isempty(Answer)
+                disp('User selected cancel.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            if ~isempty(Answer)
+                EEGName = Answer{1};
+                if ~isempty(EEGName)
+                    EEG.setname = EEGName;
+                end
+                fileName_full = Answer{2};
+                if isempty(fileName_full)
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                elseif ~isempty(fileName_full)
+                    [pathstr, file_name, ext] = fileparts(fileName_full);
+                    if strcmp(pathstr,'')
+                        pathstr = cd;
+                    end
+                    EEG.filename = [file_name,ext];
+                    EEG.filepath = pathstr;
+                    EEG.saved = 'yes';
+                    %%----------save the current sdata as--------------------
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                end
+            end
+            
+            [observe_EEGDAT.ALLEEG, EEG] = pop_newset(observe_EEGDAT.ALLEEG, EEG,OLDSET, 'gui', 'off');
             [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG( observe_EEGDAT.CURRENTSET);
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
@@ -626,6 +696,12 @@ varargout{1} = box_eegset_gui;
         if isempty(observe_EEGDAT.EEG)
             return;
         end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Clear');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -706,6 +782,13 @@ varargout{1} = box_eegset_gui;
 
 %-------------------------- Save selected EEGsets-------------------------------------------
     function savechecked(source,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets > Save');
         observe_EEGDAT.eeg_panel_message =1;
         pathName =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
@@ -764,6 +847,13 @@ varargout{1} = box_eegset_gui;
 
 %------------------------- Save as-----------------------------------------
     function savecheckedas(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Save As');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -823,6 +913,13 @@ varargout{1} = box_eegset_gui;
 
 %---------------- Enable/Disable dot structure-----------------------------
     function curr_folder(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =cd;
@@ -841,6 +938,13 @@ varargout{1} = box_eegset_gui;
 
 %-----------------select the ERPset of interest--------------------------
     function selectdata(source,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
         observe_EEGDAT.eeg_panel_message =1;
         Selected_eegsetlabel = sort(source.Value);
@@ -916,12 +1020,12 @@ varargout{1} = box_eegset_gui;
         end
         Change2epocheeg= erpworkingmemory('Change2epocheeg');
         if isempty(Change2epocheeg) || Change2epocheeg==0
-           
+            
         else
-           EStduio_eegtab_EEG_set.eeg_epoch.Value =1;  
-           EStduio_eegtab_EEG_set.eeg_contns.Value=0;
+            EStduio_eegtab_EEG_set.eeg_epoch.Value =1;
+            EStduio_eegtab_EEG_set.eeg_contns.Value=0;
         end
-          erpworkingmemory('Change2epocheeg',0);  
+        erpworkingmemory('Change2epocheeg',0);
         if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
             ALLEEG = observe_EEGDAT.ALLEEG;
             EEGArray=   estudioworkingmemory('EEGArray');
@@ -996,7 +1100,7 @@ varargout{1} = box_eegset_gui;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
-
+        
         EStduio_eegtab_EEG_set.dupeselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.renameselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.suffix.Enable= Edit_label;

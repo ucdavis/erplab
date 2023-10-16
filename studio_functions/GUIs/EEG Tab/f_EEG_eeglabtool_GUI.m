@@ -184,7 +184,6 @@ varargout{1} = EStudio_box_eeglab_tool;
                 Save_file_label = Answer{2};
             end
             
-            
             for Numofeeg = 1:numel(EEGArray)
                 EEG = ALLEEG_advance(EEGArray(Numofeeg));
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -420,7 +419,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =2;
         catch
-          
             observe_EEGDAT.count_current_eeg=1;
             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
             return;
@@ -499,8 +497,6 @@ varargout{1} = EStudio_box_eeglab_tool;
                         end
                     end
                 end
-                
-                
                 [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( ['\n',repmat('-',1,100) '\n']);
             end
