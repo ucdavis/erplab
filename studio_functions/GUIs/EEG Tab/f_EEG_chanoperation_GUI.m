@@ -15,8 +15,6 @@ addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change)
 addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 
-
-
 gui_eegtab_chan_optn = struct();
 
 %-----------------------------Name the title----------------------------------------------
@@ -78,15 +76,15 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.edit_bineq.KeyPressFcn=  @eeg_chanop_presskey;
         gui_eegtab_chan_optn.equation_selection = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_load = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_clear = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         gui_eegtab_chan_optn.asst_locaInfo = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.ref_asst = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
-            'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.locaInfor = uicontrol('Style','checkbox','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
             'String','Load Eq.','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
@@ -115,10 +113,10 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.run_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.cancel = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.run_title,...
-            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable',Enable_label);
+            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.chanop_apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.run_title,...
-            'String','Run','callback',@chanop_eeg_apply,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Run','callback',@chanop_eeg_apply,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         set(gui_eegtab_chan_optn.run_title,'Sizes',[15 105  30 105 15]);
         

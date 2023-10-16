@@ -72,21 +72,21 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         EStduio_eegtab_EEG_event2bin.BDF_edit.String = bdfileName;
         EStduio_eegtab_EEG_event2bin.BDF_browse = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
-            'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[60 -1 60]);
         
         %%----------------cancel and apply---------------------------------
         EStduio_eegtab_EEG_event2bin.reset_apply = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         
         EStduio_eegtab_EEG_event2bin.bdf_cancel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_apply,...
-            'String','Cancel','callback',@BDF_eeg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Cancel','callback',@BDF_eeg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         EStduio_eegtab_EEG_event2bin.event2bin_advanced = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_apply,...
-            'String','Advanced','callback',@event2bin_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Advanced','callback',@event2bin_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.KeyPressFcn=  @eeg_event2bin_presskey;
         
         EStduio_eegtab_EEG_event2bin.bdf_apply = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_apply,...
-            'String','Apply','callback',@eeg_bdf_apply,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Apply','callback',@eeg_bdf_apply,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.bdf_apply.KeyPressFcn=  @eeg_event2bin_presskey;
         
         

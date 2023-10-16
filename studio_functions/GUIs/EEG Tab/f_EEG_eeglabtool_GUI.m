@@ -59,26 +59,26 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.datainfo_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         
         EStduio_eegtab_eeglab_tool.about_eegdata = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.datainfo_title,...
-            'String','About this dataset','callback',@about_eegdata,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','About this dataset','callback',@about_eegdata,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_tool.edit_eeginfor = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.datainfo_title,...
-            'String','Dataset information','callback',@edit_eeginfor,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Dataset information','callback',@edit_eeginfor,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         
         %%Edit eeg events and channel locations
         EStduio_eegtab_eeglab_tool.event_chanlocs_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_tool.edit_eegevent = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.event_chanlocs_title,...
-            'String','Event values','callback',@edit_eegevent,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Event values','callback',@edit_eegevent,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_tool.edit_eegchanlocs = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.event_chanlocs_title,...
-            'String','Chan locations','callback',@edit_eegchanlocs,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Chan locations','callback',@edit_eegchanlocs,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         EStduio_eegtab_eeglab_tool.edit_samplerate = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.event_chanlocs_title,...
-            'String','Sampling rate','callback',@edit_samplerate,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Sampling rate','callback',@edit_samplerate,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         
         %%Reject data using Clean Rawdata and ASR
         EStduio_eegtab_eeglab_tool.eeg_ASR_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_tool.eeg_asr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.eeg_ASR_title,...
-            'String','Reject data using clean rawdata and ASR','callback',@eeg_asr,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Reject data using clean rawdata and ASR','callback',@eeg_asr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         %%Plot channel function
         EStduio_eegtab_eeglab_tool.plotchan_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -87,12 +87,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         EStduio_eegtab_eeglab_tool.plotchan_title2 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_tool.eeg_spcetra_map = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.plotchan_title2,...
-            'String','Spectra & maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Spectra & maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_tool.eeg_chanprop = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.plotchan_title2,...
-            'String','Chan prop.','callback',@eeg_chanprop,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Chan prop.','callback',@eeg_chanprop,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         EStduio_eegtab_eeglab_tool.eeg_tfr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.plotchan_title2,...
-            'String','Time-frequency','callback',@eeg_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Time-frequency','callback',@eeg_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_eeglab_tool.DataSelBox,'Sizes',[30 30 30 20 30])
     end
 

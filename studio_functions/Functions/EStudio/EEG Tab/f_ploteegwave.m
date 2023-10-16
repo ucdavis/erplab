@@ -188,7 +188,7 @@ try
     hbig.Position = [Pos(1)*0.5,Pos(2)*0.95,Pos(3)*1.15,Pos(4)*0.95];
     outerpos = fig_gui.OuterPosition;
     higpos = hbig.Position;
-    set(fig_gui,'outerposition',[outerpos(1),outerpos(2),(1.1/higpos(3))*FigOutpos(1) (1.1/higpos(4))*FigOutpos(2)])
+    set(fig_gui,'outerposition',[1,1,(1.1/higpos(3))*FigOutpos(1) (1.1/higpos(4))*FigOutpos(2)])
 catch
     set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
 end
