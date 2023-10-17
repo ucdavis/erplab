@@ -222,8 +222,8 @@ f_redrawERP();%%Draw ERP waves
         %%screen size
         ScreenPos = [];
         new_pos= erpworkingmemory('ERPWaveScreenPos');
-        if isempty(new_pos) || numel(new_pos)~=4
-            new_pos = [0.01,0.01,75,75];
+        if isempty(new_pos) || numel(new_pos)~=2
+            new_pos = [75,75];
             erpworkingmemory('EStudioScreenPos',new_pos);
         end
         try
@@ -231,9 +231,18 @@ f_redrawERP();%%Draw ERP waves
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
-        
-        new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-        set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        if ~isempty(new_pos(2)) && new_pos(2) >100
+            POS4 = (new_pos(2)-1)/100;
+            new_pos =[0,0-ScreenPos(4)*POS4,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+        else
+            new_pos =[0,0,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+        end
+        try
+            set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        catch
+            set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+            erpworkingmemory('EStudioScreenPos',[75 75]);
+        end
         EStudio_gui_erp_totl.Window.Resize = 0;
         
         % + File menu
@@ -253,8 +262,8 @@ f_redrawERP();%%Draw ERP waves
         comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
         
-        %%guo position
-        uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'EStudio Position', 'Callback', @EStudiopos);
+        %%window size
+        uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Window Size', 'Callback', @EStudiowinsize);
         
         
         %% Create tabs
@@ -308,6 +317,10 @@ f_redrawERP();%%Draw ERP waves
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
+        
+        EStudio_gui_erp_totl.EStudiowinsize = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Window Size',...
+            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@EStudiowinsize);
+        
         EStudio_gui_erp_totl.eeg_figurecommand = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Show Command',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
@@ -331,8 +344,6 @@ f_redrawERP();%%Draw ERP waves
         %%---------------set the layouts for ERP Tab-----------------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         EStudio_gui_erp_totl = EStudio_ERP_Tab(EStudio_gui_erp_totl,ColorB_def);
-        
-        
     end % createInterface
 
 
@@ -536,8 +547,8 @@ f_redrawERP();%%Draw ERP waves
         end
     end
 
-%%--------------------Setting for EStudio position-------------------------
-    function EStudiopos(~,~)
+%%--------------------Setting for EStudio window size----------------------
+    function EStudiowinsize(~,~)
         try
             ScreenPos =  get( groot, 'Screensize' );
         catch
@@ -549,12 +560,16 @@ f_redrawERP();%%Draw ERP waves
             return;
         end
         try
-            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
+            New_posin = erpworkingmemory('ERPWaveScreenPos');
         catch
-            New_pos = [0.01,0.01,75,75];
+            New_posin = [75,75];
         end
+        if isempty(New_posin) ||numel(New_posin)~=2
+            New_posin = [75,75];
+        end
+        New_posin(2) = abs(New_posin(2));
         
-        app = feval('EStudio_pos_gui',New_pos);
+        app = feval('EStudio_pos_gui',New_posin);
         waitfor(app,'Finishbutton',1);
         try
             New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
@@ -564,18 +579,32 @@ f_redrawERP();%%Draw ERP waves
             disp('User selected Cancel');
             return;
         end
-        if isempty(New_pos1) || numel(New_pos1)~=4
+        try New_pos1(2) = abs(New_pos1(2));catch; end;
+        
+        if isempty(New_pos1) || numel(New_pos1)~=2
+            erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         erpworkingmemory('ERPWaveScreenPos',New_pos1);
-        new_pos =[ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100,ScreenPos(3)*New_pos1(3)/100,ScreenPos(4)*New_pos1(4)/100];
-        set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        try
+            POS4 = (New_pos1(2)-New_posin(2))/100;
+            new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+            if new_pos(2) <  -abs(new_pos(4))%%if 
+                
+            end
+            set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+        catch
+            erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+            observe_EEGDAT.eeg_panel_message =4;
+            set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+            erpworkingmemory('ERPWaveScreenPos',[75 75]);
+        end
         try
             f_redrawEEG_Wave_Viewer();%%Draw EEG waves
             f_redrawERP();%%Draw ERP waves
         catch
         end
-        
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
     end
 

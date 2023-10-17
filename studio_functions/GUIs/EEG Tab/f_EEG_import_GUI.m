@@ -22,7 +22,7 @@ function varargout = f_EEG_import_GUI(varargin)
 
 % Edit the above text to modify the response to help f_EEG_import_GUI
 
-% Last Modified by GUIDE v2.5 14-Aug-2023 19:11:41
+% Last Modified by GUIDE v2.5 16-Oct-2023 21:04:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,8 +79,8 @@ end
 
 handles = setfonterplabestudio(handles);
 
-handles.checkbox_func_plugs.Value = 0;
-handles.listbox_plugins.Enable = 'off';
+handles.checkbox_func_plugs.Value = 1;
+handles.listbox_plugins.Enable = 'on';
 Plugin_fuName = {'';'ASCII/float file or Matlab array';'Biosemi BDF file (BIOSIG toolbox)';...
     'EDF/EDF+/GDF files (BIOSIG toolbox)';'Biosemi BDF and EDF files (BDF plugin)';...
     'Brain Vis. Rec. .vhdr or .ahdr file';'Brain Vis. Anal. Matlab file';'Magstim/EGI .mff file';...
@@ -202,9 +202,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -255,9 +255,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -360,9 +360,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -491,9 +491,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -544,9 +544,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -599,9 +599,9 @@ if filterindex==0
     return;
 end
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -654,9 +654,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -708,9 +708,9 @@ if filterindex==0
 end
 
 if iscell(filename)
-   filterindex  = length(filename); 
+    filterindex  = length(filename);
 else
-  filterindex =1;  
+    filterindex =1;
 end
 
 for Numofile = 1:filterindex %%loop for subjects which is allow to load the mutiple datasets
@@ -839,3 +839,13 @@ function pushbutton_eeglab_extension_Callback(hObject, eventdata, handles)
 plugin_menu([]);
 
 
+% --- Executes on button press in pushbutton_otherformat.
+function pushbutton_otherformat_Callback(hObject, eventdata, handles)
+BackERPLABcolor = [1 0.9 0.3];    % yellow
+question = ['(1) Please use EEGLAB to import the data with other formats that are not included in EStudio,\n(2) Save them as “.set” files,\n(3) Rerun EStudio and load those “.set” files.'];
+title = 'EEGsets>Import>Other data formats';
+oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+button = questdlg(sprintf(question), title,'Okay','Yes');
+set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+guidata(hObject, handles);

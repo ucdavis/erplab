@@ -38,7 +38,7 @@
 %                       right; negative, to the left.
 %         'colorseg'  - color for marking artifactual segments.
 %         'review'    - {'on'/'off'} Display a plot of the EEG after execution. Default is 'off'
-%         
+%
 %
 %
 % 'fcutoff' accepts the following values:
@@ -291,8 +291,8 @@ p.addParameter('shortseg'        , []            , @isnumeric);
 p.addParameter('winoffset'       , []            , @isnumeric);
 p.addParameter('History'         , 'script'      , @ischar);                           % history from scripting
 p.addParameter('colorseg'        , [1.0000 ...
-                                    0.9765 ...
-                                    0.5294]      , @isnumeric);
+    0.9765 ...
+    0.5294]      , @isnumeric);
 
 p.parse(EEG, varargin{:});
 
@@ -419,6 +419,16 @@ winoffsetsam      = floor(winoffset * EEG.srate/1000);  % to samples
 
 if isempty(WinRej)
     fprintf('\nCriterion was not found. No rejection was performed.\n');
+    %%Oct 2023 GH
+    BackERPLABcolor = [1 0.9 0.3];    % yellow
+    question = ['EEG name:',32,EEG.setname,'\n\n',...
+        'Warning: There are no segments that will be rejected.\n'];
+    title = 'Artifact rejection for continuous EEG';
+    oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+    set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+    button = questdlg(sprintf(question), title,'Yes','Yes');
+    set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+    
 else
     if ~isempty(shortisisam)
         [WinRej, chanrej ] = joinclosesegments(WinRej, chanrej, shortisisam);
@@ -431,8 +441,8 @@ else
     end
     %     assignin('base', 'WinRej', WinRej)
     fprintf('\n %g segments were marked.\n\n', size(WinRej,1));
-
-     
+    
+    
     
     %% Added in option for skipping EEGPLOT GUI when scripting
     if(strcmp(p.Results.History, 'gui') || strcmp(p.Results.review, 'on') )
@@ -443,13 +453,13 @@ else
         eegplot(EEG.data ...
             , 'winrej'      , matrixrej     ...
             , 'srate'       , EEG.srate     ...
-             ... , 'butlabel'    , 'REJECT'  
-            ... , 'command'     , commrej  
+            ... , 'butlabel'    , 'REJECT'
+            ... , 'command'     , commrej
             , 'events'      , EEG.event     ...
             , 'winlength'   , 10            ...
             ,'title', ['eegplot() -- ', EEG.setname] ...
             , 'spacing'     , 100           ); % call EEGPLOT GUI
-
+        
         
         EEG = eeg_eegrej(EEG, WinRej);
         
@@ -461,7 +471,7 @@ else
     % ----------------------------------------
     
     
-    %%    
+    %%
     EEG.setname     = [EEG.setname '_car'];
     EEG = eeg_checkset( EEG );
     if length(EEG.event)>=1

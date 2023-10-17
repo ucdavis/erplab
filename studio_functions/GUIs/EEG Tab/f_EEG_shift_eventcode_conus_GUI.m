@@ -95,7 +95,8 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.timeshift_edit = uicontrol('Style','edit','Parent',EEG_shift_eventcode_conus.voltage_title,...
             'callback',@timeshift_edit,'String',num2str(timeshift),'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_shift_eventcode_conus.timeshift_edit.KeyPressFcn=  @eeg_shiftcodes_presskey;
-        uiextras.Empty('Parent', EEG_shift_eventcode_conus.voltage_title ,'BackgroundColor',ColorB_def);
+         EEG_shift_eventcode_conus.timeshift_qestion = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.voltage_title,...
+            'callback',@timeshift_question,'String','?','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',[1 1 1]); % 2F
         set(EEG_shift_eventcode_conus.voltage_title,'Sizes',[90,-1,60]);
         try
             sample_rounding= def{3};
@@ -283,6 +284,19 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             return;
         end
     end
+
+%%----------------------Qestion for time shift-----------------------------
+    function timeshift_question(~,~)
+        BackERPLABcolor = [1 0.9 0.3];    % yellow
+        question = ['Positive timeshift shifts right/forward in time\nNegative timeshift shifts left/backward in time'];
+        title = 'Shift event codes for continuous EEG';
+        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        button = questdlg(sprintf(question), title,'Yes','Yes');
+        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
+    end
+
+
 
 
 %%------------------------moving window------------------------------------

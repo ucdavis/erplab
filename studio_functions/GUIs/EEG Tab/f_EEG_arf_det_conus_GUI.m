@@ -498,7 +498,6 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         
         
-        
         try
             for Numofeeg = 1:numel(EEGArray)
                 EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));

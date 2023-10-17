@@ -59,7 +59,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.clear_art_det_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  Eegtab_EEG_art_sumop.clear_art_det_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.clear_art_det = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.clear_art_det_title,...
-            'String','Clear artifact detection marks on EEG','callback',@clear_art_det,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Clear artifact detection marks on EEG','callback',@clear_art_det,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  Eegtab_EEG_art_sumop.clear_art_det_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.clear_art_det_title, 'Sizes',[15 -1 15]);
         
@@ -68,7 +68,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.syn_arfinfo_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.syn_arfinfo = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.syn_arfinfo_title,...
-            'String','Syn. artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Syn. artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.syn_arfinfo_title, 'Sizes',[15 -1 15]);
         
@@ -77,7 +77,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_onevalue_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_onevalue_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.art_onevalue = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_onevalue_title,...
-            'String','Summarize EEG artifact in one value','callback',@art_onevalue,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Summarize EEG artifact in one value','callback',@art_onevalue,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_onevalue_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.art_onevalue_title, 'Sizes',[15 -1 15]);
         
@@ -85,7 +85,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_table_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_table_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.art_table = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_table_title,...
-            'String','Summarize EEG artifact in a table','callback',@art_table,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Summarize EEG artifact in a table','callback',@art_table,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_table_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.art_table_title, 'Sizes',[15 -1 15]);
         
@@ -93,7 +93,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_graphic_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_graphic_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.art_graphic = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_graphic_title,...
-            'String','Summarize EEG artifact in a graphic','callback',@art_graphic,'FontSize',FonsizeDefault,'Enable',EnableFlag);
+            'String','Summarize EEG artifact in a graphic','callback',@art_graphic,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_graphic_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.art_graphic_title, 'Sizes',[15 -1 15]);
         

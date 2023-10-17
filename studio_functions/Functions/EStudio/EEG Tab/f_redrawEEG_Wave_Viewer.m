@@ -184,7 +184,7 @@ EStudio_gui_erp_totl.eeg_figureout.Callback = @figure_out;
 EStudio_gui_erp_totl.eeg_Reset.Callback =@Panel_Reset;
 
 
-set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 60 5]);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 100 170 60 5]);
 
 
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
