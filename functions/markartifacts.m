@@ -130,7 +130,7 @@ end
 %
 % RTs
 %
-if isRT && isFieldNested(EEG, 'rtitem')
+if isRT && isfield(EEG.EVENTLIST.bdf,'rtitem')%%GH Oct 2023%% isFieldNested(EEG, 'rtitem')
       bin = unique_bc2(cell2mat(EEG.epoch(currEpochNum).eventbini)); 
       bin = bin(bin>0);
       rtitem = EEG.EVENTLIST.bdf(bin).rtitem;
