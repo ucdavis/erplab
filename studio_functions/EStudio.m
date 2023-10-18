@@ -1,10 +1,10 @@
-% New GUI Layout - Simple ERP viewer 0.014
+% New GUI Layout -ERPLAB Studio
 %
 % Author: Guanghui Zhang & Steve J. Luck & Andrew Stewart
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022 & 2023
+% 2022-2024
 
 % ERPLAB Studio Toolbox
 %
@@ -24,14 +24,15 @@
 % along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 % Reqs:
-% - data loaded in valid ERPset
+% - data loaded in valid ERPset and EEGset
 % - GUI Layout Toolbox
 % - ERPLAB
-
+% - EEGLAB
 
 %
 % Demo to explore an ERP Viewer using the new GUI Layout Toolbox
 % Now with more in nested functions
+
 
 function [] = EStudio()
 
@@ -85,6 +86,13 @@ if iserpmem==0
     save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
 end
 
+%%close EEGLAB
+try
+    eeglab;
+    W_MAIN = findobj('tag', 'EEGLAB');
+    close(W_MAIN);
+catch
+end
 
 % Sanity checks
 try
@@ -95,13 +103,6 @@ catch
     return
 end
 
-%%close EEGLAB
-try
-    W_MAIN = findobj('tag', 'EEGLAB');
-    close(W_MAIN);
-    %     clearvars observe_ERPDAT;
-catch
-end
 
 %%Try to close existing GUI
 % global EStudio_gui_erp_totl_Window
@@ -128,7 +129,7 @@ CURRENTSET = 0;
 assignin('base','EEG',EEG);
 assignin('base','ALLEEG', ALLEEG);
 assignin('base','CURRENTSET', CURRENTSET);
-assignin('base','ALLCOM', []);
+% assignin('base','ALLCOM', []);
 
 observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
@@ -590,7 +591,7 @@ f_redrawERP();%%Draw ERP waves
         try
             POS4 = (New_pos1(2)-New_posin(2))/100;
             new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
-            if new_pos(2) <  -abs(new_pos(4))%%if 
+            if new_pos(2) <  -abs(new_pos(4))%%if
                 
             end
             set(EStudio_gui_erp_totl.Window, 'Position', new_pos);

@@ -527,14 +527,13 @@ varargout{1} = box_eegset_gui;
         [EEG,  Lastcom]= pop_loadset('filename',filename,'filepath',filepath);
         EEG = eegh(Lastcom, EEG);
         eegh(Lastcom);%%ALLCOM
-        
         if isempty(observe_EEGDAT.EEG)
             OLDSET  =0;
         else
             OLDSET = length(ALLEEG);
         end
-        [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
-        
+        [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
+        eegh(LASTCOM);
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0

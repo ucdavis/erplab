@@ -1,3 +1,7 @@
+%%This script is to save history for either current EEGset or current session.
+
+
+
 %Author: Guanghui ZHANG--zhang.guanghui@foxmail.com
 %Center for Mind and Brain
 %University of California, Davis
@@ -41,50 +45,59 @@ end
 if isempty(FonsizeDefault)
     FonsizeDefault = f_get_default_fontsize();
 end
-drawui_erp_history(FonsizeDefault);
+drawui_eeg_history(FonsizeDefault);
 varargout{1} = box_eeg_history;
 
-    function drawui_erp_history(FonsizeDefault)
+    function drawui_eeg_history(FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
+        if isempty(observe_EEGDAT.EEG)
+            EnableFlag = 'off';
+        else
+            EnableFlag = 'on';
+        end
+        
+        FontSize_defualt = FonsizeDefault;
         %%--------------------channel and bin setting----------------------
         gui_eeg_history.DataSelBox = uiextras.VBox('Parent', box_eeg_history,'BackgroundColor',ColorB_def);
         
-        gui_eeg_history.erp_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_eeg_history.erp_h_all = uicontrol('Style','radiobutton','Parent',gui_eeg_history.erp_history_title,'String','Current EEGset',...
-            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
-        gui_eeg_history.erp_h_EEG = uicontrol('Style','radiobutton','Parent', gui_eeg_history.erp_history_title,'String','Current session',...
-            'callback',@ERP_H_EEG,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
+        gui_eeg_history.eeg_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_eeg_history.eeg_h_all = uicontrol('Style','radiobutton','Parent',gui_eeg_history.eeg_history_title,'String','Current EEGset',...
+            'callback',@eeg_H_ALL,'Value',1,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag); % 2F
+        gui_eeg_history.eeg_h_EEG = uicontrol('Style','radiobutton','Parent', gui_eeg_history.eeg_history_title,'String','Current session',...
+            'callback',@eeg_H_EEG,'Value',0,'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag); % 2F
         
         try
-            ERP_history =  observe_EEGDAT.EEG.history;
+            eeg_history =  observe_EEGDAT.EEG.history;
         catch
-            ERP_history = [];
+            eeg_history = [];
         end
-        if isempty(ERP_history)
-            ERP_history = char('No history exist in the current ERPset');
+        if isempty(eeg_history)
+            eeg_history = char('No history exist in the current eegset');
         end
-        [~, total_len] = size(ERP_history);
+        [~, total_len] = size(eeg_history);
         if total_len <500
             total_len =1000;
         end
-        gui_eeg_history.erp_history_table = uiextras.HBox('Parent', gui_eeg_history.DataSelBox);
+        gui_eeg_history.eeg_history_table = uiextras.HBox('Parent', gui_eeg_history.DataSelBox);
         gui_eeg_history.uitable = uitable(  ...
-            'Parent'        , gui_eeg_history.erp_history_table,...
-            'Data'          , strsplit(ERP_history(1,:), '\n')', ...
+            'Parent'        , gui_eeg_history.eeg_history_table,...
+            'Data'          , strsplit(eeg_history(1,:), '\n')', ...
             'ColumnWidth'   , {total_len+2}, ...
             'ColumnName'    , {'Function call'}, ...
-            'RowName'       , []);
+            'RowName'       , [],'Enable',EnableFlag);
         
         %%save the scripts
-         gui_eeg_history.save_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
-        
-         
-        
-        set( gui_eeg_history.DataSelBox,'Heights',[40 -1 30]);
+        gui_eeg_history.save_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  gui_eeg_history.save_history_title,'BackgroundColor',ColorB_def);
+        gui_eeg_history.save_script = uicontrol('Style','pushbutton','Parent',gui_eeg_history.save_history_title,...
+            'String','Save history script','callback',@savescript,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent', gui_eeg_history.save_history_title,'BackgroundColor',ColorB_def);
+        set(gui_eeg_history.save_history_title,'Sizes',[-1 120 -1]);
+        set( gui_eeg_history.DataSelBox,'Sizes',[35 -1 30]);
         
     end
 
@@ -95,102 +108,137 @@ varargout{1} = box_eeg_history;
 %%**************************************************************************%%
 
 
-%--------History for both EEG and ERP data processing procedure------------
-    function ERP_H_ALL(~,~)
+%--------History for both EEG and eeg data processing procedure------------
+    function eeg_H_ALL(~,~)
         Source_value = 1;
-        set(gui_eeg_history.erp_h_all,'Value',Source_value);
-        set(gui_eeg_history.erp_h_EEG,'Value',~Source_value);
+        set(gui_eeg_history.eeg_h_all,'Value',Source_value);
+        set(gui_eeg_history.eeg_h_EEG,'Value',~Source_value);
         
         %adding the relared history in dispaly panel
         hiscp_empty =0;
         try
-            ERP_history =  observe_EEGDAT.EEG.history;
+            eeg_history =  observe_EEGDAT.EEG.history;
         catch
-            ERP_history = [];
+            eeg_history = [];
         end
         
-        if isempty(ERP_history)
-            ERP_history = char('No history exist in the current ERPset');
+        if isempty(eeg_history)
+            eeg_history = char('No history exist in the current eegset');
+            gui_eeg_history.save_script.Enable = 'off';
+        else
+            gui_eeg_history.save_script.Enable = 'on';
         end
-        ERP_history_display = {};
-        for Numofrow = 1:size(ERP_history,1)
-            ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+        eeg_history_display = {};
+        for Numofrow = 1:size(eeg_history,1)
+            eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
         end
-        set(gui_eeg_history.uitable,'Data', ERP_history_display');
-        set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
-        set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
+        set(gui_eeg_history.uitable,'Data', eeg_history_display');
         
     end
 
 %%------------------------ALLCOM-------------------------------------------
-    function ERP_H_EEG(~,~)
+    function eeg_H_EEG(~,~)
         Source_value = 1;
-        set(gui_eeg_history.erp_h_all,'Value',~Source_value);
-        set(gui_eeg_history.erp_h_EEG,'Value',Source_value);
+        set(gui_eeg_history.eeg_h_all,'Value',~Source_value);
+        set(gui_eeg_history.eeg_h_EEG,'Value',Source_value);
         %adding the relared history in dispaly panel
-        try
-            ERP_history = evalin('base','ALLCOM');
-            ERP_history = ERP_history';
-        catch
-            ERP_history = {'No command history was found in the current session'};
-        end
-        if isempty(ERP_history)
-            ERP_history = {'No command history was found in the current session'};
-        end
         
-        set(gui_eeg_history.uitable,'Data',ERP_history);
-        set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
+        try
+            eeg_history = evalin('base','ALLCOM');
+            eeg_history = eeg_history';
+        catch
+            eeg_history = [];
+            gui_eeg_history.save_script.Enable = 'off';
+        end
+        if isempty(eeg_history)
+            eeg_history = {'No command history was found in the current session'};
+            gui_eeg_history.save_script.Enable = 'off';
+        else
+            gui_eeg_history.save_script.Enable = 'on';
+        end
+        set(gui_eeg_history.uitable,'Data',eeg_history);
     end
 
+%%--------------------------------Save scripts-----------------------------
+    function savescript(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable = 'off';
+            return;
+        end
+        if gui_eeg_history.eeg_h_all.Value==1
+            MessageViewer= char(strcat('Save history script for the current EEGset'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=1;
+            LASTCOM = pop_saveh(observe_EEGDAT.EEG.history);
+        else
+            MessageViewer= char(strcat('Save history script for the current session'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=1;
+            try
+                eeg_history = evalin('base','ALLCOM');
+                eeg_history = eeg_history';
+            catch
+                return;
+            end
+            LASTCOM = pop_saveh(eeg_history);
+            
+        end
+%         eegh(LASTCOM);
+        fprintf(['\n',LASTCOM,'\n']);
+        observe_EEGDAT.eeg_panel_message=2;
+    end
 
-
-%%--------Setting current ERPset/session history based on the current updated ERPset------------
+%%--------Setting current eegset/session history based on the current updated eegset------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=22
+        if observe_EEGDAT.count_current_eeg ~=23
             return;
         end
         if  isempty(observe_EEGDAT.EEG)
-            
-            
+            gui_eeg_history.save_script.Enable = 'off';
+            gui_eeg_history.eeg_h_all.Enable = 'off';
+            gui_eeg_history.eeg_h_EEG.Enable = 'off';
+            gui_eeg_history.uitable.Enable = 'off';
         end
         
+        gui_eeg_history.save_script.Enable = 'on';
+        gui_eeg_history.eeg_h_all.Enable = 'on';
+        gui_eeg_history.eeg_h_EEG.Enable = 'on';
+        gui_eeg_history.uitable.Enable = 'on';
         
-        if gui_eeg_history.erp_h_all.Value ==1
+        
+        if gui_eeg_history.eeg_h_all.Value ==1
+            try
+                eeg_history =  observe_EEGDAT.EEG.history;
+            catch
+                eeg_history = [];
+            end
+            if isempty(eeg_history)
+                eeg_history = char('No history exist in the current eegset');
+                gui_eeg_history.save_script.Enable = 'off';
+            end
+            eeg_history_display = {};
+            for Numofrow = 1:size(eeg_history,1)
+                eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+            end
+            set(gui_eeg_history.uitable,'Data', eeg_history_display');
+            set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
+        else%% ALLeegCOM for current session
             
             try
-                ERP_history =  observe_EEGDAT.EEG.history;
+                eeg_history = evalin('base','ALLCOM');
+                eeg_history = eeg_history';
+                set(gui_eeg_history.uitable,'Data',eeg_history);
             catch
-                ERP_history = [];
+                eeg_history = {'No command history was found in the current session'};
+                set(gui_eeg_history.uitable,'Data',eeg_history);
+                gui_eeg_history.save_script.Enable = 'off';
             end
-            if isempty(ERP_history)
-                ERP_history = char('No history exist in the current ERPset');
+            if isempty(eeg_history)
+                eeg_history = {'No command history was found in the current session'};
+                set(gui_eeg_history.uitable,'Data',eeg_history);
+                gui_eeg_history.save_script.Enable = 'off';
             end
-            ERP_history_display = {};
-            for Numofrow = 1:size(ERP_history,1)
-                ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
-            end
-            set(gui_eeg_history.uitable,'Data', ERP_history_display');
-            set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
-        else%% ALLERPCOM for current session
-            
-            try
-                ERP_history = evalin('base','ALLERPCOM');
-                ERP_history = ERP_history';
-                set(gui_eeg_history.uitable,'Data',ERP_history);
-            catch
-                ERP_history = {'No command history was found in the current section'};
-                set(gui_eeg_history.uitable,'Data',ERP_history);
-            end
-            if isempty(ERP_history)
-                ERP_history = {'No command history was found in the current section'};
-                set(gui_eeg_history.uitable,'Data',ERP_history);
-            end
-            
-            set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
         end
-        
     end
-
-
 
 end
