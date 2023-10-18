@@ -164,7 +164,9 @@ varargout{1} = Eegtab_box_art_sumop;
                 
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_resetrej')),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
                     disp('User selected cancel.');
@@ -192,11 +194,16 @@ varargout{1} = Eegtab_box_art_sumop;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end%%end for loop of subjects
             
             try
@@ -284,7 +291,9 @@ varargout{1} = Eegtab_box_art_sumop;
                 
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_synctrej')),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
                     disp('User selected cancel.');
@@ -311,11 +320,16 @@ varargout{1} = Eegtab_box_art_sumop;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end%%end for loop of subjects
             
             try
@@ -391,6 +405,9 @@ varargout{1} = Eegtab_box_art_sumop;
             
             [EEG, MPD, LASTCOM] = getardetection(EEG, 1);
             fprintf([LASTCOM,'\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
         end
@@ -452,6 +469,9 @@ varargout{1} = Eegtab_box_art_sumop;
                 return;
             end
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
             fprintf( [repmat('-',1,100) '\n']);
         end
         
@@ -510,6 +530,9 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf([LASTCOM,'\n']);
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
         end
         erpworkingmemory('f_EEG_proces_messg','Summarize artifact option for epoched EEG >  Summarize EEG artifact in a graphic');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.

@@ -64,14 +64,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         EStduio_eegtab_EEG_edit_chan.mode_modify = uicontrol('Style','radiobutton','Parent',EStduio_eegtab_EEG_edit_chan.mode_1 ,...
             'String','Modify existing dataset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-%         EStduio_eegtab_EEG_edit_chan.mode_modify.String =  '<html>Modify existing dataset<br />(recursive updating)</html>';
+        %         EStduio_eegtab_EEG_edit_chan.mode_modify.String =  '<html>Modify existing dataset<br />(recursive updating)</html>';
         set(EStduio_eegtab_EEG_edit_chan.mode_1,'Sizes',[55 -1]);
         %%--------------For create a new ERPset----------------------------
         EStduio_eegtab_EEG_edit_chan.mode_2 = uiextras.HBox('Parent', EStduio_eegtab_EEG_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  EStduio_eegtab_EEG_edit_chan.mode_2,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_edit_chan.mode_create = uicontrol('Style','radiobutton','Parent',EStduio_eegtab_EEG_edit_chan.mode_2 ,...
             'String','Create new dataset','callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
-%         EStduio_eegtab_EEG_edit_chan.mode_create.String =  '<html>Create new dataset<br />(independent transformations)</html>';
+        %         EStduio_eegtab_EEG_edit_chan.mode_create.String =  '<html>Create new dataset<br />(independent transformations)</html>';
         set(EStduio_eegtab_EEG_edit_chan.mode_2,'Sizes',[55 -1]);
         
         
@@ -84,7 +84,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         EStduio_eegtab_EEG_edit_chan.browse_chan = uicontrol('Style','pushbutton','Parent',EStduio_eegtab_EEG_edit_chan.select_chan_title,...
             'String','Browse','callback',@browse_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(EStduio_eegtab_EEG_edit_chan.select_chan_title,'sizes',[40 -1 60])
-        
         
         
         %%Delete selected channels && Rename selected channels
@@ -282,6 +281,9 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 [EEG, LASTCOM] = pop_select( EEG, 'rmchannel',{chanlabels{ChanArray}});
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 if CreateeegFlag==0
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                 else
@@ -310,8 +312,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
-                        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
                 fprintf( [repmat('-',1,100) '\n']);
@@ -416,6 +424,10 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                     observe_EEGDAT.eeg_panel_message =4;
                     return
                 end
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+                
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
                 if CreateeegFlag==0
@@ -447,8 +459,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
-                        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
                 fprintf( [repmat('-',1,100) '\n']);
@@ -539,7 +557,9 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 end
                 EEG = eegh(LASTCOM, EEG);
                 fprintf(['\n',LASTCOM,'\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 
                 if CreateeegFlag==0
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
@@ -569,8 +589,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
-                        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
                 fprintf( ['\n',repmat('-',1,100) '\n']);

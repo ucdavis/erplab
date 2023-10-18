@@ -430,7 +430,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
                     fprintf( [repmat('-',1,100) '\n']);
                     return;
                 end
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
                 
@@ -461,10 +463,16 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 
             end%%end for loop of subjects
             

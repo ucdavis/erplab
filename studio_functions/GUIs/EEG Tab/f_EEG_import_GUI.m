@@ -221,6 +221,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -229,7 +230,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 guidata(hObject, handles);
@@ -286,6 +288,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -294,7 +297,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 guidata(hObject, handles);
@@ -324,6 +328,7 @@ if isempty(EEG)
     return;
 end
 EEG = eegh(LASTCOM, EEG);
+eegh(LASTCOM);
 ALLEEG = handles.ALLEEG;
 if isempty(ALLEEG)
     OLDSET=1;
@@ -331,8 +336,8 @@ else
     %  ALLEEG(length(ALLEEG)+1) = EEG;
     OLDSET = length(ALLEEG);
 end
-[ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
-
+[ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+eegh(LASTCOM);
 handles.ALLEEG = ALLEEG;
 guidata(hObject, handles);
 
@@ -391,6 +396,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -399,7 +405,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 % guidata(hObject, handles);
@@ -456,6 +463,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -464,7 +472,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 
@@ -510,15 +519,17 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
-        OLDSET=1;
+        OLDSET=0;
     else
         OLDSET = length(ALLEEG);
     end
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 
@@ -563,15 +574,17 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
-        OLDSET=1;
+        OLDSET=0;
     else
         OLDSET = length(ALLEEG);
     end
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 % guidata(hObject, handles);
@@ -618,6 +631,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -626,7 +640,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 
@@ -673,6 +688,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -681,7 +697,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 
@@ -728,6 +745,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -736,7 +754,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 
@@ -774,6 +793,7 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
         return;
     end
     EEG = eegh(LASTCOM, EEG);
+    eegh(LASTCOM);
     if isempty(ALLEEG)
         OLDSET=1;
     else
@@ -787,7 +807,8 @@ for Numofile = 1:filterindex %%loop for subjects which is allow to load the muti
     if ~isempty(myFilename)
         EEG.setname = myFilename;
     end
-    [ALLEEG, EEG] = pop_newset( ALLEEG, EEG,OLDSET);
+    [ALLEEG, EEG,~,LASTCOM] = pop_newset( ALLEEG, EEG,OLDSET);
+    eegh(LASTCOM);
     handles.ALLEEG = ALLEEG;
 end
 

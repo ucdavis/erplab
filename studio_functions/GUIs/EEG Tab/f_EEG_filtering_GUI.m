@@ -196,7 +196,7 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.hp_halfamp = uicontrol('Style','edit','Parent',gui_eegtab_filtering.filt_grid,...
             'callback',@hp_halfamp,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2B
         gui_eegtab_filtering.hp_halfamp.KeyPressFcn =@eeg_filter_presskey;
-        if strcmp(hp_halfamp_enable,'off');
+        if strcmp(hp_halfamp_enable,'off')
             if typef<2
                 gui_eegtab_filtering.hp_halfamp.String = '0';
             else
@@ -893,6 +893,9 @@ varargout{1} = EEG_filtering_box;
                 [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                     'History', 'gui');
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 if numel(EEGArray) ==1
                     Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
                     if isempty(Answer)
@@ -919,6 +922,9 @@ varargout{1} = EEG_filtering_box;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
                     end
                 end
@@ -928,6 +934,9 @@ varargout{1} = EEG_filtering_box;
                     EEG.filename = [file_name,'.set'];
                     [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                     EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                 else
                     EEG.filename = '';
                     EEG.saved = 'no';
@@ -1180,7 +1189,9 @@ varargout{1} = EEG_filtering_box;
                 [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                     'History', 'gui','Boundary', Boundaryflag);
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 
                 %%Rename single file------------------------------------
                 if numel(EEGArray) ==1
@@ -1210,6 +1221,9 @@ varargout{1} = EEG_filtering_box;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
                     end
                 end
@@ -1220,6 +1234,9 @@ varargout{1} = EEG_filtering_box;
                     EEG.saved = 'yes';
                     [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                     EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                 else
                     EEG.filename = '';
                     EEG.saved = 'no';

@@ -143,7 +143,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_dq_fre_conus',1);
-
+        
         Data = EEG_dq_fre_conus.bandtable.Data;
         [rowNum,columNum] = size(Data);
         for Numofrow = 1:rowNum
@@ -442,7 +442,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                     fprintf( [repmat('-',1,100) '\n']);
                     return;
                 end
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 fprintf([LASTCOM,'\n']);
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
                 fprintf( [repmat('-',1,100) '\n']);

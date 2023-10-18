@@ -627,6 +627,9 @@ varargout{1} = EEG_binepoch_box;
                 end
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 erpworkingmemory('Change2epocheeg',1);%%force the option to be Epoched EEG in "EEGsets" panel
                 if numel(EEGArray) ==1
                     Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
@@ -654,6 +657,9 @@ varargout{1} = EEG_binepoch_box;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
                     end
                 end
@@ -663,12 +669,18 @@ varargout{1} = EEG_binepoch_box;
                     EEG.filename = [file_name,'.set'];
                     [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                     EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                 else
                     EEG.filename = '';
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 fprintf( [repmat('-',1,100) '\n']);
             end
             

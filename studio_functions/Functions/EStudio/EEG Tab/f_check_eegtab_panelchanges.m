@@ -135,4 +135,12 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     eegpanelIndex =16;
 end
 
+
+%%compute averaged ERP
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_avg_erp');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Compute Averaged ERP for Epoched EEG" have not been applied');
+    eegpanelIndex =17;
+end
+
 return;

@@ -95,7 +95,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.timeshift_edit = uicontrol('Style','edit','Parent',EEG_shift_eventcode_conus.voltage_title,...
             'callback',@timeshift_edit,'String',num2str(timeshift),'FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         EEG_shift_eventcode_conus.timeshift_edit.KeyPressFcn=  @eeg_shiftcodes_presskey;
-         EEG_shift_eventcode_conus.timeshift_qestion = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.voltage_title,...
+        EEG_shift_eventcode_conus.timeshift_qestion = uicontrol('Style','pushbutton','Parent',EEG_shift_eventcode_conus.voltage_title,...
             'callback',@timeshift_question,'String','?','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',[1 1 1]); % 2F
         set(EEG_shift_eventcode_conus.voltage_title,'Sizes',[90,-1,60]);
         try
@@ -537,7 +537,9 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
                 
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shift')),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
                     disp('User selected cancel.');
@@ -565,11 +567,16 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end%%end for loop of subjects
             
             try

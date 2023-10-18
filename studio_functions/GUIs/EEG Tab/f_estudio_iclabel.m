@@ -116,6 +116,7 @@ catch
 end
 EEG = eegh(LASTCOM1, EEG);
 fprintf([LASTCOM1,'\n']);
+ eegh(LASTCOM1);
 
 end
 

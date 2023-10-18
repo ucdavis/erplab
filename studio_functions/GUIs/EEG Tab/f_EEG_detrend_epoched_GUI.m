@@ -113,12 +113,6 @@ varargout{1} = EEG_epoch_detrend_box;
 %%*******************   Subfunctions   ************************************
 %%*************************************************************************
 
-
-
-
-
-
-
 %%----------------Setting for "pre"----------------------------------------
     function pre_eeg(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -375,6 +369,10 @@ varargout{1} = EEG_epoch_detrend_box;
                 
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+                
                 Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_ld')),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
                     disp('User selected cancel.');
@@ -402,10 +400,16 @@ varargout{1} = EEG_epoch_detrend_box;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end%%end for loop of subjects
             
             try

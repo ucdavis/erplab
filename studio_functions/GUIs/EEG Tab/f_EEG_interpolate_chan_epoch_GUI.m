@@ -173,7 +173,7 @@ varargout{1} = box_interpolate_chan_epoch;
             'String','Run','callback',@interpolate_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_interpolate_chan_epoch.advanced_run_title);
         set(Eegtab_EEG_interpolate_chan_epoch.advanced_run_title,'Sizes',[10,-1,30,-1,10]);
-
+        
         %%resize each row
         set(Eegtab_EEG_interpolate_chan_epoch.DataSelBox,'sizes',[30 30 25 30 25 30 30 30])
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
@@ -671,7 +671,9 @@ varargout{1} = box_interpolate_chan_epoch;
                 end
                 EEG = eegh(LASTCOM, EEG);
                 fprintf(['\n',LASTCOM,'\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 if CreateeegFlag==0
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                 else
@@ -701,8 +703,14 @@ varargout{1} = box_interpolate_chan_epoch;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
-                        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
                 fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -849,6 +857,9 @@ varargout{1} = box_interpolate_chan_epoch;
                     'interpolationMethod', interpolationMethod, 'replaceChannels',ChanArray,'history', 'implicit');
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 if CreateeegFlag==0
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                 else
@@ -877,8 +888,14 @@ varargout{1} = box_interpolate_chan_epoch;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
-                        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
                 fprintf( [repmat('-',1,100) '\n']);
@@ -1042,6 +1059,9 @@ varargout{1} = box_interpolate_chan_epoch;
                     fprintf(['\n',LASTCOM,'\n']);
                 end
                 
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 
                 if CreateeegFlag==0
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
@@ -1071,8 +1091,14 @@ varargout{1} = box_interpolate_chan_epoch;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
-                        [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
                 fprintf( ['\n',repmat('-',1,100) '\n']);

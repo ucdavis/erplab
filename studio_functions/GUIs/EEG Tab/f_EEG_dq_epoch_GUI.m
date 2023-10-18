@@ -166,7 +166,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.eventcode_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.marked_epochs = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.eventcode_title,'HorizontalAlignment','left',...
             'callback',@marked_epochs,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
-        EEG_dq_epoch.marked_epochs.String = '<html>Include ONLY epochs marked with artifact<br />detection (by caitious)</html>';
+        EEG_dq_epoch.marked_epochs.String = '<html>Include ONLY epochs marked with artifact<br />detection (by cautious!)</html>';
         uiextras.Empty('Parent', EEG_dq_epoch.eventcode_title );
         set(EEG_dq_epoch.eventcode_title,'Sizes',[260,-1]);
         EEG_dq_epoch.all_marks.Value = Valueround1;
@@ -291,7 +291,7 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%-------------------------exclude marked epochs---------------------------
     function excld_marks(Source,~)
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable= 'off';
             return;
         end

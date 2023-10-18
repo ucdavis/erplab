@@ -527,7 +527,9 @@ varargout{1} = Eegtab_box_art_det_conus;
                     fprintf( [repmat('-',1,100) '\n']);
                     return;
                 end
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
                 
@@ -558,11 +560,16 @@ varargout{1} = Eegtab_box_art_det_conus;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end%%end for loop of subjects
             
             try
@@ -708,6 +715,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         else
             fprintf([LASTCOM,'\n']);
         end
+        eegh(LASTCOM);
         fprintf( [repmat('-',1,100) '\n']);
         erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
@@ -832,7 +840,9 @@ varargout{1} = Eegtab_box_art_det_conus;
                 
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_rmar')),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
                     disp('User selected cancel.');
@@ -860,11 +870,16 @@ varargout{1} = Eegtab_box_art_det_conus;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end%%end for loop of subjects
             
             try
@@ -926,8 +941,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
-%             erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview: Only work for single EEG, and we threfore gray it out');
-%             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            %             erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview: Only work for single EEG, and we threfore gray it out');
+            %             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_art_det_conus.detectar_preview.String = 'Only for single EEG';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable = 'off';
         else

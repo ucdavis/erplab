@@ -287,53 +287,48 @@ varargout{1} = box_eegset_gui;
                 return;
             end
         end
-         ChanArray=estudioworkingmemory('EEG_ChanArray');
-                 
-%         try
-            for Numofselecterp = 1:numel(SelectedERP)
-                New_EEG = observe_EEGDAT.ALLEEG(SelectedERP(Numofselecterp));
-                
-                New_EEG.filename = '';
-                New_EEG.setname = char(strcat(New_EEG.setname, '_Duplicated'));
-                
-                if isempty(ChanArray) || any(ChanArray(:)>New_EEG.nbchan) || any(ChanArray(:)<=0)
-                    ChanArray = [1:New_EEG.nbchan];
-                    estudioworkingmemory('EEG_ChanArray',ChanArray);
-                end
-                New_EEG = f_EEG_duplicate_GUI(New_EEG,length(observe_EEGDAT.ALLEEG),ChanArray);
-                if isempty(New_EEG)
-                    beep;
-                    disp('User selected cancal!');
-                    return;
-                end
-                
-                observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = New_EEG;
-                EEGlistName =  getDatasets(observe_EEGDAT.ALLEEG);
-                %%Reset the display in ERPset panel
-                EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-                EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
-                EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
-            end
-            try
-                Selected_ERP_afd =  [length(observe_EEGDAT.ALLEEG)-numel(SelectedERP)+1:length(observe_EEGDAT.ALLEEG)];
-            catch
-                Selected_ERP_afd = length(observe_EEGDAT.ALLEEG);
-            end
-            EStduio_eegtab_EEG_set.butttons_datasets.Value = Selected_ERP_afd;
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(SelectedERP)+1;
-            observe_EEGDAT.EEG  = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        ChanArray=estudioworkingmemory('EEG_ChanArray');
+        
+        %         try
+        for Numofselecterp = 1:numel(SelectedERP)
+            New_EEG = observe_EEGDAT.ALLEEG(SelectedERP(Numofselecterp));
             
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
-            observe_EEGDAT.eeg_panel_message =2;
-            %             observe_EEGDAT.Count_currentERP = observe_EEGDAT.Count_currentERP+1;
-%         catch
-%             observe_EEGDAT.eeg_panel_message =3;
-%             return;
-%         end
-        %         observe_EEGDAT.Two_GUI = observe_EEGDAT.Two_GUI+1;
+            New_EEG.filename = '';
+            New_EEG.setname = char(strcat(New_EEG.setname, '_Duplicated'));
+            
+            if isempty(ChanArray) || any(ChanArray(:)>New_EEG.nbchan) || any(ChanArray(:)<=0)
+                ChanArray = [1:New_EEG.nbchan];
+                estudioworkingmemory('EEG_ChanArray',ChanArray);
+            end
+            New_EEG = f_EEG_duplicate_GUI(New_EEG,length(observe_EEGDAT.ALLEEG),ChanArray);
+            if isempty(New_EEG)
+                beep;
+                disp('User selected cancal!');
+                return;
+            end
+            
+            observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = New_EEG;
+            EEGlistName =  getDatasets(observe_EEGDAT.ALLEEG);
+            %%Reset the display in ERPset panel
+            EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+            EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
+            EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
+        end
+        try
+            Selected_ERP_afd =  [length(observe_EEGDAT.ALLEEG)-numel(SelectedERP)+1:length(observe_EEGDAT.ALLEEG)];
+        catch
+            Selected_ERP_afd = length(observe_EEGDAT.ALLEEG);
+        end
+        EStduio_eegtab_EEG_set.butttons_datasets.Value = Selected_ERP_afd;
+        observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(SelectedERP)+1;
+        observe_EEGDAT.EEG  = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
+        observe_EEGDAT.eeg_panel_message =2;
+      
     end
 
 
@@ -521,25 +516,25 @@ varargout{1} = box_eegset_gui;
         observe_EEGDAT.eeg_panel_message =1;
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        try
-            [filename, filepath] = uigetfile({'*.set','EEG (*.set)'}, ...
-                'Load ERP', ...
-                'MultiSelect', 'on');
-            if isequal(filename,0)
-                disp('User selected Cancel');
-                return;
-            end
-            EEG = pop_loadset('filename',filename,'filepath',filepath);
-            if isempty(observe_EEGDAT.EEG)
-                OLDSET  =0;
-            else
-                OLDSET = length(ALLEEG);
-            end
-            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, OLDSET,'study',0);
-        catch
-            %%insert warning message here.
+        
+        [filename, filepath] = uigetfile({'*.set','EEG (*.set)'}, ...
+            'Load ERP', ...
+            'MultiSelect', 'on');
+        if isequal(filename,0)
+            disp('User selected Cancel');
             return;
         end
+        [EEG,  Lastcom]= pop_loadset('filename',filename,'filepath',filepath);
+        EEG = eegh(Lastcom, EEG);
+        eegh(Lastcom);%%ALLCOM
+        
+        if isempty(observe_EEGDAT.EEG)
+            OLDSET  =0;
+        else
+            OLDSET = length(ALLEEG);
+        end
+        [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
+        
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
@@ -636,6 +631,7 @@ varargout{1} = box_eegset_gui;
         
         if ~isempty(LASTCOM)
             EEG = eegh(LASTCOM, EEG);
+            eegh(LASTCOM);
             if isempty(observe_EEGDAT.ALLEEG)
                 OLDSET=1;
             else
@@ -669,10 +665,12 @@ varargout{1} = box_eegset_gui;
                     %%----------save the current sdata as--------------------
                     [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                     EEG = eegh(LASTCOM, EEG);
+                    eegh(LASTCOM);
                 end
             end
             
-            [observe_EEGDAT.ALLEEG, EEG] = pop_newset(observe_EEGDAT.ALLEEG, EEG,OLDSET, 'gui', 'off');
+            [observe_EEGDAT.ALLEEG, EEG,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG,OLDSET, 'gui', 'off');
+            eegh(LASTCOM);
             [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
@@ -809,12 +807,6 @@ varargout{1} = box_eegset_gui;
                 return;
             end
         end
-        try
-            ALLCOM = evalin('base','ALLCOM');
-        catch
-            ALLCOM = [];
-            assignin('base','ALLCOM',ALLCOM);
-        end
         
         try
             for Numoferpset = 1:length(Selected_eegset)
@@ -833,8 +825,8 @@ varargout{1} = box_eegset_gui;
                 filename = [filename '.set'];
                 [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
                 observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
+                eegh(LASTCOM);
                 disp(['Saved to',32,pathName,filename]);
-                assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             end
             observe_EEGDAT.eeg_panel_message =2;
         catch
@@ -875,13 +867,6 @@ varargout{1} = box_eegset_gui;
             end
         end
         
-        try
-            ALLCOM = evalin('base','ALLCOM');
-        catch
-            ALLCOM = [];
-            assignin('base','ALLCOM',ALLCOM);
-        end
-        
         for Numoferpset = 1:length(Selected_eegset)
             if Selected_eegset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
                 beep;
@@ -904,10 +889,12 @@ varargout{1} = box_eegset_gui;
             [pathx, filename, ext] = fileparts(erpfilename);
             filename = [filename '.set'];
             [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',erppathname);
+            eegh(LASTCOM);
             observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
             disp(['Saved to',32,erppathname,filename]);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
+        
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.eeg_panel_message =2;
         
     end
@@ -920,7 +907,6 @@ varargout{1} = box_eegset_gui;
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
@@ -993,9 +979,6 @@ varargout{1} = box_eegset_gui;
     end
 
 
-
-
-
 % Gets [ind, erp] for input ds where ds is a dataset structure, ind is the
 % index of the corresponding ERP, and ERP is the corresponding ERP
 % structure.
@@ -1022,7 +1005,6 @@ varargout{1} = box_eegset_gui;
         end
         Change2epocheeg= erpworkingmemory('Change2epocheeg');
         if isempty(Change2epocheeg) || Change2epocheeg==0
-            
         else
             EStduio_eegtab_EEG_set.eeg_epoch.Value =1;
             EStduio_eegtab_EEG_set.eeg_contns.Value=0;

@@ -159,7 +159,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [1 1 1];
         
-       
+        
         def  = erpworkingmemory('pop_eegchanoperator');
         if isempty(def)
             def = { [], 1};
@@ -508,8 +508,8 @@ varargout{1} = EEG_chan_operation_gui;
         end
         erpworkingmemory('f_EEG_proces_messg','EEG Channel Operations > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-            
-            
+        
+        
         estudioworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
@@ -636,22 +636,31 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         try
-          
+            
             for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
                 EEG = ALLEEG_out(EEGArray(Numofeeg));
                 [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
                     EEG.setname = strcat(EEG.setname,'_chop');
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
                     observe_EEGDAT.EEG= observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
                 elseif gui_eegtab_chan_optn.mode_create.Value %% If select "Create New EEGset (independent transformations)"
-                    [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                    [observe_EEGDAT.ALLEEG EEG,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                     if Save_file_label==1
                         [pathstr, file_name, ext] = fileparts(EEG.filename);
                         EEG.filename = [file_name,'.set'];
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
             end

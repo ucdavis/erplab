@@ -443,6 +443,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 fprintf([LASTCOM,'\n']);
             end
             fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
         end
         erpworkingmemory('f_EEG_proces_messg','Delete Time Segments for Continuous EEG > Preview');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
@@ -553,7 +556,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 
                 fprintf([LASTCOM,'\n']);
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_del')),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
                     disp('User selected cancel.');
@@ -581,10 +586,16 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                         %%----------save the current sdata as--------------------
                         [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                         EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
                 fprintf( [repmat('-',1,100) '\n']);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 
             end%%end for loop of subjects
             

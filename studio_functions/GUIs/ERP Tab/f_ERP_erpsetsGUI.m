@@ -28,7 +28,6 @@ if isempty(CurrentERPSet) || (CurrentERPSet> length(observe_ERPDAT.ALLERP))
     CurrentERPSet =1;
 end
 
-
 estudioworkingmemory('selectederpstudio',CurrentERPSet);
 
 try
@@ -69,11 +68,7 @@ end
 
 sel_path = cd;
 estudioworkingmemory('ERP_save_folder',sel_path);
-% datasets = {'name', 1, 0, 'Users/***/Documents/Matlab/Test_data/', 'S1.erp';'name2', 2, 1;'name3', 3, 2;'name4', 4, 1;'name5', 5, 4}; % Create datasets. {'Name', datasetNumber, parentNumber, 'filename', 'filepath'}
-% Test erpname/filepath/filename against ALLERP to correlate
-% No duplicate dataset numbers. If a dataset's parent number is not a valid
-% dataset, the dataset will be cleared when dataset = sortdata(datasets) is
-% called. erpsetname must contain at least one non-numeric character.
+
 datasets = sortdata(datasets);
 
 
@@ -83,7 +78,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_erpset(FonsizeDefault);
 
@@ -912,7 +907,7 @@ varargout{1} = box_erpset_gui;
         datasets = {};
         getDatasets()
         datasets = sortdata(datasets);
-        %         drawui_erpset();
+        
         
         dsnames = {};
         if size(datasets,1)==1
@@ -1085,7 +1080,6 @@ varargout{1} = box_erpset_gui;
         
         try
             for Numoferpset = 1:length(Selected_erpset)
-                
                 if Selected_erpset(Numoferpset) > length(observe_ERPDAT.ALLERP)
                     beep;
                     disp(['Index of selected ERP is lager than the length of ALLERP!!!']);
@@ -1103,14 +1097,12 @@ varargout{1} = box_erpset_gui;
                 [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
                 
             end
-            
             observe_ERPDAT.Process_messg =2;
         catch
             beep;
             observe_ERPDAT.Process_messg =3;
             disp(['ERPsets>Save: Cannot save the selected ERPsets.']);
             return;
-            
         end
     end
 
@@ -1138,7 +1130,6 @@ varargout{1} = box_erpset_gui;
             estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
             estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
         end
-        
         
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
@@ -1372,10 +1363,11 @@ varargout{1} = box_erpset_gui;
                 errorfound(msgboxText, title);
                 return;
             end
-            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+            
         end
+        S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
+        estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
+        estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
         
         [chk, msgboxText] = f_ERP_chckerpindex(observe_ERPDAT.ALLERP, Selected_ERP);
         if chk==1
@@ -1397,6 +1389,7 @@ varargout{1} = box_erpset_gui;
         def_baseline =  erpworkingmemory('f_ERP_BLS_Detrend');
         ERP_bin_opertion =  erpworkingmemory('f_ERP_bin_opt');
         ERP_simulation = erpworkingmemory('ERP_simulation');
+        eeg2erp =  estudioworkingmemory('EEGTab_eeg2erp');
         if isempty(ERPfilter_label)
             ERPfilter_label =1;
         end
@@ -1409,12 +1402,16 @@ varargout{1} = box_erpset_gui;
         if isempty(ERP_simulation)
             ERP_simulation =1;
         end
-        if ERPfilter_label ==1 || def_baseline{3}==1 || ERP_bin_opertion==1 || ERP_simulation==1
+        if isempty(eeg2erp)
+            eeg2erp =1;
+        end
+        if ERPfilter_label ==1 || def_baseline{3}==1 || ERP_bin_opertion==1 || ERP_simulation==1 || eeg2erp==1
             erpworkingmemory('ERPfilter',0);
             def_baseline{3} = 0;
             erpworkingmemory('f_ERP_BLS_Detrend',def_baseline);
             erpworkingmemory('f_ERP_bin_opt',0);
             erpworkingmemory('ERP_simulation',0);
+            estudioworkingmemory('EEGTab_eeg2erp',0);
             datasets = {};
             getDatasets()
             datasets = sortdata(datasets);
@@ -1500,10 +1497,4 @@ varargout{1} = box_erpset_gui;
             end
         end
     end
-
-%     function onErpChanged(~,~)
-%         assignin('base','ERP',observe_ERPDAT.ERP);
-%     end
-
-
 end

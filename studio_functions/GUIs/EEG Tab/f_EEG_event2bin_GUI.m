@@ -219,7 +219,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
- 
+        
         
         try
             for Numofeeg = 1:numel(EEGArray)
@@ -351,8 +351,14 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 if isempty(LASTCOM)
                     return;
                 end
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 EEG = eegh(LASTCOM, EEG);
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end
             
             try
@@ -375,7 +381,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             return;
         end
-
+        
     end
 
 %%---------------------------Apply-----------------------------------------
@@ -455,13 +461,15 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 %% Run pop_ command again with the inputs from the GUI
                 [EEG, LASTCOM]   = pop_binlister( EEG , 'BDF',bdfileName, 'IndexEL',  1, 'SendEL2', 'EEG', 'UpdateEEG', 'on', 'Voutput', 'EEG', 'History', 'gui' );
                 if isempty(LASTCOM)
-                  disp('Please check your data or you selected cancel')  
-                  fprintf( ['\n\n',repmat('-',1,100) '\n']); 
-                  return;
+                    disp('Please check your data or you selected cancel')
+                    fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                    return;
                 end
                 
                 EEG = eegh(LASTCOM, EEG);
-                
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 if numel(EEGArray) ==1
                     Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_bins')),EEG.filename,EEGArray(Numofeeg));
                     if isempty(Answer)
@@ -488,6 +496,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
                             %%----------save the current sdata as--------------------
                             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                             EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
                     end
                 end
@@ -502,7 +513,10 @@ varargout{1} = EStudio_box_EEG_event2bin;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             end
             
             try

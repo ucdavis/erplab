@@ -138,6 +138,9 @@ varargout{1} = EStudio_eeg_events_box;
                 fprintf(['Your EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
                 [EEG, LASTCOM] = pop_squeezevents(EEG,'History','gui');
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
             end
         end
@@ -228,86 +231,90 @@ varargout{1} = EStudio_eeg_events_box;
         erpworkingmemory('pop_erplabShiftEventCodes', ...
             {eventcodes, timeshift, rounding, displayEEG, displayFeedback});
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
-                    WanMessage = ['\n EEG Events >  Shift event code for EEGset:',32,EEG.setname...
-                        '\n Previously Created ERPLAB EVENTLIST Detected.\n Running this function changes your event codes, and so your prior Eventlist will be deleted.\n Re-create a new ERPLAB Eventlist afterwards.\n'];
-                    fprintf(2,WanMessage);
-                    %                erpworkingmemory('f_EEG_proces_messg',WanMessage);
-                    %                observe_EEGDAT.eeg_panel_message =4;
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
+                WanMessage = ['\n EEG Events >  Shift event code for EEGset:',32,EEG.setname...
+                    '\n Previously Created ERPLAB EVENTLIST Detected.\n Running this function changes your event codes, and so your prior Eventlist will be deleted.\n Re-create a new ERPLAB Eventlist afterwards.\n'];
+                fprintf(2,WanMessage);
+            end
+            
+            %% Run pop_ command again with the inputs from the GUI
+            [EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG,'Eventcodes',eventcodes,'Timeshift',timeshift,'Rounding',rounding,'DisplayEEG', displayEEG,'DisplayFeedback', displayFeedback,'History', 'gui');
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            if numel(EEGArray) ==1
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shift')),EEG.filename,EEGArray(Numofeeg));
+                if isempty(Answer)
+                    disp('User selected cancel.');
+                    return;
                 end
-                
-                %% Run pop_ command again with the inputs from the GUI
-                [EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG,'Eventcodes',eventcodes,'Timeshift',timeshift,'Rounding',rounding,'DisplayEEG', displayEEG,'DisplayFeedback', displayFeedback,'History', 'gui');
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
+                    end
+                end
+            end
+            
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                 EEG = eegh(LASTCOM, EEG);
-                if numel(EEGArray) ==1
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shift')),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        return;
-                    end
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                        end
-                    end
+                if Numofeeg==1
+                    eegh(LASTCOM);
                 end
-                
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(EEG.filename);
-                    EEG.filename = [file_name,'.set'];
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                    EEG.filepath = '';
-                end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
-            
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            [observe_EEGDAT.ALLEEG, EEG,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-           
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            return;
         end
+        
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
         
         
     end
@@ -368,10 +375,7 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
             disp('User selected Cancel')
             return
-            %         elseif strcmp(inputstrMat,'advanced')
-            %                 %[EEG, com ] = pop_editeventlist(EEG, 'History', 'off');
-            %                 [EEG, com ] = pop_editeventlist(EEG);
-            %                 return
+            
         end
         elname   = inputstrMat{1};
         boundarystrcode    = inputstrMat{2};
@@ -392,81 +396,88 @@ varargout{1} = EStudio_eeg_events_box;
             stralphanum = 'off';
         end
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                
-                %% Run pop_ command again with the inputs from the GUI
-                [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', elname, 'BoundaryString', boundarystrcode,...
-                    'BoundaryNumeric', newboundarynumcode,'Warning', striswarning, 'AlphanumericCleaning', stralphanum, 'History', 'gui');
+        
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            %% Run pop_ command again with the inputs from the GUI
+            [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', elname, 'BoundaryString', boundarystrcode,...
+                'BoundaryNumeric', newboundarynumcode,'Warning', striswarning, 'AlphanumericCleaning', stralphanum, 'History', 'gui');
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            if numel(EEGArray) ==1
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_elist')),EEG.filename,EEGArray(Numofeeg));
+                if isempty(Answer)
+                    disp('User selected cancel.');
+                    return;
+                end
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
+                    end
+                end
+            end
+            
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                 EEG = eegh(LASTCOM, EEG);
-                if numel(EEGArray) ==1
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_elist')),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        return;
-                    end
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                        end
-                    end
+                if Numofeeg==1
+                    eegh(LASTCOM);
                 end
-                
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(EEG.filename);
-                    EEG.filename = [file_name,'.set'];
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                    EEG.filepath = '';
-                end
-                %                 [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-                
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
-            
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            %                 [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            [observe_EEGDAT.ALLEEG, EEG, ~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            return;
         end
+        
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
         
     end
 
@@ -559,6 +570,9 @@ varargout{1} = EStudio_eeg_events_box;
                     'arfilter', arfilter, 'eventlist', indexel, 'History', 'gui');
                 if ~isempty( values)
                     EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                     observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG;
                 else
                     fprintf(2,['Cannot export reaction times for:',32,EEG.setname,'\n']);
@@ -601,80 +615,82 @@ varargout{1} = EStudio_eeg_events_box;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                %%check current eeg data
-                
-                %% Run pop_ command again with the inputs from the GUI
-                [filename,pathname] = uigetfile({'*.*';'*.txt'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
-                ELfullname = fullfile(pathname, filename);
-                
-                if isequal(filename,0)
-                    disp('User selected Cancel');
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    return
-                else
-                    disp(['For read an EVENTLIST, user selected ', ELfullname])
-                end
-                
-                [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
-                EEG = eegh(LASTCOM, EEG);
-                
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_impel')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                    end
-                end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            %%check current eeg data
+            
+            %% Run pop_ command again with the inputs from the GUI
+            [filename,pathname] = uigetfile({'*.*';'*.txt'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
+            ELfullname = fullfile(pathname, filename);
+            
+            if isequal(filename,0)
+                disp('User selected Cancel');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return
+            else
+                disp(['For read an EVENTLIST, user selected ', ELfullname])
             end
             
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-           
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            return;
+            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_impel')),EEG.filename,EEGArray(Numofeeg));
+            if isempty(Answer)
+                disp('User selected cancel.');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return;
+            end
+            if ~isempty(Answer)
+                EEGName = Answer{1};
+                if ~isempty(EEGName)
+                    EEG.setname = EEGName;
+                end
+                fileName_full = Answer{2};
+                if isempty(fileName_full)
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                elseif ~isempty(fileName_full)
+                    [pathstr, file_name, ext] = fileparts(fileName_full);
+                    if strcmp(pathstr,'')
+                        pathstr = cd;
+                    end
+                    EEG.filename = [file_name,ext];
+                    EEG.filepath = pathstr;
+                    EEG.saved = 'yes';
+                    %%----------save the current sdata as--------------------
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
+            end
+            [observe_EEGDAT.ALLEEG, ~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
         end
+        
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
         
     end
 
@@ -745,6 +761,9 @@ varargout{1} = EStudio_eeg_events_box;
                 disp(['For EVENTLIST output user selected ', filenameeg])
                 [EEG, LASTCOM] = pop_exporteegeventlist( EEG , 'Filename', filenameeg,'History','gui');
                 EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG;
             else
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -843,111 +862,116 @@ varargout{1} = EStudio_eeg_events_box;
         end
         erpworkingmemory('pop_eventshuffler', {valueatfield specfield});
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['Your current EEGset:',32,EEG.setname,'\n\n']);
-                
-                if ~isnumeric(valueatfield) && strcmpi(valueatfield, 'all')
-                    fprintf('User selected all %s\n', specfieldstr )
-                elseif isnumeric(valueatfield)
-                    fprintf('User specified %s = %s \n', specfieldstr, vect2colon(valueatfield))
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset:',32,EEG.setname,'\n\n']);
+            
+            if ~isnumeric(valueatfield) && strcmpi(valueatfield, 'all')
+                fprintf('User selected all %s\n', specfieldstr )
+            elseif isnumeric(valueatfield)
+                fprintf('User specified %s = %s \n', specfieldstr, vect2colon(valueatfield))
+            end
+            %%check current eeg data
+            msgboxText ='';
+            if ~isfield(EEG, 'event')
+                msgboxText =  ['pop_eventshuffler did not find EEG.event field at dataset',32,num2str(EEGArray(Numofeeg))];
+            end
+            if ~isfield(EEG.event, 'type')
+                msgboxText =  ['pop_eventshuffler did not find EEG.event.type field at dataset',32,num2str(EEGArray(Numofeeg))];
+            end
+            if ~isfield(EEG.event, 'latency')
+                msgboxText =  ['pop_eventshuffler did not find EEG.event.latency field at dataset',32,num2str(EEGArray(Numofeeg))];
+            end
+            if ischar(EEG.event(1).type) && ~isfield(EEG, 'EVENTLIST')
+                msgboxText =  ['pop_eventshuffler found alphanumeric codes at dataset',32,num2str(EEGArray(Numofeeg)),...
+                    'We recommend to use Create EEG Eventlist to convert them into numeric ones.'];
+            elseif ischar(EEG.event(1).type) && isfield(EEG, 'EVENTLIST')
+                msgboxText =  ['pop_eventshuffler found alphanumeric codes at dataset',32,num2str(EEGArray(Numofeeg)),...
+                    'We recommend to use Create EEG Eventlist Advance first.'];
+            end
+            if isempty(msgboxText)
+                %% Run pop_ command again with the inputs from the GUI
+                [EEG, LASTCOM] = pop_eventshuffler(EEG, 'Values', valueatfield, 'Field', specfieldstr, 'History', 'gui');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
                 end
-                %%check current eeg data
-                msgboxText ='';
-                if ~isfield(EEG, 'event')
-                    msgboxText =  ['pop_eventshuffler did not find EEG.event field at dataset',32,num2str(EEGArray(Numofeeg))];
-                end
-                if ~isfield(EEG.event, 'type')
-                    msgboxText =  ['pop_eventshuffler did not find EEG.event.type field at dataset',32,num2str(EEGArray(Numofeeg))];
-                end
-                if ~isfield(EEG.event, 'latency')
-                    msgboxText =  ['pop_eventshuffler did not find EEG.event.latency field at dataset',32,num2str(EEGArray(Numofeeg))];
-                end
-                if ischar(EEG.event(1).type) && ~isfield(EEG, 'EVENTLIST')
-                    msgboxText =  ['pop_eventshuffler found alphanumeric codes at dataset',32,num2str(EEGArray(Numofeeg)),...
-                        'We recommend to use Create EEG Eventlist to convert them into numeric ones.'];
-                elseif ischar(EEG.event(1).type) && isfield(EEG, 'EVENTLIST')
-                    msgboxText =  ['pop_eventshuffler found alphanumeric codes at dataset',32,num2str(EEGArray(Numofeeg)),...
-                        'We recommend to use Create EEG Eventlist Advance first.'];
-                end
-                if isempty(msgboxText)
-                    %% Run pop_ command again with the inputs from the GUI
-                    [EEG, LASTCOM] = pop_eventshuffler(EEG, 'Values', valueatfield, 'Field', specfieldstr, 'History', 'gui');
-                    EEG = eegh(LASTCOM, EEG);
-                else
-                    msgboxText =  ['EEG Events >  Shuffle events/bins/samples:', msgboxText];
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4;
-                    fprintf( ['\n',repmat('-',1,100) '\n\n']);
-                    break;
-                end
-                
-                if numel(EEGArray) ==1
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shuffled')),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        return;
-                    end
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                        end
-                    end
-                end
-                
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(EEG.filename);
-                    EEG.filename = [file_name,'.set'];
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                    EEG.filepath = '';
-                end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            else
+                msgboxText =  ['EEG Events >  Shuffle events/bins/samples:', msgboxText];
+                erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                observe_EEGDAT.eeg_panel_message =4;
+                fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                break;
             end
             
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            if numel(EEGArray) ==1
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shuffled')),EEG.filename,EEGArray(Numofeeg));
+                if isempty(Answer)
+                    disp('User selected cancel.');
+                    return;
+                end
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
+                    end
+                end
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
             
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            return;
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
         end
         
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 
@@ -1007,111 +1031,119 @@ varargout{1} = EStudio_eeg_events_box;
         end
         iserrorf   = 0;
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['Your current EEGset:',32,EEG.setname,'\n\n']);
-                serror = erplab_eegscanner(EEG, 'pop_overwritevent', 0, 0, 0, 2, 1);
-                msgboxText ='';
-                if serror
-                    return;
+        
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset:',32,EEG.setname,'\n\n']);
+            serror = erplab_eegscanner(EEG, 'pop_overwritevent', 0, 0, 0, 2, 1);
+            msgboxText ='';
+            if serror
+                return;
+            end
+            %%check current eeg data
+            if ~serror
+                testfield1 = unique_bc2([EEG.EVENTLIST.eventinfo.(mainfield)]);
+                if isempty(testfield1)
+                    iserrorf = 1;
                 end
-                %%check current eeg data
-                if ~serror
-                    testfield1 = unique_bc2([EEG.EVENTLIST.eventinfo.(mainfield)]);
-                    if isempty(testfield1)
-                        iserrorf = 1;
-                    end
-                    if isnumeric(testfield1)
-                        testfield1 = num2str(testfield1);
-                    end
-                    if strcmp(testfield1,'"')
-                        iserrorf = 1;
-                    end
-                    if iserrorf
-                        msgboxText =  ['Sorry, EEG.EVENTLIST.eventinfo.'  mainfield ' field is empty!\n\n'...
-                            'You should assign values to this field before overwriting EEG.event'];
-                    end
-                    
-                    if isempty(msgboxText)
-                        [EEG, LASTCOM] = pop_overwritevent(EEG, mainfield, 'RemoveRemCodes', rrcstr,'History', 'gui');
-                        if  isempty(LASTCOM)
-                            fprintf( ['\n',repmat('-',1,100) '\n\n']);
-                            break;
-                        end
-                        EEG = eegh(LASTCOM, EEG);
-                    else
-                        msgboxText =  ['EEG Events >  Transfer event to EEG.event:', msgboxText];
-                        erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                        observe_EEGDAT.eeg_panel_message =4;
+                if isnumeric(testfield1)
+                    testfield1 = num2str(testfield1);
+                end
+                if strcmp(testfield1,'"')
+                    iserrorf = 1;
+                end
+                if iserrorf
+                    msgboxText =  ['Sorry, EEG.EVENTLIST.eventinfo.'  mainfield ' field is empty!\n\n'...
+                        'You should assign values to this field before overwriting EEG.event'];
+                end
+                
+                if isempty(msgboxText)
+                    [EEG, LASTCOM] = pop_overwritevent(EEG, mainfield, 'RemoveRemCodes', rrcstr,'History', 'gui');
+                    if  isempty(LASTCOM)
                         fprintf( ['\n',repmat('-',1,100) '\n\n']);
                         break;
                     end
-                end
-                if numel(EEGArray) ==1
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_transf')),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        return;
-                    end
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                        end
-                    end
-                end
-                
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(EEG.filename);
-                    EEG.filename = [file_name,'.set'];
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                     EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                 else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                    EEG.filepath = '';
+                    msgboxText =  ['EEG Events >  Transfer event to EEG.event:', msgboxText];
+                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                    observe_EEGDAT.eeg_panel_message =4;
+                    fprintf( ['\n',repmat('-',1,100) '\n\n']);
+                    break;
                 end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            end
+            if numel(EEGArray) ==1
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_transf')),EEG.filename,EEGArray(Numofeeg));
+                if isempty(Answer)
+                    disp('User selected cancel.');
+                    return;
+                end
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
+                    end
+                end
             end
             
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            return;
+            [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
         end
+        
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
     end
 
 
