@@ -635,65 +635,65 @@ varargout{1} = EEG_chan_operation_gui;
             keeplocs ='off';
         end
         
-        try
-            
-            for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
-                EEG = ALLEEG_out(EEGArray(Numofeeg));
-                [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
-                EEG = eegh(LASTCOM, EEG);
+        %         try
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
+            EEG = ALLEEG_out(EEGArray(Numofeeg));
+            [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
+                EEG.setname = strcat(EEG.setname,'_chop');
+                ALLEEG(EEGArray(Numofeeg)) = EEG;
+                %                     observe_EEGDAT.EEG= observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            elseif gui_eegtab_chan_optn.mode_create.Value %% If select "Create New EEGset (independent transformations)"
+                [ALLEEG EEG,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
-                if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
-                    EEG.setname = strcat(EEG.setname,'_chop');
-                    observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
-                    observe_EEGDAT.EEG= observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-                elseif gui_eegtab_chan_optn.mode_create.Value %% If select "Create New EEGset (independent transformations)"
-                    [observe_EEGDAT.ALLEEG EEG,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                if Save_file_label==1
+                    [pathstr, file_name, ext] = fileparts(EEG.filename);
+                    EEG.filename = [file_name,'.set'];
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
-                    if Save_file_label==1
-                        [pathstr, file_name, ext] = fileparts(EEG.filename);
-                        EEG.filename = [file_name,'.set'];
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
                 end
             end
-            
-            if gui_eegtab_chan_optn.mode_create.Value%%Save the labels of the selected ERPsets
-                try
-                    Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                    observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-                catch
-                    Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                    observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-                end
-                observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            end
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%
         end
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        if gui_eegtab_chan_optn.mode_create.Value%%Save the labels of the selected ERPsets
+            try
+                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+            catch
+                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            end
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        end
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        %             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        %             Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
+        %             estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        %             assignin('base','EEG',observe_EEGDAT.EEG);
+        %             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        %             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        %
+        %             observe_EEGDAT.count_current_eeg=1;
+        %             observe_EEGDAT.eeg_panel_message =3;%%
+        %         end
         
     end
 

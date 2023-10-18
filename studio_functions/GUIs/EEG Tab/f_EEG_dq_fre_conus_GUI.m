@@ -420,42 +420,42 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         fqlabels = fqlabelsNew;
         erpworkingmemory('pop_continuousFFT',{chanArray,fqbands,fqlabels});
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Spectral Data Quality for Continuous EEG > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
-                
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                
-                if isempty(chanArray) || any(chanArray(:)>EEG.nbchan)
-                    chanArray = [1:EEG.nbchan];
-                    fprintf(['We have changed chans as below:\n']);
-                    fprintf(['Chans:',num2str(chanArray),'\n']);
-                end
-                
-                [EEG, ~, LASTCOM] = pop_continuousFFT(EEG, 'ChannelIndex',chanArray,'Frequencies',fqbands,'FrequencyLabel', ...
-                    fqlabels, 'viewGUI','true','History', 'implicit');
-                
-                if isempty(LASTCOM)
-                    disp('User selected cancel or errors occur.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-                fprintf([LASTCOM,'\n']);
-                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-                fprintf( [repmat('-',1,100) '\n']);
-            end%%end for loop of subjects
+        %         try
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Spectral Data Quality for Continuous EEG > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
             
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            if isempty(chanArray) || any(chanArray(:)>EEG.nbchan)
+                chanArray = [1:EEG.nbchan];
+                fprintf(['We have changed chans as below:\n']);
+                fprintf(['Chans:',num2str(chanArray),'\n']);
+            end
+            
+            [EEG, ~, LASTCOM] = pop_continuousFFT(EEG, 'ChannelIndex',chanArray,'Frequencies',fqbands,'FrequencyLabel', ...
+                fqlabels, 'viewGUI','true','History', 'implicit');
+            
+            if isempty(LASTCOM)
+                disp('User selected cancel or errors occur.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf([LASTCOM,'\n']);
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
-            return;
-        end
+        end%%end for loop of subjects
+        
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+        %             fprintf( [repmat('-',1,100) '\n']);
+        %             return;
+        %         end
     end
 
 

@@ -642,84 +642,84 @@ varargout{1} = Eegtab_box_avg_erp;
         
         
         
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                setindex =EEGArray(Numofeeg);
-                EEG = ALLEEG(setindex);
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Compute Averaged ERP for Epoched EEG > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                
-                %% Run the pop_ command with the user input from the GUI
-                
-                [ERP, ERPCOM]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
-                    'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
-                    'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
-                    'History', 'implicit','Saveas','off');
-                if isempty(ERPCOM)
-                    disp('User selected cancel or errors occur.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                if Numofeeg==1
-                    eegh(ERPCOM);
-                end
-                fprintf([ERPCOM,'\n']);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                ERP.erpname = '_avg';
-                ERP.filename = '_avg.erp';
-                if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-                    Selected_erpset_indx = 1;
-                else
-                    Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
-                end
-                
-                Answer = f_ERP_save_single_file(ERP.erpname,ERP.filename,Selected_erpset_indx);
-                if isempty(Answer)
-                    disp('User selectd cancal');
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    return;
-                end
-                
-                if ~isempty(Answer)
-                    ERPName = Answer{1};
-                    if ~isempty(ERPName)
-                        ERP.erpname = ERPName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        ERP.filename = ERP.erpname;
-                    elseif ~isempty(fileName_full)
-                        
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        ext = '.erp';
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        ERP.filename = [file_name,ext];
-                        ERP.filepath = pathstr;
-                        %%----------save the current sdata as--------------------
-                        [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                        ERP = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                        if Numofeeg==1
-                            eegh(ERPCOM);
-                        end
-                    end
-                end
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
-                if Numofeeg==1
-                    eegh(ERPCOM);
-                end
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                estudioworkingmemory('EEGTab_eeg2erp',1);
-            end%%end for loop of subjects
+        %         try
+        for Numofeeg = 1:numel(EEGArray)
+            setindex =EEGArray(Numofeeg);
+            EEG = ALLEEG(setindex);
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Compute Averaged ERP for Epoched EEG > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
-            observe_EEGDAT.eeg_panel_message =2;
-            EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
-        catch
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            fprintf( [repmat('-',1,100) '\n']);
-        end
+            %% Run the pop_ command with the user input from the GUI
+            
+            [ERP, ERPCOM]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
+                'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
+                'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
+                'History', 'implicit','Saveas','off');
+            if isempty(ERPCOM)
+                disp('User selected cancel or errors occur.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            if Numofeeg==1
+                eegh(ERPCOM);
+            end
+            fprintf([ERPCOM,'\n']);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            ERP.erpname = '_avg';
+            ERP.filename = '_avg.erp';
+            if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+                Selected_erpset_indx = 1;
+            else
+                Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
+            end
+            
+            Answer = f_ERP_save_single_file(ERP.erpname,ERP.filename,Selected_erpset_indx);
+            if isempty(Answer)
+                disp('User selectd cancal');
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            if ~isempty(Answer)
+                ERPName = Answer{1};
+                if ~isempty(ERPName)
+                    ERP.erpname = ERPName;
+                end
+                fileName_full = Answer{2};
+                if isempty(fileName_full)
+                    ERP.filename = ERP.erpname;
+                elseif ~isempty(fileName_full)
+                    
+                    [pathstr, file_name, ext] = fileparts(fileName_full);
+                    ext = '.erp';
+                    if strcmp(pathstr,'')
+                        pathstr = cd;
+                    end
+                    ERP.filename = [file_name,ext];
+                    ERP.filepath = pathstr;
+                    %%----------save the current sdata as--------------------
+                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                    ERP = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    if Numofeeg==1
+                        eegh(ERPCOM);
+                    end
+                end
+            end
+            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
+            if Numofeeg==1
+                eegh(ERPCOM);
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            estudioworkingmemory('EEGTab_eeg2erp',1);
+        end%%end for loop of subjects
+        
+        observe_EEGDAT.eeg_panel_message =2;
+        EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
+        %         catch
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+        %             fprintf( [repmat('-',1,100) '\n']);
+        %         end
         
         ERPset_default_label = [];
         count = 0;

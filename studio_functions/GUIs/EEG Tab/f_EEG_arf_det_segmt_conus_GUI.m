@@ -212,7 +212,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_detect_segmt_conus',1);
-        timeThresholdMS = Source.String;
+        timeThresholdMS = str2num(Source.String);
         
         if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  min(timeThresholdMS(:))<=0 || max(timeThresholdMS(:))<=0
             erpworkingmemory('f_EEG_proces_messg','Delete Time Segments for Continuous EEG >  The value of "Time Thresholds" should be a positive number');
@@ -527,98 +527,98 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             ignoreUseType,                                ...
             displayEEG,                                   ...
             ignoreBoundary});
-        
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Delete Time Segments for Continuous EEG > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
-                
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                
-                
-                %% Run the pop_ command with the user input from the GUI
-                [EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG, ...
-                    'timeThresholdMS'           , timeThresholdMS,              ...
-                    'beforeEventcodeBufferMS'   , beforeEventcodeBufferMS,       ...
-                    'afterEventcodeBufferMS'    , afterEventcodeBufferMS,         ...
-                    'ignoreUseEventcodes'       , ignoreUseEventcodes,          ...
-                    'ignoreUseType'             , ignoreUseType,                ...
-                    'displayEEG'                , displayEEG,                   ...
-                    'ignoreBoundary'            , ignoreBoundary,               ...
-                    'History'                   , 'implicit');
-                
-                if isempty(LASTCOM)
-                    disp('User selected cancel or errors occur.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                
-                fprintf([LASTCOM,'\n']);
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_del')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-                fprintf( [repmat('-',1,100) '\n']);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-                
-            end%%end for loop of subjects
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        %         try
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Delete Time Segments for Continuous EEG > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
             
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            
+            %% Run the pop_ command with the user input from the GUI
+            [EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG, ...
+                'timeThresholdMS'           , timeThresholdMS,              ...
+                'beforeEventcodeBufferMS'   , beforeEventcodeBufferMS,       ...
+                'afterEventcodeBufferMS'    , afterEventcodeBufferMS,         ...
+                'ignoreUseEventcodes'       , ignoreUseEventcodes,          ...
+                'ignoreUseType'             , ignoreUseType,                ...
+                'displayEEG'                , displayEEG,                   ...
+                'ignoreBoundary'            , ignoreBoundary,               ...
+                'History'                   , 'implicit');
+            
+            if isempty(LASTCOM)
+                disp('User selected cancel or errors occur.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+            
+            fprintf([LASTCOM,'\n']);
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_del')),EEG.filename,EEGArray(Numofeeg));
+            if isempty(Answer)
+                disp('User selected cancel.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            if ~isempty(Answer)
+                EEGName = Answer{1};
+                if ~isempty(EEGName)
+                    EEG.setname = EEGName;
+                end
+                fileName_full = Answer{2};
+                if isempty(fileName_full)
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                elseif ~isempty(fileName_full)
+                    [pathstr, file_name, ext] = fileparts(fileName_full);
+                    if strcmp(pathstr,'')
+                        pathstr = cd;
+                    end
+                    EEG.filename = [file_name,ext];
+                    EEG.filepath = pathstr;
+                    EEG.saved = 'yes';
+                    %%----------save the current sdata as--------------------
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
-            return;
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            
+        end%%end for loop of subjects
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.count_current_eeg=1;
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+        %             fprintf( [repmat('-',1,100) '\n']);
+        %             return;
+        %         end
     end
 
 

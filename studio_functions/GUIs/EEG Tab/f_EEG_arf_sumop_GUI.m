@@ -126,107 +126,107 @@ varargout{1} = Eegtab_box_art_sumop;
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        try
-            inputoption = resetrejGUI; % open GUI
-            
-            if isempty(inputoption)
-                disp('User selected Cancel')
-                return
-            end
-            arjm  = inputoption{1};
-            bflag = inputoption{2};
-            
-            if arjm==1
-                arjmstr = 'on';
-            else
-                arjmstr = 'off';
-            end
-            
-            [arflag usflag] = dec2flag(bflag);
-            
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Clear artifact detection marks on EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                if EEG.trials==1
-                    erpworkingmemory('f_EEG_proces_messg','Summarize Artifact Option for Epoched EEG >  Clear artifact detection marks on EEG: cannot work on a continuous EEG');
-                    observe_EEGDAT.eeg_panel_message =4;
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                [EEG, LASTCOM] = pop_resetrej(EEG, 'ResetArtifactFields', arjmstr, 'ArtifactFlag', arflag, 'UserFlag', usflag, 'History', 'implicit');
-                if isempty(LASTCOM)
-                    disp('User selected cancel or errors occur.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                
-                fprintf([LASTCOM,'\n']);
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_resetrej')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-                fprintf( [repmat('-',1,100) '\n']);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            end%%end for loop of subjects
-            
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            fprintf( [repmat('-',1,100) '\n']);
-            return;
+        %         try
+        inputoption = resetrejGUI; % open GUI
+        
+        if isempty(inputoption)
+            disp('User selected Cancel')
+            return
         end
+        arjm  = inputoption{1};
+        bflag = inputoption{2};
+        
+        if arjm==1
+            arjmstr = 'on';
+        else
+            arjmstr = 'off';
+        end
+        
+        [arflag usflag] = dec2flag(bflag);
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Clear artifact detection marks on EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            if EEG.trials==1
+                erpworkingmemory('f_EEG_proces_messg','Summarize Artifact Option for Epoched EEG >  Clear artifact detection marks on EEG: cannot work on a continuous EEG');
+                observe_EEGDAT.eeg_panel_message =4;
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            [EEG, LASTCOM] = pop_resetrej(EEG, 'ResetArtifactFields', arjmstr, 'ArtifactFlag', arflag, 'UserFlag', usflag, 'History', 'implicit');
+            if isempty(LASTCOM)
+                disp('User selected cancel or errors occur.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            fprintf([LASTCOM,'\n']);
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_resetrej')),EEG.filename,EEGArray(Numofeeg));
+            if isempty(Answer)
+                disp('User selected cancel.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            if ~isempty(Answer)
+                EEGName = Answer{1};
+                if ~isempty(EEGName)
+                    EEG.setname = EEGName;
+                end
+                fileName_full = Answer{2};
+                if isempty(fileName_full)
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                elseif ~isempty(fileName_full)
+                    [pathstr, file_name, ext] = fileparts(fileName_full);
+                    if strcmp(pathstr,'')
+                        pathstr = cd;
+                    end
+                    EEG.filename = [file_name,ext];
+                    EEG.filepath = pathstr;
+                    EEG.saved = 'yes';
+                    %%----------save the current sdata as--------------------
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        observe_EEGDAT.ALLEEG =ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.count_current_eeg=1;
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+        %             fprintf( [repmat('-',1,100) '\n']);
+        %             return;
+        %         end
         
         
     end
@@ -252,107 +252,108 @@ varargout{1} = Eegtab_box_art_sumop;
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        try
-            direction = synchroartifactsGUI;
-            %     direction = 1; % erplab to eeglab synchro
-            %     direction = 2; % eeglab to erplab synchro
-            %     direction = 3; % both
-            %     direction = 0; % none
-            if isempty(direction)
-                disp('User selected Cancel')
-                return
-            end
-            if direction==1      % erplab to eeglab synchro
-                dircom = 'erplab2eeglab';
-            elseif direction==2  %eeglab to erplab synchro
-                dircom = 'eeglab2erplab';
-            elseif direction==3 % both
-                dircom = 'bidirectional';
-            else
-                dircom = 'none';
-            end
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Syn. artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                if EEG.trials==1
-                    erpworkingmemory('f_EEG_proces_messg','Summarize Artifact Option for Epoched EEG >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG');
-                    observe_EEGDAT.eeg_panel_message =4;
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                [EEG, LASTCOM] = pop_syncroartifacts(EEG, 'Direction', dircom, 'History', 'implicit');
-                if isempty(LASTCOM)
-                    disp('User selected cancel or errors occur.');
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                
-                fprintf([LASTCOM,'\n']);
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_synctrej')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-                [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-                fprintf( [repmat('-',1,100) '\n']);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            end%%end for loop of subjects
-            
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            fprintf( [repmat('-',1,100) '\n']);
-            return;
+        %         try
+        direction = synchroartifactsGUI;
+        %     direction = 1; % erplab to eeglab synchro
+        %     direction = 2; % eeglab to erplab synchro
+        %     direction = 3; % both
+        %     direction = 0; % none
+        if isempty(direction)
+            disp('User selected Cancel')
+            return
         end
+        if direction==1      % erplab to eeglab synchro
+            dircom = 'erplab2eeglab';
+        elseif direction==2  %eeglab to erplab synchro
+            dircom = 'eeglab2erplab';
+        elseif direction==3 % both
+            dircom = 'bidirectional';
+        else
+            dircom = 'none';
+        end
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Syn. artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            if EEG.trials==1
+                erpworkingmemory('f_EEG_proces_messg','Summarize Artifact Option for Epoched EEG >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG');
+                observe_EEGDAT.eeg_panel_message =4;
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            [EEG, LASTCOM] = pop_syncroartifacts(EEG, 'Direction', dircom, 'History', 'implicit');
+            if isempty(LASTCOM)
+                disp('User selected cancel or errors occur.');
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            fprintf([LASTCOM,'\n']);
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_synctrej')),EEG.filename,EEGArray(Numofeeg));
+            if isempty(Answer)
+                disp('User selected cancel.');
+                return;
+            end
+            
+            if ~isempty(Answer)
+                EEGName = Answer{1};
+                if ~isempty(EEGName)
+                    EEG.setname = EEGName;
+                end
+                fileName_full = Answer{2};
+                if isempty(fileName_full)
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                elseif ~isempty(fileName_full)
+                    [pathstr, file_name, ext] = fileparts(fileName_full);
+                    if strcmp(pathstr,'')
+                        pathstr = cd;
+                    end
+                    EEG.filename = [file_name,ext];
+                    EEG.filepath = pathstr;
+                    EEG.saved = 'yes';
+                    %%----------save the current sdata as--------------------
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.count_current_eeg=1;
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
+        %             fprintf( [repmat('-',1,100) '\n']);
+        %             return;
+        %         end
         
     end
 

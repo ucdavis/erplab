@@ -852,119 +852,120 @@ varargout{1} = EEG_filtering_box;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
+        ALLEEG =  observe_EEGDAT.ALLEEG;
+        %         try
+        FilterMethod = '_filtered';
+        if numel(EEGArray)>1
+            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,FilterMethod);
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_advance = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        elseif numel(EEGArray)==1
+            Save_file_label =0;
+            ALLEEG_advance = ALLEEG;
+        end
         
-        try
-            FilterMethod = '_filtered';
-            if numel(EEGArray)>1
-                Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,FilterMethod);
-                if isempty(Answer)
-                    beep;
-                    disp('User selected Cancel');
-                    return;
-                end
-                if ~isempty(Answer{1})
-                    ALLEEG_advance = Answer{1};
-                    Save_file_label = Answer{2};
-                end
-            elseif numel(EEGArray)==1
-                Save_file_label =0;
-                ALLEEG_advance = observe_EEGDAT.ALLEEG;
+        for Numofeeg = 1:numel(EEGArray)
+            if EEGArray(Numofeeg)> length(ALLEEG)
+                msgboxText =  ['Filtering - No corresponding EEG exists in ALLEEG'];
+                erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                observe_EEGDAT.eeg_panel_message =4;
+                break;
             end
             
-            for Numofeeg = 1:numel(EEGArray)
-                if EEGArray(Numofeeg)> length(observe_EEGDAT.ALLEEG)
-                    msgboxText =  ['Filtering - No corresponding EEG exists in ALLEEG'];
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4;
-                    break;
-                end
-                
-                
-                EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                if gui_eegtab_filtering.all_chan.Value == 1
+            
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            if gui_eegtab_filtering.all_chan.Value == 1
+                chanArray = [1:EEG.nbchan];
+            else
+                if isempty(chanArray) ||  min(chanArray(:)) > EEG.nbchan || max(chanArray(:)) > EEG.nbchan || min(chanArray(:)) <=0
                     chanArray = [1:EEG.nbchan];
-                else
-                    if isempty(chanArray) ||  min(chanArray(:)) > EEG.nbchan || max(chanArray(:)) > EEG.nbchan || min(chanArray(:)) <=0
-                        chanArray = [1:EEG.nbchan];
+                end
+            end
+            
+            %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
+            [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
+                'History', 'gui');
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            if numel(EEGArray) ==1
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
+                if isempty(Answer)
+                    disp('User selected cancel.');
+                    return;
+                end
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
                     end
                 end
-                
-                %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
-                [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
-                    'History', 'gui');
+            end
+            
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                 EEG = eegh(LASTCOM, EEG);
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
-                if numel(EEGArray) ==1
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        return;
-                    end
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                            if Numofeeg==1
-                                eegh(LASTCOM);
-                            end
-                        end
-                    end
-                end
-                
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(EEG.filename);
-                    EEG.filename = [file_name,'.set'];
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                    if Numofeeg==1
-                        eegh(LASTCOM);
-                    end
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                    EEG.filepath = '';
-                end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
-            
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-            return;
+            [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         end
+        
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.count_current_eeg=1;
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
+        %             return;
+        %         end
         
     end
 
@@ -1158,112 +1159,115 @@ varargout{1} = EEG_filtering_box;
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_EEG_proces_messg','Filtering>Advanced');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        try
-            Suffix_label = 1;
-            FilterMethod = 'filtered';
-            if numel(EEGArray)>1
-                Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,FilterMethod);
+        %         try
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        Suffix_label = 1;
+        FilterMethod = 'filtered';
+        if numel(EEGArray)>1
+            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,FilterMethod);
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_advance = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        elseif numel(EEGArray)==1
+            Save_file_label =0;
+            ALLEEG_advance = ALLEEG;
+        end
+        
+        
+        for Numofeeg = 1:numel(EEGArray)
+            if EEGArray(Numofeeg)> length(ALLEEG)
+                msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
+                erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                observe_EEGDAT.eeg_panel_message =4;
+                break;
+            end
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
+            [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
+                'History', 'gui','Boundary', Boundaryflag);
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            
+            %%Rename single file------------------------------------
+            if numel(EEGArray) ==1
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
                 if isempty(Answer)
-                    beep;
                     disp('User selected Cancel');
                     return;
                 end
-                if ~isempty(Answer{1})
-                    ALLEEG_advance = Answer{1};
-                    Save_file_label = Answer{2};
+                
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
+                        if Numofeeg==1
+                            eegh(LASTCOM);
+                        end
+                    end
                 end
-            elseif numel(EEGArray)==1
-                Save_file_label =0;
-                ALLEEG_advance = observe_EEGDAT.ALLEEG;
             end
             
-            for Numofeeg = 1:numel(EEGArray)
-                if EEGArray(Numofeeg)> length(observe_EEGDAT.ALLEEG)
-                    msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4;
-                    break;
-                end
-                EEG = ALLEEG_advance(EEGArray(Numofeeg));
-                %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
-                [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
-                    'History', 'gui','Boundary', Boundaryflag);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                EEG.saved = 'yes';
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                 EEG = eegh(LASTCOM, EEG);
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
-                
-                %%Rename single file------------------------------------
-                if numel(EEGArray) ==1
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected Cancel');
-                        return;
-                    end
-                    
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                            if Numofeeg==1
-                                eegh(LASTCOM);
-                            end
-                        end
-                    end
-                end
-                
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(EEG.filename);
-                    EEG.filename = [file_name,'.set'];
-                    EEG.saved = 'yes';
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                    if Numofeeg==1
-                        eegh(LASTCOM);
-                    end
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                    EEG.filepath = '';
-                end
-                [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
-            try
-                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-            catch
-                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-            end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            estudioworkingmemory('EEGArray',Selected_EEG_afd);
-            assignin('base','EEG',observe_EEGDAT.EEG);
-            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-            return;
+            [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         end
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        %         catch
+        %             observe_EEGDAT.count_current_eeg=1;
+        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
+        %             return;
+        %         end
     end
 
 

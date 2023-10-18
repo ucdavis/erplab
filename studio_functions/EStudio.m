@@ -88,8 +88,12 @@ end
 
 %%close EEGLAB
 try
+    
+    ALLCOM = [];
+    LASTCOM = [];
     eeglab;
     W_MAIN = findobj('tag', 'EEGLAB');
+    set(W_MAIN,'visible','off')
     close(W_MAIN);
 catch
 end
@@ -151,7 +155,7 @@ addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_cha
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ERP              = [];  % Start ERP Structure on workspace
 ALLERP           = [];    %Start ALLERP Structure on workspace
-% ALLERPCOM        = [];
+ALLERPCOM        = [];
 CURRENTERP       = 1;
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
