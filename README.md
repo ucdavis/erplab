@@ -5,7 +5,7 @@ To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab
 ## ERPLAB v10.02
 
 <p align="center" >
-  <a href="https://github.com/ucdavis/erplab/releases/download/10.0/erplab10.01.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
+  <a href="https://github.com/ucdavis/erplab/releases/download/10.0/erplab10.02.zip"><img src="https://cloud.githubusercontent.com/assets/8988119/8532773/873b2af0-23e5-11e5-9869-c900726713a2.jpg">
 <br/>
 
   <img src="https://cloud.githubusercontent.com/assets/5808953/8663301/1ff9a26a-297e-11e5-9e15-a7085569058f.png" width=300px >
