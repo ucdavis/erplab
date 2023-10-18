@@ -113,12 +113,26 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
 end
 
 
-%%Remove response mistakes for Continuous EEG
+%%spectral data quality
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_dq_fre_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     messgStr  = char( 'Changes on "Spectral Data Quality for Continuous EEG" have not been applied');
     eegpanelIndex =14;
 end
 
+
+%%linear detrend
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detrend_epoch');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Linear Detrend for Epoched EEG" have not been applied');
+    eegpanelIndex =15;
+end
+
+%%data quality for epoched eeg
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_dq_epoch');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Data Quality Metrics for Epoched EEG" have not been applied');
+    eegpanelIndex =16;
+end
 
 return;

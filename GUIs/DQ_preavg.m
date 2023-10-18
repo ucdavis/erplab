@@ -604,7 +604,7 @@ DQ_defaults(1).comments{1} = 'Defaults';
 
 % DQ output
 DQ_flag   = max(get(handles.radiobuttonDQ1, 'Value'),get(handles.radiobuttonDQ2, 'Value'));
-
+                                                                
 use_defaults = get(handles.radiobuttonDQ1, 'Value');
 
 if DQ_flag
