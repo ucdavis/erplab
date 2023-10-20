@@ -440,7 +440,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.disp_norm.Value = NormFlag;
         estudioworkingmemory('EEG_plotset',EEG_plotset);
         
-        
         estudioworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];

@@ -124,7 +124,7 @@ for Numofpanel = 1:length(whichpanel)
     end
     set( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes', szs );
     EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(szs);
-end %% End for shrinking panels 4-10
+end %% End for shrinking panels 4-23
 
 %% + Create the view
 peeg = EStudio_gui_erp_totl.eegViewContainer;

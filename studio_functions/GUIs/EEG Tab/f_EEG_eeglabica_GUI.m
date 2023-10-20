@@ -273,30 +273,30 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         
-        %         try
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Classify IC by ICLabel*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-            
-            EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
-            if isempty(EEG)
-                observe_EEGDAT.eeg_panel_message =4;
-                return;
-            end
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
+        try
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+                fprintf( ['\n\n',repmat('-',1,100) '\n']);
+                fprintf(['*Classify IC by ICLabel*',32,32,32,32,datestr(datetime('now')),'\n']);
+                fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+                
+                EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
+                if isempty(EEG)
+                    observe_EEGDAT.eeg_panel_message =4;
+                    return;
+                end
+                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+            end%%end loop for subject
+            %             observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
+            observe_EEGDAT.eeg_panel_message =2;
+        catch
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel:Please confirm that IClabel has been included in Plugins folder of EEGLAB');
+            observe_EEGDAT.eeg_panel_message =4;%%There is erros in processing procedure
             fprintf( ['\n',repmat('-',1,100) '\n']);
-        end%%end loop for subject
-        %             observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
-        observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             fprintf(2,['Please confirm that IClabel has been included in Plugins folder of EEGLAB\n']);
-        %             fprintf( ['\n',repmat('-',1,100) '\n']);
-        %             return;
-        %         end
+            return;
+        end
         
     end
 

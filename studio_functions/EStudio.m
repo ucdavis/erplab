@@ -36,6 +36,18 @@
 
 function [] = EStudio()
 
+%%close EEGLAB
+try
+    ALLCOM = [];
+    LASTCOM = [];
+    eeglab;
+    W_MAIN = findobj('tag', 'EEGLAB');
+    set(W_MAIN,'visible','off')
+    close(W_MAIN);
+catch
+end
+
+
 EStudioversion = 10.0;
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 
@@ -52,14 +64,34 @@ viewer_ERPDAT = v_ERPDAT;
 
 
 %%---------------ADD FOLDER TO PATH-------------------
-pathName = which('EStudio','-all');
-if length(pathName)>1
+estudiopath = which('EStudio','-all');
+if length(estudiopath)>1
     fprintf('\nEStudio WARNING: More than one EStudio folder was found.\n\n');
 end
-pathName = pathName{1};
-pathName= pathName(1:findstr(pathName,'EStudio.m')-1);
+estudiopath = estudiopath{1};
+estudiopath= estudiopath(1:findstr(estudiopath,'EStudio.m')-1);
 % add all ERPLAB subfolders
-addpath(genpath(pathName));
+addpath(genpath(estudiopath));
+
+%%-------------------------------------------------------------------------
+%%-----------add path for each folder that contained in EStudio------------
+%%-------------------------------------------------------------------------
+%%Layout Toolbox
+% myaddpath( estudiopath, 'layoutRoot.m',   [ 'GUI Layout Toolbox' filesep 'layout']);
+% myaddpath( estudiopath, 'BoxPanel.m',   [ 'GUI Layout Toolbox' filesep 'layout',filesep,'+uiextras']);
+% myaddpath( estudiopath, 'Box.m',   [ 'GUI Layout Toolbox' filesep 'layout',filesep,'+uix']);
+% myaddpath( estudiopath, 'Container.m',   [ 'GUI Layout Toolbox' filesep 'layout',filesep,'+uix',filesep,'+mixin']);
+
+%%functions
+myaddpath( estudiopath, 'EStudio_EEG_Tab.m',   [ 'Functions' filesep 'EStudio',filesep,'EEG Tab']);
+myaddpath( estudiopath, 'EStudio_ERP_Tab.m',   [ 'Functions' filesep 'EStudio',filesep,'ERP Tab']);
+myaddpath( estudiopath, 'ERPLAB_ERP_Viewer.m',   [ 'Functions' filesep 'EStudio',filesep,'ERP Tab',filesep,'ERP wave viewer']);
+%%GUIs
+myaddpath( estudiopath, 'f_EEG_avg_erp_GUI.m',   [ 'GUIs' filesep 'EEG Tab']);
+myaddpath( estudiopath, 'f_ERP_append_GUI.m',   [ 'GUIs' filesep 'ERP Tab']);
+
+
+
 SignalProcessingToolboxCheck;
 
 if exist('memoryerpstudiopanels.erpm','file')==2
@@ -86,17 +118,6 @@ if iserpmem==0
     save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
 end
 
-%%close EEGLAB
-try
-    
-    ALLCOM = [];
-    LASTCOM = [];
-    eeglab;
-    W_MAIN = findobj('tag', 'EEGLAB');
-    set(W_MAIN,'visible','off')
-    close(W_MAIN);
-catch
-end
 
 % Sanity checks
 try
@@ -164,6 +185,7 @@ filepath =  which('dummy.erp');
 [pathstr, fname, ext] = fileparts(filepath);
 [ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
 assignin('base','ALLERP',ALLERP);
+
 
 observe_ERPDAT.ALLERP = ALLERP;
 observe_ERPDAT.CURRENTERP = CURRENTERP;
@@ -547,6 +569,7 @@ f_redrawERP();%%Draw ERP waves
             catch
                 return;
             end
+            warning('on');
         else
             return;
         end
@@ -615,3 +638,60 @@ f_redrawERP();%%Draw ERP waves
 
 %%%%%%%%%%%%%%%%%%%%%%%
 end % end of the function
+
+
+%%-------------------------------------------------------------------------
+%%-------------------------------borrow from eeglab------------------------
+%%-------------------------------------------------------------------------
+
+% find a function path and add path if not present
+% ------------------------------------------------
+function myaddpath(estudiopath, functionname, pathtoadd)
+
+tmpp = mywhich(functionname);
+tmpnewpath = [ estudiopath pathtoadd ];
+if ~isempty(tmpp)
+    tmpp = tmpp(1:end-length(functionname));
+    if length(tmpp) > length(tmpnewpath), tmpp = tmpp(1:end-1); end % remove trailing filesep
+    if length(tmpp) > length(tmpnewpath), tmpp = tmpp(1:end-1); end % remove trailing filesep
+    %disp([ tmpp '     ||        ' tmpnewpath '(' num2str(~strcmpi(tmpnewpath, tmpp)) ')' ]);
+    if ~strcmpi(tmpnewpath, tmpp)
+        warning('off', 'MATLAB:dispatcher:nameConflict');
+        addpath(tmpnewpath);
+        warning('on', 'MATLAB:dispatcher:nameConflict');
+    end
+else
+    %disp([ 'Adding new path ' tmpnewpath ]);
+    addpathifnotinlist(tmpnewpath);
+end
+
+end
+
+
+function res = mywhich(varargin)
+try
+    res = which(varargin{:});
+catch
+    fprintf('Warning: permission error accessing %s\n', varargin{1});
+end
+end
+
+
+
+function addpathifnotinlist(newpath)
+
+comp = computer;
+if strcmpi(comp(1:2), 'PC')
+    newpathtest = [ newpath ';' ];
+else
+    newpathtest = [ newpath ':' ];
+end
+p = path;
+ind = strfind(p, newpathtest);
+if isempty(ind)
+    if exist(newpath) == 7
+        addpath(newpath);
+    end
+end
+
+end

@@ -247,8 +247,8 @@ varargout{1} = box_interpolate_chan_epoch;
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',1);
         
         
-        Newchan = round(str2nunm(Source.String));
-        if isempty(Newchan) || min(Newchan(:))<=0 || max(Newchan(:)) <=0
+        Newchan = round(str2num(Source.String));
+        if isempty(Newchan) || any(Newchan(:) <=0)
             erpworkingmemory('f_EEG_proces_messg','Interpolate chan > Indexes of interpolated chans should be positive numbers');
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
@@ -256,8 +256,8 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         
         ChanNum = observe_EEGDAT.EEG.nbchan;
-        if min(Newchan(:))>ChanNum || max(Newchan(:)) >ChanNum
-            erpworkingmemory('f_EEG_proces_messg',['Interpolate chan > Indexes of interpolated chans should be between 1 and ',32,num2str(ChanNum)]);
+        if any(Newchan(:) > ChanNum)
+            erpworkingmemory('f_EEG_proces_messg',['Interpolate chan > Any indexes of interpolated chans should be between 1 and ',32,num2str(ChanNum)]);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             return;
@@ -271,6 +271,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Source.String = '';
             return;
         end
+        Source.String= vect2colon(Newchan);
     end
 
 
@@ -314,7 +315,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String  = num2str(chan_label_select);
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String  = vect2colon(chan_label_select);
         else
             beep;
             disp('User selected Cancel');
@@ -413,15 +414,15 @@ varargout{1} = box_interpolate_chan_epoch;
         ChanArray =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         
         ChanArrayNew = str2num(Source.String);
-        if isempty(ChanArrayNew) ||  min(ChanArrayNew(:))<=0
-            erpworkingmemory('f_EEG_proces_messg','Interpolate chan: Index(es) for ignored channels should be positive values');
+        if isempty(ChanArrayNew) || any(ChanArrayNew(:)<=0)
+            erpworkingmemory('f_EEG_proces_messg','Interpolate chan: Any index(es) of the ignored channels should be positive value');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         
-        if min(ChanArrayNew(:)) > observe_EEGDAT.EEG.nbchan ||  max(ChanArrayNew(:)) > observe_EEGDAT.EEG.nbchan
-            erpworkingmemory('f_EEG_proces_messg','Interpolate chan: Any of Index(es) for ignored channels should be positive values');
+        if any(ChanArrayNew(:) > observe_EEGDAT.EEG.nbchan)
+            erpworkingmemory('f_EEG_proces_messg',['Interpolate chan: Any index(es) of the ignored channels should be below ',32,num2str(observe_EEGDAT.EEG.nbchan)]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -434,6 +435,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Source.String = '';
             return;
         end
+        Source.String= vect2colon(ChanArrayNew);
         
     end
 
@@ -471,7 +473,7 @@ varargout{1} = box_interpolate_chan_epoch;
         if isempty(chanIgnore)
             indxlistb = EEG.nbchan;
         else
-            if min(chanIgnore(:)) >0  && max(chanIgnore(:)) <= EEG.nbchan
+            if any(chanIgnore(:) >0)  && any(chanIgnore(:) <= EEG.nbchan)
                 indxlistb = chanIgnore;
             else
                 indxlistb = EEG.nbchan;
@@ -481,7 +483,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String  = num2str(chan_label_select);
+            Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String  = vect2colon(chan_label_select);
         else
             beep;
             disp('User selected Cancel');
@@ -562,10 +564,8 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [0 0 0];
         
-        
         erpworkingmemory('f_EEG_proces_messg','Interpolate chan >  Advanced options for interpolate marked epochs');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
         
         if Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value==1
             interpolationMethod = 'spherical';
@@ -576,7 +576,7 @@ varargout{1} = box_interpolate_chan_epoch;
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:)<1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
@@ -743,7 +743,7 @@ varargout{1} = box_interpolate_chan_epoch;
 
 %%------------------run for interpolation----------------------------------
     function interpolate_run(Source,~)
-        if isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+        if isempty(observe_EEGDAT.EEG) %%|| observe_EEGDAT.EEG.trials ==1
             Source.Enable= 'off';
             return;
         end
@@ -786,12 +786,12 @@ varargout{1} = box_interpolate_chan_epoch;
         if Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value==1
             interpolationMethod = 'spherical';
         else
-            interpolationMethod =  'spacetime';
+            interpolationMethod =  'invdist';
         end
         
         ChanArray =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
-        if isempty(ChanArray) || min(ChanArray(:))<=0
-            ErroMesg = ['Interpolate chan >  Run: Index(es) of interpolated chans should be positive numbers'];
+        if isempty(ChanArray) || any(ChanArray(:)<=0)
+            ErroMesg = ['Interpolate chan >  Run: The index(es) of the interpolated chans should be positive numbers'];
             erpworkingmemory('f_EEG_proces_messg',ErroMesg);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
@@ -804,7 +804,7 @@ varargout{1} = box_interpolate_chan_epoch;
             ChanArrayig =  str2num(Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String);
         end
         if ~isempty(ChanArrayig)
-            overlap_elec = intersect(replaceChannelIndes, ChanArrayig);
+            overlap_elec = intersect(ChanArray, ChanArrayig);
             if ~isempty(overlap_elec)
                 ErroMesg = ['Interpolate chan >  Run: There is overlap in the replace electrodes and the ignore electrodes'];
                 erpworkingmemory('f_EEG_proces_messg',ErroMesg);
@@ -813,20 +813,26 @@ varargout{1} = box_interpolate_chan_epoch;
                 return;
             end
             
-            if  min(ChanArrayig(:))<=0
-                erpworkingmemory('f_EEG_proces_messg','Interpolate chan > Run: Index(es) for ignored channels should be positive values');
+            if  any(ChanArrayig(:)<=0)
+                erpworkingmemory('f_EEG_proces_messg','Interpolate chan > Run: Index(es) of the ignored channels should be positive values');
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 return;
             end
             
-            if min(ChanArrayig(:)) > observe_EEGDAT.EEG.nbchan ||  max(ChanArrayig(:)) > observe_EEGDAT.EEG.nbchan
-                erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Any of Index(es) for ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)]);
+            if any(ChanArrayig(:) > observe_EEGDAT.EEG.nbchan)
+                erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Index(es) of the ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)]);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 return;
             end
         end
+        if numel(ChanArrayig) + numel(ChanArray) ==observe_EEGDAT.EEG.nbchan
+            erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others']);
+            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            return;
+        end
+        
         
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
         %         try
@@ -838,7 +844,7 @@ varargout{1} = box_interpolate_chan_epoch;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %%check the selected chans
-            if min(ChanArray(:)) > EEG.nbchan || max(ChanArray(:)) > EEG.nbchan
+            if any(ChanArray(:) > EEG.nbchan)
                 Erromesg = ['Interpolate chan >  Run: Selected channel should be between 1 and ',32, num2str(EEG.nbchan)];
                 erpworkingmemory('f_EEG_proces_messg',Erromesg);
                 observe_EEGDAT.eeg_panel_message =4;
@@ -963,15 +969,15 @@ varargout{1} = box_interpolate_chan_epoch;
                 return;
             end
             
-            if  min(ignoreChannels(:))<=0
-                erpworkingmemory('f_EEG_proces_messg','Interpolate chan > Run: Index(es) for ignored channels should be positive values');
+            if  any(ignoreChannels(:)<=0)
+                erpworkingmemory('f_EEG_proces_messg','Interpolate chan > Run: Index(es) of the ignored channels should be positive values');
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 return;
             end
             
-            if min(ignoreChannels(:)) > observe_EEGDAT.EEG.nbchan ||  max(ignoreChannels(:)) > observe_EEGDAT.EEG.nbchan
-                erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Any of Index(es) for ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)]);
+            if any(ignoreChannels(:) > observe_EEGDAT.EEG.nbchan)
+                erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Index(es) of the ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)]);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 return;
@@ -981,16 +987,20 @@ varargout{1} = box_interpolate_chan_epoch;
         if Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value==1
             interpolationMethod = 'spherical';
         else
-            interpolationMethod =  'inverse_distance';
+            interpolationMethod =  'invdist';
         end
         
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        
+        if numel(ignoreChannels) + numel(replaceChannelIndes) ==observe_EEGDAT.EEG.nbchan
+            erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others']);
+            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            return;
+        end
         %%loop for the selected EEGsets
         %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -1001,14 +1011,14 @@ varargout{1} = box_interpolate_chan_epoch;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %%check interpolated chans and ignored chans
-            if min(replaceChannelIndes(:)) > EEG.nbchan || min(replaceChannelIndes(:)) > EEG.nbchan
+            if any(replaceChannelIndes(:) > EEG.nbchan )
                 erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Interpolated chans should be smaller than',32,num2str( EEG.nbchan)]);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;
             end
             
-            if min(ignoreChannels(:)) > EEG.nbchan || min(ignoreChannels(:)) > EEG.nbchan
+            if any(ignoreChannels(:) > EEG.nbchan) 
                 erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Ignored chans should be smaller than',32,num2str( EEG.nbchan)]);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);

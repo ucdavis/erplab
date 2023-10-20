@@ -30,7 +30,6 @@ else
 end
 
 
-
 try
     FonsizeDefault = varargin{2};
 catch
@@ -174,13 +173,11 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.all_chan.KeyPressFcn =@eeg_filter_presskey;
         set(gui_eegtab_filtering.filter_bin_chan_option, 'Sizes',[130  170]);
         
-        
         %%--------------------------Setting for IIR filter------------------------------
         gui_eegtab_filtering.IIR_title = uiextras.HBox('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_eegtab_filtering.IIR_title,'String','Setting for IIR Butterworth:',...
             'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
-        
+
         gui_eegtab_filtering.filt_grid = uiextras.Grid('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
         % first column
         uiextras.Empty('Parent',gui_eegtab_filtering.filt_grid); % 1A
@@ -297,9 +294,9 @@ varargout{1} = EEG_filtering_box;
 
 
 
-%%****************************************************************************************************************************************
-%%*******************   Subfunctions   ***************************************************************************************************
-%%****************************************************************************************************************************************
+%%*************************************************************************
+%%*******************   Subfunctions   ************************************
+%%*************************************************************************
 
 %%----------------------all bin and all chan-------------------------------
     function All_chan(~,~)

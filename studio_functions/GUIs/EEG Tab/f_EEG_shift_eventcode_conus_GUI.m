@@ -605,7 +605,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_browse.Enable= 'off';
             EEG_shift_eventcode_conus.timeshift_edit.Enable= 'off';
@@ -614,6 +614,11 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.roundlater.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
+            if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
+                Eegtab_box_shift_eventcodes_conus.Title = 'No events were found for the current EEG';
+                Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 0 0];
+            end
+            
             if observe_EEGDAT.count_current_eeg ~=17
                 return;
             else
@@ -626,6 +631,8 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if observe_EEGDAT.count_current_eeg ~=17
             return;
         end
+        Eegtab_box_shift_eventcodes_conus.Title = 'Shift Event Codes for Continuous EEG';
+        Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 1 1];
         
         EEG_shift_eventcode_conus.event_codes_edit.Enable= 'on';
         EEG_shift_eventcode_conus.event_codes_browse.Enable= 'on';
@@ -672,6 +679,8 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_browse.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_edit.String = '';
+            EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
+            EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
         end
         observe_EEGDAT.count_current_eeg=18;
     end

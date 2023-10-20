@@ -501,13 +501,16 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
             EEG_rmresp_mistak_conus.stimulusall.Enable= 'off';
             EEG_rmresp_mistak_conus.Stimulus_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.response_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.rmresp_mistake_run.Enable= 'off';
             EEG_rmresp_mistak_conus.rmresp_mistake_cancel.Enable= 'off';
-            
+            if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
+                Eegtab_box_rmresp_mistak_conus.Title = 'No events were found for  the current EEG';
+                Eegtab_box_rmresp_mistak_conus.ForegroundColor= [1 0 0];
+            end
             if observe_EEGDAT.count_current_eeg ~=18
                 return;
             else
@@ -528,13 +531,19 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.String = 'Cancel';
         EEG_rmresp_mistak_conus.stimulusall.Enable= 'on';
         EEG = observe_EEGDAT.EEG;
-        
+        Eegtab_box_rmresp_mistak_conus.Title = 'Remove Response Mistakes for Continuous EEG';
+        Eegtab_box_rmresp_mistak_conus.ForegroundColor= [1 1 1];
         % Check numeric or string type
-        if ischar(EEG.event(1).type)
-            ec_type_is_str = 0;
-        else
+        try
+            if ischar(EEG.event(1).type)
+                ec_type_is_str = 0;
+            else
+                ec_type_is_str = 1;
+            end
+        catch
             ec_type_is_str = 1;
         end
+        
         evT = struct2table(EEG.event);
         %         if ec_type_is_str
         %             all_ev = str2double(evT.type);

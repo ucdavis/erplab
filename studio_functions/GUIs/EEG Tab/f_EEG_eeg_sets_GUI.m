@@ -197,6 +197,8 @@ varargout{1} = box_eegset_gui;
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
+        whichpanel = [18:22];
+        EEGTab_close_open_Panels(whichpanel);
     end
 
 %%--------------------------epoched EEG--------------------------------------
@@ -222,7 +224,7 @@ varargout{1} = box_eegset_gui;
             return;
         end
         EEGArray = EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if min(EEGArray(:)) > length(EEGlistName) || max(EEGArray(:)) > length(EEGlistName)
+        if any(EEGArray(:) > length(EEGlistName))
             EEGArray = length(EEGlistName);
         end
         EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
@@ -259,6 +261,9 @@ varargout{1} = box_eegset_gui;
         observe_EEGDAT.count_current_eeg=2;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
+        
+        whichpanel = [12:17];
+        EEGTab_close_open_Panels(whichpanel);
     end
 
 
@@ -328,10 +333,7 @@ varargout{1} = box_eegset_gui;
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
-      
     end
-
-
 
 %%-------------------Rename the selcted files------------------------------
     function renamedata(~,~)
@@ -1146,5 +1148,25 @@ varargout{1} = box_eegset_gui;
             EEGtypeFlag = [];
         end
     end
+end
+
+
+
+function EEGTab_close_open_Panels(whichpanel)
+global EStudio_gui_erp_totl
+if any(whichpanel(:)>23) || any(whichpanel(:)<1)
+    return;
+end
+
+for Numofpanel = 1:length(whichpanel)
+    minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;
+    if ~minned
+        szs = get( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes');
+        set( EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}, 'IsMinimized', true);
+        szs(whichpanel(Numofpanel)) = 25;
+        set( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes', szs );
+        EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(szs);
+    end
+end %% End
 
 end

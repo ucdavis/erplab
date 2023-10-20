@@ -326,7 +326,6 @@ varargout{1} = EEG_epoch_detrend_box;
             
             if detwindow(1)>= detwindow(2)
                 msgboxText =  ['Linear Detrend for Epoched EEG > Apply - The first value must be smaller than the second one'];
-                
             end
             
             if detwindow(2) > observe_EEGDAT.EEG.times(end)

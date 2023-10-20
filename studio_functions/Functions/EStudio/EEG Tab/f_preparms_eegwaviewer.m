@@ -188,6 +188,9 @@ end
 if ICdisp==0
     ICArray = [];
 end
+if isempty(ICArray)
+    ICdisp=0;
+end
 
 if matlabfig==1
     [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...

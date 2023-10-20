@@ -30,8 +30,8 @@ classdef o_EEGDATA < handle
                 obj_eeg.ALLEEG = values_eeg;
                 notify(obj_eeg,'alleeg_change');
             catch
-                warning('on');
             end
+            warning('on');
         end
         
         %%eeg
@@ -41,8 +41,8 @@ classdef o_EEGDATA < handle
                 obj_eeg.EEG = values_eeg;
                 notify(obj_eeg,'eeg_change');
             catch
-                warning('on');
             end
+            warning('on');
         end
         
         %%current eeg
@@ -52,8 +52,8 @@ classdef o_EEGDATA < handle
                 obj_eeg.CURRENTSET = values_eeg;
                 notify(obj_eeg,'current_change');
             catch
-                warning('on');
             end
+            warning('on');
         end
         
         %%count current eeg change
@@ -77,9 +77,10 @@ classdef o_EEGDATA < handle
                 obj_eeg.eeg_panel_message = values_eeg;
                 notify(obj_eeg,'eeg_panel_change_message');
             catch
-                 warning('on');
+                warning('on');
             end
-           
+            
+            
         end
         
         %%two panels
@@ -101,8 +102,8 @@ classdef o_EEGDATA < handle
                 obj_eeg.eeg_reset_def_paras = values_eeg;
                 notify(obj_eeg,'eeg_reset_def_paras_change');
             catch
-                warning('on');
             end
+            warning('on');
         end
     end
     
