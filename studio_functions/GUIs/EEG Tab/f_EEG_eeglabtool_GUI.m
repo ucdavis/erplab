@@ -600,9 +600,13 @@ varargout{1} = EStudio_box_eeglab_tool;
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['**Reject data using clean rawdata and ASR**\n']);
         fprintf(['Your current eegset(s):',32,num2str(EEGArray),'\n']);
-        
-        [ALLEEG_advance,LASTCOM] =pop_clean_rawdata(ALLEEG_advance);
-        
+        try
+            [ALLEEG_advance,LASTCOM] =pop_clean_rawdata(ALLEEG_advance);
+        catch
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR: Clean Rawdata tool wasnot included in EEGLAB plugin');
+            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            return;
+        end
         if isempty(LASTCOM)
             disp('User selected cancel');
             fprintf( ['\n\n',repmat('-',1,100) '\n']);

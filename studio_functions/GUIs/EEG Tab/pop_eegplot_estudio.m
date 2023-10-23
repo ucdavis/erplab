@@ -201,10 +201,15 @@ end
 try
     command = erase(command,"eeglab('redraw');");
     command = erase(command,"[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);");
+    rmstr = strcat("warndlg2(strvcat('Epochs (=trials) marked for rejection have been noted.','To actually reject these epochs, use the same menu item to','inspect/reject data and select",' "','Reject marked trials','" '," checkbox'), 'Warning');");
+    command = erase(command,rmstr);
 catch
     command = strrep(command,"eeglab('redraw');",'');
     command = strrep(command,"[ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);",'');
+    rmstr = strcat("warndlg2(strvcat('Epochs (=trials) marked for rejection have been noted.','To actually reject these epochs, use the same menu item to','inspect/reject data and select",' "','Reject marked trials','" '," checkbox'), 'Warning');");
+    command = strrep(command,rmstr,'');
 end
+
 
 if icacomp == 1
     eegplot( EEG.data, 'srate', EEG.srate, 'title', ['Scroll channel activities -- eegplot() -- ', EEG.setname], ...

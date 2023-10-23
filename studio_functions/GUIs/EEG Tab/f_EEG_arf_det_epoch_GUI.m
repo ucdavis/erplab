@@ -1303,8 +1303,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
     end
 
 
-
-
 %%--------------press return to execute "Apply"----------------------------
     function eeg_artdetect_presskey(hObject, eventdata)
         keypress = eventdata.Key;

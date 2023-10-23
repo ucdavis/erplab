@@ -2,6 +2,8 @@
 %%easy to know which eegset that they are seeing when using ICLabel
 
 
+%%Thanks for EEGLAB developers
+
 % *** This function is part of ERPLAB Studio Toolbox ***
 % Author: Guanghui Zhang & Steven Luck
 % Center for Mind and Brain
@@ -116,8 +118,7 @@ catch
 end
 EEG = eegh(LASTCOM1, EEG);
 fprintf([LASTCOM1,'\n']);
- eegh(LASTCOM1);
-
+eegh(LASTCOM1);
 end
 
 

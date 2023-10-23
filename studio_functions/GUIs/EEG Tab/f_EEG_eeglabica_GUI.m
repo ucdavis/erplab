@@ -222,7 +222,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(['*Inspect/label ICs*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             
-            [~,LASTCOM] =  pop_selectcomps(EEG);%%somthing goes wrong
+            [~,LASTCOM] =  pop_selectcomps(EEG);%
             if isempty(LASTCOM)
                 erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;

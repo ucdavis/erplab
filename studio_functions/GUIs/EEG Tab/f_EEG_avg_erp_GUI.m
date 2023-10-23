@@ -640,8 +640,6 @@ varargout{1} = Eegtab_box_avg_erp;
             assignin('base','ALLERPCOM',ERPCOM);
         end
         
-        
-        
         %         try
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
@@ -739,7 +737,6 @@ varargout{1} = Eegtab_box_avg_erp;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.Count_currentERP=1;
-        
     end
 
 

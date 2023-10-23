@@ -13,7 +13,7 @@
 
 function varargout = f_EEG_eeg_sets_GUI(varargin)
 global observe_EEGDAT;
-global observe_ERPDAT;
+% global observe_ERPDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
@@ -35,9 +35,6 @@ elseif nargin == 1
 else
     box_eegset_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGsets', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
-
-
-
 
 % global selectedData;
 sel_path = cd;
@@ -76,7 +73,6 @@ varargout{1} = box_eegset_gui;
         EStduio_eegtab_EEG_set.eeg_epoch = uicontrol('Parent',EStduio_eegtab_EEG_set.datatype_title, 'Style', 'radiobutton', 'String', 'Epoched EEG',...
             'Callback', @epoch_eeg,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
         
-        
         %%-----------------------ERPset display---------------------------------------
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         panelsv2box = uiextras.VBox('Parent',panelshbox,'Spacing',5,'BackgroundColor',ColorB_def);
@@ -94,7 +90,6 @@ varargout{1} = box_eegset_gui;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         EStduio_eegtab_EEG_set.butttons_datasets.Value = EEGArray;
-        
         
         %%---------------------Options for EEGsets-----------------------------------------------------
         EStduio_eegtab_EEG_set.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -388,7 +383,6 @@ varargout{1} = box_eegset_gui;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Add Suffix');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -439,10 +433,10 @@ varargout{1} = box_eegset_gui;
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Import');
         observe_EEGDAT.eeg_panel_message =1;
         %-----------Setting for import-------------------------------------
-        
         ALLEEG =   f_EEG_import_GUI(observe_EEGDAT.ALLEEG);
         if isempty(ALLEEG)
-            observe_EEGDAT.eeg_panel_message =4;
+            disp('User selected cancel');
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -501,9 +495,15 @@ varargout{1} = box_eegset_gui;
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
+        
+        if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
+            
+            whichpanel = [18:22];
+        else
+            whichpanel = [12:17];
+        end
+        EEGTab_close_open_Panels(whichpanel);
     end
-
-
 
 
 %%---------------------Load EEG--------------------------------------------
@@ -590,7 +590,13 @@ varargout{1} = box_eegset_gui;
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
-        
+        if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
+            
+            whichpanel = [18:22];
+        else
+            whichpanel = [12:17];
+        end
+        EEGTab_close_open_Panels(whichpanel);
     end
 
 %%----------------------------Append two or more files---------------------
@@ -689,7 +695,6 @@ varargout{1} = box_eegset_gui;
             observe_EEGDAT.eeg_panel_message=2;
         end
     end
-
 
 
 %%----------------------Clear the selected EEGsets-------------------------
@@ -1150,11 +1155,11 @@ varargout{1} = box_eegset_gui;
     end
 end
 
-
-
+%%----Oct 2023---GH
+%%---automatically close right panels if select continuous/epoched EEG-----
 function EEGTab_close_open_Panels(whichpanel)
 global EStudio_gui_erp_totl
-if any(whichpanel(:)>23) || any(whichpanel(:)<1)
+if any(whichpanel(:)>23) || any(whichpanel(:)<1)%%check the labels for the right panels
     return;
 end
 
@@ -1167,6 +1172,5 @@ for Numofpanel = 1:length(whichpanel)
         set( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes', szs );
         EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(szs);
     end
-end %% End
-
+end 
 end

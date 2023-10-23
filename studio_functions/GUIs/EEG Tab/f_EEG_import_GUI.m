@@ -857,16 +857,18 @@ end
 
 % --- Executes on button press in pushbutton_eeglab_extension.
 function pushbutton_eeglab_extension_Callback(hObject, eventdata, handles)
+ handles.text_message.String = 'We recommended you restart "Import EEG data GUI" after you updated the functions using "EEGLAB manage extensions".';
 plugin_menu([]);
 
 
 % --- Executes on button press in pushbutton_otherformat.
 function pushbutton_otherformat_Callback(hObject, eventdata, handles)
 BackERPLABcolor = [1 0.9 0.3];    % yellow
-question = ['(1) Please use EEGLAB to import the data with other formats that are not included in EStudio,\n(2) Save them as “.set” files,\n(3) Rerun EStudio and load those “.set” files.'];
+titleName = ['Import the other data formats:\n'];
+question = ['(1) Please use EEGLAB to import the datasets with other formats,\n(2) Save them as “.set” files after imported them by EEGLAB,\n(3) Restart EStudio and load the “.set” files by "EEGsets" panel > "load".'];
 title = 'EEGsets>Import>Other data formats';
 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-button = questdlg(sprintf(question), title,'Okay','Yes');
+button = questdlg(sprintf([titleName,question]), title,'Okay','Yes');
 set(0,'DefaultUicontrolBackgroundColor',oldcolor);
 guidata(hObject, handles);
