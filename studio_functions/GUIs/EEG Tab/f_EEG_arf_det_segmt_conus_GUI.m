@@ -632,7 +632,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             EEG_art_det_segmt_conus.event_exp_edit.Enable= 'off';
             EEG_art_det_segmt_conus.event_exp_select.Enable= 'off';
             EEG_art_det_segmt_conus.boundaryevent.Enable= 'off';
-            
+            Eegtab_box_art_det_segmt_conus.TitleColor= [0.7500    0.7500    0.750];
             EEG_art_det_segmt_conus.detectsegmt_preview.Enable= 'off';
             EEG_art_det_segmt_conus.detectsegmt_run.Enable= 'off';
             if observe_EEGDAT.count_current_eeg ~=16
@@ -647,7 +647,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         if observe_EEGDAT.count_current_eeg ~=16
             return;
         end
-        
+        Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_art_det_segmt_conus.time_threshold_edit.Enable= 'on';
         EEG_art_det_segmt_conus.chan_browse.Enable= 'on';
         EEG_art_det_segmt_conus.periods_edit.Enable= 'on';

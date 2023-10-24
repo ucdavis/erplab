@@ -478,8 +478,6 @@ varargout{1} = Eegtab_box_art_sumop;
         
         erpworkingmemory('f_EEG_proces_messg','Summarize Artifact Option for Epoched EEG >  Summarize EEG artifact in a table');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
-        
-        
     end
 
 %%-------------------Summarize EEG artifact in a graphic-------------------
@@ -549,6 +547,7 @@ varargout{1} = Eegtab_box_art_sumop;
             Eegtab_EEG_art_sumop.art_onevalue.Enable = 'off';
             Eegtab_EEG_art_sumop.art_table.Enable = 'off';
             Eegtab_EEG_art_sumop.art_graphic.Enable= 'off';
+            Eegtab_box_art_sumop.TitleColor= [0.7500    0.7500    0.75000];
             if observe_EEGDAT.count_current_eeg ~=13
                 return;
             else
@@ -562,6 +561,7 @@ varargout{1} = Eegtab_box_art_sumop;
         if observe_EEGDAT.count_current_eeg ~=13
             return;
         end
+        Eegtab_box_art_sumop.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_sumop.clear_art_det.Enable = 'on';
         Eegtab_EEG_art_sumop.syn_arfinfo.Enable = 'on';
         Eegtab_EEG_art_sumop.art_interp.Enable = 'on';

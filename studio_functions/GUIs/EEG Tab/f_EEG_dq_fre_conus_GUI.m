@@ -470,6 +470,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             EEG_dq_fre_conus.resetable.Enable= 'off';
             EEG_dq_fre_conus.dq_fre_run.Enable= 'off';
             EEG_dq_fre_conus.dq_fre_cancel.Enable= 'off';
+            Eegtab_box_dq_fre_conus.TitleColor= [0.7500    0.7500    0.750];
             if observe_EEGDAT.count_current_eeg ~=19
                 return;
             else
@@ -486,6 +487,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if isempty(chanOld)
             EEG_dq_fre_conus.chans_edit.String= vect2colon(1:observe_EEGDAT.EEG.nbchan);
         end
+        Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_fre_conus.chans_edit.Enable= 'on';
         EEG_dq_fre_conus.chans_browse.Enable= 'on';
         EEG_dq_fre_conus.bandtable.Enable = 'on';

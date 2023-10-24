@@ -614,11 +614,11 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.roundlater.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
-            if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
-                Eegtab_box_shift_eventcodes_conus.Title = 'No events were found for the current EEG';
-                Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 0 0];
-            end
-            
+            %             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
+            %                 Eegtab_box_shift_eventcodes_conus.Title = 'No events were found for the current EEG';
+            %                 Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 0 0];
+            %             end
+            Eegtab_box_shift_eventcodes_conus.TitleColor= [0.7500    0.7500    0.75000];
             if observe_EEGDAT.count_current_eeg ~=17
                 return;
             else
@@ -644,7 +644,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'on';
         EEG_shift_eventcode_conus.shiftcodes_cancel.String = 'Cancel';
         EEG = observe_EEGDAT.EEG;
-        
+        Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
         if   ~isempty(EEG(1).event) && ~isempty([EEG(1).event.type])
             %             [eventtypes histo] = squeezevents(EEG.event);
             % Check numeric or string type

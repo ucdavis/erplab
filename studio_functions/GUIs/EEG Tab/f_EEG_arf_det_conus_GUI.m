@@ -916,6 +916,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             Eegtab_EEG_art_det_conus.detectar_advanced.Enable= 'off';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'off';
             Eegtab_EEG_art_det_conus.detectar_run.Enable= 'off';
+            Eegtab_box_art_det_conus.TitleColor= [0.75 0.75 0.75];
             if observe_EEGDAT.count_current_eeg ~=15
                 return;
             else
@@ -928,7 +929,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if observe_EEGDAT.count_current_eeg ~=15
             return;
         end
-        
+        Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_conus.chan_edit.Enable= 'on';
         Eegtab_EEG_art_det_conus.chan_browse.Enable= 'on';
         Eegtab_EEG_art_det_conus.periods_edit.Enable= 'on';

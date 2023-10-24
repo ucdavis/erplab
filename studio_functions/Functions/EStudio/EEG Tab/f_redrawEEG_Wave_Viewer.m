@@ -181,10 +181,8 @@ EStudio_gui_erp_totl.eeg_figuresaveas.Callback=@figure_saveas;
 
 EStudio_gui_erp_totl.eeg_figureout.Callback = @figure_out;
 
-EStudio_gui_erp_totl.eeg_Reset.Callback =@Panel_Reset;
 
-
-set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 100 170 60 5]);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 5]);
 
 
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
@@ -868,51 +866,6 @@ catch
     observe_EEGDAT.eeg_panel_message=3;
 end
 end
-
-
-
-
-%%Reset each panel that using the default parameters
-function Panel_Reset(~,~)
-global observe_EEGDAT;
-global EStudio_gui_erp_totl
-
-if isempty(observe_EEGDAT.EEG)
-    return;
-end
-
-estudioworkingmemory('MERPWaveViewer_label',[]);
-estudioworkingmemory('MERPWaveViewer_others',[]);
-
-MessageViewer= char(strcat('Reset'));
-erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-
-try
-    observe_EEGDAT.eeg_panel_message=1;
-    %     observe_EEGDAT.Reset_Waviewer_panel=1;
-    estudioworkingmemory('zoomSpace',0);
-    f_redrawEEG_Wave_Viewer();
-    observe_EEGDAT.eeg_panel_message=2;
-catch
-    observe_EEGDAT.eeg_panel_message=3;
-end
-
-%%Reset the window size and position
-new_pos = [0.01,0.01,75,75];
-erpworkingmemory('ERPWaveScreenPos',new_pos);
-try
-    ScreenPos =  get( groot, 'Screensize' );
-catch
-    ScreenPos =  get( 0, 'Screensize' );
-end
-EStudio_gui_erp_totl.screen_pos = new_pos;
-new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
-
-end
-
-
-
 
 
 % %%------------------------Message panel------------------------------------

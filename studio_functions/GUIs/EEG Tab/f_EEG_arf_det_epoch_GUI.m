@@ -1175,7 +1175,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_preview.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'off';
-            
+            Eegtab_box_art_det_epoch.TitleColor= [0.7500    0.7500    0.75000];
             if observe_EEGDAT.count_current_eeg ~=12
                 return;
             else
@@ -1188,7 +1188,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         if observe_EEGDAT.count_current_eeg ~=12
             return;
         end
-        
+        Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
         Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';
         Eegtab_EEG_art_det_epoch.chan_browse.Enable= 'on';

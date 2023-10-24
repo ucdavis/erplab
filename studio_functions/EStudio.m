@@ -343,10 +343,7 @@ f_redrawERP();%%Draw ERP waves
         EStudio_gui_erp_totl.eeg_zoom_out_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>|',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
-        
-        EStudio_gui_erp_totl.EStudiowinsize = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Window Size',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@EStudiowinsize);
+
         
         EStudio_gui_erp_totl.eeg_figurecommand = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Show Command',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -356,9 +353,6 @@ f_redrawERP();%%Draw ERP waves
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         EStudio_gui_erp_totl.eeg_figureout = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        EStudio_gui_erp_totl.eeg_Reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         

@@ -502,8 +502,10 @@ varargout{1} = EEG_epoch_detrend_box;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials==1
             Enable_Label = 'off';
+            EEG_epoch_detrend_box.TitleColor= [0.7500    0.7500    0.75000];
         else
             Enable_Label = 'on';
+            EEG_epoch_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
         end
         
         gui_eeg_epoch_dt.blc.Enable = Enable_Label;
