@@ -756,14 +756,12 @@ varargout{1} = Eegtab_box_avg_erp;
             EEG_avg_erp.invalidepoch.Enable= 'off';
             EEG_avg_erp.avg_run.Enable= 'off';
             EEG_avg_erp.avg_cancel.Enable= 'off';
-            Eegtab_box_avg_erp.TitleColor= [0.7500    0.7500    0.75000];
-            if observe_EEGDAT.count_current_eeg ~=22
-                return;
+            if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
+                Eegtab_box_avg_erp.TitleColor= [0.7500    0.7500    0.75000];
             else
-                if observe_EEGDAT.EEG.trials ==1
-                    observe_EEGDAT.count_current_eeg=23;
-                end
+                Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=23;
             return;
         end
         

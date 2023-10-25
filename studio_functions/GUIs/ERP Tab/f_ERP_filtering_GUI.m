@@ -584,12 +584,6 @@ varargout{1} = ERP_filtering_box;
         end
     end
 
-%-----------------------change for ALLERPs---------------------------------
-%     function erpschange(~,~)
-%
-%
-%     end
-
 
 %%------------------Setting for apply option--------------------------------
     function ERP_filter_apply(~,~)
@@ -1391,7 +1385,6 @@ varargout{1} = ERP_filtering_box;
             
             
             Selected_erpset = observe_ERPDAT.CURRENTERP;
-            
             Check_Selected_erpset = [0 0 0 0 0 0 0];
             if numel(Selected_erpset)>1
                 Check_Selected_erpset = f_checkerpsets(observe_ERPDAT.ALLERP,Selected_erpset);
@@ -1402,7 +1395,6 @@ varargout{1} = ERP_filtering_box;
                 gui_erp_filtering.all_bin_chan.Value = 1;
                 gui_erp_filtering.all_bin_chan.Enable = 'on';
             end
-            
         end
     end
 

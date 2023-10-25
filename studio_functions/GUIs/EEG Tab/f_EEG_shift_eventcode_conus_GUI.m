@@ -605,6 +605,9 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=14
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_browse.Enable= 'off';
@@ -614,23 +617,15 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.roundlater.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
-            %             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
-            %                 Eegtab_box_shift_eventcodes_conus.Title = 'No events were found for the current EEG';
-            %                 Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 0 0];
-            %             end
-            Eegtab_box_shift_eventcodes_conus.TitleColor= [0.7500    0.7500    0.75000];
-            if observe_EEGDAT.count_current_eeg ~=17
-                return;
+            if  ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ~=1
+                Eegtab_box_shift_eventcodes_conus.TitleColor= [0.7500    0.7500    0.75000];
             else
-                if observe_EEGDAT.EEG.trials ~=1
-                    observe_EEGDAT.count_current_eeg=18;
-                end
+                Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 1 1];
             end
+            observe_EEGDAT.count_current_eeg=15;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=17
-            return;
-        end
+        
         Eegtab_box_shift_eventcodes_conus.Title = 'Shift Event Codes for Continuous EEG';
         Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 1 1];
         
@@ -659,21 +654,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             else
                 all_ev = evT.type;
             end
-            
-            %         eventtypes = unique(all_ev);
-            % %         eventtypes(isnan(eventtypes)) = [];
-            %             Eventcodeold =  EEG_shift_eventcode_conus.event_codes_edit.String;
-            %             try
-            %                 Eventcodeold = eval(num2str(Eventcodeold)); %if numeric
-            %             catch
-            %                 Eventcodeold = regexp(Eventcodeold,'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
-            %                 Eventcodeold = Eventcodeold(~cellfun('isempty',Eventcodeold));
-            %             end
-            %
-            %             [C,IA] = ismember_bc2(Eventcodeold,eventtypes,'legacy');
-            %             if min(IA(:)) ==0
-            %                 EEG_shift_eventcode_conus.event_codes_edit.String = '';
-            %             end
         else
             fprintf(['Shift Event Codes for Continuous EEG > Event for current EEG is empty',32,32,32,32,datestr(datetime('now')),'\n']);
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
@@ -682,7 +662,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
         end
-        observe_EEGDAT.count_current_eeg=18;
+        observe_EEGDAT.count_current_eeg=15;
     end
 
 

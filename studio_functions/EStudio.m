@@ -40,15 +40,17 @@ function [] = EStudio()
 try
     ALLCOM = [];
     LASTCOM = [];
-    eeglab;
+    %     eeglab;
     W_MAIN = findobj('tag', 'EEGLAB');
-    set(W_MAIN,'visible','off')
     close(W_MAIN);
+    eegh('EStudio;');
+        evalin('base', 'eeg_global;');
+        eeg_global;
 catch
 end
 
 
-EStudioversion = 10.0;
+EStudioversion = 10.02;
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 
 clearvars observe_EEGDAT;
@@ -222,7 +224,6 @@ EStudio_gui_erp_totl = createInterface();
 f_redrawEEG_Wave_Viewer();%%Draw EEG waves
 f_redrawERP();%%Draw ERP waves
 
-
     function EStudio_gui_erp_totl = createInterface()
         
         try
@@ -243,7 +244,7 @@ f_redrawERP();%%Draw ERP waves
             'NumberTitle', 'off', ...
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
-            'HandleVisibility', 'off', 'tag', 'rollover');
+            'HandleVisibility', 'on', 'tag', 'EStudio');
         
         % set the window size
         %%screen size
@@ -305,11 +306,11 @@ f_redrawERP();%%Draw ERP waves
         EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
         EStudio_gui_erp_totl.context_tabs.BackgroundColor = ColorB_def;
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%------------EEG tab for continous EEG and epoched EEG------------
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         EStudio_gui_erp_totl = EStudio_EEG_Tab(EStudio_gui_erp_totl,ColorB_def);
-        
         FonsizeDefault = f_get_default_fontsize();figbgdColor = [1 1 1];
         EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegpageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
@@ -327,39 +328,28 @@ f_redrawERP();%%Draw ERP waves
         
         EStudio_gui_erp_totl.eeg_zoom_in_fivesmall = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','<<',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
-        
         EStudio_gui_erp_totl.eeg_zoom_in_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','<',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
-        
         EStudio_gui_erp_totl.eeg_zoom_edit = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','edit','String','',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
-        
         EStudio_gui_erp_totl.eeg_zoom_out_small = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
-        
         EStudio_gui_erp_totl.eeg_zoom_out_fivelarge = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>>',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
-        
         EStudio_gui_erp_totl.eeg_zoom_out_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>|',...
             'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1]);
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-
-        
         EStudio_gui_erp_totl.eeg_figurecommand = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Show Command',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        
         EStudio_gui_erp_totl.eeg_figuresaveas = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Save Figure as',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
         EStudio_gui_erp_totl.eeg_figureout = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
-        
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
         EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorB_def);
+        
+        
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%---------------set the layouts for ERP Tab-----------------------
@@ -388,11 +378,9 @@ f_redrawERP();%%Draw ERP waves
         if isempty(observe_EEGDAT.EEG)
             return;
         end
-        
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         return;
     end
-
 
 %------------------------------------ERP-----------------------------------
     function onErpChanged( ~, ~ )
@@ -516,9 +504,6 @@ f_redrawERP();%%Draw ERP waves
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        %         ColorB_def = [1 1 1];
-        %        EStudio_gui_erp_totl.Process_messg= erpworkingmemory('EStudio_proces_messg');
-        %         EStudio_gui_erp_totl.Process_messg.ForegroundColor = [0 0 0];
         Processed_Method=erpworkingmemory('f_ERP_proces_messg');
         EStudio_gui_erp_totl.Process_messg.FontSize = 14;
         if observe_ERPDAT.Process_messg ==1

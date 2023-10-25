@@ -13,7 +13,6 @@ function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 % addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
 
@@ -1018,7 +1017,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 return;
             end
             
-            if any(ignoreChannels(:) > EEG.nbchan) 
+            if any(ignoreChannels(:) > EEG.nbchan)
                 erpworkingmemory('f_EEG_proces_messg',['Interpolate chan >  Run: Ignored chans should be smaller than',32,num2str( EEG.nbchan)]);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -1145,6 +1144,9 @@ varargout{1} = box_interpolate_chan_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=17
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG)
             Eegtab_EEG_interpolate_chan_epoch.mode_modify.Enable ='off';
             Eegtab_EEG_interpolate_chan_epoch.mode_create.Enable = 'off';
@@ -1160,12 +1162,10 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_run.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.cancel.Enable='off';
+            observe_EEGDAT.count_current_eeg=18;
             return;
         end
         
-        if observe_EEGDAT.count_current_eeg ~=14
-            return;
-        end
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.Enable ='on';
         Eegtab_EEG_interpolate_chan_epoch.mode_create.Enable = 'on';
         Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.Enable= 'on';
@@ -1192,7 +1192,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.Parameters{6} =  Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value ;
         end
         
-        observe_EEGDAT.count_current_eeg=15;
+        observe_EEGDAT.count_current_eeg=18;
     end
 
 %%-----------------------------cancel--------------------------------------

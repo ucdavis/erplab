@@ -568,6 +568,9 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=21
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             EEG_dq_epoch.def_para.Enable= 'off';
             EEG_dq_epoch.custom_para.Enable= 'off';
@@ -577,28 +580,21 @@ varargout{1} = Eegtab_box_dq_epoch;
             EEG_dq_epoch.marked_epochs.Enable= 'off';
             EEG_dq_epoch.dq_run.Enable= 'off';
             EEG_dq_epoch.dq_cancel.Enable= 'off';
-            Eegtab_box_dq_epoch.TitleColor= [0.7500    0.7500    0.75000];
-            if observe_EEGDAT.count_current_eeg ~=21
-                return;
+            
+            if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
+                Eegtab_box_dq_epoch.TitleColor= [0.7500    0.7500    0.75000];
             else
-                if observe_EEGDAT.EEG.trials ==1
-                    observe_EEGDAT.count_current_eeg=22;
-                end
+                Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=22;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=21
-            return;
-        end
-        
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_epoch.timelimits = [observe_EEGDAT.EEG.times(1),observe_EEGDAT.EEG.times(end)];
         if EEG_dq_epoch.def_para.Value==1
             DQ_defaults = make_DQ_spec([observe_EEGDAT.EEG.times(1),observe_EEGDAT.EEG.times(end)]);
             EEG_dq_epoch.DQ_spec=DQ_defaults;
         end
-        
-        
         EEG_dq_epoch.def_para.Enable= 'on';
         EEG_dq_epoch.custom_para.Enable= 'on';
         EEG_dq_epoch.custom_para_op.Enable = 'on';

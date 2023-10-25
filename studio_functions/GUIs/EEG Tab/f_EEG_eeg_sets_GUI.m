@@ -591,7 +591,6 @@ varargout{1} = box_eegset_gui;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
-            
             whichpanel = [18:22];
         else
             whichpanel = [12:17];
@@ -782,6 +781,7 @@ varargout{1} = box_eegset_gui;
         estudioworkingmemory('EEGArray',EEGArray);
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
+        erpworkingmemory('f_EEG_proces_messg','EEGsets > Clear EEG');
         observe_EEGDAT.eeg_panel_message=2;
     end
 
@@ -793,7 +793,6 @@ varargout{1} = box_eegset_gui;
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         
         erpworkingmemory('f_EEG_proces_messg','EEGsets > Save');
         observe_EEGDAT.eeg_panel_message =1;

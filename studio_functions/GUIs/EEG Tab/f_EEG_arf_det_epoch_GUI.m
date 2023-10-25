@@ -1157,6 +1157,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=18
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Eegtab_EEG_art_det_epoch.det_algo.Enable= 'off';
             Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'off';
@@ -1175,19 +1178,15 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_preview.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'off';
-            Eegtab_box_art_det_epoch.TitleColor= [0.7500    0.7500    0.75000];
-            if observe_EEGDAT.count_current_eeg ~=12
-                return;
+            if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
+                Eegtab_box_art_det_epoch.TitleColor= [0.7500    0.7500    0.75000];
             else
-                if observe_EEGDAT.EEG.trials ==1
-                    observe_EEGDAT.count_current_eeg=13;
-                end
+                Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=19;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=12
-            return;
-        end
+        
         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.det_algo.Enable= 'on';
         Eegtab_EEG_art_det_epoch.chan_edit.Enable= 'on';
@@ -1299,7 +1298,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.movewindow_edit.String = num2str(floor((observe_EEGDAT.EEG.times(end)-observe_EEGDAT.EEG.times(1))/2));
             end
         end
-        observe_EEGDAT.count_current_eeg=13;
+        observe_EEGDAT.count_current_eeg=19;
     end
 
 

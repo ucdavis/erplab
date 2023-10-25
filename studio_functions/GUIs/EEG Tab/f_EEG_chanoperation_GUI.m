@@ -12,7 +12,6 @@ function varargout = f_EEG_chanoperation_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 % addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 
 gui_eegtab_chan_optn = struct();
@@ -700,11 +699,11 @@ varargout{1} = EEG_chan_operation_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=11
+            return;
+        end
         if isempty(observe_EEGDAT.EEG)
             Enable_label = 'off';
-        end
-        if observe_EEGDAT.count_current_eeg ~=5
-            return;
         end
         if ~isempty(observe_EEGDAT.EEG)
             EEGArray =  estudioworkingmemory('EEGArray');
@@ -752,7 +751,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.ref_asst.Enable = Enable_label;
         gui_eegtab_chan_optn.locaInfor.Enable = Enable_label;
         gui_eegtab_chan_optn.cancel.Enable = Enable_label;
-        observe_EEGDAT.count_current_eeg =6;
+        observe_EEGDAT.count_current_eeg =12;
     end
 
 

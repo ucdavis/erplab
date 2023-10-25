@@ -501,29 +501,24 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=15
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
             EEG_rmresp_mistak_conus.stimulusall.Enable= 'off';
             EEG_rmresp_mistak_conus.Stimulus_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.response_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.rmresp_mistake_run.Enable= 'off';
             EEG_rmresp_mistak_conus.rmresp_mistake_cancel.Enable= 'off';
-            %             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
-            %                 Eegtab_box_rmresp_mistak_conus.Title = 'No events were found for  the current EEG';
-            %                 Eegtab_box_rmresp_mistak_conus.ForegroundColor= [1 0 0];
-            %             end
-            Eegtab_box_rmresp_mistak_conus.TitleColor= [0.7500    0.7500    0.75000];
-            if observe_EEGDAT.count_current_eeg ~=18
-                return;
+            if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ~=1
+                Eegtab_box_rmresp_mistak_conus.TitleColor= [0.7500    0.7500    0.75000];
             else
-                if observe_EEGDAT.EEG.trials ~=1
-                    observe_EEGDAT.count_current_eeg=19;
-                end
+                Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=16;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=18
-            return;
-        end
+        
         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_rmresp_mistak_conus.Stimulus_edit.Enable= 'on';
         EEG_rmresp_mistak_conus.response_edit.Enable= 'on';
@@ -564,7 +559,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
         EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
         EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
-        observe_EEGDAT.count_current_eeg=19;
+        observe_EEGDAT.count_current_eeg=16;
     end
 
 

@@ -905,6 +905,9 @@ varargout{1} = Eegtab_box_art_det_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=12
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
             Eegtab_EEG_art_det_conus.chan_edit.Enable= 'off';
             Eegtab_EEG_art_det_conus.chan_browse.Enable= 'off';
@@ -914,19 +917,15 @@ varargout{1} = Eegtab_box_art_det_conus;
             Eegtab_EEG_art_det_conus.detectar_advanced.Enable= 'off';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'off';
             Eegtab_EEG_art_det_conus.detectar_run.Enable= 'off';
-            Eegtab_box_art_det_conus.TitleColor= [0.75 0.75 0.75];
-            if observe_EEGDAT.count_current_eeg ~=15
-                return;
+            if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ~=1
+                Eegtab_box_art_det_conus.TitleColor= [0.75 0.75 0.75];
             else
-                if observe_EEGDAT.EEG.trials ~=1
-                    observe_EEGDAT.count_current_eeg=16;
-                end
+                Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=13;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=15
-            return;
-        end
+        
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_conus.chan_edit.Enable= 'on';
         Eegtab_EEG_art_det_conus.chan_browse.Enable= 'on';
@@ -964,7 +963,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if isempty(str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String))
             Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
         end
-        observe_EEGDAT.count_current_eeg=16;
+        observe_EEGDAT.count_current_eeg=13;
     end
 
 

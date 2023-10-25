@@ -13,7 +13,6 @@ function varargout = f_EEG_events_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 % addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
 
@@ -1174,6 +1173,9 @@ varargout{1} = EStudio_eeg_events_box;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+         if observe_EEGDAT.count_current_eeg ~=8
+            return;
+        end
         if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event)
             EnableFlag = 'off';
             EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
@@ -1189,14 +1191,14 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
-            if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
-                EStudio_eeg_events_box.Title = 'No events were found for  the current EEG';
-                EStudio_eeg_events_box.ForegroundColor= [1 0 0];
-            end
-        end
-        if observe_EEGDAT.count_current_eeg ~=6
+%             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
+%                 EStudio_eeg_events_box.Title = 'No events were found for  the current EEG';
+%                 EStudio_eeg_events_box.ForegroundColor= [1 0 0];
+%             end
+            observe_EEGDAT.count_current_eeg=9;
             return;
         end
+       
         EStudio_eeg_events_box.Title = 'EEG Events';
         EStudio_eeg_events_box.ForegroundColor= [1 1 1];
         
@@ -1226,7 +1228,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
-        observe_EEGDAT.count_current_eeg=7;
+        observe_EEGDAT.count_current_eeg=9;
     end
 
 end

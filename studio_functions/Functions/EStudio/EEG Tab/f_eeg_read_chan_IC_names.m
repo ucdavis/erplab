@@ -17,8 +17,8 @@ if ~isempty(chanlocs) && channeLabel==1
     chanlocs = chanlocs(ChanArray);
     tmplocs = readlocs(chanlocs);
     chanName = { tmplocs.labels };
-    chanName = strrep(chanName,'_','\_');
-    %     chanName = strvcat(chanName);
+%     chanName = strrep(chanName,'_','\_');
+        chanName = strvcat(chanName);
 elseif (isempty(chanlocs) || channeLabel==0) && ~isempty(ChanArray)
     count = 0;
     for ii = ChanArray

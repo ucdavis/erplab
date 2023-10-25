@@ -540,6 +540,9 @@ varargout{1} = Eegtab_box_art_sumop;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=19
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Eegtab_EEG_art_sumop.clear_art_det.Enable = 'off';
             Eegtab_EEG_art_sumop.syn_arfinfo.Enable = 'off';
@@ -547,20 +550,15 @@ varargout{1} = Eegtab_box_art_sumop;
             Eegtab_EEG_art_sumop.art_onevalue.Enable = 'off';
             Eegtab_EEG_art_sumop.art_table.Enable = 'off';
             Eegtab_EEG_art_sumop.art_graphic.Enable= 'off';
-            Eegtab_box_art_sumop.TitleColor= [0.7500    0.7500    0.75000];
-            if observe_EEGDAT.count_current_eeg ~=13
-                return;
+            if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
+                Eegtab_box_art_sumop.TitleColor= [0.7500    0.7500    0.75000];
             else
-                if observe_EEGDAT.EEG.trials ==1
-                    observe_EEGDAT.count_current_eeg=14;
-                end
+                Eegtab_box_art_sumop.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=20;
             return;
         end
         
-        if observe_EEGDAT.count_current_eeg ~=13
-            return;
-        end
         Eegtab_box_art_sumop.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_sumop.clear_art_det.Enable = 'on';
         Eegtab_EEG_art_sumop.syn_arfinfo.Enable = 'on';
@@ -568,7 +566,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_onevalue.Enable = 'on';
         Eegtab_EEG_art_sumop.art_table.Enable = 'on';
         Eegtab_EEG_art_sumop.art_graphic.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=14;
+        observe_EEGDAT.count_current_eeg=20;
     end
 
 end

@@ -938,6 +938,10 @@ varargout{1} = EStudio_box_eeglab_tool;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=5
+            return;
+        end
+        
         if  isempty(observe_EEGDAT.EEG)
             EStduio_eegtab_eeglab_tool.about_eegdata.Enable =  'off';
             EStduio_eegtab_eeglab_tool.edit_eeginfor.Enable=  'off';
@@ -948,10 +952,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             EStduio_eegtab_eeglab_tool.eeg_spcetra_map.Enable=  'off';
             EStduio_eegtab_eeglab_tool.eeg_chanprop.Enable=  'off';
             EStduio_eegtab_eeglab_tool.eeg_tfr.Enable=  'off';
-            return;
-        end
-        
-        if observe_EEGDAT.count_current_eeg ~=9
+            observe_EEGDAT.count_current_eeg=6;
             return;
         end
         
@@ -986,7 +987,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.eeg_spcetra_map.Enable=  'on';
         EStduio_eegtab_eeglab_tool.eeg_chanprop.Enable=  'on';
         EStduio_eegtab_eeglab_tool.eeg_tfr.Enable=  'on';
-        observe_EEGDAT.count_current_eeg=10;
+        observe_EEGDAT.count_current_eeg=6;
     end
 
 end

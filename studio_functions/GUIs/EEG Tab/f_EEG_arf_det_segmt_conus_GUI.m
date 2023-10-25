@@ -624,6 +624,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=13
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
             EEG_art_det_segmt_conus.time_threshold_edit.Enable= 'off';
             EEG_art_det_segmt_conus.chan_browse.Enable= 'off';
@@ -632,21 +635,17 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             EEG_art_det_segmt_conus.event_exp_edit.Enable= 'off';
             EEG_art_det_segmt_conus.event_exp_select.Enable= 'off';
             EEG_art_det_segmt_conus.boundaryevent.Enable= 'off';
-            Eegtab_box_art_det_segmt_conus.TitleColor= [0.7500    0.7500    0.750];
             EEG_art_det_segmt_conus.detectsegmt_preview.Enable= 'off';
             EEG_art_det_segmt_conus.detectsegmt_run.Enable= 'off';
-            if observe_EEGDAT.count_current_eeg ~=16
-                return;
+            if ~isempty(observe_EEGDAT.EEG) &&  observe_EEGDAT.EEG.trials ~=1
+                Eegtab_box_art_det_segmt_conus.TitleColor= [0.7500    0.7500    0.750];
             else
-                if observe_EEGDAT.EEG.trials ~=1
-                    observe_EEGDAT.count_current_eeg=17;
-                end
+                Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=14;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=16
-            return;
-        end
+        
         Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_art_det_segmt_conus.time_threshold_edit.Enable= 'on';
         EEG_art_det_segmt_conus.chan_browse.Enable= 'on';
@@ -659,22 +658,11 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.Enable= 'on';
         EEG_art_det_segmt_conus.detectsegmt_run.Enable= 'on';
         
-        EEGArray= estudioworkingmemory('EEGArray');
-        %         if numel(EEGArray)~=1
-        %             erpworkingmemory('f_EEG_proces_messg','Delete Time Segments for Continuous EEG > Preview: Only work for single EEG, and we threfore gray it out');
-        %             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-        %             EEG_art_det_segmt_conus.detectsegmt_preview.String = 'Only for single EEG';
-        %             EEG_art_det_segmt_conus.detectsegmt_preview.Enable = 'off';
-        %         else
-        %             EEG_art_det_segmt_conus.detectsegmt_preview.String = 'Preview';
-        %             EEG_art_det_segmt_conus.detectsegmt_preview.Enable = 'on';
-        %         end
         EEG_art_det_segmt_conus.detectsegmt_preview.String = 'Preview';
         chanArray = str2num(EEG_art_det_segmt_conus.time_threshold_edit.String);
         if isempty(chanArray) || min(chanArray(:)) > observe_EEGDAT.EEG.nbchan || max(chanArray(:)) > observe_EEGDAT.EEG.nbchan
             EEG_art_det_segmt_conus.time_threshold_edit.String = '7000';
         end
-        
         %%set default parameters
         if isempty(str2num(EEG_art_det_segmt_conus.buffer_before_edit.String))
             EEG_art_det_segmt_conus.buffer_before_edit.String = '3500';
@@ -685,7 +673,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         if isempty(str2num(EEG_art_det_segmt_conus.event_exp_edit.String))
             EEG_art_det_segmt_conus.event_exp_edit.String = '';
         end
-        observe_EEGDAT.count_current_eeg=17;
+        observe_EEGDAT.count_current_eeg=14;
     end
 
 

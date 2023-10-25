@@ -124,17 +124,21 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_no_title = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'BackgroundColor',ColorB_def);
         EStduio_gui_EEG_plotset.chanorder_number = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default order',...
             'Callback', @chanorder_number,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',1);
+        EStduio_gui_EEG_plotset.chanorder_number.KeyPressFcn=  @eeg_plotset_presskey;
         EStduio_gui_EEG_plotset.chanorder_front = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Front-back/left-right',...
             'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',0);
+        EStduio_gui_EEG_plotset.chanorder_front.KeyPressFcn=  @eeg_plotset_presskey;
         set(EStduio_gui_EEG_plotset.chanorder_no_title,'Sizes',[120 -1]);
         %%channel order-custom
         EStduio_gui_EEG_plotset.chanorder_custom_title = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'BackgroundColor',ColorB_def);
         EStduio_gui_EEG_plotset.chanorder_custom = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_custom_title, 'Style', 'radiobutton', 'String', 'Custom',...
             'Callback', @chanorder_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',0);
+        EStduio_gui_EEG_plotset.chanorder_custom.KeyPressFcn=  @eeg_plotset_presskey;
         EStduio_gui_EEG_plotset.chanorder_custom_exp = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_custom_title, 'Style', 'pushbutton', 'String', 'Export',...
             'Callback', @chanorder_custom_exp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         EStduio_gui_EEG_plotset.chanorder_custom_imp = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_custom_title, 'Style', 'pushbutton', 'String', 'Import',...
             'Callback', @chanorder_custom_imp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+        
         EEG_plotset{10} = 1;
         EEG_plotset{11} = [];
         
@@ -546,7 +550,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-
+        
         
         if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
             MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that chanlocs for the current EEG is empty and please check it out'));
@@ -893,8 +897,40 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=3 || isempty(observe_EEGDAT.EEG)
+        if observe_EEGDAT.count_current_eeg ~=3
             return;
+        end
+        if isempty(observe_EEGDAT.EEG)
+            Enableflag = 'off';
+        else
+            Enableflag = 'on';
+        end
+        
+        EStduio_gui_EEG_plotset.disp_orgdata.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.disp_IC.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.WinLength_edit.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.v_scale_edit.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanlab_name.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanlab_numb.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.rem_DC.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.disp_event.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.disp_stack.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.disp_norm.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanorder_number.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanorder_front.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanorder_custom.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.plotset_cancel.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.plot_apply.Enable = Enableflag;
+        if strcmp(Enableflag,'on')
+            if EStduio_gui_EEG_plotset.chanorder_custom.Value ==1
+                Enableflag = 'on';
+            else
+                Enableflag = 'off';
+            end
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = Enableflag;
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
         end
         observe_EEGDAT.count_current_eeg=4;
     end

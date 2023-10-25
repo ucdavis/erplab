@@ -151,6 +151,10 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 
 %----------------------------Get the changed channels----------------------*
     function onElecRange ( src, ~)
+        if isempty(observe_EEGDAT.EEG)
+            observe_EEGDAT.count_current_eeg=2;
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
@@ -207,7 +211,11 @@ varargout{1} = EStudio_eeg_box_ic_chan;
     end
 
 %%---------------------Cancel what have changed----------------------------
-    function plot_eeg_cancel(~,~)
+    function plot_eeg_cancel(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+           Source.Enable = 'off';
+           return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
@@ -368,7 +376,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         ALLEEGIN = observe_EEGDAT.ALLEEG;
         CURRENTEEGIN= observe_EEGDAT.CURRENTSET;
-        if (~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)) || (~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs))
+        if (~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)) || (isfield(observe_EEGDAT.EEG,'chanlocs') && ~isempty(observe_EEGDAT.EEG.chanlocs))
             %The channels and bins will be modified if the ERPset is changed
             ChannelValue =  EStduio_eegtab_EEG_IC_chan.ElecRange.Value-1;
             Chanlist = observe_EEGDAT.EEG.chanlocs;

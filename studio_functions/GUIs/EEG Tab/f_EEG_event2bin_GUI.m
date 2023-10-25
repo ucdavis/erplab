@@ -545,24 +545,26 @@ varargout{1} = EStudio_box_EEG_event2bin;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=9
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG)
             EStduio_eegtab_EEG_event2bin.BDF_edit.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_apply.Enable = 'off';
+            observe_EEGDAT.count_current_eeg=10;
             return;
         end
         
-        if observe_EEGDAT.count_current_eeg ~=7
-            return;
-        end
+        
         EStduio_eegtab_EEG_event2bin.BDF_edit.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_apply.Enable = 'on';
-        observe_EEGDAT.count_current_eeg=8;
+        observe_EEGDAT.count_current_eeg=10;
     end
 
 %%-------------------------------------------------------------------------

@@ -461,6 +461,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=16
+            return;
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
             EEG_dq_fre_conus.chans_edit.Enable= 'off';
             EEG_dq_fre_conus.chans_browse.Enable= 'off';
@@ -470,19 +473,15 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             EEG_dq_fre_conus.resetable.Enable= 'off';
             EEG_dq_fre_conus.dq_fre_run.Enable= 'off';
             EEG_dq_fre_conus.dq_fre_cancel.Enable= 'off';
-            Eegtab_box_dq_fre_conus.TitleColor= [0.7500    0.7500    0.750];
-            if observe_EEGDAT.count_current_eeg ~=19
-                return;
+            if ~isempty(observe_EEGDAT.EEG) &&  observe_EEGDAT.EEG.trials ~=1
+                Eegtab_box_dq_fre_conus.TitleColor= [0.7500    0.7500    0.750];
             else
-                if observe_EEGDAT.EEG.trials ~=1
-                    observe_EEGDAT.count_current_eeg=20;
-                end
+                Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
+            observe_EEGDAT.count_current_eeg=17;
             return;
         end
-        if observe_EEGDAT.count_current_eeg ~=19
-            return;
-        end
+        
         chanOld = str2num(EEG_dq_fre_conus.chans_edit.String);
         if isempty(chanOld)
             EEG_dq_fre_conus.chans_edit.String= vect2colon(1:observe_EEGDAT.EEG.nbchan);
@@ -496,7 +495,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.resetable.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_run.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_cancel.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=20;
+        observe_EEGDAT.count_current_eeg=17;
     end
 
 

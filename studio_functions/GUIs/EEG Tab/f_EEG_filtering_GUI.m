@@ -177,7 +177,7 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.IIR_title = uiextras.HBox('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_eegtab_filtering.IIR_title,'String','Setting for IIR Butterworth:',...
             'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-
+        
         gui_eegtab_filtering.filt_grid = uiextras.Grid('Parent',gui_eegtab_filtering.filtering,'BackgroundColor',ColorB_def);
         % first column
         uiextras.Empty('Parent',gui_eegtab_filtering.filt_grid); % 1A
@@ -1268,104 +1268,6 @@ varargout{1} = EEG_filtering_box;
     end
 
 
-
-%%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
-    function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=4
-            return;
-        end
-        
-        if  isempty(observe_EEGDAT.EEG)
-            gui_eegtab_filtering.apply.Enable = 'off';
-            gui_eegtab_filtering.advanced.Enable = 'off';
-            gui_eegtab_filtering.roll_off.Enable = 'off';
-            gui_eegtab_filtering.hp_halfamp.Enable = 'off';
-            gui_eegtab_filtering.lp_halfamp.Enable = 'off';
-            gui_eegtab_filtering.hp_tog.Enable = 'off';
-            gui_eegtab_filtering.lp_tog.Enable = 'off';
-            gui_eegtab_filtering.all_chan.Enable = 'off';
-            gui_eegtab_filtering.Selected_chan.Enable = 'off';
-            gui_eegtab_filtering.cancel.Enable = 'off';
-            return;
-        else
-            gui_eegtab_filtering.all_chan.Enable = 'on';
-            gui_eegtab_filtering.Selected_chan.Enable = 'on';
-            locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%for high pass filter
-            hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);%% for low pass filter
-            if isempty(locutoff)
-                locutoff =0;
-                gui_eegtab_filtering.hp_halfamp.String = '0';
-            end
-            if isempty(hicutoff)
-                hicutoff = 0;
-                gui_eegtab_filtering.lp_halfamp.String = '0';
-            end
-            fs = observe_EEGDAT.EEG.srate;
-            if fs <=0
-                fs = 256;
-            end
-            typef = 0;
-            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
-            [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
-            if locutoff > 0 && hicutoff ==0
-                highpass_toggle_value = 1;
-                hp_halfamp_enable = 'on';
-                lowpass_toggle_value = 0;
-                lp_halfamp_Enable = 'off';
-                hp_halfpow_string =num2str(roundn(frec3dB(1),-2));
-                lp_halfpow_string ='---';
-            end
-            %%Low pass filtering
-            if hicutoff > 0 && locutoff ==0
-                highpass_toggle_value = 0;
-                hp_halfamp_enable = 'off';
-                lowpass_toggle_value = 1;
-                lp_halfamp_Enable = 'on';
-                lp_halfpow_string =num2str(roundn(frec3dB,-2));
-                hp_halfpow_string ='---';
-            end
-            %%Band pass filtering or notch filtering
-            if locutoff >0 && hicutoff>0
-                highpass_toggle_value = 1;
-                hp_halfamp_enable = 'on';
-                hp_halfpow_string =num2str(roundn(frec3dB(2),-2));
-                lowpass_toggle_value = 1;
-                lp_halfamp_Enable = 'on';
-                lp_halfpow_string =num2str(roundn(frec3dB(1),-2));
-            end
-            
-            if locutoff==0 && hicutoff==0
-                highpass_toggle_value = 0;
-                hp_halfamp_enable = 'off';
-                hp_halfpow_string ='0';
-                lowpass_toggle_value = 0;
-                lp_halfamp_Enable = 'off';
-                lp_halfpow_string ='0';
-            end
-            gui_eegtab_filtering.apply.Enable = 'on';
-            gui_eegtab_filtering.advanced.Enable = 'on';
-            gui_eegtab_filtering.roll_off.Enable = 'on';
-            gui_eegtab_filtering.hp_halfpow.String = hp_halfpow_string;
-            gui_eegtab_filtering.lp_halfpow.String = lp_halfpow_string;
-            gui_eegtab_filtering.hp_halfamp.Enable = hp_halfamp_enable;
-            gui_eegtab_filtering.lp_halfamp.Enable = lp_halfamp_Enable;
-            gui_eegtab_filtering.hp_tog.Value = highpass_toggle_value;
-            gui_eegtab_filtering.lp_tog.Value = lowpass_toggle_value;
-            gui_eegtab_filtering.hp_tog.Enable = 'on';
-            gui_eegtab_filtering.lp_tog.Enable = 'on';
-            gui_eegtab_filtering.cancel.Enable = 'on';
-            if ndims(observe_EEGDAT.EEG.data)==3
-                gui_eegtab_filtering.DC_remove.Enable = 'off';
-                gui_eegtab_filtering.DC_remove.Value = 0;
-            else
-                gui_eegtab_filtering.DC_remove.Enable = 'on';
-            end
-        end
-        
-        observe_EEGDAT.count_current_eeg=5;
-    end
-
-
 %%--------------------------------------Cancel-----------------------------
 %%this function is to cancel the changed parameters
     function EEG_filter_Cancel(~,~)
@@ -1505,6 +1407,103 @@ varargout{1} = EEG_filtering_box;
         def{2} = hicutoff;
         erpworkingmemory('pop_basicfilter',def);
         
+    end
+
+%%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
+    function count_current_eeg_change(~,~)
+        if observe_EEGDAT.count_current_eeg ~=4
+            return;
+        end
+        
+        if  isempty(observe_EEGDAT.EEG)
+            gui_eegtab_filtering.apply.Enable = 'off';
+            gui_eegtab_filtering.advanced.Enable = 'off';
+            gui_eegtab_filtering.roll_off.Enable = 'off';
+            gui_eegtab_filtering.hp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+            gui_eegtab_filtering.hp_tog.Enable = 'off';
+            gui_eegtab_filtering.lp_tog.Enable = 'off';
+            gui_eegtab_filtering.all_chan.Enable = 'off';
+            gui_eegtab_filtering.Selected_chan.Enable = 'off';
+            gui_eegtab_filtering.cancel.Enable = 'off';
+            observe_EEGDAT.count_current_eeg=5;
+            return;
+        else
+            gui_eegtab_filtering.all_chan.Enable = 'on';
+            gui_eegtab_filtering.Selected_chan.Enable = 'on';
+            locutoff = str2num(gui_eegtab_filtering.hp_halfamp.String);%%for high pass filter
+            hicutoff = str2num(gui_eegtab_filtering.lp_halfamp.String);%% for low pass filter
+            if isempty(locutoff)
+                locutoff =0;
+                gui_eegtab_filtering.hp_halfamp.String = '0';
+            end
+            if isempty(hicutoff)
+                hicutoff = 0;
+                gui_eegtab_filtering.lp_halfamp.String = '0';
+            end
+            fs = observe_EEGDAT.EEG.srate;
+            if fs <=0
+                fs = 256;
+            end
+            typef = 0;
+            filterorder = 2*gui_eegtab_filtering.roll_off.Value;
+            [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
+            if locutoff > 0 && hicutoff ==0
+                highpass_toggle_value = 1;
+                hp_halfamp_enable = 'on';
+                lowpass_toggle_value = 0;
+                lp_halfamp_Enable = 'off';
+                hp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+                lp_halfpow_string ='---';
+            end
+            %%Low pass filtering
+            if hicutoff > 0 && locutoff ==0
+                highpass_toggle_value = 0;
+                hp_halfamp_enable = 'off';
+                lowpass_toggle_value = 1;
+                lp_halfamp_Enable = 'on';
+                lp_halfpow_string =num2str(roundn(frec3dB,-2));
+                hp_halfpow_string ='---';
+            end
+            %%Band pass filtering or notch filtering
+            if locutoff >0 && hicutoff>0
+                highpass_toggle_value = 1;
+                hp_halfamp_enable = 'on';
+                hp_halfpow_string =num2str(roundn(frec3dB(2),-2));
+                lowpass_toggle_value = 1;
+                lp_halfamp_Enable = 'on';
+                lp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+            end
+            
+            if locutoff==0 && hicutoff==0
+                highpass_toggle_value = 0;
+                hp_halfamp_enable = 'off';
+                hp_halfpow_string ='0';
+                lowpass_toggle_value = 0;
+                lp_halfamp_Enable = 'off';
+                lp_halfpow_string ='0';
+            end
+            gui_eegtab_filtering.apply.Enable = 'on';
+            gui_eegtab_filtering.advanced.Enable = 'on';
+            gui_eegtab_filtering.roll_off.Enable = 'on';
+            gui_eegtab_filtering.hp_halfpow.String = hp_halfpow_string;
+            gui_eegtab_filtering.lp_halfpow.String = lp_halfpow_string;
+            gui_eegtab_filtering.hp_halfamp.Enable = hp_halfamp_enable;
+            gui_eegtab_filtering.lp_halfamp.Enable = lp_halfamp_Enable;
+            gui_eegtab_filtering.hp_tog.Value = highpass_toggle_value;
+            gui_eegtab_filtering.lp_tog.Value = lowpass_toggle_value;
+            gui_eegtab_filtering.hp_tog.Enable = 'on';
+            gui_eegtab_filtering.lp_tog.Enable = 'on';
+            gui_eegtab_filtering.cancel.Enable = 'on';
+            if ndims(observe_EEGDAT.EEG.data)==3
+                gui_eegtab_filtering.DC_remove.Enable = 'off';
+                gui_eegtab_filtering.DC_remove.Value = 0;
+            else
+                gui_eegtab_filtering.DC_remove.Enable = 'on';
+            end
+        end
+        
+        observe_EEGDAT.count_current_eeg=5;
     end
 
 

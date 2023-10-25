@@ -198,6 +198,7 @@ varargout{1} = box_eeg_history;
             gui_eeg_history.eeg_h_all.Enable = 'off';
             gui_eeg_history.eeg_h_EEG.Enable = 'off';
             gui_eeg_history.uitable.Enable = 'off';
+            return;
         end
         
         gui_eeg_history.save_script.Enable = 'on';

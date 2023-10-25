@@ -1426,7 +1426,6 @@ if ndims(EEG.data)==2
                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
         end
         
-        
         set(myeegviewer,'TickDir', 'in','LineWidth',1);
         %%xtick
         AmpScale = OldAmpScale;
