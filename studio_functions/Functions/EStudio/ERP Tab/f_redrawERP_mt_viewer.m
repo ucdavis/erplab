@@ -92,8 +92,6 @@ if numel(latency) ==1
         errorfound(sprintf(msgboxText), title);
         return
     end
-    
-    
 else
     
     if latency(1) < Times_erp_curr(1)
@@ -112,6 +110,40 @@ end
 
 %%Parameter from bin and channel panel
 Elecs_shown = S_ws_getbinchan.elecs_shown{Select_index};
+if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+    EEG_plotset = estudioworkingmemory('ERP_chanorders');
+    ChanArray = reshape(Elecs_shown,1,[]);
+    try
+        chanOrder = EEG_plotset{1};
+        if chanOrder==2
+            if isfield(observe_ERPDAT.ERP,'chanlocs') && ~isempty(observe_ERPDAT.ERP.chanlocs)
+                chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(ChanArray));
+                if ~isempty(chanindexnew)
+                    ChanArray = ChanArray(chanindexnew);
+                end
+            end
+        elseif chanOrder==3
+            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+            chanorders =   EEG_plotset{2};
+            chanorderindex = chanorders{1,1};
+            chanorderindex1 = unique(chanorderindex);
+            chanorderlabels = chanorders{1,2};
+            [C,IA]= ismember_bc2(chanorderlabels,labels);
+            Chanlanelsinst = labels(ChanArray);
+            if ~any(IA==0) && numel(chanorderindex1) == length(labels)
+                [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
+                [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
+                ChanArray = IA2(chanorderindex(IA1));
+            end
+        end
+        Elecs_shown = ChanArray;
+    catch
+    end
+    
+end
+
+
+
 Bins = S_ws_getbinchan.bins{Select_index};
 Bin_chans = S_ws_getbinchan.bins_chans(Select_index);
 Elec_list = S_ws_getbinchan.elec_list{Select_index};
@@ -129,7 +161,6 @@ Timet_high =S_ws_geterpplot.timet_high(Select_index);
 Timet_step=S_ws_geterpplot.timet_step(Select_index);
 Fill = S_ws_geterpplot.fill(Select_index);
 Plority_plot = S_ws_geterpplot.Positive_up(Select_index);
-
 
 if Bin_chans == 0
     elec_n = S_ws_getbinchan.elec_n(Select_index);

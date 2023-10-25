@@ -38,9 +38,41 @@ S_ws_geterpplot = estudioworkingmemory('geterpplot');
 %%Parameter from bin and channel panel
 % Elecs_shown = estudioworkingmemory('ChanShow');
 Elecs_shown = S_ws_getbinchan.elecs_shown{S_ws_getbinchan.Select_index};
-% if isempty(Elecs_shown) || max(Elecs_shown)> numel(Elecs_shown_all)
-%     Elecs_shown = Elecs_shown_all;
-% end
+
+if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+    EEG_plotset = estudioworkingmemory('ERP_chanorders');
+    ChanArray = reshape(Elecs_shown,1,[]);
+    try
+        chanOrder = EEG_plotset{1};
+        if chanOrder==2
+            if isfield(observe_ERPDAT.ERP,'chanlocs') && ~isempty(observe_ERPDAT.ERP.chanlocs)
+                chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(ChanArray));
+                if ~isempty(chanindexnew)
+                    ChanArray = ChanArray(chanindexnew);
+                end
+            end
+        elseif chanOrder==3
+            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+            chanorders =   EEG_plotset{2};
+            chanorderindex = chanorders{1,1};
+            chanorderindex1 = unique(chanorderindex);
+            chanorderlabels = chanorders{1,2};
+            [C,IA]= ismember_bc2(chanorderlabels,labels);
+            Chanlanelsinst = labels(ChanArray);
+            if ~any(IA==0) && numel(chanorderindex1) == length(labels)
+                [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
+                [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
+                ChanArray = IA2(chanorderindex(IA1));
+            end
+        end
+        Elecs_shown = ChanArray;
+    catch
+    end
+    
+end
+
+
+
 Bins = S_ws_getbinchan.bins{S_ws_getbinchan.Select_index};
 try
     Bin_chans = S_ws_getbinchan.bins_chans(S_ws_getbinchan.Select_index);

@@ -281,7 +281,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             %             Source.String = '';
             return;
         end
-        
     end
 
 
@@ -319,7 +318,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             %             Source.String = '';
             return;
         end
-        
     end
 
 

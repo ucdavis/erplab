@@ -9,7 +9,6 @@
 
 function OutputViewerpareeg = f_preparms_eegwaviewer(EEG,matlabfig,History,figureName)
 
-
 OutputViewerpareeg = '';
 if nargin<1
     help f_preparms_eegwaviewer();
@@ -28,17 +27,46 @@ if nargin <2
     matlabfig=1;
 end
 if nargin <4
-   figureName = ''; 
+    figureName = '';
 end
 
 %%channel array and IC array
 %channels
 ChanArray = estudioworkingmemory('EEG_ChanArray');
 nbchan = EEG.nbchan;
-if isempty(ChanArray) || min(ChanArray(:)) >nbchan || max(ChanArray(:))> nbchan||  min(ChanArray(:))<=0
+if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     ChanArray = 1:nbchan;
     estudioworkingmemory('EEG_ChanArray',ChanArray);
 end
+
+EEG_plotset = estudioworkingmemory('EEG_plotset');
+ChanArray = reshape(ChanArray,1,[]);
+try
+    chanOrder = EEG_plotset{10};
+    if chanOrder==2
+        if isfield(EEG,'chanlocs') && ~isempty(EEG.chanlocs)
+            chanindexnew = f_estudio_chan_frontback_left_right(EEG.chanlocs(ChanArray));
+            if ~isempty(chanindexnew)
+                ChanArray = ChanArray(chanindexnew);
+            end
+        end
+    elseif chanOrder==3
+        [eloc, labels, theta, radius, indices] = readlocs(EEG.chanlocs);
+        chanorders =   EEG_plotset{11};
+        chanorderindex = chanorders{1};
+        chanorderindex1 = unique(chanorderindex);
+        chanorderlabels = chanorders{2};
+        [C,IA]= ismember_bc2(chanorderlabels,labels);
+        Chanlanelsinst = labels(ChanArray);
+        if ~any(IA==0) && numel(chanorderindex1) == length(labels)
+            [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
+            [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
+            ChanArray = IA2(chanorderindex(IA1));
+        end
+    end
+catch
+end
+
 
 %%ICs
 ICArray = estudioworkingmemory('EEG_ICArray');
@@ -52,8 +80,6 @@ else
         estudioworkingmemory('EEG_ICArray',ICArray);
     end
 end
-
-
 
 %%Plot setting
 EEG_plotset = estudioworkingmemory('EEG_plotset');
@@ -191,6 +217,10 @@ end
 if isempty(ICArray)
     ICdisp=0;
 end
+
+
+
+
 
 if matlabfig==1
     [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...

@@ -116,14 +116,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EEG_plotset{9} = EStduio_gui_EEG_plotset.disp_norm.Value;
         
         
-        
         %%channel order
         EStduio_gui_EEG_plotset.chanorder_title = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EStduio_gui_EEG_plotset.chanorder_title,'String','Channel Order (for plotting only):',...
             'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         EStduio_gui_EEG_plotset.chanorder_no_title = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_plotset.chanorder_number = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'By chan number',...
+        EStduio_gui_EEG_plotset.chanorder_number = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default order',...
             'Callback', @chanorder_number,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',1);
         EStduio_gui_EEG_plotset.chanorder_front = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Front-back/left-right',...
             'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',0);
@@ -136,8 +135,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
             'Callback', @chanorder_custom_exp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         EStduio_gui_EEG_plotset.chanorder_custom_imp = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_custom_title, 'Style', 'pushbutton', 'String', 'Import',...
             'Callback', @chanorder_custom_imp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        EEG_plotset{9} = 1;
-        EEG_plotset{10} = [];
+        EEG_plotset{10} = 1;
+        EEG_plotset{11} = [];
         
         %%----------------cancel and apply---------------------------------
         EStduio_gui_EEG_plotset.reset_apply = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -154,6 +153,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         set(EStduio_gui_EEG_plotset.DataSelBox,'Sizes',[25 25 25 25 25 20 25 25 30]);
         estudioworkingmemory('EEG_plotset',EEG_plotset);
+        
+        EStduio_gui_EEG_plotset.chanorder{1,1} = [];
+        EStduio_gui_EEG_plotset.chanorder{1,2} = '';
     end
 
 
@@ -324,7 +326,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 
-
 %%--------------------------Stack: on--------------------------------------
     function disp_stack(Source,~)
         %%first checking if the changes on the other panels have been applied
@@ -393,7 +394,28 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
         EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-        
+        try
+            chanlocs = observe_EEGDAT.EEG.chanlocs;
+            if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
+                MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right:please do "chan locations" first in EEGLAB Tool panel.'));
+                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+                observe_EEGDAT.eeg_panel_message=4;
+                EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+                EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+                EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+                EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+                EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            end
+        catch
+            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+        end
     end
 
 %%----------------------channel order-custom-------------------------------
@@ -413,22 +435,103 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom.Value=1;
         EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'on';
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'on';
+        
+        if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
     end
 
 %%---------------------export channel orders-------------------------------
     function chanorder_custom_exp(~,~)
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
+        
+        if ~isempty(messgStr) %%&& eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        estudioworkingmemory('EEGTab_plotset',1);
-        EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
-        EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
         
+        if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export: It seems that chanlocs for the current EEG is empty and please check it out'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
         
+        MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export'));
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        observe_EEGDAT.eeg_panel_message=1;
+        
+        if isempty(EStduio_gui_EEG_plotset.chanorder{1,1}) || isempty(EStduio_gui_EEG_plotset.chanorder{1,2})
+            chanOrders = [1:observe_EEGDAT.EEG.nbchan];
+            [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+        else
+            chanOrders =  EStduio_gui_EEG_plotset.chanorder{1,1} ;
+            labels=  EStduio_gui_EEG_plotset.chanorder{1,2};
+        end
+        Data = cell(length(chanOrders),2);
+        for ii =1:length(chanOrders)
+            try
+                Data{ii,1} = chanOrders(ii);
+                Data{ii,2} = labels{ii};
+            catch
+            end
+        end
+        
+        pathstr = pwd;
+        namedef ='Channel_order';
+        [erpfilename, erppathname, indxs] = uiputfile({'*.txt';'*.xlsx;*.xls'}, ...
+            ['Export EEG channel order (for plotting only)'],...
+            fullfile(pathstr,namedef));
+        if isequal(erpfilename,0)
+            disp('User selected Cancel')
+            return
+        end
+        
+        [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+        if indxs==2
+            ext = '.xls';
+        else
+            ext = '.txt';
+        end
+        erpFilename = char(strcat(erppathname,erpfilename,ext));
+        fileID = fopen(erpFilename,'w+');
+        
+        formatSpec ='';
+        for jj = 1:2
+            if jj==1
+                formatSpec = strcat(formatSpec,'%d\t',32);
+            else
+                formatSpec = strcat(formatSpec,'%s\t',32);
+            end
+        end
+        formatSpec = strcat(formatSpec,'\n');
+        
+        for row = 1:numel(chanOrders)
+            if indxs==1
+                fprintf(fileID,formatSpec,Data{row,:});
+            else
+                fprintf(fileID,formatSpec,Data{row,1},Data{row,2});
+            end
+        end
+        fclose(fileID);
+        disp(['A new EEG channel order file was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
+        
+        MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export'));
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        observe_EEGDAT.eeg_panel_message=2;
     end
 
 %%-------------------------import channel orders---------------------------
@@ -443,6 +546,90 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+
+        
+        if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that chanlocs for the current EEG is empty and please check it out'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        %%import data chan orders
+        [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+        
+        
+        [erpfilename, erppathname, indxs] = uigetfile({'*.txt'}, ...
+            ['Import EEG channel order (for plotting only)'],...
+            'MultiSelect', 'off');
+        if isequal(erpfilename,0) || indxs~=1
+            disp('User selected Cancel')
+            return
+        end
+        
+        [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+        ext = '.txt';
+        erpFilename = char(strcat(erppathname,erpfilename,ext));
+        
+        DataInput =  readcell(erpFilename);
+        if isempty(DataInput)
+            EStduio_gui_EEG_plotset.chanorder{1,1}=[];
+            EStduio_gui_EEG_plotset.chanorder{1,2} = '';
+        end
+        chanorders = [];
+        chanlabes = [];
+        for ii = 1:size(DataInput,1)
+            if isnumeric(DataInput{ii,1})
+                chanorders(ii) = DataInput{ii,1};
+            end
+            if ischar(DataInput{ii,2})
+                chanlabes{ii} = DataInput{ii,2};
+            end
+        end
+        chanorders1 = unique(chanorders);
+        if any(chanorders(:)>length(labels)) || any(chanorders(:)<=0)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that some of the defined chan orders are invalid or replicated, please check the file'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        if numel(chanorders1)~= observe_EEGDAT.EEG.nbchan
+            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)]);
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        [C,IA]= ismember_bc2(chanlabes,labels);
+        if any(IA==0)
+            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The names of channels must be the same to the current EEG']);
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        EStduio_gui_EEG_plotset.chanorder{1,1}=chanorders;
+        EStduio_gui_EEG_plotset.chanorder{1,2} = chanlabes;
         
     end
 
@@ -552,8 +739,37 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EEG_plotset{9}=0;
         end
         EStduio_gui_EEG_plotset.disp_norm.Value = NormFlag;
-        estudioworkingmemory('EEG_plotset',EEG_plotset);
         
+        try chanOrder = EEG_plotset{10}; catch  chanOrder =1; end
+        if chanOrder==2
+            EStduio_gui_EEG_plotset.chanorder_number.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            EEG_plotset{10}=2;
+            EStduio_gui_EEG_plotset.chanorder{1,1} = [];
+            EStduio_gui_EEG_plotset.chanorder{1,2} = '';
+        elseif chanOrder==3
+            EStduio_gui_EEG_plotset.chanorder_number.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'on';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'on';
+            EEG_plotset{10}=3;
+        else
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            EEG_plotset{10}=1;
+            EStduio_gui_EEG_plotset.chanorder{1,1} = [];
+            EStduio_gui_EEG_plotset.chanorder{1,2} = '';
+        end
+        
+        
+        estudioworkingmemory('EEG_plotset',EEG_plotset);
         estudioworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
@@ -625,6 +841,42 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EEG_plotset{8}= EStduio_gui_EEG_plotset.disp_stack.Value;
         %%Norm?
         EEG_plotset{9}=EStduio_gui_EEG_plotset.disp_norm.Value;
+        %%channel orders
+        [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+        if  EStduio_gui_EEG_plotset.chanorder_number.Value==1
+            EEG_plotset{10} = 1;
+            EEG_plotset{11}= {1:length(labels),labels};
+            EStduio_gui_EEG_plotset.chanorder{1,1} = 1:length(labels);
+            EStduio_gui_EEG_plotset.chanorder{1,2} = labels;
+        elseif EStduio_gui_EEG_plotset.chanorder_front.Value==1
+            EEG_plotset{10} = 2;
+            chanindexnew = f_estudio_chan_frontback_left_right(observe_EEGDAT.EEG.chanlocs);
+            if ~isempty(chanindexnew)
+                EEG_plotset{11} = {1:numel(chanindexnew),labels(chanindexnew)};
+                EStduio_gui_EEG_plotset.chanorder{1,1} = 1:numel(chanindexnew);
+                EStduio_gui_EEG_plotset.chanorder{1,2} = labels(chanindexnew);
+            else
+                EEG_plotset{11}= {1:length(labels),labels};
+                EStduio_gui_EEG_plotset.chanorder{1,1} = 1:length(labels);
+                EStduio_gui_EEG_plotset.chanorder{1,2} = labels;
+            end
+        elseif EStduio_gui_EEG_plotset.chanorder_custom.Value==1
+            EEG_plotset{10} = 3;
+            if isempty(EStduio_gui_EEG_plotset.chanorder{1,1})
+                EEG_plotset{11}= {1:length(labels),labels};
+                MessageViewer= char(strcat('Plot Setting > Apply:There were no custom-defined chan orders and we therefore used the default orders'));
+                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+                observe_EEGDAT.eeg_panel_message=4;
+                EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+                EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+                EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+                EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+                EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            else
+                EEG_plotset{11} = EStduio_gui_EEG_plotset.chanorder;
+            end
+        end
+        
         estudioworkingmemory('EEG_plotset',EEG_plotset);
         
         estudioworkingmemory('EEGTab_plotset',0);
@@ -633,24 +885,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [0 0 0];
-        
+        MessageViewer= char(strcat('Plot Setting > Apply'));
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
     end
-
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
         if observe_EEGDAT.count_current_eeg ~=3 || isempty(observe_EEGDAT.EEG)
             return;
-        end
-        EEGIN = observe_EEGDAT.EEG;
-        if isempty(EEGIN.icachansind)
-            EStduio_gui_EEG_plotset.disp_IC.Value=0;
-            EStduio_gui_EEG_plotset.disp_IC.Enable = 'off';
-            %%<Insert warning message here>
-        else
-            EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
         end
         observe_EEGDAT.count_current_eeg=4;
     end

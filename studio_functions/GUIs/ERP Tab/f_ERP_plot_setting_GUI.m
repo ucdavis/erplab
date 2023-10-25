@@ -40,8 +40,6 @@ if isempty(S_IN)
     estudioworkingmemory('geterpplot',S_erpbinchan.geterpplot);
     estudioworkingmemory('geterpbinchan',S_erpbinchan.geterpbinchan);
     S_IN = S_erpbinchan.geterpplot;
-    
-    
 end
 
 S_erpplot = S_IN;
@@ -69,7 +67,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_erpplot(FonsizeDefault);
 varargout{1} = ERP_plotset_box;
@@ -150,6 +148,27 @@ varargout{1} = ERP_plotset_box;
             {'CHANNELS with BINS overlay','BINS with CHANNELS overlay'},'callback',@pageviewchanged,'FontSize',FonsizeDefault);
         
         
+        %%channel order
+        gui_erp_plot.chanorder_title = uiextras.HBox('Parent',gui_erp_plot.plotop ,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',gui_erp_plot.chanorder_title,'String','Channel Order (for plotting only):',...
+            'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        
+        gui_erp_plot.chanorder_no_title = uiextras.HBox('Parent',gui_erp_plot.plotop ,'BackgroundColor',ColorB_def);
+        gui_erp_plot.chanorder_number = uicontrol('Parent',gui_erp_plot.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default order',...
+            'Callback', @chanorder_number,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',1);
+        gui_erp_plot.chanorder_front = uicontrol('Parent',gui_erp_plot.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Front-back/left-right',...
+            'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',0);
+        set(gui_erp_plot.chanorder_no_title,'Sizes',[120 -1]);
+        %%channel order-custom
+        gui_erp_plot.chanorder_custom_title = uiextras.HBox('Parent',gui_erp_plot.plotop ,'BackgroundColor',ColorB_def);
+        gui_erp_plot.chanorder_custom = uicontrol('Parent',gui_erp_plot.chanorder_custom_title, 'Style', 'radiobutton', 'String', 'Custom',...
+            'Callback', @chanorder_custom,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','on','Value',0);
+        gui_erp_plot.chanorder_custom_exp = uicontrol('Parent',gui_erp_plot.chanorder_custom_title, 'Style', 'pushbutton', 'String', 'Export',...
+            'Callback', @chanorder_custom_exp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+        gui_erp_plot.chanorder_custom_imp = uicontrol('Parent',gui_erp_plot.chanorder_custom_title, 'Style', 'pushbutton', 'String', 'Import',...
+            'Callback', @chanorder_custom_imp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+        
+        
         gui_erp_plot.reset_apply = uiextras.HBox('Parent',gui_erp_plot.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_plot.reset_apply); % 1A
         plotops_erp.plot_reset = uicontrol('Style', 'pushbutton','Parent',gui_erp_plot.reset_apply,...
@@ -160,8 +179,10 @@ varargout{1} = ERP_plotset_box;
         uiextras.Empty('Parent', gui_erp_plot.reset_apply); % 1A
         set(gui_erp_plot.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         
-        set(gui_erp_plot.plotop, 'Sizes', [20 25 20 25 25 25 20 30]);
-        
+        set(gui_erp_plot.plotop, 'Sizes', [20 25 20 25 25 25 20 20 25 25 30]);
+        plotops_erp.chanorderIndex = 1;
+        plotops_erp.chanorder{1,1}=[];
+        plotops_erp.chanorder{1,2} = '';
     end
 
 
@@ -334,7 +355,6 @@ varargout{1} = ERP_plotset_box;
             fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
-            
             return;
         end
         
@@ -678,11 +698,248 @@ varargout{1} = ERP_plotset_box;
                 S_binchan.bins_chans(1:end) = 1;
             end
         end
-        
         estudioworkingmemory('geterpbinchan',S_binchan);
     end
 
+%%----------------------channel order-number-------------------------------
+    function chanorder_number(~,~)
+        gui_erp_plot.chanorder_number.Value=1;
+        gui_erp_plot.chanorder_front.Value=0;
+        gui_erp_plot.chanorder_custom.Value=0;
+        gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+        gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+    end
 
+%%-----------------channel order-front-back/left-right---------------------
+    function chanorder_front(~,~)
+        gui_erp_plot.chanorder_number.Value=0;
+        gui_erp_plot.chanorder_front.Value=1;
+        gui_erp_plot.chanorder_custom.Value=0;
+        gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+        gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+        try
+            chanlocs = observe_ERPDAT.ERP.chanlocs;
+            if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
+                MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right:please do "chan locations" first in EEGLAB Tool panel.'));
+                erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+                observe_ERPDAT.Process_messg=4;
+                gui_erp_plot.chanorder_number.Value=1;
+                gui_erp_plot.chanorder_front.Value=0;
+                gui_erp_plot.chanorder_custom.Value=0;
+                gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+                gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            end
+        catch
+            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current ERP is empty and please check it out'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+        end
+    end
+
+%%----------------------channel order-custom-------------------------------
+    function chanorder_custom(~,~)
+        
+        gui_erp_plot.chanorder_number.Value=0;
+        gui_erp_plot.chanorder_front.Value=0;
+        gui_erp_plot.chanorder_custom.Value=1;
+        gui_erp_plot.chanorder_custom_exp.Enable = 'on';
+        gui_erp_plot.chanorder_custom_imp.Enable = 'on';
+        
+        if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+    end
+
+%%---------------------export channel orders-------------------------------
+    function chanorder_custom_exp(~,~)
+        if strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export: Current ERP is empty'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            return;
+        end
+        if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export: It seems that chanlocs for the current EEG is empty and please check it out'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export'));
+        erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+        observe_ERPDAT.Process_messg=1;
+        
+        if isempty(gui_erp_plot.chanorder{1,1}) || isempty(gui_erp_plot.chanorder{1,2})
+            chanOrders = [1:observe_ERPDAT.ERP.nbchan];
+            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+        else
+            chanOrders =  gui_erp_plot.chanorder{1,1} ;
+            labels=  gui_erp_plot.chanorder{1,2};
+        end
+        Data = cell(length(chanOrders),2);
+        for ii =1:length(chanOrders)
+            try
+                Data{ii,1} = chanOrders(ii);
+                Data{ii,2} = labels{ii};
+            catch
+            end
+        end
+        
+        pathstr = pwd;
+        namedef ='Channel_order';
+        [erpfilename, erppathname, indxs] = uiputfile({'*.txt';'*.xlsx;*.xls'}, ...
+            ['Export ERP channel order (for plotting only)'],...
+            fullfile(pathstr,namedef));
+        if isequal(erpfilename,0)
+            disp('User selected Cancel')
+            return
+        end
+        
+        [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+        if indxs==2
+            ext = '.xls';
+        else
+            ext = '.txt';
+        end
+        erpFilename = char(strcat(erppathname,erpfilename,ext));
+        fileID = fopen(erpFilename,'w+');
+        
+        formatSpec ='';
+        for jj = 1:2
+            if jj==1
+                formatSpec = strcat(formatSpec,'%d\t',32);
+            else
+                formatSpec = strcat(formatSpec,'%s\t',32);
+            end
+        end
+        formatSpec = strcat(formatSpec,'\n');
+        
+        for row = 1:numel(chanOrders)
+            if indxs==1
+                fprintf(fileID,formatSpec,Data{row,:});
+            else
+                fprintf(fileID,formatSpec,Data{row,1},Data{row,2});
+            end
+        end
+        fclose(fileID);
+        disp(['A new ERP channel order file was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
+        
+        MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export'));
+        erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+        observe_ERPDAT.Process_messg=2;
+    end
+
+%%-------------------------import channel orders---------------------------
+    function chanorder_custom_imp(~,~)
+        if strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: Current ERP is empty'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            return;
+        end
+        if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that chanlocs for the current ERP is empty and please check it out'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        %%import data chan orders
+        [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+        
+        
+        [erpfilename, erppathname, indxs] = uigetfile({'*.txt'}, ...
+            ['Import ERP channel order (for plotting only)'],...
+            'MultiSelect', 'off');
+        if isequal(erpfilename,0) || indxs~=1
+            disp('User selected Cancel')
+            return
+        end
+        
+        [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+        ext = '.txt';
+        erpFilename = char(strcat(erppathname,erpfilename,ext));
+        
+        DataInput =  readcell(erpFilename);
+        if isempty(DataInput)
+            gui_erp_plot.chanorder{1,1}=[];
+            gui_erp_plot.chanorder{1,2} = '';
+        end
+        chanorders = [];
+        chanlabes = [];
+        for ii = 1:size(DataInput,1)
+            if isnumeric(DataInput{ii,1})
+                chanorders(ii) = DataInput{ii,1};
+            end
+            if ischar(DataInput{ii,2})
+                chanlabes{ii} = DataInput{ii,2};
+            end
+        end
+        chanorders1 = unique(chanorders);
+        if any(chanorders(:)>length(labels)) || any(chanorders(:)<=0)
+            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that some of the defined chan orders are invalid or replicated, please check the file'));
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        if numel(chanorders1)~= observe_ERPDAT.ERP.nbchan
+            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The number of the defined chan orders must be',32,num2str(observe_ERPDAT.ERP.nchan)]);
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        [C,IA]= ismember_bc2(chanlabes,labels);
+        if any(IA==0)
+            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The names of channels must be the same to the current ERP']);
+            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=4;
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        gui_erp_plot.chanorder{1,1}=chanorders;
+        gui_erp_plot.chanorder{1,2} = chanlabes;
+    end
 
 
 %%--------------Reset the parameters for plotting panel--------------------
@@ -767,6 +1024,28 @@ varargout{1} = ERP_plotset_box;
             set(gui_erp_plot.pagesel,'Value',Bin_chan_overlay+1);
         end
         estudioworkingmemory('erp_plot_set',0);
+        %%channel order
+        if plotops_erp.chanorderIndex==1
+            gui_erp_plot.chanorder_number.Value=1;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+            
+        elseif plotops_erp.chanorderIndex==2
+            gui_erp_plot.chanorder_number.Value=0;
+            gui_erp_plot.chanorder_front.Value=1;
+            gui_erp_plot.chanorder_custom.Value=0;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+        elseif plotops_erp.chanorderIndex==3
+            gui_erp_plot.chanorder_number.Value=0;
+            gui_erp_plot.chanorder_front.Value=0;
+            gui_erp_plot.chanorder_custom.Value=1;
+            gui_erp_plot.chanorder_custom_exp.Enable = 'on';
+            gui_erp_plot.chanorder_custom_imp.Enable = 'on';
+        end
+        
         
         %%---------------Deative the setting for the number of columns when activing ERP viewer
         try
@@ -841,8 +1120,47 @@ varargout{1} = ERP_plotset_box;
             ColumnNum = 1;
         end
         estudioworkingmemory('EStudioColumnNum',ColumnNum);
-        %         observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
         observe_ERPDAT.Process_messg =2;
+        
+        %%channel orders
+        if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+            if  gui_erp_plot.chanorder_number.Value==1
+                gui_erp_plot.chanorderIndex=1;
+                gui_erp_plot.chanorder{1,1} = 1:length(labels);
+                gui_erp_plot.chanorder{1,2} = labels;
+            elseif gui_erp_plot.chanorder_front.Value==1
+                gui_erp_plot.chanorderIndex = 2;
+                chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs);
+                if ~isempty(chanindexnew)
+                    gui_erp_plot.chanorder{1,1} = 1:numel(chanindexnew);
+                    gui_erp_plot.chanorder{1,2} = labels(chanindexnew);
+                else
+                    gui_erp_plot.chanorder{1,1} = 1:length(labels);
+                    gui_erp_plot.chanorder{1,2} = labels;
+                end
+            elseif gui_erp_plot.chanorder_custom.Value==1
+                
+                if isempty(gui_erp_plot.chanorder{1,1})
+                    gui_erp_plot.chanorderIndex = 3;
+                    MessageViewer= char(strcat('Plot Setting > Apply:There were no custom-defined chan orders and we therefore used the default orders'));
+                    erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+                    observe_ERPDAT.Process_messg=4;
+                    gui_erp_plot.chanorder_number.Value=1;
+                    gui_erp_plot.chanorder_front.Value=0;
+                    gui_erp_plot.chanorder_custom.Value=0;
+                    gui_erp_plot.chanorder_custom_exp.Enable = 'off';
+                    gui_erp_plot.chanorder_custom_imp.Enable = 'off';
+                    gui_erp_plot.chanorderIndex=1;
+                    gui_erp_plot.chanorder{1,1} = 1:length(labels);
+                    gui_erp_plot.chanorder{1,2} = labels;
+                end
+            end
+        end
+        
+        estudioworkingmemory('ERP_chanorders',{gui_erp_plot.chanorderIndex,gui_erp_plot.chanorder});
+        
+        
         
         %%plot the waveforms
         try

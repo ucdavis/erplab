@@ -78,7 +78,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
                 Chanlist_name{Numofchan+1,1} = char(strcat(num2str(Numofchan),'.',32,Chanlist(Numofchan).labels));
             end
             Enable = 'on';
-%             observe_EEGDAT.EEG_chan = 1:ChaNum;
+            %             observe_EEGDAT.EEG_chan = 1:ChaNum;
             if ~isempty(ALLEEGIN(CURRENTSETIN).icachansind)
                 ICNamestrs{1} = 'All';
                 for ii = 1:numel(ALLEEGIN(CURRENTSETIN).icachansind)
@@ -339,8 +339,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         binArray =   estudioworkingmemory('EEG_ICArray');
         binString = EStduio_eegtab_EEG_IC_chan.ICRange.String;
         if isemoty(binArray)
-           EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
-           return;
+            EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
+            return;
         end
         if max(binArray)> length(binString)-1
             EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
@@ -368,7 +368,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         ALLEEGIN = observe_EEGDAT.ALLEEG;
         CURRENTEEGIN= observe_EEGDAT.CURRENTSET;
-        if ~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)
+        if (~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)) || (~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs))
             %The channels and bins will be modified if the ERPset is changed
             ChannelValue =  EStduio_eegtab_EEG_IC_chan.ElecRange.Value-1;
             Chanlist = observe_EEGDAT.EEG.chanlocs;
@@ -390,7 +390,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.plot_reset.Enable = 'on';
             EStduio_eegtab_EEG_IC_chan.plot_apply.Enable = 'on';
         else
-            Chanlist_name = 'No EEG is available';
+            Chanlist_name = 'No EEG is available or  chanlocs is empty';
             EStduio_eegtab_EEG_IC_chan.ElecRange.String = Chanlist_name;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value=1;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Enable = 'off';
