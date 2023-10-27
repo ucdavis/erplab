@@ -35,7 +35,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_erp_bin_operation(FonsizeDefault);
 varargout{1} = ERP_CSD_gui;
@@ -43,11 +43,9 @@ varargout{1} = ERP_CSD_gui;
     function drawui_erp_bin_operation(FonsizeDefault)
         FontSize_defualt = FonsizeDefault;
         
-        if strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-            Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
+        
+        Enable_label = 'off';
+        
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         %%--------------------channel and bin setting----------------------
         gui_erp_CSD.DataSelBox = uiextras.VBox('Parent', ERP_CSD_gui,'BackgroundColor',ColorB_def);

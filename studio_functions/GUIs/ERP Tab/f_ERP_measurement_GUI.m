@@ -185,7 +185,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 erp_m_t_gui(FonsizeDefault);
 
@@ -200,22 +200,9 @@ varargout{1} = erp_measurement_box;
             ColorB_def = [0.95 0.95 0.95];
         end
         ERPMTops.mt = uiextras.VBox('Parent',erp_measurement_box,'Spacing',1,'BackgroundColor',ColorB_def);
-        try
-            SelectedIndex = EStudio_erp_m_t_p.Erpsets;
-        catch
-            SelectedIndex = observe_ERPDAT.CURRENTERP;
-        end
-        if strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-            checked_curr_index = 1;
-        else
-            checked_curr_index = 0;
-        end
-        checked_ERPset_Index = f_checkerpsets(observe_ERPDAT.ALLERP,SelectedIndex);
-        if checked_curr_index || any(checked_ERPset_Index)
-            Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
+        
+        Enable_label = 'off';
+        
         
         %%-----------------------Measurement type setting-------------------
         ERPMTops.measurement_type = uiextras.Grid('Parent',ERPMTops.mt,'Spacing',1,'BackgroundColor',ColorB_def);

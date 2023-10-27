@@ -1,4 +1,4 @@
-%%this function is used to call back the parameters for plotting EEG wave
+%%this function is used to call back the parameters for plotting ERP wave
 
 % *** This function is part of EStudio Toolbox ***
 % Author: Guanghui Zhang & Steven Luck
@@ -7,15 +7,15 @@
 % Davis, CA
 % August 2023
 
-function OutputViewerpareeg = f_preparms_eegwaviewer(EEG,matlabfig,History,figureName)
+function OutputViewerparerp = f_preparms_erptab(ERP,matlabfig,History,figureName)
 
-OutputViewerpareeg = '';
+OutputViewerparerp = '';
 if nargin<1
-    help f_preparms_eegwaviewer();
+    help f_preparms_erptab();
     return
 end
-if isempty(EEG)
-    disp('f_preparms_eegwaviewer(): EEG is empty');
+if isempty(ERP)
+    disp('f_preparms_erptab(): ERP is empty');
     return;
 end
 
@@ -30,17 +30,19 @@ if nargin <4
     figureName = '';
 end
 
-%%channel array and IC array
+%%channel array and bin array
 %channels
-ChanArray = estudioworkingmemory('EEG_ChanArray');
-nbchan = EEG.nbchan;
+ChanArray=estudioworkingmemory('ERP_ChanArray');     
+nbchan = ERP.nchan;
 if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     ChanArray = 1:nbchan;
-    estudioworkingmemory('EEG_ChanArray',ChanArray);
+    estudioworkingmemory('ERP_ChanArray',ChanArray);
 end
+
 
 EEG_plotset = estudioworkingmemory('EEG_plotset');
 ChanArray = reshape(ChanArray,1,[]);
+
 try
     chanOrder = EEG_plotset{10};
     if chanOrder==2
@@ -68,8 +70,10 @@ catch
 end
 
 
-%%ICs
-ICArray = estudioworkingmemory('EEG_ICArray');
+%%bins
+BinArray=estudioworkingmemory('ERP_BinArray');
+
+
 if isempty(EEG.icachansind)
     ICArray = [];
     estudioworkingmemory('EEG_ICArray',[]);
@@ -224,18 +228,18 @@ if matlabfig==1
         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);
 else
-    OutputViewerpareeg{1} = ChanArray;
-    OutputViewerpareeg{2} = ICArray;
-    OutputViewerpareeg{3} =EEGdisp;
-    OutputViewerpareeg{4} =ICdisp;
-    OutputViewerpareeg{5} =Winlength;
-    OutputViewerpareeg{6} =AmpScale;
-    OutputViewerpareeg{7} =ChanLabel;
-    OutputViewerpareeg{8} =Submean;
-    OutputViewerpareeg{9} = EventOnset;
-    OutputViewerpareeg{10} =StackFlag;
-    OutputViewerpareeg{11} =NormFlag;
-    OutputViewerpareeg{12} =Startimes;
+    OutputViewerparerp{1} = ChanArray;
+    OutputViewerparerp{2} = ICArray;
+    OutputViewerparerp{3} =EEGdisp;
+    OutputViewerparerp{4} =ICdisp;
+    OutputViewerparerp{5} =Winlength;
+    OutputViewerparerp{6} =AmpScale;
+    OutputViewerparerp{7} =ChanLabel;
+    OutputViewerparerp{8} =Submean;
+    OutputViewerparerp{9} = EventOnset;
+    OutputViewerparerp{10} =StackFlag;
+    OutputViewerparerp{11} =NormFlag;
+    OutputViewerparerp{12} =Startimes;
 end
 
 end

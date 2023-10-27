@@ -45,7 +45,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 erp_spectral_gui(FonsizeDefault);
 
@@ -57,13 +57,7 @@ varargout{1} = ERP_filtering_box;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        
-        if strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-            Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
-        
+        Enable_label = 'off';
         
         gui_erp_spectral.spectral = uiextras.VBox('Parent',ERP_filtering_box,'Spacing',1,'BackgroundColor',ColorB_def);
         

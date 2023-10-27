@@ -620,7 +620,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             if  ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ~=1
                 Eegtab_box_shift_eventcodes_conus.TitleColor= [0.7500    0.7500    0.75000];
             else
-                Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 1 1];
+                Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
             observe_EEGDAT.count_current_eeg=15;
             return;

@@ -48,17 +48,15 @@ varargout{1} = ERP_filtering_box;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        if strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+       
             Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
         
         try
             nchan = observe_ERPDAT.ERP.nchan;
             fs = observe_ERPDAT.ERP.srate;
         catch
             nchan =1;
+            fs = 256;
         end
         defx = {0 30 2 1:nchan 1 'butter' 0 []};
         def  = erpworkingmemory('pop_filterp');
@@ -115,37 +113,36 @@ varargout{1} = ERP_filtering_box;
         hp_tog_enable = 'on';
         lp_tog_enable = 'on';
         
-        if ~strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-            
-            %%High-pass filtering
-            [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
-            if locutoff > 0 && hicutoff ==0
-                highpass_toggle_value = 1;
-                hp_halfamp_enable = 'on';
-                lowpass_toggle_value = 0;
-                lp_halfamp_Enable = 'off';
-                hp_halfpow_string =num2str(roundn(frec3dB(1),-2));
-                lp_halfpow_string ='---';
-            end
-            %%Low pass filtering
-            if hicutoff > 0 && locutoff ==0
-                highpass_toggle_value = 0;
-                hp_halfamp_enable = 'off';
-                lowpass_toggle_value = 1;
-                lp_halfamp_Enable = 'on';
-                lp_halfpow_string =num2str(roundn(frec3dB,-2));
-                hp_halfpow_string ='---';
-            end
-            %%Band pass filtering or notch filtering
-            if locutoff >0 && hicutoff>0
-                highpass_toggle_value = 1;
-                hp_halfamp_enable = 'on';
-                hp_halfpow_string =num2str(roundn(frec3dB(2),-2));
-                lowpass_toggle_value = 1;
-                lp_halfamp_Enable = 'on';
-                lp_halfpow_string =num2str(roundn(frec3dB(1),-2));
-            end
-        else
+       
+%             %%High-pass filtering
+%             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
+%             if locutoff > 0 && hicutoff ==0
+%                 highpass_toggle_value = 1;
+%                 hp_halfamp_enable = 'on';
+%                 lowpass_toggle_value = 0;
+%                 lp_halfamp_Enable = 'off';
+%                 hp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+%                 lp_halfpow_string ='---';
+%             end
+%             %%Low pass filtering
+%             if hicutoff > 0 && locutoff ==0
+%                 highpass_toggle_value = 0;
+%                 hp_halfamp_enable = 'off';
+%                 lowpass_toggle_value = 1;
+%                 lp_halfamp_Enable = 'on';
+%                 lp_halfpow_string =num2str(roundn(frec3dB,-2));
+%                 hp_halfpow_string ='---';
+%             end
+%             %%Band pass filtering or notch filtering
+%             if locutoff >0 && hicutoff>0
+%                 highpass_toggle_value = 1;
+%                 hp_halfamp_enable = 'on';
+%                 hp_halfpow_string =num2str(roundn(frec3dB(2),-2));
+%                 lowpass_toggle_value = 1;
+%                 lp_halfamp_Enable = 'on';
+%                 lp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+%             end
+
             hp_halfamp_enable = 'off';
             lp_halfamp_Enable = 'off';
             Apply_ERP_filter_enable = 'off';
@@ -155,7 +152,7 @@ varargout{1} = ERP_filtering_box;
             hp_tog_enable = 'off';
             hp_halfpow_string ='--';
             lp_halfpow_string ='---';
-        end
+       
         gui_erp_filtering.filtering = uiextras.VBox('Parent',ERP_filtering_box,'BackgroundColor',ColorB_def);
         
         %%-----------------------------Setting for bin and chan--------------------

@@ -387,9 +387,9 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.ElecRange.String=Chanlist_name;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Min = 1;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Max = length(Chanlist_name)+1;
-            if min(ChannelValue(:)) >length(Chanlist_name)-1 || max(ChannelValue(:))> length(Chanlist_name)-1 || numel(ChannelValue) == length(Chanlist_name)-1
+            if isempty(ChannelValue)|| any(ChannelValue(:)<=0) || any(ChannelValue(:) >length(Chanlist_name)-1) || numel(ChannelValue) == length(Chanlist_name)-1
                 EStduio_eegtab_EEG_IC_chan.ElecRange.Value = 1;
-                ChanArray = [1:length(Chanlist_name)];
+                ChanArray = [1:length(Chanlist_name)-1];
             else
                 EStduio_eegtab_EEG_IC_chan.ElecRange.Value =ChannelValue+1;
                 ChanArray = ChannelValue;
@@ -416,7 +416,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.ICRange.String = ICNamestrs;
             ICValue = EStduio_eegtab_EEG_IC_chan.ICRange.Value-1;
             
-            if numel(ICValue) == numel(observe_EEGDAT.EEG.icachansind) || min(ICValue(:))>numel(observe_EEGDAT.EEG.icachansind) ||  max(ICValue(:))>numel(observe_EEGDAT.EEG.icachansind)
+            if isempty(ICValue) || any(ICValue(:)<=0)|| numel(ICValue) == numel(observe_EEGDAT.EEG.icachansind) || any(ICValue(:)>numel(observe_EEGDAT.EEG.icachansind))
                 EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
                 ICValue = [ 1:numel(observe_EEGDAT.EEG.icachansind)];
             else

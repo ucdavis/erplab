@@ -39,7 +39,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_erp_bin_operation(FonsizeDefault);
 varargout{1} = ERP_chan_operation_gui;
@@ -54,11 +54,9 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(FontSize_defualt)
             FontSize_defualt = 12;
         end
-        if strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-            Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
+        
+        Enable_label = 'off';
+        
         %%--------------------channel and bin setting----------------------
         gui_erp_chan_operation.DataSelBox = uiextras.VBox('Parent', ERP_chan_operation_gui);
         for ii = 1:100

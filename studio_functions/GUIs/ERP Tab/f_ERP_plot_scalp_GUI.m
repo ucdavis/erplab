@@ -36,22 +36,17 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_erp_scalp_operation(FonsizeDefault);
 
 varargout{1} = ERP_plot_scalp_gui;
 
     function drawui_erp_scalp_operation(FonsizeDefault)
-        %         FontSize_defualt = erpworkingmemory('fontsizeGUI');
-        %         if isempty(FontSize_defualt)
-        FontSize_defualt = 12;
-        %         end
-        if strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-            Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
+        
+        FonsizeDefault = 12;
+        
+        Enable_label = 'off';
         
         plegend.binnum = 1;
         plegend.bindesc = 1;
@@ -81,21 +76,21 @@ varargout{1} = ERP_plot_scalp_gui;
         
         gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...
-            'String','Bin(s)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Bin(s)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
         set(gui_erp_scalp_map.bin_plot,'HorizontalAlignment','left');
         gui_erp_scalp_map.bin_plot_edit = uicontrol('Style','edit','Parent',gui_erp_scalp_map.bin_plot_title,...
-            'String','','callback',@scalp_bin_edit,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','','callback',@scalp_bin_edit,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_scalp_map.bin_plot_opt = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.bin_plot_title,...
-            'String','Browse','callback',@scalp_bin_op,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Browse','callback',@scalp_bin_op,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_scalp_map.bin_plot_title ,'Sizes',[60 150 60]);
         
         %%%------------Latency TO PLOT---------------------
         gui_erp_scalp_map.latency_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.latency_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.latency_plot_title,...
-            'String','Latency (ms) [min max]','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'String','Latency (ms) [min max]','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
         set(gui_erp_scalp_map.latency_plot,'HorizontalAlignment','left');
         gui_erp_scalp_map.latency_plot_edit = uicontrol('Style','edit','Parent',gui_erp_scalp_map.latency_plot_title,...
-            'String','','callback',@scalp_latency_plot,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','','callback',@scalp_latency_plot,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         %%----------------------------------Map Type------------------------------
         gui_erp_scalp_map.map_type_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
@@ -187,10 +182,10 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','?','callback',@scap_help,'FontSize',16,'Enable','on'); % 2F
         
         gui_erp_scalp_map.advanced = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
-            'String','Advanced','callback',@apply_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Advanced','callback',@apply_advanced,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2F
         
         gui_erp_scalp_map.run = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
-            'String','Apply','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Apply','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2F
         set(gui_erp_scalp_map.ERPscalpops,'Sizes',[20,25,25,25 55 20 30 25 20 25 30 30]);
     end
 

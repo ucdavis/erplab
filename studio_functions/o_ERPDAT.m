@@ -10,7 +10,7 @@ classdef o_ERPDAT < handle
         Count_currentERP
         Process_messg
         Two_GUI
-        
+        erp_two_panels
     end
     
     
@@ -25,6 +25,7 @@ classdef o_ERPDAT < handle
         Count_currentERP_change
         Messg_change
         Two_GUI_change
+        erp_two_panels_change
     end
     
     
@@ -121,5 +122,17 @@ classdef o_ERPDAT < handle
             end
             warning('on');
         end
+        
+        %%two panels
+        function set.erp_two_panels(obj_erp,values_erp)
+            try
+                warning('off');
+                obj_erp.erp_two_panels = values_erp;
+                notify(obj_erp,'erp_two_panels_change');
+            catch
+                warning('on');
+            end
+        end
+        
     end
 end

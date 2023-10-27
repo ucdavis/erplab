@@ -76,7 +76,7 @@ varargout{1} = box_eeg_history;
             eeg_history = [];
         end
         if isempty(eeg_history)
-            eeg_history = char('No history exist in the current eegset');
+            eeg_history = char('No history was found for the current eegset');
         end
         [~, total_len] = size(eeg_history);
         if total_len <500
@@ -98,9 +98,7 @@ varargout{1} = box_eeg_history;
         uiextras.Empty('Parent', gui_eeg_history.save_history_title,'BackgroundColor',ColorB_def);
         set(gui_eeg_history.save_history_title,'Sizes',[-1 120 -1]);
         set( gui_eeg_history.DataSelBox,'Sizes',[35 -1 30]);
-        
     end
-
 
 
 %%**************************************************************************%%
@@ -133,7 +131,6 @@ varargout{1} = box_eeg_history;
             eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
         end
         set(gui_eeg_history.uitable,'Data', eeg_history_display');
-        
     end
 
 %%------------------------ALLCOM-------------------------------------------
@@ -198,6 +195,8 @@ varargout{1} = box_eeg_history;
             gui_eeg_history.eeg_h_all.Enable = 'off';
             gui_eeg_history.eeg_h_EEG.Enable = 'off';
             gui_eeg_history.uitable.Enable = 'off';
+            eeg_history = char('No history was found for the current eegset');
+            set(gui_eeg_history.uitable,'Data', strsplit(eeg_history(1,:), '\n')');
             return;
         end
         

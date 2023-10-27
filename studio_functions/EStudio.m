@@ -38,24 +38,29 @@ function [] = EStudio()
 
 %%close EEGLAB
 try
-    ALLCOM = [];
-    LASTCOM = [];
-    %     eeglab;
     W_MAIN = findobj('tag', 'EEGLAB');
     close(W_MAIN);
+    clearvars ALLCOM;
+    
+    LASTCOM = [];
+    %     eeglab;
+    global ALLCOM;
+    ALLCOM =[];
     eegh('EStudio;');
-        evalin('base', 'eeg_global;');
-        eeg_global;
+    evalin('base', 'eeg_global;');
+    eeg_global;
 catch
 end
 
 
 EStudioversion = 10.02;
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
-
-clearvars observe_EEGDAT;
-clearvars observe_ERPDAT;
-clearvars viewer_ERPDAT;
+try
+    clearvars observe_EEGDAT;
+    clearvars observe_ERPDAT;
+    clearvars viewer_ERPDAT;
+catch
+end
 
 % global CURRENTERP;
 global observe_EEGDAT;
@@ -183,9 +188,9 @@ CURRENTERP       = 1;
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
 assignin('base','CURRENTERP', CURRENTERP);
-filepath =  which('dummy.erp');
-[pathstr, fname, ext] = fileparts(filepath);
-[ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
+% filepath =  which('dummy.erp');
+% [pathstr, fname, ext] = fileparts(filepath);
+% [ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
 assignin('base','ALLERP',ALLERP);
 
 
@@ -195,10 +200,7 @@ observe_ERPDAT.ERP = ERP;
 observe_ERPDAT.Count_ERP = 0;
 observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg = 0;%0 is the default means there is no message for processing procedure;
-
-%1 means the processign procedure is running
-%2 means the processign procedure is done
-%3 means there are some errors for processing procedure
+observe_ERPDAT.erp_two_panels = 0;
 observe_ERPDAT.Two_GUI = 0;
 
 addlistener(observe_ERPDAT,'cerpchange',@indexERP);
@@ -207,6 +209,8 @@ addlistener(observe_ERPDAT,'erpschange',@allErpChanged);
 addlistener(observe_ERPDAT,'Count_ERP_change',@CountErpChanged);
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'Messg_change',@Process_messg_change_main);
+addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+
 
 
 erpworkingmemory('f_EEG_proces_messg_pre',{'',0});

@@ -22,20 +22,12 @@ addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 ERPsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
 
-CurrentERPSet = evalin('base','CURRENTERP');
-
-if isempty(CurrentERPSet) || (CurrentERPSet> length(observe_ERPDAT.ALLERP))
-    CurrentERPSet =1;
-end
-
-estudioworkingmemory('selectederpstudio',CurrentERPSet);
-
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 catch
     ColorB_def = [0.95 0.95 0.95];
 end
-datasets = []; % Local data structure
+
 % global box;
 if nargin == 0
     fig = figure(); % Parent figure
@@ -47,29 +39,8 @@ else
 end
 
 
-getDatasets() % Get datasets from ALLERP
-
-datasets = sortdata(datasets);
-datasets = sortdata(datasets);
-% global selectedData;
-try
-    cerp = observe_ERPDAT.CURRENTERP;
-    i = observe_ERPDAT.ALLERP(1,cerp);
-    [r,~] = size(datasets);
-    for j = 1:r
-        if strcmp(i.erpname,cell2mat(datasets(j,1)))&&strcmp(i.filename,cell2mat(datasets(j,4)))&&strcmp(i.filepath,cell2mat(datasets(j,5)))
-            selectedData = j;
-        end
-    end
-catch
-    selectedData = 0;
-end
-
-
 sel_path = cd;
 estudioworkingmemory('ERP_save_folder',sel_path);
-
-datasets = sortdata(datasets);
 
 
 try
@@ -85,9 +56,6 @@ drawui_erpset(FonsizeDefault);
 varargout{1} = box_erpset_gui;
 
 
-% Grab local structure from global ERP (update local structure instead of
-% replacing it)
-
 % Draw the ui
     function drawui_erpset(FonsizeDefault)
         try
@@ -95,31 +63,14 @@ varargout{1} = box_erpset_gui;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        [r, ~] = size(datasets); % Get size of array of datasets. r is # of datasets
-        % Sort the datasets!!!
-        datasets = sortdata(datasets);
+        
         vBox = uiextras.VBox('Parent', box_erpset_gui, 'Spacing', 5,'BackgroundColor',ColorB_def); % VBox for everything
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        %         panelshbox = uix.ScrollingPanel('Parent', vBox);
         panelsv2box = uiextras.VBox('Parent',panelshbox,'Spacing',5,'BackgroundColor',ColorB_def);
         
-        
         %%-----------------------ERPset display---------------------------------------
-        dsnames = {};
-        if size(datasets,1)==1
-            if strcmp(datasets{1},'No ERPset loaded')
-                dsnames = {''};
-                Edit_label = 'off';
-            else
-                dsnames{1} =    strcat(num2str(cell2mat(datasets(1,2))),'.',32,datasets{1,1});
-                Edit_label = 'on';
-            end
-        else
-            for Numofsub = 1:size(datasets,1)
-                dsnames{Numofsub} =    char(strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1}));
-            end
-            Edit_label = 'on';
-        end
+        ERPlistName =  getERPsets();
+        Edit_label = 'off';
         SelectedERP= estudioworkingmemory('selectederpstudio');
         if isempty(SelectedERP)
             SelectedERP = observe_ERPDAT.CURRENTERP;
@@ -133,14 +84,10 @@ varargout{1} = box_erpset_gui;
             estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
             estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
         end
-        ds_length = length(datasets);
-        if selectedData == 0
-            ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-                ds_length,'String', dsnames,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
-        else
-            ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-                ds_length,'String', dsnames,'Value', SelectedERP,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
-        end
+        
+        ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
+            2,'String', ERPlistName,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
+        
         set(vBox, 'Sizes', 150);
         
         %%---------------------Options for ERPsets-----------------------------------------------------
@@ -159,11 +106,15 @@ varargout{1} = box_erpset_gui;
         ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export', 'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault);
-        ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', 'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault);
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save', 'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault);
-        ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', 'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault);
-        ERPsetops.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', 'Callback', @toggledots,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
+            'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', ...
+            'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
+            'Callback', @toggledots,'Enable',Edit_label,'FontSize',FonsizeDefault);
         set(buttons4,'Sizes',[70 70 115])
     end
 
@@ -209,7 +160,6 @@ varargout{1} = box_erpset_gui;
             ChanArray = [];
         end
         
-        
         try
             for Numofselecterp = 1:numel(SelectedERP)
                 New_ERP = observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp));
@@ -228,19 +178,12 @@ varargout{1} = box_erpset_gui;
                 end
                 
                 observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = New_ERP;
-                
-                datasets = {};
-                getDatasets()
-                datasets = sortdata(datasets);
-                dsnames = {};
-                for Numofsub = 1:size(datasets,1)
-                    dsnames{Numofsub} =    char(strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1}));
-                end
+                ERPlistName =  getERPsets();
                 %%Reset the display in ERPset panel
-                ERPsetops.butttons_datasets.String = dsnames;
+                ERPsetops.butttons_datasets.String = ERPlistName;
                 ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(datasets);
-                % ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
+                ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+                
             end
             try
                 Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1:length(observe_ERPDAT.ALLERP)];
@@ -258,17 +201,10 @@ varargout{1} = box_erpset_gui;
             estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
             estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
             observe_ERPDAT.Process_messg =2;
-            observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+            observe_ERPDAT.Count_currentERP = 2;
         catch
-            ERPsetops.butttons_datasets.Value = length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            SelectedERP =observe_ERPDAT.CURRENTERP;
-            estudioworkingmemory('selectederpstudio',SelectedERP);
-            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP_afd);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
             observe_ERPDAT.Process_messg =3;
-            observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+            observe_ERPDAT.Count_currentERP = 2;
             return;
         end
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
@@ -296,47 +232,19 @@ varargout{1} = box_erpset_gui;
         end
         for Numofselecterp = 1:length(SelectedERP)
             try
-                ndsns = SelectedERP(Numofselecterp);
-                [r,~] = size(datasets);
-                for Numofsub = 1:r
-                    if ismember(datasets{Numofsub,2},ndsns)
-                        
-                        erpName = char(datasets{Numofsub,1});
-                        new = f_ERP_rename_gui(erpName,SelectedERP(Numofselecterp));
-                        if isempty(new)
-                            beep;
-                            disp(['User selected cancel']);
-                            return;
-                        end
-                        datasets{Numofsub,1} = new{1,1};
-                        clear k
-                        [~,cerp] = size(observe_ERPDAT.ALLERP);
-                        for k = 1:cerp
-                            if strcmp(observe_ERPDAT.ALLERP(1,k).filepath,datasets{Numofsub,5}) && strcmp(observe_ERPDAT.ALLERP(1,k).filename,datasets{Numofsub,4})
-                                observe_ERPDAT.ALLERP(1,k).erpname = cell2mat(new);
-                            end
-                        end
-                    end
-                end
-                datasets = sortdata(datasets);
-                
-                dsnames = {};
-                for Numofsub = 1:size(datasets,1)
-                    dsnames{Numofsub} =    char(strcat(num2str(datasets{Numofsub,2}),'.',32,datasets{Numofsub,1}));
-                end
-                ERPsetops.butttons_datasets.String = dsnames;
+                erpName = char(observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname);
+                new = f_ERP_rename_gui(erpName,SelectedERP(Numofselecterp));
+                observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname = cell2mat(new);
+                ERPlistName =  getERPsets();
+                ERPsetops.butttons_datasets.String = ERPlistName;
                 ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(datasets)+1;
+                ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
                 observe_ERPDAT.Process_messg =2;
             catch
-                datasets = sortdata(datasets);
-                dsnames = {};
-                for Numofsub = 1:size(datasets,1)
-                    dsnames{Numofsub} =    char(strcat(num2str(datasets{Numofsub,2}),'.',32,char(datasets{Numofsub,1})));
-                end
-                ERPsetops.butttons_datasets.String = dsnames;
+                ERPlistName =  getERPsets();
+                ERPsetops.butttons_datasets.String = ERPlistName;
                 ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(datasets)+1;
+                ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
                 observe_ERPDAT.Process_messg =3;
             end
         end
@@ -369,30 +277,19 @@ varargout{1} = box_erpset_gui;
         new = f_ERP_suffix_gui('Suffix');
         if ~isempty(new)
             for Numofselecterp = 1:length(SelectedERP)
-                datasets{SelectedERP(Numofselecterp),1} = char(strcat(datasets{SelectedERP(Numofselecterp),1},'_',new{1}));
-                
-                [~,cerp] = size(observe_ERPDAT.ALLERP);
-                for Numoferp = 1:cerp
-                    if strcmp(observe_ERPDAT.ALLERP(1,Numoferp).filepath,char(datasets{SelectedERP(Numofselecterp),5})) && strcmp(observe_ERPDAT.ALLERP(1,Numoferp).filename,char(datasets{SelectedERP(Numofselecterp),4}))
-                        observe_ERPDAT.ALLERP(1,Numoferp).erpname = char(datasets{SelectedERP(Numofselecterp),1});
-                    end
-                end
+                observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname = char(strcat( observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname,'_',new{1}));
             end
             observe_ERPDAT.Process_messg =2;
         else
             beep;
-            disp('User cancelled');
+            disp('User selected cancel');
             observe_ERPDAT.Process_messg =4;
             return;
         end
-        datasets = sortdata(datasets);
-        dsnames = {};
-        for Numofsub = 1:size(datasets,1)
-            dsnames{Numofsub} =    char(strcat(num2str((datasets{Numofsub,2})),'.',32,char(datasets{Numofsub,1})));
-        end
-        ERPsetops.butttons_datasets.String = dsnames;
+        ERPlistName =  getERPsets();
+        ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Min = 1;
-        ERPsetops.butttons_datasets.Max = size(datasets,1)+1;
+        ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
     end
 
 
@@ -624,23 +521,11 @@ varargout{1} = box_erpset_gui;
                 observe_ERPDAT.ALLERP(ERPset_default_label)=[];
             end
             
-            datasets = {};
-            getDatasets()
-            datasets = sortdata(datasets);
+            ERPlistName =  getERPsets();
             
-            dsnames = {};
-            if size(datasets,1)==1
-                if strcmp(datasets{1},'No ERPset loaded')
-                    dsnames = {''};
-                    Edit_label = 'off';
-                else
-                    dsnames{1} =    strcat(num2str(cell2mat(datasets(1,2))),'.',32,datasets{1,1});
-                    Edit_label = 'on';
-                end
+            if isempty(observe_ERPDAT.ALLERP)
+                Edit_label = 'off';
             else
-                for Numofsub = 1:size(datasets,1)
-                    dsnames{Numofsub} =    strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1});
-                end
                 Edit_label = 'on';
             end
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
@@ -651,13 +536,9 @@ varargout{1} = box_erpset_gui;
             disp(['User selected cancel']);
             return;
         end
+        
         ERPsetops.butttons_datasets.Value = length(observe_ERPDAT.ALLERP);
-        ERPsetops.butttons_datasets.String = dsnames;
-        if strcmp(datasets{1},'No ERPset loaded')
-            Edit_label = 'off';
-        else
-            Edit_label = 'on';
-        end
+        ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
@@ -674,11 +555,8 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
         estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
         ERPsetops.butttons_datasets.Min=1;
-        if size(datasets,1)<=2
-            ERPsetops.butttons_datasets.Max=size(datasets,1)+1;
-        else
-            ERPsetops.butttons_datasets.Max=size(datasets,1);
-        end
+        
+        ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
@@ -873,7 +751,7 @@ varargout{1} = box_erpset_gui;
             end
             
             if numel(findobj('tag', 'erpsets')) > 0
-                [ERP, ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'on', 'multiload', 'off',...
+                [ERP, ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
                     'History', 'gui');
             else
                 [ERP, ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
@@ -904,37 +782,19 @@ varargout{1} = box_erpset_gui;
                 observe_ERPDAT.CURRENTERP = size(observe_ERPDAT.ALLERP,2);
             end
         end
-        datasets = {};
-        getDatasets()
-        datasets = sortdata(datasets);
         
+        ERPlistName =  getERPsets();
         
-        dsnames = {};
-        if size(datasets,1)==1
-            if strcmp(datasets{1},'No ERPset loaded')
-                dsnames = {''};
-                Edit_label = 'off';
-            else
-                dsnames{1} =    strcat(num2str(cell2mat(datasets(1,2))),'.',32,datasets{1,1});
-                Edit_label = 'on';
-            end
+        if isempty(observe_ERPDAT.ALLERP)
+            Edit_label = 'off';
         else
-            for Numofsub = 1:size(datasets,1)
-                dsnames{Numofsub} =    strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1});
-            end
             Edit_label = 'on';
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         
         ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
-        ERPsetops.butttons_datasets.String = dsnames;
-        
-        if strcmp(datasets{1},'No ERPset loaded')
-            Edit_label = 'off';
-        else
-            Edit_label = 'on';
-        end
+        ERPsetops.butttons_datasets.String = ERPlistName;
         
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
@@ -946,7 +806,6 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         
-        
         SelectedERP = observe_ERPDAT.CURRENTERP;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         
@@ -955,14 +814,10 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
         
         ERPsetops.butttons_datasets.Min=1;
-        if size(datasets,1)<=2
-            ERPsetops.butttons_datasets.Max=size(datasets,1)+1;
-        else
-            ERPsetops.butttons_datasets.Max=size(datasets,1);
-        end
         
+        ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
-        observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+        observe_ERPDAT.Count_currentERP = 2;
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -973,54 +828,28 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Clear');
         observe_ERPDAT.Process_messg =1;
         
-        %         global ERPCOM;
         SelectedERP = ERPsetops.butttons_datasets.Value;
-        ERPset_remained = setdiff(1:size(datasets,1),SelectedERP);
+        ERPset_remained = setdiff(1:size(observe_ERPDAT.ALLERP,1),SelectedERP);
         
         if isempty(ERPset_remained)
-            if numel(findobj('tag', 'erpsets')) > 0
-                [observe_ERPDAT.ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', 'dummy.erp', 'Warning', 'on','multiload', 'off',...
-                    'History', 'implicit');
-            else
-                [observe_ERPDAT.ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', 'dummy.erp', 'Warning', 'on','multiload', 'off',...
-                    'History', 'implicit'); %If eeglab is not open, don't update
-            end
-            %Reset the datasets%%%%%
-            
-            datasets = {};
-            datasets{1} =  observe_ERPDAT.ALLERP(end).erpname;
-            datasets{2} =  1;
-            datasets{3} =  0;
-            datasets{4} =  observe_ERPDAT.ALLERP(end).filename;
-            datasets{5} =  observe_ERPDAT.ALLERP(end).filepath;
-            
-            observe_ERPDAT.ALLERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.ALLERP = [];
+            observe_ERPDAT.ERP = [];
             observe_ERPDAT.CURRENTERP  = 1;
             assignin('base','ERP',observe_ERPDAT.ERP)
         else
             observe_ERPDAT.ALLERP = observe_ERPDAT.ALLERP(ERPset_remained);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP  = length(observe_ERPDAT.ALLERP);
-            datasets = {};
-            getDatasets();
         end
         
-        datasets = sortdata(datasets);
-        
-        dsnames = {};
-        for Numofsub = 1:size(datasets,1)
-            dsnames{Numofsub} =    strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1});
-        end
-        
-        if strcmp(datasets{1},'No ERPset loaded') && length(observe_ERPDAT.ALLERP)==1
-            dsnames = {''};
+        ERPlistName =  getERPsets();
+        if isempty(observe_ERPDAT.ALLERP)
             Edit_label = 'off';
         else
             Edit_label = 'on';
         end
         
-        ERPsetops.butttons_datasets.String = dsnames;
+        ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
@@ -1030,19 +859,21 @@ varargout{1} = box_erpset_gui;
         ERPsetops.saveasbutton.Enable=Edit_label;
         ERPsetops.dotstoggle.Enable=Edit_label;
         ERPsetops.butttons_datasets.Min =1;
-        ERPsetops.butttons_datasets.Max =length(dsnames)+1;
+        ERPsetops.butttons_datasets.Max =length(ERPlistName)+1;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         
         SelectedERP = observe_ERPDAT.CURRENTERP;
         estudioworkingmemory('selectederpstudio',SelectedERP);
-        S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,SelectedERP);
-        estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-        estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+        if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ALLERP)
+            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,SelectedERP);
+            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
+            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+        end
         observe_ERPDAT.Process_messg =2;
         
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
-        observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+        observe_ERPDAT.Count_currentERP = 2;
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -1095,7 +926,6 @@ varargout{1} = box_erpset_gui;
                 filename = [filename '.erp'];
                 [observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
                 [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
-                
             end
             observe_ERPDAT.Process_messg =2;
         catch
@@ -1285,51 +1115,6 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
-
-
-% called datasets = sortdata(datasets), sorts datasets in order based on
-% parents
-    function varargout = sortdata(data)
-        cinds = [];
-        ndata = {}; % Sorted data
-        it = 1; % Iterator for row
-        for i = data' % Iterate thru all datasets
-            if cell2mat(i(3)) == 0 % Find base datasets (child of 0 means it's not reliant on another dataset)
-                [~, ic] = size(cinds);
-                cinds(1, ic+1) = cell2mat(i(2)); % Append dataset number to list of current indexes
-                ndata(it,:) = i'; % Put it in
-                it = it + 1;
-            end
-        end
-        
-        cond = true;
-        while cond
-            ninds = []; % Reset new indexes
-            for i = data' % Iterate thru all data
-                for j = cinds % Iterate thru all parents
-                    if cell2mat(i(3)) == j % Check to see if every datapoint is a child of the current layer
-                        [~, nic] = size(ninds);
-                        ninds(1, nic+1) = cell2mat(i(2)); % Append dataset number to the next round of parents
-                        [ndr, ~] = size(ndata);
-                        for v = 1:ndr
-                            if cell2mat(ndata(v, 2)) == j
-                                ndata(v+2:end+1,:) = ndata(v+1:end,:);
-                                ndata(v+1,:) = i';
-                            end
-                        end
-                    end
-                end
-            end
-            [~, nic] = size(ninds);
-            if nic == 0 % If we've gone thru all of them, there should be no new indexes
-                cond = false;
-            end
-            clear cinds
-            cinds = ninds; % Start again with ninds
-        end
-        varargout{1} = ndata;
-    end
-
 % Gets [ind, erp] for input ds where ds is a dataset structure, ind is the
 % index of the corresponding ERP, and ERP is the corresponding ERP
 % structure.
@@ -1346,155 +1131,127 @@ varargout{1} = box_erpset_gui;
             end
             
         end
-        
     end
-
 
 
 %%%--------------Up this panel--------------------------------------
     function Count_currentERPChanged(~,~)
         
-        Selected_ERP= estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_ERP)
-            Selected_ERP = observe_ERPDAT.CURRENTERP;
-            if isempty(Selected_ERP)
-                msgboxText =  'No ERPset was selected!!!';
-                title = 'EStudio: ERPsets';
-                errorfound(msgboxText, title);
-                return;
-            end
-            
-        end
-        S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
-        estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-        estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+         if observe_ERPDAT.Count_currentERP~=1
+           return; 
+         end
         
-        [chk, msgboxText] = f_ERP_chckerpindex(observe_ERPDAT.ALLERP, Selected_ERP);
-        if chk==1
-            Selected_ERP = observe_ERPDAT.CURRENTERP;
+        if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
+            Selected_ERP= estudioworkingmemory('selectederpstudio');
             if isempty(Selected_ERP)
-                msgboxText =  'No ERPset was imported!!!';
-                title = 'EStudio: f_ERP_binoperation_GUI error.';
-                errorfound(msgboxText, title);
+                Selected_ERP = observe_ERPDAT.CURRENTERP;
+                if isempty(Selected_ERP)
+                    msgboxText =  'No ERPset was selected!!!';
+                    title = 'EStudio: ERPsets';
+                    errorfound(msgboxText, title);
+                    return;
+                end
+                
+            end
+            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
+            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
+            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+            
+            [chk, msgboxText] = f_ERP_chckerpindex(observe_ERPDAT.ALLERP, Selected_ERP);
+            if chk==1
+                Selected_ERP = observe_ERPDAT.CURRENTERP;
+                if isempty(Selected_ERP)
+                    msgboxText =  'No ERPset was imported!!!';
+                    title = 'EStudio: f_ERP_binoperation_GUI error.';
+                    errorfound(msgboxText, title);
+                    return;
+                end
+                S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
+                estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
+                estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+                estudioworkingmemory('selectederpstudio',Selected_ERP);
+                observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
                 return;
             end
-            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-            estudioworkingmemory('selectederpstudio',Selected_ERP);
-            observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
-            return;
-        end
-        ERPfilter_label =  erpworkingmemory('ERPfilter');
-        def_baseline =  erpworkingmemory('f_ERP_BLS_Detrend');
-        ERP_bin_opertion =  erpworkingmemory('f_ERP_bin_opt');
-        ERP_simulation = erpworkingmemory('ERP_simulation');
-        eeg2erp =  estudioworkingmemory('EEGTab_eeg2erp');
-        if isempty(ERPfilter_label)
-            ERPfilter_label =1;
-        end
-        if isempty(def_baseline)
-            def_baseline{3} =1;
-        end
-        if isempty(ERP_bin_opertion)
-            ERP_bin_opertion =1;
-        end
-        if isempty(ERP_simulation)
-            ERP_simulation =1;
-        end
-        if isempty(eeg2erp)
-            eeg2erp =1;
-        end
-        if ERPfilter_label ==1 || def_baseline{3}==1 || ERP_bin_opertion==1 || ERP_simulation==1 || eeg2erp==1
-            erpworkingmemory('ERPfilter',0);
-            def_baseline{3} = 0;
-            erpworkingmemory('f_ERP_BLS_Detrend',def_baseline);
-            erpworkingmemory('f_ERP_bin_opt',0);
-            erpworkingmemory('ERP_simulation',0);
-            estudioworkingmemory('EEGTab_eeg2erp',0);
-            datasets = {};
-            getDatasets()
-            datasets = sortdata(datasets);
-            dsnames = {};
-            if size(datasets,1)==1
-                if strcmp(datasets{1},'No ERPset loaded')
-                    dsnames = {''};
-                    Edit_label = 'off';
-                else
-                    dsnames{1} =    strcat(num2str(cell2mat(datasets(1,2))),'.',32,datasets{1,1});
-                    Edit_label = 'on';
-                end
-            else
-                for Numofsub = 1:size(datasets,1)
-                    dsnames{Numofsub} =    strcat(num2str(cell2mat(datasets(Numofsub,2))),'.',32,datasets{Numofsub,1});
-                end
-                Edit_label = 'on';
+            ERPfilter_label =  erpworkingmemory('ERPfilter');
+            def_baseline =  erpworkingmemory('f_ERP_BLS_Detrend');
+            ERP_bin_opertion =  erpworkingmemory('f_ERP_bin_opt');
+            ERP_simulation = erpworkingmemory('ERP_simulation');
+            eeg2erp =  estudioworkingmemory('EEGTab_eeg2erp');
+            if isempty(ERPfilter_label)
+                ERPfilter_label =1;
             end
-            ERPsetops.butttons_datasets.String = dsnames;
+            if isempty(def_baseline)
+                def_baseline{3} =1;
+            end
+            if isempty(ERP_bin_opertion)
+                ERP_bin_opertion =1;
+            end
+            if isempty(ERP_simulation)
+                ERP_simulation =1;
+            end
+            if isempty(eeg2erp)
+                eeg2erp =1;
+            end
+            if ERPfilter_label ==1 || def_baseline{3}==1 || ERP_bin_opertion==1 || ERP_simulation==1 || eeg2erp==1
+                erpworkingmemory('ERPfilter',0);
+                def_baseline{3} = 0;
+                erpworkingmemory('f_ERP_BLS_Detrend',def_baseline);
+                erpworkingmemory('f_ERP_bin_opt',0);
+                erpworkingmemory('ERP_simulation',0);
+                estudioworkingmemory('EEGTab_eeg2erp',0);
+                ERPlistName =  getERPsets();
+                ERPsetops.butttons_datasets.String = ERPlistName;
+                ERPsetops.butttons_datasets.Value = Selected_ERP;
+                
+                S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
+                estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
+                estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+                ERPsetops.butttons_datasets.Min=1;
+                ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
+                estudioworkingmemory('selectederpstudio',Selected_ERP);
+            end
             ERPsetops.butttons_datasets.Value = Selected_ERP;
-            if strcmp(datasets{1},'No ERPset loaded')
-                Edit_label = 'off';
-            else
-                Edit_label = 'on';
-            end
-            ERPsetops.dupeselected.Enable=Edit_label;
-            ERPsetops.renameselected.Enable=Edit_label;
-            ERPsetops.suffix.Enable= Edit_label;
-            ERPsetops.clearselected.Enable=Edit_label;
-            ERPsetops.savebutton.Enable= Edit_label;
-            ERPsetops.saveasbutton.Enable=Edit_label;
-            ERPsetops.dotstoggle.Enable=Edit_label;
-            ERPsetops.butttons_datasets.Enable = Edit_label;
-            ERPsetops.export.Enable = Edit_label;
-            estudioworkingmemory('selectederpstudio',Selected_ERP);
-            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_ERP);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+            ERPsetops.butttons_datasets.Enable = 'off';
+            Edit_label = 'on';
+        else
+            ERPlistName =  getERPsets();
+            Selected_ERP =1;
+            ERPsetops.butttons_datasets.String = ERPlistName;
+            ERPsetops.butttons_datasets.Value = Selected_ERP;
             ERPsetops.butttons_datasets.Min=1;
-            ERPsetops.butttons_datasets.Max=size(datasets,1)+1;
+            ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
+            estudioworkingmemory('selectederpstudio',Selected_ERP);
+            Edit_label = 'off';
         end
-        ERPsetops.butttons_datasets.Value = Selected_ERP;
+        ERPsetops.dupeselected.Enable=Edit_label;
+        ERPsetops.renameselected.Enable=Edit_label;
+        ERPsetops.suffix.Enable= Edit_label;
+        ERPsetops.clearselected.Enable=Edit_label;
+        ERPsetops.savebutton.Enable= Edit_label;
+        ERPsetops.saveasbutton.Enable=Edit_label;
+        ERPsetops.dotstoggle.Enable=Edit_label;
+        ERPsetops.butttons_datasets.Enable = Edit_label;
+        ERPsetops.export.Enable = Edit_label;
+        ERPsetops.importexport.Enable = 'on';
+        ERPsetops.loadbutton.Enable = 'on';
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
     end
 
-%----------------------Get the information of the updated ERPsets----------
-    function  getDatasets()
-        if isempty(datasets)
-            datasets = {};
+%%------------------get the names of erpsets-------------------------------
+    function ERPlistName =  getERPsets(ALLERP)
+        if nargin<1
+            ALLERP= observe_ERPDAT.ALLERP;
         end
-        [s,~] = size(datasets);
-        del = [];
-        for i = 1:s
-            cond = false;
-            for j = observe_ERPDAT.ALLERP
-                if strcmp(j.filename, datasets{i,4}) && strcmp(j.filepath, datasets{i,5}) && strcmp(i.erpname, datasets{j,1})
-                    cond = true;
-                end
+        ERPlistName = {};
+        if ~isempty(ALLERP)
+            for ii = 1:length(ALLERP)
+                ERPlistName{ii,1} =    char(strcat(num2str(ii),'.',32, ALLERP(ii).erpname));
             end
-            if ~cond
-                del(end+1) = i;
-            end
-        end
-        for i = del
-            datasets(del,:) = [];
-        end
-        for i = observe_ERPDAT.ALLERP
-            cond = false;
-            [s,~] = size(datasets);
-            for j = 1:s
-                if strcmp(i.filename, datasets{j,4}) && strcmp(i.filepath, datasets{j,5}) && strcmp(i.erpname, datasets{j,1});
-                    cond = true;
-                end
-            end
-            if ~cond
-                datasets{end+1,1} = i.erpname;
-                [r,~] = size(datasets);
-                datasets{end,2} = r;
-                datasets{end,3} = 0;
-                datasets{end,4} = i.filename;
-                datasets{end,5} = i.filepath;
-            end
+        else
+            ERPlistName{1} = 'No erpset is available' ;
         end
     end
+
 end

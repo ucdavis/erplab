@@ -33,7 +33,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 erp_blc_dt_gui(FonsizeDefault);
 varargout{1} = ERP_basecorr_detrend_box;
@@ -41,11 +41,8 @@ varargout{1} = ERP_basecorr_detrend_box;
     function erp_blc_dt_gui(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
-        if strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-            Enable_label = 'off';
-        else
-            Enable_label = 'on';
-        end
+        
+        Enable_label = 'off';
         gui_erp_blc_dt.blc_dt = uiextras.VBox('Parent',ERP_basecorr_detrend_box,'Spacing',1,'BackgroundColor',ColorB_def);
         
         %%Measurement type
@@ -82,13 +79,6 @@ varargout{1} = ERP_basecorr_detrend_box;
         
         gui_erp_blc_dt.custom_edit = uicontrol('Style', 'edit','Parent', gui_erp_blc_dt.blc_dt_bp_option_cust,...
             'String','','callback',@custom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault);
-        
-        if observe_ERPDAT.ERP.times(1)>=0
-            CUstom_String = '';
-        else
-            CUstom_String = num2str([observe_ERPDAT.ERP.times(1),0]);
-        end
-        gui_erp_blc_dt.custom_edit.String = CUstom_String;
         set(gui_erp_blc_dt.blc_dt_bp_option_cust, 'Sizes',[160  135]);
         
         
@@ -507,7 +497,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
             return;
         end
-         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 

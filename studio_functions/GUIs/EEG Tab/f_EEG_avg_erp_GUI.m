@@ -704,7 +704,12 @@ varargout{1} = Eegtab_box_avg_erp;
                     end
                 end
             end
+            
+            if isempty(observe_ERPDAT.ALLERP)
+                observe_ERPDAT.ALLERP = ERP;
+            else
             observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
+            end
             if Numofeeg==1
                 eegh(ERPCOM);
             end
@@ -714,23 +719,7 @@ varargout{1} = Eegtab_box_avg_erp;
         
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( [repmat('-',1,100) '\n']);
-        %         end
         
-        ERPset_default_label = [];
-        count = 0;
-        for Numoferpset = 1:size(observe_ERPDAT.ALLERP,2)
-            if strcmp(observe_ERPDAT.ALLERP(Numoferpset).erpname,'No ERPset loaded')
-                count = count +1;
-                ERPset_default_label(count) = Numoferpset;
-            end
-        end
-        
-        if ~isempty(ERPset_default_label)
-            observe_ERPDAT.ALLERP(ERPset_default_label)=[];
-        end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
