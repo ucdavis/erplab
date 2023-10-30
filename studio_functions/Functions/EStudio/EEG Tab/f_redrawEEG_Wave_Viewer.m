@@ -207,6 +207,8 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
             OutputViewereegpar{6},OutputViewereegpar{7},OutputViewereegpar{8},...
             OutputViewereegpar{9},OutputViewereegpar{10},OutputViewereegpar{11},...
             OutputViewereegpar{12},EStudio_gui_erp_totl.myeegviewer);
+    else
+        return;
     end
 end
 
@@ -687,6 +689,7 @@ elseif isempty(Pagecurrent)
         Pagecurrent = ypos;
     end
 end
+
 Pagecurrent = Pagecurrent-1;
 if  Pagecurrent>0 && Pagecurrent<=pageNum
     EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(Pagecurrent);

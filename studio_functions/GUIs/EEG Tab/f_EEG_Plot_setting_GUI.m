@@ -623,7 +623,46 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         [C,IA]= ismember_bc2(chanlabes,labels);
         if any(IA==0)
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The names of channels must be the same to the current EEG']);
+            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The channel labels must be the same to the current EEG']);
+            [xpos,ypos] =find(IA==0);
+            if ~isempty(ypos)
+                labelsmatch = '';
+                for ii = 1:numel(ypos)
+                    if ii==1
+                        labelsmatch = [labelsmatch,32,chanlabes{ypos(ii)}];
+                    else
+                        labelsmatch = [labelsmatch,',',32,chanlabes{ypos(ii)}];
+                    end
+                end
+                disp(['The defined labels that didnot match: ',32,labelsmatch]);
+            end
+            ypos = setdiff([1:length(labels)],setdiff(IA,0));
+            if ~isempty(ypos)
+                labelsmatch = '';
+                for ii = 1:numel(ypos)
+                    if ii==1
+                        labelsmatch = [labelsmatch,32,labels{ypos(ii)}];
+                    else
+                        labelsmatch = [labelsmatch,',',32,labels{ypos(ii)}];
+                    end
+                end
+                disp(['The labels  that didnot match for the current data: ',32,labelsmatch]);
+            end
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
+            EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+            EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+            EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+            EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
+        end
+        
+        if ~isempty(IA)
+            IA = unique(IA);
+        end
+        if numel(IA)~=observe_EEGDAT.EEG.nbchan
+            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: There are some replicated channel labels']);
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message=4;
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;

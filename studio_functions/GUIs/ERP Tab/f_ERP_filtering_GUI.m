@@ -1310,7 +1310,6 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.all_bin_chan.Enable = 'off';
             gui_erp_filtering.Selected_bin_chan.Enable = 'off';
         else
-            
             gui_erp_filtering.all_bin_chan.Enable = 'on';
             gui_erp_filtering.Selected_bin_chan.Enable = 'on';
             locutoff = str2num(gui_erp_filtering.hp_halfamp.String);%%for high pass filter

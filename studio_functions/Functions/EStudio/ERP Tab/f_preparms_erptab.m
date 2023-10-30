@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% August 2023
+% Oct 2023
 
 function OutputViewerparerp = f_preparms_erptab(ERP,matlabfig,History,figureName)
 
@@ -31,30 +31,32 @@ if nargin <4
 end
 
 %%channel array and bin array
-%channels
-ChanArray=estudioworkingmemory('ERP_ChanArray');     
+%
+%%channels
+ChanArray=estudioworkingmemory('ERP_ChanArray');
 nbchan = ERP.nchan;
 if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     ChanArray = 1:nbchan;
     estudioworkingmemory('ERP_ChanArray',ChanArray);
 end
 
-
-EEG_plotset = estudioworkingmemory('EEG_plotset');
+ERP_chanorders = estudioworkingmemory('ERP_chanorders');
 ChanArray = reshape(ChanArray,1,[]);
-
+chanOrder = ERP_chanorders{1};
+if isempty(chanOrder) || any(chanOrder<=0) || numel(chanOrder)~=1 || (chanOrder~=1 && chanOrder~=2 && chanOrder~=3)
+    chanOrder=1;
+end
 try
-    chanOrder = EEG_plotset{10};
     if chanOrder==2
-        if isfield(EEG,'chanlocs') && ~isempty(EEG.chanlocs)
-            chanindexnew = f_estudio_chan_frontback_left_right(EEG.chanlocs(ChanArray));
+        if isfield(ERP,'chanlocs') && ~isempty(ERP.chanlocs)
+            chanindexnew = f_estudio_chan_frontback_left_right(ERP.chanlocs(ChanArray));
             if ~isempty(chanindexnew)
                 ChanArray = ChanArray(chanindexnew);
             end
         end
     elseif chanOrder==3
-        [eloc, labels, theta, radius, indices] = readlocs(EEG.chanlocs);
-        chanorders =   EEG_plotset{11};
+        [eloc, labels, theta, radius, indices] = readlocs(ERP.chanlocs);
+        chanorders =   ERP_chanorders{2};
         chanorderindex = chanorders{1};
         chanorderindex1 = unique(chanorderindex);
         chanorderlabels = chanorders{2};
@@ -69,177 +71,122 @@ try
 catch
 end
 
-
+%
 %%bins
 BinArray=estudioworkingmemory('ERP_BinArray');
-
-
-if isempty(EEG.icachansind)
-    ICArray = [];
-    estudioworkingmemory('EEG_ICArray',[]);
-else
-    nIC = numel(EEG.icachansind);
-    if isempty(ICArray) || min(ICArray(:))>nIC || max(ICArray(:)) >  nIC ||  min(ICArray(:))<=0
-        ICArray = [];
-        estudioworkingmemory('EEG_ICArray',ICArray);
-    end
+if isempty(BinArray) || any(BinArray(:)>ERP.nbin) || any(BinArray(:)<=0)
+    BinArray  = [1:ERP.nbin];
+    estudioworkingmemory('ERP_BinArray',BinArray);
 end
 
+
+%
 %%Plot setting
-EEG_plotset = estudioworkingmemory('EEG_plotset');
-if isempty(EEG_plotset)
-    EEGdisp = 1;
-    ICdisp = 0;
-    Winlength = 5;%%in second
-    AmpScale = 50;
-    ChanLabel = 1;
-    Submean=0;
-    EventOnset = 1;
-    StackFlag = 0;
-    NormFlag = 0;
+ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
+
+%
+%%time range
+timeStartdef = ERP.times(1);
+timEnddef = ERP.times(end);
+[def xstepdef]= default_time_ticks_studio(ERP, [ERP.times(1),ERP.times(end)]);
+
+try timerange = ERPTab_plotset_pars{1}; catch timerange =[timeStartdef,timEnddef]; end
+try
+    timeStart = timerange(1);
+catch
+    timeStart = timeStartdef;
+end
+if isempty(timeStart) || numel(timeStart)~=1 || any(timeStart>timEnddef)
+    timeStart = timeStartdef;
+end
+
+try
+    timEnd = timerange(2);
+catch
+    timEnd = timEnddef;
+end
+if isempty(timEnd) || numel(timEnd)~=1 || any(timEnd<timeStart)
+    timEnd = timEnddef;
+end
+
+if timeStart> timEnd
+    timEnd = timEnddef;
+    timeStart = timeStartdef;
+end
+
+try xtickstep = ERPTab_plotset_pars{2}; catch xtickstep = xstepdef; end
+if isempty(xtickstep) || numel(xtickstep)~=1 || any(xtickstep<=0) || xtickstep > (timEnd-timeStart)
+    xtickstep = xstepdef;
+end
+
+%%y scale
+try PolarityValue=ERPTab_plotset_pars{7};catch PolarityValue=1; end
+if isempty(PolarityValue) || numel(PolarityValue)~=1 || (PolarityValue~=1&&PolarityValue~=0)
+    PolarityValue=1;
+end
+if PolarityValue==1
+    positive_up = 1;
 else
-    %%diaply original data?
-    try
-        EEGdisp = EEG_plotset{1};
-    catch
-        EEGdisp = 1;
-    end
-    if isempty(EEGdisp) || (EEGdisp~=0 && EEGdisp~=1)
-        EEGdisp = 1;
-    end
-    
-    %%display ICs?
-    try
-        ICdisp = EEG_plotset{2};
-    catch
-        ICdisp = 0;
-    end
-    if isempty(ICdisp) || (ICdisp~=0 && ICdisp~=1)
-        ICdisp = 0;
-    end
-    
-    %%Time range?
-    try
-        Winlength = EEG_plotset{3};
-    catch
-        Winlength = 5;
-    end
-    if isempty(Winlength) || numel(Winlength)~=1 || min(Winlength(:))<=0
-        Winlength=5;
-    end
-    
-    
-    %%Vertical scale?
-    try
-        AmpScale = EEG_plotset{4};
-    catch
-        AmpScale = 50;
-    end
-    if isempty(AmpScale) || numel(AmpScale)~=1 || AmpScale==0
-        AmpScale = 50;
-    end
-    
-    %%Channel labels? (1 is name, 0 is number)
-    try
-        ChanLabel = EEG_plotset{5};
-    catch
-        ChanLabel = 1;
-    end
-    if isempty(ChanLabel) || numel(ChanLabel)~=1 || (ChanLabel~=0 && ChanLabel~=1)
-        ChanLabel = 1;
-    end
-    
-    %%Remove DC? (1 is "Yes", 0 is "no")
-    try
-        Submean = EEG_plotset{6};
-    catch
-        Submean = 0;
-    end
-    if isempty(Submean) || numel(Submean)~=1 || (Submean~=0 && Submean~=1)
-        Submean = 0;
-    end
-    
-    %%Display events?
-    try
-        EventOnset = EEG_plotset{7};
-    catch
-        EventOnset = 1;
-    end
-    if isempty(EventOnset) ||  numel(EventOnset)~=1 || (EventOnset~=0 && EventOnset~=1)
-        EventOnset = 1;
-    end
-    
-    
-    %%Stack?
-    try
-        StackFlag = EEG_plotset{8};
-    catch
-        StackFlag = 0;
-    end
-    if isempty(StackFlag) || numel(StackFlag)~=1 || (StackFlag~=0&&StackFlag~=1)
-        StackFlag = 0;
-    end
-    
-    %%Norm?
-    try
-        NormFlag = EEG_plotset{9};
-    catch
-        NormFlag = 0;
-    end
-    if isempty(NormFlag) ||numel(NormFlag)~=1 || (NormFlag~=0 && NormFlag~=1)
-        NormFlag = 0;
-    end
+    positive_up = -1;
 end
 
-
-%%Start time to display
-Startimes = estudioworkingmemory('Startimes');
-[chaNum,sampleNum,trialNum]=size(EEG.data);
-Frames = sampleNum*trialNum;
-if EEG.trials>1 % time in second or in trials
-    multiplier = size(EEG.data,2);
+YScaledef =prctile(ERP.bindata(:)*positive_up,95)*2/3;
+if YScaledef>= 0&&YScaledef <=0.1
+    YScaledef = 0.1;
+elseif YScaledef< 0&& YScaledef > -0.1
+    YScaledef = 0.1;
 else
-    multiplier = EEG.srate;
+    YScaledef = round(YScaledef);
+end
+try YtickInterval = ERPTab_plotset_pars{3};catch YtickInterval= YScaledef; end
+if isempty(YtickInterval) || numel(YtickInterval)~=1 || any(YtickInterval<0.1)
+    YtickInterval= YScaledef;
 end
 
-StartimesMax = max(0,ceil((Frames-1)/multiplier)-Winlength);
-if ndims(EEG.data)==3
-    Startimes=Startimes-1;
+try YtickSpace  =ERPTab_plotset_pars{4};catch YtickSpace=1.5; end
+if isempty(YtickSpace) || numel(YtickSpace)~=1 || any(YtickSpace<=0)
+    YtickSpace=1.5;
 end
-if isempty(Startimes) || numel(Startimes)~=1 || Startimes<0 ||Startimes>StartimesMax
-    Startimes=0;
-    estudioworkingmemory('Startimes',Startimes);
+
+try Fillscreen = ERPTab_plotset_pars{5};catch Fillscreen=1; end
+if isempty(Fillscreen) || numel(Fillscreen)~=1 || (Fillscreen~=0 && Fillscreen~=1)
+    Fillscreen=1;
 end
+
+try columNum =ERPTab_plotset_pars{6}; catch columNum=1; end
+
+if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
+    columNum=1;
+end
+
+try Binchan_Overlay = ERPTab_plotset_pars{8}; catch Binchan_Overlay=0; end
+if isempty(Binchan_Overlay) || numel(Binchan_Overlay)~=1 || (Binchan_Overlay~=0 && Binchan_Overlay~=1)
+    Binchan_Overlay=0;
+end
+
 
 figSize = estudioworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end
-if ICdisp==0
-    ICArray = [];
-end
-if isempty(ICArray)
-    ICdisp=0;
-end
 
 
 if matlabfig==1
-    [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
+    [EEG, eegcom] = pop_ploterptab(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);
 else
     OutputViewerparerp{1} = ChanArray;
-    OutputViewerparerp{2} = ICArray;
-    OutputViewerparerp{3} =EEGdisp;
-    OutputViewerparerp{4} =ICdisp;
-    OutputViewerparerp{5} =Winlength;
-    OutputViewerparerp{6} =AmpScale;
-    OutputViewerparerp{7} =ChanLabel;
-    OutputViewerparerp{8} =Submean;
-    OutputViewerparerp{9} = EventOnset;
-    OutputViewerparerp{10} =StackFlag;
-    OutputViewerparerp{11} =NormFlag;
-    OutputViewerparerp{12} =Startimes;
+    OutputViewerparerp{2} = BinArray;
+    OutputViewerparerp{3} =timeStart;
+    OutputViewerparerp{4} =timEnd;
+    OutputViewerparerp{5} =xtickstep;
+    OutputViewerparerp{6} =YtickInterval;
+    OutputViewerparerp{7} =YtickSpace;
+    OutputViewerparerp{8} =Fillscreen;
+    OutputViewerparerp{9} = columNum;
+    OutputViewerparerp{10} =positive_up;
+    OutputViewerparerp{11} =Binchan_Overlay;
 end
 
 end

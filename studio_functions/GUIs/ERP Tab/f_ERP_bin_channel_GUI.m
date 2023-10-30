@@ -1,7 +1,7 @@
 %%This function is used to get the 'Bin and Channel Selection' Panel and record the change of th selected channels and selected bins
 
 % *** This function is part of ERPLAB Studio Toolbox ***
-% Author: Guanghui Zhang & Steven Luck
+% Author: Guanghui Zhang
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -77,7 +77,7 @@ varargout{1} = EStudio_box_bin_chan;
         
         uiextras.Empty('Parent', ERPTab_bin_chan.reset_apply); % 1A
         ERPTab_bin_chan.plot_apply = uicontrol('Style', 'pushbutton','Parent',ERPTab_bin_chan.reset_apply,...
-            'String','Apply','callback',@plot_erp_apply,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+            'String','Apply','callback',@binchan_apply,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         ERPTab_bin_chan.plot_apply.KeyPressFcn=  @erp_binchan_presskey;
         uiextras.Empty('Parent', ERPTab_bin_chan.reset_apply); % 1A
         set(ERPTab_bin_chan.reset_apply, 'Sizes',[10,-1,30,-1,10]);
@@ -259,7 +259,7 @@ varargout{1} = EStudio_box_bin_chan;
     end
 
 %%---------------------------Apply-----------------------------------------
-    function plot_erp_apply(~,~)
+    function binchan_apply(~,~)
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=2;
             return;
@@ -273,7 +273,7 @@ varargout{1} = EStudio_box_bin_chan;
         estudioworkingmemory('ERPTab_chanbin',0);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
-        EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
+        EStudio_box_bin_chan.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_bin_chan.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_bin_chan.plot_reset.ForegroundColor = [0 0 0];
         
@@ -312,6 +312,7 @@ varargout{1} = EStudio_box_bin_chan;
         %%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%
+        observe_ERPDAT.Count_currentERP=1;
         
         erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
@@ -388,6 +389,27 @@ varargout{1} = EStudio_box_bin_chan;
         observe_ERPDAT.Count_currentERP=3;
     end
 
+
+
+    function erp_two_panels_change(~,~)
+        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+            return;
+        end
+        
+        ChangeFlag =  estudioworkingmemory('ERPTab_chanbin');
+        if ChangeFlag~=1
+            return;
+        end
+        binchan_apply();
+        estudioworkingmemory('ERPTab_chanbin',0);
+        ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
+        ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
+        EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_bin_chan.plot_reset.BackgroundColor =  [1 1 1];
+        ERPTab_bin_chan.plot_reset.ForegroundColor = [0 0 0];
+    end
+
+
 %%--------------press return to execute "Apply"----------------------------
     function erp_binchan_presskey(hObject, eventdata)
         keypress = eventdata.Key;
@@ -396,7 +418,7 @@ varargout{1} = EStudio_box_bin_chan;
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
-            plot_erp_apply();
+            binchan_apply();
             estudioworkingmemory('ERPTab_chanbin',0);
             ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
             ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];

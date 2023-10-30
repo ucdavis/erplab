@@ -213,7 +213,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            EStduio_eegtab_EEG_edit_chan.select_edit_chan.String  = num2str(chan_label_select);
+            EStduio_eegtab_EEG_edit_chan.select_edit_chan.String  = vect2colon(chan_label_select);
         else
             beep;
             disp('User selected Cancel');
