@@ -346,8 +346,17 @@ for h=1:nset % dataset
                         end
                         okepoch = [];
                         g = 1;
-                        for t=1:length(selectedepochs)
-                              xitem = cell2mat(ALLEEG(dataset(h)).epoch(selectedepochs(t)).eventitem);
+                        for t=1:length(selectedepochs) %changed 10/27/23 GZ & DG
+                            if iscell(ALLEEG(dataset(h)).epoch(selectedepochs(t)).eventitem)
+                                xitem = cell2mat(ALLEEG(dataset(h)).epoch(selectedepochs(t)).eventitem);
+                            elseif isnumeric(ALLEEG(dataset(h)).epoch(selectedepochs(t)).eventitem)
+                                xitem = (ALLEEG(dataset(h)).epoch(selectedepochs(t)).eventitem);
+                            else
+                                msgboxText =  ['We could not use eventitem for the current dataset #'];
+                                title      = 'ERPLAB: getepochindex() Error';
+                                errorfound(msgboxText, title);
+                                return
+                            end
                               if nnz(ismember_bc2(xitem, iteme))>0
                                     okepoch(g) = selectedepochs(t);
                                     g = g + 1;
