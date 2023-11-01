@@ -41,6 +41,10 @@ if ishandle( EStudio_gui_erp_totl.ViewAxes )
 end
 
 ERPArray= estudioworkingmemory('selectederpstudio');
+if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
+    ERPArray= 1;
+    estudioworkingmemory('selectederpstudio',1);
+end
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
         ERPArray =  length(observe_ERPDAT.ALLERP) ;

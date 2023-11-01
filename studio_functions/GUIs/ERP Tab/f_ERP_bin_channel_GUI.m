@@ -313,7 +313,6 @@ varargout{1} = EStudio_box_bin_chan;
         %%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%
         observe_ERPDAT.Count_currentERP=1;
-        
         erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
     end

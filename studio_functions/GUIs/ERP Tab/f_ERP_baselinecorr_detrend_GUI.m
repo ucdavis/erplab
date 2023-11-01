@@ -2,7 +2,7 @@
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Feb. 2022
+%Feb. 2022 && Nov. 2023
 
 % ERPLAB Studio
 
@@ -770,7 +770,7 @@ varargout{1} = ERP_basecorr_detrend_box;
                 end
             end
         end
-        observe_ERPDAT.Count_currentERP=5;
+        observe_ERPDAT.Count_currentERP=6;
     end
 
 

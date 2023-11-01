@@ -2,20 +2,16 @@
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Feb. 2022
+%Feb. 2022 & Nov. 2023
 
 % ERPLAB Studio
 
 function varargout = f_ERP_spectral_GUI(varargin)
 
-% global gui_erp_spectral;
 global observe_ERPDAT;
-% addlistener(observe_ERPDAT,'ALLERP_change',@erpschange);
-% addlistener(observe_ERPDAT,'ERP_change',@drawui_CB);
-% addlistener(observe_ERPDAT,'CURRENTERP_change',@cerpchange);
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
+addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 
-% erp_m_t_p = S_OUT.geterpvalues;
 
 defaulpar =  erpworkingmemory('f_ERP_spectral');
 defaulpar{1} = 0;defaulpar{2} = [];defaulpar{3} = [];defaulpar{4} = [];defaulpar{5} = [];
@@ -69,31 +65,48 @@ varargout{1} = ERP_filtering_box;
         set(gui_erp_spectral.dispaly_title,'HorizontalAlignment','left');
         gui_erp_spectral.amplitude = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.amplitude_option,'String','Amplitude',...
             'callback',@spectral_amplitude,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.amplitude.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.phase = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.amplitude_option,...
             'String','Phase','callback',@spectral_phase,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.phase.KeyPressFcn= @erp_spectral_presskey;
         set( gui_erp_spectral.amplitude_option, 'Sizes', [80 100 100]);
         %%%power and dB
         gui_erp_spectral.pow_db = uiextras.HBox('Parent', gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_spectral.pow_db);
         gui_erp_spectral.power = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.pow_db ,...
             'String','Power','callback',@spectral_power,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.power.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.db = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.pow_db ,...
             'String','dB','callback',@spectral_db,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.db.KeyPressFcn= @erp_spectral_presskey;
         set( gui_erp_spectral.pow_db , 'Sizes', [80 100 100]);
         %%%
+        if gui_erp_spectral.phase.Value==1
+            gui_erp_spectral.Paras{1}=2;
+        elseif gui_erp_spectral.power.Value==1
+            gui_erp_spectral.Paras{1}=3;
+        elseif gui_erp_spectral.db.Value==1
+            gui_erp_spectral.Paras{1}=4;
+        else
+            gui_erp_spectral.Paras{1}=1;
+        end
         
         gui_erp_spectral.hamwin_title_option = uiextras.HBox('Parent', gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_spectral.hamwin_title = uicontrol('Style','text','Parent',  gui_erp_spectral.hamwin_title_option,'String','Hamming window:','FontSize',FonsizeDefault);
         set( gui_erp_spectral.hamwin_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         gui_erp_spectral.hamwin_on = uicontrol('Style', 'radiobutton','Parent',  gui_erp_spectral.hamwin_title_option,...
             'String','On','callback',@spectral_hamwin_on,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.hamwin_on.KeyPressFcn= @erp_spectral_presskey;
         gui_erp_spectral.hamwin_off = uicontrol('Style', 'radiobutton','Parent', gui_erp_spectral.hamwin_title_option,...
             'String','Off','callback',@spectral_hamwin_off,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.hamwin_off.KeyPressFcn= @erp_spectral_presskey;
         uiextras.Empty('Parent',  gui_erp_spectral.hamwin_title_option,'BackgroundColor',ColorB_def);
         set( gui_erp_spectral.hamwin_title_option, 'Sizes', [120 60 60 40]);
-        
+        gui_erp_spectral.Paras{2}=gui_erp_spectral.hamwin_on.Value;
         
         gui_erp_spectral.other_option = uiextras.HBox('Parent',gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
+        gui_erp_spectral.cancel = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
+            'String','Cancel','callback',@spectral_cancel,'Enable',Enable_label,'FontSize',FonsizeDefault);
         gui_erp_spectral.plot = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
             'String','Plot','callback',@spectral_plot,'Enable',Enable_label,'FontSize',FonsizeDefault);
         gui_erp_spectral.save = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
@@ -102,7 +115,7 @@ varargout{1} = ERP_filtering_box;
             'String','Advanced','callback',@spectral_advanced,'Enable',Enable_label,'FontSize',FonsizeDefault);
         
         set(gui_erp_spectral.spectral, 'Sizes', [20 20 20 30]);
-        
+        estudioworkingmemory('ERPTab_spectral',0);
     end
 %%****************************************************************************************************************************************
 %%*******************   Subfunctions   ***************************************************************************************************
@@ -110,6 +123,27 @@ varargout{1} = ERP_filtering_box;
 
 %%--------------------------------setting for amplitude------------------
     function  spectral_amplitude(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_spectral.plot.ForegroundColor = [1 1 1];
+        ERP_filtering_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.save.ForegroundColor = [1 1 1];
+        gui_erp_spectral.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.advanced.ForegroundColor = [1 1 1];
+        gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
+        
+        estudioworkingmemory('ERPTab_spectral',1);
+        
         gui_erp_spectral.amplitude.Value =1;
         gui_erp_spectral.phase.Value = 0;
         gui_erp_spectral.power.Value = 0;
@@ -118,6 +152,26 @@ varargout{1} = ERP_filtering_box;
 
 %%--------------------------Setting for phase-----------------------------
     function spectral_phase(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_spectral.plot.ForegroundColor = [1 1 1];
+        ERP_filtering_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.save.ForegroundColor = [1 1 1];
+        gui_erp_spectral.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.advanced.ForegroundColor = [1 1 1];
+        gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_spectral',1);
+        
         gui_erp_spectral.phase.Value = 1;
         gui_erp_spectral.amplitude.Value =0;
         gui_erp_spectral.power.Value = 0;
@@ -126,6 +180,26 @@ varargout{1} = ERP_filtering_box;
 
 %%--------------------Setting for power------------------------------------
     function spectral_power(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_spectral.plot.ForegroundColor = [1 1 1];
+        ERP_filtering_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.save.ForegroundColor = [1 1 1];
+        gui_erp_spectral.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.advanced.ForegroundColor = [1 1 1];
+        gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_spectral',1);
+        
         gui_erp_spectral.phase.Value = 0;
         gui_erp_spectral.amplitude.Value =0;
         gui_erp_spectral.power.Value =1;
@@ -134,6 +208,26 @@ varargout{1} = ERP_filtering_box;
 
 %%--------------------Setting for dB------------------------------------
     function spectral_db(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_spectral.plot.ForegroundColor = [1 1 1];
+        ERP_filtering_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.save.ForegroundColor = [1 1 1];
+        gui_erp_spectral.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.advanced.ForegroundColor = [1 1 1];
+        gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_spectral',1);
+        
         gui_erp_spectral.phase.Value = 0;
         gui_erp_spectral.amplitude.Value =0;
         gui_erp_spectral.power.Value =0;
@@ -143,59 +237,157 @@ varargout{1} = ERP_filtering_box;
 
 %%-------------------------Setting for hamming window:on-------------------
     function spectral_hamwin_on(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_spectral.plot.ForegroundColor = [1 1 1];
+        ERP_filtering_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.save.ForegroundColor = [1 1 1];
+        gui_erp_spectral.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.advanced.ForegroundColor = [1 1 1];
+        gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_spectral',1);
+        
         gui_erp_spectral.hamwin_on.Value = 1;
         gui_erp_spectral.hamwin_off.Value = 0;
     end
 
 %%-------------------------Setting for hamming window:off-------------------
     function spectral_hamwin_off(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_spectral.plot.ForegroundColor = [1 1 1];
+        ERP_filtering_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.save.ForegroundColor = [1 1 1];
+        gui_erp_spectral.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.advanced.ForegroundColor = [1 1 1];
+        gui_erp_spectral.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_spectral.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_spectral',1);
         gui_erp_spectral.hamwin_on.Value = 0;
         gui_erp_spectral.hamwin_off.Value = 1;
     end
 
-
+%%-----------------------------cancel--------------------------------------
+    function spectral_cancel(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.plot.ForegroundColor = [0 0 0];
+        ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.save.ForegroundColor = [0 0 0];
+        gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
+        gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_spectral',0);
+        amplitude = gui_erp_spectral.Paras{1};
+        if isempty(amplitude) || numel(amplitude)~=1 || (amplitude~=1 && amplitude~=2 && amplitude~=3 && amplitude~=4)
+            amplitude = 1;
+            gui_erp_spectral.Paras{1}=1;
+        end
+        if amplitude==2
+            gui_erp_spectral.amplitude.Value = 0;
+            gui_erp_spectral.phase.Value=1;
+            gui_erp_spectral.power.Value=0;
+            gui_erp_spectral.db.Value=0;
+        elseif  amplitude==3
+            gui_erp_spectral.amplitude.Value = 0;
+            gui_erp_spectral.phase.Value=0;
+            gui_erp_spectral.power.Value=1;
+            gui_erp_spectral.db.Value=0;
+        elseif amplitude==4
+            gui_erp_spectral.amplitude.Value = 0;
+            gui_erp_spectral.phase.Value=0;
+            gui_erp_spectral.power.Value=0;
+            gui_erp_spectral.db.Value=1;
+        else
+            gui_erp_spectral.amplitude.Value = 1;
+            gui_erp_spectral.phase.Value=0;
+            gui_erp_spectral.power.Value=0;
+            gui_erp_spectral.db.Value=0;
+        end
+        hamwin_on = gui_erp_spectral.Paras{2};
+        if isempty(hamwin_on) ||numel(hamwin_on)~=1 || (hamwin_on~=0 && hamwin_on~=1)
+            hamwin_on =1;
+            gui_erp_spectral.Paras{2}=1;
+        end
+        gui_erp_spectral.hamwin_on.Value=hamwin_on;
+        gui_erp_spectral.hamwin_off.Value=~hamwin_on;
+    end
 
 %%--------------------------Setting for plot-------------------------------
     function spectral_plot(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.plot.ForegroundColor = [0 0 0];
+        ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.save.ForegroundColor = [0 0 0];
+        gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
+        gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_spectral',0);
+        
         if gui_erp_spectral.hamwin_on.Value
             iswindowed =1;
         else
             iswindowed = 0;
         end
-        
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset)
-            Selected_erpset =  observe_ERPDAT.CURRENTERP;
-            S_erpbinchan = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_erpset);
-            estudioworkingmemory('geterpbinchan',S_erpbinchan.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpbinchan.geterpplot);
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
+            Selected_erpset =  length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = Selected_erpset;
         end
-        
-        S_binchan =  estudioworkingmemory('geterpbinchan');
-        checked_ERPset_Index_bin_chan =S_binchan.checked_ERPset_Index;
-        
         
         defaulpar1 =  erpworkingmemory('f_ERP_spectral');
-        BinArray = [];
-        ChanArray = [];
         FreqRange = [];
-        
-        if checked_ERPset_Index_bin_chan(1) ==1
-            BinArray = [];
-        elseif checked_ERPset_Index_bin_chan(2) ==2
-            ChanArray = [];
+        BinArray = estudioworkingmemory('ERP_BinArray');
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
+        if chk(1)==1
+            BinArray =  [1:observe_ERPDAT.ERP.nbin];
         end
-        
-        try
-            
-            BinArray = S_binchan.bins{1};
-            ChanArray = S_binchan.elecs_shown{1};
-        catch
-            BinArray = [];
-            ChanArray = [];
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
+        if chk(2)==1
+            ChanArray =  [1:observe_ERPDAT.ERP.nchan];
         end
-        
         
         %%Plot the spectrum for the selected ERPset
         %                 try
@@ -316,25 +508,39 @@ varargout{1} = ERP_filtering_box;
                     set(gca,'LineWidth',2);
                 end
             end
-            
         end%%end loop for ERPSET
-        
     end
 
 
 %%-----------------Setting for save option---------------------------------
     function spectral_save(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.plot.ForegroundColor = [0 0 0];
+        ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.save.ForegroundColor = [0 0 0];
+        gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
+        gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_spectral',0);
         
         erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
         observe_ERPDAT.Process_messg =1;
-        
-        
         
         pathName =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
-        
         if gui_erp_spectral.hamwin_on.Value
             iswindowed =1;
         else
@@ -343,32 +549,19 @@ varargout{1} = ERP_filtering_box;
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset)
             Selected_erpset =  observe_ERPDAT.CURRENTERP;
-            S_erpbinchan = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_erpset);
-            estudioworkingmemory('geterpbinchan',S_erpbinchan.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpbinchan.geterpplot);
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = Selected_erpset;
         end
-        
-        S_binchan =  estudioworkingmemory('geterpbinchan');
-        checked_ERPset_Index_bin_chan =S_binchan.checked_ERPset_Index;
-        
-        
-        BinArray = [];
-        ChanArray = [];
         FreqRange = [];
-        
-        if checked_ERPset_Index_bin_chan(1) ==1
-            BinArray = [];
-        elseif checked_ERPset_Index_bin_chan(2) ==2
-            ChanArray = [];
+        BinArray = estudioworkingmemory('ERP_BinArray');
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
+        if chk(1)==1
+            BinArray =  [1:observe_ERPDAT.ERP.nbin];
         end
-        
-        try
-            BinArray = S_binchan.bins{1};
-            ChanArray = S_binchan.elecs_shown{1};
-        catch
-            BinArray = [];
-            ChanArray = [];
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
+        if chk(2)==1
+            ChanArray =  [1:observe_ERPDAT.ERP.nchan];
         end
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
@@ -403,16 +596,14 @@ varargout{1} = ERP_filtering_box;
             if isempty(BinArray)
                 BinArray = [1:ERP_curret_s.nbin];
             end
-            
             if isempty(ChanArray)
                 ChanArray =  [1:ERP_curret_s.nchan];
             end
             
-            if max(BinArray(:))> ERP_FFT.nbin
+            if any(BinArray(:)> ERP_FFT.nbin)
                 BinArray = [1:ERP_FFT.nbin];
             end
-            
-            if max(ChanArray(:))> ERP_FFT.nchan
+            if any(ChanArray(:)> ERP_FFT.nchan)
                 ChanArray = [1:ERP_FFT.nchan];
             end
             
@@ -455,9 +646,7 @@ varargout{1} = ERP_filtering_box;
                     figure_name = strcat(ERP_FFT.erpname,'_Spectrum_dB');
                 end
             end
-            
             if ind==1
-                
                 [filenamei, pathname] = uiputfile({'*.mat';'*.*'},['Save',32,'"',ERP_FFT.erpname,'"', 32,'as'],fullfile(pathName,figure_name));
                 if isequal(filenamei,0)
                     disp('User selected Cancel')
@@ -509,27 +698,32 @@ varargout{1} = ERP_filtering_box;
                     return;
                 end
             end
-            
         end
         erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
         observe_ERPDAT.Process_messg =2;
-        
     end
 
 
 %%-------------------Setting for advance option---------------------------
     function  spectral_advanced(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
         pathName_folder =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_folder)
             pathName_folder =  cd;
         end
-        
         if gui_erp_spectral.hamwin_on.Value
             iswindowed =1;
         else
             iswindowed = 0;
         end
-        
         try
             def =  erpworkingmemory('f_spectral_analysis_adavance');
         catch
@@ -537,7 +731,6 @@ varargout{1} = ERP_filtering_box;
         end
         if isempty(def)
             def = {1,[], [], [1 16], 1, 1,1,0};
-            
         end
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
@@ -545,27 +738,24 @@ varargout{1} = ERP_filtering_box;
             ALLERPCOM = [];
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
-        
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset)
-            Selected_erpset =  observe_ERPDAT.CURRENTERP;
-            S_erpbinchan = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selected_erpset);
-            estudioworkingmemory('geterpbinchan',S_erpbinchan.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpbinchan.geterpplot);
+            Selected_erpset =  length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = Selected_erpset;
             estudioworkingmemory('selectederpstudio',Selected_erpset);
         end
         
-        S_binchan =  estudioworkingmemory('geterpbinchan');
-        checked_ERPset_Index_bin_chan =S_binchan.checked_ERPset_Index;
-        
-        try
-            BinArray = S_binchan.bins{1};
-            ChanArray = S_binchan.elecs_shown{1};
-        catch
-            BinArray = [];
-            ChanArray = [];
+        BinArray = estudioworkingmemory('ERP_BinArray');
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
+        if chk(1)==1
+            BinArray =  [1:observe_ERPDAT.ERP.nbin];
         end
-        
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
+        if chk(2)==1
+            ChanArray =  [1:observe_ERPDAT.ERP.nchan];
+        end
         def{2} = BinArray;
         def{3} = ChanArray;
         
@@ -580,23 +770,14 @@ varargout{1} = ERP_filtering_box;
         end
         erpworkingmemory('f_spectral_analysis_adavance',defaulpar1);
         
-        
         BinArray = defaulpar1{2};
         ChanArray = defaulpar1{3};
-        if checked_ERPset_Index_bin_chan(1)==1
-            BinArray = [];
-        end
-        
-        if checked_ERPset_Index_bin_chan(2) ==2
-            ChanArray = [];
-        end
         
         FreqRange = defaulpar1{4};
         FreqTick = defaulpar1{5};
         RowNum = defaulpar1{6};
         ColumnNum = defaulpar1{7};
         Save_label =   defaulpar1{8};
-        
         if Save_label
             try
                 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -643,14 +824,13 @@ varargout{1} = ERP_filtering_box;
                 BinArray = [1:ERP_curret_s.nbin];
             end
             
-            if max(BinArray(:))> ERP_FFT.nbin
+            if any(BinArray(:)> ERP_FFT.nbin)
                 BinArray = [1:ERP_FFT.nbin];
             end
             
-            if max(ChanArray(:))> ERP_FFT.nchan
+            if any(ChanArray(:)> ERP_FFT.nchan)
                 ChanArray = [1:ERP_FFT.nchan];
             end
-            
             if isempty(FreqRange) || FreqRange(2)>ERP_FFT.times(end)
                 FreqRange=[ERP_FFT.times(1), ERP_FFT.times(end)];
                 FreqTick = default_time_ticks(ERP_FFT, FreqRange);
@@ -660,7 +840,6 @@ varargout{1} = ERP_filtering_box;
                 FreqTick = default_time_ticks(ERP_FFT, FreqRange);
                 FreqTick = str2num(FreqTick{1});
             end
-            
             [xxx, latsamp, latdiffms] = closest(ERP_FFT.times, FreqRange);
             tmin = latsamp(1);
             tmax = latsamp(2);
@@ -712,7 +891,6 @@ varargout{1} = ERP_filtering_box;
                         line_colors = line_colors(1:ERP_FFT.nbin,:,:);
                     end
                 end
-                
                 if isempty(line_colors)
                     line_colors = get_colors(ERP_FFT.nbin);
                 end
@@ -759,7 +937,11 @@ varargout{1} = ERP_filtering_box;
                             X_label{Numoflabel} = [];
                         end
                         set(gca,'TickDir','out');
-                        set(gca,'LineWidth',2);
+                        set(gca,'LineWidth',1);
+                        set(gca,'Color','w',...
+                            'XColor','k',...
+                            'YColor','k',...
+                            'ZColor','k');
                     end
                 end
                 hold off;
@@ -777,7 +959,6 @@ varargout{1} = ERP_filtering_box;
                     elseif gui_erp_spectral.db.Value
                         figure_name = [ERP_FFT.erpname,'_Spectrum_ dB'];
                     end
-                    
                 end
                 
                 if ind==1
@@ -793,7 +974,6 @@ varargout{1} = ERP_filtering_box;
                         end
                         filename = [filename ext];
                     end
-                    
                     if strcmpi(ext,'.mat')
                         [ERP_FFT, issave, ERPCOM] = pop_savemyerp(ERP_FFT, 'erpname', ERP_FFT.erpname, 'filename', filename, 'filepath',pathname);
                         [~, ALLERPCOM] = erphistory(ERP_FFT, ALLERPCOM, ERPCOM);
@@ -838,35 +1018,31 @@ varargout{1} = ERP_filtering_box;
                     end
                 end
             end
-            
         end%%end loop for ERPSET
-        
     end
 
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function Count_currentERPChanged(~,~)
-        if  strcmp(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-            gui_erp_spectral.advanced.Enable = 'off';
-            gui_erp_spectral.save.Enable = 'off';
-            gui_erp_spectral.plot.Enable = 'off';
-            gui_erp_spectral.phase.Enable = 'off';
-            gui_erp_spectral.amplitude.Enable = 'off';
-            gui_erp_spectral.hamwin_on.Enable = 'off';
-            gui_erp_spectral.hamwin_off.Enable = 'off';
-            gui_erp_spectral.power.Enable = 'off';
-            gui_erp_spectral.db.Enable = 'off';
-        else
-            gui_erp_spectral.advanced.Enable = 'on';
-            gui_erp_spectral.save.Enable = 'on';
-            gui_erp_spectral.plot.Enable = 'on';
-            gui_erp_spectral.phase.Enable = 'on';
-            gui_erp_spectral.amplitude.Enable = 'on';
-            gui_erp_spectral.power.Enable = 'on';
-            gui_erp_spectral.db.Enable = 'on';
-            gui_erp_spectral.hamwin_on.Enable = 'on';
-            gui_erp_spectral.hamwin_off.Enable = 'on';
+        if observe_ERPDAT.Count_currentERP~=10
+            return;
         end
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+            Enable_label = 'off';
+        else
+            Enable_label = 'on';
+        end
+        gui_erp_spectral.advanced.Enable = Enable_label;
+        gui_erp_spectral.save.Enable = Enable_label;
+        gui_erp_spectral.plot.Enable = Enable_label;
+        gui_erp_spectral.phase.Enable = Enable_label;
+        gui_erp_spectral.amplitude.Enable =Enable_label;
+        gui_erp_spectral.power.Enable = Enable_label;
+        gui_erp_spectral.db.Enable = Enable_label;
+        gui_erp_spectral.hamwin_on.Enable =Enable_label;
+        gui_erp_spectral.hamwin_off.Enable = Enable_label;
+        gui_erp_spectral.cancel.Enable = Enable_label;
+        observe_ERPDAT.Count_currentERP=11;
     end
 
 %%----Get the color for lines--------------------------------------
@@ -891,6 +1067,54 @@ varargout{1} = ERP_filtering_box;
             end
         end
     end
+
+%%-------execute "apply" before doing any change for other panels----------
+    function erp_two_panels_change(~,~)
+        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+            return;
+        end
+        ChangeFlag =  estudioworkingmemory('ERPTab_spectral');
+        if ChangeFlag~=1
+            return;
+        end
+        spectral_plot();
+        gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.plot.ForegroundColor = [0 0 0];
+        ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.save.ForegroundColor = [0 0 0];
+        gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
+        gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_spectral',0);
+    end
+
+
+%%--------------press return to execute "Apply"----------------------------
+    function erp_spectral_presskey(~,eventdata)
+        keypress = eventdata.Key;
+        ChangeFlag =  estudioworkingmemory('ERPTab_spectral');
+        if ChangeFlag~=1
+            return;
+        end
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            spectral_plot();
+            gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
+            gui_erp_spectral.plot.ForegroundColor = [0 0 0];
+            ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+            gui_erp_spectral.save.BackgroundColor =  [1 1 1];
+            gui_erp_spectral.save.ForegroundColor = [0 0 0];
+            gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
+            gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
+            gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
+            gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
+            estudioworkingmemory('ERPTab_spectral',0);
+        else
+            return;
+        end
+    end
+
 
 end
 %Progem end: ERP Measurement tool

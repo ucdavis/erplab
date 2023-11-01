@@ -2,18 +2,14 @@
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Feb. 2022
+%Feb. 2022 && Nov. 2023
 
 % ERPLAB Studio
 
 function varargout = f_ERP_chanoperation_GUI(varargin)
 global observe_ERPDAT;
-% addlistener(observe_ERPDAT,'ALLERP_change',@allErpChanged);
-% addlistener(observe_ERPDAT,'ERP_change',@onErpChanged);
-% addlistener(observe_ERPDAT,'CURRENTERP_change',@cerpchange);
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-
-
+addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 gui_erp_chan_operation = struct();
 
 %-----------------------------Name the title----------------------------------------------
@@ -25,11 +21,14 @@ catch
 end
 if nargin == 0
     fig = figure(); % Parent figure
-    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Channel Operations', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Channel Operations', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @chanop_help); % Create boxpanel
 elseif nargin == 1
-    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Channel Operations', 'Padding', 5,'BackgroundColor',ColorB_def);
+    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Channel Operations', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @chanop_help);
 else
-    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Channel Operations', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Channel Operations', 'Padding', 5,...
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @chanop_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -54,9 +53,7 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(FontSize_defualt)
             FontSize_defualt = 12;
         end
-        
         Enable_label = 'off';
-        
         %%--------------------channel and bin setting----------------------
         gui_erp_chan_operation.DataSelBox = uiextras.VBox('Parent', ERP_chan_operation_gui);
         for ii = 1:100
@@ -70,6 +67,8 @@ varargout{1} = ERP_chan_operation_gui;
             'ColumnName'    , [], ...
             'RowName'       , []);
         set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,length(dsnames)),'FontSize',FontSize_defualt);
+        gui_erp_chan_operation.edit_bineq.KeyPressFcn= @erp_chanop_presskey;
+        gui_erp_chan_operation.Paras{1} = gui_erp_chan_operation.edit_bineq.Data;
         
         gui_erp_chan_operation.equation_selection = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
@@ -85,29 +84,34 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.locaInfor = uicontrol('Style','checkbox','Parent',gui_erp_chan_operation.asst_locaInfo,...
             'String','Load Eq.','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
+        gui_erp_chan_operation.Paras{2} =gui_erp_chan_operation.locaInfor.Value;
         set(gui_erp_chan_operation.asst_locaInfo,'Sizes',[105 180]);
+        gui_erp_chan_operation.locaInfor.KeyPressFcn= @erp_chanop_presskey;
         %%%----------------Mode-----------------------------------
         gui_erp_chan_operation.mode_1 = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.mode_modify_title = uicontrol('Style','text','Parent',gui_erp_chan_operation.mode_1 ,...
             'String','Mode:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.mode_modify = uicontrol('Style','radiobutton','Parent',gui_erp_chan_operation.mode_1 ,...
             'String','Modify Existing ERPset','callback',@mode_modify,'Value',1,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+        gui_erp_chan_operation.mode_modify.KeyPressFcn= @erp_chanop_presskey;
         gui_erp_chan_operation.mode_modify.String =  '<html>Modify Existing ERPset<br />(recursive updating)</html>';
         set(gui_erp_chan_operation.mode_1,'Sizes',[55 -1]);
+        gui_erp_chan_operation.Paras{3} = gui_erp_chan_operation.mode_modify.Value;
         %%--------------For create a new ERPset----------------------------
         gui_erp_chan_operation.mode_2 = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_chan_operation.mode_2,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.mode_create = uicontrol('Style','radiobutton','Parent',gui_erp_chan_operation.mode_2 ,...
             'String',{'', ''},'callback',@mode_create,'Value',0,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.mode_create.String =  '<html>Create New ERPset<br />(independent transformations)</html>';
+        gui_erp_chan_operation.mode_create.KeyPressFcn= @erp_chanop_presskey;
         set(gui_erp_chan_operation.mode_2,'Sizes',[55 -1]);
         %%-----------------Run---------------------------------------------
         gui_erp_chan_operation.run_title = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         
         
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
-        uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
-            'String','?','callback',@chanop_help,'FontSize',16,'Enable','on');
+        gui_erp_chan_operation.cancel = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
+            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable','off');
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.run = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
@@ -117,8 +121,9 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.note_title = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',gui_erp_chan_operation.note_title,...
             'String','Note: Operates on all bins and channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        
         set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30 30]);
+        
+        estudioworkingmemory('ERPTab_chanop',0);
     end
 
 
@@ -132,9 +137,24 @@ varargout{1} = ERP_chan_operation_gui;
         web('https://github.com/lucklab/erplab/wiki/EEG-and-ERP-Channel-Operations','-browser');
     end
 
-
 %%-------------------Equation editor---------------------------------------
     function eq_advanced(Source_editor,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
+        
         def  = erpworkingmemory('pop_erpchanoperator');
         if isempty(def)
             def = { [], 1};
@@ -199,6 +219,23 @@ varargout{1} = ERP_chan_operation_gui;
 
 %%-------------------Equation Load---------------------------------------
     function eq_load(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
+        
+        
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
             disp('User selected Cancel')
@@ -207,25 +244,20 @@ varargout{1} = ERP_chan_operation_gui;
             fullname = fullfile(filepath, filename);
             disp(['f_ERP_chanoperation_GUI(): For formulas-file, user selected ', fullname])
         end
-        
         fid_formula = fopen( fullname );
         try
             formcell    = textscan(fid_formula, '%s','delimiter', '\r');
             formulas    = char(formcell{:});
         catch
-            beep;
             msgboxText =  ['ERP Channel Operations - Please, check your file:\n '...
                 fullname '\n'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if size(formulas,2)>256
-            beep;
             msgboxText =  ['ERP Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -237,6 +269,22 @@ varargout{1} = ERP_chan_operation_gui;
 
 %%-------------------Equation Clear---------------------------------------
     function eq_clear(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
+        
         for ii = 1:1000
             dsnames{ii,1} = '';
         end
@@ -246,16 +294,26 @@ varargout{1} = ERP_chan_operation_gui;
 
 %%-------------------Reference assist--------------------------------------
     function ref_asst(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
         gui_erp_chan_operation.mode_modify.Value = 0;
         gui_erp_chan_operation.mode_create.Value = 1;
         
-        try
-            ERPLAB =  observe_ERPDAT.ERP;
-            nchan = ERPLAB.nchan;
-        catch
-            ERPLAB.chanlocs = [];
-            nchan    = 1;
-        end
+        ERPLAB =  observe_ERPDAT.ERP;
+        nchan = ERPLAB.nchan;
         listch=[];
         if isempty(ERPLAB.chanlocs)
             for e=1:nchan
@@ -300,7 +358,6 @@ varargout{1} = ERP_chan_operation_gui;
                     dsnames{count,1}  = formulas{ii};
                 end
             end
-            
             for ii = 1:length(formulalist)
                 dsnames{count+ii,1}  = formulalist{ii};
             end
@@ -308,19 +365,48 @@ varargout{1} = ERP_chan_operation_gui;
             gui_erp_chan_operation.edit_bineq.Data =dsnames;
         end
         set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
-        
     end
 
 %%--------------------Preserve location information------------------------
     function loca_infor(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
         Value = source.Value;
         gui_erp_chan_operation.locaInfor.Value = Value;
     end
 
 
-
 %%------------------Modify Existing ERPset---------------------------------------
     function mode_modify(Source_editor,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
+        
         gui_erp_chan_operation.mode_modify.Value = 1;
         gui_erp_chan_operation.mode_create.Value = 0;
         
@@ -352,11 +438,27 @@ varargout{1} = ERP_chan_operation_gui;
             def{1} = formulaArray;
             erpworkingmemory('pop_erpchanoperator',def);
         end
-        
     end
 
 %%------------------Create New ERPset---------------------------------------
     function mode_create(Source_create,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_chan_operation.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.run.ForegroundColor = [1 1 1];
+        ERP_chan_operation_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_chan_operation.cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_chanop',1);
+        
+        
         gui_erp_chan_operation.mode_modify.Value = 0;
         gui_erp_chan_operation.mode_create.Value = 1;
         FormulaArrayIn = char(gui_erp_chan_operation.edit_bineq.Data);
@@ -390,11 +492,45 @@ varargout{1} = ERP_chan_operation_gui;
             def{1} = formulaArray;
             erpworkingmemory('pop_erpchanoperator',def);
         end
-        
     end
+%%------------------------------cancel-------------------------------------
+    function chanop_cancel(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_chanop',0);
+        gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
+        ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
+        
+        gui_erp_chan_operation.edit_bineq.Data= gui_erp_chan_operation.Paras{1};
+        gui_erp_chan_operation.locaInfor.Value=gui_erp_chan_operation.Paras{2};
+        mode_modify = gui_erp_chan_operation.Paras{3};
+        gui_erp_chan_operation.mode_modify.Value=mode_modify;
+        gui_erp_chan_operation.mode_create.Value = ~mode_modify;
+    end
+
 
 %%---------------------Run-------------------------------------------------
     function apply_run(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=6
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        
         pathName_def =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
@@ -402,23 +538,13 @@ varargout{1} = ERP_chan_operation_gui;
         
         Selectederp_Index= estudioworkingmemory('selectederpstudio');
         if isempty(Selectederp_Index)
-            Selectederp_Index = observe_ERPDAT.CURRENTERP;
-            if isempty(Selectederp_Index)
-                beep;
-                msgboxText =  ['ERP Channel Operations -No ERPset was selected'];
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
-                return;
-            end
-            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selectederp_Index);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+            Selectederp_Index =  length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = Selectederp_Index;
+            estudioworkingmemory('selectederpstudio',Selectederp_Index);
         end
         
-        
         Eq_Data =  gui_erp_chan_operation.edit_bineq.Data;
-        
         Formula_str = {};
         count = 0;
         for ii = 1:length(Eq_Data)
@@ -427,15 +553,18 @@ varargout{1} = ERP_chan_operation_gui;
                 Formula_str{count} = Eq_Data{ii};
             end
         end
-        
         if isempty(Formula_str)
-            beep;
             msgboxText =  ['ERP Channel Operations - You have not yet written a formula'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
+        estudioworkingmemory('ERPTab_chanop',0);
+        gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
+        ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
         
         %%check the format of equations
         if gui_erp_chan_operation.mode_modify.Value
@@ -451,7 +580,6 @@ varargout{1} = ERP_chan_operation_gui;
         %%%Create a new ERPset for the bin-operated ERPsets
         Save_file_label = [];
         if gui_erp_chan_operation.mode_create.Value
-            
             if numel(Selectederp_Index) > 1
                 Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_chop');
                 if isempty(Answer)
@@ -506,12 +634,14 @@ varargout{1} = ERP_chan_operation_gui;
         if isempty(Save_file_label)
             Save_file_label =0;
         end
-        
         if gui_erp_chan_operation.locaInfor.Value
             keeplocs =1;
         else
             keeplocs =0;
         end
+        gui_erp_chan_operation.Paras{1} = gui_erp_chan_operation.edit_bineq.Data;
+        gui_erp_chan_operation.Paras{2} =gui_erp_chan_operation.locaInfor.Value;
+        gui_erp_chan_operation.Paras{3} = gui_erp_chan_operation.mode_modify.Value;
         
         try
             erpworkingmemory('f_ERP_proces_messg','ERP Bin Operations');
@@ -534,7 +664,6 @@ varargout{1} = ERP_chan_operation_gui;
                     end
                 end
             end
-            
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             if gui_erp_chan_operation.mode_create.Value%%Save the labels of the selected ERPsets
                 try
@@ -550,7 +679,7 @@ varargout{1} = ERP_chan_operation_gui;
             assignin('base','ALLERPCOM',ALLERPCOM);
             assignin('base','ERPCOM',ERPCOM);
             erpworkingmemory('f_ERP_bin_opt',1);
-            observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+            observe_ERPDAT.Count_currentERP = 1;
             observe_ERPDAT.Process_messg =2;
             return;
         catch
@@ -559,7 +688,7 @@ varargout{1} = ERP_chan_operation_gui;
             Selected_ERP_afd =observe_ERPDAT.CURRENTERP;
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             erpworkingmemory('f_ERP_bin_opt',1);
-            observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+            observe_ERPDAT.Count_currentERP = 1;
             observe_ERPDAT.Process_messg =3;%%
             return;
         end
@@ -569,35 +698,11 @@ varargout{1} = ERP_chan_operation_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)
-            Selectederp_Index = observe_ERPDAT.CURRENTERP;
-            if isempty(Selectederp_Index)
-                beep;
-                msgboxText =  ['ERP Channel Operations - No ERPset was selected'];
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
-                return;
-            end
-            S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,Selectederp_Index);
-            estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-            estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-        end
-        S_binchan =  estudioworkingmemory('geterpbinchan');
-        checked_ERPset_Index = S_binchan.checked_ERPset_Index;
-        
-        
-        if strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-            checked_curr_index = 1;
-        else
-            checked_curr_index = 0;
+        if observe_ERPDAT.Count_currentERP~=7
+            return;
         end
         
-        if isempty(checked_ERPset_Index)
-            checked_ERPset_Index = f_checkerpsets(observe_ERPDAT.ALLERP,Selectederp_Index);
-        end
-        if checked_curr_index || any(checked_ERPset_Index(:))
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100
                 if ii==1
@@ -609,6 +714,13 @@ varargout{1} = ERP_chan_operation_gui;
             gui_erp_chan_operation.edit_bineq.Data = dsnames;
             set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         else
+            Selectederp_Index= estudioworkingmemory('selectederpstudio');
+            if isempty(Selectederp_Index) || any(Selectederp_Index>length(observe_ERPDAT.ALLERP))
+                Selectederp_Index = length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+                estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            end
             Enable_label = 'on';
             chanopDataor =  gui_erp_chan_operation.edit_bineq.Data;
             for ii = 1:100
@@ -630,7 +742,46 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.run.Enable = Enable_label;
         gui_erp_chan_operation.ref_asst.Enable = Enable_label;
         gui_erp_chan_operation.locaInfor.Enable = Enable_label;
-        
+        gui_erp_chan_operation.cancel.Enable = Enable_label;
+        observe_ERPDAT.Count_currentERP=8;
     end
 
+
+%%-------execute "apply" before doing any change for other panels----------
+    function erp_two_panels_change(~,~)
+        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+            return;
+        end
+        ChangeFlag =  estudioworkingmemory('ERPTab_chanop');
+        if ChangeFlag~=1
+            return;
+        end
+        apply_run();
+        estudioworkingmemory('ERPTab_chanop',0);
+        gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
+        ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
+    end
+
+%%--------------press return to execute "Apply"----------------------------
+    function erp_chanop_presskey(~,eventdata)
+        keypress = eventdata.Key;
+        ChangeFlag =  estudioworkingmemory('ERPTab_chanop');
+        if ChangeFlag~=1
+            return;
+        end
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            apply_run();
+            estudioworkingmemory('ERPTab_chanop',0);
+            gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
+            gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
+            ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+            gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
+            gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
+        else
+            return;
+        end
+    end
 end

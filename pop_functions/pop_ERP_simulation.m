@@ -698,7 +698,11 @@ ERPautx.pnts = numel(Times);
 ERPautx.erpname ='Cretedartificialwave';
 ERPautx.srate = Srate;
 ERPautx.saved  = 'no';
-
+%%fixed by GH
+ERPautx.ntrials.accepted = 1;
+ERPautx.ntrials.rejected =0;
+ERPautx.ntrials.invalid=0;
+ERPautx.ntrials.arflags = zeros(1,8);
 %
 % History
 %
