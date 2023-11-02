@@ -608,18 +608,6 @@ varargout{1} = ERP_basecorr_detrend_box;
         estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
-        %         catch
-        %             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
-        %             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-        %             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        %
-        %             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-        %
-        %             observe_ERPDAT.Process_messg =3;
-        %             erpworkingmemory('f_ERP_BLS_Detrend',{BaselineMethod,0,1});
-        %             observe_ERPDAT.Count_currentERP = 1;
-        %             return;
-        %         end
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -744,6 +732,10 @@ varargout{1} = ERP_basecorr_detrend_box;
             gui_erp_blc_dt.custom_edit.Enable = 'on';
         else
             gui_erp_blc_dt.custom_edit.Enable = 'off';
+        end
+        if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP')
+            observe_ERPDAT.Count_currentERP=6;
+            return;
         end
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset) || any(Selected_erpset> length(observe_ERPDAT.ALLERP))

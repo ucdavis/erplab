@@ -8,16 +8,10 @@
 
 function varargout = f_ERP_history_GUI(varargin)
 global observe_ERPDAT;
-% addlistener(observe_ERPDAT,'ALLERP_change',@allErpChanged);
-% addlistener(observe_ERPDAT,'ERP_change',@onErpChanged);
-% addlistener(observe_ERPDAT,'CURRENTERP_change',@cerpchange);
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 
-
 gui_erp_history = struct();
-
 %-----------------------------Name the title----------------------------------------------
-% global box_erp_history;
 
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -41,7 +35,7 @@ catch
     FonsizeDefault = [];
 end
 if isempty(FonsizeDefault)
-   FonsizeDefault = f_get_default_fontsize();
+    FonsizeDefault = f_get_default_fontsize();
 end
 drawui_erp_history(FonsizeDefault);
 varargout{1} = box_erp_history;
@@ -58,17 +52,10 @@ varargout{1} = box_erp_history;
         
         
         gui_erp_history.erp_h_all = uicontrol('Style','radiobutton','Parent',gui_erp_history.erp_history_title,'String','Current ERPset',...
-            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
-        gui_erp_history.erp_h_EEG = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','Current session',...
-            'callback',@ERP_H_EEG,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
-        
-        %         gui_erp_history.erp_h_erp = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','ERP','callback',@ERP_H_ERP,'Value',0); % 2F
-        
-        try
-            ERP_history =  observe_ERPDAT.ERP.history;
-        catch
-            ERP_history = [];
-        end
+            'callback',@ERP_H_ALL,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+        gui_erp_history.erp_h_current = uicontrol('Style','radiobutton','Parent', gui_erp_history.erp_history_title,'String','Current session',...
+            'callback',@erp_h_current,'Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
+        ERP_history = [];
         if isempty(ERP_history)
             ERP_history = char('No history exist in the current ERPset');
         end
@@ -83,10 +70,15 @@ varargout{1} = box_erp_history;
             'ColumnWidth'   , {total_len+2}, ...
             'ColumnName'    , {'Function call'}, ...
             'RowName'       , []);
-        set( gui_erp_history.DataSelBox,'Heights',[40 -1]);
+        %%save the scripts
+        gui_erp_history.save_history_title = uiextras.HBox('Parent', gui_erp_history.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent',  gui_erp_history.save_history_title,'BackgroundColor',ColorB_def);
+        gui_erp_history.save_script = uicontrol('Style','pushbutton','Parent',gui_erp_history.save_history_title,...
+            'String','Save history script','callback',@savescript,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent', gui_erp_history.save_history_title,'BackgroundColor',ColorB_def);
+        set(gui_erp_history.save_history_title,'Sizes',[-1 120 -1]);
+        set(gui_erp_history.DataSelBox,'Sizes',[40 -1 30]);
     end
-
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
@@ -97,8 +89,7 @@ varargout{1} = box_erp_history;
     function ERP_H_ALL(~,~)
         Source_value = 1;
         set(gui_erp_history.erp_h_all,'Value',Source_value);
-        set(gui_erp_history.erp_h_EEG,'Value',~Source_value);
-        
+        set(gui_erp_history.erp_h_current,'Value',~Source_value);
         %adding the relared history in dispaly panel
         hiscp_empty =0;
         try
@@ -106,16 +97,6 @@ varargout{1} = box_erp_history;
         catch
             ERP_history = [];
         end
-        %         if isempty(ERP_history)
-        %             hiscp_empty =1;
-        %             ERP_history = {'No history exist in the current ERPset'};
-        %         end
-        %
-        %         if hiscp_empty
-        %             set(gui_erp_history.uitable,'Data', ERP_history);
-        %         else
-        %             set(gui_erp_history.uitable,'Data', strsplit(ERP_history(1,:), '\n')');
-        %         end
         
         if isempty(ERP_history)
             ERP_history = char('No history exist in the current ERPset');
@@ -125,16 +106,14 @@ varargout{1} = box_erp_history;
             ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
         end
         set(gui_erp_history.uitable,'Data', ERP_history_display');
-        set(gui_erp_history.DataSelBox,'Heights',[40 -1]);
-        set(gui_erp_history.DataSelBox,'Heights',[40 -1]);
         
     end
 
 
-    function ERP_H_EEG(~,~)
+    function erp_h_current(~,~)
         Source_value = 1;
         set(gui_erp_history.erp_h_all,'Value',~Source_value);
-        set(gui_erp_history.erp_h_EEG,'Value',Source_value);
+        set(gui_erp_history.erp_h_current,'Value',Source_value);
         %adding the relared history in dispaly panel
         try
             ERP_history = evalin('base','ALLERPCOM');
@@ -147,42 +126,48 @@ varargout{1} = box_erp_history;
         end
         
         set(gui_erp_history.uitable,'Data',ERP_history);
-        set(gui_erp_history.DataSelBox,'Heights',[40 -1]);
     end
 
-
-
-%%----------------------ALLERPsets change-----------------------------------------
-    function allErpChanged(~,~)
+%%---------------------save history to script------------------------------
+    function savescript(~,~)
         
+        if gui_erp_history.erp_h_all.Value==1
+            MessageViewer= char(strcat('Save history script for the current ERPset'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=1;
+            LASTCOM = pop_saveh(observe_ERPDAT.ERP.history);
+        else
+            MessageViewer= char(strcat('Save history script for the current session'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_ERPDAT.Process_messg=1;
+            try
+                erp_history = evalin('base','ALLERPCOM');
+                erp_history = erp_history';
+            catch
+                return;
+            end
+            LASTCOM = pop_saveh(erp_history);
+        end
+        fprintf(['\n',LASTCOM,'\n']);
+        observe_ERPDAT.Process_messg=2;
     end
 
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-%         try
-%             ERPloadIndex = estudioworkingmemory('ERPloadIndex');
-%         catch
-%             ERPloadIndex =0;
-%         end
-%         if ERPloadIndex==1
-%             ALLERPIN = evalin('base','ALLERP');
-%             CURRENTERPIN = evalin('base','CURRENTERP');
-%             observe_ERPDAT.ALLERP = ALLERPIN;
-%             observe_ERPDAT.CURRENTERP =CURRENTERPIN;
-%             try
-%                 observe_ERPDAT.ERP = ALLERPIN(CURRENTERPIN);
-%             catch
-%                 observe_ERPDAT.ERP = ALLERPIN(end);
-%                 observe_ERPDAT.CURRENTERP =length(ALLERPIN);
-%             end
-%         end
-        
-        
-        %check which option was selected and then update the related
-        %information based on the current ERPset.
+        if observe_ERPDAT.Count_currentERP~=14
+            return;
+        end
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+            Enableflag = 'off';
+        else
+            Enableflag = 'on';
+        end
+        gui_erp_history.save_script.Enable = Enableflag;
+        gui_erp_history.uitable.Enable = Enableflag;
+        gui_erp_history.erp_h_all.Enable = Enableflag;
+        gui_erp_history.erp_h_current.Enable = Enableflag;
         if gui_erp_history.erp_h_all.Value ==1
-            
             try
                 ERP_history =  observe_ERPDAT.ERP.history;
             catch
@@ -196,9 +181,7 @@ varargout{1} = box_erp_history;
                 ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
             end
             set(gui_erp_history.uitable,'Data', ERP_history_display');
-            set(gui_erp_history.DataSelBox,'Heights',[40 -1]);
         else%% ALLERPCOM for current session
-            
             try
                 ERP_history = evalin('base','ALLERPCOM');
                 ERP_history = ERP_history';
@@ -212,11 +195,7 @@ varargout{1} = box_erp_history;
                 set(gui_erp_history.uitable,'Data',ERP_history);
             end
             
-            set(gui_erp_history.DataSelBox,'Heights',[40 -1]);
         end
-        
+        observe_ERPDAT.Count_currentERP=15;
     end
-
-
-
 end

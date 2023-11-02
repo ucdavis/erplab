@@ -752,6 +752,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
+         f_redrawERP();
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -810,9 +811,10 @@ varargout{1} = box_erpset_gui;
         SelectedERP = observe_ERPDAT.CURRENTERP;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         observe_ERPDAT.Process_messg =2;
-        observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = 2;
+        f_redrawERP();
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+         f_redrawERP();
     end
 
 
@@ -1057,12 +1059,10 @@ varargout{1} = box_erpset_gui;
                 set(0,'DefaultUicontrolBackgroundColor',oldcolor);
             end
         end
-        
         observe_ERPDAT.Process_messg =2;
-        observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = 2;
+         f_redrawERP();
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
-        
     end
 
 % Gets [ind, erp] for input ds where ds is a dataset structure, ind is the

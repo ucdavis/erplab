@@ -765,7 +765,7 @@ varargout{1} = ERP_filtering_box;
         erpworkingmemory('pop_filterp', {locutoff,hicutoff,filterorder,chanArray,filterallch,fdesign,remove_dc});
         
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
+        if isempty(Selected_erpset) || any(Selected_erpset> length(observe_ERPDAT.ALLERP))
             Selected_erpset =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = Selected_erpset;

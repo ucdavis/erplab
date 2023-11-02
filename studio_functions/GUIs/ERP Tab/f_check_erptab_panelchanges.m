@@ -80,4 +80,18 @@ if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
 end
 
 
+MyViewer_chanbin = estudioworkingmemory('ERPTab_gravg');
+if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
+    messgStr  = char( 'Changes on "Average across ERPsets" have not been applied');
+    erpanelIndex =11;
+end
+
+
+MyViewer_chanbin = estudioworkingmemory('ERPTab_append');
+if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
+    messgStr  = char( 'Changes on "Append ERPsets" have not been applied');
+    erpanelIndex =12;
+end
+
+
 return;

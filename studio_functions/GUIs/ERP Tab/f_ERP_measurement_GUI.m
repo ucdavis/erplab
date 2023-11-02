@@ -1057,6 +1057,15 @@ varargout{1} = erp_measurement_box;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
+        ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
+        ERPMTops.m_t_value.ForegroundColor = [0 0 0];
+        erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        ERPMTops.cancel.BackgroundColor =  [1 1 1];
+        ERPMTops.cancel.ForegroundColor = [0 0 0];
+        ERPMTops.apply.BackgroundColor =  [1 1 1];
+        ERPMTops.apply.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_mesuretool',0);
+        
         pathName_folder =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_folder)
             pathName_folder =  cd;
@@ -1245,6 +1254,16 @@ varargout{1} = erp_measurement_box;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
+        ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
+        ERPMTops.m_t_value.ForegroundColor = [0 0 0];
+        erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        ERPMTops.cancel.BackgroundColor =  [1 1 1];
+        ERPMTops.cancel.ForegroundColor = [0 0 0];
+        ERPMTops.apply.BackgroundColor =  [1 1 1];
+        ERPMTops.apply.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_mesuretool',0);
+        
+        
         pathName_folder =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_folder)
             pathName_folder =  cd;
