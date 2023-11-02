@@ -73,4 +73,11 @@ if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
 end
 
 
+MyViewer_chanbin = estudioworkingmemory('ERPTab_mesuretool');
+if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
+    messgStr  = char( 'Changes on "ERP Measurement Tool" have not been applied');
+    erpanelIndex =10;
+end
+
+
 return;

@@ -1114,7 +1114,5 @@ varargout{1} = ERP_filtering_box;
             return;
         end
     end
-
-
 end
 %Progem end: ERP Measurement tool
