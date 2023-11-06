@@ -119,7 +119,7 @@ varargout{1} = box_eegset_gui;
         EStduio_eegtab_EEG_set.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
             'Callback', @curr_folder,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115]);
-        set(vBox, 'Sizes', [20 170 25 25 25]);
+        set(vBox, 'Sizes', [20 370 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
     end
 

@@ -25,11 +25,11 @@ EStduio_eegtab_eeglab_tool = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB Tools (works on one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB Tools (only for one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools (works on one selected dataset)', 'Padding ', 5,'BackgroundColor',ColorB_def);
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools (only for one selected dataset)', 'Padding ', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools (works on one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -79,6 +79,14 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.eeg_asr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.eeg_ASR_title,...
             'String','Reject data using clean rawdata and ASR','callback',@eeg_asr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
+        %%adjust event latencies
+        EStduio_eegtab_eeglab_tool.eeg_adjustlatency_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_eeglab_tool.adjust_latency = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_eeglab_tool.eeg_adjustlatency_title,...
+            'String','Adjust event latencies','callback',@adjust_latency,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent',EStduio_eegtab_eeglab_tool.eeg_adjustlatency_title);
+        set(EStduio_eegtab_eeglab_tool.eeg_adjustlatency_title,'Sizes',[130 -1])
+        
+        
         %%Plot channel function
         EStduio_eegtab_eeglab_tool.plotchan_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_eeglab_tool.plotchan_title1,...
@@ -92,7 +100,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         EStduio_eegtab_eeglab_tool.eeg_tfr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.plotchan_title2,...
             'String','Time-frequency','callback',@eeg_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        set(EStduio_eegtab_eeglab_tool.DataSelBox,'Sizes',[30 30 30 20 30])
+        set(EStduio_eegtab_eeglab_tool.DataSelBox,'Sizes',[30 30 30 30 20 30])
     end
 
 
@@ -119,7 +127,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset: Only works on one selected dataset');
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset: Only only for one selected dataset');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
             return;
@@ -166,7 +174,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Dataset information: Only works on one selected dataset');
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Dataset information: Only only for one selected dataset');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
             return;
@@ -268,7 +276,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Event value: Only works on one selected dataset');
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Event value: Only only for one selected dataset');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
             return;
@@ -624,9 +632,7 @@ varargout{1} = EStudio_box_eeglab_tool;
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                 EEG = eegh(LASTCOM, EEG);
                 ALLEEG_advance(Numofeeg) = EEG;
-                
                 eegh(LASTCOM);
-                
             end
         else
             for Numofeeg = 1:numel(EEGArray)
@@ -658,6 +664,92 @@ varargout{1} = EStudio_box_eeglab_tool;
         %             return;
         %         end
         
+    end
+
+%%----------------adjust event latencies-----------------------------------
+    function adjust_latency(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate');
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        if numel(EEGArray)~=1
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate: Only works on one selected dataset');
+            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            Source.Enable = 'off';
+            return;
+        end
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        Editsetsuffix = '_adjlat';
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        Save_file_label =0;
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        EEG_advance = ALLEEG_advance(EEGArray);
+        %         try
+        %%Edit the channel locations
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['**Adjust event latencies**\n']);
+        fprintf(['Your current eegset(s):',32,num2str(EEGArray),'\n']);
+        [EEG_advance,LASTCOM] = pop_adjustevents(EEG_advance);
+        
+        if isempty(LASTCOM)
+            disp('User selected cancel');
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            return;
+        end
+        fprintf(LASTCOM,'\n');
+        
+        eegh(LASTCOM);
+        
+        if Save_file_label
+            EEG = EEG_advance;
+            [pathstr, file_name, ext] = fileparts(EEG.filename);
+            EEG.filename = [file_name,'.set'];
+            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+            EEG_advance = eegh(LASTCOM, EEG);
+            eegh(LASTCOM);
+        else
+            for Numofeeg = 1:numel(EEGArray)
+                EEG_advance.filename = '';
+                EEG_advance.saved = 'no';
+                EEG_advance.filepath = '';
+            end
+        end
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        
+        observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = EEG_advance;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 
@@ -815,7 +907,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        
         EEG = observe_EEGDAT.EEG;
         typecomp = 1;    % defaults
         chanorcomp = 1;
@@ -952,6 +1043,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             EStduio_eegtab_eeglab_tool.eeg_spcetra_map.Enable=  'off';
             EStduio_eegtab_eeglab_tool.eeg_chanprop.Enable=  'off';
             EStduio_eegtab_eeglab_tool.eeg_tfr.Enable=  'off';
+            EStduio_eegtab_eeglab_tool.adjust_latency.Enable=  'off';
             observe_EEGDAT.count_current_eeg=6;
             return;
         end
@@ -971,7 +1063,8 @@ varargout{1} = EStudio_box_eeglab_tool;
             EStduio_eegtab_eeglab_tool.eeg_spcetra_map.Enable=  'off';
             EStduio_eegtab_eeglab_tool.eeg_chanprop.Enable=  'off';
             EStduio_eegtab_eeglab_tool.eeg_tfr.Enable=  'off';
-            observe_EEGDAT.count_current_eeg=10;
+            EStduio_eegtab_eeglab_tool.adjust_latency.Enable=  'off';
+            observe_EEGDAT.count_current_eeg=6;
             return;
         end
         EStduio_eegtab_eeglab_tool.about_eegdata.Enable =  'on';
@@ -987,6 +1080,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.eeg_spcetra_map.Enable=  'on';
         EStduio_eegtab_eeglab_tool.eeg_chanprop.Enable=  'on';
         EStduio_eegtab_eeglab_tool.eeg_tfr.Enable=  'on';
+        EStduio_eegtab_eeglab_tool.adjust_latency.Enable=  'on';
         observe_EEGDAT.count_current_eeg=6;
     end
 

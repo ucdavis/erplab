@@ -142,6 +142,7 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
         gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
+        observe_ERPDAT.Count_currentERP=17;
     end
 
 

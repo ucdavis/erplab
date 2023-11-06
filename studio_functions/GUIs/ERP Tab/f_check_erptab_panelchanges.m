@@ -94,4 +94,13 @@ if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
 end
 
 
+
+MyViewer_chanbin = estudioworkingmemory('ERPTab_stimulation');
+if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
+    messgStr  = char( 'Changes on "Create Artificial ERP Waveform" have not been applied');
+    erpanelIndex =13;
+end
+
+
+
 return;

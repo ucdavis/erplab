@@ -241,7 +241,6 @@ varargout{1} = ERP_filtering_box;
 
     function filter_help(~,~)
         web('https://github.com/lucklab/erplab/wiki/Filtering','-browser');
-        
     end
 %%----------------------all bin and all chan-------------------------------
     function All_bin_chan(~,~)

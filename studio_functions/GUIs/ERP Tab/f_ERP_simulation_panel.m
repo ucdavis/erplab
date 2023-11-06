@@ -11,6 +11,7 @@ function varargout = f_ERP_simulation_panel(varargin)
 % global gui_erp_simulation;
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
+addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -40,12 +41,11 @@ varargout{1} = ERP_simulation_box;
 %%********************Draw the GUI for ERP measurement tool*****************
     function erp_blc_dt_gui(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
-            Enable_label = 'off';
+        Enable_label = 'off';
         def   = erpworkingmemory('pop_ERP_simulation');
         if isempty(def)
             def  = {1,1,100,50,0,-200,799,1,1000,0,1,0,1,0,1,10};
         end
-        
         try
             BasFunLabel = def{1};
         catch
@@ -71,16 +71,18 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.realdatamatch_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.realerp_check = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.realdatamatch_title,...
             'callback',@erpcheckbox,'String','Compare with Real Data','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def,'Value',0);
+        gui_erp_simulation.realerp_check.KeyPressFcn= @erp_simuls_presskey;
         uiextras.Empty('Parent', gui_erp_simulation.realdatamatch_title);
         set(gui_erp_simulation.realdatamatch_title, 'Sizes',[200 70]);
-        
+        gui_erp_simulation.Paras{1}=gui_erp_simulation.realerp_check.Value;
         %%ERPset for real data
         gui_erp_simulation.erpset_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.erpset_title,...
             'String','ERPset:','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.erpsetedit = uicontrol('Style', 'edit','Parent', gui_erp_simulation.erpset_title,...
             'callback',@erpsetedit,'String','','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
-        
+        gui_erp_simulation.Paras{2} = str2num(gui_erp_simulation.erpsetedit.String);
+        gui_erp_simulation.erpsetedit.KeyPressFcn= @erp_simuls_presskey;
         gui_erp_simulation.erpsetpopup = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.erpset_title,...
             'callback',@erpsetpopup,'String','Browse','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
         
@@ -90,21 +92,22 @@ varargout{1} = ERP_simulation_box;
             'String','Channel:','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.channeledit = uicontrol('Style', 'edit','Parent', gui_erp_simulation.erpsetchan_title,...
             'callback',@channeledit,'String','','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
+        gui_erp_simulation.channeledit.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{3} = str2num(gui_erp_simulation.channeledit.String);
         
         gui_erp_simulation.channelpopup = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.erpsetchan_title,...
             'callback',@channelpopup,'String','Browse','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
-        
         %%bin for real data
         gui_erp_simulation.erpsetbin_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.erpsetbin_title,...
             'String','Bin:','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         gui_erp_simulation.binedit = uicontrol('Style', 'edit','Parent', gui_erp_simulation.erpsetbin_title,...
             'callback',@binedit,'String','','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
-        
+        gui_erp_simulation.binedit.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{4} = str2num(gui_erp_simulation.binedit.String);
         gui_erp_simulation.binpopup = uicontrol('Style', 'pushbutton','Parent', gui_erp_simulation.erpsetbin_title,...
             'callback',@binpopup,'String','Browse','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1],'Enable','off');
-        
-        if length(observe_ERPDAT.ALLERP)==1 && strcmpi(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+        if isempty(observe_ERPDAT.ALLERP)
             gui_erp_simulation.realerp_check.Value =0;
             EnableFlag = 'off';
             gui_erp_simulation.realerp_check.Enable = EnableFlag;
@@ -113,9 +116,7 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.asif_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.asif_title,...
             'String','Basic Information for Simulation','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
-        
         gui_erp_simulation.epoch_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
-        
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
             'String','Epoch: Start','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         try
@@ -125,7 +126,8 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.epoch_start = uicontrol('Style', 'edit','Parent',  gui_erp_simulation.epoch_title,...
             'callback',@epochstart,'String',num2str(epochStart),'FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
-        
+        gui_erp_simulation.epoch_start.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{5} = str2num(gui_erp_simulation.epoch_start.String);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
             'String','Stop','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         try
@@ -135,7 +137,8 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.epoch_stop = uicontrol('Style', 'edit','Parent',  gui_erp_simulation.epoch_title,...
             'callback',@epocstop,'String',num2str(epochStop),'FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
-        
+        gui_erp_simulation.epoch_stop.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{6} = str2num(gui_erp_simulation.epoch_stop.String);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.epoch_title,...
             'String','ms','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
         set(gui_erp_simulation.epoch_title, 'Sizes',[80 60 40 60 25]);
@@ -148,6 +151,8 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.srate_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.srate=uicontrol('Style', 'radiobutton','Parent',  gui_erp_simulation.srate_title,...
             'callback',@srateop,'String','Sampling rate','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.Paras{7} = gui_erp_simulation.srate.Value;
+        gui_erp_simulation.srate.KeyPressFcn= @erp_simuls_presskey;
         try
             srate = def{9};
         catch
@@ -155,6 +160,8 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.srateedit =uicontrol('Style', 'edit','Parent',  gui_erp_simulation.srate_title,...
             'callback',@srateedit,'String', '','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
+        gui_erp_simulation.srateedit.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{8} = str2num(gui_erp_simulation.srateedit.String);
         if srateop==1
             gui_erp_simulation.srate.Value =1;
             gui_erp_simulation.srateedit.Enable = 'on';
@@ -173,8 +180,10 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.speriod_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.srateperiod=uicontrol('Style', 'radiobutton','Parent',  gui_erp_simulation.speriod_title,...
             'callback',@srateperiod,'String','Sampling period','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.srateperiod.KeyPressFcn= @erp_simuls_presskey;
         gui_erp_simulation.srateperiodedit =uicontrol('Style', 'edit','Parent',  gui_erp_simulation.speriod_title,...
             'callback',@srateperiodedit,'String', '','FontSize',FonsizeDefault ,'BackgroundColor',[1 1 1]);
+        gui_erp_simulation.srateperiodedit.KeyPressFcn= @erp_simuls_presskey;
         if srateop==1
             gui_erp_simulation.srateperiod.Value =0;
             gui_erp_simulation.srateperiodedit.Enable = 'off';
@@ -199,6 +208,9 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.exguafun_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.exgua_op = uicontrol('Style', 'radiobutton','Parent', gui_erp_simulation.exguafun_option,...
             'String','ExGaussian','callback',@exguass_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.exgua_op.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{9} = gui_erp_simulation.exgua_op.Value;
+        
         if BasFunLabel==1
             gui_erp_simulation.exgua_op.Value =1;
             ExgauEnable = 'on';
@@ -223,7 +235,8 @@ varargout{1} = ERP_simulation_box;
             'String',num2str(Exgau_amp),'callback',@exgau_peakamp,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_option,...
             'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+        gui_erp_simulation.exgua_peakamp.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{10} = str2num(gui_erp_simulation.exgua_peakamp.String);
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_option);
         set(gui_erp_simulation.exguafun_option, 'Sizes',[90 90 60 30 15]);
         
@@ -241,7 +254,8 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.exgua_mean = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting,...
             'String',num2str(Exgau_mean),'callback',@exgau_mean,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
+        gui_erp_simulation.exgua_mean.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{11} = str2num(gui_erp_simulation.exgua_mean.String);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_setting,...
             'String','SD','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         try
@@ -255,13 +269,12 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.exgua_sd = uicontrol('Style', 'edit','Parent', gui_erp_simulation.exguafun_setting,...
             'String',num2str(ExGauSD),'callback',@exgau_sd,'Enable',ExgauEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(gui_erp_simulation.exguafun_setting, 'Sizes',[15 90 50 40 50]);
-        
+        gui_erp_simulation.exgua_sd.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{12} = str2num(gui_erp_simulation.exgua_sd.String);
         gui_erp_simulation.exguafun_setting1 = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting1);
-        
         uicontrol('Style', 'text','Parent', gui_erp_simulation.exguafun_setting1,...
             'String','Exponential tau','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         try
             ExGauTau = def{5};
         catch
@@ -275,7 +288,8 @@ varargout{1} = ERP_simulation_box;
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting1);
         uiextras.Empty('Parent', gui_erp_simulation.exguafun_setting1);
         set(gui_erp_simulation.exguafun_setting1, 'Sizes',[15 90 50 40 50]);
-        
+        gui_erp_simulation.exgua_tau.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{13} = str2num(gui_erp_simulation.exgua_tau.String);
         %%Impulse function
         gui_erp_simulation.impulse_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.impulse_op = uicontrol('Style', 'radiobutton','Parent', gui_erp_simulation.impulse_option,...
@@ -283,19 +297,20 @@ varargout{1} = ERP_simulation_box;
         if BasFunLabel==2
             ImpulseEnable ='on';
             gui_erp_simulation.impulse_op.Value =1;
-            
         else
             ImpulseEnable = 'off';
             gui_erp_simulation.impulse_op.Value =0;
         end
-        
+        gui_erp_simulation.impulse_op.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{14} = gui_erp_simulation.impulse_op.Value;
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_option,...
             'String','Peak amplitude','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         gui_erp_simulation.impulse_peakamp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.impulse_option,...
             'String','','callback',@impulse_peakamp,'Enable',ImpulseEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_option,...
             'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.impulse_peakamp.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{15} = str2num(gui_erp_simulation.impulse_peakamp.String);
         if BasFunLabel==2
             try
                 impulsePeakamp = def{2};
@@ -309,16 +324,15 @@ varargout{1} = ERP_simulation_box;
         end
         uiextras.Empty('Parent', gui_erp_simulation.impulse_option);
         set( gui_erp_simulation.impulse_option, 'Sizes',[80 100 60 30 15]);
-        
         gui_erp_simulation.impulse_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.impulse_setting);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,...
             'String','Latency','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         gui_erp_simulation.impulse_latency = uicontrol('Style', 'edit','Parent', gui_erp_simulation.impulse_setting,...
             'String','','callback',@impulse_latency,'Enable',ImpulseEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', gui_erp_simulation.impulse_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.impulse_latency.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{16} = str2num(gui_erp_simulation.impulse_latency.String);
         if BasFunLabel==2
             try
                 impulselat = def{3};
@@ -330,17 +344,16 @@ varargout{1} = ERP_simulation_box;
             end
             gui_erp_simulation.impulse_latency.String = num2str(impulselat);
         end
-        
         uiextras.Empty('Parent', gui_erp_simulation.impulse_setting);
         set(gui_erp_simulation.impulse_setting, 'Sizes',[80 100 60 30 15]);
-        
         %%Boxcar function
         gui_erp_simulation.square_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.square_op = uicontrol('Style', 'radiobutton','Parent', gui_erp_simulation.square_option,...
             'String','Boxcar','callback',@square_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+        gui_erp_simulation.square_op.KeyPressFcn= @erp_simuls_presskey;
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_option,...
             'String','Peak amplitude','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.Paras{17} =gui_erp_simulation.square_op.Value;
         if BasFunLabel==3
             squareEnable = 'on';
         else
@@ -351,6 +364,8 @@ varargout{1} = ERP_simulation_box;
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_option,...
             'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.square_option);
+        gui_erp_simulation.square_peakamp.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{18} =str2num(gui_erp_simulation.square_peakamp.String);
         if BasFunLabel==3
             try
                 sqaurePeakamp = def{2};
@@ -366,16 +381,15 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.square_op.Value =0;
         end
         set( gui_erp_simulation.square_option, 'Sizes',[80 100 60 30 15]);
-        
         gui_erp_simulation.square_setting = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.square_setting);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
             'String','Onset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         gui_erp_simulation.square_onset = uicontrol('Style', 'edit','Parent', gui_erp_simulation.square_setting,...
             'String','','callback',@square_onset,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.square_onset.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{19} =str2num(gui_erp_simulation.square_onset.String);
         if BasFunLabel==3
             try
                 Onsetlat = def{3};
@@ -387,15 +401,13 @@ varargout{1} = ERP_simulation_box;
             end
             gui_erp_simulation.square_onset.String = num2str(Onsetlat);
         end
-        
-        
         uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
             'String','Offset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         gui_erp_simulation.square_offset = uicontrol('Style', 'edit','Parent', gui_erp_simulation.square_setting,...
             'String','','callback',@square_offset,'Enable',squareEnable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,...
-            'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', gui_erp_simulation.square_setting,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.square_offset.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{20} =str2num(gui_erp_simulation.square_offset.String);
         if BasFunLabel==3
             try
                 Offsetlat = def{4};
@@ -415,11 +427,12 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.noisefun_title = uiextras.HBox('Parent',  gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',  gui_erp_simulation.noisefun_title,...
             'String','Noise Function for Simulation','FontWeight','bold','FontSize',FonsizeDefault ,'BackgroundColor',ColorB_def);
-        
         %%sin noise
         gui_erp_simulation.sin_option = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.sin_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.sin_option ,...
             'String','Sinusoidal','callback',@sinoise_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.sin_op.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{21} = gui_erp_simulation.sin_op.Value;
         try
             sinop = def{14};
         catch
@@ -435,9 +448,10 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.sin_op.Value=0;
             sinEnable = 'off';
         end
-        
         gui_erp_simulation.sin_amp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.sin_option ,...
             'String',' ','callback',@sin_amp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',sinEnable);
+        gui_erp_simulation.sin_amp.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{22} = str2num(gui_erp_simulation.sin_amp.String);
         try
             sinamp = def{15};
         catch
@@ -453,7 +467,8 @@ varargout{1} = ERP_simulation_box;
             'String',' ','callback',@sinoise_fre,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',sinEnable);
         uicontrol('Style', 'text','Parent', gui_erp_simulation.sin_option,...
             'String','Hz','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+        gui_erp_simulation.sin_fre.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{23} = str2num(gui_erp_simulation.sin_fre.String);
         try
             sinfre = def{16};
         catch
@@ -464,11 +479,12 @@ varargout{1} = ERP_simulation_box;
         end
         gui_erp_simulation.sin_fre.String = num2str(sinfre);
         set(gui_erp_simulation.sin_option, 'Sizes',[90 60 30 60 30]);
-        
         %%white noise
         gui_erp_simulation.white_title = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.white_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.white_title ,...
             'String','White','callback',@whitenoise_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.white_op.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{24} = gui_erp_simulation.white_op.Value;
         try
             whiteop =def{10};
         catch
@@ -484,14 +500,13 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.white_op.Value =0;
             whitEnable = 'off';
         end
-        
         gui_erp_simulation.white_amp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.white_title ,...
             'String',' ','callback',@white_amp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',whitEnable);
-        
-        uicontrol('Style', 'text','Parent', gui_erp_simulation.white_title,...
-            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.white_amp.KeyPressFcn= @erp_simuls_presskey;
+        uicontrol('Style', 'text','Parent', gui_erp_simulation.white_title,'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.white_title);
         uiextras.Empty('Parent', gui_erp_simulation.white_title);
+        gui_erp_simulation.Paras{25} = str2num(gui_erp_simulation.white_amp.String);
         try
             whiteamp =def{11};
         catch
@@ -507,6 +522,8 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.pink_title = uiextras.HBox('Parent', gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_simulation.pink_op = uicontrol('Style', 'checkbox','Parent', gui_erp_simulation.pink_title ,...
             'String','Pink','callback',@pinknoise_op,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_simulation.pink_op.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{26} = gui_erp_simulation.pink_op.Value;
         try
             pinkeop =def{12};
         catch
@@ -522,17 +539,17 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.pink_op.Value =0;
             pinkEnable = 'off';
         end
-        
         gui_erp_simulation.pink_amp = uicontrol('Style', 'edit','Parent', gui_erp_simulation.pink_title ,...
             'String',' ','callback',@pink_amp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',pinkEnable);
+        gui_erp_simulation.pink_amp.KeyPressFcn= @erp_simuls_presskey;
+        gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
         try
             pinkAmp = def{13};
         catch
             pinkAmp=0;
         end
         gui_erp_simulation.pink_amp.String = num2str(pinkAmp);
-        uicontrol('Style', 'text','Parent', gui_erp_simulation.pink_title,...
-            'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', gui_erp_simulation.pink_title,'String','μV','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.pink_title);
         uiextras.Empty('Parent', gui_erp_simulation.pink_title);
         set(gui_erp_simulation.pink_title, 'Sizes',[90 60 30 60 30]);
@@ -555,7 +572,6 @@ varargout{1} = ERP_simulation_box;
         uiextras.Empty('Parent', gui_erp_simulation.newnoise_option);
         set(gui_erp_simulation.newnoise_option, 'Sizes',[70 130 70]);
         
-        
         %%Cancel and advanced
         gui_erp_simulation.other_option = uiextras.HBox('Parent',gui_erp_simulation.bsfun_box,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_erp_simulation.other_option,'BackgroundColor',ColorB_def);
@@ -569,33 +585,39 @@ varargout{1} = ERP_simulation_box;
         set(gui_erp_simulation.bsfun_box, 'Sizes',[200 20 25 25 25 25 20 25 25 25 20 25 25 25 25 25 25 25 20 25 25 25 25 25]);
         plot_erp_simulation();
         
-        
-        
-        
+        estudioworkingmemory('ERPTab_stimulation',0);
     end
-
-
-
 %%****************************************************************************************************************************************
 %%*******************   Subfunctions   ***************************************************************************************************
 %%****************************************************************************************************************************************
 
 %%---------------------------Help------------------------------------------
     function simuerp_help(~,~)
-       web('https://github.com/ucdavis/erplab/wiki/Create-an-Artificial-ERP-Waveform','-browser');  
+        web('https://github.com/ucdavis/erplab/wiki/Create-an-Artificial-ERP-Waveform','-browser');
     end
-
-
 
 %%---------------------Match with real ERP?--------------------------------
     function erpcheckbox(Str,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
+        
         Value = Str.Value;
         if Value ==1
             EnableFlag = 'on';
         else
             EnableFlag = 'off';
         end
-        if length(observe_ERPDAT.ALLERP)==1 && strcmpi(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             Str.Enable = 'off';
             EnableFlag = 'off';
             
@@ -618,7 +640,6 @@ varargout{1} = ERP_simulation_box;
         else
             EnableFlagn = 'on';
         end
-        
         gui_erp_simulation.epoch_start.Enable = EnableFlagn;
         gui_erp_simulation.epoch_stop.Enable = EnableFlagn;
         gui_erp_simulation.srate.Enable = EnableFlagn;
@@ -643,6 +664,17 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------------ERPset edit--------------------------------------
     function erpsetedit(Str,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         ERPArray = str2num(Str.String);
         if  ~isempty(observe_ERPDAT.ALLERP)
             if ~isempty(ERPArray) && min(ERPArray)>0
@@ -651,7 +683,6 @@ varargout{1} = ERP_simulation_box;
                 end
                 if ERPArray> length(observe_ERPDAT.ALLERP)
                     msgboxText =  'Create Artificial ERP Waveform -Real ERP: Input should be smaller than the length of ALLERP';
-                    fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
                     Str.String = '';
@@ -680,7 +711,6 @@ varargout{1} = ERP_simulation_box;
                 end
             else
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Index of ERPset should be a positive numeric';
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
                 Str.String = '';
@@ -708,6 +738,17 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------------ERPset popup--------------------------------------
     function erpsetpopup(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         ERPArray = str2num(gui_erp_simulation.erpsetedit.String);
         if ~isempty(ERPArray)
             if numel(ERPArray)~=1
@@ -773,6 +814,18 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------------channel edit-------------------------------------
     function channeledit(Str,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         channelArray = str2num(Str.String);
         if ~isempty(observe_ERPDAT.ALLERP)
             if isempty(channelArray)
@@ -814,9 +867,21 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------------channel popup------------------------------------
     function channelpopup(~,~)
-        if length(observe_ERPDAT.ALLERP)==1 && strcmpi(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             return;
         end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         if ~isempty(observe_ERPDAT.ALLERP)
             ERPsetArray =  str2num(gui_erp_simulation.erpsetedit.String);
             if ~isempty(ERPsetArray)
@@ -866,13 +931,27 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------------bin edit-----------------------------------------
     function binedit(Str,~)
+        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+            Str.Enable = 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         binArray = str2num(Str.String);
         if  ~isempty(observe_ERPDAT.ALLERP)
             if isempty(binArray)
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Please input one positive numeric for "Bin"';
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
-                %                 Str.String = '1';
                 return;
             end
             if numel(binArray)~=1
@@ -907,10 +986,22 @@ varargout{1} = ERP_simulation_box;
 
 
 %%-----------------------bin popup-----------------------------------------
-    function binpopup(~,~)
-        if length(observe_ERPDAT.ALLERP)==1 && strcmpi(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+    function binpopup(Str,~)
+        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+            Str.Enable = 'off';
             return;
         end
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         if ~isempty(observe_ERPDAT.ALLERP)
             ERPsetArray =  str2num(gui_erp_simulation.erpsetedit.String);
             if ~isempty(ERPsetArray)
@@ -976,12 +1067,21 @@ varargout{1} = ERP_simulation_box;
 
 %%----------------------------epoch start----------------------------------
     function epochstart(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         epochStart = str2num( gui_erp_simulation.epoch_start.String);
         epochStop = str2num( gui_erp_simulation.epoch_stop.String);
         if epochStart>=epochStop
-            beep;
             msgboxText =  ['Create Artificial ERP Waveform - The value for epoch start should be smaller than epoch stop'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             Str.String = '';
@@ -992,14 +1092,23 @@ varargout{1} = ERP_simulation_box;
 
 %%----------------------------epoch stop-----------------------------------
     function epocstop(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         epochStart = str2num( gui_erp_simulation.epoch_start.String);
         epochStop = str2num( gui_erp_simulation.epoch_stop.String);
         if epochStart>=epochStop
-            beep;
             msgboxText =  ['Create Artificial ERP Waveform - The value for epoch start should be smaller than epoch stop'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
-            Str.String = '';
             return;
         end
         plot_erp_simulation();
@@ -1007,6 +1116,16 @@ varargout{1} = ERP_simulation_box;
 
 %%---------------------Sampling rate option--------------------------------
     function srateop(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.srate.Value =1;
         gui_erp_simulation.srateedit.Enable = 'on';
         gui_erp_simulation.srateperiod.Value =0;
@@ -1017,6 +1136,17 @@ varargout{1} = ERP_simulation_box;
 
 %%--------------Edit sampling rate-----------------------------------------
     function srateedit(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         srate = str2num(Str.String);
         if ~isempty(srate) && numel(srate)==1 && srate>0
             gui_erp_simulation.srateperiodedit.String = num2str(1000/srate);
@@ -1032,6 +1162,17 @@ varargout{1} = ERP_simulation_box;
 
 %%---------------------Sampling period-------------------------------------
     function srateperiod(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         gui_erp_simulation.srate.Value =0;
         gui_erp_simulation.srateedit.Enable = 'off';
         gui_erp_simulation.srateperiod.Value =1;
@@ -1041,6 +1182,16 @@ varargout{1} = ERP_simulation_box;
 
 %%----------------------Edit sampling period-------------------------------
     function srateperiodedit(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         srateperiod = str2num(Str.String);
         if ~isempty(srateperiod) && numel(srateperiod)==1 && srateperiod>0
             gui_erp_simulation.srateedit.String = num2str(1000/srateperiod);
@@ -1056,6 +1207,16 @@ varargout{1} = ERP_simulation_box;
 
 %%--------------------------------Select ex-gaussian function--------------
     function exguass_op(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.exgua_op.Value =1;
         gui_erp_simulation.exgua_peakamp.Enable = 'on';
         gui_erp_simulation.exgua_mean.Enable = 'on';
@@ -1074,6 +1235,16 @@ varargout{1} = ERP_simulation_box;
 
 %%---------------Peak amplitude for ex-Gaussian function-------------------
     function exgau_peakamp(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         PeakAmp = str2num(Str.String);
         if isempty(PeakAmp) || numel(PeakAmp)~=1
             msgboxText =  ['Create Artificial ERP Waveform> peak amplitude for Ex-Gaussian should be a numeric'];
@@ -1087,6 +1258,16 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------Guasssian mean-----------------------------------------
     function exgau_mean(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         Mean = str2num(Str.String);
         if isempty(Mean) || numel(Mean)~=1
             msgboxText =  ['Create Artificial ERP Waveform> Gaussian mean for Ex-Gaussian should be a numeric'];
@@ -1100,6 +1281,16 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------SD for Ex-Gaussian function-----------------------------
     function exgau_sd(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         SD = str2num(Str.String);
         if isempty(SD) || numel(SD)~=1
             msgboxText =  ['Create Artificial ERP Waveform> SD for Ex-Gaussian should be a numeric'];
@@ -1114,6 +1305,16 @@ varargout{1} = ERP_simulation_box;
 
 %%----------------Tau for Ex-Gaussian function-----------------------------
     function exgau_tau(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         Tau = str2num(Str.String);
         if isempty(Tau) || numel(Tau)~=1
             msgboxText =  ['Create Artificial ERP Waveform> Exponential tau for Ex-Gaussian should be a numeric'];
@@ -1128,6 +1329,16 @@ varargout{1} = ERP_simulation_box;
 
 %%--------------------------------impulse function-------------------------
     function impulse_op(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.exgua_op.Value =0;
         gui_erp_simulation.exgua_peakamp.Enable = 'off';
         gui_erp_simulation.exgua_mean.Enable = 'off';
@@ -1145,6 +1356,16 @@ varargout{1} = ERP_simulation_box;
 
 %%-------------Impulse peak amplitude--------------------------------------
     function impulse_peakamp(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Impulse- peak amplitude should be a numeric'];
@@ -1158,6 +1379,16 @@ varargout{1} = ERP_simulation_box;
 
 %%-------------------Latency for impluse-----------------------------------
     function impulse_latency(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         peakLat = str2num(Str.String);
         if isempty(peakLat)
             msgboxText =  ['Create Artificial ERP Waveform>Impulse- Latency should be a numeric'];
@@ -1171,12 +1402,21 @@ varargout{1} = ERP_simulation_box;
 
 %%--------------------------------square function--------------------------
     function square_op(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         gui_erp_simulation.exgua_op.Value =0;
         gui_erp_simulation.exgua_peakamp.Enable = 'off';
         gui_erp_simulation.exgua_mean.Enable = 'off';
         gui_erp_simulation.exgua_sd.Enable = 'off';
         gui_erp_simulation.exgua_tau.Enable = 'off';
-        
         gui_erp_simulation.impulse_op.Value = 0;
         gui_erp_simulation.impulse_peakamp.Enable = 'off';
         gui_erp_simulation.impulse_latency.Enable = 'off';
@@ -1190,6 +1430,16 @@ varargout{1} = ERP_simulation_box;
 
 %%--------------Peak amplitude for square function-------------------------
     function square_peakamp(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Square- peak amplitude should be a numeric'];
@@ -1203,6 +1453,16 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------Square onset latency-----------------------------------
     function square_onset(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         onsetlat = str2num(Str.String);
         if isempty(onsetlat)
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Onset latency should be a numeric'];
@@ -1224,6 +1484,16 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------Boxcar offset latency----------------------------------
     function square_offset(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         offsetlat = str2num(Str.String);
         if isempty(offsetlat)
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Offset latency should be a numeric'];
@@ -1245,7 +1515,16 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------update new noise if needed------------------------------
     function newnoise_op(~,~)
-        
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         %%reset the phase for sin signal
         SimulationPhase = rand(1);
         erpworkingmemory('SimulationPhase',SimulationPhase);
@@ -1267,6 +1546,17 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------check box of sin function-------------------------------
     function sinoise_op(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         Value = Str.Value;
         if Value==1
             Enable = 'on';
@@ -1280,6 +1570,16 @@ varargout{1} = ERP_simulation_box;
 
 %%---------------Peak amplitude for sin noise------------------------------
     function sin_amp(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Sinusoidal noise- peak amplitude should be a numeric'];
@@ -1293,6 +1593,16 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------Frequency for sin noise--------------------------------
     function sinoise_fre(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         Fresin = str2num(Str.String);
         if isempty(Fresin) || Fresin<=0
             msgboxText =  ['Create Artificial ERP Waveform>Sinusoidal noise- frequency should be a positive numeric'];
@@ -1306,6 +1616,16 @@ varargout{1} = ERP_simulation_box;
 
 %%------------checkbox for white noise-------------------------------------
     function whitenoise_op(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         if Str.Value ==1
             gui_erp_simulation.white_amp.Enable ='on';
         else
@@ -1316,6 +1636,17 @@ varargout{1} = ERP_simulation_box;
 
 %%-------------------Peak amplitude for white noise------------------------
     function white_amp(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>White noise- peak amplitude should be a numeric'];
@@ -1329,6 +1660,16 @@ varargout{1} = ERP_simulation_box;
 
 %%--------------------check box for pink noise-----------------------------
     function pinknoise_op(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
         if Str.Value ==1
             gui_erp_simulation.pink_amp.Enable = 'on';
         else
@@ -1339,10 +1680,20 @@ varargout{1} = ERP_simulation_box;
 
 %%------------------peak amplitude of pink noise---------------------------
     function pink_amp(Str,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Pink noise- peak amplitude should be a numeric'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             Str.String = '0';
@@ -1353,12 +1704,155 @@ varargout{1} = ERP_simulation_box;
 
 %%-----------------------Help----------------------------------------------
     function simulation_cancel(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 1 1 1];
+        gui_erp_simulation.apply.ForegroundColor = [0 0 0];
+        ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_stimulation',0);
         
+        
+        try gui_erp_simulation.realerp_check.Value = gui_erp_simulation.Paras{1};catch gui_erp_simulation.realerp_check.Value=0; end
+        gui_erp_simulation.erpsetedit.String = num2str(gui_erp_simulation.Paras{2});
+        if gui_erp_simulation.realerp_check.Value==0
+            Enable1 = 'off';
+            Enable2 = 'on';
+        else
+            Enable1 = 'on';
+            Enable2 = 'off';
+        end
+        %%chan
+        gui_erp_simulation.erpsetpopup.Enable = Enable1;
+        gui_erp_simulation.erpsetedit.Enable = Enable1;
+        gui_erp_simulation.channeledit.String = num2str(gui_erp_simulation.Paras{3});
+        gui_erp_simulation.channeledit.Enable = Enable1;
+        gui_erp_simulation.channelpopup.Enable = Enable1;
+        %%bin
+        gui_erp_simulation.binedit.String= num2str(gui_erp_simulation.Paras{4});
+        gui_erp_simulation.binedit.Enable = Enable1;
+        gui_erp_simulation.binpopup.Enable = Enable1;
+        %%start and end for the epoch
+        gui_erp_simulation.epoch_start.String = num2str(gui_erp_simulation.Paras{5});
+        gui_erp_simulation.epoch_stop.String = num2str(gui_erp_simulation.Paras{6});
+        gui_erp_simulation.epoch_start.Enable = Enable2;
+        gui_erp_simulation.epoch_stop.Enable = Enable2;
+        %%sampling rate
+        gui_erp_simulation.srate.Value = gui_erp_simulation.Paras{7};
+        gui_erp_simulation.srateedit.String = num2str( gui_erp_simulation.Paras{8});
+        if gui_erp_simulation.srate.Value==1
+            gui_erp_simulation.srateedit.Enable = 'on';
+            gui_erp_simulation.srateperiod.Value=0;
+            if ~isempty(gui_erp_simulation.Paras{8}) && gui_erp_simulation.Paras{8}~=0
+                gui_erp_simulation.srateperiodedit = num2str(1000/gui_erp_simulation.Paras{8});
+            end
+        else
+            gui_erp_simulation.srateedit.Enable = 'off';
+            gui_erp_simulation.srateperiod.Value=1;
+            if ~isempty(gui_erp_simulation.Paras{8}) && gui_erp_simulation.Paras{8}~=0
+                gui_erp_simulation.srateperiodedit.String = num2str(1000/gui_erp_simulation.Paras{8});
+            end
+        end
+        if gui_erp_simulation.realerp_check.Value==1
+            gui_erp_simulation.srate.Enable = Enable2;
+            gui_erp_simulation.srateedit.Enable = Enable2;
+            gui_erp_simulation.srateperiod.Enable = Enable2;
+            gui_erp_simulation.srateperiodedit.Enable = Enable2;
+        end
+        %%exgaussian
+        gui_erp_simulation.exgua_op.Value= gui_erp_simulation.Paras{9};
+        if gui_erp_simulation.exgua_op.Value==1
+            Enableflag = 'on';
+        else
+            Enableflag = 'off';
+        end
+        gui_erp_simulation.exgua_peakamp.String = num2str(gui_erp_simulation.Paras{10});
+        gui_erp_simulation.exgua_mean.String = num2str(gui_erp_simulation.Paras{11});
+        gui_erp_simulation.exgua_sd.String= num2str(gui_erp_simulation.Paras{12});
+        gui_erp_simulation.exgua_tau.String= num2str(gui_erp_simulation.Paras{13});
+        gui_erp_simulation.exgua_peakamp.Enable = Enableflag;
+        gui_erp_simulation.exgua_mean.Enable = Enableflag;
+        gui_erp_simulation.exgua_sd.Enable = Enableflag;
+        gui_erp_simulation.exgua_tau.Enable = Enableflag;
+        
+        %%impulse
+        gui_erp_simulation.impulse_op.Value = gui_erp_simulation.Paras{14};
+        if gui_erp_simulation.impulse_op.Value==1
+            Enableflag = 'on';
+        else
+            Enableflag = 'off';
+        end
+        gui_erp_simulation.impulse_peakamp.String = num2str(gui_erp_simulation.Paras{15});
+        gui_erp_simulation.impulse_latency.String=num2str(gui_erp_simulation.Paras{16});
+        gui_erp_simulation.impulse_peakamp.Enable = Enableflag;
+        gui_erp_simulation.impulse_latency.Enable = Enableflag;
+        
+        %%boxcar
+        gui_erp_simulation.square_op.Value=gui_erp_simulation.Paras{17};
+        gui_erp_simulation.square_peakamp.String = num2str(gui_erp_simulation.Paras{18});
+        gui_erp_simulation.square_onset.String= num2str(gui_erp_simulation.Paras{19});
+        gui_erp_simulation.square_offset.String= num2str(gui_erp_simulation.Paras{20});
+        if gui_erp_simulation.square_op.Value==1
+            Enableflag = 'on';
+        else
+            Enableflag = 'off';
+        end
+        gui_erp_simulation.square_peakamp.Enable = Enableflag;
+        gui_erp_simulation.square_onset.Enable = Enableflag;
+        gui_erp_simulation.square_offset.Enable = Enableflag;
+        
+        %%sinusoidal signal
+        gui_erp_simulation.sin_op.Value = gui_erp_simulation.Paras{21};
+        gui_erp_simulation.sin_amp.String =num2str(gui_erp_simulation.Paras{22});
+        gui_erp_simulation.sin_fre.String=num2str(gui_erp_simulation.Paras{23});
+        if gui_erp_simulation.sin_op.Value
+            Enableflag = 'on';
+        else
+            Enableflag = 'off';
+        end
+        gui_erp_simulation.sin_amp.Enable = Enableflag;
+        gui_erp_simulation.sin_fre.Enable = Enableflag;
+        
+        %%white noise
+        gui_erp_simulation.white_op.Value=gui_erp_simulation.Paras{24};
+        gui_erp_simulation.white_amp.String = num2str(gui_erp_simulation.Paras{25});
+        if gui_erp_simulation.white_op.Value==1
+            gui_erp_simulation.white_amp.Enable = 'on';
+        else
+            gui_erp_simulation.white_amp.Enable = 'off';
+        end
+        
+        %%pink noise
+        gui_erp_simulation.pink_op.Value=gui_erp_simulation.Paras{26};
+        gui_erp_simulation.pink_amp.String = num2str(gui_erp_simulation.Paras{27});
+        if gui_erp_simulation.pink_op.Value==1
+            gui_erp_simulation.pink_amp.Enable = 'on';
+        else
+            gui_erp_simulation.pink_amp.Enable = 'off';
+        end
     end
 
 
 %%----------------------apply----------------------------------------------
     function simulation_apply(~,~)
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=13
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_simulation.apply.ForegroundColor = [1 1 1];
+        ERP_simulation_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('ERPTab_stimulation',1);
+        
         erpworkingmemory('f_ERP_proces_messg','Create Artificial ERP waveform');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ALLERPCOM = evalin('base','ALLERPCOM');
@@ -1502,7 +1996,6 @@ varargout{1} = ERP_simulation_box;
                 observe_ERPDAT.Process_messg =4;
                 return;
             end
-            
         end
         %%---------------------------Noise signal----------------------------------
         if gui_erp_simulation.sin_op.Value==1
@@ -1549,6 +2042,40 @@ varargout{1} = ERP_simulation_box;
         end
         NewnoiseFlag = gui_erp_simulation.newnoise_op.Value;
         
+        gui_erp_simulation.apply.BackgroundColor =  [ 1 1 1];
+        gui_erp_simulation.apply.ForegroundColor = [0 0 0];
+        ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_stimulation',0);
+        
+        gui_erp_simulation.Paras{1}=gui_erp_simulation.realerp_check.Value;
+        gui_erp_simulation.Paras{2} = str2num(gui_erp_simulation.erpsetedit.String);
+        gui_erp_simulation.Paras{3} = str2num(gui_erp_simulation.channeledit.String);
+        gui_erp_simulation.Paras{4} = str2num(gui_erp_simulation.binedit.String);
+        gui_erp_simulation.Paras{5} = str2num(gui_erp_simulation.epoch_start.String);
+        gui_erp_simulation.Paras{6} = str2num(gui_erp_simulation.epoch_stop.String);
+        gui_erp_simulation.Paras{7} = gui_erp_simulation.srate.Value;
+        gui_erp_simulation.Paras{8} = str2num(gui_erp_simulation.srateedit.String);
+        gui_erp_simulation.Paras{9} = gui_erp_simulation.exgua_op.Value;
+        gui_erp_simulation.Paras{10} = str2num(gui_erp_simulation.exgua_peakamp.String);
+        gui_erp_simulation.Paras{11} = str2num(gui_erp_simulation.exgua_mean.String);
+        gui_erp_simulation.Paras{12} = str2num(gui_erp_simulation.exgua_sd.String);
+        gui_erp_simulation.Paras{13} = str2num(gui_erp_simulation.exgua_tau.String);
+        gui_erp_simulation.Paras{14} = gui_erp_simulation.impulse_op.Value;
+        gui_erp_simulation.Paras{15} = str2num(gui_erp_simulation.impulse_peakamp.String);
+        gui_erp_simulation.Paras{16} = str2num(gui_erp_simulation.impulse_latency.String);
+        gui_erp_simulation.Paras{17} =gui_erp_simulation.square_op.Value;
+        gui_erp_simulation.Paras{18} =str2num(gui_erp_simulation.square_peakamp.String);
+        gui_erp_simulation.Paras{19} =str2num(gui_erp_simulation.square_onset.String);
+        gui_erp_simulation.Paras{20} =str2num(gui_erp_simulation.square_offset.String);
+        gui_erp_simulation.Paras{21} = gui_erp_simulation.sin_op.Value;
+        gui_erp_simulation.Paras{22} = str2num(gui_erp_simulation.sin_amp.String);
+        gui_erp_simulation.Paras{23} = str2num(gui_erp_simulation.sin_fre.String);
+        gui_erp_simulation.Paras{24} = gui_erp_simulation.white_op.Value;
+        gui_erp_simulation.Paras{25} = str2num(gui_erp_simulation.white_amp.String);
+        gui_erp_simulation.Paras{26} = gui_erp_simulation.pink_op.Value;
+        gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
         try
             ALLERP = [];
             [ERP, ERPCOM] =  pop_ERP_simulation(ALLERP,BasFuncName,'EpochStart',EpochStart,'EpochStop',EpochStop,'Srate',Srate,'BasPeakAmp',BasPeakAmp,'MeanLatencyOnset',MeanLatOnset,'SDOffset',SDOffset,...
@@ -1560,7 +2087,6 @@ varargout{1} = ERP_simulation_box;
                 beep;
                 return;
             end
-            
             if ~isempty(Answer)
                 ERPName = Answer{1};
                 if ~isempty(ERPName)
@@ -1596,7 +2122,6 @@ varargout{1} = ERP_simulation_box;
             observe_ERPDAT.Count_currentERP = 1;
             observe_ERPDAT.Process_messg =2;
         catch
-            %           estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             observe_ERPDAT.Process_messg =3;
             observe_ERPDAT.Count_currentERP = 1;
             return;
@@ -1609,7 +2134,6 @@ varargout{1} = ERP_simulation_box;
 %%-----------------Plot ERP for the simulation-----------------------------
 %%-------------------------------------------------------------------------
     function plot_erp_simulation(~,~)
-        
         MatchFlag = gui_erp_simulation.realerp_check.Value;
         ALLERP = observe_ERPDAT.ALLERP;
         ERP = [];
@@ -1883,7 +2407,7 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.square_peakamp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of Boxcar function'];
-             erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
                 return;
             end
@@ -1983,7 +2507,6 @@ varargout{1} = ERP_simulation_box;
             catch
                 rng(1,'twister');
             end
-            
             Desirednosizepink = f_pinknoise(numel(Times));
             Desirednosizepink = reshape(Desirednosizepink,1,numel(Desirednosizepink));
             Desirednosizepink = PeakAmp*Desirednosizepink./max(abs(Desirednosizepink(:)));
@@ -1994,23 +2517,22 @@ varargout{1} = ERP_simulation_box;
             try
                 RealData = squeeze(ERP.bindata(ChannelArray,:,binArray));
                 plot(gui_erp_simulation.plot_erp,Times,[Sig;RealData],'linewidth',1.5);
-          
+                
             catch
             end
         else
             plot(gui_erp_simulation.plot_erp,Times,Sig,'k','linewidth',1.5);
         end
-%         gui_erp_simulation.plot_erp.FontSize =12;
+        %         gui_erp_simulation.plot_erp.FontSize =12;
         xlim(gui_erp_simulation.plot_erp,[Times(1),Times(end)]);
     end
 
 
 %%-------enable the panel for real data------------------------------------
     function Count_currentERPChanged(~,~)
-          if observe_ERPDAT.Count_currentERP~=17
+        if observe_ERPDAT.Count_currentERP~=17
             return;
-          end
-        
+        end
         if isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
             gui_erp_simulation.realerp_check.Value =0;
             EnableFlag = 'off';
@@ -2057,9 +2579,73 @@ varargout{1} = ERP_simulation_box;
                     gui_erp_simulation.srateperiodedit.Enable = 'on';
                 end
             end
+            gui_erp_simulation.Paras{1}=gui_erp_simulation.realerp_check.Value;
+            gui_erp_simulation.Paras{2} = str2num(gui_erp_simulation.erpsetedit.String);
+            gui_erp_simulation.Paras{3} = str2num(gui_erp_simulation.channeledit.String);
+            gui_erp_simulation.Paras{4} = str2num(gui_erp_simulation.binedit.String);
+            gui_erp_simulation.Paras{5} = str2num(gui_erp_simulation.epoch_start.String);
+            gui_erp_simulation.Paras{6} = str2num(gui_erp_simulation.epoch_stop.String);
+            gui_erp_simulation.Paras{7} = gui_erp_simulation.srate.Value;
+            gui_erp_simulation.Paras{8} = str2num(gui_erp_simulation.srateedit.String);
+            gui_erp_simulation.Paras{9} = gui_erp_simulation.exgua_op.Value;
+            gui_erp_simulation.Paras{10} = str2num(gui_erp_simulation.exgua_peakamp.String);
+            gui_erp_simulation.Paras{11} = str2num(gui_erp_simulation.exgua_mean.String);
+            gui_erp_simulation.Paras{12} = str2num(gui_erp_simulation.exgua_sd.String);
+            gui_erp_simulation.Paras{13} = str2num(gui_erp_simulation.exgua_tau.String);
+            gui_erp_simulation.Paras{14} = gui_erp_simulation.impulse_op.Value;
+            gui_erp_simulation.Paras{15} = str2num(gui_erp_simulation.impulse_peakamp.String);
+            gui_erp_simulation.Paras{16} = str2num(gui_erp_simulation.impulse_latency.String);
+            gui_erp_simulation.Paras{17} =gui_erp_simulation.square_op.Value;
+            gui_erp_simulation.Paras{18} =str2num(gui_erp_simulation.square_peakamp.String);
+            gui_erp_simulation.Paras{19} =str2num(gui_erp_simulation.square_onset.String);
+            gui_erp_simulation.Paras{20} =str2num(gui_erp_simulation.square_offset.String);
+            gui_erp_simulation.Paras{21} = gui_erp_simulation.sin_op.Value;
+            gui_erp_simulation.Paras{22} = str2num(gui_erp_simulation.sin_amp.String);
+            gui_erp_simulation.Paras{23} = str2num(gui_erp_simulation.sin_fre.String);
+            gui_erp_simulation.Paras{24} = gui_erp_simulation.white_op.Value;
+            gui_erp_simulation.Paras{25} = str2num(gui_erp_simulation.white_amp.String);
+            gui_erp_simulation.Paras{26} = gui_erp_simulation.pink_op.Value;
+            gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
         end
         plot_erp_simulation();
     end
 
+%%-------execute "apply" before doing any change for other panels----------
+    function erp_two_panels_change(~,~)
+        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+            return;
+        end
+        ChangeFlag =  estudioworkingmemory('ERPTab_stimulation');
+        if ChangeFlag~=1
+            return;
+        end
+        simulation_apply();
+        gui_erp_simulation.apply.BackgroundColor =  [ 1 1 1];
+        gui_erp_simulation.apply.ForegroundColor = [0 0 0];
+        ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_stimulation',0);
+    end
+
+%%--------------press return to execute "Apply"----------------------------
+    function erp_simuls_presskey(~,eventdata)
+        keypress = eventdata.Key;
+        ChangeFlag =  estudioworkingmemory('ERPTab_stimulation');
+        if ChangeFlag~=1
+            return;
+        end
+        if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
+            simulation_apply();
+            gui_erp_simulation.apply.BackgroundColor =  [ 1 1 1];
+            gui_erp_simulation.apply.ForegroundColor = [0 0 0];
+            ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+            gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
+            gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
+            estudioworkingmemory('ERPTab_stimulation',0);
+        else
+            return;
+        end
+    end
 end
 %Progem end: ERP simulation

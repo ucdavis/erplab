@@ -24,11 +24,11 @@ EStduio_eegtab_eeglab_ica = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB ICA (works on one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB ICA (only for one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (works on one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (only for one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (works on one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -70,6 +70,27 @@ varargout{1} = EStudio_box_eeglab_ica;
         EStduio_eegtab_eeglab_ica.remove_ics = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.event_chanlocs_title,...
             'String','Remove ICs','callback',@remove_ics,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
+        
+        %%transfter ICA weights
+        EStduio_eegtab_eeglab_ica.icaweigts_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', EStduio_eegtab_eeglab_ica.icaweigts_title1,...
+            'String','Transfer ICA weights:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_eeglab_ica.DataSelGrid = uiextras.Grid('Parent', EStduio_eegtab_eeglab_ica.DataSelBox,...
+            'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Current EEG','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        EStduio_eegtab_eeglab_ica.CurrentEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
+            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+        uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
+        uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target EEG','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        EStduio_eegtab_eeglab_ica.targetEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
+            'callback',@trans_weight_targeteeg,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        EStduio_eegtab_eeglab_ica.traICAweight= uicontrol('Style','pushbutton','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Transfer',...
+            'callback',@trans_weight,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+        set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[90 20 90 60],'RowSizes',[20 30]);
+        
+        
         %%Plot channel function
         EStduio_eegtab_eeglab_ica.plotic_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_eeglab_ica.plotic_title1,...
@@ -77,7 +98,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         
         EStduio_eegtab_eeglab_ica.plotic_title2 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_ica.eeg_spcetra_map = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title2,...
-            'String','Spectra & maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Spectra&maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.ic_maps_2d = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title2,...
             'String','Maps (2-D)','callback',@maps_2d,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.ic_maps_3d = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title2,...
@@ -88,7 +109,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             'String','IC Properties','callback',@eeg_ic_prop,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.eeg_ic_tfr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.plotic_title3,...
             'String','IC Time-frequency','callback',@eeg_ic_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        set(EStduio_eegtab_eeglab_ica.DataSelBox,'Sizes',[30 30 20 30 30])
+        set(EStduio_eegtab_eeglab_ica.DataSelBox,'Sizes',[30 30 20 50 20 30 30]);
     end
 
 %%**************************************************************************%%
@@ -435,6 +456,184 @@ varargout{1} = EStudio_box_eeglab_ica;
         %         end
         
     end
+%%----------------------------Target EEG for ICA weight transfer-----------
+    function trans_weight_targeteeg(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        if numel(EEGArray)~=1
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights:Only works on one selected dataset');
+            observe_EEGDAT.eeg_panel_message =4;
+            return;
+        end
+        
+        TartgetEEG = str2num(Source.String);
+        if isempty(TartgetEEG) || numel(TartgetEEG)~=1 || any(TartgetEEG<=0)
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights: The index of the Target EEG must be a single positive value');
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+        if any(TartgetEEG>length(observe_EEGDAT.ALLEEG))
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights: The index of the Target EEG should be smaller than ',32,num2str(length(observe_EEGDAT.ALLEEG))]);
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+        if any(TartgetEEG== observe_EEGDAT.CURRENTSET)
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights: The current EEG cannot be used as target one']);
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+        
+        if isempty(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind)
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights: Please run ICA for the target EEG first']);
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+        if any(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind> observe_EEGDAT.EEG.nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights: The channels donot match with the current EEG']);
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+    end
+
+%%------------------------Transfer ICA weights-----------------------------
+    function trans_weight(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) &&  eegpanelIndex~=0
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights> Transfer');
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        if numel(EEGArray)~=1
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights:Only works on one selected dataset');
+            observe_EEGDAT.eeg_panel_message =4;
+            return;
+        end
+        TartgetEEG = str2num(EStduio_eegtab_eeglab_ica.targetEEG_tras.String);
+        if isempty(TartgetEEG) || numel(TartgetEEG)~=1 || any(TartgetEEG<=0)
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Transfer ICA weights > Transfer: The index of the Target EEG must be a single positive value');
+            observe_EEGDAT.eeg_panel_message =4;
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
+            return;
+        end
+        if any(TartgetEEG>length(observe_EEGDAT.ALLEEG))
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights > Transfer: The index of the Target EEG should be smaller than ',32,num2str(length(observe_EEGDAT.ALLEEG))]);
+            observe_EEGDAT.eeg_panel_message =4;
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
+            return;
+        end
+        if any(TartgetEEG== observe_EEGDAT.CURRENTSET)
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights > Transfer: The current EEG cannot be used as target one']);
+            observe_EEGDAT.eeg_panel_message =4;
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
+            return;
+        end
+        if isempty(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind)
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights> Transfer: Please run ICA for the target EEG first']);
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+        if any(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind> observe_EEGDAT.EEG.nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights > Transfer: The channels donot match with the current EEG']);
+            observe_EEGDAT.eeg_panel_message =4;
+            Source.String = '';
+            return;
+        end
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_trafweights');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        %         try
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf( ['**Transfer ICA weights > Transfer**\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(TartgetEEG),').icaweights'],...
+                'icasphere', ['ALLEEG(',num2str(TartgetEEG),').icasphere'], 'icachansind', ['ALLEEG(',num2str(TartgetEEG),').icachansind']);
+            if isempty(LASTCOM)
+                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+                observe_EEGDAT.eeg_panel_message =4;
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return;
+            end
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf(['\n',LASTCOM,'\n']);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end
+        
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
+    end
+
+
 
 %%---------------------IC maps 2D------------------------------------------
     function maps_2d(Source,~)
@@ -753,10 +952,10 @@ varargout{1} = EStudio_box_eeglab_ica;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-         if observe_EEGDAT.count_current_eeg ~=6
+        if observe_EEGDAT.count_current_eeg ~=6
             return;
         end
-        if  isempty(observe_EEGDAT.EEG)
+        if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
             EStduio_eegtab_eeglab_ica.icadecomp_eeg.Enable  = 'off';
             EStduio_eegtab_eeglab_ica.inslabel_ics.Enable= 'off';
             EStduio_eegtab_eeglab_ica.classifyics_iclabel.Enable= 'off';
@@ -766,11 +965,14 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.ic_maps_3d.Enable= 'off';
             EStduio_eegtab_eeglab_ica.eeg_ic_prop.Enable= 'off';
             EStduio_eegtab_eeglab_ica.eeg_ic_tfr.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
             observe_EEGDAT.count_current_eeg=7;
             return;
         end
         
-       
+        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
@@ -785,7 +987,10 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.ic_maps_3d.Enable= 'off';
             EStduio_eegtab_eeglab_ica.eeg_ic_prop.Enable= 'off';
             EStduio_eegtab_eeglab_ica.eeg_ic_tfr.Enable= 'off';
-            observe_EEGDAT.count_current_eeg=11;
+            EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
+            observe_EEGDAT.count_current_eeg=7;
             return;
         end
         
@@ -799,6 +1004,9 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.ic_maps_3d.Enable= 'off';
             EStduio_eegtab_eeglab_ica.eeg_ic_prop.Enable= 'off';
             EStduio_eegtab_eeglab_ica.eeg_ic_tfr.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
         else
             EStduio_eegtab_eeglab_ica.icadecomp_eeg.Enable  = 'on';
             EStduio_eegtab_eeglab_ica.inslabel_ics.Enable= 'on';
@@ -809,7 +1017,11 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.ic_maps_3d.Enable= 'on';
             EStduio_eegtab_eeglab_ica.eeg_ic_prop.Enable= 'on';
             EStduio_eegtab_eeglab_ica.eeg_ic_tfr.Enable= 'on';
+            EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
+            EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'on';
+            EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'on';
         end
+        EStduio_eegtab_eeglab_ica.CurrentEEG_tras.String = num2str(observe_EEGDAT.CURRENTSET);
         %%CHECK IF ICLABEL EXISTS
         if ~exist('ICLabel','dir') && ~exist('eegplugin_iclabel', 'file')
             fprintf(2, 'Warning: ICLabel default plugin missing (probably due to downloading zip file from Github). Install manually.\n');

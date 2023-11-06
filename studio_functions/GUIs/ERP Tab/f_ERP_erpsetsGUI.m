@@ -71,7 +71,7 @@ varargout{1} = box_erpset_gui;
         
         ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
             2,'String', ERPlistName,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
-        set(vBox, 'Sizes', 150);
+        set(vBox, 'Sizes', 350);
         
         
         %%---------------------Options for ERPsets-----------------------------------------------------
