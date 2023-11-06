@@ -24,11 +24,14 @@ EEG_art_det_segmt_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Delete Time Segments for Continuous EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Delete Time Segments for Continuous EEG',... 
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @segment_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Time Segments for Continuous EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Time Segments for Continuous EEG', ...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @segment_help);
 else
-    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Time Segments for Continuous EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Time Segments for Continuous EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @segment_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -194,6 +197,11 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%------------------------segement detection help--------------------------
+    function segment_help(~,~)
+       web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');  
+    end
 
 
 %%----------------------edit chans-----------------------------------------

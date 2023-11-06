@@ -25,11 +25,14 @@ Eegtab_EEG_art_det_epoch = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Detection for Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Detection for Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @artepo_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Detection for Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Detection for Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @artepo_help);
 else
-    Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Detection for Epoched EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Detection for Epoched EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @artepo_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -170,6 +173,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%--------------------------help-------------------------------------------
+    function artepo_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Artifact-Detection-in-Epoched-Data/','-browser');
+    end
 
 %%-------------------Artifact detection algorithms-------------------------
     function det_algo(Source,~)

@@ -23,11 +23,14 @@ Eegtab_EEG_interpolate_chan_epoch = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Interpolate chan', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Interpolate chan',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @intpchan_help); % Create boxpanel
 elseif nargin == 1
-    box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Interpolate chan', 'Padding', 5,'BackgroundColor',ColorB_def);
+    box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Interpolate chan',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @intpchan_help);
 else
-    box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Interpolate chan', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    box_interpolate_chan_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Interpolate chan',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @intpchan_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -183,6 +186,12 @@ varargout{1} = box_interpolate_chan_epoch;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%-----------------------------help----------------------------------------
+    function intpchan_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+    end
+
 
 %%---------------------Modify Existing dataset-----------------------------
     function mode_modify(Source,~)

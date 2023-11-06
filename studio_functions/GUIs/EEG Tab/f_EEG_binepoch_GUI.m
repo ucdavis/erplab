@@ -18,11 +18,14 @@ addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change)
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EEG_binepoch_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Extract Bin-based Epochs', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EEG_binepoch_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Extract Bin-based Epochs', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @epoch_help); % Create boxpanel
 elseif nargin == 1
-    EEG_binepoch_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-based Epochs', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EEG_binepoch_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-based Epochs', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @epoch_help);
 else
-    EEG_binepoch_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-based Epochs', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EEG_binepoch_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-based Epochs', 'Padding', 5, ...
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @epoch_help);
 end
 
 gui_eegtab_binepoch = struct();
@@ -171,6 +174,12 @@ varargout{1} = EEG_binepoch_box;
 %%****************************************************************************************************************************************
 %%*******************   Subfunctions   ***************************************************************************************************
 %%****************************************************************************************************************************************
+
+%%----------------------epoch help-----------------------------------------
+    function epoch_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Epoching-Bins/','-browser');
+    end
+
 
 %%----------------input baseline period defined by user----------------------
     function timerange_edit(Source,~)

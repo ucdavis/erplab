@@ -25,11 +25,14 @@ EStduio_eegtab_eeglab_tool = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB Tools (only for one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', fig, 'HelpFcn', @eeglabtool_help, 'Title',...
+        'EEGLAB Tools (only for one selected dataset)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools (only for one selected dataset)', 'Padding ', 5,'BackgroundColor',ColorB_def);
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'HelpFcn', @eeglabtool_help, 'Title',...
+        'EEGLAB Tools (only for one selected dataset)', 'Padding ', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'HelpFcn', @eeglabtool_help, 'Title',...
+    'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -108,6 +111,12 @@ varargout{1} = EStudio_box_eeglab_tool;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+
+%%---------------------------------eeglab tool-----------------------------
+    function eeglabtool_help(~,~)
+         web('https://eeglab.org/tutorials/','-browser'); 
+    end
 
 %%-----------------------About the current EEG-----------------------------
     function about_eegdata(Source,~)

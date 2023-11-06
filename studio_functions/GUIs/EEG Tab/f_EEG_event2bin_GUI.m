@@ -25,11 +25,14 @@ EStduio_eegtab_EEG_event2bin = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', fig, 'Title', 'Assign Events to Bins', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', fig, 'Title', 'Assign Events to Bins', ...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @event2bin_help); % Create boxpanel
 elseif nargin == 1
-    EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Assign Events to Bins', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Assign Events to Bins',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @event2bin_help);
 else
-    EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Assign Events to Bins', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_box_EEG_event2bin = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Assign Events to Bins',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @event2bin_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -100,6 +103,10 @@ varargout{1} = EStudio_box_EEG_event2bin;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
+%%-------------------event to bin help-------------------------------------
+    function event2bin_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Assigning-Events-to-Bins-with-BINLISTER/','-browser');
+    end
 
 %%-------------------------Edit the BDF file-------------------------------
     function BDF_edit(Source,~)

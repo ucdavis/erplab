@@ -23,11 +23,14 @@ EStduio_eegtab_EEG_events = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG Events', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG Events', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @event_help); % Create boxpanel
 elseif nargin == 1
-    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @event_help);
 else
-    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,...
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @event_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -96,6 +99,12 @@ varargout{1} = EStudio_eeg_events_box;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%-----------------------event help----------------------------------------
+    function event_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+    end
+
 
 %%----------Summarize the event codes for the selected EEG-----------------
     function summarize_code(Source,~)
@@ -1173,7 +1182,7 @@ varargout{1} = EStudio_eeg_events_box;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-         if observe_EEGDAT.count_current_eeg ~=8
+        if observe_EEGDAT.count_current_eeg ~=8
             return;
         end
         if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event)
@@ -1191,14 +1200,14 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
-%             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
-%                 EStudio_eeg_events_box.Title = 'No events were found for  the current EEG';
-%                 EStudio_eeg_events_box.ForegroundColor= [1 0 0];
-%             end
+            %             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
+            %                 EStudio_eeg_events_box.Title = 'No events were found for  the current EEG';
+            %                 EStudio_eeg_events_box.ForegroundColor= [1 0 0];
+            %             end
             observe_EEGDAT.count_current_eeg=9;
             return;
         end
-       
+        
         EStudio_eeg_events_box.Title = 'EEG Events';
         EStudio_eeg_events_box.ForegroundColor= [1 1 1];
         

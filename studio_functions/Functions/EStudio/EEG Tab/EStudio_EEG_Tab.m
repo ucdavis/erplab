@@ -28,8 +28,6 @@ set(EStudio_gui_erp_totl.eegpanelscroll,'BackgroundColor',ColorB_def);
 % + Adjust the main layout
 set( EStudio_gui_erp_totl.tabEEG, 'Widths', [-4, 300]); % Viewpanel and settings panel
 
-
-
 %%-------------------------function panels---------------------------------
 EStudio_gui_erp_totl.eegpanel_fonts  = f_get_default_fontsize();
 

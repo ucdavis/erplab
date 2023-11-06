@@ -24,11 +24,14 @@ Eegtab_EEG_art_det_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Rejection for Continuous EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Rejection for Continuous EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @art_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @art_help);
 else
-    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @art_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -122,6 +125,10 @@ varargout{1} = Eegtab_box_art_det_conus;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
+%%-----------------------artifact detection help---------------------------
+    function art_help(~,~)
+        web(' https://github.com/ucdavis/erplab/wiki/Artifact-Rejection-in-Continuous-Data/','-browser');
+    end
 
 %%----------------------edit chans-----------------------------------------
     function chan_edit(Source,~)

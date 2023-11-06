@@ -24,11 +24,14 @@ EEG_dq_epoch = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics from Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics from Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @dq_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics from Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics from Epoched EEG', ...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @dq_help);
 else
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics from Epoched EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics from Epoched EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @dq_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -192,6 +195,12 @@ varargout{1} = Eegtab_box_dq_epoch;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%------------------------------help---------------------------------------
+    function dq_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/ERPLAB-Data-Quality-Metrics/','-browser');
+    end
+
 
 %%--------------------------------default parameters-----------------------
     function def_para(Source,~)

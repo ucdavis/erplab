@@ -25,11 +25,14 @@ Eegtab_EEG_art_sumop = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', fig, 'Title', 'Summarize Artifact Option for Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', fig, 'Title', 'Summarize Artifact Option for Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @sumart_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Summarize Artifact Option for Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Summarize Artifact Option for Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @sumart_help);
 else
-    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Summarize Artifact Option for Epoched EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Summarize Artifact Option for Epoched EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @sumart_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -106,6 +109,10 @@ varargout{1} = Eegtab_box_art_sumop;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
+%%---------------------------help------------------------------------------
+    function sumart_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+    end
 
 %%----------------clear artifact detection marks---------------------------
     function clear_art_det(Source,~)

@@ -22,11 +22,14 @@ catch
 end
 if nargin == 0
     fig = figure(); % Parent figure
-    EEG_filtering_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Filtering', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EEG_filtering_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Filtering', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @filter_help); % Create boxpanel
 elseif nargin == 1
-    EEG_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Filtering', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EEG_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Filtering', 'Padding', 5,...
+        'BackgroundColor',ColorB_def, 'HelpFcn', @filter_help);
 else
-    EEG_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Filtering', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EEG_filtering_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Filtering', 'Padding', 5,...
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @filter_help);
 end
 
 
@@ -297,6 +300,11 @@ varargout{1} = EEG_filtering_box;
 %%*************************************************************************
 %%*******************   Subfunctions   ************************************
 %%*************************************************************************
+
+%%----------------------filter help----------------------------------------
+    function filter_help(~,~)
+        web('https://github.com/lucklab/erplab/wiki/Filtering','-browser');
+    end
 
 %%----------------------all bin and all chan-------------------------------
     function All_chan(~,~)

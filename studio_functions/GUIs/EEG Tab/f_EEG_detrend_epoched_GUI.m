@@ -18,11 +18,14 @@ addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change)
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Linear Detrend for Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Linear Detrend for Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @detrend_help); % Create boxpanel
 elseif nargin == 1
-    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend for Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend for Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @detrend_help);
 else
-    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend for Epoched EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend for Epoched EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @detrend_help);
 end
 
 gui_eeg_epoch_dt = struct();
@@ -112,6 +115,12 @@ varargout{1} = EEG_epoch_detrend_box;
 %%*************************************************************************
 %%*******************   Subfunctions   ************************************
 %%*************************************************************************
+
+%%---------------------------function--------------------------------------
+    function detrend_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+    end
+
 
 %%----------------Setting for "pre"----------------------------------------
     function pre_eeg(Source,~)
@@ -511,7 +520,6 @@ varargout{1} = EEG_epoch_detrend_box;
             Enable_Label = 'on';
             EEG_epoch_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
         end
-        
         gui_eeg_epoch_dt.blc.Enable = Enable_Label;
         gui_eeg_epoch_dt.dt.Enable = Enable_Label;
         gui_eeg_epoch_dt.apply.Enable = Enable_Label;

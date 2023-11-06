@@ -26,11 +26,14 @@ EEG_avg_erp = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERP from Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERP from Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @avg_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERP from Epoched EEG', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERP from Epoched EEG',...
+        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @avg_help);
 else
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERP from Epoched EEG', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERP from Epoched EEG',...
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @avg_help);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -225,6 +228,11 @@ varargout{1} = Eegtab_box_avg_erp;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+    function avg_help(~,~)
+        web('https://github.com/ucdavis/erplab/wiki/Computing-Averaged-ERPs/','-browser');
+    end
+
 
 %%--------------------------------default parameters-----------------------
     function def_para(Source,~)
@@ -708,7 +716,7 @@ varargout{1} = Eegtab_box_avg_erp;
             if isempty(observe_ERPDAT.ALLERP)
                 observe_ERPDAT.ALLERP = ERP;
             else
-            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
+                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
             end
             if Numofeeg==1
                 eegh(ERPCOM);
