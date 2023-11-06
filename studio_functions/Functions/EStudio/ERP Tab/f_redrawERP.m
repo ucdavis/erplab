@@ -2,7 +2,7 @@
 
 
 
-% Author: Guanghui Zhang & Steve J. Luck & Andrew Stewart
+% Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
@@ -24,7 +24,10 @@ end
 if isempty(ColorB_def)
     ColorB_def = [0.95 0.95 0.95];
 end
-
+% We first clear the existing axes ready to build a new one
+if ishandle( EStudio_gui_erp_totl.ViewAxes )
+    delete( EStudio_gui_erp_totl.ViewAxes );
+end
 %Sets the units of your root object (screen) to pixels
 set(0,'units','pixels')
 %Obtains this pixel information
@@ -35,16 +38,7 @@ set(0,'units','inches')
 Inch_SS = get(0,'screensize');
 %Calculates the resolution (pixels per inch)
 Resolation = Pix_SS./Inch_SS;
-% We first clear the existing axes ready to build a new one
-if ishandle( EStudio_gui_erp_totl.ViewAxes )
-    delete( EStudio_gui_erp_totl.ViewAxes );
-end
-
 ERPArray= estudioworkingmemory('selectederpstudio');
-if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
-    ERPArray= 1;
-    estudioworkingmemory('selectederpstudio',1);
-end
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
         ERPArray =  length(observe_ERPDAT.ALLERP) ;
@@ -69,6 +63,8 @@ else
     pageNum=1;
     pagecurrentNum=1;
     PageStr = 'No ERPset was loaded';
+    ERPArray= 1;
+    estudioworkingmemory('selectederpstudio',1);
 end
 EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
 
@@ -79,21 +75,15 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', EStudio_gui
 
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
 
-
-%%Changed by Guanghui Zhang 2 August 2022-------panel for display the processing procedure for some functions, e.g., filtering
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
-
-% erpworkingmemory('EStudio_proces_messg',EStudio_gui_erp_totl);
 
 %%Setting title
 EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
-
 EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
-pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',14,'FontWeight','bold');
-
+pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
 if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -132,7 +122,6 @@ end
 
 
 if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
-    
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     hold(EStudio_gui_erp_totl.erptabwaveiwer,'on');
     set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
@@ -489,16 +478,13 @@ else
     xticks_clomn = (timeStart:xtickstep:timEnd);
 end
 
-
 xtickstep_p = ceil(xtickstep/(1000/ERP.srate));%% Time points of the gap between columns
 %
 %%----------------------Modify the data into  multiple-columns---------------------------------------
 rowNum = ceil(b/columNum);
 plot_erp_data_new = NaN(size(plot_erp_data,1),size(plot_erp_data,2),rowNum*columNum);
-
 plot_erp_data_new(:,:,1:size(plot_erp_data,3))  =  plot_erp_data;
 plot_erp_data_new_trans = [];
-
 
 if  columNum==1
     for Numofrow = 1:rowNum

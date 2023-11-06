@@ -3,66 +3,55 @@
 function [new_erp_data,Amp_out,Lat_out_trals,Amp,Lat]= f_ERP_plot_wav(ERPIN)
 global observe_ERPDAT;
 
-S_ws_geterpset= estudioworkingmemory('selectederpstudio');
-if isempty(S_ws_geterpset)
-    S_ws_geterpset = observe_ERPDAT.CURRENTERP;
-    
-    if isempty(S_ws_geterpset)
-        msgboxText =  'No ERPset was selected!!!';
-        title = 'EStudio: ERPsets';
-        errorfound(msgboxText, title);
-        return;
-    end
-    S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,S_ws_geterpset);
-    estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-    estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+ERPArray= estudioworkingmemory('selectederpstudio');
+if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
+    ERPArray =  length(observe_ERPDAT.ALLERP) ;
+    estudioworkingmemory('selectederpstudio',ERPArray);
+    observe_ERPDAT.CURRENTERP = ERPArray;
+    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(ERPArray);
+    assignin('base','ERP',observe_ERPDAT.ERP);
+    assignin('base','ALLERP', observe_ERPDAT.ALLERP);
+    assignin('base','CURRENTERP', observe_ERPDAT.CURRENTERP);
 end
-
-S_ws_getbinchan =  estudioworkingmemory('geterpbinchan');
-S_ws_geterpplot = estudioworkingmemory('geterpplot');
-
 
 %%Parameter from bin and channel panel
-Elecs_shown = S_ws_getbinchan.elecs_shown{S_ws_getbinchan.Select_index};
-Bins = S_ws_getbinchan.bins{S_ws_getbinchan.Select_index};
-Bin_chans = S_ws_getbinchan.bins_chans(S_ws_getbinchan.Select_index);
-Elec_list = S_ws_getbinchan.elec_list{S_ws_getbinchan.Select_index};
-Matlab_ver = S_ws_getbinchan.matlab_ver;
-
-
-
-%%Parameter from plotting panel
-Min_vspacing = S_ws_geterpplot.min_vspacing(S_ws_getbinchan.Select_index);
-Min_time = S_ws_geterpplot.min(S_ws_getbinchan.Select_index);
-Max_time = S_ws_geterpplot.max(S_ws_getbinchan.Select_index);
-Yscale = S_ws_geterpplot.yscale(S_ws_getbinchan.Select_index);
-Timet_low =S_ws_geterpplot.timet_low(S_ws_getbinchan.Select_index);
-Timet_high =S_ws_geterpplot.timet_high(S_ws_getbinchan.Select_index);
-Timet_step=S_ws_geterpplot.timet_step(S_ws_getbinchan.Select_index);
-Fill = S_ws_geterpplot.fill(S_ws_getbinchan.Select_index);
-Plority_plot = S_ws_geterpplot.Positive_up(S_ws_getbinchan.Select_index);
-
-
-if Bin_chans == 0
-    elec_n = S_ws_getbinchan.elec_n(S_ws_getbinchan.Select_index);
-    max_elec_n = ERPIN.nchan;
+ERP = observe_ERPDAT.ERP;
+OutputViewerparerp = f_preparms_mtviewer_erptab(ERP,0);
+ChanArray = OutputViewerparerp{1};
+BinArray = OutputViewerparerp{2};
+timeStart =OutputViewerparerp{3};
+timEnd =OutputViewerparerp{4};
+Timet_step=OutputViewerparerp{5};
+[~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
+Yscale = OutputViewerparerp{6};
+Min_vspacing = OutputViewerparerp{7};
+Fillscreen = OutputViewerparerp{8};
+positive_up = OutputViewerparerp{10};
+BinchanOverlay= OutputViewerparerp{11};
+moption= OutputViewerparerp{12};
+latency= OutputViewerparerp{13};
+Min_time = observe_ERPDAT.ERP.times(1);
+Max_time = observe_ERPDAT.ERP.times(end);
+Baseline = OutputViewerparerp{14};
+InterpFactor =  OutputViewerparerp{15};
+Resolution =OutputViewerparerp{16};
+Afraction=OutputViewerparerp{17};
+polpeak = OutputViewerparerp{18};
+locpeakrep= OutputViewerparerp{19};
+fracmearep= OutputViewerparerp{20};
+PeakOnset= OutputViewerparerp{21};
+Neighborhood= OutputViewerparerp{23};
+if BinchanOverlay == 0
+    splot_n = numel(OutputViewerparerp{1});
 else
-    elec_n = S_ws_getbinchan.bin_n(S_ws_getbinchan.Select_index);
-    max_elec_n = ERPIN.nbin;
+    splot_n = numel(OutputViewerparerp{2});
 end
 
-
-ndata = 0;
-nplot = 0;
-if Bin_chans == 0
-    ndata = Bins;
-    nplot = Elecs_shown;
+if BinchanOverlay == 0
+    ndata = BinArray;
 else
-    ndata = Elecs_shown;
-    nplot = Bins;
+    ndata = ChanArray;
 end
-
-
 
 [xxx, latsamp, latdiffms] = closest(ERPIN.times, [Min_time Max_time]);
 tmin = latsamp(1);
@@ -76,41 +65,35 @@ if tmax > numel(ERPIN.times)
     tmax = numel(ERPIN.times);
 end
 
-
-splot_n = elec_n;
-
 plot_erp_data = nan(tmax-tmin+1,numel(ndata));
 for i = 1:splot_n
-    if Bin_chans == 0
+    if BinchanOverlay == 0
         for i_bin = 1:numel(ndata)
-            plot_erp_data(:,i_bin,i) = ERPIN.bindata(Elecs_shown(i),tmin:tmax,Bins(i_bin))'*Plority_plot; %
+            plot_erp_data(:,i_bin,i) = ERPIN.bindata(ChanArray(i),tmin:tmax,BinArray(i_bin))'*positive_up; %
         end
     else
         for i_bin = 1:numel(ndata)
-            plot_erp_data(:,i_bin,i) = ERPIN.bindata(Elecs_shown(i_bin),tmin:tmax,Bins(i))'*Plority_plot; %
+            plot_erp_data(:,i_bin,i) = ERPIN.bindata(ChanArray(i_bin),tmin:tmax,BinArray(i))'*positive_up; %
         end
     end
 end
 
-
 %%Transfer the original data to what can be used to plot in ERPlab Studio
-%%based on the seleted channels and bins, time-window
+%%based on the seleted channels and BinArray, time-window
 perc_lim = Yscale;
 percentile = perc_lim*3/2;
 ind_plot_height = percentile*2;
 offset = [];
-if Bin_chans == 0
-    offset = (numel(Elecs_shown)-1:-1:0)*ind_plot_height;
+if BinchanOverlay == 0
+    offset = (numel(ChanArray)-1:-1:0)*ind_plot_height;
 else
-    offset = (numel(Bins)-1:-1:0)*ind_plot_height;
+    offset = (numel(BinArray)-1:-1:0)*ind_plot_height;
 end
 [~,~,b] = size(plot_erp_data);
 
 for i = 1:b
     plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
 end
-
-
 
 [a,c,b] = size(plot_erp_data);
 new_erp_data = zeros(a,b*c);
@@ -121,33 +104,20 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%Find the amplitude and latency based on geterpvalues%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-erp_m_t_p = estudioworkingmemory('geterpvalues');
-
-if isempty(erp_m_t_p)
-    msgboxText = ['EStudio says: Please select the meaurement type of interest and set the related parameters from "ERP measurement tool".'];
-    title = 'EStudio: ERP measurement tool';
-    errorfound(msgboxText, title);
-    return;
-end
-
-
 MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareaplat','fareanlat',...
     'areat','ninteg','areap','arean','areazt','nintegz','areazp','areazn','instabl'};
-[C,IA] = ismember_bc2({erp_m_t_p.Measure}, MeasureName);
+[C,IA] = ismember_bc2({moption}, MeasureName);
 if ~any(IA) || isempty(IA)
     IA =1;
 end
 
-
-if isempty(erp_m_t_p.latency)
+if isempty(latency)
     msgboxText =  'Please set a Measurement window';
     title = 'ERPLAB: ERP Measurement Tool';
     errorfound(msgboxText, title);
     return;
 end
-moption = erp_m_t_p.Measure;
-latency = erp_m_t_p.latency;
+
 if isempty(moption)
     msgboxText = ['EStudio says: User must specify a type of measurement.'];
     title = 'EStudio: ERP measurement tool- "Measurement type".';
@@ -182,26 +152,20 @@ chanArray = [1:ERPIN.nchan];
 Amp   = zeros(length(binArray), length(chanArray));
 Lat   = [];
 
-erp_m_t_p.Erpsets = S_ws_geterpset;
-
-
-
-
 MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareaplat','fareanlat',...
     'areat','ninteg','areap','arean','areazt','nintegz','areazp','areazn','instabl'};
-[C,IA] = ismember_bc2({erp_m_t_p.Measure}, MeasureName);
+[C,IA] = ismember_bc2({moption}, MeasureName);
 if ~any(IA) || isempty(IA)
     IA =1;
 end
 
-if isempty(erp_m_t_p.latency)
+if isempty(latency)
     msgboxText =  'Please set a Measurement window';
     title = 'ERPLAB: ERP Measurement Tool';
     errorfound(msgboxText, title);
     return;
 end
-moption = erp_m_t_p.Measure;
-latency = erp_m_t_p.latency;
+
 if isempty(moption)
     msgboxText = ['ERPLAB says: User must specify a type of measurement.'];
     title = 'EStudio: ERP measurement tool- "Measurement type".';
@@ -232,61 +196,51 @@ else
     end
 end
 
-% ALLERP = evalin('base','ALLERP');
-if isempty(erp_m_t_p.Afraction)
-    erp_m_t_p.Afraction  =0.5;
+if isempty(Afraction) || any(Afraction<=0) || any(Afraction>=0)
+    Afraction  =0.5;
 end
 
-if strcmp(erp_m_t_p.Peakpolarity,'positive')%check the polirity
-    polpeak =1;
-else
-    polpeak =0;
+if isempty(polpeak) || numel(polpeak)~=1 || (polpeak~=0 && polpeak~=1)
+    polpeak=0;
 end
 
-if strcmp( erp_m_t_p.Peakreplace,'NaN')
-    locpeakrep=0;
-else
-    locpeakrep =1;
+if isempty(locpeakrep) || numel(locpeakrep)~=1 || (locpeakrep~=0 && locpeakrep~=1)
+    locpeakrep=1;
+end
+
+if isempty(fracmearep) || numel(fracmearep)~=1 || (fracmearep~=0 && fracmearep~=1 && fracmearep~=2)
+    fracmearep=0;
+end
+Component = 0;
+
+if isempty(PeakOnset) || numel(PeakOnset)~=1 || (PeakOnset~=0 && PeakOnset~=1)
+    PeakOnset=1;
+end
+if isempty(Neighborhood) ||numel(Neighborhood)~=1 || any(Neighborhood<1)
+    Neighborhood=1;
 end
 
 
-if strcmp(erp_m_t_p.Fracreplace,'NaN')
-    fracmearep =0;
-elseif strcmp(erp_m_t_p.Fracreplace,'absolute')
-    fracmearep=1;
-else
-    fracmearep =2;
-end
-
-[Amp, Lat]  = geterpvalues(ERPIN, erp_m_t_p.latency, binArray, chanArray, ...
-    MeasureName{IA}, erp_m_t_p.Baseline, erp_m_t_p.Component,...
-    polpeak, erp_m_t_p.Neighborhood, locpeakrep,...
-    erp_m_t_p.Afraction, fracmearep, erp_m_t_p.InterpFactor,erp_m_t_p.PeakOnset);
-
-% [ALLERP, Amp, Lat] = pop_geterpvalues(ALLERP, erp_m_t_p.latency, binArray,chanArray,...
-%     'Erpsets', Current_ERP, 'Measure',MeasureName{IA}, 'Component', erp_m_t_p.Component,...
-%     'Resolution', erp_m_t_p.Resolution, 'Baseline', erp_m_t_p.Baseline, 'Binlabel', erp_m_t_p.Binlabel,...
-%     'Peakpolarity',erp_m_t_p.Peakpolarity, 'Neighborhood', erp_m_t_p.Neighborhood, 'Peakreplace', erp_m_t_p.Peakreplace,...
-%      'Warning',erp_m_t_p.Warning,'SendtoWorkspace', erp_m_t_p.SendtoWorkspace, 'Append', erp_m_t_p.Append,...
-%     'FileFormat', erp_m_t_p.FileFormat,'Afraction', erp_m_t_p.Afraction, 'Mlabel', erp_m_t_p.Mlabel,...
-%     'Fracreplace', erp_m_t_p.Fracreplace,'IncludeLat', erp_m_t_p.IncludeLat, 'InterpFactor', erp_m_t_p.InterpFactor,...
-%     'PeakOnset',erp_m_t_p.PeakOnset);
+[Amp, Lat]  = geterpvalues(ERPIN, latency, binArray, chanArray, ...
+    MeasureName{IA}, Baseline, Component,...
+    polpeak, Neighborhood, locpeakrep,...
+    Afraction, fracmearep, InterpFactor,PeakOnset);
 
 Lat_out_trals = {};
 
 for i = 1:splot_n
-    if Bin_chans == 0
+    if BinchanOverlay == 0
         for i_bin = 1:numel(ndata)
-            Amp_out_trans(i_bin,i) = Amp(Bins(i_bin),Elecs_shown(i))*Plority_plot; %
+            Amp_out_trans(i_bin,i) = Amp(BinArray(i_bin),ChanArray(i))*positive_up; %
             if ~isempty(Lat)
-                Lat_out_trals{i_bin,i} =  Lat{Bins(i_bin),Elecs_shown(i)};
+                Lat_out_trals{i_bin,i} =  Lat{BinArray(i_bin),ChanArray(i)};
             end
         end
     else
         for i_bin = 1:numel(ndata)
-            Amp_out_trans(i_bin,i) = Amp(Bins(i),Elecs_shown(i_bin))*Plority_plot; %
+            Amp_out_trans(i_bin,i) = Amp(BinArray(i),ChanArray(i_bin))*positive_up; %
             if ~isempty(Lat)
-                Lat_out_trals{i_bin,i} =  Lat{Bins(i),Elecs_shown(i_bin)};
+                Lat_out_trals{i_bin,i} =  Lat{BinArray(i),ChanArray(i_bin)};
             end
         end
     end
@@ -300,11 +254,8 @@ if ismember_bc2(moption, {'meanbl','peakampbl','areazt','areazp','areazn', 'nint
 elseif ismember_bc2(moption, {'peaklatbl','fpeaklat','fareatlat', 'fareaplat','fninteglat','fareanlat'})
     
     for i = 1:b
-        Amp_out(:,i) = Amp_out_trans(:,i)*Plority_plot;
+        Amp_out(:,i) = Amp_out_trans(:,i)*positive_up;
     end
-    
 end
-
-
 
 return;

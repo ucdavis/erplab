@@ -1375,8 +1375,20 @@ varargout{1} = ERP_plotset_box;
             columNum =1;
             ERPTab_plotset.columns.String = '1';
         end
+        
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;
+        end
+        if mtViewer ==1
+            columNum=1;
+            ERPTab_plotset.columns.String=1;
+            ERPTab_plotset.columns.Enable = 'off';
+        else
+            ERPTab_plotset.columns.Enable = 'on';
+        end
+        
         ERPTab_plotset_pars{6} =columNum;
-        disp('Need to gray out the number of columns if viewer the ERP measurements at plot setting');
         
         %%polarity (positive up?)
         ERPTab_plotset_pars{7} =ERPTab_plotset.positive_up.Value;

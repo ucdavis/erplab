@@ -307,12 +307,18 @@ varargout{1} = EStudio_box_bin_chan;
         end
         estudioworkingmemory('ERP_BinArray',BinArray);
         
-        %%plot waves
-        %%insert here
-        %%%%%%%%%%%%%%%%
-        %%%%%%%%%%%%%%%%
-        %%%%%%%%%%%%%%%%
-        observe_ERPDAT.Count_currentERP=1;
+        observe_ERPDAT.Count_currentERP=3;
+        
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;
+        end
+        if mtViewer ==0
+            f_redrawERP();
+        else
+            f_redrawERP_mt_viewer();
+        end
+        
         erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
     end
@@ -323,8 +329,6 @@ varargout{1} = EStudio_box_bin_chan;
         if observe_ERPDAT.Count_currentERP~=2
             return;
         end
-        disp('need to insert plot function in chan and bin panel ("apply")');%%delete this one this was finished.
-        
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             Chanlist_name = 'No erpset is available';
             ERPTab_bin_chan.ElecRange.String = Chanlist_name;
@@ -387,7 +391,6 @@ varargout{1} = EStudio_box_bin_chan;
         ERPTab_bin_chan.plot_apply.Enable = Enableflag;
         observe_ERPDAT.Count_currentERP=3;
     end
-
 
 
     function erp_two_panels_change(~,~)

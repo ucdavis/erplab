@@ -261,6 +261,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.m_t_viewer_on.Value = 0;
         ERPMTops.m_t_viewer_off.Value =1;
         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
+        erpworkingmemory('ERPTab_mtviewer',ERPMTops.m_t_viewer_on.Value);
         
         uiextras.Empty('Parent', ERPMTops.mt_viewer,'BackgroundColor',ColorB_def); % 1A
         set(ERPMTops.mt_viewer,'Sizes',[70 60 60 70]);
@@ -665,7 +666,6 @@ varargout{1} = erp_measurement_box;
     end
 
 
-
 %%---------------Bins selection from "Option"------------------------------
     function binSelect_label(Source,~)
         if isempty(observe_ERPDAT.ERP)
@@ -1042,7 +1042,7 @@ varargout{1} = erp_measurement_box;
         estudioworkingmemory('ERPTab_mesuretool',1);
         set(ERPMTops.m_t_viewer_off,'Value',1);
         set(ERPMTops.m_t_viewer_on,'Value',0);
-        ERPMTops.apply.Enable = 'off';
+        %         ERPMTops.apply.Enable = 'off';
     end
 
 
@@ -1263,7 +1263,6 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_mesuretool',0);
         
-        
         pathName_folder =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_folder)
             pathName_folder =  cd;
@@ -1283,15 +1282,10 @@ varargout{1} = erp_measurement_box;
         if ~any(IA) || isempty(IA)
             IA =1;
         end
-        if isempty(ERPMTops.m_t_file.String)
-            msgboxText =  ['ERP Measurement Tool > Apply - Please set a name for the output file'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
-            return;
-        end
+        
         latency = str2num(ERPMTops.m_t_TW.String);
         if isempty(latency)
-            msgboxText =  ['ERP Measurement Tool > Apply - Please define the measurement window'];
+            msgboxText =  ['ERP Measurement Tool > Viewer - Please define the measurement window'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -1299,27 +1293,27 @@ varargout{1} = erp_measurement_box;
         moption = ERPMTops.def_erpvalue{7};
         
         if isempty(moption)
-            msgboxText =  ['ERP Measurement Tool -Apply  - User must specify a type of measurement'];
+            msgboxText =  ['ERP Measurement Tool -  Viewer - User must specify a type of measurement'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if ismember_bc2({moption}, {'instabl', 'areazt','areazp','areazn', 'nintegz'})
             if length(latency)~=1
-                msgboxText =  ['ERP Measurement Tool > Apply - ',32, moption,32, ' only needs 1 latency value'];
+                msgboxText =  ['ERP Measurement Tool > Viewer - ',32, moption,32, ' only needs 1 latency value'];
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
                 return;
             end
         else
             if length(latency)~=2
-                msgboxText =  ['ERP Measurement Tool > Apply - ',32,moption,32, ' needs 2 latency values.'];
+                msgboxText =  ['ERP Measurement Tool > Viewer - ',32,moption,32, ' needs 2 latency values.'];
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
                 return;
             else
                 if latency(1)>=latency(2)
-                    msgboxText =  ['ERP Measurement Tool > Apply - For latency range, lower time limit must be on the left.\n'...
+                    msgboxText =  ['ERP Measurement Tool > Viewer - For latency range, lower time limit must be on the left.\n'...
                         'Additionally, lower time limit must be at least 1/samplerate seconds lesser than the higher one.'];
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg =4;
@@ -1330,7 +1324,7 @@ varargout{1} = erp_measurement_box;
         binArray = str2num(ERPMTops.m_t_bin.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
         if chk(1)
-            msgboxText =  ['ERP Measurement Tool > Apply - ',32,msgboxText];
+            msgboxText =  ['ERP Measurement Tool > Viewer - ',32,msgboxText];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -1338,24 +1332,24 @@ varargout{1} = erp_measurement_box;
         chanArray = str2num(ERPMTops.m_t_chan.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, [],chanArray,2);
         if chk(2)
-            msgboxText =  ['ERP Measurement Tool > Apply - ',32,msgboxText];
+            msgboxText =  ['ERP Measurement Tool > Viewer - ',32,msgboxText];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         FileName =  ERPMTops.m_t_file.String;
         [pathNamex, fname, ext] = fileparts(FileName);
-        if isempty(fname)
-            msgboxText =  ['ERP Measurement Tool > Apply - Please give a name to the output file'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
-            return;
-        end
+        %         if isempty(fname)
+        %             msgboxText =  ['ERP Measurement Tool > Apply - Please give a name to the output file'];
+        %             erpworkingmemory('f_ERP_proces_messg',msgboxText);
+        %             observe_ERPDAT.Process_messg =4;
+        %             return;
+        %         end
         if isempty(pathNamex)
             ERPMTops.m_t_file.String = fullfile(pathName_folder,fname);
         end
         FileName=ERPMTops.m_t_file.String;
-        erpworkingmemory('f_ERP_proces_messg',' ERP Measurement Tool (Save values)');
+        erpworkingmemory('f_ERP_proces_messg',' ERP Measurement Tool > Viewer');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
@@ -1373,6 +1367,9 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
+        
+        erpworkingmemory('ERPTab_mtviewer',ERPMTops.m_t_viewer_on.Value);
+        
         if ~isempty(latency)
             %%---------------save the applied parameters using erpworkingmemory function--------------------
             Measure = MeasureName{IA};
@@ -1552,11 +1549,6 @@ varargout{1} = erp_measurement_box;
         end
         ERPMTops.m_t_viewer_on.Value=m_t_viewer_on;
         ERPMTops.m_t_viewer_off.Value=~m_t_viewer_on;
-        if m_t_viewer_on==1
-            ERPMTops.apply.Enable = 'on';
-        else
-            ERPMTops.apply.Enable = 'off';
-        end
     end
 
 

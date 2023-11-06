@@ -450,7 +450,7 @@ varargout{1} = ERP_grdavg_box_gui;
             pathName_def =cd;
         end
         Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index) any(Selectederp_Index>length(observe_ERPDAT.ALLERP))
+        if isempty(Selectederp_Index) || any(Selectederp_Index>length(observe_ERPDAT.ALLERP))
             Selectederp_Index = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);

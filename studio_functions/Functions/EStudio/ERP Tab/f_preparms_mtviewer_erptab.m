@@ -5,10 +5,10 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% Oct 2023
+% Nov. 2023
 
 
-function OutputViewerparerp = f_preparms_erptab(ERP,matlabfig,History,figureName)
+function OutputViewerparerp = f_preparms_mtviewer_erptab(ERP,matlabfig,History,figureName)
 
 OutputViewerparerp = '';
 if nargin<1
@@ -160,17 +160,71 @@ if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
     columNum=1;
 end
 
+
 try Binchan_Overlay = ERPTab_plotset_pars{8}; catch Binchan_Overlay=0; end
 if isempty(Binchan_Overlay) || numel(Binchan_Overlay)~=1 || (Binchan_Overlay~=0 && Binchan_Overlay~=1)
     Binchan_Overlay=0;
 end
-
 
 figSize = estudioworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end
 
+%%----------------------------Measurement tool-----------------------------
+geterpvaluesparas = erpworkingmemory('pop_geterpvalues');
+try moption = geterpvaluesparas{7}; catch moption = 'meanbl'; end
+
+try latency = geterpvaluesparas{4};catch latency = []; end
+
+try  blc = geterpvaluesparas{10}; catch  blc = 'none'; end
+if numel(blc)~=2
+    if ~ismember_bc2(blc, {'none','pre','post','all','whole'})
+        blc = 'none';
+    end
+end
+try intfactor = geterpvaluesparas{21}; catch intfactor=1; end
+
+if isempty(intfactor) || numel(intfactor)~=1 || any(intfactor<=0 ) || any(intfactor>10)
+    intfactor=1;
+end
+
+try Resolution = geterpvaluesparas{9};catch Resolution=3; end
+if isempty(Resolution) || numel(Resolution)~=1 || any(Resolution<1) || any(Resolution>6)
+    Resolution =3;
+end
+
+try Afraction = geterpvaluesparas{15};catch Afraction =  0.5;end
+if isempty(Afraction) || numel(Afraction)~=1 || any(Afraction<=0) || any(Afraction>=1)
+    Afraction =  0.5;
+end
+
+try polpeak = geterpvaluesparas{12};catch polpeak=0; end
+if isempty(polpeak) || numel(polpeak)~=1 || (polpeak~=0 && polpeak~=1)
+    polpeak=0;
+end
+
+try locpeakrep= geterpvaluesparas{14};catch locpeakrep=1;  end
+if isempty(locpeakrep) || numel(locpeakrep)~=1 || (locpeakrep~=0 && locpeakrep~=1)
+    locpeakrep=1;
+end
+
+try fracmearep= geterpvaluesparas{16};catch fracmearep=1;  end
+if isempty(fracmearep) || numel(fracmearep)~=1 || (fracmearep~=0 && fracmearep~=1 && fracmearep~=2)
+    fracmearep=0;
+end
+try PeakOnset = geterpvaluesparas{22};catch PeakOnset=1;  end
+if isempty(PeakOnset) || numel(PeakOnset)~=1 || (PeakOnset~=0 && PeakOnset~=1)
+    PeakOnset=1;
+end
+matlab_ver = version('-release');
+Matlab_ver = str2double(matlab_ver(1:4));
+
+
+try sampeak = geterpvaluesparas{14};catch sampeak=1;  end
+if isempty(sampeak) ||numel(sampeak)~=1 || any(sampeak<1)
+    sampeak=1;
+end
 
 if matlabfig==1
     [EEG, eegcom] = pop_ploterptab(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
@@ -188,6 +242,18 @@ else
     OutputViewerparerp{9} = columNum;
     OutputViewerparerp{10} =positive_up;
     OutputViewerparerp{11} =Binchan_Overlay;
+    OutputViewerparerp{12} =moption;
+    OutputViewerparerp{13} =latency;
+    OutputViewerparerp{14} =blc;
+    OutputViewerparerp{15} =intfactor;
+    OutputViewerparerp{16} =Resolution;
+    OutputViewerparerp{17} =Afraction;
+    OutputViewerparerp{18} =polpeak;
+    OutputViewerparerp{19} = locpeakrep;
+    OutputViewerparerp{20} =fracmearep;
+    OutputViewerparerp{21} =PeakOnset;
+    OutputViewerparerp{22} =Matlab_ver;
+    OutputViewerparerp{23} =sampeak;
 end
 
 end

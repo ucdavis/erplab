@@ -15,6 +15,8 @@
 function varargout = f_ERP_erpsetsGUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
+global EStudio_gui_erp_totl;
+
 
 ERPsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
@@ -512,8 +514,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Min=1;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
-        observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
-        observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+        observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -752,7 +753,15 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-         f_redrawERP();
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;
+        end
+        if mtViewer ==0
+            f_redrawERP();
+        else
+            f_redrawERP_mt_viewer();
+        end
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -812,9 +821,16 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-        f_redrawERP();
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;
+        end
+        if mtViewer ==0
+            f_redrawERP();
+        else
+            f_redrawERP_mt_viewer();
+        end
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
-         f_redrawERP();
     end
 
 
@@ -1061,7 +1077,15 @@ varargout{1} = box_erpset_gui;
         end
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-         f_redrawERP();
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;
+        end
+        if mtViewer ==0
+            f_redrawERP();
+        else
+            f_redrawERP_mt_viewer();
+        end
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
@@ -1097,8 +1121,6 @@ varargout{1} = box_erpset_gui;
                 observe_ERPDAT.CURRENTERP = Selected_ERP;
                 estudioworkingmemory('selectederpstudio',Selected_ERP);
             end
-            
-            
             ERPlistName =  getERPsets();
             ERPsetops.butttons_datasets.String = ERPlistName;
             ERPsetops.butttons_datasets.Value = Selected_ERP;
@@ -1133,8 +1155,15 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = 2;
         
-        %%insert the viewer
-        f_redrawERP();
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;
+        end
+        if mtViewer ==0
+            f_redrawERP();
+        else
+            f_redrawERP_mt_viewer();
+        end
     end
 
 %%------------------get the names of erpsets-------------------------------

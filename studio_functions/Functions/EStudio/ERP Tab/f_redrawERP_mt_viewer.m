@@ -2,195 +2,30 @@
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Feb. 2022
+%Feb. 2022 && Nov. 2023
 
 % ERPLAB Studio
 
 
-
-
-
 function f_redrawERP_mt_viewer()
-% Draw a demo ERP into the axes provided
-% global EStudio_gui_erp_totl;
+
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
-S_ws_geterpset= estudioworkingmemory('selectederpstudio');
-if isempty(S_ws_geterpset)
-    S_ws_geterpset = observe_ERPDAT.CURRENTERP;
-    
-    if isempty(S_ws_geterpset)
-        msgboxText =  'No ERPset was selected!!!';
-        title = 'EStudio: ERPsets';
-        errorfound(msgboxText, title);
-        return;
-    end
-    S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,S_ws_geterpset);
-    estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-    estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-end
 
-S_ws_getbinchan =  estudioworkingmemory('geterpbinchan');
-Select_index = S_ws_getbinchan.Select_index;
-S_ws_geterpplot = estudioworkingmemory('geterpplot');
-
-
-S_ws_geterpvalues =  estudioworkingmemory('geterpvalues');
+%%Get the background color
+FonsizeDefault = f_get_default_fontsize();
 try
-    
-    Viewer_Label = S_ws_geterpvalues.Viewer;
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
-    mnamex = '"Viewer" was not selected for the measured ERPset.';
-    question = [ '%s\n\n Please select "On" for "Viewer" on the "ERP Measurement Tool" panel .\n'];
-    title       = 'ERPLAB Studio: ERP Measurement Tool';
-    button      = questdlg(sprintf(question, mnamex), title,'OK','OK');
-    return;
+    ColorB_def = [0. 95 0.95 0.95];
 end
-
-if isempty(Viewer_Label) || ~strcmp(Viewer_Label,'on')
-    mnamex = '"Off" was selected for "Viewer" on the "ERP Measurement Tool" panel.';
-    question = [ '%s\n\n Please check "S" on Workspace of Matlab.\n'];
-    title       = 'ERPLAB Studio: ERP Measurement Tool';
-    button      = questdlg(sprintf(question, mnamex), title,'OK','OK');
-    return;
+if isempty(ColorB_def)
+    ColorB_def = [0. 95 0.95 0.95];
 end
-
-
-try
-    moption = S_ws_geterpvalues.Measure;
-catch
-    mnamex = 'Measurement type was not selected on the "ERP Measurement Tool" panel.';
-    question = [ '%s\n\n Please select anyone of measurement types from pop menu of "Measurement Type".\n'];
-    title       = 'ERPLAB Studio: ERP Measurement Tool';
-    button      = questdlg(sprintf(question, mnamex), title,'OK','OK');
-    return;
-end
-
-
-try
-    latency = S_ws_geterpvalues.latency;
-catch
-    mnamex = 'Measurement window was not defined on the "ERP Measurement Tool" panel.';
-    question = [ '%s\n\n Please set measurement window on "Measurement window".\n'];
-    title       = 'ERPLAB Studio: ERP Measurement Tool';
-    button      = questdlg(sprintf(question, mnamex), title,'OK','OK');
-    return;
-end
-
-Times_erp_curr = observe_ERPDAT.ERP.times;
-
-if numel(latency) ==1
-    if latency(1)< Times_erp_curr(1)
-        msgboxText = ['For latency range, lower time limit must be larger than',32,num2str(Times_erp_curr(1)),'.\n'];
-        title = 'EStudio: ERP measurement tool- Viewer "on". ';
-        errorfound(sprintf(msgboxText), title);
-        return
-        
-    elseif latency(1)> Times_erp_curr(end)
-        msgboxText = ['For latency range, upper time limit must be smaller than',32,num2str(Times_erp_curr(end)),'.\n'];
-        title = 'EStudio: ERP measurement tool- Viewer "on". ';
-        errorfound(sprintf(msgboxText), title);
-        return
-    end
-else
-    
-    if latency(1) < Times_erp_curr(1)
-        msgboxText = ['For latency range, lower time limit must be larger than',32,num2str(Times_erp_curr(1)),'.\n'];
-        title = 'EStudio: ERP measurement tool- Viewer "on". ';
-        errorfound(sprintf(msgboxText), title);
-        return
-        
-    elseif latency(end)  > Times_erp_curr(end)
-        msgboxText = ['For latency range, upper time limit must be smaller than',32,num2str(Times_erp_curr(end)),'.\n'];
-        title = 'EStudio: ERP measurement tool- Viewer "on". ';
-        errorfound(sprintf(msgboxText), title);
-        return
-    end
-end
-
-%%Parameter from bin and channel panel
-Elecs_shown = S_ws_getbinchan.elecs_shown{Select_index};
-if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-    EEG_plotset = estudioworkingmemory('ERP_chanorders');
-    ChanArray = reshape(Elecs_shown,1,[]);
-    try
-        chanOrder = EEG_plotset{1};
-        if chanOrder==2
-            if isfield(observe_ERPDAT.ERP,'chanlocs') && ~isempty(observe_ERPDAT.ERP.chanlocs)
-                chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(ChanArray));
-                if ~isempty(chanindexnew)
-                    ChanArray = ChanArray(chanindexnew);
-                end
-            end
-        elseif chanOrder==3
-            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
-            chanorders =   EEG_plotset{2};
-            chanorderindex = chanorders{1,1};
-            chanorderindex1 = unique(chanorderindex);
-            chanorderlabels = chanorders{1,2};
-            [C,IA]= ismember_bc2(chanorderlabels,labels);
-            Chanlanelsinst = labels(ChanArray);
-            if ~any(IA==0) && numel(chanorderindex1) == length(labels)
-                [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
-                [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
-                ChanArray = IA2(chanorderindex(IA1));
-            end
-        end
-        Elecs_shown = ChanArray;
-    catch
-    end
-    
-end
-
-
-
-Bins = S_ws_getbinchan.bins{Select_index};
-Bin_chans = S_ws_getbinchan.bins_chans(Select_index);
-Elec_list = S_ws_getbinchan.elec_list{Select_index};
-Matlab_ver = S_ws_getbinchan.matlab_ver;
-
-
-
-%%Parameter from plotting panel
-Min_vspacing = S_ws_geterpplot.min_vspacing(Select_index);
-Min_time = S_ws_geterpplot.min(Select_index);
-Max_time = S_ws_geterpplot.max(Select_index);
-Yscale = S_ws_geterpplot.yscale(Select_index);
-Timet_low =S_ws_geterpplot.timet_low(Select_index);
-Timet_high =S_ws_geterpplot.timet_high(Select_index);
-Timet_step=S_ws_geterpplot.timet_step(Select_index);
-Fill = S_ws_geterpplot.fill(Select_index);
-Plority_plot = S_ws_geterpplot.Positive_up(Select_index);
-
-if Bin_chans == 0
-    elec_n = S_ws_getbinchan.elec_n(Select_index);
-    max_elec_n = observe_ERPDAT.ALLERP(S_ws_geterpset(Select_index)).nchan;
-else
-    elec_n = S_ws_getbinchan.bin_n(Select_index);
-    max_elec_n = observe_ERPDAT.ALLERP(S_ws_geterpset(Select_index)).nbin;
-end
-
 % We first clear the existing axes ready to build a new one
 if ishandle( EStudio_gui_erp_totl.ViewAxes )
     delete( EStudio_gui_erp_totl.ViewAxes );
 end
-
-
-% Get chan labels
-S_chan.chan_label = cell(1,max_elec_n);
-S_chan.chan_label_place = zeros(1,max_elec_n);
-
-
-if Bin_chans == 0
-    for i = 1:elec_n
-        S_chan.chan_label{i} = observe_ERPDAT.ERP.chanlocs(Elecs_shown(i)).labels;
-    end
-else
-    for i = 1:elec_n
-        S_chan.chan_label{i} = observe_ERPDAT.ERP.bindescr(Bins(i));
-    end
-end
-
 
 %Sets the units of your root object (screen) to pixels
 set(0,'units','pixels')
@@ -204,72 +39,62 @@ Inch_SS = get(0,'screensize');
 Res = Pix_SS./Inch_SS;
 
 
-pb_height = Min_vspacing*Res(4);  %px
-
-
-% Plot data in the main viewer fig
-splot_n = elec_n;
-tsize   = 13;
-
-%%Get the background color
-try
-    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
-catch
-    ColorB_def = [0. 95 0.95 0.95];
+ERPArray= estudioworkingmemory('selectederpstudio');
+if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
+    if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
+        ERPArray =  length(observe_ERPDAT.ALLERP) ;
+        estudioworkingmemory('selectederpstudio',ERPArray);
+        observe_ERPDAT.CURRENTERP = ERPArray;
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(ERPArray);
+        assignin('base','ERP',observe_ERPDAT.ERP);
+        assignin('base','ALLERP', observe_ERPDAT.ALLERP);
+        assignin('base','CURRENTERP', observe_ERPDAT.CURRENTERP);
+    end
+    [xpos,ypos] = find(ERPArray==observe_ERPDAT.CURRENTERP);
+    if ~isempty(ypos)
+        pagecurrentNum = ypos;
+        pageNum = numel(ERPArray);
+        PageStr = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP).erpname;
+    else
+        pageNum=1;
+        pagecurrentNum=1;
+        PageStr = observe_EEGDAT.EEG.setname;
+    end
+else
+    pageNum=1;
+    pagecurrentNum=1;
+    PageStr = 'No ERPset was loaded';
+    ERPArray= 1;
+    estudioworkingmemory('selectederpstudio',1);
 end
-if isempty(ColorB_def)
-    ColorB_def = [0. 95 0.95 0.95];
-end
 
-clear pb r_ax plotgrid
 EStudio_gui_erp_totl.plotgrid = uiextras.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
-
 pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
-
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ERP_M_T_Viewer = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
-%%-------------------Display the processing procedure-----------------------
-%%Changed by Guanghui Zhang 2 August 2022-------panel for display the processing procedure for some functions, e.g., filtering
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid );%%%Message
-EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',20,'FontWeight','bold','BackgroundColor',ColorB_def);
-
-
-%%Setting title
-EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', '<','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',30,'BackgroundColor',[1 1 1]);
-if Select_index ==1
-    EStudio_gui_erp_totl.pageinfo_minus.Enable = 'off';
-end
-
-EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(S_ws_getbinchan.Select_index),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',20,'BackgroundColor',[1 1 1]);
-if S_ws_getbinchan.Select_index ==1
-    EStudio_gui_erp_totl.pageinfo_edit.Enable = 'on';
-end
-
-
-EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', '>','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',30,'BackgroundColor',[1 1 1]);
-if S_ws_getbinchan.Select_index == numel(S_ws_geterpset)
-    EStudio_gui_erp_totl.pageinfo_plus.Enable = 'off';
-end
-
-pageinfo_str = ['Page',32,num2str(Select_index),'/',num2str(numel(S_ws_geterpset)),':',32,observe_ERPDAT.ERP.erpname];
-pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',14,'FontWeight','bold');
-
-if length(S_ws_geterpset) ==1
+EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.pageinfo_plus.Enable = 'off';
+pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
+pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
+if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
     Enable_plus_BackgroundColor = [1 1 1];
     Enable_minus_BackgroundColor = [0 0 0];
 else
-    
-    if Select_index ==1
+    if pagecurrentNum ==1
         Enable_minus = 'off';
         Enable_plus = 'on';
         
         Enable_plus_BackgroundColor = [0 1 0];
         Enable_minus_BackgroundColor = [0 0 0];
-    elseif  Select_index == length(S_ws_geterpset)
+    elseif  pagecurrentNum == length(ERPArray)
         Enable_minus = 'on';
         Enable_plus = 'off';
         Enable_plus_BackgroundColor = [0 0 0];
@@ -285,133 +110,147 @@ EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-
 set(pageinfo_box, 'Sizes', [50 50 50 -1] );
 set(pageinfo_box,'BackgroundColor',ColorB_def);
 set(pageinfo_text,'BackgroundColor',ColorB_def);
-%Setting title. END
 
-%for i=1:splot_n
-
-ndata = 0;
-nplot = 0;
-if Bin_chans == 0
-    ndata = Bins;
-    nplot = Elecs_shown;
-else
-    ndata = Elecs_shown;
-    nplot = Bins;
+if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
+    EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
+    set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
 
-%Both equation is incorrect.
-
-pnts    = observe_ERPDAT.ERP.pnts;
-timeor  = observe_ERPDAT.ERP.times; % original time vector
-p1      = timeor(1);
-p2      = timeor(end);
-
-try
-    intfactor = S_ws_geterpvalues.InterpFactor;
-catch
-    intfactor =1;
-end
-
-if intfactor~=1
-    timex = linspace(p1,p2,round(pnts*intfactor));
-else
-    timex = timeor;
-end
-
-
-[xxx, latsamp, latdiffms] = closest(timex, [Min_time Max_time]);
-tmin = latsamp(1);
-tmax = latsamp(2);
-
-if tmin < 1
-    tmin = 1;
-end
-
-if tmax > numel(timex)
-    tmax = numel(timex);
-end
-
-try
-    blc = S_ws_geterpvalues.Baseline;
-catch
-    blc = 'none';
-end
-
-if intfactor~=1
-    Plot_erp_data_TRAN = [];
-    for Numoftwo = 1:size(observe_ERPDAT.ERP.bindata,3)
-        for Numofone = 1:size(observe_ERPDAT.ERP.bindata,1)
-            data = squeeze(observe_ERPDAT.ERP.bindata(Numofone,:,Numoftwo));
-            data  = spline(timeor, data, timex); % re-sampled data
-            blv    = blvalue2(data, timex, blc);
-            data   = data - blv;
-            Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
-        end
-    end
-    Bindata = Plot_erp_data_TRAN;
-else
-    Bindata = observe_ERPDAT.ERP.bindata;
-end
-
-plot_erp_data = nan(tmax-tmin+1,numel(ndata));
-for i = 1:splot_n
-    if Bin_chans == 0
-        for i_bin = 1:numel(ndata)
-            plot_erp_data(:,i_bin,i) = Bindata(Elecs_shown(i),tmin:tmax,Bins(i_bin))'*Plority_plot; %
-        end
+if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
+    ERP = observe_ERPDAT.ERP;
+    OutputViewerparerp = f_preparms_mtviewer_erptab(ERP,0);
+    
+    
+    %%Parameter from bin and channel panel
+    ChanArray = OutputViewerparerp{1};
+    BinArray = OutputViewerparerp{2};
+    timeStart =OutputViewerparerp{3};
+    timEnd =OutputViewerparerp{4};
+    Timet_step=OutputViewerparerp{5};
+    [~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
+    Yscale = OutputViewerparerp{6};
+    Min_vspacing = OutputViewerparerp{7};
+    Fillscreen = OutputViewerparerp{8};
+    positive_up = OutputViewerparerp{10};
+    BinchanOverlay= OutputViewerparerp{11};
+    moption= OutputViewerparerp{12};
+    latency= OutputViewerparerp{13};
+    Min_time = observe_ERPDAT.ERP.times(1);
+    Max_time = observe_ERPDAT.ERP.times(end);
+    blc = OutputViewerparerp{14};
+    intfactor =  OutputViewerparerp{15};
+    Resolution =OutputViewerparerp{16};
+    Matlab_ver = OutputViewerparerp{22};
+    
+    
+    if BinchanOverlay == 0
+        splot_n = numel(OutputViewerparerp{1});
     else
-        for i_bin = 1:numel(ndata)
-            plot_erp_data(:,i_bin,i) = Bindata(Elecs_shown(i_bin),tmin:tmax,Bins(i))'*Plority_plot; %
+        splot_n = numel(OutputViewerparerp{2});
+    end
+    pb_height = Min_vspacing*Res(4);  %px
+    
+    if BinchanOverlay == 0
+        ndata = BinArray;
+        nplot = ChanArray;
+    else
+        ndata = ChanArray;
+        nplot = BinArray;
+    end
+    
+    pnts    = observe_ERPDAT.ERP.pnts;
+    timeor  = observe_ERPDAT.ERP.times; % original time vector
+    p1      = timeor(1);
+    p2      = timeor(end);
+    if intfactor~=1
+        timex = linspace(p1,p2,round(pnts*intfactor));
+    else
+        timex = timeor;
+    end
+    
+    [xxx, latsamp, latdiffms] = closest(timex, [Min_time Max_time]);
+    tmin = latsamp(1);
+    tmax = latsamp(2);
+    if tmin < 1
+        tmin = 1;
+    end
+    if tmax > numel(timex)
+        tmax = numel(timex);
+    end
+    
+    if intfactor~=1
+        Plot_erp_data_TRAN = [];
+        for Numoftwo = 1:size(observe_ERPDAT.ERP.bindata,3)
+            for Numofone = 1:size(observe_ERPDAT.ERP.bindata,1)
+                data = squeeze(observe_ERPDAT.ERP.bindata(Numofone,:,Numoftwo));
+                data  = spline(timeor, data, timex); % re-sampled data
+                blv    = blvalue2(data, timex, blc);
+                data   = data - blv;
+                Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
+            end
+        end
+        Bindata = Plot_erp_data_TRAN;
+    else
+        Bindata = observe_ERPDAT.ERP.bindata;
+    end
+    
+    plot_erp_data = nan(tmax-tmin+1,numel(ndata));
+    for i = 1:splot_n
+        if BinchanOverlay == 0
+            for i_bin = 1:numel(ndata)
+                plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i),tmin:tmax,BinArray(i_bin))'*positive_up; %
+            end
+        else
+            for i_bin = 1:numel(ndata)
+                plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i_bin),tmin:tmax,BinArray(i))'*positive_up; %
+            end
         end
     end
-end
-
-perc_lim = Yscale;
-percentile = perc_lim*3/2;
-%How to get x unique colors?
-line_colors = erpworkingmemory('PWColor');
-if size(line_colors,1)~= numel(ndata)
-    if numel(ndata)> size(line_colors,1)
+    
+    perc_lim = Yscale;
+    percentile = perc_lim*3/2;
+    %How to get x unique colors?
+    line_colors = erpworkingmemory('PWColor');
+    if size(line_colors,1)~= numel(ndata)
+        if numel(ndata)> size(line_colors,1)
+            line_colors = get_colors(numel(ndata));
+        else
+            line_colors = line_colors(1:numel(ndata),:,:);
+        end
+    end
+    
+    if isempty(line_colors)
         line_colors = get_colors(numel(ndata));
-    else
-        line_colors = line_colors(1:numel(ndata),:,:);
     end
-end
-
-if isempty(line_colors)
-    line_colors = get_colors(numel(ndata));
-end
-
-line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
-
-ind_plot_height = percentile*2; % Height of each individual subplot
-
-offset = [];
-if Bin_chans == 0
-    offset = (numel(Elecs_shown)-1:-1:0)*ind_plot_height;
-else
-    offset = (numel(Bins)-1:-1:0)*ind_plot_height;
-end
-[~,~,Num_plot] = size(plot_erp_data);
-
-for i = 1:Num_plot
-    plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
-end
-
-if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
+    
+    line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
+    
+    ind_plot_height = percentile*2; % Height of each individual subplot
+    
+    offset = [];
+    if BinchanOverlay == 0
+        offset = (numel(ChanArray)-1:-1:0)*ind_plot_height;
+    else
+        offset = (numel(BinArray)-1:-1:0)*ind_plot_height;
+    end
+    [~,~,Num_plot] = size(plot_erp_data);
+    
+    for i = 1:Num_plot
+        plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
+    end
+    
     %pb_ax = uipanel('Parent',EStudio_gui_erp_totl.plotgrid);
-    r_ax = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color',[1 1 1],'Box','on');
-    hold(r_ax,'on');
+    EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color',[1 1 1],'Box','on');
+    hold(EStudio_gui_erp_totl.erptabwaveiwer,'on');
     set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
-    r_ax_legend = axes('Parent', EStudio_gui_erp_totl.ViewAxes_legend,'Color','none','Box','off');
-    hold(r_ax_legend,'on');
+    EStudio_gui_erp_totl.erptabwaveiwer_legend = axes('Parent', EStudio_gui_erp_totl.ViewAxes_legend,'Color','none','Box','off');
+    hold(EStudio_gui_erp_totl.erptabwaveiwer_legend,'on');
     
     
-    set(r_ax,'XLim',[Min_time Max_time]);
+    set(EStudio_gui_erp_totl.erptabwaveiwer,'XLim',[Min_time Max_time]);
     ts = timex(tmin:tmax);
     [a,Num_data,Num_plot] = size(plot_erp_data);
     new_erp_data = zeros(a,Num_plot*Num_data);
@@ -419,12 +258,10 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
         new_erp_data(:,((Num_data*(i-1))+1):(Num_data*i)) = plot_erp_data(:,:,i);
     end
     
-    % plot_erp_data_fin = [repmat((1:numel(nplot)-1)*ind_plot_height,[numel(ts) 1]) new_erp_data];
-    
-    % pb_here = plot(r_ax,ts,plot_erp_data_fin,'LineWidth',1);
-    pb_here = plot(r_ax,ts,new_erp_data,'LineWidth',1.5);
-    hold(r_ax,'on');%Same function as hold on;
-    r_ax.LineWidth=1.5;
+    % pb_here = plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,plot_erp_data_fin,'LineWidth',1);
+    pb_here = plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,new_erp_data,'LineWidth',1.5);
+    hold(EStudio_gui_erp_totl.erptabwaveiwer,'on');%Same function as hold on;
+    EStudio_gui_erp_totl.erptabwaveiwer.LineWidth=1.5;
     yticks  = -perc_lim:perc_lim:((2*percentile*Num_plot)-(2*perc_lim));
     
     oldlim = [-percentile yticks(end)-perc_lim+percentile];
@@ -442,10 +279,10 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
         xstep_label =0;
     end
     if ~xstep_label
-        [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [Timet_low,Timet_high]);
+        [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [timeStart,timEnd]);
         xticks = str2num(def{1,1});
     else
-        xticks = (Timet_low:Timet_step:Timet_high);
+        xticks = (timeStart:Timet_step:timEnd);
     end
     % estudioworkingmemory('erp_xtickstep',0);
     x_axs = ones(size(new_erp_data,1),1);
@@ -457,27 +294,17 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
             xticks_label(count) = jjj;
         end
     end
-    % if ~isempty(xticks_label)
-    %     xticks(xticks_label) = [];
-    % end
     for Numofxlabel = 1:numel(xticks)
         xticks_labels{Numofxlabel} = num2str(xticks(Numofxlabel));
     end
     
-    try
-        moption =  S_ws_geterpvalues.Measure;
-    catch
-        moption = 'meanbl';
-    end
-    
-    
     for jj = 1:numel(offset)
-        plot(r_ax,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',3);
-        set(r_ax,'XLim',[Timet_low,Timet_high]);
-        set(r_ax,'XTick',xticks, ...
-            'box','off', 'Color','none','xticklabels',xticks_labels,'FontWeight','bold');
+        plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',2);
+        set(EStudio_gui_erp_totl.erptabwaveiwer,'XLim',[timeStart,timEnd]);
+        set(EStudio_gui_erp_totl.erptabwaveiwer,'XTick',xticks, ...
+            'box','off', 'Color','none','xticklabels',xticks_labels);
         myX_Crossing = offset(jj);
-        props = get(r_ax);
+        props = get(EStudio_gui_erp_totl.erptabwaveiwer);
         
         tick_bottom = -props.TickLength(1)*diff(props.YLim);
         if abs(tick_bottom) > abs(Yscale)/5
@@ -488,15 +315,13 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
             end
         end
         tick_top = 0;
-        
-        line(r_ax,props.XLim, [0 0] + myX_Crossing, 'color', 'k','LineWidth',1.5);
-        
+        line(EStudio_gui_erp_totl.erptabwaveiwer,props.XLim, [0 0] + myX_Crossing, 'color', 'k','LineWidth',1.5);
         if ~isempty(props.XTick)
             xtick_x = repmat(props.XTick, 2, 1);
             xtick_y = repmat([tick_bottom; tick_top] + myX_Crossing, 1, length(props.XTick));
-            h_ticks = line(r_ax,xtick_x, xtick_y, 'color', 'k','LineWidth',1.5);
+            h_ticks = line(EStudio_gui_erp_totl.erptabwaveiwer,xtick_x, xtick_y, 'color', 'k','LineWidth',1.5);
         end
-        set(r_ax, 'XTick', [], 'XTickLabel', []);
+        set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'XTickLabel', []);
         %         tick_bottom = -props.TickLength(1)*diff(props.YLim);
         nTicks = length(props.XTick);
         h_ticklabels = zeros(size(props.XTick));
@@ -504,7 +329,7 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
             if numel(offset)==jj
                 kkkk = 1;
             else
-                if abs(Timet_low - xticks(1)) > 1000/observe_ERPDAT.ERP.srate
+                if abs(timeStart - xticks(1)) > 1000/observe_ERPDAT.ERP.srate
                     kkkk = 1;
                 else
                     kkkk = 2;
@@ -512,7 +337,7 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
             end
             for iCount = kkkk:nTicks
                 xtick_label = (props.XTickLabel(iCount, :));
-                text(r_ax,props.XTick(iCount), tick_bottom + myX_Crossing, ...
+                text(EStudio_gui_erp_totl.erptabwaveiwer,props.XTick(iCount), tick_bottom + myX_Crossing, ...
                     xtick_label, ...
                     'HorizontalAlignment', 'Center', ...
                     'VerticalAlignment', 'Top', ...
@@ -527,36 +352,23 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
     % end
     
     %%%Mark the area/latency/amplitude of interest within the defined window.
-    ERP_mark_area_latency(r_ax,timex(tmin:tmax),moption,plot_erp_data,latency,line_colors,offset,Plority_plot);%cwm = [0 0 0];% white: Background color for measurement window
+    ERP_mark_area_latency(EStudio_gui_erp_totl.erptabwaveiwer,timex(tmin:tmax),moption,plot_erp_data,latency,line_colors,offset,positive_up);%cwm = [0 0 0];% white: Background color for measurement window
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % set(r_ax,'XLim',[Timet_low,Timet_high]);
-    
-    %%%%%%%%-----------------------------
     
     [xxx, latsamp,cdiff] = closest(timex, 0);
     if cdiff<1000/observe_ERPDAT.ERP.srate
-        xline(r_ax,timex(latsamp),'k-.','LineWidth',1);%%Marking start time point for each column
+        xline(EStudio_gui_erp_totl.erptabwaveiwer,timex(latsamp),'k-.','LineWidth',1);%%Marking start time point for each column
     end
     
-    if top_vspace < 0
-        top_vspace = 0;
-    end
-    
-    if bot_vspace > 0
-        bot_vspace = 0;
-    end
-    set(r_ax,'XLim',[Timet_low,Timet_high],'Ylim',newlim);
+    set(EStudio_gui_erp_totl.erptabwaveiwer,'XLim',[timeStart,timEnd],'Ylim',newlim);
     
     for i = 1:numel(pb_here)
         pb_here(i).Color = line_colors(i,:);
     end
     
-    
-    Ylabels_new = ylabs.*Plority_plot;
+    Ylabels_new = ylabs.*positive_up;
     [~,Y_label] = find(Ylabels_new == -0);
     Ylabels_new(Y_label) = 0;
-    
     
     if numel(offset)>1
         count = 0;
@@ -565,56 +377,50 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
             
             count  = count+1;
             try
-                if Bin_chans == 0
-                    leg_str = sprintf('%s',strrep(Elec_list{Elecs_shown(count)},'_','\_'));
+                if BinchanOverlay == 0
+                    leg_str = sprintf('%s',strrep(chanLabels{ChanArray(count)},'_','\_'));
                 else
-                    leg_str = sprintf('%s',strrep(observe_ERPDAT.ERP.bindescr{Bins(count)},'_','\_'));
+                    leg_str = sprintf('%s',strrep(observe_ERPDAT.ERP.bindescr{BinArray(count)},'_','\_'));
                 end
             catch
                 leg_str = '';
             end
-            text(r_ax,Timet_low,offset(i+1)+offset(end-1)/6,leg_str,'FontWeight','bold','FontSize', 14);
-            
+            text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,offset(i+1)+offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
         end
     end
     
     try
-        if Bin_chans == 0
-            leg_str = sprintf('%s',strrep(Elec_list{Elecs_shown(end)},'_','\_'));
+        if BinchanOverlay == 0
+            leg_str = sprintf('%s',strrep(chanLabels{ChanArray(end)},'_','\_'));
         else
-            leg_str = sprintf('%s',strrep(observe_ERPDAT.ERP.bindescr{Bins(end)},'_','\_'));
+            leg_str = sprintf('%s',strrep(observe_ERPDAT.ERP.bindescr{BinArray(end)},'_','\_'));
         end
     catch%%
         leg_str = '';
     end
     
     try
-        text(r_ax,Timet_low,offset(end-1)/6,leg_str,'FontWeight','bold','FontSize', 14);
+        text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,offset(end-1)/6,leg_str,'FontWeight','bold','FontSize', FonsizeDefault);
     catch
-        text(r_ax,Timet_low,Yscale/2,leg_str,'FontWeight','bold','FontSize', 14);
+        text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,Yscale/2,leg_str,'FontWeight','bold','FontSize', FonsizeDefault);
     end
     
-    
-    % xticks = (Min_time:Timet_step:Max_time);
-    % some options currently only work post Matlab R2016a
     if Matlab_ver >= 2016
-        set(r_ax,'FontSize',tsize,'FontWeight','bold','XAxisLocation','origin',...
+        set(EStudio_gui_erp_totl.erptabwaveiwer,'FontSize',FonsizeDefault,'FontWeight','bold','XAxisLocation','origin',...
             'XGrid','on','YGrid','on','YTick',yticks,'YTickLabel',Ylabels_new, ...
             'YLim',newlim,'XTick',xticks, ...
-            'box','off', 'Color','none','XLim',[Timet_low Timet_high]);
+            'box','off', 'Color','none','XLim',[timeStart timEnd]);
     else
-        set(r_ax,'FontSize',tsize,'FontWeight','bold','XAxisLocation','bottom',...
+        set(EStudio_gui_erp_totl.erptabwaveiwer,'FontSize',FonsizeDefault,'FontWeight','bold','XAxisLocation','bottom',...
             'XGrid','on','YGrid','on','YTick',yticks,'YTickLabel',Ylabels_new, ...
             'YLim',newlim, 'XTick',xticks,...
-            'box','off', 'Color','none','XLim',[Timet_low Timet_high]);
+            'box','off', 'Color','none','XLim',[timeStart timEnd]);
         hline(0,'k'); % backup xaxis
     end
-    hold(r_ax,'off');
-    % if numel(offset)>1
-    set(r_ax, 'XTick', [], 'XTickLabel', []);
-    % end
-    %%%%%%%%%%%%
-    % r_ax.Position(1) =r_ax.Position(1)+0.5;
+    hold(EStudio_gui_erp_totl.erptabwaveiwer,'off');
+    set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'XTickLabel', []);
+    
+    % EStudio_gui_erp_totl.erptabwaveiwer.Position(1) =EStudio_gui_erp_totl.erptabwaveiwer.Position(1)+0.5;
     line_colors_ldg = erpworkingmemory('PWColor');
     if isempty(line_colors_ldg)
         line_colors_ldg = get_colors(numel(ndata));
@@ -627,33 +433,28 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
         end
     end
     
-    
     for Numofplot = 1:size(plot_erp_data,2)
-        plot(r_ax_legend,[0 0],'Color',line_colors_ldg(Numofplot,:,:),'LineWidth',3)
+        plot(EStudio_gui_erp_totl.erptabwaveiwer_legend,[0 0],'Color',line_colors_ldg(Numofplot,:,:),'LineWidth',3)
     end
-    
-    if Bin_chans == 0
+    if BinchanOverlay == 0
         Leg_Name = '';
-        for Numofbin = 1:numel(Bins)
-            Leg_Name{Numofbin} = strcat('Bin',num2str(Bins(Numofbin)));
+        for Numofbin = 1:numel(BinArray)
+            Leg_Name{Numofbin} = strcat('Bin',num2str(BinArray(Numofbin)));
         end
-        
     else
-        for Numofchan = 1:numel(Elecs_shown)
-            Leg_Name{Numofchan} = strrep(Elec_list{Elecs_shown(Numofchan)},'_','\_');
+        for Numofchan = 1:numel(ChanArray)
+            Leg_Name{Numofchan} = strrep(chanLabels{ChanArray(Numofchan)},'_','\_');
         end
     end
-    here_lgd = legend(r_ax_legend,Leg_Name,'FontSize',14,'TextColor','blue');
-    legend(r_ax_legend,'boxoff');
-    
-    
+    here_lgd = legend(EStudio_gui_erp_totl.erptabwaveiwer_legend,Leg_Name,'FontSize',FonsizeDefault,'TextColor','blue');
+    legend(EStudio_gui_erp_totl.erptabwaveiwer_legend,'boxoff');
     
     %end
     EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
     EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fill
+    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
         pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     end
     
@@ -663,53 +464,37 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
     EStudio_gui_erp_totl.plotgrid.Heights =[30 -1 80 30];
     %%%-------------------Display results obtained from "Measurement Tool" Panel---------------------------------
     [~,~,~,Amp,Lat]= f_ERP_plot_wav(observe_ERPDAT.ERP);
-    try
-        Resolution =S_ws_geterpvalues.Resolution;
-    catch
-        Resolution =3;
-    end
-    try
-        moption =S_ws_geterpvalues.Measure;
-    catch
-        beep;
-        disp('Please select one of Measurement type');
-        return;
-    end
     
-    %%Get name for the selected rows (i.e.,bins) and columns (i.e., channels)
+    %%Get name for the selected rows (i.e.,BinArray) and columns (i.e., channels)
     RowName = {};
-    for Numofbin = 1:numel(Bins)
-        RowName{Numofbin} = strcat('Bin',num2str(Bins(Numofbin)));%'<html><font size= >',':',32,observe_ERPDAT.ERP.bindescr{Bins(Numofbin)}
+    for Numofbin = 1:numel(BinArray)
+        RowName{Numofbin} = strcat('Bin',num2str(BinArray(Numofbin)));%'<html><font size= >',':',32,observe_ERPDAT.ERP.bindescr{BinArray(Numofbin)}
     end
     ColumnName = {};
-    for Numofsel_chan = 1:numel(Elecs_shown)
-        ColumnName{Numofsel_chan} = ['<html><font size= >',num2str(Elecs_shown(Numofsel_chan)),'.',32,Elec_list{Elecs_shown(Numofsel_chan)}];
+    for Numofsel_chan = 1:numel(ChanArray)
+        ColumnName{Numofsel_chan} = ['<html><font size= >',num2str(ChanArray(Numofsel_chan)),'.',32,chanLabels{ChanArray(Numofsel_chan)}];
     end
     
-    % txt_title = uicontrol('Parent',EStudio_gui_erp_totl.ERP_M_T_Viewer,'Style', 'text', 'String', 'My Example Title');
     try
         if ismember_bc2(moption, {'instabl','peaklatbl','fpeaklat','fareatlat','fninteglat','fareaplat','fareanlat','meanbl','peakampbl','areat','ninteg','areap','arean','ninteg','areazt','nintegz','areazp','areazn'})
-            Data_display = Amp(Bins,Elecs_shown);
+            Data_display = Amp(BinArray,ChanArray);
         else
-            Data_display = Lat(Bins,Elecs_shown);
+            Data_display = Lat(BinArray,ChanArray);
         end
-        
         if ismember_bc2(moption,{'arean','areazn'})
             Data_display= -1.*Data_display;
         end
-        
         Data_display_tra = {};
         for Numofone = 1:size(Data_display,1)
             for Numoftwo = 1:size(Data_display,2)
                 if ~isnan(Data_display(Numofone,Numoftwo))
-                    if Bin_chans == 0
+                    if BinchanOverlay == 0
                         Data_display_tra{Numofone,Numoftwo} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display(Numofone,Numoftwo));
                     else
                         Data_display_tra{Numoftwo,Numofone} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display(Numofone,Numoftwo));
                     end
-                    
                 else
-                    if Bin_chans == 0
+                    if BinchanOverlay == 0
                         Data_display_tra{Numofone,Numoftwo} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
                     else
                         Data_display_tra{Numoftwo,Numofone} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
@@ -717,9 +502,8 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
                 end
             end
         end
-        
         EStudio_gui_erp_totl.ERP_M_T_Viewer_table = uitable(EStudio_gui_erp_totl.ERP_M_T_Viewer,'Data',Data_display_tra,'Units','Normalize');
-        if Bin_chans == 0
+        if BinchanOverlay == 0
             EStudio_gui_erp_totl.ERP_M_T_Viewer_table.RowName = RowName;
             EStudio_gui_erp_totl.ERP_M_T_Viewer_table.ColumnName = ColumnName;
         else
@@ -727,7 +511,6 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
             EStudio_gui_erp_totl.ERP_M_T_Viewer_table.ColumnName = RowName;
         end
         EStudio_gui_erp_totl.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
-        
         
         if size(Data_display_tra,2)<12
             ColumnWidth = {};
@@ -738,12 +521,10 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
         elseif size(Data_display_tra,2) ==1
             EStudio_gui_erp_totl.ERP_M_T_Viewer_table.ColumnWidth = {EStudio_gui_erp_totl.ERP_M_T_Viewer.Position(3)};
         end
-        
     catch
         for Numofbin = 1:observe_ERPDAT.ERP.nbin
             Data_display{Numofbin,1} = '';
         end
-        
         RowName = {};
         for Numofbin = 1:observe_ERPDAT.ERP.nbin
             RowName{Numofbin} = strcat('Bin',num2str((Numofbin)));
@@ -756,7 +537,7 @@ if ~strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
         EStudio_gui_erp_totl.ERP_M_T_Viewer_table.ForegroundColor = [1 1 1];
     end
     
-    EStudio_gui_erp_totl.ERP_M_T_Viewer_table.FontSize = 12;
+    EStudio_gui_erp_totl.ERP_M_T_Viewer_table.FontSize = FonsizeDefault;
 else
     set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
     EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
@@ -793,45 +574,56 @@ end
 %------------------Display the waveform for proir ERPset--------------------
 function page_minus(~,~,EStudio_gui_erp_totl)
 global observe_ERPDAT;
-S_ws_geterpset= estudioworkingmemory('selectederpstudio');
-if isempty(S_ws_geterpset)
-    S_ws_geterpset = observe_ERPDAT.CURRENTERP;
-    
-    if isempty(S_ws_geterpset)
-        msgboxText =  'No ERPset was selected!!!';
-        title = 'EStudio: ERPsets';
-        errorfound(msgboxText, title);
-        return;
-    end
-    S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,S_ws_geterpset);
-    estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-    estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-end
-S_ws_getbinchan =  estudioworkingmemory('geterpbinchan');
-S_ws_getbinchan.Select_index  = S_ws_getbinchan.Select_index-1;
-Current_erp_Index = S_ws_geterpset(S_ws_getbinchan.Select_index);
-if Current_erp_Index > length(observe_ERPDAT.ALLERP)
-    beep;
-    disp('Waiting for modifing');
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
     return;
 end
+
+ERPArray= estudioworkingmemory('selectederpstudio');
+if isempty(ERPArray)
+    ERPArray = length(observe_ERPDAT.ALLERP);
+    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+    observe_ERPDAT.CURRENTERP = ERPArray;
+    estudioworkingmemory('selectederpstudio',ERPArray);
+end
+
+Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
+pageNum = numel(ERPArray);
+if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
+    Pagecurrent =1;
+elseif isempty(Pagecurrent)
+    [xpos, ypos] = find(ERPArray==observe_ERPDAT.CURRENTERP);
+    if isempty(ypos)
+        Pagecurrent=1;
+    else
+        Pagecurrent = ypos;
+    end
+end
+
+Pagecurrent = Pagecurrent-1;
+if  Pagecurrent>0 && Pagecurrent<=pageNum
+else
+    Pagecurrent=1;
+end
+
+Current_erp_Index = ERPArray(Pagecurrent);
+EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
+
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
-estudioworkingmemory('geterpbinchan',S_ws_getbinchan);
-if length(S_ws_geterpset) ==1
+
+% f_redrawERP();
+if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
     Enable_plus_BackgroundColor = [0 0 0];
     Enable_minus_BackgroundColor = [0 0 0];
 else
-    
-    if S_ws_getbinchan.Select_index ==1
+    if Pagecurrent ==1
         Enable_minus = 'off';
         Enable_plus = 'on';
-        
         Enable_plus_BackgroundColor = [0 1 0];
         Enable_minus_BackgroundColor = [0 0 0];
-    elseif  S_ws_getbinchan.Select_index == length(S_ws_geterpset)
+    elseif  Pagecurrent == length(ERPArray)
         Enable_minus = 'on';
         Enable_plus = 'off';
         Enable_plus_BackgroundColor = [0 0 0];
@@ -845,92 +637,90 @@ else
 end
 EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
-f_redrawERP_mt_viewer();
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 
-MessageViewer= char(strcat('Plot prior page (<)'));
+MessageViewer= char(strcat('Plot previous page (<)'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 observe_ERPDAT.Process_messg =1;
 try
-    observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+    observe_ERPDAT.Count_currentERP = 1;
     observe_ERPDAT.Process_messg =2;
 catch
     observe_ERPDAT.Process_messg =3;
 end
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+
 end
 
 
 
 %%Edit the index of ERPsets
 function page_edit(Str,~,EStudio_gui_erp_totl)
-CurrentERPindex = str2num(Str.String);
 global observe_ERPDAT;
-S_ws_geterpset= estudioworkingmemory('selectederpstudio');
-if isempty(S_ws_geterpset)
-    S_ws_geterpset = observe_ERPDAT.CURRENTERP;
-    if isempty(S_ws_geterpset)
-        msgboxText =  'No ERPset was selected!!!';
-        title = 'EStudio: ERPsets';
-        errorfound(msgboxText, title);
-        return;
-    end
-    S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,S_ws_geterpset);
-    estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-    estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
+
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    return;
 end
-S_ws_getbinchan =  estudioworkingmemory('geterpbinchan');
-if ~isempty(CurrentERPindex) &&  numel(CurrentERPindex)==1 && (CurrentERPindex<= numel(S_ws_geterpset))
-    S_ws_getbinchan.Select_index  = CurrentERPindex;
-    Current_erp_Index = S_ws_geterpset(S_ws_getbinchan.Select_index);
-    % EStudio_gui_erp_totl.pageinfo_edit.String = num2str(S_ws_getbinchan.Select_index);
-    if Current_erp_Index > length(observe_ERPDAT.ALLERP)
-        beep;
-        disp('Waiting for modifing');
-        return;
+ERPArray= estudioworkingmemory('selectederpstudio');
+if isempty(ERPArray)
+    ERPArray = length(observe_ERPDAT.ALLERP);
+    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+    observe_ERPDAT.CURRENTERP = ERPArray;
+    estudioworkingmemory('selectederpstudio',ERPArray);
+end
+
+Pagecurrent = str2num(Str.String);
+if isempty(Pagecurrent) || numel(Pagecurrent)~=1 || any(Pagecurrent>numel(ERPArray)) || any(Pagecurrent<1)
+    [xpos, ypos] = find(ERPArray==observe_ERPDAT.CURRENTERP);
+    if isempty(ypos)
+        Pagecurrent=1;
+    else
+        Pagecurrent = ypos;
     end
-    observe_ERPDAT.CURRENTERP =  Current_erp_Index;
-    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
-    estudioworkingmemory('geterpbinchan',S_ws_getbinchan);
-    if length(S_ws_geterpset) ==1
+    observe_ERPDAT.CURRENTERP =  ERPArray(Pagecurrent);
+    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(ERPArray(Pagecurrent));
+end
+EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
+
+if length(ERPArray) ==1
+    Enable_minus = 'off';
+    Enable_plus = 'off';
+    Enable_plus_BackgroundColor = [0 0 0];
+    Enable_minus_BackgroundColor = [0 0 0];
+else
+    if Pagecurrent ==1
         Enable_minus = 'off';
+        Enable_plus = 'on';
+        Enable_plus_BackgroundColor = [0 1 0];
+        Enable_minus_BackgroundColor = [1 1 1];
+    elseif  Pagecurrent == length(ERPArray)
+        Enable_minus = 'on';
         Enable_plus = 'off';
         Enable_plus_BackgroundColor = [0 0 0];
-        Enable_minus_BackgroundColor = [0 0 0];
+        Enable_minus_BackgroundColor = [0 1 0];
     else
-        if CurrentERPindex ==1
-            Enable_minus = 'off';
-            Enable_plus = 'on';
-            Enable_plus_BackgroundColor = [0 1 0];
-            Enable_minus_BackgroundColor = [1 1 1];
-        elseif  CurrentERPindex == length(S_ws_geterpset)
-            Enable_minus = 'on';
-            Enable_plus = 'off';
-            Enable_plus_BackgroundColor = [0 0 0];
-            Enable_minus_BackgroundColor = [0 1 0];
-        else
-            Enable_minus = 'on';
-            Enable_plus = 'on';
-            Enable_plus_BackgroundColor = [0 1 0];
-            Enable_minus_BackgroundColor = [0 1 0];
-        end
-    end
-    EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
-    EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
-    EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
-    EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-    
-    MessageViewer= char(strcat('Page Editor'));
-    erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-    observe_ERPDAT.Process_messg =1;
-    try
-        observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
-        observe_ERPDAT.Process_messg =2;
-    catch
-        observe_ERPDAT.Process_messg =3;
+        Enable_minus = 'on';
+        Enable_plus = 'on';
+        Enable_plus_BackgroundColor = [0 1 0];
+        Enable_minus_BackgroundColor = [0 1 0];
     end
 end
+EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
+EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
+EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
+EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
+
+MessageViewer= char(strcat('Page Editor'));
+erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+observe_ERPDAT.Process_messg =1;
+try
+    observe_ERPDAT.Count_currentERP = 1;
+    observe_ERPDAT.Process_messg =2;
+catch
+    observe_ERPDAT.Process_messg =3;
+end
+
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
@@ -938,49 +728,59 @@ end
 %------------------Display the waveform for next ERPset--------------------
 function page_plus(~,~,EStudio_gui_erp_totl)
 global observe_ERPDAT;
-S_ws_geterpset= estudioworkingmemory('selectederpstudio');
-if isempty(S_ws_geterpset)
-    S_ws_geterpset = observe_ERPDAT.CURRENTERP;
-    if isempty(S_ws_geterpset)
-        msgboxText =  'No ERPset was selected!!!';
-        title = 'EStudio: ERPsets';
-        errorfound(msgboxText, title);
-        return;
-    end
-    S_erpplot = f_ERPplot_Parameter(observe_ERPDAT.ALLERP,S_ws_geterpset);
-    estudioworkingmemory('geterpbinchan',S_erpplot.geterpbinchan);
-    estudioworkingmemory('geterpplot',S_erpplot.geterpplot);
-end
-S_ws_getbinchan =  estudioworkingmemory('geterpbinchan');
-S_ws_getbinchan.Select_index  = S_ws_getbinchan.Select_index+1;
-Current_erp_Index = S_ws_geterpset(S_ws_getbinchan.Select_index);
-if Current_erp_Index > length(observe_ERPDAT.ALLERP)
-    beep;
-    disp('Waiting for modifing');
+
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
     return;
 end
+ERPArray= estudioworkingmemory('selectederpstudio');
+if isempty(ERPArray)
+    ERPArray = length(observe_ERPDAT.ALLERP);
+    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+    observe_ERPDAT.CURRENTERP = ERPArray;
+    estudioworkingmemory('selectederpstudio',ERPArray);
+end
+
+Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
+pageNum = numel(ERPArray);
+if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
+    Pagecurrent =1;
+elseif isempty(Pagecurrent)
+    [xpos, ypos] = find(ERPArray==observe_ERPDAT.CURRENTERP);
+    if isempty(ypos)
+        Pagecurrent=1;
+    else
+        Pagecurrent = ypos;
+    end
+end
+
+Pagecurrent = Pagecurrent+1;
+if  Pagecurrent>0 && Pagecurrent<=pageNum
+else
+    Pagecurrent = pageNum;
+end
+
+Current_erp_Index = ERPArray(Pagecurrent);
+EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
+
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
-estudioworkingmemory('geterpbinchan',S_ws_getbinchan);
-if length(S_ws_geterpset) ==1
+estudioworkingmemory('selectederpstudio',ERPArray);
+if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
     Enable_plus_BackgroundColor = [0 0 0];
     Enable_minus_BackgroundColor = [0 0 0];
 else
-    
-    if S_ws_getbinchan.Select_index ==1
+    if Current_erp_Index ==1
         Enable_minus = 'off';
         Enable_plus = 'on';
         Enable_plus_BackgroundColor = [0 1 0];
         Enable_minus_BackgroundColor = [1 1 1];
-    elseif  S_ws_getbinchan.Select_index == length(S_ws_geterpset)
+    elseif  Current_erp_Index == length(ERPArray)
         Enable_minus = 'on';
         Enable_plus = 'off';
         Enable_plus_BackgroundColor = [0 0 0];
         Enable_minus_BackgroundColor = [0 1 0];
-        
-        
     else
         Enable_minus = 'on';
         Enable_plus = 'on';
@@ -997,7 +797,7 @@ MessageViewer= char(strcat('Plot next page (>)'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 observe_ERPDAT.Process_messg =1;
 try
-    observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+    observe_ERPDAT.Count_currentERP = 1;
     observe_ERPDAT.Process_messg =2;
 catch
     observe_ERPDAT.Process_messg =3;
@@ -1007,7 +807,7 @@ end
 
 
 %%Mark the area or latency/amplitude of interest within defined latecies%%%
-function ERP_mark_area_latency(r_ax,timex,moption,plot_erp_data,latency,line_colors,offset,Plority_plot)
+function ERP_mark_area_latency(r_ax,timex,moption,plot_erp_data,latency,line_colors,offset,positive_up)
 try
     cwm_backgb   = erpworkingmemory('MWColor');
 catch
@@ -1049,10 +849,10 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                 timexx = timex(latsamp(1):latsamp(2));
                 dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
                 data_check  = dataxx-offset(Numofstione);
-                if Plority_plot==1
+                if positive_up==1
                     dataxx(data_check<0) = [];
                     timexx(data_check<0) = [];
-                elseif Plority_plot ==-1
+                elseif positive_up ==-1
                     dataxx(data_check>0) = [];
                     timexx(data_check>0) = [];
                 else
@@ -1128,10 +928,10 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                 timexx = timex(latsamp(1):latsamp(2));
                 dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
                 data_check  = dataxx-offset(Numofstione);
-                if Plority_plot==1
+                if positive_up==1
                     dataxx(data_check>0) = [];
                     timexx(data_check>0) = [];
-                elseif Plority_plot ==-1
+                elseif positive_up ==-1
                     dataxx(data_check<0) = [];
                     timexx(data_check<0) = [];
                 else
@@ -1177,11 +977,9 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                         fill(r_ax,inBetweenRegionX2, inBetweenRegionY2,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
                     elseif numel(Check_isolated) >1
                         for Numofrange = 1:numel(Check_isolated)-1
-                            
                             inBetweenRegionX = [timexx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)),fliplr(timexx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))];
                             inBetweenRegionY = [squeeze(dataxx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))',fliplr(offset(Numofstione)*ones(1,numel(timexx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))))];
                             fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                            
                         end
                         inBetweenRegionX1 = [timexx(1:Check_isolated(1)),fliplr(timexx(1:Check_isolated(1)))];
                         inBetweenRegionY1 = [squeeze(dataxx(1:Check_isolated(1)))',fliplr(offset(Numofstione)*ones(1,numel(timexx(1:Check_isolated(1)))))];
@@ -1209,13 +1007,12 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                 timexxn = timex(latsamp(1):latsamp(2));
                 dataxxn = squeeze(datax(:,Numofstitwo,Numofstione));
                 data_check  = dataxxn-offset(Numofstione);
-                if Plority_plot==1
+                if positive_up==1
                     dataxxp(data_check<0) = [];
                     timexxp(data_check<0) = [];
                     dataxxn(data_check>0) = [];
                     timexxn(data_check>0) = [];
-                    
-                elseif Plority_plot ==-1
+                elseif positive_up ==-1
                     dataxxp(data_check>0) = [];
                     timexxp(data_check>0) = [];
                     dataxxn(data_check<0) = [];
@@ -1338,7 +1135,6 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                         inBetweenRegionX2 = [timexxn(Check_isolated(Numofrange+1)+1:end),fliplr(timexxn(Check_isolated(Numofrange+1)+1:end))];
                         inBetweenRegionY2 = [squeeze(dataxxn(Check_isolated(Numofrange+1)+1:end))',fliplr(offset(Numofstione)*ones(1,numel(timexxn(Check_isolated(Numofrange+1)+1:end))))];
                         fill(r_ax,inBetweenRegionX2, inBetweenRegionY2,line_colors(Numofstitwo,:,:).*0.3,'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                        
                     else
                         inBetweenRegionX = [timexxn,fliplr(timexxn)];
                         inBetweenRegionY = [squeeze(dataxxn)',fliplr(offset(Numofstione)*ones(1,numel(timexxn)))];
@@ -1349,7 +1145,6 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
         end
         
     elseif ismember_bc2(moption, {'areat', 'fareatlat'})%  negative values become positive
-        
         for Numofstione = 1:size(datax,3)
             for Numofstitwo = 1:size(datax,2)
                 timexx = timex(latsamp(1):latsamp(2));
@@ -1389,12 +1184,12 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                     dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
                     data_check_unsl = squeeze(datax(:,Numofstitwo,Numofstione));
                     data_check  = dataxx -offset(Numofstione);
-                    if Plority_plot==1
+                    if positive_up==1
                         dataxx(data_check<0) = [];
                         timexx(data_check<0) = [];
                         data_check_unsl(data_check>0) =[];
                         timexx_unsl(data_check>0) = [];
-                    elseif Plority_plot ==-1
+                    elseif positive_up ==-1
                         dataxx(data_check>0) = [];
                         timexx(data_check>0) = [];
                         data_check_unsl(data_check<0) =[];
@@ -1411,7 +1206,6 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                     inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];
                     inBetweenRegionY_unsl = [squeeze(data_check_unsl)',fliplr(offset(Numofstione)*ones(1,numel(timexx_unsl)))];
                     fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,[1 1 1],'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                    
                 end
             end
             
@@ -1428,12 +1222,12 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                     dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
                     data_check_unsl = squeeze(datax(:,Numofstitwo,Numofstione));
                     data_check  = dataxx -offset(Numofstione);
-                    if Plority_plot==1
+                    if positive_up==1
                         dataxx(data_check>0) = [];
                         timexx(data_check>0) = [];
                         data_check_unsl(data_check<0) =[];
                         timexx_unsl(data_check<0) = [];
-                    elseif Plority_plot ==-1
+                    elseif positive_up ==-1
                         dataxx(data_check<0) = [];
                         timexx(data_check<0) = [];
                         data_check_unsl(data_check>0) =[];
@@ -1465,12 +1259,12 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                     dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
                     data_check_unsl = squeeze(datax(:,Numofstitwo,Numofstione));
                     data_check  = dataxx -offset(Numofstione);
-                    if Plority_plot==1
+                    if positive_up==1
                         dataxx(data_check<0) = [];
                         timexx(data_check<0) = [];
                         data_check_unsl(data_check>0) =[];
                         timexx_unsl(data_check>0) = [];
-                    elseif Plority_plot ==-1
+                    elseif positive_up ==-1
                         dataxx(data_check>0) = [];
                         timexx(data_check>0) = [];
                         data_check_unsl(data_check<0) =[];
@@ -1487,11 +1281,8 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                     inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];%
                     inBetweenRegionY_unsl = [squeeze(data_check_unsl)',fliplr(offset(Numofstione)*ones(1,numel(timexx_unsl)))];
                     fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,line_colors(Numofstitwo,:,:)*0.5,'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                    
                 end
             end
-            
-            
         end
     end
 end
@@ -1533,7 +1324,6 @@ elseif length(latency)==2
         
     elseif ismember_bc2(moption, { 'fareatlat', 'fareaplat','fninteglat','fareanlat'})%fractional area latency
         
-        
         [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(observe_ERPDAT.ERP);
         for Numofstione = 1:Num_plot
             for Numofstitwo = 1:Num_data
@@ -1546,7 +1336,6 @@ elseif length(latency)==2
         end
         
     elseif ismember_bc2(moption,  {'peaklatbl','fpeaklat'}) % fractional peak latency && Local peak latency
-        
         [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(observe_ERPDAT.ERP);
         for Numofstione = 1:Num_plot
             for Numofstitwo = 1:Num_data
