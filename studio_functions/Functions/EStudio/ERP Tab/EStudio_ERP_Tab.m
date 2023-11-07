@@ -30,7 +30,6 @@ set( EStudio_gui_erp_totl.tabERP, 'Widths', [-4, 300]); % Viewpanel and settings
 
 
 EStudio_gui_erp_totl.panel_fonts  = f_get_default_fontsize();
-
 EStudio_gui_erp_totl.settingLayout = uiextras.VBox('Parent', EStudio_gui_erp_totl.panelscroll,'BackgroundColor',ColorB_def);
 
 % + Create the settings window panels for ERP panel
@@ -55,7 +54,7 @@ EStudio_gui_erp_totl.panelSizes(9) = 450;
 EStudio_gui_erp_totl.panel{10} = f_ERP_spectral_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(10) = 125;
 EStudio_gui_erp_totl.panel{11} = f_ERP_measurement_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(11) = 240;
+EStudio_gui_erp_totl.panelSizes(11) = 220;
 EStudio_gui_erp_totl.panel{12} = f_ERP_grandaverageGUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(12) = 260;
 EStudio_gui_erp_totl.panel{13} = f_ERP_append_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -109,7 +108,6 @@ end %% End for shrinking panels 4-10
 %% + Create the view
 p = EStudio_gui_erp_totl.ViewContainer;
 EStudio_gui_erp_totl.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorB_def);
-
 end
 
 

@@ -322,7 +322,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         ScreenPos = [];
         
         new_pos= erpworkingmemory('ERPWaveScreenPos');
-        if isempty(new_pos)
+        if isempty(new_pos) || numel(new_pos)~=4
             new_pos = [0.01,0.01,75,75];
             erpworkingmemory('ERPWaveScreenPos',new_pos);
         end

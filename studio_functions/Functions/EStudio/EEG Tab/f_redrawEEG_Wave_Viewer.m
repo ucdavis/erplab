@@ -1,7 +1,5 @@
 %PURPOSE  : Plot EEG waves within one axes as EEGLAB
 
-
-
 % Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis
@@ -16,37 +14,10 @@ global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
 addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-FonsizeDefault = f_get_default_fontsize();
 
 if nargin>1
     help f_redrawEEG_Wave_Viewer;
     return;
-end
-
-% We first clear the existing axes ready to build a new one
-% if ishandle( EStudio_gui_erp_totl.eegViewAxes )
-%     delete( EStudio_gui_erp_totl.eegViewAxes );
-% end
-
-%Sets the units of your root object (screen) to pixels
-set(0,'units','pixels')
-%Obtains this pixel information
-Pix_SS = get(0,'screensize');
-%Sets the units of your root object (screen) to inches
-set(0,'units','inches')
-%Obtains this inch information
-Inch_SS = get(0,'screensize');
-%Calculates the resolution (pixels per inch)
-Res = Pix_SS./Inch_SS;
-
-pb_height = 1*Res(4);
-try
-    [~, ~,ColorB_def,~,~,~] = geterplabstudiodef;%%Get background color
-catch
-    ColorB_def = [0.7020 0.77 0.85];
-end
-if isempty(ColorB_def) || numel(ColorB_def)~=3
-    ColorB_def = [0.7020 0.77 0.85];
 end
 
 figbgdColor = [1 1 1];%%need to set
@@ -104,7 +75,6 @@ if ~isempty(observe_EEGDAT.ALLEEG)  && ~isempty(observe_EEGDAT.EEG)
         %%Insert something to call the function that can change the parameters in
         %%the other panels
     end
-    
     [xpos,ypos] = find(EEGset_selected==observe_EEGDAT.CURRENTSET);
     if ~isempty(ypos)
         pagecurrentNum = ypos;
@@ -121,17 +91,12 @@ else
     PageStr = 'No EEG was loaded';
 end
 
-% EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
-%%-----------------panel is to dispaly the EEGset names--------------------
 EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
 EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
-
 EStudio_gui_erp_totl.eegpageinfo_minus.Callback=@page_minus;
 EStudio_gui_erp_totl.eegpageinfo_edit.String=num2str(pagecurrentNum);
 EStudio_gui_erp_totl.eegpageinfo_edit.Callback=@page_edit;
 EStudio_gui_erp_totl.eegpageinfo_plus.Callback=@page_plus;
-
-
 if pageNum ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -160,35 +125,22 @@ EStudio_gui_erp_totl.eegpageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.eegpageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.eegpageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 set(EStudio_gui_erp_totl.eegpageinfo_box, 'Sizes', [-1 70 50 70] );
-
-
 EStudio_gui_erp_totl.eeg_zoom_in_large.Callback=@zoomin_large;
 EStudio_gui_erp_totl.eeg_zoom_in_fivesmall.Callback=@zoomin_fivesmall;
 EStudio_gui_erp_totl.eeg_zoom_in_small.Callback=@zoomin_small;
-
 EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
 EStudio_gui_erp_totl.eeg_zoom_edit.Callback=@zoomedit;
-
-
 EStudio_gui_erp_totl.eeg_zoom_out_small.Callback = @zoomout_small;
 EStudio_gui_erp_totl.eeg_zoom_out_fivelarge.Callback =@zoomout_fivelarge;
 EStudio_gui_erp_totl.eeg_zoom_out_large.Callback =@zoomout_large;
-
 EStudio_gui_erp_totl.eeg_figurecommand.Callback=@Show_command;
-
-
 EStudio_gui_erp_totl.eeg_figuresaveas.Callback=@figure_saveas;
-
 EStudio_gui_erp_totl.eeg_figureout.Callback = @figure_out;
 
-
 set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 5]);
-
-
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
-
 EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 40; % set the first element (pageinfo) to 30px high
 pause(0.1);
 EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
@@ -211,14 +163,11 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
         return;
     end
 end
-
-%%
 if isempty(observe_EEGDAT.EEG)
     set(EStudio_gui_erp_totl.myeegviewer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 else
     %     set(EStudio_gui_erp_totl.myeegviewer, 'XTick', [], 'XTickLabel', []);
 end
-
 end % redrawDemo
 
 
@@ -563,7 +512,6 @@ erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 observe_EEGDAT.eeg_panel_message=1;
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
-
 end
 
 
@@ -648,7 +596,6 @@ if ~isempty(Pagecurrent) && Pagecurrent>0 && Pagecurrent<= pageNum%%
     observe_EEGDAT.count_current_eeg =2;
     f_redrawEEG_Wave_Viewer();%%replot the waves
 end
-
 end
 
 
@@ -682,14 +629,10 @@ elseif isempty(Pagecurrent)
         Pagecurrent=1;
         observe_EEGDAT.CURRENTSET = EEGset_selected(1);
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
-        return;
     else
         Pagecurrent = ypos;
     end
 end
-
 Pagecurrent = Pagecurrent-1;
 if  Pagecurrent>0 && Pagecurrent<=pageNum
     EStudio_gui_erp_totl.eegpageinfo_edit.String = num2str(Pagecurrent);
@@ -756,7 +699,6 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
 else
     return;
 end
-
 end
 
 
@@ -773,7 +715,6 @@ end
 if ~isempty(messgStr)
     observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
 end
-
 MessageViewer= char(strcat('Show Command'));
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 try
@@ -800,8 +741,6 @@ end
 if ~isempty(messgStr)
     observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
 end
-
-
 MessageViewer= char(strcat('Save Figure As'));
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 
@@ -809,7 +748,6 @@ pathstr = pwd;
 [~, namedef, ~] = fileparts(observe_EEGDAT.EEG.setname);
 [figurename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
     'Save as',[fullfile(pathstr,namedef)]);
-
 
 if isequal(figurename,0)
     beep;
@@ -834,7 +772,6 @@ try
 catch
     observe_EEGDAT.eeg_panel_message=3;
 end
-
 end
 
 
@@ -1024,7 +961,6 @@ end
 if isempty(ChanArray) || min(ChanArray(:)) >nbchan || max(ChanArray(:))> nbchan||  min(ChanArray(:))<=0
     ChanArray = 1:nbchan;
 end
-
 
 %%selected ICs
 if nargin<3

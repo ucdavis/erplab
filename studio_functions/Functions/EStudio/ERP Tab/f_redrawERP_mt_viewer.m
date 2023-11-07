@@ -249,7 +249,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer_legend = axes('Parent', EStudio_gui_erp_totl.ViewAxes_legend,'Color','none','Box','off');
     hold(EStudio_gui_erp_totl.erptabwaveiwer_legend,'on');
     
-    
     set(EStudio_gui_erp_totl.erptabwaveiwer,'XLim',[Min_time Max_time]);
     ts = timex(tmin:tmax);
     [a,Num_data,Num_plot] = size(plot_erp_data);
@@ -344,8 +343,7 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
                     'FontSize', 12, ...
                     'FontName', props.FontName, ...
                     'FontAngle', props.FontAngle, ...
-                    'FontUnits', props.FontUnits, ...
-                    'FontWeight', 'bold');
+                    'FontUnits', props.FontUnits);
             end
         end
     end
@@ -365,7 +363,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     for i = 1:numel(pb_here)
         pb_here(i).Color = line_colors(i,:);
     end
-    
     Ylabels_new = ylabs.*positive_up;
     [~,Y_label] = find(Ylabels_new == -0);
     Ylabels_new(Y_label) = 0;
@@ -400,18 +397,18 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     end
     
     try
-        text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,offset(end-1)/6,leg_str,'FontWeight','bold','FontSize', FonsizeDefault);
+        text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
     catch
-        text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,Yscale/2,leg_str,'FontWeight','bold','FontSize', FonsizeDefault);
+        text(EStudio_gui_erp_totl.erptabwaveiwer,timeStart,Yscale/2,leg_str,'FontSize', FonsizeDefault);
     end
     
     if Matlab_ver >= 2016
-        set(EStudio_gui_erp_totl.erptabwaveiwer,'FontSize',FonsizeDefault,'FontWeight','bold','XAxisLocation','origin',...
+        set(EStudio_gui_erp_totl.erptabwaveiwer,'FontSize',FonsizeDefault,'XAxisLocation','origin',...
             'XGrid','on','YGrid','on','YTick',yticks,'YTickLabel',Ylabels_new, ...
             'YLim',newlim,'XTick',xticks, ...
             'box','off', 'Color','none','XLim',[timeStart timEnd]);
     else
-        set(EStudio_gui_erp_totl.erptabwaveiwer,'FontSize',FonsizeDefault,'FontWeight','bold','XAxisLocation','bottom',...
+        set(EStudio_gui_erp_totl.erptabwaveiwer,'FontSize',FonsizeDefault,'XAxisLocation','bottom',...
             'XGrid','on','YGrid','on','YTick',yticks,'YTickLabel',Ylabels_new, ...
             'YLim',newlim, 'XTick',xticks,...
             'box','off', 'Color','none','XLim',[timeStart timEnd]);
@@ -450,18 +447,9 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     legend(EStudio_gui_erp_totl.erptabwaveiwer_legend,'boxoff');
     
     %end
-    EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
-        pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
-    end
     
-    EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
     % EStudio_gui_erp_totl.ViewAxes.Widths = -10;
-    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
-    EStudio_gui_erp_totl.plotgrid.Heights =[30 -1 80 30];
+    
     %%%-------------------Display results obtained from "Measurement Tool" Panel---------------------------------
     [~,~,~,Amp,Lat]= f_ERP_plot_wav(observe_ERPDAT.ERP);
     
@@ -536,14 +524,22 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
         EStudio_gui_erp_totl.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
         EStudio_gui_erp_totl.ERP_M_T_Viewer_table.ForegroundColor = [1 1 1];
     end
+    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
+    EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
+    EStudio_gui_erp_totl.plotgrid.Heights(3) = 80; % set the second element (x axis) to 30px high
+    EStudio_gui_erp_totl.plotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
+    EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
     
+    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
+        pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
+    end
+    EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
     EStudio_gui_erp_totl.ERP_M_T_Viewer_table.FontSize = FonsizeDefault;
 else
     set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
     EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
-    
 end
 end % redrawDemo
 
@@ -611,7 +607,6 @@ EStudio_gui_erp_totl.pageinfo_edit.String = num2str(Pagecurrent);
 observe_ERPDAT.CURRENTERP =  Current_erp_Index;
 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_erp_Index);
 
-% f_redrawERP();
 if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -1024,7 +1019,6 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                     timexxn(data_check>0) = [];
                 end
                 
-                
                 if ~isempty(dataxxp) && numel(dataxxp)>=2
                     %%Check isolated point
                     Check_outlierp =[];
@@ -1321,9 +1315,7 @@ elseif length(latency)==2
                 line(r_ax, [Lat{Numofstitwo,Numofstione} Lat{Numofstitwo,Numofstione}],[offset(Numofstione),squeeze(Amp_out(Numofstitwo,Numofstione))],'Color',line_colors(Numofstitwo,:,:),'LineWidth',3,'LineStyle','--','Marker','x');
             end
         end
-        
     elseif ismember_bc2(moption, { 'fareatlat', 'fareaplat','fninteglat','fareanlat'})%fractional area latency
-        
         [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(observe_ERPDAT.ERP);
         for Numofstione = 1:Num_plot
             for Numofstitwo = 1:Num_data

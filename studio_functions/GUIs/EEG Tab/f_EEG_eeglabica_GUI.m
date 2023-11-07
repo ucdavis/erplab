@@ -80,18 +80,24 @@ varargout{1} = EStudio_box_eeglab_ica;
             'String','Transfer ICA weights:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_ica.DataSelGrid = uiextras.Grid('Parent', EStduio_eegtab_eeglab_ica.DataSelBox,...
             'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Current EEG','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid);
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','From','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Selected dataset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
         EStduio_eegtab_eeglab_ica.CurrentEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
+        
         uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
-        uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target EEG','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target dataset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
         EStduio_eegtab_eeglab_ica.targetEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
             'callback',@trans_weight_targeteeg,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        
+        uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
         EStduio_eegtab_eeglab_ica.traICAweight= uicontrol('Style','pushbutton','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Transfer',...
             'callback',@trans_weight,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
-        set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[90 20 90 60],'RowSizes',[20 30]);
+        set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[30 90 20 80 50],'RowSizes',[20 30]);
         
         
         %%Plot channel function
@@ -121,7 +127,7 @@ varargout{1} = EStudio_box_eeglab_ica;
 
 %%--------------------eeglab ica help--------------------------------------
     function eeglabica_help(~,~)
-        web('https://eeglab.org/tutorials/','-browser');  
+        web('https://eeglab.org/tutorials/','-browser');
     end
 
 %%-----------------Decompose the data by ICA-------------------------------

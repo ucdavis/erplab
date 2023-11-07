@@ -32,7 +32,7 @@ elseif nargin == 1
         'EEGLAB Tools (only for one selected dataset)', 'Padding ', 5,'BackgroundColor',ColorB_def);
 else
     EStudio_box_eeglab_tool = uiextras.BoxPanel('Parent', varargin{1}, 'HelpFcn', @eeglabtool_help, 'Title',...
-    'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+        'EEGLAB Tools (only for one selected dataset)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -115,7 +115,7 @@ varargout{1} = EStudio_box_eeglab_tool;
 
 %%---------------------------------eeglab tool-----------------------------
     function eeglabtool_help(~,~)
-         web('https://eeglab.org/tutorials/','-browser'); 
+        web('https://eeglab.org/tutorials/','-browser');
     end
 
 %%-----------------------About the current EEG-----------------------------
@@ -676,89 +676,14 @@ varargout{1} = EStudio_box_eeglab_tool;
     end
 
 %%----------------adjust event latencies-----------------------------------
-    function adjust_latency(Source,~)
-        if isempty(observe_EEGDAT.EEG)
-            Source.Enable= 'off';
-            return;
-        end
-        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr) &&  eegpanelIndex~=0
-            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-        end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate');
-        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
-        EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
-            EEGArray = observe_EEGDAT.CURRENTSET;
-        end
-        if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate: Only works on one selected dataset');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-            Source.Enable = 'off';
-            return;
-        end
-        ALLEEG = observe_EEGDAT.ALLEEG;
-        Editsetsuffix = '_adjlat';
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
-        if isempty(Answer)
-            beep;
-            disp('User selected Cancel');
-            return;
-        end
-        Save_file_label =0;
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        EEG_advance = ALLEEG_advance(EEGArray);
-        %         try
-        %%Edit the channel locations
-        fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        fprintf(['**Adjust event latencies**\n']);
-        fprintf(['Your current eegset(s):',32,num2str(EEGArray),'\n']);
-        [EEG_advance,LASTCOM] = pop_adjustevents(EEG_advance);
-        
-        if isempty(LASTCOM)
-            disp('User selected cancel');
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            return;
-        end
-        fprintf(LASTCOM,'\n');
-        
-        eegh(LASTCOM);
-        
-        if Save_file_label
-            EEG = EEG_advance;
-            [pathstr, file_name, ext] = fileparts(EEG.filename);
-            EEG.filename = [file_name,'.set'];
-            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-            EEG_advance = eegh(LASTCOM, EEG);
-            eegh(LASTCOM);
-        else
-            for Numofeeg = 1:numel(EEGArray)
-                EEG_advance.filename = '';
-                EEG_advance.saved = 'no';
-                EEG_advance.filepath = '';
-            end
-        end
-        fprintf( ['\n',repmat('-',1,100) '\n']);
-        
-        observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = EEG_advance;
-        try
-            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-        catch
-            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-        end
-        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
-        assignin('base','EEG',observe_EEGDAT.EEG);
-        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        observe_EEGDAT.count_current_eeg=1;
-        observe_EEGDAT.eeg_panel_message =2;
+    function adjust_latency(~,~)
+        BackERPLABcolor = [1 0.9 0.3];    % yellow
+        question = ["We do not support this EEGLAB function. We recommend that you instead use ERPLAB's function: Shift Event Codes for Continuous EEG.\nAlternatively, you can quite from ERPLAB Studio, launch EEGLAB, and run the EEGLAB function."];
+        title = 'EEGLAB Tool > Adjust event latencies';
+        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+        button = questdlg(sprintf(question), title,'Yes','Yes');
+        set(0,'DefaultUicontrolBackgroundColor',oldcolor);
     end
 
 

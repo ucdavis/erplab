@@ -83,7 +83,16 @@ EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', '
 EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
-pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
+EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
+
+EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',pageinfo_box,'Style','pushbutton','String','Advanced Wave Viewer',...
+    'Callback',@Advanced_viewer,'FontSize',FonsizeDefault);
+if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
+EStudio_gui_erp_totl.advanced_viewer.Enable = 'on';
+else
+EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';    
+end
+
 if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -111,9 +120,9 @@ EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-set(pageinfo_box, 'Sizes', [50 50 50 -1] );
+set(pageinfo_box, 'Sizes', [50 50 50 -1 150] );
 set(pageinfo_box,'BackgroundColor',ColorB_def);
-set(pageinfo_text,'BackgroundColor',ColorB_def);
+set(EStudio_gui_erp_totl.pageinfo_text,'BackgroundColor',ColorB_def);
 
 if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
@@ -154,15 +163,14 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     else
         splot_n = numel(OutputViewerparerp{2});
     end
-    
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
-        pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
-    end
-    EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
     EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
     EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
     EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
+    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
+        pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
+    end
+    EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
 else
     set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
     EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
@@ -404,6 +412,16 @@ end
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
+function Advanced_viewer(Source,~)
+global observe_ERPDAT;
+
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    Source.Enable = 'off';
+    return;
+end
+ERPLAB_ERP_Viewer(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP);
+
+end
 
 function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,YtickInterval,columNum,...
     positive_up,BinchanOverlay,waveview,legendview)

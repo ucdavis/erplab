@@ -1,21 +1,18 @@
 % ERPset selector panel
 %
-% Author: Carter Luck and Guanghui ZHANG
+% Author: Guanghui ZHANG && Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2018 & 2022 & 2023 Oct
+% 2022 & 2023 Oct
 
 % ERPLAB Toolbox
 %
 
-%
-% Initial setup
-%
+
 function varargout = f_ERP_erpsetsGUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-global EStudio_gui_erp_totl;
 
 
 ERPsetops = struct();
@@ -40,8 +37,6 @@ end
 
 sel_path = cd;
 estudioworkingmemory('ERP_save_folder',sel_path);
-
-
 try
     FonsizeDefault = varargin{2};
 catch
