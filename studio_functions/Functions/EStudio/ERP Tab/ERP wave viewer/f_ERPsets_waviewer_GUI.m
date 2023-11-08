@@ -21,7 +21,7 @@ addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 addlistener(viewer_ERPDAT,'ERPset_Chan_bin_label_change',@ERPset_Chan_bin_label_change);
-addlistener(observe_ERPDAT,'Two_GUI_change',@Two_GUI_change);
+
 ERPwaveview_erpsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
 % gui_erp_waviewer.Window.WindowButtonMotionFcn = {@erpselect_refresh};
@@ -30,7 +30,7 @@ try
 catch
     ColorBviewer_def = [0.7765    0.7294    0.8627];
 end
-ERPdatasets = []; % Local data structure
+
 % global ERPsets_waveviewer_box;
 if nargin == 0
     fig = figure(); % Parent figure
@@ -56,9 +56,6 @@ catch
 end
 
 ALLERP = ERPwaviewer.ALLERP;
-ERPdatasets = getERPDatasets(ALLERP); % Get datasets from ALLERP
-ERPdatasets = sortdata(ERPdatasets);
-ERPdatasets = sortdata(ERPdatasets);
 
 %%Get local path
 sel_path = cd;
@@ -75,15 +72,18 @@ if isempty(FonsizeDefault)
     FonsizeDefault = f_get_default_fontsize();
 end
 
-drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
+drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
 
 % Draw the ui
-    function drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
+    function drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         catch
             ColorBviewer_def =  [0.7765    0.7294    0.8627];
         end
+        ERPdatasets = getERPDatasets(ALLERP); % Get datasets from ALLERP
+        ERPdatasets = sortdata(ERPdatasets);
+        
         try
             SelectedIndex = ERPwaviewer.SelectERPIdx;
             ALLERP = ERPwaviewer.ALLERP;
@@ -104,16 +104,9 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         %%-----------------------Display tthe selected ERPsets---------------------------------------
         panelshbox = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox, 'Spacing', 5,'BackgroundColor',ColorBviewer_def);
         dsnames = {};
-        if size(ERPdatasets,1)==1
-            if strcmp(ERPdatasets{1},'No ERPset loaded')
-                dsnames = {''};
-            else
-                dsnames{1} =    strcat(num2str(cell2mat(ERPdatasets(1,2))),'.',32,ERPdatasets{1,1});
-            end
-        else
-            for Numofsub = 1:size(ERPdatasets,1)
-                dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
-            end
+        
+        for Numofsub = 1:size(ERPdatasets,1)
+            dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
         end
         ds_length = length(ERPdatasets);
         ERPwaveview_erpsetops.butttons_datasets = uicontrol('Parent', panelshbox, 'Style', 'listbox', 'min', 1,'max',...
@@ -175,7 +168,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
-        
         if strcmpi(ERPtooltype,'EStudio') || strcmpi(ERPtooltype,'ERPLAB')
             if strcmpi(ERPtooltype,'ERPLAB')
                 try
@@ -192,7 +184,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                     viewer_ERPDAT.Process_messg =3;
                     return;
                 end
-                %                 estudioworkingmemory('PlotOrg_ERPLAB',1);
             end
             try
                 ALLERPin = evalin('base','ALLERP');
@@ -212,29 +203,19 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 assignin('base','ALLERPwaviewer',[]);
                 return;
             end
-            
-            if strcmpi(ERPtooltype,'EStudio')
-                Selected_erpset= estudioworkingmemory('selectederpstudio');
-                CURRENTERPStudio = observe_ERPDAT.CURRENTERP;
-                if length(ALLERPin)==1 && strcmpi(ALLERPin(1).erpname,'No ERPset loaded')
-                    try
-                        cprintf('red',['\n ERP Wave viewer will be closed because ALLERP is empty.\n\n']);
-                        close(gui_erp_waviewer.Window);
-                    catch
-                    end
-                    assignin('base','ALLERPwaviewer',[]);
-                    return;
-                end
-            end
-            
-            if isempty(Selected_erpset) || min(Selected_erpset(:))> length(ALLERPin) ||  max(Selected_erpset(:))> length(ALLERPin)
+            Selected_erpset=estudioworkingmemory('selectederpstudio');
+            if isempty(Selected_erpset) || any(Selected_erpset(:)> length(ALLERPin)) ||any(Selected_erpset(:)<1)
                 Selected_erpset =  length(ALLERPin);
+            end
+            try
+                CURRENTERPStudio = evalin('base','CURRENTERP');
+            catch
+                CURRENTERPStudio = [];
             end
             if isempty(CURRENTERPStudio) || CURRENTERPStudio> length(ALLERPin)
                 CURRENTERPStudio =  Selected_erpset(1);
                 ERPwaviewer_apply.PageIndex=1;
             end
-            
             
             ERPwaveview_erpsetops.ALLERP = ALLERPin;
             ERPwaveview_erpsetops.ERP = ALLERPin(CURRENTERPStudio);
@@ -245,18 +226,9 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             ERPdatasets = getERPDatasets(ALLERPin); % Get datasets from ALLERP
             ERPdatasets = sortdata(ERPdatasets);
             dsnames = {};
-            if size(ERPdatasets,1)==1
-                if strcmp(ERPdatasets{1},'No ERPset loaded')
-                    dsnames = {''};
-                else
-                    dsnames{1} = strcat(num2str(cell2mat(ERPdatasets(1,2))),'.',32,ERPdatasets{1,1});
-                end
-            else
-                for Numofsub = 1:size(ERPdatasets,1)
-                    dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
-                end
+            for Numofsub = 1:size(ERPdatasets,1)
+                dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
             end
-            
             ds_length = size(ERPdatasets,1);
             if ds_length<=2
                 ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
@@ -273,7 +245,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPwaviewer_apply.ERP = ALLERPin(CURRENTERPStudio);
         ERPwaviewer_apply.SelectERPIdx =Selected_erpset;
         ERPwaviewer_apply.CURRENTERP = CURRENTERPStudio;
-        %         ERPwaviewer_apply.PageIndex = 1;
         estudioworkingmemory('MyViewer_ERPsetpanel',0);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
@@ -373,16 +344,8 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPdatasets = getERPDatasets(ALLERPin); % Get datasets from ALLERP
         ERPdatasets = sortdata(ERPdatasets);
         dsnames = {};
-        if size(ERPdatasets,1)==1
-            if strcmp(ERPdatasets{1},'No ERPset loaded')
-                dsnames = {''};
-            else
-                dsnames{1} = strcat(num2str(cell2mat(ERPdatasets(1,2))),'.',32,ERPdatasets{1,1});
-            end
-        else
-            for Numofsub = 1:size(ERPdatasets,1)
-                dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
-            end
+        for Numofsub = 1:size(ERPdatasets,1)
+            dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
         end
         
         ds_length = size(ERPdatasets,1);
@@ -505,16 +468,8 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
         ERPdatasets = getERPDatasets(ALLERPup); % Get datasets from ALLERP
         ERPdatasets = sortdata(ERPdatasets);
         dsnames = {};
-        if size(ERPdatasets,1)==1
-            if strcmp(ERPdatasets{1},'No ERPset loaded')
-                dsnames = {''};
-            else
-                dsnames{1} = strcat(num2str(cell2mat(ERPdatasets(1,2))),'.',32,ERPdatasets{1,1});
-            end
-        else
-            for Numofsub = 1:size(ERPdatasets,1)
-                dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
-            end
+        for Numofsub = 1:size(ERPdatasets,1)
+            dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
         end
         
         ERPwaveview_erpsetops.butttons_datasets.Enable = Enable_label;
@@ -579,20 +534,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                     return;
                 end
                 
-                if strcmpi(ERPtooltype,'EStudio')
-                    Selected_erpset= estudioworkingmemory('selectederpstudio');
-                    CURRENTERPStudio = observe_ERPDAT.CURRENTERP;
-                    if length(ALLERPin)==1 && strcmpi(ALLERPin(1).erpname,'No ERPset loaded')
-                        try
-                            cprintf('red',['\n ERP Wave viewer will be closed because ALLERP is empty.\n\n']);
-                            close(gui_erp_waviewer.Window);
-                        catch
-                        end
-                        assignin('base','ALLERPwaviewer',[]);
-                        return;
-                    end
-                end
-                
                 if isempty(Selected_erpset) || min(Selected_erpset(:))> length(ALLERPin) || max(Selected_erpset(:))> length(ALLERPin)
                     Selected_erpset =  length(ALLERPin);
                 end
@@ -604,7 +545,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 if isempty(y_index)
                     y_index = numel(Selected_erpset);
                 end
-                
                 ERPwaveview_erpsetops.ALLERP = ALLERPin;
                 ERPwaveview_erpsetops.ERP = ALLERPin(CURRENTERPStudio);
                 ERPwaveview_erpsetops.CURRENTERP = CURRENTERPStudio;
@@ -615,18 +555,9 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
                 ERPdatasets = getERPDatasets(ALLERPin); % Get datasets from ALLERP
                 ERPdatasets = sortdata(ERPdatasets);
                 dsnames = {};
-                if size(ERPdatasets,1)==1
-                    if strcmp(ERPdatasets{1},'No ERPset loaded')
-                        dsnames = {''};
-                    else
-                        dsnames{1} = strcat(num2str(cell2mat(ERPdatasets(1,2))),'.',32,ERPdatasets{1,1});
-                    end
-                else
-                    for Numofsub = 1:size(ERPdatasets,1)
-                        dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
-                    end
+                for Numofsub = 1:size(ERPdatasets,1)
+                    dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
                 end
-                
                 ds_length = size(ERPdatasets,1);
                 if ds_length<=2
                     ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
@@ -655,7 +586,6 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
             ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
             ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
-            
             assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
             viewer_ERPDAT.Reset_Waviewer_panel=2;
         end
@@ -677,9 +607,8 @@ drawui_erpsetbinchan_viewer(ERPdatasets,ERPwaviewer,FonsizeDefault)
             fprintf(2,'\n ERPsets > f_ERPsets_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
             return;
         end
-        
         ERPsetArray = ERPwaviewer_apply.SelectERPIdx;
-        if max(ERPsetArray(:)) <= length(ERPwaveview_erpsetops.butttons_datasets.String)
+        if any(ERPsetArray(:) <= length(ERPwaveview_erpsetops.butttons_datasets.String))
             ERPwaveview_erpsetops.butttons_datasets.Value = ERPsetArray;
         end
     end

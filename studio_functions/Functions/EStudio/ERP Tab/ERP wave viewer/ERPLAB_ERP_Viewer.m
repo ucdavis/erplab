@@ -167,7 +167,7 @@ if nargin>6
     return;
 end
 
-erpworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB 
+erpworkingmemory('ERPLAB_ERPWaviewer',0);%%Update the Viewer based on the changes in ERPLAB
 % if ~strcmpi(ERPtooltype,'EStudio')
 %     addlistener(viewer_ERPDAT,'count_loadproper_change',@count_loadproper_change);
 %     addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
@@ -320,7 +320,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             'Toolbar', 'none', ...
             'HandleVisibility', 'off', 'tag', 'rollover');
         ScreenPos = [];
-        
         new_pos= erpworkingmemory('ERPWaveScreenPos');
         if isempty(new_pos) || numel(new_pos)~=4
             new_pos = [0.01,0.01,75,75];
@@ -331,6 +330,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
+        gui_erp_waviewer.monitor_size = ScreenPos;
         gui_erp_waviewer.screen_pos = new_pos;
         new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
         set(gui_erp_waviewer.Window, 'Position', new_pos);
@@ -357,37 +357,26 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         % + Adjust the main layout
         set( gui_erp_waviewer.tabERP, 'Widths', [-4, 270]); % Viewpanel and settings panel
-        
-        
         gui_erp_waviewer.panel_fonts  = f_get_default_fontsize(); %% get the default fontsize based on the different plat form, e.g., Mac
-        
         gui_erp_waviewer.settingLayout = uiextras.VBox('Parent', gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
         
         % + Create the settings window panels for ERP panel
         gui_erp_waviewer.panel{1} = f_ERPsets_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(1) = 255;
-        
         gui_erp_waviewer.panel{2} = f_ERP_Binchan_waviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(2) = 280;
-        
         gui_erp_waviewer.panel{3} = f_ERP_timeampscal_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(3) = 490;
-        
         gui_erp_waviewer.panel{4} = f_ERP_plotorg_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(4) = 385;
-        
         gui_erp_waviewer.panel{5} = f_ERP_labelset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(5) = 200;
-        
         gui_erp_waviewer.panel{6} = f_ERP_lineset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(6) = 375;
-        
         gui_erp_waviewer.panel{7} = f_ERP_otherset_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(7) = 225;
-        
         gui_erp_waviewer.panel{8} = f_ERP_property_waveviewer_GUI(gui_erp_waviewer.settingLayout,gui_erp_waviewer.panel_fonts);
         gui_erp_waviewer.panelSizes(8) = 130;
-        
         set(gui_erp_waviewer.settingLayout, 'Heights', gui_erp_waviewer.panelSizes);
         gui_erp_waviewer.panelscroll.Heights = sum(gui_erp_waviewer.panelSizes);
         
@@ -422,11 +411,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
 
 
     function nMinimize( eventSource, eventData, whichpanel) %#ok<INUSL>
-        try
-            [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
-        catch
-            ColorBviewer_def = [0.7020 0.77 0.85];
-        end
         minned = gui_erp_waviewer.panel{whichpanel}.IsMinimized;
         szs = get( gui_erp_waviewer.settingLayout, 'Sizes' );
         if minned
@@ -436,9 +420,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             set( gui_erp_waviewer.panel{whichpanel}, 'IsMinimized', true);
             szs(whichpanel) = 25;
         end
-        set( gui_erp_waviewer.settingLayout, 'Sizes', szs ,'BackgroundColor',ColorBviewer_def);
+        set( gui_erp_waviewer.settingLayout, 'Sizes', szs);
         gui_erp_waviewer.panelscroll.Heights = sum(szs);
-        set(gui_erp_waviewer.panelscroll,'BackgroundColor',ColorBviewer_def);
     end % nMinimize
 
 

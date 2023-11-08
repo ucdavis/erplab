@@ -38,7 +38,6 @@ Inch_SS = get(0,'screensize');
 %Calculates the resolution (pixels per inch)
 Res = Pix_SS./Inch_SS;
 
-
 ERPArray= estudioworkingmemory('selectederpstudio');
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
@@ -67,7 +66,6 @@ else
     ERPArray= 1;
     estudioworkingmemory('selectederpstudio',1);
 end
-
 EStudio_gui_erp_totl.plotgrid = uiextras.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
 pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
@@ -82,6 +80,14 @@ EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'p
 EStudio_gui_erp_totl.pageinfo_plus.Enable = 'off';
 pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
 pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
+EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',pageinfo_box,'Style','pushbutton','String','Advanced Wave Viewer',...
+    'Callback',@Advanced_viewer,'FontSize',FonsizeDefault);
+if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
+    EStudio_gui_erp_totl.advanced_viewer.Enable = 'on';
+else
+    EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
+end
+
 if length(ERPArray) ==1
     Enable_minus = 'off';
     Enable_plus = 'off';
@@ -110,7 +116,7 @@ EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
-set(pageinfo_box, 'Sizes', [50 50 50 -1] );
+set(pageinfo_box, 'Sizes', [50 50 50 -1 150] );
 set(pageinfo_box,'BackgroundColor',ColorB_def);
 set(pageinfo_text,'BackgroundColor',ColorB_def);
 
@@ -118,13 +124,10 @@ if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
-
 if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     ERP = observe_ERPDAT.ERP;
     OutputViewerparerp = f_preparms_mtviewer_erptab(ERP,0);
     
-    
-    %%Parameter from bin and channel panel
     ChanArray = OutputViewerparerp{1};
     BinArray = OutputViewerparerp{2};
     timeStart =OutputViewerparerp{3};
@@ -144,8 +147,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     intfactor =  OutputViewerparerp{15};
     Resolution =OutputViewerparerp{16};
     Matlab_ver = OutputViewerparerp{22};
-    
-    
     if BinchanOverlay == 0
         splot_n = numel(OutputViewerparerp{1});
     else
@@ -160,7 +161,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
         ndata = ChanArray;
         nplot = BinArray;
     end
-    
     pnts    = observe_ERPDAT.ERP.pnts;
     timeor  = observe_ERPDAT.ERP.times; % original time vector
     p1      = timeor(1);
@@ -170,7 +170,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     else
         timex = timeor;
     end
-    
     [xxx, latsamp, latdiffms] = closest(timex, [Min_time Max_time]);
     tmin = latsamp(1);
     tmax = latsamp(2);
@@ -209,7 +208,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
             end
         end
     end
-    
     perc_lim = Yscale;
     percentile = perc_lim*3/2;
     %How to get x unique colors?
@@ -258,9 +256,9 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     end
     
     % pb_here = plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,plot_erp_data_fin,'LineWidth',1);
-    pb_here = plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,new_erp_data,'LineWidth',1.5);
+    pb_here = plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,new_erp_data,'LineWidth',1);
     hold(EStudio_gui_erp_totl.erptabwaveiwer,'on');%Same function as hold on;
-    EStudio_gui_erp_totl.erptabwaveiwer.LineWidth=1.5;
+    EStudio_gui_erp_totl.erptabwaveiwer.LineWidth=1;
     yticks  = -perc_lim:perc_lim:((2*percentile*Num_plot)-(2*perc_lim));
     
     oldlim = [-percentile yticks(end)-perc_lim+percentile];
@@ -298,7 +296,7 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     end
     
     for jj = 1:numel(offset)
-        plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',2);
+        plot(EStudio_gui_erp_totl.erptabwaveiwer,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',1);
         set(EStudio_gui_erp_totl.erptabwaveiwer,'XLim',[timeStart,timEnd]);
         set(EStudio_gui_erp_totl.erptabwaveiwer,'XTick',xticks, ...
             'box','off', 'Color','none','xticklabels',xticks_labels);
@@ -314,11 +312,11 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
             end
         end
         tick_top = 0;
-        line(EStudio_gui_erp_totl.erptabwaveiwer,props.XLim, [0 0] + myX_Crossing, 'color', 'k','LineWidth',1.5);
+        line(EStudio_gui_erp_totl.erptabwaveiwer,props.XLim, [0 0] + myX_Crossing, 'color', 'k','LineWidth',1);
         if ~isempty(props.XTick)
             xtick_x = repmat(props.XTick, 2, 1);
             xtick_y = repmat([tick_bottom; tick_top] + myX_Crossing, 1, length(props.XTick));
-            h_ticks = line(EStudio_gui_erp_totl.erptabwaveiwer,xtick_x, xtick_y, 'color', 'k','LineWidth',1.5);
+            h_ticks = line(EStudio_gui_erp_totl.erptabwaveiwer,xtick_x, xtick_y, 'color', 'k','LineWidth',1);
         end
         set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'XTickLabel', []);
         %         tick_bottom = -props.TickLength(1)*diff(props.YLim);
@@ -340,26 +338,22 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
                     xtick_label, ...
                     'HorizontalAlignment', 'Center', ...
                     'VerticalAlignment', 'Top', ...
-                    'FontSize', 12, ...
+                    'FontSize', FonsizeDefault, ...
                     'FontName', props.FontName, ...
                     'FontAngle', props.FontAngle, ...
                     'FontUnits', props.FontUnits);
             end
         end
     end
-    % end
     
     %%%Mark the area/latency/amplitude of interest within the defined window.
     ERP_mark_area_latency(EStudio_gui_erp_totl.erptabwaveiwer,timex(tmin:tmax),moption,plot_erp_data,latency,line_colors,offset,positive_up);%cwm = [0 0 0];% white: Background color for measurement window
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
     [xxx, latsamp,cdiff] = closest(timex, 0);
     if cdiff<1000/observe_ERPDAT.ERP.srate
         xline(EStudio_gui_erp_totl.erptabwaveiwer,timex(latsamp),'k-.','LineWidth',1);%%Marking start time point for each column
     end
-    
     set(EStudio_gui_erp_totl.erptabwaveiwer,'XLim',[timeStart,timEnd],'Ylim',newlim);
-    
     for i = 1:numel(pb_here)
         pb_here(i).Color = line_colors(i,:);
     end
@@ -371,7 +365,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
         count = 0;
         for i = 0:numel(offset)-1
             leg_str = '';
-            
             count  = count+1;
             try
                 if BinchanOverlay == 0
@@ -431,7 +424,7 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     end
     
     for Numofplot = 1:size(plot_erp_data,2)
-        plot(EStudio_gui_erp_totl.erptabwaveiwer_legend,[0 0],'Color',line_colors_ldg(Numofplot,:,:),'LineWidth',3)
+        plot(EStudio_gui_erp_totl.erptabwaveiwer_legend,[0 0],'Color',line_colors_ldg(Numofplot,:,:),'LineWidth',1)
     end
     if BinchanOverlay == 0
         Leg_Name = '';
@@ -445,10 +438,6 @@ if ~isempty(observe_ERPDAT.ALLERP) &&  ~isempty(observe_ERPDAT.ERP)
     end
     here_lgd = legend(EStudio_gui_erp_totl.erptabwaveiwer_legend,Leg_Name,'FontSize',FonsizeDefault,'TextColor','blue');
     legend(EStudio_gui_erp_totl.erptabwaveiwer_legend,'boxoff');
-    
-    %end
-    
-    % EStudio_gui_erp_totl.ViewAxes.Widths = -10;
     
     %%%-------------------Display results obtained from "Measurement Tool" Panel---------------------------------
     [~,~,~,Amp,Lat]= f_ERP_plot_wav(observe_ERPDAT.ERP);
@@ -799,6 +788,20 @@ catch
 end
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
+
+
+function Advanced_viewer(Source,~)
+global observe_ERPDAT;
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    Source.Enable = 'off';
+    return;
+end
+erpworkingmemory('f_ERP_proces_messg','Launching "Advanced Wave Viewer"');
+observe_ERPDAT.Process_messg =1;
+ERPLAB_ERP_Viewer(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP);
+observe_ERPDAT.Process_messg =2;
+end
+
 
 
 %%Mark the area or latency/amplitude of interest within defined latecies%%%

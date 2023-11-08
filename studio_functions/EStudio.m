@@ -244,7 +244,7 @@ EStudio_gui_erp_totl = createInterface();
         % set the window size
         %%screen size
         ScreenPos = [];
-        new_pos= erpworkingmemory('ERPWaveScreenPos');
+        new_pos= erpworkingmemory('EStudioScreenPos');
         if isempty(new_pos) || numel(new_pos)~=2
             new_pos = [75,75];
             erpworkingmemory('EStudioScreenPos',new_pos);
@@ -474,8 +474,9 @@ EStudio_gui_erp_totl = createInterface();
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
+        FonsizeDefault = f_get_default_fontsize();
         Processed_Method=erpworkingmemory('f_ERP_proces_messg');
-        EStudio_gui_erp_totl.Process_messg.FontSize = 14;
+        EStudio_gui_erp_totl.Process_messg.FontSize = FonsizeDefault;
         if observe_ERPDAT.Process_messg ==1
             EStudio_gui_erp_totl.Process_messg.String = strcat('1- ',Processed_Method,': Running....');
             EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[1 1 1];
@@ -539,7 +540,7 @@ EStudio_gui_erp_totl = createInterface();
             return;
         end
         try
-            New_posin = erpworkingmemory('ERPWaveScreenPos');
+            New_posin = erpworkingmemory('EStudioScreenPos');
         catch
             New_posin = [75,75];
         end
@@ -565,7 +566,7 @@ EStudio_gui_erp_totl = createInterface();
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        erpworkingmemory('ERPWaveScreenPos',New_pos1);
+        erpworkingmemory('EStudioScreenPos',New_pos1);
         try
             POS4 = (New_pos1(2)-New_posin(2))/100;
             new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
@@ -577,11 +578,19 @@ EStudio_gui_erp_totl = createInterface();
             erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
             observe_EEGDAT.eeg_panel_message =4;
             set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
-            erpworkingmemory('ERPWaveScreenPos',[75 75]);
+            erpworkingmemory('EStudioScreenPos',[75 75]);
         end
         try
             f_redrawEEG_Wave_Viewer();%%Draw EEG waves
-            f_redrawERP();%%Draw ERP waves
+            mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+            if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+                mtViewer=0;
+            end
+            if mtViewer ==0
+                f_redrawERP();
+            else
+                f_redrawERP_mt_viewer();
+            end
         catch
         end
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;

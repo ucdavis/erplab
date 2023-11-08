@@ -16,7 +16,6 @@ addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 
-
 gui_otherset_waveviewer = struct();
 
 %-----------------------------Name the title----------------------------------------------

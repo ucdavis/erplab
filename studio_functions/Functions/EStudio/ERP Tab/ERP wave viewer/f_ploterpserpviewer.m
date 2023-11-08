@@ -1448,8 +1448,6 @@ try
         NewHeight = h_legend.Position(4) * HeightScaleFactor;
         h_legend.Position(2) = h_legend.Position(2) - (NewHeight - h_legend.Position(4));
         h_legend.Position(4) = NewHeight;
-        
-        
         legend(sh,'boxoff');
         axis(sh,'off');
     else
@@ -1470,11 +1468,11 @@ catch
     disp('Cannot display the legend names, please check "qGridposArray" or other parameters!');
 end
 set(gcf,'color',qFigbgColor);
-prePaperType = get(fig_gui,'PaperType');
-prePaperUnits = get(fig_gui,'PaperUnits');
-preUnits = get(fig_gui,'Units');
-prePaperPosition = get(fig_gui,'PaperPosition');
-prePaperSize = get(fig_gui,'PaperSize');
+% prePaperType = get(fig_gui,'PaperType');
+% prePaperUnits = get(fig_gui,'PaperUnits');
+% preUnits = get(fig_gui,'Units');
+% prePaperPosition = get(fig_gui,'PaperPosition');
+% prePaperSize = get(fig_gui,'PaperSize');
 % Make changing paper type possible
 set(fig_gui,'PaperType','<custom>');
 
@@ -1486,7 +1484,7 @@ paperPosition = get(fig_gui,'PaperPosition');
 position = get(fig_gui,'Position');
 set(fig_gui,'PaperPosition',[0,0,position(3:4)]);
 set(fig_gui,'PaperSize',position(3:4));
-
+set(fig_gui,'Position',[0,0,position(3),position(4)]);
 %%save figure  with different formats
 if ~isempty(extfig)
     [C_style,IA_style] = ismember_bc2(extfig,{'.pdf','.svg','.jpg','.png','.tif','.bmp','.eps'});

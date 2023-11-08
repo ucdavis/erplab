@@ -11,9 +11,6 @@
 function varargout = f_ERP_property_waveviewer_GUI(varargin)
 global gui_erp_waviewer;
 global viewer_ERPDAT;
-% addlistener(viewer_ERPDAT,'v_currentERP_change',@Count_currentERPChanged);
-% addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
-
 
 gui_property_waveviewer = struct();
 
@@ -74,8 +71,7 @@ varargout{1} = box_erpwave_viewer_property;
         gui_property_waveviewer.parameters_load = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_TN_title,'String',ViewerName,...
             'callback',@viewer_TN,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.viewer_TN_title, 'Sizes',[70 165]);
-        
-        
+
         gui_property_waveviewer.viewer_pos_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title,'String','Position:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
@@ -436,9 +432,9 @@ varargout{1} = box_erpwave_viewer_property;
         end
         
         try
-            ScreenPos =  get( groot, 'Screensize' );
+            ScreenPos =  gui_erp_waviewer.monitor_size;
         catch
-            ScreenPos =  get( 0, 'Screensize' );
+            ScreenPos =  [0 0 900 1800];
         end
         try
             New_pos = gui_erp_waviewer.Window.Position;
@@ -469,7 +465,6 @@ varargout{1} = box_erpwave_viewer_property;
             end
             estudioworkingmemory('zoomSpace',zoomSpace);
             gui_erp_waviewer.zoom_edit.String = num2str(roundn(zoomSpace,-1));
-            
         end
         
         New_pos = roundn(New_pos,-3);

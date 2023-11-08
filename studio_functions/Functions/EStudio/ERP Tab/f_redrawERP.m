@@ -88,9 +88,9 @@ EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','te
 EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',pageinfo_box,'Style','pushbutton','String','Advanced Wave Viewer',...
     'Callback',@Advanced_viewer,'FontSize',FonsizeDefault);
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
-EStudio_gui_erp_totl.advanced_viewer.Enable = 'on';
+    EStudio_gui_erp_totl.advanced_viewer.Enable = 'on';
 else
-EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';    
+    EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
 end
 
 if length(ERPArray) ==1
@@ -128,7 +128,6 @@ if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
-
 
 if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
@@ -412,15 +411,17 @@ end
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
+
 function Advanced_viewer(Source,~)
 global observe_ERPDAT;
-
 if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
     Source.Enable = 'off';
     return;
 end
+erpworkingmemory('f_ERP_proces_messg','Launching "Advanced Wave Viewer"');
+observe_ERPDAT.Process_messg =1;
 ERPLAB_ERP_Viewer(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP);
-
+observe_ERPDAT.Process_messg =2;
 end
 
 function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,YtickInterval,columNum,...
@@ -555,7 +556,6 @@ if  columNum>1 % Plotting waveforms with munltiple-columns
         xticks_clomn_add = [1:numel(ts)+xtickstep_p].*f_bin+(ts_colmn(end).*ones(1,numel(ts)+xtickstep_p));
         ts_colmn = [ts_colmn,xticks_clomn_add];
     end
-    
     X_zero_line(1) =ts(1);
     for Numofcolumn = 1:columNum-1
         if Numofcolumn ==1
@@ -564,7 +564,6 @@ if  columNum>1 % Plotting waveforms with munltiple-columns
             X_zero_line(Numofcolumn+1) = X_zero_line(Numofcolumn)+ ts(end)-ts(1)+f_bin + (xtickstep_p)*f_bin;
         end
     end
-    
     [xticks,xticks_labels] = f_geterpxticklabel(ERP,xticks_clomn,columNum,[timeStart,timEnd],xtickstep);
     ts = ts_colmn;
     timeStart= ts(1);
@@ -576,7 +575,6 @@ if  columNum>1 % Plotting waveforms with munltiple-columns
             break;
         end
     end
-    
 else%% Plotting waveforms with single-column
     xticks =xticks_clomn;
     X_zero_line(1) =ts(1);
@@ -595,7 +593,6 @@ for i = 1:b
     new_erp_data(:,((c*(i-1))+1):(c*i)) = plot_erp_data(:,:,i);
 end
 
-
 line_colors = erpworkingmemory('PWColor');
 if size(line_colors,1)~= numel(ndata)
     if numel(ndata)> size(line_colors,1)
@@ -604,11 +601,9 @@ if size(line_colors,1)~= numel(ndata)
         line_colors = line_colors(1:numel(ndata),:,:);
     end
 end
-
 if isempty(line_colors)
     line_colors = get_colors(numel(ndata));
 end
-
 line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
 %
 %%------------Setting xticklabels for each row --------------
@@ -632,7 +627,6 @@ for jj = 1:numel(offset)-1
     end
     %
     tick_top = 0;
-    
     line(waveview,props.XLim, [0 0] + myX_Crossing, 'color', [1 1 1]);%'k'
     
     if ~isempty(props.XTick)
