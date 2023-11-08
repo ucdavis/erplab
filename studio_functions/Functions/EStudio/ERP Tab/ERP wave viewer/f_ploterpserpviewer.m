@@ -1009,7 +1009,7 @@ if ~isempty(qFigureName)
 end
 try
     outerpos = fig_gui.OuterPosition;
-    set(fig_gui,'outerposition',[outerpos(1),outerpos(2),qFigOutpos(1) 1.05*qFigOutpos(2)])
+    set(fig_gui,'outerposition',[1,1,qFigOutpos(1) 1.05*qFigOutpos(2)])
 catch
     set(fig_gui,'outerposition',get(0,'screensize'));%%Maximum figure
 end
@@ -1484,7 +1484,7 @@ paperPosition = get(fig_gui,'PaperPosition');
 position = get(fig_gui,'Position');
 set(fig_gui,'PaperPosition',[0,0,position(3:4)]);
 set(fig_gui,'PaperSize',position(3:4));
-set(fig_gui,'Position',[0,0,position(3),position(4)]);
+
 %%save figure  with different formats
 if ~isempty(extfig)
     [C_style,IA_style] = ismember_bc2(extfig,{'.pdf','.svg','.jpg','.png','.tif','.bmp','.eps'});

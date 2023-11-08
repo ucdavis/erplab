@@ -2856,7 +2856,6 @@ varargout{1} = box_erpxtaxes_viewer_property;
         MERPWaveViewer_yaxis{4} =  str2num(char(gui_erpxyaxeset_waveviewer.yticks_edit.String));
         MERPWaveViewer_yaxis{8} = str2num(char(gui_erpxyaxeset_waveviewer.yminorstepedit.String));
         estudioworkingmemory('MERPWaveViewer_yaxis',MERPWaveViewer_yaxis);%%save the changed parameters for y axis to memory file.
-        
     end
 
 

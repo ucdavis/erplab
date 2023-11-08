@@ -216,7 +216,18 @@ estudioworkingmemory('MyViewer_other',0);
 
 ERPwaviewer.ALLERP =ALLERP;
 ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
-ERPwaviewer.CURRENTERP =selectedERP_index(end);
+try
+    CURRENTERP = evalin('base','CURRENTERP');
+catch
+    CURRENTERP = numel(selectedERP_index);
+end
+ERPwaviewer.CURRENTERP =CURRENTERP;
+[xpos,ypos] = find(selectedERP_index==CURRENTERP);
+if ~isempty(ypos)
+    ERPwaviewer.PageIndex =ypos;
+else
+    ERPwaviewer.PageIndex=numel(selectedERP_index);
+end
 ERPwaviewer.SelectERPIdx =selectedERP_index;
 ERPwaviewer.bin = binArray;
 ERPwaviewer.chan = chanArray;
@@ -233,7 +244,6 @@ ERPwaviewer.xaxis = [];
 ERPwaviewer.yaxis = [];
 ERPwaviewer.polarity = [];
 ERPwaviewer.SEM = [];
-ERPwaviewer.PageIndex = 1;
 ERPwaviewer.baselinecorr = 'none';
 ERPwaviewer.chanbinsetlabel = [];
 ERPwaviewer.figbackgdcolor = [1 1 1];

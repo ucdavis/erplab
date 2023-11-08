@@ -420,9 +420,28 @@ if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
 end
 erpworkingmemory('f_ERP_proces_messg','Launching "Advanced Wave Viewer"');
 observe_ERPDAT.Process_messg =1;
-ERPLAB_ERP_Viewer(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP);
+
+ChanArray= estudioworkingmemory('ERP_ChanArray');
+if isempty(ChanArray) || any(ChanArray<1) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+    ChanArray = [1:observe_ERPDAT.ERP.nchan];
+end
+BinArray= estudioworkingmemory('ERP_BinArray');
+if isempty(BinArray) || any(BinArray<1) || any(BinArray>observe_ERPDAT.ERP.nbin)
+    BinArray = [1:observe_ERPDAT.ERP.nbin];
+end
+ERPArray= estudioworkingmemory('selectederpstudio');
+if isempty(ERPArray)
+    ERPArray = length(observe_ERPDAT.ALLERP);
+    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+    observe_ERPDAT.CURRENTERP = ERPArray;
+    estudioworkingmemory('selectederpstudio',ERPArray);
+end
+ERPLAB_ERP_Viewer(observe_ERPDAT.ALLERP,ERPArray,BinArray,ChanArray);
 observe_ERPDAT.Process_messg =2;
 end
+
+
+
 
 function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,YtickInterval,columNum,...
     positive_up,BinchanOverlay,waveview,legendview)

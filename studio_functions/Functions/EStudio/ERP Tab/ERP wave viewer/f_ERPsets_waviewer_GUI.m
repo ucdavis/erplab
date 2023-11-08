@@ -148,7 +148,7 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
 
 %%---------------Setting for auto option-----------------------------------
     function erpselect_refresh(~,~)
-        %         Value = Source.Value;
+        
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -164,35 +164,34 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
             return;
         end
         
-        MessageViewer= char(strcat('ERPsets>" Refresh'));
+        MessageViewer= char(strcat('ERPsets > Refresh'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
+        
+        try
+            ALLERPin = evalin('base','ALLERP');
+        catch
+            messgStr =  strcat('Cannot get ALLERP from Workspace');
+            erpworkingmemory('ERPViewer_proces_messg',messgStr);
+            viewer_ERPDAT.Process_messg =3;
+            return;
+        end
         
         if strcmpi(ERPtooltype,'EStudio') || strcmpi(ERPtooltype,'ERPLAB')
             if strcmpi(ERPtooltype,'ERPLAB')
                 try
-                    Selected_erpset = ERPwaveview_erpsetops.butttons_datasets.Value;
-                    try
-                        CURRENTERPStudio = Selected_erpset(ERPwaviewer_apply.PageIndex);
-                    catch
-                        CURRENTERPStudio = Selected_erpset(1);
-                        ERPwaviewer_apply.PageIndex=1;
-                    end
+                    Selected_erpset = evalin('base','CURRENTERP');
                 catch
-                    messgStr =  strcat('Cannot get CURRENTERP from Workspace');
-                    erpworkingmemory('ERPViewer_proces_messg',messgStr);
-                    viewer_ERPDAT.Process_messg =3;
-                    return;
+                    Selected_erpset = length(ALLERPin);
+                    ERPwaviewer_apply.PageIndex=1;
+                end
+            else
+                Selected_erpset=estudioworkingmemory('selectederpstudio');
+                if isempty(Selected_erpset) || any(Selected_erpset(:)> length(ALLERPin)) ||any(Selected_erpset(:)<1)
+                    Selected_erpset =  length(ALLERPin);
                 end
             end
-            try
-                ALLERPin = evalin('base','ALLERP');
-            catch
-                messgStr =  strcat('Cannot get ALLERP from Workspace');
-                erpworkingmemory('ERPViewer_proces_messg',messgStr);
-                viewer_ERPDAT.Process_messg =3;
-                return;
-            end
+            
             if isempty(ALLERPin)
                 viewer_ERPDAT.Process_messg =3;
                 try
@@ -203,10 +202,7 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
                 assignin('base','ALLERPwaviewer',[]);
                 return;
             end
-            Selected_erpset=estudioworkingmemory('selectederpstudio');
-            if isempty(Selected_erpset) || any(Selected_erpset(:)> length(ALLERPin)) ||any(Selected_erpset(:)<1)
-                Selected_erpset =  length(ALLERPin);
-            end
+            
             try
                 CURRENTERPStudio = evalin('base','CURRENTERP');
             catch
@@ -216,7 +212,12 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
                 CURRENTERPStudio =  Selected_erpset(1);
                 ERPwaviewer_apply.PageIndex=1;
             end
-            
+            [xpos,ypos] = find(Selected_erpset==CURRENTERPStudio);
+            if ~isempty(ypos)
+             ERPwaviewer_apply.PageIndex=ypos;   
+            else
+             ERPwaviewer_apply.PageIndex=numel(Selected_erpset);   
+            end
             ERPwaveview_erpsetops.ALLERP = ALLERPin;
             ERPwaveview_erpsetops.ERP = ALLERPin(CURRENTERPStudio);
             ERPwaveview_erpsetops.CURRENTERP = CURRENTERPStudio;

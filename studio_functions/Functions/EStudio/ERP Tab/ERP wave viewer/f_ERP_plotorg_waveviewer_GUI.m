@@ -250,6 +250,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
             plotBox = plotBoxdef;
             MERPWaveViewer_plotorg{3}=plotBox;
         end
+        if gui_plotorg_waveviewer.layout_auto.Value==1
+            plotBox = plotBoxdef;
+            MERPWaveViewer_plotorg{3}=plotBox;
+        end
         if isempty(plotBox) || numel(plotBox)~=2 || min(plotBox(:))<1 || max(plotBox(:))>256
             plotBox = plotBoxdef;
             MERPWaveViewer_plotorg{3}=plotBox;
@@ -2158,7 +2162,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
                 viewer_ERPDAT.Process_messg =4;
             end
-         
+            
             
             ERPwaviewerin.plot_org.gridlayout.data =GridinforDataOrg;
             gui_plotorg_waveviewer.rownum.Value = size(GridinforDataOrg,1);
@@ -2317,7 +2321,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if changeFlag~=1
             return;
         end
-         MessageViewer= char(strcat('Plot Organization > Cancel'));
+        MessageViewer= char(strcat('Plot Organization > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         
@@ -2479,7 +2483,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpwave_viewer_plotorg.TitleColor= [0.5 0.5 0.9];
-          MessageViewer= char(strcat('Plot Organization > Cancel'));
+        MessageViewer= char(strcat('Plot Organization > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
     end
