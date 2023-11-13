@@ -1304,7 +1304,6 @@ end
 if length(latency)==1
     if ismember_bc2(moption,  {'areazt','areazp','areazn', 'nintegz'})%% Four options for Numerical integration/Area between two (automatically detected)zero-crossing latencies
         xline(r_ax,latency, 'Color', cwm,'LineWidth' ,1);
-        
     else
         xline(r_ax,latency, 'Color', cwm,'LineWidth' ,1);
     end

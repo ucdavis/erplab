@@ -628,7 +628,7 @@ line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every
 %%------------Setting xticklabels for each row --------------
 x_axs = ones(size(new_erp_data,1),1);
 for jj = 1:numel(offset)-1
-    plot(waveview,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',1);
+%     plot(waveview,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',1);
     set(waveview,'XTick',xticks, ...
         'box','off', 'Color','none','xticklabels',xticks_labels);
     myX_Crossing = offset(jj);
@@ -705,7 +705,7 @@ nTicks = length(props.XTick);
 if ~isempty(props.XTick)
     xtick_x = repmat(props.XTick, 2, 1);
     xtick_y = repmat([tick_bottom; tick_top] + myX_Crossing, 1, length(props.XTick));
-    line(waveview,xtick_x(:,1:ceil(nTicks/columNum*Element_left)), xtick_y(:,1:ceil(nTicks/columNum*Element_left)), 'color', 'k','LineWidth',1.5);
+    line(waveview,xtick_x(:,1:ceil(nTicks/columNum*Element_left)), xtick_y(:,1:ceil(nTicks/columNum*Element_left)), 'color', 'k','LineWidth',1);
 end
 set(waveview, 'XTick', [], 'XTickLabel', []);
 if nTicks>1
@@ -780,7 +780,7 @@ end
 %%------------Marking start time point for each column---------------------
 if  columNum>1
     for ii = 2:numel(X_zero_line)
-        xline(waveview,X_zero_line(ii), 'y--','LineWidth',1.5);
+        xline(waveview,X_zero_line(ii), 'y--','LineWidth',1);
     end
 end
 
@@ -797,7 +797,6 @@ if  columNum==1
         count = 0;
         for i = 0:numel(offset)-1
             leg_str = '';
-            
             count  = count+1;
             try
                 if BinchanOverlay == 0
