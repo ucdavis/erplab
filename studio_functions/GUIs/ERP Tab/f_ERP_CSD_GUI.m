@@ -88,7 +88,7 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.run_title = uiextras.HBox('Parent', gui_erp_CSD.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_CSD.run_title);
         gui_erp_CSD.run = uicontrol('Style','pushbutton','Parent',gui_erp_CSD.run_title,...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_CSD.run_title);
         set(gui_erp_CSD.run_title,'Sizes',[85 90 85]);
         

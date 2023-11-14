@@ -72,15 +72,15 @@ varargout{1} = ERP_chan_operation_gui;
         
         gui_erp_chan_operation.equation_selection = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_load = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         gui_erp_chan_operation.asst_locaInfo = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.ref_asst = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.asst_locaInfo,...
-            'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.locaInfor = uicontrol('Style','checkbox','Parent',gui_erp_chan_operation.asst_locaInfo,...
             'String','Load Eq.','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_erp_chan_operation.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
@@ -111,10 +111,10 @@ varargout{1} = ERP_chan_operation_gui;
         
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.cancel = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
-            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable','off');
+            'String','Cancel','callback',@chanop_cancel,'FontSize',FontSize_defualt,'Enable','off','BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.run = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.run_title,...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);
         

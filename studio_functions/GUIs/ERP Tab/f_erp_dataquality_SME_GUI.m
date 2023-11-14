@@ -79,17 +79,17 @@ drawui_erp_information(FonsizeDefault);
         
         gui_erp_DQSME.DQSME_option = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_DQSME.DQSME_option_table  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option,'String','Show in a table',...
-            'callback',@DQSME_table,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'callback',@DQSME_table,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         gui_erp_DQSME.DQSME_option_file  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option,'String','Save to file',...
-            'callback',@DQSME_file,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'callback',@DQSME_file,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(gui_erp_DQSME.DQSME_option,'Sizes',[120 120]);
         
         set(gui_erp_DQSME.DQSME_option_table,'Enable','off');
         set(gui_erp_DQSME.DQSME_option_file,'Enable','off');
         gui_erp_DQSME.DQSME_option1 = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_DQSME.DQSME_option_measure  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option1,'String','Show measures on Command Window',...
-            'callback',@DQSME_measures,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'callback',@DQSME_measures,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_DQSME.DQSME_option1);
         set(gui_erp_DQSME.DQSME_option1,'Sizes',[240 10]);
         set(gui_erp_DQSME.DataSelBox,'Sizes',[20 20 20 30 30]);

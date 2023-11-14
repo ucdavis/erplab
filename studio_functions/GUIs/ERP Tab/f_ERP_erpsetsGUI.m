@@ -74,28 +74,28 @@ varargout{1} = box_erpset_gui;
         %%---------------------Options for ERPsets-----------------------------------------------------
         ERPsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.dupeselected = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
-            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @duplicateSelected,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.renameselected = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Rename',...
-            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.suffix = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
-            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
-            'Callback', @imp_erp,'FontSize',FonsizeDefault);
+            'Callback', @imp_erp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export', 'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
-            'Callback', @load,'FontSize',FonsizeDefault);
+            'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
-            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
-            'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', ...
-            'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
-            'Callback', @toggledots,'Enable',Edit_label,'FontSize',FonsizeDefault);
+            'Callback', @toggledots,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115])
     end
 
@@ -171,7 +171,6 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.Count_currentERP = 2;
             return;
         end
-%         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 
@@ -187,7 +186,6 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Rename');
         observe_ERPDAT.Process_messg =1;
@@ -284,7 +282,6 @@ varargout{1} = box_erpset_gui;
             beep;
             disp(['User selected cancel']);
             return;
-            
         end
         ALLERPCOM = evalin('base','ALLERPCOM');
         

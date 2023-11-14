@@ -388,7 +388,7 @@ EStudio_gui_erp_totl = createInterface();
         pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
         EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
         EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',pageinfo_box,'Style','pushbutton','String','Advanced Wave Viewer',...
-            'Callback',@Advanced_viewer,'FontSize',FonsizeDefault);
+            'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStudio_gui_erp_totl.advanced_viewer.Enable = 'off';
         Enable_minus = 'off';
         Enable_plus = 'off';

@@ -106,13 +106,13 @@ varargout{1} = ERP_filtering_box;
         
         gui_erp_spectral.other_option = uiextras.HBox('Parent',gui_erp_spectral.spectral,'Spacing',1,'BackgroundColor',ColorB_def);
         gui_erp_spectral.cancel = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
-            'String','Cancel','callback',@spectral_cancel,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','Cancel','callback',@spectral_cancel,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_spectral.plot = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
-            'String','Plot','callback',@spectral_plot,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','Plot','callback',@spectral_plot,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_spectral.save = uicontrol('Style','pushbutton','Parent',gui_erp_spectral.other_option,...
-            'String','Save','callback',@spectral_save,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','Save','callback',@spectral_save,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_spectral.advanced = uicontrol('Parent',gui_erp_spectral.other_option,'Style','pushbutton',...
-            'String','Advanced','callback',@spectral_advanced,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','Advanced','callback',@spectral_advanced,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         set(gui_erp_spectral.spectral, 'Sizes', [20 20 20 30]);
         estudioworkingmemory('ERPTab_spectral',0);

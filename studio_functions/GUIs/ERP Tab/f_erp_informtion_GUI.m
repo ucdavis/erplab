@@ -100,7 +100,7 @@ drawui_erp_information(FonsizeDefault);
         %%------------totla rejected----------
         gui_erp_information.total_rejected_show = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_information.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Artifact rejection details',...
-            'callback',@total_reject_ops,'FontSize',FonsizeDefault);
+            'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_information.total_rejected_option.Enable = 'off';
         uiextras.Empty('Parent', gui_erp_information.total_rejected_show);
         set(gui_erp_information.total_rejected_show,'Sizes',[150 250]);

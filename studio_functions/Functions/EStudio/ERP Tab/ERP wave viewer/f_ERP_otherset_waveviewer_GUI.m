@@ -243,7 +243,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         %%Apply and save the changed parameters
         gui_otherset_waveviewer.help_run_title = uiextras.HBox('Parent', gui_otherset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',   gui_otherset_waveviewer.help_run_title );
-        uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title,'String','Cancel',...
+        gui_otherset_waveviewer.cancel = uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title,'String','Cancel',...
             'callback',@other_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold'%,'HorizontalAlignment','left'
         uiextras.Empty('Parent',   gui_otherset_waveviewer.help_run_title );
         gui_otherset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',  gui_otherset_waveviewer.help_run_title ,'String','Apply',...
@@ -273,6 +273,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.polarity_up.Value = 1;
         gui_otherset_waveviewer.polarity_down.Value = 0;
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%-------------------------Setting for Polarity down-----------------------
@@ -286,7 +288,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_otherset_waveviewer.polarity_up.Value = 0;
         gui_otherset_waveviewer.polarity_down.Value = 1;
     end
@@ -302,7 +305,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;
         if Value ==1
             gui_otherset_waveviewer.SEM_custom.Enable = 'on';
@@ -326,6 +330,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 %%---------------------------SEM trans.------------------------------------
     function SEMtrans(~,~)
@@ -337,6 +343,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 
@@ -351,7 +359,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_otherset_waveviewer.bsl_none.Value =1;
         gui_otherset_waveviewer.bsl_pre.Value =0;
         gui_otherset_waveviewer.bsl_post.Value =0;
@@ -371,7 +380,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =1;
         gui_otherset_waveviewer.bsl_post.Value =0;
@@ -392,7 +402,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =0;
         gui_otherset_waveviewer.bsl_post.Value =1;
@@ -412,7 +423,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =0;
         gui_otherset_waveviewer.bsl_post.Value =0;
@@ -431,7 +443,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_otherset_waveviewer.bsl_none.Value =0;
         gui_otherset_waveviewer.bsl_pre.Value =0;
         gui_otherset_waveviewer.bsl_post.Value =0;
@@ -449,7 +462,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         MessageViewer= char(strcat('Other > Baseline Correction > Custom'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         try
@@ -504,7 +518,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_otherset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_otherset.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         bgColor = str2num(Str.String);
         if isempty(bgColor)
             viewer_ERPDAT.Process_messg =4;
@@ -609,6 +624,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Other > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
@@ -626,6 +643,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
+        gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Other > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -875,7 +894,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
-            
+            gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+            gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
             %%save the reset parameters for this panel
             MERPWaveViewer_others{1} = ERPwaviewerin.polarity;
             MERPWaveViewer_others{2} = ERPwaviewerin.SEM.active;
@@ -896,6 +916,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
+            gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+            gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
         else
             return;
         end

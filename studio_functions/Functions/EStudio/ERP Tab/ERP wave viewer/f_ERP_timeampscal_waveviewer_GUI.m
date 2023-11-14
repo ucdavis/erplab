@@ -141,11 +141,9 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.xsecond.KeyPressFcn = @xyaxis_presskey;
         set(gui_erpxyaxeset_waveviewer.display_title,'Sizes',[75 90 75]);
         if timerangeAutodef==1
-            %             ERPwaviewer.xaxis.tdis = 1;
             erpworkingmemory('MyViewer_xaxis_second',0);
             erpworkingmemory('MyViewer_xaxis_msecond',1);
         else
-            %             ERPwaviewer.xaxis.tdis = 0;
             erpworkingmemory('MyViewer_xaxis_second',1);
             erpworkingmemory('MyViewer_xaxis_msecond',0);
         end
@@ -399,7 +397,6 @@ varargout{1} = box_erpxtaxes_viewer_property;
             fontenable = 'off';
         end
         ERPwaviewer.xaxis.label = gui_erpxyaxeset_waveviewer.xtimelabel_on.Value;
-        
         
         %%-----font, font size, and text color for time ticks--------------
         try
@@ -865,7 +862,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%Apply and save the changed parameters
         gui_erpxyaxeset_waveviewer.help_run_title = uiextras.HBox('Parent', gui_erpxyaxeset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.help_run_title);
-        uicontrol('Style','pushbutton','Parent', gui_erpxyaxeset_waveviewer.help_run_title ,'String','Cancel',...
+        gui_erpxyaxeset_waveviewer.cancel = uicontrol('Style','pushbutton','Parent', gui_erpxyaxeset_waveviewer.help_run_title ,'String','Cancel',...
             'callback',@xyaxis_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erpxyaxeset_waveviewer.help_run_title );
         gui_erpxyaxeset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',gui_erpxyaxeset_waveviewer.help_run_title ,'String','Apply',...
@@ -914,6 +911,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
             gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
             box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+            gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+            gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
             
             gui_erpxyaxeset_waveviewer.xmillisecond.Value =1; %display with millisecond
             gui_erpxyaxeset_waveviewer.xsecond.Value =0;%display with second
@@ -1043,7 +1042,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
             gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
             box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-            
+            gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+            gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
             gui_erpxyaxeset_waveviewer.xmillisecond.Value =0; %display with millisecond
             gui_erpxyaxeset_waveviewer.xsecond.Value =1;%display with second
             ERPwaviewerIN = evalin('base','ALLERPwaviewer');
@@ -1156,7 +1156,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = strx_auto.Value;
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         if Value==1
@@ -1222,7 +1223,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         try
             ERPwaviewer = evalin('base','ALLERPwaviewer');
@@ -1284,7 +1286,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         xdisSecondValue = gui_erpxyaxeset_waveviewer.xmillisecond.Value;
         timeArray =  str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
         timeticksdef = '';
@@ -1327,7 +1330,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;
         if Value ==1
             gui_erpxyaxeset_waveviewer.timeticks_edit.Enable = 'off';
@@ -1373,7 +1377,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         
         if gui_erpxyaxeset_waveviewer.xmillisecond.Value==1
             xtick_precision = Source.Value-1;
@@ -1407,7 +1412,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;
         if Value ==1
             gui_erpxyaxeset_waveviewer.timeminorticks_auto.Enable = 'on';
@@ -1470,7 +1476,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Str_xtick_minor = str2num(Str.String);
         if isempty(Str_xtick_minor)
             messgStr =  strcat('Minor ticks for "X Axs" in "Time and Amplitude Scales" - Input must be numeric ');
@@ -1492,7 +1499,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;
         xticks = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
         stepX = [];
@@ -1545,7 +1553,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 1;
         gui_erpxyaxeset_waveviewer.xtimelabel_off.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimefont_custom.Enable = 'on';
@@ -1563,7 +1572,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.xtimelabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimelabel_off.Value = 1;
         gui_erpxyaxeset_waveviewer.xtimefont_custom.Enable = 'off';
@@ -1581,6 +1591,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%---------------------fontsize of x labelticks----------------------------
@@ -1593,6 +1605,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 %%---------------------color of x labelticks-------------------------------
     function xtimecolor(Source,~)
@@ -1604,6 +1618,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%------------------Setting for units:on-----------------------------------
@@ -1616,7 +1632,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value = 1;
         gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = 0;
     end
@@ -1631,7 +1648,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.xtimeunits_on.Value = 0;
         gui_erpxyaxeset_waveviewer.xtimeunits_off.Value = 1;
     end
@@ -1651,7 +1669,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         yscalecustom = str2num(char(yscalStr.String));
         %%checking the inputs
         if isempty(yscalecustom)|| numel(yscalecustom)~=2
@@ -1702,7 +1721,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = yscaleauto.Value;
         if Value ==1
             try
@@ -1784,6 +1804,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         
         ytickcustom = str2num(char(Str.String));
         %%checking the inputs
@@ -1847,7 +1869,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;
         if Value ==1
             yRangeLabel = str2num(char(gui_erpxyaxeset_waveviewer.yrange_edit.String));
@@ -1891,6 +1914,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         
         yticksLabel =  gui_erpxyaxeset_waveviewer.yticks_edit.String;
         ytick_precision = Source.Value-1;
@@ -1926,7 +1951,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;
         if Value ==1
             gui_erpxyaxeset_waveviewer.yminorstep_auto.Enable = 'on';
@@ -1983,7 +2009,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         ytickmin_step = str2num(Str.String);
         if isempty(ytickmin_step)
             messgStr =  strcat('Minor ticks for "Y Axs" in "Time and Amplitude Scales": Input must be one number or more numbers');
@@ -2004,7 +2031,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         Value = Str.Value;%%
         if Value ==1
             yticksStr = str2num(char(gui_erpxyaxeset_waveviewer.yticks_edit.String));
@@ -2052,7 +2080,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 1;
         gui_erpxyaxeset_waveviewer.ylabel_off.Value = 0;
         gui_erpxyaxeset_waveviewer.yfont_custom.Enable = 'on';
@@ -2071,6 +2100,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%------------------------fontsize of y label ticks------------------------
@@ -2083,6 +2114,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%------------------------color of y label ticks---------------------------
@@ -2095,6 +2128,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 
@@ -2108,7 +2143,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.ylabel_on.Value = 0;
         gui_erpxyaxeset_waveviewer.ylabel_off.Value = 1;
         gui_erpxyaxeset_waveviewer.yfont_custom.Enable = 'off';
@@ -2126,7 +2162,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.yunits_on.Value = 1;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = 0;
     end
@@ -2141,7 +2178,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erpxtaxes_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erpxyaxeset_waveviewer.yunits_on.Value = 0;
         gui_erpxyaxeset_waveviewer.yunits_off.Value = 1;
     end
@@ -2356,6 +2394,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('MyViewer_xyaxis',0);
         MessageViewer= char(strcat('Time and Amplitude Scales > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -2373,6 +2413,8 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erpxyaxeset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erpxyaxeset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erpxtaxes_viewer_property.TitleColor= [0.5 0.5 0.9];
+        gui_erpxyaxeset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_erpxyaxeset_waveviewer.cancel.ForegroundColor = [0 0 0];
         
         MessageViewer= char(strcat('Time and Amplitude Scales > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);

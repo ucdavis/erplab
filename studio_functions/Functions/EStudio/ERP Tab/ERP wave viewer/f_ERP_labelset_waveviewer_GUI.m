@@ -217,7 +217,7 @@ varargout{1} = box_erplabelset_viewer_property;
         %%-----------------------help and apply----------------------------
         gui_labelset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title );
-        uicontrol('Style','pushbutton','Parent', gui_labelset_waveviewer.help_apply_title  ,'String','Cancel',...
+        gui_labelset_waveviewer.cancel =  uicontrol('Style','pushbutton','Parent', gui_labelset_waveviewer.help_apply_title  ,'String','Cancel',...
             'callback',@label_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         gui_labelset_waveviewer.Apply= uicontrol('Style','pushbutton','Parent',gui_labelset_waveviewer.help_apply_title  ,'String','Apply',...
@@ -242,6 +242,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
         
         gui_labelset_waveviewer.labelauto.Value = 1;
         gui_labelset_waveviewer.nolabel.Value = 0;
@@ -318,7 +320,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_labelset_waveviewer.labelauto.Value = 0;
         gui_labelset_waveviewer.nolabel.Value = 1;
         gui_labelset_waveviewer.customlabel.Value = 0;
@@ -342,7 +345,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_labelset_waveviewer.labelauto.Value = 0;
         gui_labelset_waveviewer.nolabel.Value =0;
         gui_labelset_waveviewer.customlabel.Value = 1;
@@ -366,6 +370,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
         if isempty(str2num(Source.String)) || numel(str2num(Source.String))~=1
             viewer_ERPDAT.Process_messg =4;
             messgStr =  strcat('Chan/Bin/ERPset Label Properties > X% should a number and we therefore used 50');
@@ -384,6 +390,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
         if isempty(str2num(Source.String)) || numel(str2num(Source.String))~=1
             viewer_ERPDAT.Process_messg =4;
             messgStr =  strcat('Chan/Bin/ERPset Label Properties > Y% should a number and we therefore used 100');
@@ -402,6 +410,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%--------------------------Font of label text-----------------------------
@@ -414,6 +424,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%------------------------Fontsize of label text---------------------------
@@ -426,6 +438,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%-----------------------color of label text-------------------------------
@@ -438,6 +452,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         gui_labelset_waveviewer.Apply.ForegroundColor = [1 1 1];
         box_erplabelset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%--------------------------Help-------------------------------------------
@@ -506,6 +522,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
         gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
@@ -522,7 +540,8 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
         gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
         box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
-        
+        gui_labelset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_labelset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;

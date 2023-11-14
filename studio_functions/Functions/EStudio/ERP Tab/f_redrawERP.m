@@ -86,7 +86,7 @@ pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,Pa
 EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
 
 EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',pageinfo_box,'Style','pushbutton','String','Advanced Wave Viewer',...
-    'Callback',@Advanced_viewer,'FontSize',FonsizeDefault);
+    'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.advanced_viewer.Enable = 'on';
 else
@@ -628,7 +628,7 @@ line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every
 %%------------Setting xticklabels for each row --------------
 x_axs = ones(size(new_erp_data,1),1);
 for jj = 1:numel(offset)-1
-%     plot(waveview,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',1);
+    %     plot(waveview,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',1);
     set(waveview,'XTick',xticks, ...
         'box','off', 'Color','none','xticklabels',xticks_labels);
     myX_Crossing = offset(jj);

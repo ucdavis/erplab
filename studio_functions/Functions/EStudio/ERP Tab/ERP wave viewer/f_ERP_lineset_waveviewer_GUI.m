@@ -329,7 +329,7 @@ varargout{1} = box_erplineset_viewer_property;
         %%-------------------------help and apply--------------------------
         gui_erplinset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_erplinset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title );
-        uicontrol('Style','pushbutton','Parent', gui_erplinset_waveviewer.help_apply_title  ,'String','Cancel',...
+        gui_erplinset_waveviewer.cancel  = uicontrol('Style','pushbutton','Parent', gui_erplinset_waveviewer.help_apply_title  ,'String','Cancel',...
             'callback',@linelegend_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_erplinset_waveviewer.help_apply_title  );
         gui_erplinset_waveviewer.apply = uicontrol('Style','pushbutton','Parent',gui_erplinset_waveviewer.help_apply_title  ,'String','Apply',...
@@ -356,7 +356,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erplinset_waveviewer.linesauto.Value =1;
         gui_erplinset_waveviewer.linescustom.Value = 0;
         gui_erplinset_waveviewer.line_customtable.Enable = 'off';
@@ -402,7 +403,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erplinset_waveviewer.linesauto.Value =0;
         gui_erplinset_waveviewer.linescustom.Value = 1;
         gui_erplinset_waveviewer.line_customtable.Enable = 'on';
@@ -427,6 +429,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 
@@ -441,7 +445,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
         try
             ERPwaviewer = evalin('base','ALLERPwaviewer');
         catch
@@ -492,7 +497,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erplinset_waveviewer.font_colorauto.Value=0; %
         gui_erplinset_waveviewer.font_colorcustom.Value = 1;
         gui_erplinset_waveviewer.font_custom_type.Enable = 'on'; %
@@ -512,6 +518,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 %%----------------------fontsize of legend text----------------------------
@@ -524,6 +532,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 
@@ -537,7 +547,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erplinset_waveviewer.legendtextauto.Value =1; %
         gui_erplinset_waveviewer.legendtextcustom.Value =0;
     end
@@ -553,7 +564,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
         gui_erplinset_waveviewer.legendtextauto.Value =0; %
         gui_erplinset_waveviewer.legendtextcustom.Value =1;
     end
@@ -568,6 +580,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560]; %%mark the changes
         gui_erplinset_waveviewer.apply.ForegroundColor = [1 1 1];
         box_erplineset_viewer_property.TitleColor= [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [1 1 1];
     end
 
 
@@ -644,6 +658,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Lines & Legends > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =2;
@@ -661,7 +677,8 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
         gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
         box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
-        
+        gui_erplinset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+        gui_erplinset_waveviewer.cancel.ForegroundColor = [0 0 0];
         MessageViewer= char(strcat('Lines & Legends > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -942,7 +959,6 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
         estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
-        
     end
 
 
@@ -1224,6 +1240,8 @@ varargout{1} = box_erplineset_viewer_property;
             gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
+            gui_erplinset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+            gui_erplinset_waveviewer.cancel.ForegroundColor = [0 0 0];
             
             MERPWaveViewer_linelegend{1}=gui_erplinset_waveviewer.linesauto.Value;
             MERPWaveViewer_linelegend{2}= gui_erplinset_waveviewer.line_customtable.Data;
@@ -1246,6 +1264,8 @@ varargout{1} = box_erplineset_viewer_property;
             gui_erplinset_waveviewer.apply.BackgroundColor =  [1 1 1];
             gui_erplinset_waveviewer.apply.ForegroundColor = [0 0 0];
             box_erplineset_viewer_property.TitleColor= [0.5 0.5 0.9];
+            gui_erplinset_waveviewer.cancel.BackgroundColor =  [1 1 1];
+            gui_erplinset_waveviewer.cancel.ForegroundColor = [0 0 0];
         else
             return;
         end

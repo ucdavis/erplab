@@ -78,12 +78,12 @@ varargout{1} = box_erp_append;
         gui_erp_append.advance_help_title = uiextras.HBox('Parent',gui_erp_append.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         %         uiextras.Empty('Parent', gui_erp_append.advance_help_title);
         gui_erp_append.append_cancel= uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,...
-            'String','Cancel','callback',@append_cancel,'Enable','off','FontSize',FonsizeDefault);
+            'String','Cancel','callback',@append_cancel,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %         uiextras.Empty('Parent', gui_erp_append.advance_help_title);
         gui_erp_append.append_advance = uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,...
-            'String','Advanced','callback',@advance_erpappend,'FontSize',FonsizeDefault,'Enable','off');
+            'String','Advanced','callback',@advance_erpappend,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         gui_erp_append.append_run = uicontrol('Style', 'pushbutton','Parent',gui_erp_append.advance_help_title,'String','Run',...
-            'callback',@append_run,'FontSize',FonsizeDefault,'Enable','off');
+            'callback',@append_run,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         set(gui_erp_append.DataSelBox,'Sizes',[30 25 30]);
         estudioworkingmemory('ERPTab_append',0);
     end

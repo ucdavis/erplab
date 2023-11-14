@@ -61,11 +61,11 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.edit_bineq.KeyPressFcn = @erp_binop_presskey;
         gui_erp_bin_operation.equation_selection = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_load = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         %%%----------------Mode-----------------------------------
         gui_erp_bin_operation.mode_1 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.mode_modify_title = uicontrol('Style','text','Parent',gui_erp_bin_operation.mode_1 ,...
@@ -90,10 +90,10 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.run_title = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         gui_erp_bin_operation.cancel= uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.run_title,...
-            'String','Cancel','callback',@binop_cancel,'FontSize',FontSize_defualt,'Enable','off'); % 2F
+            'String','Cancel','callback',@binop_cancel,'FontSize',FontSize_defualt,'Enable','off','BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         gui_erp_bin_operation.run = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.run_title,...
-            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label); % 2F
+            'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         set(gui_erp_bin_operation.run_title, 'Sizes',[15 105  30 105 15]);
         
