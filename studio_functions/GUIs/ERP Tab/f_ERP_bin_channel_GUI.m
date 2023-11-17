@@ -290,7 +290,7 @@ varargout{1} = EStudio_box_bin_chan;
             Enableflag = 'on';
             %
             %%setting for channels
-            ChannelValue =  ERPTab_bin_chan.ElecRange.Value-1;
+            ChannelValue =  estudioworkingmemory('ERP_ChanArray');
             Chanlist = observe_ERPDAT.ERP.chanlocs;
             Chanlist_name{1} = 'All';
             for Numofchan = 1:length(Chanlist)
@@ -320,7 +320,7 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.BinRange.String = binlist_name;
             ERPTab_bin_chan.BinRange.Min = 1;
             ERPTab_bin_chan.BinRange.Max = length(binlist_name) + 1;
-            BinArray=  ERPTab_bin_chan.BinRange.Value-1;
+            BinArray= estudioworkingmemory('ERP_BinArray');
             BinNum = observe_ERPDAT.ERP.nbin;
             if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) >= BinNum
                 BinArray = [1:BinNum];
@@ -329,9 +329,9 @@ varargout{1} = EStudio_box_bin_chan;
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
             end
         end
-        
-        estudioworkingmemory('ERP_ChanArray',ChanArray);
-        estudioworkingmemory('ERP_BinArray',BinArray);
+%         
+%         estudioworkingmemory('ERP_ChanArray',ChanArray);
+%         estudioworkingmemory('ERP_BinArray',BinArray);
         ERPTab_bin_chan.ElecRange.Enable = Enableflag;
         ERPTab_bin_chan.BinRange.Enable = Enableflag;
         ERPTab_bin_chan.plot_reset.Enable = Enableflag;

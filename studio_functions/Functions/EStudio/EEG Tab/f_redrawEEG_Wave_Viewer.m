@@ -141,7 +141,7 @@ set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 4
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
-EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 40; % set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
 pause(0.1);
 EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
 EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
@@ -1110,9 +1110,6 @@ if ~isempty(Events)
             if strcmpi(Eventtypes{index}, 'boundary'), indexwidth(index) = 1; end
         end
     else
-        %         if option_boundary99
-        %             indexwidth = [ Eventtypes == -99 ];
-        %         end
     end
     Eventtypewidths = Eventwidths (mod(indexwidth([1:length(Eventtypes)])-1 ,length(Eventwidths))+1);
     Eventwidths     = Eventwidths (mod(indexwidth(indexcolor)-1               ,length(Eventwidths))+1);

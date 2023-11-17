@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022 & Oct 2023
+% 2022 & Nov 2023
 
 
 function varargout = f_ERP_plot_setting_GUI(varargin)
@@ -89,18 +89,10 @@ varargout{1} = ERP_plotset_box;
         set(ERPTab_plotset.yscale, 'Sizes', [50 45 35 50 35 60]);
         
         
-        ERPTab_plotset.plot_column = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', ERPTab_plotset.plot_column,'String','Number of columns:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
-        ERPTab_plotset.columns = uicontrol('Style','edit','Parent', ERPTab_plotset.plot_column,'Enable','off',...
-            'String',num2str(1),'callback',@onElecNbox,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); % 2E Plot_column
-        set(ERPTab_plotset.plot_column, 'Sizes', [150 -1]);
-        ERPTab_plotset.columns.KeyPressFcn=  @erp_plotsetting_presskey;
-        
         ERPTab_plotset.polarity_waveform = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
-        
         uicontrol('Style','text','Parent', ERPTab_plotset.polarity_waveform,'String','Polarity:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1F
         
-        %% second column:
+        %% polarity
         ERPTab_plotset.positive_up = uicontrol('Style','radiobutton','Parent',ERPTab_plotset.polarity_waveform,'String','Positive Up',...
             'callback',@polarity_up,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         ERPTab_plotset.positive_up.KeyPressFcn=  @erp_plotsetting_presskey;
@@ -136,6 +128,38 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorder_custom_imp = uicontrol('Parent',ERPTab_plotset.chanorder_custom_title, 'Style', 'pushbutton', 'String', 'Import',...
             'Callback', @chanorder_custom_imp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         
+        %%Grid layout
+        ERPTab_plotset.gridlayout_title = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.gridlayout_title,'String','Grid Layout:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
+        
+        ERPTab_plotset.gridlayout_title2 = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.gridlayoutdef = uicontrol('Style','radiobutton','Parent', ERPTab_plotset.gridlayout_title2,...
+            'callback',@gridlayoutdef,'String','Default','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',1,'Enable','off'); % 1E
+        ERPTab_plotset.gridlayoutdef.KeyPressFcn=  @erp_plotsetting_presskey;
+        ERPTab_plotset.gridlayout_custom = uicontrol('Style','radiobutton','Parent', ERPTab_plotset.gridlayout_title2,...
+            'callback',@gridlayout_custom,'String','Custom','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off'); % 1E
+        ERPTab_plotset.gridlayout_custom.KeyPressFcn=  @erp_plotsetting_presskey;
+        ERPTab_plotset.gridlayout_export = uicontrol('Style','pushbutton','Parent', ERPTab_plotset.gridlayout_title2,...
+            'callback',@gridlayout_export,'String','Export','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 1E
+        ERPTab_plotset.gridlayout_import = uicontrol('Style','pushbutton','Parent', ERPTab_plotset.gridlayout_title2,...
+            'callback',@gridlayout_import,'String','Import','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off'); % 1E
+        set(ERPTab_plotset.gridlayout_title2,'Sizes',[70 70 60 60]);
+        
+        ERPTab_plotset.row_colum_title = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
+        for ii = 1:256
+            rowcolumnString{ii} = num2str(ii);
+        end
+        uicontrol('Style','text','Parent', ERPTab_plotset.row_colum_title,'String','Row(s):','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
+        ERPTab_plotset.rowNum_set = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.row_colum_title,'Enable','off',...
+            'String',rowcolumnString,'callback',@rowNum_set,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1);
+        ERPTab_plotset.rowNum_set.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent', ERPTab_plotset.row_colum_title,'String','Column(s):','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1E
+        ERPTab_plotset.columns = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.row_colum_title,'Enable','off',...
+            'String',rowcolumnString,'callback',@columNum_select,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',1); % 2E Plot_column
+        ERPTab_plotset.columns.KeyPressFcn=  @erp_plotsetting_presskey;
+        set(ERPTab_plotset.row_colum_title,'Sizes',[45 75 60 75]);
+        
+        %%cancel & apply
         ERPTab_plotset.reset_apply = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         ERPTab_plotset.plot_reset = uicontrol('Style', 'pushbutton','Parent',ERPTab_plotset.reset_apply,'Enable','off',...
@@ -146,7 +170,7 @@ varargout{1} = ERP_plotset_box;
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         set(ERPTab_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         
-        set(ERPTab_plotset.plotop, 'Sizes', [20 25 20 25 25 25 20 20 25 25 30]);
+        set(ERPTab_plotset.plotop, 'Sizes', [20 25 20 25 25 25 20 20 25 20 25 25 30]);
         ERPTab_plotset.chanorderIndex = 1;
         ERPTab_plotset.chanorder{1,1}=[];
         ERPTab_plotset.chanorder{1,2} = '';
@@ -155,6 +179,7 @@ varargout{1} = ERP_plotset_box;
         estudioworkingmemory('ERPTab_plotset',0);
         ERPTab_plotset.timet_auto_reset = 1;
         ERPTab_plotset.timeticks_auto_reset = 1;
+        ERPTab_plotset.gridlayputarray = [];
     end
 
 %%**************************************************************************%%
@@ -209,14 +234,12 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
         xtixlk_min = str2num(src.String);
         xtixlk_max = str2num(ERPTab_plotset.timet_high.String);
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
@@ -304,7 +327,6 @@ varargout{1} = ERP_plotset_box;
         else
             xtickstepdef = [];
         end
-        
         tick_step = str2num(src.String);
         if isempty(tick_step) || numel(tick_step)~=1 || any(tick_step<=0)
             src.String = num2str(xtickstepdef);
@@ -372,14 +394,12 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
         val = str2num(src.String);
         if isempty(val)  || numel(val)~=1 || any(val(:)<=0)
             if ERPTab_plotset.positive_up.Value==1
@@ -414,14 +434,12 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
         val = str2num(src.String);
         if isempty(val) || numel(val)~=1 || any(val(:)<0)
             msgboxText =  ['Plot Setting> y scale > spacing - Input of spacing must be a positive value'];
@@ -429,7 +447,6 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Process_messg =4;
             src.String = '1.5';
         end
-        
     end
 
 %%-----------------fill screen---------------------------------------------*
@@ -443,41 +460,12 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-    end
-
-%%-----------Determing the numbrt of columns------------------------------
-    function onElecNbox(source,~)
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=2;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
-        end
-        
-        estudioworkingmemory('ERPTab_plotset',1);
-        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
-        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        Values = str2num(source.String);
-        if isempty(Values) || numel(Values)~=1 || any(Values(:)<=0)
-            source.String = '1';
-            msgboxText =  ['Plot Setting> Number of columns - Input for the number of columns must be a positive value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
-            return;
-        end
     end
 
 %------------------Set the polarity of waveform is up or not-------------------
@@ -491,14 +479,12 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
         ERPTab_plotset.positive_up.Value =1;
         ERPTab_plotset.negative_up.Value = 0;
     end
@@ -515,14 +501,12 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
         ERPTab_plotset.positive_up.Value =0;
         ERPTab_plotset.negative_up.Value = 1;
     end
@@ -538,7 +522,6 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_plotset',1);
         ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
@@ -641,13 +624,11 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
-        
         ERPTab_plotset.chanorder_number.Value=0;
         ERPTab_plotset.chanorder_front.Value=0;
         ERPTab_plotset.chanorder_custom.Value=1;
         ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
         ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
-        
         if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
             MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
@@ -659,7 +640,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             return;
         end
-        
     end
 
 %%---------------------export channel orders-------------------------------
@@ -819,7 +799,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             return;
         end
-        
         if numel(chanorders1)~= observe_ERPDAT.ERP.nchan
             MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The number of the defined chan orders must be',32,num2str(observe_ERPDAT.ERP.nchan)]);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
@@ -831,7 +810,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             return;
         end
-        
         [C,IA]= ismember_bc2(chanlabes,labels);
         if any(IA==0)
             MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The names of channels must be the same to the current ERP']);
@@ -848,7 +826,6 @@ varargout{1} = ERP_plotset_box;
                 end
                 disp(['The defined labels that didnot match: ',32,labelsmatch]);
             end
-            
             ypos = setdiff([1:length(labels)],setdiff(IA,0));
             if ~isempty(ypos)
                 labelsmatch = '';
@@ -861,7 +838,6 @@ varargout{1} = ERP_plotset_box;
                 end
                 disp(['The labels  that didnot match for the current data: ',32,labelsmatch]);
             end
-            
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
             ERPTab_plotset.chanorder_front.Value=0;
@@ -870,7 +846,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             return;
         end
-        
         if ~isempty(IA)
             IA = unique(IA);
         end
@@ -885,10 +860,247 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             return;
         end
-        
-        
         ERPTab_plotset.chanorder{1,1}=chanorders;
         ERPTab_plotset.chanorder{1,2} = chanlabes;
+    end
+
+%%-------------------default layout----------------------------------------
+    function gridlayoutdef(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        ERPTab_plotset.gridlayoutdef.Value = 1;
+        ERPTab_plotset.gridlayout_custom.Value = 0;
+        ERPTab_plotset.gridlayout_export.Enable ='off';
+        ERPTab_plotset.gridlayout_import.Enable ='off';
+        ERPTab_plotset.rowNum_set.Enable ='off';
+        ERPTab_plotset.columns.Enable ='off';
+        ERPTab_plotset.columns.Value=1;
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            estudioworkingmemory('ERP_BinArray',BinArray);
+        end
+        if ERPTab_plotset.pagesel.Value==1
+            nplot = numel(ChanArray);
+            [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+            plotarray = ChanArray;
+        else
+            nplot = numel(BinArray);
+            labelsdef =observe_ERPDAT.ERP.bindescr;
+            plotarray = BinArray;
+        end
+        if nplot<=256
+            ERPTab_plotset.rowNum_set.Value=nplot;
+        else
+            ERPTab_plotset.columns.Value = ceil(nplot/256);
+            ERPTab_plotset.rowNum_set.Value = 256;
+        end
+        gridlayputarray = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
+        count = 0;
+        for ii = 1:ERPTab_plotset.rowNum_set.Value
+            for jj = 1:ERPTab_plotset.columns.Value
+                count = count+1;
+                if count>nplot
+                    break;
+                end
+                gridlayputarray{ii,jj} = labelsdef{plotarray(count)};
+            end
+        end
+        ERPTab_plotset.gridlayputarray = gridlayputarray;
+    end
+
+%%-------------------custom layout-----------------------------------------
+    function gridlayout_custom(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        
+        ERPTab_plotset.gridlayoutdef.Value = 0;
+        ERPTab_plotset.gridlayout_custom.Value = 1;
+        ERPTab_plotset.gridlayout_export.Enable ='on';
+        ERPTab_plotset.gridlayout_import.Enable ='on';
+        ERPTab_plotset.rowNum_set.Enable ='on';
+        ERPTab_plotset.columns.Enable ='on';
+    end
+
+%%---------------------export layout---------------------------------------
+    function gridlayout_export(Source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) %%&& eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+%         estudioworkingmemory('ERPTab_plotset',1);
+        
+        erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Export');
+        observe_ERPDAT.Process_messg =1;
+        pathstr = pwd;
+        namedef ='GridLocations';
+        [erpfilename, erppathname, indxs] = uiputfile({'*.txt'}, ...
+            ['Save Grid Locations as'],...
+            fullfile(pathstr,namedef));
+        if isequal(erpfilename,0)
+            disp('User selected Cancel')
+            return
+        end
+        [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+        ext = '.txt';
+        erpFilename = char(strcat(erppathname,erpfilename,ext));
+        
+        AllabelArray = ERPTab_plotset.gridlayputarray;
+        
+        rowNums = ERPTab_plotset.rowNum_set.Value;
+        columNums = ERPTab_plotset.columns.Value;
+        
+        if isempty(AllabelArray) || rowNums~= size(AllabelArray,1) || columNums~= size(AllabelArray,2)
+            AllabelArray = reshape(AllabelArray,numel(AllabelArray),1);
+            AllabelArray_new  = cell(rowNums,columNums);
+            count = 0;
+            for ii = 1:rowNums
+                for jj = 1:columNums
+                    count=count+1;
+                    if count<= numel(AllabelArray)
+                        AllabelArray_new{ii,jj}  = AllabelArray{count};
+                    end
+                end
+            end
+            AllabelArray = AllabelArray_new;
+        end
+        
+        fileID = fopen(erpFilename,'w');
+        [nrows,ncols] = size(AllabelArray);
+        formatSpec ='';
+        for jj = 1:ncols
+            formatSpec = strcat(formatSpec,'%s\t',32);
+        end
+        formatSpec = strcat(formatSpec,'\n');
+        for row = 1:nrows
+            fprintf(fileID,formatSpec,AllabelArray{row,:});
+        end
+        fclose(fileID);
+        observe_ERPDAT.Process_messg =2;
+    end
+
+%%---------------------import layout---------------------------------------
+    function gridlayout_import(source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        
+        [filename, filepath] = uigetfile('*.txt', ...
+            'Plot Setting > Grid Layout > Import', ...
+            'MultiSelect', 'off');
+        if isequal(filename,0)
+            disp('User selected Cancel');
+            return;
+        end
+        try
+            DataInput =  readcell([filepath,filename]);
+        catch
+            DataInput =  readcell([filepath,filename]);
+            erpworkingmemory('f_ERP_proces_messg',['Plot Setting > Grid Layout > Import:','Cannot import:',filepath,filename]);
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
+        if isempty(DataInput)
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid');
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
+        overlapindex =1;% ERPTab_plotset.pagesel.Value;
+        [Griddata, checkflag ]= f_tranf_check_import_grid(DataInput,overlapindex);
+        if checkflag==0
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid or didnot match with existing labels');
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
+        ERPTab_plotset.rowNum_set.Value =size(Griddata,1);
+        ERPTab_plotset.columns.Value =size(Griddata,2);
+        ERPTab_plotset.gridlayputarray = Griddata;%%save the grid layout
+    end
+
+%%--------------------row numbers------------------------------------------
+    function rowNum_set(Source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+%%------------------------column numbers-----------------------------------
+    function columNum_select(Source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
     end
 
 
@@ -913,7 +1125,6 @@ varargout{1} = ERP_plotset_box;
         
         erpworkingmemory('f_ERP_proces_messg','Plot Setting>Cancel');
         observe_ERPDAT.Process_messg =1;
-        
         %
         %%------------------------------time range-------------------------
         ERPTab_plotset_pars =  estudioworkingmemory('ERPTab_plotset_pars');
@@ -1021,7 +1232,7 @@ varargout{1} = ERP_plotset_box;
             ColumnNum =1;
             ERPTab_plotset_pars{6}=1;
         end
-        ERPTab_plotset.columns.String = num2str(ColumnNum); % 2E Plot_column
+        ERPTab_plotset.columns.Value =ColumnNum; % 2E Plot_column
         ERPTab_plotset.columns.Enable = 'on';
         
         %
@@ -1073,6 +1284,69 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
             ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
         end
+        try rowNum = ERPTab_plotset_pars{9};catch rowNum=1;ERPTab_plotset_pars{9}=1; end
+        ERPTab_plotset.rowNum_set.Value=rowNum;
+        try gridlayoutdef =  ERPTab_plotset_pars{10};catch gridlayoutdef =1; ERPTab_plotset_pars{10}=1;  end
+        if isempty(gridlayoutdef) || numel(gridlayoutdef)~=1 || (gridlayoutdef~=0 && gridlayoutdef~=1)
+            gridlayoutdef =1; ERPTab_plotset_pars{10}=1;
+        end
+        ERPTab_plotset.gridlayoutdef.Value=gridlayoutdef;%%default grid layout?
+        ERPTab_plotset.gridlayout_custom.Value = ~gridlayoutdef;
+        if gridlayoutdef==1
+            EnableFlag= 'off';
+        else
+            EnableFlag= 'on';
+        end
+        ERPTab_plotset.gridlayout_export.Enable =EnableFlag;
+        ERPTab_plotset.gridlayout_import.Enable =EnableFlag;
+        ERPTab_plotset.rowNum_set.Enable =EnableFlag;
+        ERPTab_plotset.columns.Enable =EnableFlag;
+        
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            estudioworkingmemory('ERP_BinArray',BinArray);
+        end
+        if ERPTab_plotset.pagesel.Value==1
+            nplot = numel(ChanArray);
+            [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+            plotarray = ChanArray;
+        else
+            nplot = numel(BinArray);
+            labelsdef =observe_ERPDAT.ERP.bindescr;
+            plotarray = BinArray;
+        end
+        gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
+        count = 0;
+        for ii = 1:ERPTab_plotset.rowNum_set.Value
+            for jj = 1:ERPTab_plotset.columns.Value
+                count = count+1;
+                if count>nplot
+                    break;
+                end
+                gridlayputarraydef{ii,jj} = labelsdef{plotarray(count)};
+            end
+        end
+        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+            mtViewer=0;erpworkingmemory('ERPTab_mtviewer',0);
+        end
+        
+        if gridlayoutdef==1 || mtViewer==1
+            ERPTab_plotset.columns.Value = 1;
+            ERPTab_plotset.rowNum_set.Value = nplot;
+            ERPTab_plotset.gridlayputarray=gridlayputarraydef;
+        end
+        
+        try gridlayputarray= ERPTab_plotset_pars{11};catch gridlayputarray= gridlayputarraydef ;ERPTab_plotset_pars{11}=gridlayputarraydef; end
+        ERPTab_plotset.gridlayputarray=gridlayputarray;
+        ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1096,13 +1370,10 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
         
-        
         erpworkingmemory('f_ERP_proces_messg','Plot Setting>Apply');
         observe_ERPDAT.Process_messg =1;
-        
         ERPTab_plotset.timet_auto_reset = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.timeticks_auto_reset = ERPTab_plotset.yscale_auto.Value;
-        
         %
         %%time range
         timeStartdef = observe_ERPDAT.ERP.times(1);
@@ -1189,7 +1460,7 @@ varargout{1} = ERP_plotset_box;
         %%fill screen?
         ERPTab_plotset_pars{5} = ERPTab_plotset.fill_screen.Value;
         %%Number of columns
-        columNum = round(str2num(ERPTab_plotset.columns.String));
+        columNum = round(ERPTab_plotset.columns.Value);
         if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
             columNum =1;
             ERPTab_plotset.columns.String = '1';
@@ -1209,8 +1480,52 @@ varargout{1} = ERP_plotset_box;
         else
             ERPTab_plotset_pars{8} =  1;
         end
-        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         
+        ERPTab_plotset_pars{9}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
+        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
+        
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            estudioworkingmemory('ERP_BinArray',BinArray);
+        end
+        if ERPTab_plotset.pagesel.Value==1
+            [~,plotArraystr] = readlocs(observe_ERPDAT.ERP.chanlocs(ChanArray));
+        else
+            plotArraystr= observe_ERPDAT.ERP.bindescr(BinArray);
+        end
+        rowNum = ERPTab_plotset_pars{9} ;
+        gridlayputarraydef = cell(rowNum,columNum);
+        count = 0;
+        for ii = 1:rowNum
+            for jj = 1:columNum
+                count = count+1;
+                if count<= length(plotArraystr)
+                    gridlayputarraydef{ii,jj} = plotArraystr{count};
+                end
+            end
+        end
+        if ERPTab_plotset.gridlayoutdef.Value==1 || size(ERPTab_plotset.gridlayputarray,1)~=rowNum || size(ERPTab_plotset.gridlayputarray,2)~=columNum
+            ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+        end
+        [Griddata, checkflag,labelsIndex]= f_tranf_check_import_grid(ERPTab_plotset.gridlayputarray,ERPTab_plotset.pagesel.Value);
+        
+        if checkflag==1
+            if ERPTab_plotset.pagesel.Value==1
+                estudioworkingmemory('ERP_ChanArray',labelsIndex);
+            else
+                estudioworkingmemory('ERP_BinArray',labelsIndex);
+            end
+        else
+            ERPTab_plotset.gridlayputarray = gridlayputarray;
+        end
+        ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         %%channel orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         if  ERPTab_plotset.chanorder_number.Value==1
@@ -1278,6 +1593,12 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorder_custom_imp.Enable =enbaleflag;
         ERPTab_plotset.plot_reset.Enable =enbaleflag;
         ERPTab_plotset.plot_apply.Enable =enbaleflag;
+        ERPTab_plotset.gridlayoutdef.Enable =enbaleflag;
+        ERPTab_plotset.gridlayout_custom.Enable =enbaleflag;
+        ERPTab_plotset.gridlayout_export.Enable =enbaleflag;
+        ERPTab_plotset.gridlayout_import.Enable =enbaleflag;
+        ERPTab_plotset.rowNum_set.Enable =enbaleflag;
+        ERPTab_plotset.columns.Enable =enbaleflag;
         if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP =4;
             return;
@@ -1295,7 +1616,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_exp.Enable ='off';
             ERPTab_plotset.chanorder_custom_imp.Enable ='off';
         end
-        
         %
         %%time range
         if ERPTab_plotset.timet_auto.Value == 1
@@ -1306,15 +1626,14 @@ varargout{1} = ERP_plotset_box;
             [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
             ERPTab_plotset.timet_step.String = num2str(xstep);
         end
-        
         timeStart = str2num(ERPTab_plotset.timet_low.String);
-        if isempty(timeStart) || numel(timeStart)~=1 || timeStart>observe_ERPDAT.ERP.times(end) || timeStart<observe_ERPDAT.ERP.times(1)
+        if isempty(timeStart) || numel(timeStart)~=1 || timeStart>observe_ERPDAT.ERP.times(end) %%|| timeStart<observe_ERPDAT.ERP.times(1)
             timeStart = observe_ERPDAT.ERP.times(1);
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
         end
         timEnd = str2num(ERPTab_plotset.timet_high.String);
         
-        if isempty(timEnd) || numel(timEnd)~=1 || timEnd<observe_ERPDAT.ERP.times(1) || timEnd> observe_ERPDAT.ERP.times(end)
+        if isempty(timEnd) || numel(timEnd)~=1 || timEnd<observe_ERPDAT.ERP.times(1) %%|| timEnd> observe_ERPDAT.ERP.times(end)
             timEnd = observe_ERPDAT.ERP.times(end);
             ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
         end
@@ -1332,7 +1651,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.timet_step.String = num2str(xtickstep);
         end
         ERPTab_plotset_pars{2} = xtickstep;
-        
         %
         %%Y scale
         if ERPTab_plotset.positive_up.Value==1
@@ -1369,27 +1687,83 @@ varargout{1} = ERP_plotset_box;
         %%fill screen?
         ERPTab_plotset_pars{5} = ERPTab_plotset.fill_screen.Value;
         
-        %%Number of columns
-        columNum = round(str2num(ERPTab_plotset.columns.String));
-        if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
-            columNum =1;
-            ERPTab_plotset.columns.String = '1';
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            estudioworkingmemory('ERP_BinArray',BinArray);
+        end
+        if ERPTab_plotset.pagesel.Value==1
+            nplot = numel(ChanArray);
+            plotarray = ChanArray;
+            [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+        else
+            nplot = numel(BinArray);
+            plotarray = BinArray;
+            labelsdef =observe_ERPDAT.ERP.bindescr;
+        end
+        gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
+        count = 0;
+        for ii = 1:ERPTab_plotset.rowNum_set.Value
+            for jj = 1:ERPTab_plotset.columns.Value
+                count = count+1;
+                if count>nplot
+                    break;
+                end
+                gridlayputarraydef{ii,jj} = labelsdef{plotarray(count)};
+            end
         end
         
+        if ERPTab_plotset.gridlayoutdef.Value ==1
+            EnableFlag = 'off';
+            ERPTab_plotset.columns.Value=1;
+            if nplot<=256
+                ERPTab_plotset.rowNum_set.Value=nplot;
+                ERPTab_plotset.columns.Value =1;
+            else
+                ERPTab_plotset.columns.Value = ceil(nplot/256);
+                ERPTab_plotset.rowNum_set.Value = 256;
+            end
+            ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+        else
+            EnableFlag = 'on';
+        end
+        ERPTab_plotset.gridlayout_export.Enable =EnableFlag;
+        ERPTab_plotset.gridlayout_import.Enable =EnableFlag;
+        ERPTab_plotset.rowNum_set.Enable =EnableFlag;
+        ERPTab_plotset.columns.Enable =EnableFlag;
+        
+        %%Number of columns
+        columNum = round(ERPTab_plotset.columns.Value);
+        if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
+            columNum =1;
+            ERPTab_plotset.columns.Value = 1;
+        end
+        
+        %%check if ERP measurement tool is on?
         mtViewer =  erpworkingmemory('ERPTab_mtviewer');
         if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-            mtViewer=0;
+            mtViewer=0; erpworkingmemory('ERPTab_mtviewer',0);
         end
         if mtViewer ==1
             columNum=1;
-            ERPTab_plotset.columns.String=1;
+            ERPTab_plotset.columns.Value=1;
             ERPTab_plotset.columns.Enable = 'off';
-        else
-            ERPTab_plotset.columns.Enable = 'on';
+            ERPTab_plotset.rowNum_set.Value = nplot;
+            ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+            ERPTab_plotset.gridlayout_export.Enable ='off';
+            ERPTab_plotset.gridlayout_import.Enable ='off';
+            ERPTab_plotset.rowNum_set.Enable ='off';
+            ERPTab_plotset.columns.Enable ='off';
+            ERPTab_plotset.gridlayoutdef.Value =1;
+            ERPTab_plotset.gridlayout_custom.Value =0;
         end
         
         ERPTab_plotset_pars{6} =columNum;
-        
         %%polarity (positive up?)
         ERPTab_plotset_pars{7} =ERPTab_plotset.positive_up.Value;
         
@@ -1399,9 +1773,13 @@ varargout{1} = ERP_plotset_box;
         else
             ERPTab_plotset_pars{8} =  1;
         end
+        ERPTab_plotset_pars{9}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
+        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
+        ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         observe_ERPDAT.Count_currentERP=4;
     end
+
 
     function erp_two_panels_change(~,~)
         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
@@ -1439,6 +1817,40 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
         else
             return;
+        end
+    end
+
+
+%%-----------------------check out the imported lay out--------------------
+    function [Griddata, checkflag,labelsIndex]= f_tranf_check_import_grid(DataInput,overlapindex)
+        checkflag = 0;
+        Griddata = cell(size(DataInput));
+        if overlapindex==1
+            [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+        else
+            labelsdef =observe_ERPDAT.ERP.bindescr;
+        end
+        count = 0;
+        labelsIndex = [];
+        for ii = 1:size(DataInput,1)
+            for jj = 1:size(DataInput,2)
+                if ~ischar(DataInput{ii,jj}) || strcmpi(DataInput{ii,jj},'none')  || isempty(DataInput{ii,jj})
+                else
+                    [C,IA] = ismember_bc2(DataInput{ii,jj},labelsdef);
+                    if IA~=0
+                        Griddata{ii,jj} =   labelsdef{IA};
+                        checkflag =1;
+                        count = count+1;
+                        labelsIndex(count) = IA;
+                    else
+                        if overlapindex==1
+                            disp([DataInput{ii,jj},32,'didnot match with any channel labels']);
+                        else
+                            disp([DataInput{ii,jj},32,'didnot match with any bin labels']);
+                        end
+                    end
+                end
+            end
         end
     end
 

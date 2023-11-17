@@ -358,7 +358,7 @@ EStudio_gui_erp_totl = createInterface();
         EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
         set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 5]);
         EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
-        EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 40; % set the first element (pageinfo) to 30px high
+        EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
         EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
         EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
         Pos = EStudio_gui_erp_totl.myeegviewer.Position;
@@ -476,26 +476,20 @@ EStudio_gui_erp_totl = createInterface();
         end
         FonsizeDefault = f_get_default_fontsize();
         Processed_Method=erpworkingmemory('f_ERP_proces_messg');
+         EStudio_gui_erp_totl.Process_messg.BackgroundColor = [0.95 0.95 0.95];
         EStudio_gui_erp_totl.Process_messg.FontSize = FonsizeDefault;
         if observe_ERPDAT.Process_messg ==1
             EStudio_gui_erp_totl.Process_messg.String = strcat('1- ',Processed_Method,': Running....');
-            EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[1 1 1];
             EStudio_gui_erp_totl.Process_messg.ForegroundColor = [0 0 0];
         elseif observe_ERPDAT.Process_messg==2
             EStudio_gui_erp_totl.Process_messg.String = strcat('2- ',Processed_Method,': Complete');
             EStudio_gui_erp_totl.Process_messg.ForegroundColor = [0 0.5 0];
-            EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[1 1 1];
-            %             pause(2);
-            %             EStudio_gui_erp_totl.Process_messg.String = '';
-            %             EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[0.95 0.95 0.95];
         elseif observe_ERPDAT.Process_messg ==3
             EStudio_gui_erp_totl.Process_messg.String = strcat('2- ',Processed_Method,': Error');
             EStudio_gui_erp_totl.Process_messg.ForegroundColor = [1 0 0];
-            EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[1 1 1];
         elseif observe_ERPDAT.Process_messg ==4
             EStudio_gui_erp_totl.Process_messg.String = strcat('Warning: ',32,Processed_Method);
-            EStudio_gui_erp_totl.Process_messg.ForegroundColor = [1 0 0];
-            EStudio_gui_erp_totl.Process_messg.BackgroundColor = ColorB_def;%[1 1 1];
+            EStudio_gui_erp_totl.Process_messg.ForegroundColor = [1 0.65 0];
         else
             
         end

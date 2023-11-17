@@ -352,7 +352,7 @@ end
 
 %%ylable font
 if nargin <34
-    qYlabelfont = 'Geneva';
+    qYlabelfont = 'Helvetica';
 end
 
 %%display ylabels?
@@ -410,7 +410,7 @@ end
 
 %%xlabel font
 if nargin <26
-    qXlabelfont= 'Geneva';
+    qXlabelfont= 'Helvetica';
 end
 
 %%disply xtick labels ?
@@ -501,7 +501,7 @@ end
 
 %%font of channel/bin/erpset label
 if nargin <17
-    qLabelfont= 'Geneva';
+    qLabelfont= 'Helvetica';
 end
 
 %%location of channel/bin/erpset label
@@ -516,7 +516,7 @@ end
 
 %%font of legend name
 if nargin <14
-    qLegendFont  = 'Geneva';
+    qLegendFont  = 'Helvetica';
 end
 
 %%legend name
@@ -862,8 +862,8 @@ if isyaxislabel==1 %% y axis GAP
             yscaleall = 2*max(abs(qYScales));
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
-        if yscaleall < y_scale_def(2)-y_scale_def(2)
-            yscaleall = y_scale_def(2)-y_scale_def(2);
+        if yscaleall < y_scale_def(2)-y_scale_def(1)
+            yscaleall = y_scale_def(2)-y_scale_def(1);
         end
         
         for Numofrows = 1:Numrows
@@ -886,8 +886,8 @@ else%% y axis Overlay
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
         
-        if yscaleall < y_scale_def(2)-y_scale_def(2)
-            yscaleall = y_scale_def(2)-y_scale_def(2);
+        if yscaleall < y_scale_def(2)-y_scale_def(1)
+            yscaleall = y_scale_def(2)-y_scale_def(1);
         end
         
         if Numrows ==1
@@ -962,7 +962,7 @@ end
 
 
 %%Get the figure name which is to be plotted
-if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==1 && qPLOTORG(2)==2) %% Page is ERPset
+if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1) %% Page is ERPset
     ERP = ALLERPBls(qCURRENTPLOT);
     if isempty(ERP.filename) || strcmp(ERP.filename,'')
         ERP.filename = 'still_not_saved!';

@@ -90,7 +90,6 @@ if nargin==1
     
     %%figure name if any
     figureName = EEG.setname;
-    
     %%Figure position
     figSize = [];
     
@@ -100,7 +99,6 @@ if nargin==1
     pause(0.1);
     return;
 end
-
 
 %
 % Parsing inputs

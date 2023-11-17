@@ -6,7 +6,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022 & 2023 Oct
+% 2022 & Oct-Nov 2023
 
 
 
@@ -68,25 +68,39 @@ else
 end
 EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
 
-pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
-
-EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
-EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',ColorB_def);
-
-EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
-
-xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
-EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
-
 %%Setting title
+pageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.pageinfo_minus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',{@page_minus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.pageinfo_edit = uicontrol('Parent',pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',{@page_edit,EStudio_gui_erp_totl},'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.pageinfo_plus = uicontrol('Parent',pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',{@page_plus,EStudio_gui_erp_totl},'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',32,PageStr];
 EStudio_gui_erp_totl.pageinfo_text = uicontrol('Parent',pageinfo_box,'Style','text','String',pageinfo_str,'FontSize',FonsizeDefault);
-
 EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',pageinfo_box,'Style','pushbutton','String','Advanced Wave Viewer',...
     'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+
+%%legends
+ViewAxes_legend_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_legend_title,'BackgroundColor',[1 1 1]);
+%%waves
+EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
+
+%%save figure, command....
+commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', commandfig_panel); % 1A
+EStudio_gui_erp_totl.erp_figurecommand = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Show Command',...
+    'Callback',@Show_command, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Save Figure as',...
+    'Callback',@figure_saveas, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Create Static /Exportable Plot',...
+    'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+uiextras.Empty('Parent', commandfig_panel); % 1A
+set(commandfig_panel, 'Sizes', [-1 100 100 170 5]);
+
+%%message
+xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.advanced_viewer.Enable = 'on';
 else
@@ -132,10 +146,9 @@ end
 if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     hold(EStudio_gui_erp_totl.erptabwaveiwer,'on');
-    set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
     EStudio_gui_erp_totl.erptabwaveiwer_legend = axes('Parent', EStudio_gui_erp_totl.ViewAxes_legend,'Color','none','Box','off');
     hold(EStudio_gui_erp_totl.erptabwaveiwer_legend,'on');
-    
+    set(EStudio_gui_erp_totl.erptabwaveiwer_legend, 'XTick', [], 'YTick', []);
     ERP = observe_ERPDAT.ERP;
     OutputViewerparerp = f_preparms_erptab(ERP,0);
     
@@ -144,6 +157,7 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
         f_plotaberpwave(ERP,OutputViewerparerp{1},OutputViewerparerp{2},...
             OutputViewerparerp{3},OutputViewerparerp{4},OutputViewerparerp{5},...
             OutputViewerparerp{6},OutputViewerparerp{9},OutputViewerparerp{10},OutputViewerparerp{11},...
+            OutputViewerparerp{12},OutputViewerparerp{13},...
             EStudio_gui_erp_totl.erptabwaveiwer,EStudio_gui_erp_totl.erptabwaveiwer_legend);
     else
         return;
@@ -162,23 +176,27 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     else
         splot_n = numel(OutputViewerparerp{2});
     end
-    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
-    EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
+    
     if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
         pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     end
     EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
-else
-    set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
-    EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Heights(3) = 30;
+    
+end
+EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
+EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
 end
 
-end
+%%-------------------------------------------------------------------------
+%%-----------------------------Subfunctions--------------------------------
+%%-------------------------------------------------------------------------
 
-%------------------Display the waveform for proir ERPset--------------------
+
+%------------------Display the waveform for proir ERPset-------------------
 function page_minus(~,~,EStudio_gui_erp_totl)
 global observe_ERPDAT;
 if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
@@ -344,8 +362,6 @@ if isempty(ERPArray)
     observe_ERPDAT.CURRENTERP = ERPArray;
     estudioworkingmemory('selectederpstudio',ERPArray);
 end
-
-
 Pagecurrent = str2num(EStudio_gui_erp_totl.pageinfo_edit.String);
 pageNum = numel(ERPArray);
 if  ~isempty(Pagecurrent) &&  numel(Pagecurrent)~=1 %%if two or more numbers are entered
@@ -411,6 +427,92 @@ end
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
+%%--------------------------show the command-------------------------------
+function Show_command(~,~)
+global observe_ERPDAT;
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    return;
+end
+[messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+if ~isempty(messgStr)
+    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+end
+erpworkingmemory('f_ERP_proces_messg','Show Command');
+observe_ERPDAT.Process_messg =1;
+f_preparms_erptab(observe_ERPDAT.ERP,1,'command');
+observe_ERPDAT.Process_messg =2;
+end
+
+%%----------------------------save figure as-------------------------------
+function figure_saveas(~,~)
+global observe_ERPDAT;
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    return;
+end
+[messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+if ~isempty(messgStr)
+    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+end
+
+erpworkingmemory('f_ERP_proces_messg','Save figure as');
+observe_ERPDAT.Process_messg =1;
+pathstr = pwd;
+namedef =[observe_ERPDAT.ERP.erpname,'.pdf'];
+[erpfilename, erppathname, indxs] = uiputfile({'*.pdf';'*.svg';'*.jpg';'*.png';'*.tif';'*.bmp';'*.eps'},...
+    'Save as',[fullfile(pathstr,namedef)]);
+
+
+if isequal(erpfilename,0)
+    beep;
+    observe_ERPDAT.Process_messg =3;
+    disp('User selected Cancel')
+    return
+end
+
+History = 'off';
+[pathstr, erpfilename1, ext] = fileparts(erpfilename) ;
+
+if isempty(ext)
+    figurename = fullfile(erppathname,char(strcat(erpfilename,'.pdf')));
+else
+    figurename = fullfile(erppathname,erpfilename);
+end
+
+% try
+f_preparms_erptab(observe_ERPDAT.ERP,1,History,figurename);
+observe_ERPDAT.Process_messg =2;
+% catch
+%     observe_ERPDAT.Process_messg =3;
+% end
+
+end
+
+%%--------------------Create static/eportable plot-------------------------
+function figure_out(~,~)
+global observe_ERPDAT;
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    return;
+end
+[messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+if ~isempty(messgStr)
+    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+end
+
+MessageViewer= char(strcat('Create Static/Exportable Plot'));
+erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+observe_ERPDAT.Process_messg =1;
+try
+    figurename = observe_ERPDAT.ERP.erpname;
+catch
+    figurename = '';
+end
+History = 'off';
+f_preparms_erptab(observe_ERPDAT.ERP,1,History,figurename);
+observe_ERPDAT.Process_messg =2;
+end
+
+
+
 
 function Advanced_viewer(Source,~)
 global observe_ERPDAT;
@@ -444,495 +546,395 @@ end
 
 
 function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,YtickInterval,columNum,...
-    positive_up,BinchanOverlay,waveview,legendview)
+    positive_up,BinchanOverlay,rowNums,GridposArray,waveview,legendview)
 
 FonsizeDefault = f_get_default_fontsize();
 %%matlab version
 matlab_ver = version('-release');
 Matlab_ver = str2double(matlab_ver(1:4));
 
-%%channel labels
-[~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
 
-if BinchanOverlay == 0
-    splot_n = numel(ChanArray);
+qtimeRange = [timeStart timEnd];
+if BinchanOverlay==0
+    qPLOTORG = [1 2 3];
+    [~, qplotArrayStr, ~, ~, ~]  = readlocs(ERP.chanlocs(ChanArray));
+    qLegendName= ERP.bindescr(BinArray);
 else
-    splot_n = numel(BinArray);
+    qPLOTORG = [2 1 3];
+    [~, qLegendName, ~, ~, ~]  = readlocs(ERP.chanlocs(ChanArray));
+    qplotArrayStr = ERP.bindescr(BinArray);
 end
+[ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP,1,qPLOTORG,1);
 
-%
-%%------------Setting the number of data and plotting---------------------
-ndata = 0;
-nplot = 0;
-if BinchanOverlay == 0 %if channels with bin overlay
-    ndata = BinArray;
-    nplot = ChanArray;
-else %if bins with channel overlay
-    ndata = ChanArray;
-    nplot = BinArray;
+if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
+    bindata = ERPdatadef(ChanArray,:,BinArray,1);
+    plotArray = ChanArray;
+elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
+    bindata = ERPdatadef(ChanArray,:,BinArray,1);
+    bindata = permute(bindata,[3 2 1 4]);
+    plotArray = BinArray;
 end
-
-[xtick_time, Bindata] = f_get_erp_xticklabel_time(ERP, [ERP.times(1) ERP.times(end)],[timeStart,timEnd]);
-% plot_erp_data = nan(tmax-tmin+1,numel(ndata));
-plot_erp_data = [];
-for i = 1:splot_n
-    if BinchanOverlay == 0
-        for i_bin = 1:numel(ndata)
-            plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i),:,BinArray(i_bin))'*positive_up; %
-        end
-    else
-        for i_bin = 1:numel(ndata)
-            plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i_bin),:,BinArray(i))'*positive_up; %
-        end
-    end
+if isempty(timeRangedef)
+    timeRangedef = ERP.times;
 end
-if YtickInterval==0
-    YtickInterval = max(abs(Bindata(:)));
-end
-perc_lim = YtickInterval;
-percentile = perc_lim*3/2;
-[~,~,b] = size(plot_erp_data);
-%
-%%%------------Setting xticklabels for each row of each wave--------------
-xstep_label = estudioworkingmemory('erp_xtickstep');
-if isempty(xstep_label)
-    xstep_label =0;
-end
-if ~xstep_label
-    [def xtickstep]= default_time_ticks_studio(ERP, [timeStart,timEnd]);
-    if ~isempty(def)
-        xticks_clomn = str2num(def{1,1});
-        while xticks_clomn(end)<=timEnd
-            xticks_clomn(numel(xticks_clomn)+1) = xticks_clomn(end)+xtickstep;
-            if xticks_clomn(end)>timEnd
-                xticks_clomn = xticks_clomn(1:end-1);
-                break;
-            end
-        end
-    else
-        xticks_clomn = (timeStart:xtickstep:timEnd);
-    end
-else
-    xticks_clomn = (timeStart:xtickstep:timEnd);
-end
-
-xtickstep_p = ceil(xtickstep/(1000/ERP.srate));%% Time points of the gap between columns
-%
-%%----------------------Modify the data into  multiple-columns---------------------------------------
-rowNum = ceil(b/columNum);
-plot_erp_data_new = NaN(size(plot_erp_data,1),size(plot_erp_data,2),rowNum*columNum);
-plot_erp_data_new(:,:,1:size(plot_erp_data,3))  =  plot_erp_data;
-plot_erp_data_new_trans = [];
-
-if  columNum==1
-    for Numofrow = 1:rowNum
-        plot_erp_data_new_trans(:,:,:,Numofrow) = plot_erp_data_new(:,:,(Numofrow-1)*columNum+1:Numofrow*columNum);
-    end
-    clear plot_erp_data;
-    plot_erp_data_new_trans = permute(plot_erp_data_new_trans,[1,3,2,4]) ;
-    plot_erp_data = reshape(plot_erp_data_new_trans,size(plot_erp_data_new_trans,1)*size(plot_erp_data_new_trans,2),size(plot_erp_data_new_trans,3),size(plot_erp_data_new_trans,4));
-    
-elseif columNum>1
-    plot_erp_data_trans_clumns = NaN(size(plot_erp_data_new,1)*columNum+(columNum-1)*xtickstep_p,size(plot_erp_data_new,2),rowNum);
-    for Numofrow = 1:rowNum
-        Data_column = plot_erp_data_new(:,:,(Numofrow-1)*columNum+1:Numofrow*columNum);
-        for Numofcolumn = 1:columNum
-            low_interval = size(plot_erp_data_new,1)*(Numofcolumn-1)+1+(Numofcolumn-1)*xtickstep_p;
-            high_interval = size(plot_erp_data_new,1)*(Numofcolumn-1)+(Numofcolumn-1)*xtickstep_p+size(plot_erp_data_new,1);
-            plot_erp_data_trans_clumns(low_interval:high_interval,:,Numofrow) = squeeze(Data_column(:,:,Numofcolumn));
-        end
-    end
-    plot_erp_data = plot_erp_data_trans_clumns;
-end
-
-ind_plot_height = percentile*2; % Height of each individual subplot
-
-offset = [];
-if BinchanOverlay == 0
-    offset = (size(plot_erp_data,3)-1:-1:0)*ind_plot_height;
-else
-    offset = (size(plot_erp_data,3)-1:-1:0)*ind_plot_height;
-end
-[~,~,b] = size(plot_erp_data);
-for i = 1:b
-    plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
-end
-
+fs= ERP.srate;
+qYScales = [-YtickInterval,YtickInterval];
+Ypert =20;
+%%get y axis
+y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
+yMaxdef = ceil(max(bindata(:)))-floor(min(bindata(:)));
 try
-    f_bin = 1000/ERP.srate;
+    y_scale_def(1) = min([1.1*y_scale_def(1),1.1*qYScales(1)]);
+    y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);
 catch
-    f_bin = 1;
 end
 
-ts = xtick_time;
-ts_colmn = ts;
+if numel(qYScales)==2
+    yscaleall = qYScales(end)-qYScales(1);
+else
+    yscaleall = 2*max(abs(qYScales));
+    qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
+end
+if yscaleall < y_scale_def(2)-y_scale_def(1)
+    yscaleall = y_scale_def(2)-y_scale_def(1);
+end
+for Numofrows = 1:rowNums
+    OffSetY(Numofrows) = yscaleall*(rowNums-Numofrows)*(Ypert/100+1);
+end
 
-%
-%%------------------Adjust the data into multiple/single columns------------
-if  columNum>1 % Plotting waveforms with munltiple-columns
-    xticks_org = xticks_clomn;
-    for Numofcolumn = 1:columNum-1
-        xticks_clomn_add = [1:numel(ts)+xtickstep_p].*f_bin+(ts_colmn(end).*ones(1,numel(ts)+xtickstep_p));
-        ts_colmn = [ts_colmn,xticks_clomn_add];
-    end
-    X_zero_line(1) =ts(1);
-    for Numofcolumn = 1:columNum-1
-        if Numofcolumn ==1
-            X_zero_line(Numofcolumn+1) = X_zero_line(Numofcolumn)+ ts(end)-ts(1)+f_bin + (xtickstep_p/2)*f_bin;
-        else
-            X_zero_line(Numofcolumn+1) = X_zero_line(Numofcolumn)+ ts(end)-ts(1)+f_bin + (xtickstep_p)*f_bin;
-        end
-    end
-    [xticks,xticks_labels] = f_geterpxticklabel(ERP,xticks_clomn,columNum,[timeStart,timEnd],xtickstep);
-    ts = ts_colmn;
-    timeStart= ts(1);
-    timEnd= ts(end);
-    for ii =1:100
-        if timEnd <xticks(end)
-            timEnd =timEnd +f_bin;
-        else
-            break;
-        end
-    end
-else%% Plotting waveforms with single-column
-    xticks =xticks_clomn;
-    X_zero_line(1) =ts(1);
-    for Numofxlabel = 1:numel(xticks)
-        xticks_labels{Numofxlabel} = num2str(xticks(Numofxlabel));
-    end
+qYticksdef = str2num(char(default_amp_ticks_viewer(qYScales)));
+qYticks = [-YtickInterval,0, YtickInterval];
+if isempty(qYticks) || numel(qYticks)<2
+    qYticks = qYticksdef;
 end
 
 
-splot_n = size(plot_erp_data,3);%%Adjust the columns
-set(waveview,'XLim',[timeStart,timEnd]);
-
-[a,c,b] = size(plot_erp_data);
-new_erp_data = zeros(a,b*c);
-for i = 1:b
-    new_erp_data(:,((c*(i-1))+1):(c*i)) = plot_erp_data(:,:,i);
+%%gap between columns
+Xpert = 20;
+try
+    StepX = (ERP.times(end)-ERP.times(1))*(Xpert/100);
+catch
+    beep;
+    disp('ERP.times only has one element.');
+    return;
 end
+StepXP = ceil(StepX/(1000/fs));
 
-line_colors = erpworkingmemory('PWColor');
-if size(line_colors,1)~= numel(ndata)
-    if numel(ndata)> size(line_colors,1)
-        line_colors = get_colors(numel(ndata));
+qPolarityWave = positive_up;
+
+NumOverlay = size(bindata,3);
+isxaxislabel=1;
+
+%%line color
+qLineColorspec = get_colors(NumOverlay);
+%%xticks
+[timeticksdef stepX]= default_time_ticks_studio(ERP, qtimeRange);
+timeticksdef = str2num(char(timeticksdef));
+qtimeRangedef = round(qtimeRange/100)*100;
+qXticks = xtickstep+qtimeRangedef(1);
+for ii=1:1000
+    xtickcheck = qXticks(end)+xtickstep;
+    if xtickcheck>qtimeRangedef(2)
+        break;
     else
-        line_colors = line_colors(1:numel(ndata),:,:);
+        qXticks(numel(qXticks)+1) =xtickcheck;
     end
 end
-if isempty(line_colors)
-    line_colors = get_colors(numel(ndata));
+if isempty(qXticks)|| stepX==xtickstep
+    qXticks =  timeticksdef;
 end
-line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
-%
-%%------------Setting xticklabels for each row --------------
-x_axs = ones(size(new_erp_data,1),1);
-for jj = 1:numel(offset)-1
-    %     plot(waveview,ts,x_axs.*offset(end),'color',[1 1 1],'LineWidth',1);
-    set(waveview,'XTick',xticks, ...
-        'box','off', 'Color','none','xticklabels',xticks_labels);
-    myX_Crossing = offset(jj);
-    props = get(waveview);
-    
-    tick_bottom = -props.TickLength(1)*diff(props.YLim);
-    if abs(tick_bottom) > abs(YtickInterval)/5
-        try
-            tick_bottom = - abs(YtickInterval)/5;
-        catch
-            tick_bottom = tick_bottom;
-        end
-    elseif abs(tick_bottom)<abs(YtickInterval)/5
-        tick_bottom = - abs(YtickInterval)/5;
-    end
-    %
-    tick_top = 0;
-    line(waveview,props.XLim, [0 0] + myX_Crossing, 'color', [1 1 1]);%'k'
-    
-    if ~isempty(props.XTick)
-        xtick_x = repmat(props.XTick, 2, 1);
-        xtick_y = repmat([tick_bottom; tick_top] + myX_Crossing, 1, length(props.XTick));
-        line(waveview,xtick_x, xtick_y, 'color', 'k','LineWidth',1);
-    end
-    set(waveview, 'XTick', [], 'XTickLabel', []);
-    nTicks = length(props.XTick);
-    if nTicks>1
-        if numel(offset)==jj
-            kkkk = 1;
-        else
-            if abs(timeStart - xticks(1)) > 1000/ERP.srate
-                kkkk = 1;
+%%remove the margins of a plot
+ax = waveview;
+outerpos = ax.OuterPosition;
+ti = ax.TightInset;
+left = outerpos(1) + ti(1);
+bottom = outerpos(2) + ti(2);
+ax_width = outerpos(3) - ti(1) - ti(3);
+ax_height = outerpos(4) - ti(2) - ti(4);
+ax.Position = [left bottom ax_width ax_height];
+
+%%check elements in qGridposArray
+plotArray = reshape(plotArray,1,[]);
+for Numofrows = 1:size(GridposArray,1)
+    for Numofcolumns = 1:size(GridposArray,2)
+        SingleGridpos = GridposArray(Numofrows,Numofcolumns);
+        if SingleGridpos~=0
+            ExistGridops = f_existvector(plotArray,SingleGridpos);
+            if ExistGridops==1
+                GridposArray(Numofrows,Numofcolumns) =0;
             else
-                kkkk = 2;
+                [xpos,ypos]=  find(plotArray==SingleGridpos);
+                GridposArray(Numofrows,Numofcolumns) =ypos;
             end
         end
-        for iCount = kkkk:nTicks
-            xtick_label = (props.XTickLabel(iCount, :));
-            text(waveview,props.XTick(iCount), tick_bottom + myX_Crossing, ...
-                xtick_label, ...
-                'HorizontalAlignment', 'Center', ...
-                'VerticalAlignment', 'Top', ...
-                'FontSize', FonsizeDefault, ...
-                'FontName', props.FontName, ...
-                'FontAngle', props.FontAngle, ...
-                'FontUnits', props.FontUnits);
+    end
+end
+fontnames = 'Helvetica';
+
+
+countPlot = 0;
+for Numofrows = 1:rowNums
+    for Numofcolumns = 1:columNum
+        try
+            plotdatalabel = GridposArray(Numofrows,Numofcolumns);
+        catch
+            plotdatalabel = 0;
         end
-    end
-end
-
-%
-%%----------------Start:Remove xticks for the columns without waves in the last row-------------------------
-Element_left = numel(nplot) - (ceil(numel(nplot)/columNum)-1)*columNum;
-plot(waveview,ts,x_axs.*offset(end),'color', [1 1 1],'LineWidth',1);
-set(waveview,'XTick',xticks, ...
-    'box','off', 'Color','none','xticklabels',xticks_labels);
-myX_Crossing = offset(end);
-props = get(waveview);
-
-tick_bottom = -props.TickLength(1)*diff(props.YLim);
-if abs(tick_bottom) > abs(YtickInterval)/5
-    try
-        tick_bottom = - abs(YtickInterval)/5;
-    catch
-        tick_bottom = tick_bottom;
-    end
-elseif abs(tick_bottom)<abs(YtickInterval)/5
-    tick_bottom = - abs(YtickInterval)/5;
-end
-
-tick_top = 0;
-line(waveview,props.XLim, [0 0] + myX_Crossing, 'color', [1 1 1]);%'k'
-nTicks = length(props.XTick);
-if ~isempty(props.XTick)
-    xtick_x = repmat(props.XTick, 2, 1);
-    xtick_y = repmat([tick_bottom; tick_top] + myX_Crossing, 1, length(props.XTick));
-    line(waveview,xtick_x(:,1:ceil(nTicks/columNum*Element_left)), xtick_y(:,1:ceil(nTicks/columNum*Element_left)), 'color', 'k','LineWidth',1);
-end
-set(waveview, 'XTick', [], 'XTickLabel', []);
-if nTicks>1
-    for iCount = 1:ceil(nTicks/columNum*Element_left)
-        xtick_label = (props.XTickLabel(iCount, :));
-        text(waveview,props.XTick(iCount), tick_bottom + myX_Crossing, ...
-            xtick_label, ...
-            'HorizontalAlignment', 'Center', ...
-            'VerticalAlignment', 'Top', ...
-            'FontSize', FonsizeDefault, ...
-            'FontName', props.FontName, ...
-            'FontAngle', props.FontAngle, ...
-            'FontUnits', props.FontUnits);
-    end
-end
-%%--------------------------End:Remove xticks for the columns without waves in the last row-------------------------
-
-%%-----------------Get zeroline for each row-----------------------------
-row_baseline = NaN(numel(ts),splot_n);
-count = 0;
-for Numofsplot = 0:splot_n-1
-    for Numofcolumn = 1:columNum
-        count = count +1;
-        if count> numel(nplot)
-            break;
+        
+        try
+            labelcbe = qplotArrayStr{plotdatalabel};
+            if isempty(labelcbe)
+                labelcbe  = 'No label';
+            end
+        catch
+            labelcbe = 'no';
         end
-        low_interval = size(plot_erp_data_new,1)*(Numofcolumn-1)+1+(Numofcolumn-1)*xtickstep_p;
-        high_interval = size(plot_erp_data_new,1)*(Numofcolumn-1)+(Numofcolumn-1)*xtickstep_p+size(plot_erp_data_new,1);
-        row_baseline(low_interval:high_interval,Numofsplot+1) = ones(numel(low_interval:high_interval),1).*offset(Numofsplot+1);
-    end
-end
-%
-%%-------------------------Plotting ERP waves-----------------------------
-pb_here = plot(waveview,ts, [new_erp_data],'LineWidth',1);
-set(waveview, 'XTick', [], 'XTickLabel', []);
-
-%
-%%----------------Marking 0 point (event-locked)--------------------------
-[xxx, latsamp_0, latdiffms_0] = closest(xticks, [0]);
-if numel(offset)>1
-    if latdiffms_0 ==0
-        for Numofcolumn = 1:columNum
-            xline(waveview,xticks((Numofcolumn-1)*numel(xticks_clomn)+latsamp_0),'k-.','LineWidth',1);%%'Color',Marking start time point for each column
+        try
+            plotbindata =  bindata(plotdatalabel,:,:,:);
+        catch
+            plotbindata = [];
         end
-    end
-elseif numel(offset)==1
-    
-    for Numofcolumn = 1:numel(nplot)
-        xline(waveview,xticks((Numofcolumn-1)*numel(xticks_clomn)+latsamp_0),'k-.','LineWidth',1);%%'Color',Marking start time point for each column
-    end
-end
-%
-yticks  = -perc_lim:perc_lim:((2*percentile*b)-(2*perc_lim));
-ylabs = repmat([-perc_lim 0 perc_lim],[1,b]);
-oldlim = [-percentile yticks(end)-perc_lim+percentile];
-top_vspace = max( max( new_erp_data))-oldlim(2);
-bot_vspace = min( min( new_erp_data))-oldlim(1);
-if top_vspace < 0
-    top_vspace = 0;
-end
-
-if bot_vspace > 0
-    bot_vspace = 0;
-end
-newlim = oldlim + [bot_vspace top_vspace];
-set(waveview,'XLim',[timeStart,timEnd],'Ylim',newlim);
-
-for i = 1:numel(pb_here)
-    pb_here(i).Color = line_colors(i,:);
-end
-
-%%------------Marking start time point for each column---------------------
-if  columNum>1
-    for ii = 2:numel(X_zero_line)
-        xline(waveview,X_zero_line(ii), 'y--','LineWidth',1);
-    end
-end
-
-for Numofplot = 1:size(row_baseline,2)
-    plot(waveview,ts,row_baseline(:,Numofplot),'color',[0 0 0],'LineWidth',1);
-end
-ylabs = [fliplr(-perc_lim:-perc_lim:newlim(1)) ylabs(2:end-1) (yticks(end):perc_lim:newlim(2))-yticks(end)+perc_lim];
-yticks = [fliplr(-perc_lim:-perc_lim:newlim(1)) yticks(2:end-1) yticks(end):perc_lim:newlim(2)];
-
-%
-%%-------------Name of bin/channel for each subplot--------------------------
-if  columNum==1
-    if numel(offset)>1
-        count = 0;
-        for i = 0:numel(offset)-1
-            leg_str = '';
-            count  = count+1;
-            try
-                if BinchanOverlay == 0
-                    leg_str = sprintf('%s',strrep(chanLabels{ChanArray(count)},'_','\_'));
+        
+        if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
+            countPlot =countPlot +1;
+            if qPolarityWave==1
+                data4plot = squeeze(bindata(plotdatalabel,:,:,1));
+            else
+                data4plot = squeeze(bindata(plotdatalabel,:,:,1))*(-1);
+            end
+            
+            data4plot = reshape(data4plot,numel(timeRangedef),NumOverlay);
+            for Numofoverlay = 1:NumOverlay
+                [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
+                PosIndexsALL = [Numofrows,columNum];
+                if isxaxislabel==2
+                    [~,XtimerangetrasfALL,~,~,~] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexsALL,StepXP);
                 else
-                    leg_str = sprintf('%s',strrep(ERP.bindescr{BinArray(count)},'_','\_'));
+                    [~,XtimerangetrasfALL,~] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexsALL,StepX,fs);
                 end
-            catch
-                leg_str = '';
+                PosIndexs = [Numofrows,Numofcolumns];
+                if isxaxislabel==2
+                    [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepXP);
+                else
+                    [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepX,fs);
+                end
+                hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
+                    'Color', qLineColorspec(Numofoverlay,:));
             end
-            text(waveview,ts(1),offset(i+1)+offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
-        end
-    end
-    
-    try
-        if BinchanOverlay == 0
-            leg_str = sprintf('%s',strrep(chanLabels{ChanArray(end)},'_','\_'));
-        else
-            leg_str = sprintf('%s',strrep(ERP.bindescr{BinArray(end)},'_','\_'));
-        end
-    catch%%
-        leg_str = '';
-    end
-    
-    try
-        text(waveview,ts(1),offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
-    catch
-        text(waveview,ts(1),YtickInterval/2,leg_str,'FontSize', FonsizeDefault);
-    end
-else%% Getting y ticks and legends for multiple-columns
-    if numel(offset)>1
-        count = 0;
-        for i = 0:numel(offset)-1
-            leg_str = '';
-            for Numofcolumn = 1: columNum
-                count  = count+1;
+            
+            if numel(OffSetY)==1 && OffSetY==0
+                if ~qPolarityWave
+                    YscalesNew =  sort(y_scale_def*(-1));
+                else
+                    YscalesNew =  y_scale_def;
+                end
+                set(waveview,'ylim',YscalesNew);
+            else
+                if qPolarityWave
+                    ylimleftedge = floor(y_scale_def(1));
+                    ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
+                else
+                    ylimleftedge = -abs(ceil(y_scale_def(end)));
+                    ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
+                end
+                set(waveview,'ylim',[ylimleftedge,ylimrightedge]);
+            end
+            
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%----------------------Adjust y axis------------------------%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            props = get(waveview);
+            if qPolarityWave
+                props.YTick = qYticks+OffSetY(Numofrows);
+            else
+                props.YTick =  fliplr (-1*qYticks)+OffSetY(Numofrows);
+            end
+            props.YTickLabel = cell(numel(props.YTick),1);
+            
+            
+            for Numofytick = 1:numel(props.YTick)
+                props.YTickLabel(Numofytick) = {num2str(props.YTick(Numofytick))};
+            end
+            
+            [x,y_0] = find(Xtimerange==0);
+            if isempty(y_0)
+                y_0 = 1;
+            end
+            myY_Crossing = Xtimerangetrasf(y_0);
+            tick_top = 0;
+            
+            if countPlot ==1
+                ytick_bottom = -props.TickLength(1)*diff(props.XLim);
+                ytick_bottomratio = abs(ytick_bottom)/diff(props.XLim);
+            else
                 try
-                    if BinchanOverlay == 0
-                        leg_str = sprintf('%s',strrep(chanLabels{ChanArray(count)},'_','\_'));
-                    else
-                        leg_str = sprintf('%s',strrep(ERP.bindescr{BinArray(count)},'_','\_'));
+                    ytick_bottom = ytick_bottom;
+                    ytick_bottomratio = ytick_bottomratio;
+                catch
+                    ytick_bottom = -props.TickLength(1)*diff(props.XLim);
+                    ytick_bottomratio = abs(ytick_bottom)/diff(props.XLim);
+                end
+            end
+            %%add  yunits
+            if ~isempty(props.YTick)
+                ytick_y = repmat(props.YTick, 2, 1);
+                ytick_x = repmat([tick_top;ytick_bottom] +myY_Crossing, 1, length(props.YTick));
+                line(waveview,ytick_x(:,:), ytick_y(:,:), 'color', 'k','LineWidth',1);
+                try
+                    [~,y_below0] =find(qYticks<0);
+                    if isempty(y_below0) && qYScales(1)<0
+                        line(waveview,ytick_x(:,:), ones(2,1)*(qYScales(1)+OffSetY(Numofrows)), 'color', 'k','LineWidth',1);
+                    end
+                    [~,y_over0] =find(qYticks>0);
+                    if isempty(y_over0) && qYScales(2)>0
+                        line(waveview,ytick_x(:,:), ones(2,1)*(qYScales(2)+OffSetY(Numofrows)), 'color', 'k','LineWidth',1);
                     end
                 catch
-                    leg_str = '';
                 end
-                if Numofcolumn ==1
-                    text(waveview,X_zero_line(Numofcolumn),offset(i+1)+offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
+            end
+            
+            if ~isempty(qYScales)  && numel(qYScales)==2 %qYScales(end))+OffSetY(1)
+                if  qPolarityWave==0
+                    qYScalestras =   fliplr (-1*qYScales);
                 else
-                    text(waveview,X_zero_line(Numofcolumn)+xtickstep/2,offset(i+1)+offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
+                    qYScalestras = qYScales;
+                end
+                plot(waveview,ones(numel(qYScalestras),1)*myY_Crossing, qYScalestras+OffSetY(Numofrows),'k','LineWidth',1);
+            else
+                if ~isempty(y_scale_def) && numel(unique(y_scale_def))==2
+                    if  qPolarityWave==0
+                        qYScalestras =   fliplr (-1*y_scale_def);
+                    else
+                        qYScalestras = y_scale_def;
+                    end
+                    plot(waveview,ones(numel(qYScales),1)*myY_Crossing, qYScalestras+OffSetY(Numofrows),'k','LineWidth',1);
+                else
                 end
             end
-        end
-    end
-    
-    count = (numel(offset)-1)*columNum;
-    leg_str = '';
-    for Numofcolumn = 1:columNum
-        count  = count+1;
-        try
-            if BinchanOverlay == 0
-                leg_str = sprintf('%s',strrep(chanLabels{ChanArray(count)},'_','\_'));
-            else
-                leg_str = sprintf('%s',strrep(ERP.bindescr{BinArray(count)},'_','\_'));
+            
+            qYtickdecimal=1;
+            nYTicks = length(props.YTick);
+            for iCount = 1:nYTicks
+                if qPolarityWave
+                    ytick_label= sprintf(['%.',num2str(qYtickdecimal),'f'],str2num(char(props.YTickLabel(iCount, :)))-OffSetY(Numofrows));
+                else
+                    qyticktras =   fliplr(-1*qYticks);
+                    ytick_label= sprintf(['%.',num2str(qYtickdecimal),'f'],-qyticktras(iCount));
+                end
+                %                 end
+                if str2num(char(ytick_label)) ==0 || (str2num(char(ytick_label))<0.0001 && str2num(char(ytick_label))>0) || (str2num(char(ytick_label))>-0.0001 && str2num(char(ytick_label))<0)
+                    ytick_label = '';
+                end
+                text(waveview,myY_Crossing-2*abs(ytick_bottom),props.YTick(iCount),  ...
+                    ytick_label, ...
+                    'HorizontalAlignment', 'right', ...
+                    'VerticalAlignment', 'middle', ...
+                    'FontSize', FonsizeDefault, ...
+                    'FontAngle', props.FontAngle, ...
+                    'FontUnits', props.FontUnits,...
+                    'FontName', fontnames, ...
+                    'Color',[0 0 0]);%
             end
-        catch%%
-            leg_str = '';
+            
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%----------------------Adjust x axis------------------------%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            props.XTick = qXtickstransf;
+            props.XTickLabel = cell(numel(qXticks),1);
+            for Numofytick = 1:numel(props.XTick)
+                props.XTickLabel(Numofytick) = {num2str(qXticks(Numofytick))};
+            end
+            myX_Crossing = OffSetY(Numofrows);
+            if countPlot ==1
+                xtick_bottom = -props.TickLength(2)*max(props.YLim);
+                if abs(xtick_bottom)/max(props.YLim) > ytick_bottomratio
+                    xtick_bottom = -ytick_bottomratio*max(props.YLim);
+                end
+            else
+                try
+                    xtick_bottom = xtick_bottom;
+                catch
+                    xtick_bottom = -props.TickLength(2)*max(props.YLim);
+                    if abs(xtick_bottom)/max(props.YLim) > ytick_bottomratio
+                        xtick_bottom = -ytick_bottomratio*max(props.YLim);
+                    end
+                end
+            end
+            if ~isempty(props.XTick)
+                xtick_x = repmat(props.XTick, 2, 1);
+                xtick_y = repmat([xtick_bottom; tick_top]*0.5 + myX_Crossing, 1, length(props.XTick));
+                line(waveview,xtick_x, xtick_y, 'color', 'k','LineWidth',1);
+            end
+            [x_xtick,y_xtick] = find(props.XTick==0);
+            if ~isempty(y_xtick)
+                props.XTick(y_xtick) = 2*xtick_bottom;
+            end
+            plot(waveview,Xtimerangetrasf, myX_Crossing.*ones(numel(Xtimerangetrasf),1),'k','LineWidth',1);
+            nxTicks = length(props.XTick);
+            qXticklabel = 'on';
+            for iCount = 1:nxTicks
+                xtick_label = (props.XTickLabel(iCount, :));
+                if strcmpi(qXticklabel,'on')
+                    if strcmpi(xtick_label,'0')
+                        xtick_label = '';
+                    end
+                else
+                    xtick_label = '';
+                end
+                text(waveview,props.XTick(iCount), xtick_bottom*0.5 + myX_Crossing, ...
+                    xtick_label, ...
+                    'HorizontalAlignment', 'Center', ...
+                    'VerticalAlignment', 'Top', ...
+                    'FontSize', FonsizeDefault, ...
+                    'FontAngle', props.FontAngle, ...
+                    'FontUnits', props.FontUnits,...
+                    'FontName', fontnames, ...
+                    'Color',[0 0 0]);%'FontName', qXlabelfont, ...
+            end
+            %%-----------------minor X---------------
+            set(waveview,'xlim',[Xtimerange(1),Xtimerangetrasf(end)]);
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%------------------channel/bin/erpset label-----------------%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            ypercentage =100;
+            ypos_LABEL = (qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1);
+            xpercentage = 50;
+            xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
+            labelcbe =  strrep(char(labelcbe),'_','\_');
+            try
+                labelcbe = regexp(labelcbe, '\;', 'split');
+            catch
+            end
+            text(waveview,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe),'FontName', fontnames,'HorizontalAlignment', 'center');%'FontWeight', 'bold',
+        else
         end
         try
-            if Numofcolumn ==1
-                text(waveview,X_zero_line(Numofcolumn),offset(i+1)+offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
+            if 2<columNum && columNum<5
+                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/20,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/20]);
+            elseif columNum==1
+                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/40,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/40]);
+            elseif columNum==2
+                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/30,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/30]);
             else
-                text(waveview,X_zero_line(Numofcolumn)+xtickstep/2,offset(i+1)+offset(end-1)/6,leg_str,'FontSize', FonsizeDefault);
+                set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end
         catch
-            if Numofcolumn ==1
-                text(waveview,X_zero_line(Numofcolumn),YtickInterval/2,leg_str,'FontSize', FonsizeDefault);
-            else
-                text(waveview,X_zero_line(Numofcolumn)+xtickstep/2,YtickInterval/2,leg_str,'FontSize', FonsizeDefault);
-            end
         end
-    end
+    end%% end of columns
+    ylim([(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
+end%% end of rows
+set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
+NumColumns = ceil(sqrt(length(qLegendName)));
+for Numofoverlay = 1:numel(hplot)
+    qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
+    LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str([0 0 0]),'}',32,qLegendName{Numofoverlay}));
 end
-
-%
-%%-------------Setting x/yticks and ticklabels--------------------------------
-Ylabels_new = ylabs.*positive_up;
-[~,Y_label] = find(Ylabels_new == -0);
-Ylabels_new(Y_label) = 0;
-% xticks = (timeStartdef:xtickstep:timEnddef);
-% some options currently only work post Matlab R2016a ,'XLim',[timeStartdef timEnddef],'XLim',[timeStartdef timEnddef]
-if Matlab_ver >= 2016
-    set(waveview,'FontSize',FonsizeDefault,'XAxisLocation','origin',...
-        'XGrid','on','YGrid','on','YTick',yticks,'YTickLabel',Ylabels_new, ...
-        'YLim',newlim,'XTick',xticks, ...
-        'box','off', 'Color','none','xticklabels',xticks_labels);
-else
-    set(waveview,'FontSize',FonsizeDefault,'XAxisLocation','bottom',...
-        'XGrid','on','YGrid','on','YTick',yticks,'YTickLabel',Ylabels_new, ...
-        'YLim',newlim, 'XTick',xticks, ...
-        'box','off', 'Color','none','xticklabels',xticks_labels);
-    hline(0,'k'); % backup xaxis
-end
-set(waveview, 'XTick', [], 'XTickLabel', []);
-waveview.YAxis.LineWidth = 1;
-hold(waveview,'off');
-
-%%--------------------------Setting legend---------------------------------
-line_colors_ldg = erpworkingmemory('PWColor');
-if isempty(line_colors_ldg)
-    line_colors_ldg = get_colors(numel(ndata));
-end
-
-if size(line_colors_ldg,1)~= numel(ndata)
-    if numel(ndata)> size(line_colors_ldg,1)
-        line_colors_ldg = get_colors(numel(ndata));
-    else
-        line_colors_ldg = line_colors_ldg(1:numel(ndata),:,:);
-    end
-end
-
-for Numofplot = 1:size(plot_erp_data,2)
-    plot(legendview,[0 0],'Color',line_colors_ldg(Numofplot,:,:),'LineWidth',2)
-end
-
-if BinchanOverlay == 0
-    Leg_Name = {};
-    for Numofbin = 1:numel(BinArray)
-        Leg_Name{Numofbin} = strcat('Bin',num2str(BinArray(Numofbin)));
-    end
-else
-    for Numofchan = 1:numel(ChanArray)
-        Leg_Name{Numofchan} = strrep(chanLabels{ChanArray(Numofchan)},'_','\_');
-    end
-end
-legend(legendview,Leg_Name,'FontSize',FonsizeDefault,'TextColor','blue');
-legend(legendview,'boxoff');
+p  = get(legendview,'position');
+h_legend = legend(legendview,hplot,qLegendName);
+set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault);
 end
 
 
@@ -957,5 +959,4 @@ for i = 1:numel(angles)
         colors(i,:) = [1 0 (1-(angles(i)-floor(angles(i))))]*0.75;
     end
 end
-
 end

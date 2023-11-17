@@ -84,7 +84,8 @@ varargout{1} = box_erpset_gui;
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
             'Callback', @imp_erp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export', 'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault);
+        ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export',...
+            'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
@@ -747,7 +748,7 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Count_currentERP = 2;
         mtViewer =  erpworkingmemory('ERPTab_mtviewer');
         if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-            mtViewer=0;
+            mtViewer=0;erpworkingmemory('ERPTab_mtviewer',0);
         end
         if mtViewer ==0
             f_redrawERP();

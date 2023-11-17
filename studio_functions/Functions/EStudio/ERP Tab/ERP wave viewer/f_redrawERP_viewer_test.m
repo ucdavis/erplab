@@ -130,16 +130,8 @@ gui_erp_waviewer.erpwaviewer_legend_title = uiextras.HBox( 'Parent', gui_erp_wav
 uicontrol('Parent',gui_erp_waviewer.erpwaviewer_legend_title,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 
 gui_erp_waviewer.erpwaviewer_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.erpwaviewer_legend_title,'BackgroundColor',figbgdColor);
-
-
 gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);
-% gui_erp_waviewer.ViewAxes_legend = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',ColorBviewer_def);
-
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-% gui_erp_waviewer.Resize = 0;
-
-
-% gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor,'SizeChangedFcn',@WAviewerResize);%
 gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
 
 
@@ -180,22 +172,12 @@ gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel
 
 %%Setting title
 gui_erp_waviewer.pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr{pagecurrentNum}];
-
 gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-
-
 gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '<','Callback',@page_minus,'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'FontWeight','bold');
-% if S_ws_getbinchan.Select_index ==1
 gui_erp_waviewer.pageinfo_minus.Enable = 'off';
-% end
 gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
-
-
 gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', '>','Callback',@page_plus,'FontSize',FonsizeDefault+5,'BackgroundColor',[1 1 1],'FontWeight','bold');
-% if S_ws_getbinchan.Select_index == numel(S_ws_geterpset)
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
-% end
-
 
 if pageNum ==1
     Enable_minus = 'off';
@@ -1631,7 +1613,7 @@ if isempty(qYticks)
 end
 
 %%Get the figure name which is to be plotted
-if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==1 && qPLOTORG(2)==2) %% Page is ERPset
+if (qPLOTORG(1)==1 && qPLOTORG(2)==2) || (qPLOTORG(1)==2 && qPLOTORG(2)==1) %% Page is ERPset
     ERP = ALLERPBls(qCURRENTPLOT);
     if isempty(ERP.filename) || strcmp(ERP.filename,'')
         ERP.filename = 'still_not_saved!';

@@ -127,7 +127,6 @@ end %% End for shrinking panels 4-23
 %% + Create the view
 peeg = EStudio_gui_erp_totl.eegViewContainer;
 EStudio_gui_erp_totl.eegViewAxes = uiextras.HBox( 'Parent', peeg,'BackgroundColor',ColorB_def);
-
 end
 
 
