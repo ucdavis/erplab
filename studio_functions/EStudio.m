@@ -41,9 +41,7 @@ try
     W_MAIN = findobj('tag', 'EEGLAB');
     close(W_MAIN);
     clearvars ALLCOM;
-    
     LASTCOM = [];
-    %     eeglab;
     global ALLCOM;
     ALLCOM =[];
     eegh('EStudio;');
@@ -187,11 +185,8 @@ CURRENTERP       = 1;
 assignin('base','ERP',ERP);
 assignin('base','ALLERP', ALLERP);
 assignin('base','CURRENTERP', CURRENTERP);
-% filepath =  which('dummy.erp');
-% [pathstr, fname, ext] = fileparts(filepath);
-% [ERP, ALLERP] = pop_loaderp('filename','dummy.erp', 'filepath',pathstr ,'History', 'off');
 assignin('base','ALLERP',ALLERP);
-
+assignin('base','ALLERPCOM',ALLERPCOM);
 
 observe_ERPDAT.ALLERP = ALLERP;
 observe_ERPDAT.CURRENTERP = CURRENTERP;
@@ -271,9 +266,6 @@ EStudio_gui_erp_totl = createInterface();
         % + File menu
         EStudio_gui_erp_totl.FileMenu = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'File');
         uimenu( EStudio_gui_erp_totl.FileMenu, 'Label', 'Exit', 'Callback', @onExit);
-        
-        % + View menu
-        EStudio_gui_erp_totl.ViewMenu = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'ERPLAB Commands' );
         
         %%-----------Setting------------------------------------------------
         EStudio_gui_erp_totl.Setting = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Setting');
@@ -403,7 +395,6 @@ EStudio_gui_erp_totl = createInterface();
         set(EStudio_gui_erp_totl.pageinfo_text,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
         set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
-        %         set(EStudio_gui_erp_totl.plot_wav_legend,'Sizes',[80 -10]);
         EStudio_gui_erp_totl.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
         EStudio_gui_erp_totl.plotgrid.Heights(3) = 30;
     end % createInterface
@@ -476,7 +467,7 @@ EStudio_gui_erp_totl = createInterface();
         end
         FonsizeDefault = f_get_default_fontsize();
         Processed_Method=erpworkingmemory('f_ERP_proces_messg');
-         EStudio_gui_erp_totl.Process_messg.BackgroundColor = [0.95 0.95 0.95];
+        EStudio_gui_erp_totl.Process_messg.BackgroundColor = [0.95 0.95 0.95];
         EStudio_gui_erp_totl.Process_messg.FontSize = FonsizeDefault;
         if observe_ERPDAT.Process_messg ==1
             EStudio_gui_erp_totl.Process_messg.String = strcat('1- ',Processed_Method,': Running....');
@@ -574,19 +565,8 @@ EStudio_gui_erp_totl = createInterface();
             set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
             erpworkingmemory('EStudioScreenPos',[75 75]);
         end
-        try
-            f_redrawEEG_Wave_Viewer();%%Draw EEG waves
-            mtViewer =  erpworkingmemory('ERPTab_mtviewer');
-            if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-                mtViewer=0;
-            end
-            if mtViewer ==0
-                f_redrawERP();
-            else
-                f_redrawERP_mt_viewer();
-            end
-        catch
-        end
+      
+        f_redrawERP();
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
     end
 

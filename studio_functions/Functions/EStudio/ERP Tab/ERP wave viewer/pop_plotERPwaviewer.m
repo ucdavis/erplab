@@ -65,7 +65,7 @@
 %Yticks           - y ticks e.g., [-6 -3 0 5 10]
 %Yticklabel       -display yticklabels? 1 is on and 0 is off.
 %Ylabelfont       -font for yticklabels e.g., 'Courier'
-%Ylabelfontsize   -fontsize for yticklabels
+%Ylabelfontsize   -fontsize for yticklabels e.g., 12
 %Ylabelcolor      -color (RGB) for yticks and yticklabels e.g., [0 0 0]
 %Yunits           -display units for x axes. "on" or "off"
 %MinorTicksY      -

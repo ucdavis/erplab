@@ -272,12 +272,12 @@ varargout{1} = erp_measurement_box;
             'callback',@ERPmeasr_cancel,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.m_t_value = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Save measures',...
             'callback',@erp_m_t_savalue,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPMTops.apply = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Viewer',...
+        ERPMTops.apply = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','View',...
             'callback',@erp_m_t_apply,'Enable',Enable_label,'FontSize',FonsizeDefault,'Value',0,'BackgroundColor',[1 1 1]);
         set(ERPMTops.out_file_run,'Sizes',[70 -1 70]);
         
         %%ERPMTops end
-        set(ERPMTops.mt,'Sizes',[150 30]);
+        set(ERPMTops.mt,'Sizes',[155 30]);
         estudioworkingmemory('ERPTab_mesuretool',0);
     end
 
@@ -699,7 +699,7 @@ varargout{1} = erp_measurement_box;
         %----------------judge the number of latency/latencies--------
         bin_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(bin_label_select)
-            ERPMTops.m_t_bin.String=vect2colon(EStudio_erp_m_t_p.binArray,'Sort', 'on');
+            ERPMTops.m_t_bin.String=vect2colon(bin_label_select,'Sort', 'on');
         else
             beep
             disp('User selected Cancel');
@@ -779,7 +779,7 @@ varargout{1} = erp_measurement_box;
         titlename = 'Select Channel(s):';
         chan_label_select = browsechanbinGUI(listb, chanArray, titlename);
         if ~isempty(chan_label_select)
-            ERPMTops.m_t_chan.String=vect2colon(EStudio_erp_m_t_p.chanArray,'Sort', 'on');
+            ERPMTops.m_t_chan.String=vect2colon(chan_label_select,'Sort', 'on');
         else
             disp('User selected Cancel');
             return
@@ -1413,8 +1413,9 @@ varargout{1} = erp_measurement_box;
                 Binlabel, Peakpolarity,ERPMTops.def_erpvalue{13},Peakreplace,...
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
+            f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
         end
-        observe_ERPDAT.Count_currentERP=1;
+%         observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
 

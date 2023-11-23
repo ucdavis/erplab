@@ -122,7 +122,7 @@ end
 
 %%y scale
 try PolarityValue=ERPTab_plotset_pars{7};catch PolarityValue=1; end
-if isempty(PolarityValue) || numel(PolarityValue)~=1 || (PolarityValue~=1&&PolarityValue~=0)
+if isempty(PolarityValue) || numel(PolarityValue)~=1 || (PolarityValue~=1&&PolarityValue~=-1)
     PolarityValue=1;
 end
 if PolarityValue==1
@@ -155,21 +155,58 @@ if isempty(Fillscreen) || numel(Fillscreen)~=1 || (Fillscreen~=0 && Fillscreen~=
 end
 
 try columNum =ERPTab_plotset_pars{6}; catch columNum=1; end
-
 if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
     columNum=1;
 end
-
+columNum=1;
 
 try Binchan_Overlay = ERPTab_plotset_pars{8}; catch Binchan_Overlay=0; end
 if isempty(Binchan_Overlay) || numel(Binchan_Overlay)~=1 || (Binchan_Overlay~=0 && Binchan_Overlay~=1)
     Binchan_Overlay=0;
 end
+Binchan_Overlay=0;
+
+if Binchan_Overlay==0
+    rowNumdef = numel(ChanArray);
+    plotArray = ChanArray;
+    [~, labelsdef, ~, ~, ~] = readlocs(ERP.chanlocs(ChanArray));
+    PLOTORG = [1 2 3];
+    nplot = numel(BinArray);
+    LegendName = ERP.bindescr(BinArray);
+else
+    rowNumdef = numel(BinArray);
+    plotArray = BinArray;
+    labelsdef =ERP.bindescr(BinArray);
+    PLOTORG = [2 1 3];
+    nplot = numel(ChanArray);
+    [~, chanlabels, ~, ~, ~] = readlocs(ERP.chanlocs(ChanArray));
+    LegendName = chanlabels(ChanArray);
+end
+
+
+try rowNum = ERPTab_plotset_pars{9};catch rowNum=rowNumdef; end
+rowNum=rowNumdef;
 
 figSize = estudioworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end
+
+
+GridposArraydef = zeros(rowNum,columNum);
+count = 0;
+for Numofrow = 1:rowNum
+    for Numofcolumn = 1:columNum
+        count = count +1;
+        if count<= numel(plotArray)
+            GridposArraydef(Numofrow,Numofcolumn)=  plotArray(count);
+        else
+            break;
+        end
+    end
+end
+
+
 
 %%----------------------------Measurement tool-----------------------------
 geterpvaluesparas = erpworkingmemory('pop_geterpvalues');
@@ -254,6 +291,7 @@ else
     OutputViewerparerp{21} =PeakOnset;
     OutputViewerparerp{22} =Matlab_ver;
     OutputViewerparerp{23} =sampeak;
+     OutputViewerparerp{24} =GridposArraydef;
 end
 
 end

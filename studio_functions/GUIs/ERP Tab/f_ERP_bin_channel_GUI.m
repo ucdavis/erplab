@@ -255,15 +255,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         estudioworkingmemory('ERP_BinArray',BinArray);
         observe_ERPDAT.Count_currentERP=3;
-        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
-        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-            mtViewer=0;
-        end
-        if mtViewer ==0
-            f_redrawERP();
-        else
-            f_redrawERP_mt_viewer();
-        end
+      
+         f_redrawERP();
         erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Two_GUI =2;

@@ -907,12 +907,18 @@ varargout{1} = ERP_plotset_box;
             labelsdef =observe_ERPDAT.ERP.bindescr;
             plotarray = BinArray;
         end
-        if nplot<=256
-            ERPTab_plotset.rowNum_set.Value=nplot;
-        else
-            ERPTab_plotset.columns.Value = ceil(nplot/256);
-            ERPTab_plotset.rowNum_set.Value = 256;
-        end
+        %         if nplot<=256
+        %             ERPTab_plotset.rowNum_set.Value=nplot;
+        %         else
+        %             ERPTab_plotset.columns.Value = ceil(nplot/256);
+        %             ERPTab_plotset.rowNum_set.Value = 256;
+        %         end
+        rowNum = ceil(sqrt(nplot));
+        ERPTab_plotset.rowNum_set.Value=rowNum;
+        ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
+        
+        
+        
         gridlayputarray = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
         count = 0;
         for ii = 1:ERPTab_plotset.rowNum_set.Value
@@ -964,13 +970,13 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) %%&& eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-%         estudioworkingmemory('ERPTab_plotset',1);
+        %         estudioworkingmemory('ERPTab_plotset',1);
         
         erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Export');
         observe_ERPDAT.Process_messg =1;
         pathstr = pwd;
         namedef ='GridLocations';
-        [erpfilename, erppathname, indxs] = uiputfile({'*.txt'}, ...
+        [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
             ['Save Grid Locations as'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
@@ -978,7 +984,7 @@ varargout{1} = ERP_plotset_box;
             return
         end
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        ext = '.txt';
+        ext = '.tsv';
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         
         AllabelArray = ERPTab_plotset.gridlayputarray;
@@ -1006,8 +1012,10 @@ varargout{1} = ERP_plotset_box;
         formatSpec ='';
         for jj = 1:ncols
             formatSpec = strcat(formatSpec,'%s\t',32);
+            titleName{1,jj} = '';
         end
         formatSpec = strcat(formatSpec,'\n');
+        fprintf(fileID,formatSpec,titleName{1,:});
         for row = 1:nrows
             fprintf(fileID,formatSpec,AllabelArray{row,:});
         end
@@ -1033,7 +1041,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
-        [filename, filepath] = uigetfile('*.txt', ...
+        [filename, filepath] = uigetfile('*.tsv', ...
             'Plot Setting > Grid Layout > Import', ...
             'MultiSelect', 'off');
         if isequal(filename,0)
@@ -1041,9 +1049,9 @@ varargout{1} = ERP_plotset_box;
             return;
         end
         try
-            DataInput =  readcell([filepath,filename]);
+            DataInput =  readtable([filepath,filename], "FileType","text");
         catch
-            DataInput =  readcell([filepath,filename]);
+            DataInput =  readtable([filepath,filename], "FileType","text");
             erpworkingmemory('f_ERP_proces_messg',['Plot Setting > Grid Layout > Import:','Cannot import:',filepath,filename]);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -1054,6 +1062,7 @@ varargout{1} = ERP_plotset_box;
             return;
         end
         overlapindex =1;% ERPTab_plotset.pagesel.Value;
+        DataInput = table2cell(DataInput);
         [Griddata, checkflag ]= f_tranf_check_import_grid(DataInput,overlapindex);
         if checkflag==0
             erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid or didnot match with existing labels');
@@ -1522,7 +1531,7 @@ varargout{1} = ERP_plotset_box;
                 estudioworkingmemory('ERP_BinArray',labelsIndex);
             end
         else
-            ERPTab_plotset.gridlayputarray = gridlayputarray;
+            ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
@@ -1720,14 +1729,10 @@ varargout{1} = ERP_plotset_box;
         
         if ERPTab_plotset.gridlayoutdef.Value ==1
             EnableFlag = 'off';
-            ERPTab_plotset.columns.Value=1;
-            if nplot<=256
-                ERPTab_plotset.rowNum_set.Value=nplot;
-                ERPTab_plotset.columns.Value =1;
-            else
-                ERPTab_plotset.columns.Value = ceil(nplot/256);
-                ERPTab_plotset.rowNum_set.Value = 256;
-            end
+            rowNum = ceil(sqrt(nplot));
+            ERPTab_plotset.rowNum_set.Value=rowNum;
+            ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
+            
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         else
             EnableFlag = 'on';
@@ -1745,23 +1750,23 @@ varargout{1} = ERP_plotset_box;
         end
         
         %%check if ERP measurement tool is on?
-        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
-        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-            mtViewer=0; erpworkingmemory('ERPTab_mtviewer',0);
-        end
-        if mtViewer ==1
-            columNum=1;
-            ERPTab_plotset.columns.Value=1;
-            ERPTab_plotset.columns.Enable = 'off';
-            ERPTab_plotset.rowNum_set.Value = nplot;
-            ERPTab_plotset.gridlayputarray = gridlayputarraydef;
-            ERPTab_plotset.gridlayout_export.Enable ='off';
-            ERPTab_plotset.gridlayout_import.Enable ='off';
-            ERPTab_plotset.rowNum_set.Enable ='off';
-            ERPTab_plotset.columns.Enable ='off';
-            ERPTab_plotset.gridlayoutdef.Value =1;
-            ERPTab_plotset.gridlayout_custom.Value =0;
-        end
+%         mtViewer =  erpworkingmemory('ERPTab_mtviewer');
+%         if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
+%             mtViewer=0; erpworkingmemory('ERPTab_mtviewer',0);
+%         end
+%         if mtViewer ==1
+%             columNum=1;
+%             ERPTab_plotset.columns.Value=1;
+%             ERPTab_plotset.columns.Enable = 'off';
+%             ERPTab_plotset.rowNum_set.Value = nplot;
+%             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+%             ERPTab_plotset.gridlayout_export.Enable ='off';
+%             ERPTab_plotset.gridlayout_import.Enable ='off';
+%             ERPTab_plotset.rowNum_set.Enable ='off';
+%             ERPTab_plotset.columns.Enable ='off';
+%             ERPTab_plotset.gridlayoutdef.Value =1;
+%             ERPTab_plotset.gridlayout_custom.Value =0;
+%         end
         
         ERPTab_plotset_pars{6} =columNum;
         %%polarity (positive up?)

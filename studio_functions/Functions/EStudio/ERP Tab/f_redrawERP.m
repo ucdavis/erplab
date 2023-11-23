@@ -176,19 +176,19 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     else
         splot_n = numel(OutputViewerparerp{2});
     end
-    
+    EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
+    EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
+    EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
+    EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
+    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
     if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
-        pb_height = (EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
+        pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     end
-    EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
-    
+    %         EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
+    EStudio_gui_erp_totl.ViewAxes.Heights = 0.95*EStudio_gui_erp_totl.ViewAxes.Position(4);
+    EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
 end
-EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
-EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
-EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
-EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
-EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
-EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
+
 end
 
 %%-------------------------------------------------------------------------
@@ -582,12 +582,6 @@ qYScales = [-YtickInterval,YtickInterval];
 Ypert =20;
 %%get y axis
 y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
-yMaxdef = ceil(max(bindata(:)))-floor(min(bindata(:)));
-try
-    y_scale_def(1) = min([1.1*y_scale_def(1),1.1*qYScales(1)]);
-    y_scale_def(2) = max([1.1*y_scale_def(2),1.1*qYScales(2)]);
-catch
-end
 
 if numel(qYScales)==2
     yscaleall = qYScales(end)-qYScales(1);
@@ -671,7 +665,7 @@ for Numofrows = 1:size(GridposArray,1)
 end
 fontnames = 'Helvetica';
 
-
+hplot = [];
 countPlot = 0;
 for Numofrows = 1:rowNums
     for Numofcolumns = 1:columNum
@@ -722,24 +716,24 @@ for Numofrows = 1:rowNums
                     'Color', qLineColorspec(Numofoverlay,:));
             end
             
-            if numel(OffSetY)==1 && OffSetY==0
-                if ~qPolarityWave
-                    YscalesNew =  sort(y_scale_def*(-1));
-                else
-                    YscalesNew =  y_scale_def;
-                end
-                set(waveview,'ylim',YscalesNew);
-            else
-                if qPolarityWave
-                    ylimleftedge = floor(y_scale_def(1));
-                    ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
-                else
-                    ylimleftedge = -abs(ceil(y_scale_def(end)));
-                    ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
-                end
-                set(waveview,'ylim',[ylimleftedge,ylimrightedge]);
-            end
-            
+            %             if numel(OffSetY)==1 && OffSetY==0
+            %                 if ~qPolarityWave
+            %                     YscalesNew =  sort(y_scale_def*(-1));
+            %                 else
+            %                     YscalesNew =  y_scale_def;
+            %                 end
+            %                 set(waveview,'ylim',YscalesNew);
+            %             else
+            %                 if qPolarityWave
+            %                     ylimleftedge = min([floor(y_scale_def(1)),qYScales(1)]);
+            %                     ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
+            %                 else
+            %                     ylimleftedge = -max([abs(ceil(y_scale_def(end))),abs(qYScales(end))]);
+            %                     ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
+            %                 end
+            % %                 set(waveview,'ylim',[ylimleftedge,ylimrightedge]);
+            %             end
+            %
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust y axis------------------------%%
@@ -816,7 +810,7 @@ for Numofrows = 1:rowNums
             qYtickdecimal=1;
             nYTicks = length(props.YTick);
             for iCount = 1:nYTicks
-                if qPolarityWave
+                if qPolarityWave==1
                     ytick_label= sprintf(['%.',num2str(qYtickdecimal),'f'],str2num(char(props.YTickLabel(iCount, :)))-OffSetY(Numofrows));
                 else
                     qyticktras =   fliplr(-1*qYticks);
@@ -924,17 +918,23 @@ for Numofrows = 1:rowNums
         catch
         end
     end%% end of columns
-    ylim([(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
+    ylim([1.1*(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
+    if qPolarityWave==-1
+        ylimleftedge = min([1.1*(min(OffSetY(:))+qYScales(1)),-abs(y_scale_def(2))]);
+        ylim([ylimleftedge,1.1*(max(OffSetY(:))+qYScales(end))]);
+    end
 end%% end of rows
 set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
-NumColumns = ceil(sqrt(length(qLegendName)));
-for Numofoverlay = 1:numel(hplot)
-    qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
-    LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str([0 0 0]),'}',32,qLegendName{Numofoverlay}));
+if ~isempty(hplot)
+    NumColumns = ceil(sqrt(length(qLegendName)));
+    for Numofoverlay = 1:numel(hplot)
+        qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
+        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str([0 0 0]),'}',32,qLegendName{Numofoverlay}));
+    end
+    p  = get(legendview,'position');
+    h_legend = legend(legendview,hplot,qLegendName);
+    set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault);
 end
-p  = get(legendview,'position');
-h_legend = legend(legendview,hplot,qLegendName);
-set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault);
 end
 
 

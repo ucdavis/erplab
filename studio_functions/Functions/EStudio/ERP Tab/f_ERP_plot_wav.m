@@ -1,57 +1,32 @@
 
 
-function [new_erp_data,Amp_out,Lat_out_trals,Amp,Lat]= f_ERP_plot_wav(ERPIN)
-global observe_ERPDAT;
-
-ERPArray= estudioworkingmemory('selectederpstudio');
-if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
-    ERPArray =  length(observe_ERPDAT.ALLERP) ;
-    estudioworkingmemory('selectederpstudio',ERPArray);
-    observe_ERPDAT.CURRENTERP = ERPArray;
-    observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(ERPArray);
-    assignin('base','ERP',observe_ERPDAT.ERP);
-    assignin('base','ALLERP', observe_ERPDAT.ALLERP);
-    assignin('base','CURRENTERP', observe_ERPDAT.CURRENTERP);
-end
+function [new_erp_data,Amp_out,Lat_out_trals,Amp,Lat]= f_ERP_plot_wav(ERPIN,offset,ChanArray,BinArray)
 
 %%Parameter from bin and channel panel
-ERP = observe_ERPDAT.ERP;
+ERP = ERPIN;
 OutputViewerparerp = f_preparms_mtviewer_erptab(ERP,0);
-ChanArray = OutputViewerparerp{1};
-BinArray = OutputViewerparerp{2};
-timeStart =OutputViewerparerp{3};
-timEnd =OutputViewerparerp{4};
-Timet_step=OutputViewerparerp{5};
 [~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
 Yscale = OutputViewerparerp{6};
-Min_vspacing = OutputViewerparerp{7};
-Fillscreen = OutputViewerparerp{8};
 positive_up = OutputViewerparerp{10};
 BinchanOverlay= OutputViewerparerp{11};
 moption= OutputViewerparerp{12};
 latency= OutputViewerparerp{13};
-Min_time = observe_ERPDAT.ERP.times(1);
-Max_time = observe_ERPDAT.ERP.times(end);
+Min_time = ERP.times(1);
+Max_time = ERP.times(end);
 Baseline = OutputViewerparerp{14};
 InterpFactor =  OutputViewerparerp{15};
-Resolution =OutputViewerparerp{16};
 Afraction=OutputViewerparerp{17};
 polpeak = OutputViewerparerp{18};
 locpeakrep= OutputViewerparerp{19};
 fracmearep= OutputViewerparerp{20};
 PeakOnset= OutputViewerparerp{21};
 Neighborhood= OutputViewerparerp{23};
-if BinchanOverlay == 0
-    splot_n = numel(OutputViewerparerp{1});
-else
-    splot_n = numel(OutputViewerparerp{2});
-end
 
-if BinchanOverlay == 0
-    ndata = BinArray;
-else
-    ndata = ChanArray;
-end
+splot_n = numel(ChanArray);
+
+
+ndata = BinArray;
+
 
 [xxx, latsamp, latdiffms] = closest(ERPIN.times, [Min_time Max_time]);
 tmin = latsamp(1);
@@ -83,14 +58,7 @@ end
 perc_lim = Yscale;
 percentile = perc_lim*3/2;
 ind_plot_height = percentile*2;
-offset = [];
-if BinchanOverlay == 0
-    offset = (numel(ChanArray)-1:-1:0)*ind_plot_height;
-else
-    offset = (numel(BinArray)-1:-1:0)*ind_plot_height;
-end
 [~,~,b] = size(plot_erp_data);
-
 for i = 1:b
     plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
 end

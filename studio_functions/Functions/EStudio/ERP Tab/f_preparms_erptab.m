@@ -189,9 +189,9 @@ try rowNum = ERPTab_plotset_pars{9};catch rowNum=rowNumdef; end
 
 
 try layoutDef = ERPTab_plotset_pars{10};catch layoutDef=1;end
-if layoutDef==1
-    rowNum=rowNumdef;
-end
+% if layoutDef==1
+%     rowNum=rowNumdef;
+% end
 plotBox = [rowNum,columNum];
 
 
