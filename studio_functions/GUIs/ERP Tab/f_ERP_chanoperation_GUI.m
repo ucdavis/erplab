@@ -701,7 +701,7 @@ varargout{1} = ERP_chan_operation_gui;
         if observe_ERPDAT.Count_currentERP~=7
             return;
         end
-        
+         ViewerFlag=erpworkingmemory('ViewerFlag');
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100
@@ -733,6 +733,9 @@ varargout{1} = ERP_chan_operation_gui;
             end
             gui_erp_chan_operation.edit_bineq.Data = dsnames;
             set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
+        end
+        if ViewerFlag==1
+            Enable_label = 'off';
         end
         gui_erp_chan_operation.mode_modify.Enable=Enable_label;
         gui_erp_chan_operation.mode_create.Enable=Enable_label;

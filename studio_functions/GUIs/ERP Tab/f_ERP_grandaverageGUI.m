@@ -632,7 +632,8 @@ varargout{1} = ERP_grdavg_box_gui;
         if observe_ERPDAT.Count_currentERP~=12
             return;
         end
-        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enable_label = 'off';
         else
             Enable_label = 'on';

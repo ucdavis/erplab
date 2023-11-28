@@ -34,7 +34,6 @@ else
     box_erpset_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERPsets', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
-
 sel_path = cd;
 estudioworkingmemory('ERP_save_folder',sel_path);
 try
@@ -49,7 +48,6 @@ drawui_erpset(FonsizeDefault);
 
 varargout{1} = box_erpset_gui;
 
-
 % Draw the ui
     function drawui_erpset(FonsizeDefault)
         try
@@ -57,7 +55,6 @@ varargout{1} = box_erpset_gui;
         catch
             ColorB_def = [0.95 0.95 0.95];
         end
-        
         vBox = uiextras.VBox('Parent', box_erpset_gui, 'Spacing', 5,'BackgroundColor',ColorB_def); % VBox for everything
         panelshbox = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         panelsv2box = uiextras.VBox('Parent',panelshbox,'Spacing',5,'BackgroundColor',ColorB_def);
@@ -70,7 +67,6 @@ varargout{1} = box_erpset_gui;
             2,'String', ERPlistName,'Value',1,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
         set(vBox, 'Sizes', 350);
         
-        
         %%---------------------Options for ERPsets-----------------------------------------------------
         ERPsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.dupeselected = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
@@ -79,7 +75,6 @@ varargout{1} = box_erpset_gui;
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.suffix = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
@@ -508,7 +503,6 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
-        %         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 
@@ -672,7 +666,6 @@ varargout{1} = box_erpset_gui;
                 end
             end
         end
-        %%%Export data end
     end
 
 
@@ -688,7 +681,6 @@ varargout{1} = box_erpset_gui;
         
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Load');
         observe_ERPDAT.Process_messg =1;
-        
         ALLERPCOM = evalin('base','ALLERPCOM');
         try
             [filename, filepath] = uigetfile({'*.erp','ERP (*.erp)';...
@@ -726,10 +718,8 @@ varargout{1} = box_erpset_gui;
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-        
         ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
         ERPsetops.butttons_datasets.String = ERPlistName;
-        
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
@@ -739,7 +729,6 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dotstoggle.Enable=Edit_label;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
-        
         SelectedERP = observe_ERPDAT.CURRENTERP;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         ERPsetops.butttons_datasets.Min=1;
@@ -1052,16 +1041,7 @@ varargout{1} = box_erpset_gui;
         end
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-        %         mtViewer =  erpworkingmemory('ERPTab_mtviewer');
-        %         if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-        %             mtViewer=0;
-        %         end
-        %         if mtViewer ==0
         f_redrawERP();
-        %         else
-        %             f_redrawERP_mt_viewer();
-        %         end
-        %         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 % Gets [ind, erp] for input ds where ds is a dataset structure, ind is the
@@ -1116,6 +1096,15 @@ varargout{1} = box_erpset_gui;
             estudioworkingmemory('selectederpstudio',Selected_ERP);
             Edit_label = 'off';
         end
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if ViewerFlag==1
+            Edit_label = 'off';
+            ERPsetops.importexport.Enable=Edit_label;
+            ERPsetops.loadbutton.Enable=Edit_label;
+        else
+            ERPsetops.importexport.Enable='on';
+            ERPsetops.loadbutton.Enable='on';
+        end
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
@@ -1125,8 +1114,6 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dotstoggle.Enable=Edit_label;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
-        ERPsetops.importexport.Enable = 'on';
-        ERPsetops.loadbutton.Enable = 'on';
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = 2;
         f_redrawERP();

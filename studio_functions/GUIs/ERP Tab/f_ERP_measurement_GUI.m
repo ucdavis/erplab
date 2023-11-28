@@ -254,7 +254,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.m_t_value = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Save measures',...
             'callback',@erp_m_t_savalue,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.apply = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','View',...
-            'callback',@erp_m_t_apply,'Enable',Enable_label,'FontSize',FonsizeDefault,'Value',0,'BackgroundColor',[1 1 1]);
+            'callback',@erp_m_t_view,'Enable',Enable_label,'FontSize',FonsizeDefault,'Value',0,'BackgroundColor',[1 1 1]);
         set(ERPMTops.out_file_run,'Sizes',[70 -1 70]);
         
         %%ERPMTops end
@@ -1226,7 +1226,7 @@ varargout{1} = erp_measurement_box;
 
 
 %%---------------------Apply measurement-----------------------------------
-    function erp_m_t_apply(Source,~)
+    function erp_m_t_view(Source,~)
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=1;
             return;
@@ -1389,8 +1389,11 @@ varargout{1} = erp_measurement_box;
                 Binlabel, Peakpolarity,ERPMTops.def_erpvalue{13},Peakreplace,...
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
+            erpworkingmemory('ViewerFlag', 1);
+            observe_ERPDAT.Count_currentERP=1;
             f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
         end
+        erpworkingmemory('ViewerFlag', 0);
         observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -1400,7 +1403,8 @@ varargout{1} = erp_measurement_box;
         if observe_ERPDAT.Count_currentERP~=11
             return;
         end
-        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enable_label = 'off';
         else
             Enable_label = 'on';
@@ -1522,7 +1526,7 @@ varargout{1} = erp_measurement_box;
         if ChangeFlag~=1
             return;
         end
-        erp_m_t_apply();
+        erp_m_t_view();
         ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
         ERPMTops.m_t_value.ForegroundColor = [0 0 0];
         erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
@@ -1541,7 +1545,7 @@ varargout{1} = erp_measurement_box;
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
-            erp_m_t_apply();
+            erp_m_t_view();
             ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
             ERPMTops.m_t_value.ForegroundColor = [0 0 0];
             erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]

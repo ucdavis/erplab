@@ -580,6 +580,10 @@ varargout{1} = ERP_bin_operation_gui;
             gui_erp_bin_operation.edit_bineq.Data = dsnames;
             set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if ViewerFlag==1;
+           Enable_label = 'off';  
+        end
         gui_erp_bin_operation.mode_modify.Enable=Enable_label;
         gui_erp_bin_operation.mode_create.Enable=Enable_label;
         gui_erp_bin_operation.eq_editor.Enable = Enable_label;

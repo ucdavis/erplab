@@ -322,9 +322,10 @@ varargout{1} = EStudio_box_bin_chan;
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
             end
         end
-%         
-%         estudioworkingmemory('ERP_ChanArray',ChanArray);
-%         estudioworkingmemory('ERP_BinArray',BinArray);
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if ViewerFlag==1
+           Enableflag='off'; 
+        end
         ERPTab_bin_chan.ElecRange.Enable = Enableflag;
         ERPTab_bin_chan.BinRange.Enable = Enableflag;
         ERPTab_bin_chan.plot_reset.Enable = Enableflag;

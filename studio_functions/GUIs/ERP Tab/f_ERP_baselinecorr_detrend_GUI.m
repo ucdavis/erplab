@@ -710,7 +710,8 @@ varargout{1} = ERP_basecorr_detrend_box;
         if observe_ERPDAT.Count_currentERP~=5
             return;
         end
-        if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP')
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP') || ViewerFlag==1
             Enable_Label = 'off';
         else
             Enable_Label = 'on';

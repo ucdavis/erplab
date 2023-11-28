@@ -358,7 +358,8 @@ varargout{1} = ERP_CSD_gui;
         if observe_ERPDAT.Count_currentERP~=9
             return;
         end
-        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
+         ViewerFlag=erpworkingmemory('ViewerFlag');
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || ViewerFlag==1
             Enable_label = 'off';
         else
             Enable_label = 'on';

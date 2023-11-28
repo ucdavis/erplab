@@ -684,7 +684,7 @@ varargout{1} = ERP_plotset_box;
         
         pathstr = pwd;
         namedef ='Channel_order';
-        [erpfilename, erppathname, indxs] = uiputfile({'*.txt';'*.xlsx;*.xls'}, ...
+        [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
             ['Export ERP channel order (for plotting only)'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
@@ -693,15 +693,12 @@ varargout{1} = ERP_plotset_box;
         end
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        if indxs==2
-            ext = '.xls';
-        else
-            ext = '.txt';
-        end
+        ext = '.tsv';
+        
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         fileID = fopen(erpFilename,'w+');
         
-        formatSpec ='';
+        formatSpec =['%s\t',32];
         for jj = 1:2
             if jj==1
                 formatSpec = strcat(formatSpec,'%d\t',32);
@@ -710,13 +707,16 @@ varargout{1} = ERP_plotset_box;
             end
         end
         formatSpec = strcat(formatSpec,'\n');
+        columName = {'','Column1','Column2'};
         
+        fprintf(fileID,'%s\t %s\t %s\t\n',columName{1,:});
         for row = 1:numel(chanOrders)
-            if indxs==1
-                fprintf(fileID,formatSpec,Data{row,:});
-            else
-                fprintf(fileID,formatSpec,Data{row,1},Data{row,2});
+            rowdata = cell(1,3);
+            rowdata{1,1} = char(['Row',num2str(row)]);
+            for jj = 1:2
+                rowdata{1,jj+1} = Data{row,jj};
             end
+            fprintf(fileID,formatSpec,rowdata{1,:});
         end
         fclose(fileID);
         disp(['A new ERP channel order file was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
@@ -760,7 +760,7 @@ varargout{1} = ERP_plotset_box;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.txt'}, ...
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv'}, ...
             ['Import ERP channel order (for plotting only)'],...
             'MultiSelect', 'off');
         if isequal(erpfilename,0) || indxs~=1
@@ -769,19 +769,24 @@ varargout{1} = ERP_plotset_box;
         end
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        ext = '.txt';
+        ext = '.tsv';
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         
-        DataInput =  readcell(erpFilename);
+        DataInput =  readtable(erpFilename, "FileType","text");
         if isempty(DataInput)
             ERPTab_plotset.chanorder{1,1}=[];
             ERPTab_plotset.chanorder{1,2} = '';
         end
+        DataInput = table2cell(DataInput);
         chanorders = [];
         chanlabes = [];
+        DataInput = DataInput(:,2:end);
         for ii = 1:size(DataInput,1)
             if isnumeric(DataInput{ii,1})
                 chanorders(ii) = DataInput{ii,1};
+            else
+                chanorders(ii) =0;
+                disp(['The values is not a number at Row:',32,num2str(ii),', Column 1\n']);
             end
             if ischar(DataInput{ii,2})
                 chanlabes{ii} = DataInput{ii,2};
@@ -907,18 +912,10 @@ varargout{1} = ERP_plotset_box;
             labelsdef =observe_ERPDAT.ERP.bindescr;
             plotarray = BinArray;
         end
-        %         if nplot<=256
-        %             ERPTab_plotset.rowNum_set.Value=nplot;
-        %         else
-        %             ERPTab_plotset.columns.Value = ceil(nplot/256);
-        %             ERPTab_plotset.rowNum_set.Value = 256;
-        %         end
+        
         rowNum = ceil(sqrt(nplot));
         ERPTab_plotset.rowNum_set.Value=rowNum;
         ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
-        
-        
-        
         gridlayputarray = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
         count = 0;
         for ii = 1:ERPTab_plotset.rowNum_set.Value
@@ -970,7 +967,6 @@ varargout{1} = ERP_plotset_box;
         if ~isempty(messgStr) %%&& eegpanelIndex~=2
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        %         estudioworkingmemory('ERPTab_plotset',1);
         
         erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Export');
         observe_ERPDAT.Process_messg =1;
@@ -1010,14 +1006,23 @@ varargout{1} = ERP_plotset_box;
         fileID = fopen(erpFilename,'w');
         [nrows,ncols] = size(AllabelArray);
         formatSpec ='';
-        for jj = 1:ncols
+        for jj = 1:ncols+1
             formatSpec = strcat(formatSpec,'%s\t',32);
-            titleName{1,jj} = '';
+            if jj==1
+                columName{1,jj} = '';
+            else
+                columName{1,jj} = ['Column',32,num2str(jj-1)];
+            end
         end
         formatSpec = strcat(formatSpec,'\n');
-        fprintf(fileID,formatSpec,titleName{1,:});
+        fprintf(fileID,formatSpec,columName{1,:});
         for row = 1:nrows
-            fprintf(fileID,formatSpec,AllabelArray{row,:});
+            rowdata = cell(1,ncols+1);
+            rowdata{1,1} = char(['Row',num2str(row)]);
+            for jj = 1:ncols
+                rowdata{1,jj+1} = AllabelArray{row,jj};
+            end
+            fprintf(fileID,formatSpec,rowdata{1,:});
         end
         fclose(fileID);
         observe_ERPDAT.Process_messg =2;
@@ -1063,6 +1068,15 @@ varargout{1} = ERP_plotset_box;
         end
         overlapindex =1;% ERPTab_plotset.pagesel.Value;
         DataInput = table2cell(DataInput);
+        
+        [rows,columns] = size(DataInput);
+        if columns<=2
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid and one column is designed besides the first column that is row title');
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
+        
+        DataInput = DataInput(:,2:end);
         [Griddata, checkflag ]= f_tranf_check_import_grid(DataInput,overlapindex);
         if checkflag==0
             erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid or didnot match with existing labels');
@@ -1295,6 +1309,8 @@ varargout{1} = ERP_plotset_box;
         end
         try rowNum = ERPTab_plotset_pars{9};catch rowNum=1;ERPTab_plotset_pars{9}=1; end
         ERPTab_plotset.rowNum_set.Value=rowNum;
+        
+        
         try gridlayoutdef =  ERPTab_plotset_pars{10};catch gridlayoutdef =1; ERPTab_plotset_pars{10}=1;  end
         if isempty(gridlayoutdef) || numel(gridlayoutdef)~=1 || (gridlayoutdef~=0 && gridlayoutdef~=1)
             gridlayoutdef =1; ERPTab_plotset_pars{10}=1;
@@ -1330,6 +1346,13 @@ varargout{1} = ERP_plotset_box;
             labelsdef =observe_ERPDAT.ERP.bindescr;
             plotarray = BinArray;
         end
+        
+        if gridlayoutdef==1
+            ERPTab_plotset.rowNum_set.Value = ceil(sqrt(nplot));
+            ERPTab_plotset.columns.Value = ceil(nplot/ceil(sqrt(nplot)));
+        end
+        
+        
         gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
         count = 0;
         for ii = 1:ERPTab_plotset.rowNum_set.Value
@@ -1341,14 +1364,7 @@ varargout{1} = ERP_plotset_box;
                 gridlayputarraydef{ii,jj} = labelsdef{plotarray(count)};
             end
         end
-        mtViewer =  erpworkingmemory('ERPTab_mtviewer');
-        if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-            mtViewer=0;erpworkingmemory('ERPTab_mtviewer',0);
-        end
-        
-        if gridlayoutdef==1 || mtViewer==1
-            ERPTab_plotset.columns.Value = 1;
-            ERPTab_plotset.rowNum_set.Value = nplot;
+        if gridlayoutdef==1
             ERPTab_plotset.gridlayputarray=gridlayputarraydef;
         end
         
@@ -1578,7 +1594,8 @@ varargout{1} = ERP_plotset_box;
         if observe_ERPDAT.Count_currentERP~=3
             return;
         end
-        if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+         ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             enbaleflag = 'off';
         else
             enbaleflag = 'on';
@@ -1748,26 +1765,6 @@ varargout{1} = ERP_plotset_box;
             columNum =1;
             ERPTab_plotset.columns.Value = 1;
         end
-        
-        %%check if ERP measurement tool is on?
-%         mtViewer =  erpworkingmemory('ERPTab_mtviewer');
-%         if isempty(mtViewer) || numel(mtViewer)~=1 || (mtViewer~=0 && mtViewer~=1)
-%             mtViewer=0; erpworkingmemory('ERPTab_mtviewer',0);
-%         end
-%         if mtViewer ==1
-%             columNum=1;
-%             ERPTab_plotset.columns.Value=1;
-%             ERPTab_plotset.columns.Enable = 'off';
-%             ERPTab_plotset.rowNum_set.Value = nplot;
-%             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
-%             ERPTab_plotset.gridlayout_export.Enable ='off';
-%             ERPTab_plotset.gridlayout_import.Enable ='off';
-%             ERPTab_plotset.rowNum_set.Enable ='off';
-%             ERPTab_plotset.columns.Enable ='off';
-%             ERPTab_plotset.gridlayoutdef.Value =1;
-%             ERPTab_plotset.gridlayout_custom.Value =0;
-%         end
-        
         ERPTab_plotset_pars{6} =columNum;
         %%polarity (positive up?)
         ERPTab_plotset_pars{7} =ERPTab_plotset.positive_up.Value;

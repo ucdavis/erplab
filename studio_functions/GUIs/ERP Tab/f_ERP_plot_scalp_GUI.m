@@ -1702,8 +1702,8 @@ varargout{1} = ERP_plot_scalp_gui;
         if observe_ERPDAT.Count_currentERP~=4
             return;
         end
-        
-        if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             Enable_lab = 'off';
         else
             Enable_lab = 'on';

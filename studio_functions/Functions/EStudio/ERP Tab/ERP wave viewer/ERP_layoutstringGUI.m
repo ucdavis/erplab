@@ -587,7 +587,7 @@ end
 % --- Executes on button press in pushbutton6_import.
 function pushbutton6_import_Callback(hObject, eventdata, handles)
 
-[filename, filepath] = uigetfile('*.txt', ...
+[filename, filepath] = uigetfile('*.tsv', ...
     'Load Gird Locations', ...
     'MultiSelect', 'off');
 if isequal(filename,0)
@@ -595,21 +595,24 @@ if isequal(filename,0)
     return;
 end
 try
-    %     DataInput = importdata([filepath,filename]);%%There are some errors
-    %     when using importdata
-    DataInput =  readcell([filepath,filename]);
+    DataInput =  readtable([filepath,filename], "FileType","text");
     CellNum=2;
 catch
-    
-    DataInput =  readcell([filepath,filename]);
     handles.text7_message.String = sprintf(['Cannot import:',filepath,filename]);
     return;
-    CellNum=2;
 end
 if isempty(DataInput)
     handles.text7_message.String = sprintf(['The file is empty.']);
     return;
 end
+
+DataInput = table2cell(DataInput);
+[rows,columns] = size(DataInput);
+if columns==1
+    handles.text7_message.String = sprintf(['Import is invalid']);
+    return;
+end
+DataInput = DataInput(:,2:end);
 
 DataOutput = f_gridlocation_transcell(DataInput,CellNum);
 
@@ -745,7 +748,7 @@ function pushbutton8_Export_Callback(hObject, eventdata, handles)
 
 pathstr = pwd;
 namedef ='GridLocations';
-[erpfilename, erppathname, indxs] = uiputfile({'*.txt'}, ...
+[erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
     ['Save Grid Locations as'],...
     fullfile(pathstr,namedef));
 if isequal(erpfilename,0)
@@ -754,7 +757,7 @@ if isequal(erpfilename,0)
 end
 
 [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-ext = '.txt';
+ext = '.tsv';
 erpFilename = char(strcat(erppathname,erpfilename,ext));
 
 AllabelArray = handles.AllabelArray;
@@ -764,13 +767,23 @@ Data = f_checktable_gridlocations_waviewer(Data,AllabelArray);
 [nrows,ncols] = size(Data);
 Data = f_gridlocation_respace_addnan(Data);
 formatSpec ='';
-for jj = 1:ncols
+for jj = 1:ncols+1
     formatSpec = strcat(formatSpec,'%s\t',32);
+    if jj==1
+        columName{1,jj} = '';
+    else
+        columName{1,jj} = ['Column',32,num2str(jj-1)];
+    end
 end
 formatSpec = strcat(formatSpec,'\n');
-
+fprintf(fileID,formatSpec,columName{1,:});
 for row = 1:nrows
-    fprintf(fileID,formatSpec,Data{row,:});
+    rowdata = cell(1,ncols+1);
+    rowdata{1,1} = char(['Row',num2str(row)]);
+    for jj = 1:ncols
+        rowdata{1,jj+1} = Data{row,jj};
+    end
+    fprintf(fileID,formatSpec,rowdata{1,:});
 end
 fclose(fileID);
 
@@ -784,7 +797,7 @@ for ii = 1:nrows
         if ~isempty(labx)
             labx = regexprep(labx,'\\|\/|\*|\#|\$|\@','_');
         else
-            labx = 'NaN';
+            labx = ' ';
         end
         data{ii,jj} = labx;
     end

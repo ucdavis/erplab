@@ -157,6 +157,10 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_information.total_rejected_percentage.String = '0';
             Enable_label = 'off';
         end
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if ViewerFlag==1
+            Enable_label = 'off';
+        end
         gui_erp_information.total_rejected_percentage.Enable = Enable_label;
         gui_erp_information.total_rejected_option.Enable = Enable_label;
         observe_ERPDAT.Count_currentERP=16;

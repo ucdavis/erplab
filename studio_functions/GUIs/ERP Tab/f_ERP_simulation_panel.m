@@ -2533,7 +2533,8 @@ varargout{1} = ERP_simulation_box;
         if observe_ERPDAT.Count_currentERP~=17
             return;
         end
-        if isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             gui_erp_simulation.realerp_check.Value =0;
             EnableFlag = 'off';
             gui_erp_simulation.realerp_check.Enable = EnableFlag;

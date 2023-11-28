@@ -1410,8 +1410,8 @@ varargout{1} = ERP_filtering_box;
         if observe_ERPDAT.Count_currentERP~=6
             return;
         end
-        
-        if isempty(observe_ERPDAT.ALLERP)  || isempty(observe_ERPDAT.ERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(observe_ERPDAT.ALLERP)  || isempty(observe_ERPDAT.ERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             gui_erp_filtering.apply.Enable = 'off';
             gui_erp_filtering.advanced.Enable = 'off';
             gui_erp_filtering.roll_off.Enable = 'off';

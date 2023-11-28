@@ -119,7 +119,10 @@ drawui_erp_information(FonsizeDefault);
         else
             Enableflag = 'on';
         end
-        
+         ViewerFlag=erpworkingmemory('ViewerFlag');
+         if ViewerFlag==1
+           Enableflag = 'off';  
+         end
         ERP_SME_summary = f_dq_summary(observe_ERPDAT.ERP);
         Median_tw =ERP_SME_summary{3,1};
         Median_name = strcat(num2str(roundn(ERP_SME_summary{1,1},-2)),', chan.',num2str(ERP_SME_summary{2,1}),',',32,num2str(Median_tw(1)),'-',num2str(Median_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,1}));

@@ -591,7 +591,8 @@ varargout{1} = box_erp_append;
         if observe_ERPDAT.Count_currentERP~=13
             return;
         end
-        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enableflag = 'off';
         else
             Enableflag = 'on';

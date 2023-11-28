@@ -206,7 +206,7 @@ addlistener(observe_ERPDAT,'Messg_change',@Process_messg_change_main);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 
 
-
+ erpworkingmemory('ViewerFlag', 0);%%measurement viewer: off
 erpworkingmemory('f_EEG_proces_messg_pre',{'',0});
 estudioworkingmemory('EStudioColumnNum',1);
 erpworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
@@ -409,7 +409,6 @@ EStudio_gui_erp_totl = createInterface();
         EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
         EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
         EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
-        
     end % createInterface
 
 
