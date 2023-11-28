@@ -151,7 +151,7 @@ end
 
 %
 %%---------------line color, line style, line marker,linewidth-------------
-LegendName = {''};
+LegendName = {''};%%legend name will be automatically changed 
 if PLOTORG(2) ==1 %% if  the selected Channel is "Grid"
     OverlayArray = chanArray;
     for Numofchan = 1:numel(chanArray)
@@ -280,9 +280,9 @@ fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
 TextcolorLeg = 1;
 Legcolumns = 1;
 try
-    for NumofOverlay =1:numel(OverlayArray)
-        LegendName{NumofOverlay} = char(gui_erp_waviewer.ERPwaviewer.Legend.data{NumofOverlay,2});
-    end
+%     for NumofOverlay =1:numel(OverlayArray)
+%         LegendName{NumofOverlay} = char(gui_erp_waviewer.ERPwaviewer.Legend.data{NumofOverlay,2});
+%     end
     FontLegValue =  gui_erp_waviewer.ERPwaviewer.Legend.font;
     FontLeg = fonttype{FontLegValue};
     FontSizeLeg =  gui_erp_waviewer.ERPwaviewer.Legend.fontsize;

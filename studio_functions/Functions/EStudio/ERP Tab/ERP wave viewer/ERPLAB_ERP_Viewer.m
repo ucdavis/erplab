@@ -182,8 +182,6 @@ viewer_ERPDAT.Count_currentERP = 0;
 %1 means the processign procedure is running
 %2 means the processign procedure is done
 %3 means there are some errors for processing procedure
-viewer_ERPDAT.count_legend=0;%% this is to capture the changes of legend name
-viewer_ERPDAT.page_xyaxis=0;%%get the changes of x/y axis based on the changed pages or selected ERPsets
 viewer_ERPDAT.loadproper_count = 0;
 viewer_ERPDAT.Process_messg = 0;
 viewer_ERPDAT.count_twopanels = 0;%% Automaticlly saving the changes on the other panel if the current panel is changed
@@ -214,49 +212,48 @@ estudioworkingmemory('MyViewer_labels',0);
 estudioworkingmemory('MyViewer_linelegend',0);
 estudioworkingmemory('MyViewer_other',0);
 
-ERPwaviewer.ALLERP =ALLERP;
-ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
+gui_erp_waviewer.ERPwaviewer.ALLERP =ALLERP;
+gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(selectedERP_index(end));
 try
     CURRENTERP = evalin('base','CURRENTERP');
 catch
     CURRENTERP = numel(selectedERP_index);
 end
-ERPwaviewer.CURRENTERP =CURRENTERP;
+gui_erp_waviewer.ERPwaviewer.CURRENTERP =CURRENTERP;
 [xpos,ypos] = find(selectedERP_index==CURRENTERP);
 if ~isempty(ypos)
-    ERPwaviewer.PageIndex =ypos;
+    gui_erp_waviewer.ERPwaviewer.PageIndex =ypos;
 else
-    ERPwaviewer.PageIndex=numel(selectedERP_index);
+    gui_erp_waviewer.ERPwaviewer.PageIndex=numel(selectedERP_index);
 end
-ERPwaviewer.SelectERPIdx =selectedERP_index;
-ERPwaviewer.bin = binArray;
-ERPwaviewer.chan = chanArray;
-ERPwaviewer.binchan_op = 1;%% 1. Auto; 2.Custom
+gui_erp_waviewer.ERPwaviewer.SelectERPIdx =selectedERP_index;
+gui_erp_waviewer.ERPwaviewer.bin = binArray;
+gui_erp_waviewer.ERPwaviewer.chan = chanArray;
+gui_erp_waviewer.ERPwaviewer.binchan_op = 1;%% 1. Auto; 2.Custom
 
-ERPwaviewer.plot_org.Grid = 1; %1.Channels; 2.Bins; 3. ERPsets; 4. None
-ERPwaviewer.plot_org.Overlay = 2; %1.Channels; 2.Bins; 3. ERPsets; 4. None
-ERPwaviewer.plot_org.Pages = 3; %1.Channels; 2.Bins; 3. ERPsets; 4. None
-ERPwaviewer.plot_org.gridlayout.op = 1; %1.Auto; 2. Custom
-ERPwaviewer.plot_org.gridlayout.data = [];
-ERPwaviewer.Lines = [];
-ERPwaviewer.Legend = [];
-ERPwaviewer.xaxis = [];
-ERPwaviewer.yaxis = [];
-ERPwaviewer.polarity = [];
-ERPwaviewer.SEM = [];
-ERPwaviewer.baselinecorr = 'none';
-ERPwaviewer.chanbinsetlabel = [];
-ERPwaviewer.figbackgdcolor = [1 1 1];
-ERPwaviewer.figname = 'My Viewer';
-ERPwaviewer.FigOutpos=[];
-assignin('base','ALLERPwaviewer',ERPwaviewer);
-
+gui_erp_waviewer.ERPwaviewer.plot_org.Grid = 1; %1.Channels; 2.Bins; 3. ERPsets; 4. None
+gui_erp_waviewer.ERPwaviewer.plot_org.Overlay = 2; %1.Channels; 2.Bins; 3. ERPsets; 4. None
+gui_erp_waviewer.ERPwaviewer.plot_org.Pages = 3; %1.Channels; 2.Bins; 3. ERPsets; 4. None
+gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.op = 1; %1.Auto; 2. Custom
+gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data = [];
+gui_erp_waviewer.ERPwaviewer.Lines = [];
+gui_erp_waviewer.ERPwaviewer.Legend = [];
+gui_erp_waviewer.ERPwaviewer.xaxis = [];
+gui_erp_waviewer.ERPwaviewer.yaxis = [];
+gui_erp_waviewer.ERPwaviewer.polarity = [];
+gui_erp_waviewer.ERPwaviewer.SEM = [];
+gui_erp_waviewer.ERPwaviewer.baselinecorr = 'none';
+gui_erp_waviewer.ERPwaviewer.chanbinsetlabel = [];
+gui_erp_waviewer.ERPwaviewer.figbackgdcolor = [1 1 1];
+gui_erp_waviewer.ERPwaviewer.figname = 'My Viewer';
+gui_erp_waviewer.ERPwaviewer.FigOutpos=[];
+%
 % estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
+
 try
     close(gui_erp_waviewer.Window);%%close previous GUI if exists
 catch
 end
-gui_erp_waviewer.ERPwaviewer = ERPwaviewer;
 
 createInterface_ERPWave_viewer(ERPtooltype);
 
@@ -273,9 +270,8 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
         set(0,'DefaultUicontrolBackgroundColor',oldcolor);
         
         if strcmpi(button,'Yes')
-            ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
-            Parameterfile.ALLERP= ERPwaviewerdef.ALLERP;
-            Parameterfile.ERP = ERPwaviewerdef.ERP;
+            Parameterfile.ALLERP= gui_erp_waviewer.ERPwaviewer.ALLERP;
+            Parameterfile.ERP = gui_erp_waviewer.ERPwaviewer.ERP;
         else
             if strcmpi(button,'No')
                 beep;
@@ -289,7 +285,6 @@ if ~isempty( Parameterfile)%% update the panels based on the saved file
             return;
         end
     end
-    assignin('base','ALLERPwaviewer',Parameterfile);
     viewer_ERPDAT.loadproper_count = 1;
     f_redrawERP_viewer_test();
 end
@@ -328,12 +323,12 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
             'NumberTitle', 'off', ...
             'MenuBar', 'none', ...
             'Toolbar', 'none', ...
-            'HandleVisibility', 'off', 'tag', 'rollover');
+            'HandleVisibility', 'on', 'tag', 'rollover');
         ScreenPos = [];
-        new_pos= erpworkingmemory('ERPWaveScreenPos');
-        if isempty(new_pos) || numel(new_pos)~=4
-            new_pos = [0.01,0.01,75,75];
-            erpworkingmemory('ERPWaveScreenPos',new_pos);
+        new_pos= erpworkingmemory('ERPWaviewerScreenPos');
+        if isempty(new_pos) || numel(new_pos)~=2
+            new_pos = [75,75];
+            erpworkingmemory('ERPWaviewerScreenPos',new_pos);
         end
         try
             ScreenPos =  get( groot, 'Screensize' );
@@ -342,7 +337,12 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         end
         gui_erp_waviewer.monitor_size = ScreenPos;
         gui_erp_waviewer.screen_pos = new_pos;
-        new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+        if  ~isempty(new_pos(2)) && new_pos(2) >100
+            POS4 = (100-new_pos(2))/100;
+            new_pos =[0,ScreenPos(4)*POS4,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+        else
+            new_pos =[0,0,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+        end
         set(gui_erp_waviewer.Window, 'Position', new_pos);
         
         % + View menu
@@ -447,7 +447,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         if strcmpi(button1,'Yes')
             try
                 close(gui_erp_waviewer.Window);
-                clear ALLERPwaviewer;
             catch
                 return;
             end

@@ -20,7 +20,6 @@ global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
-addlistener(viewer_ERPDAT,'ERPset_Chan_bin_label_change',@ERPset_Chan_bin_label_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 
 
@@ -79,7 +78,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         
         try
             SelectedIndex = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-            
         catch
             SelectedIndex =length(ALLERP);
         end
@@ -161,17 +159,17 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         ds_length = size(ERPdatasets,1);
         ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
         ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
-        Selected_erpset =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-        if isempty(Selected_erpset)|| min(Selected_erpset(:))<=0 || any(Selected_erpset(:) > length(ALLERPin))
-            Selected_erpset =  length(ALLERPin);
-            gui_erp_waviewer.ERPwaviewer.SelectERPIdx = Selected_erpset;
-            gui_erp_waviewer.ERPwaviewer.CURRENTERP = Selected_erpset;
-            gui_erp_waviewer.ERPwaviewer.ERP = gui_erp_waviewer.ERPwaviewer.ALLERP(Selected_erpset);
+        ERPArray =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        if isempty(ERPArray)|| min(ERPArray(:))<=0 || any(ERPArray(:) > length(ALLERPin))
+            ERPArray =  length(ALLERPin);
+            gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPArray;
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP = ERPArray;
+            gui_erp_waviewer.ERPwaviewer.ERP = gui_erp_waviewer.ERPwaviewer.ALLERP(ERPArray);
             gui_erp_waviewer.ERPwaviewer.PageIndex=1;
-            ERPwaveview_erpsetops.butttons_datasets.Value = Selected_erpset;
+            ERPwaveview_erpsetops.butttons_datasets.Value = ERPArray;
             viewer_ERPDAT.Count_currentERP = 2;
         end
-        ERPwaveview_erpsetops.butttons_datasets.Value = Selected_erpset;
+        ERPwaveview_erpsetops.butttons_datasets.Value = ERPArray;
         estudioworkingmemory('MyViewer_ERPsetpanel',0);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
@@ -205,21 +203,18 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         ERPtooltype = erpgettoolversion('tooltype');
         if strcmpi(ERPtooltype,'EStudio')
             ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
-            if ~isempty(Geterpbinchan)
-                
-                try chan_bin =ERPTab_plotset_pars{10};catch chan_bin=1; end;
-                if isempty(chan_bin) || numel(chan_bin)~=1  || (chan_bin~=1 && chan_bin~=2)
-                    chan_bin=1;
-                end
-                if chan_bin ==1
-                    gui_erp_waviewer.ERPwaviewer.plot_org.Grid =2;
-                    gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=1;
-                    gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
-                elseif chan_bin==2
-                    gui_erp_waviewer.ERPwaviewer.plot_org.Grid =1;
-                    gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=2;
-                    gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
-                end
+            try chan_bin =ERPTab_plotset_pars{10};catch chan_bin=1; end;
+            if isempty(chan_bin) || numel(chan_bin)~=1  || (chan_bin~=1 && chan_bin~=2)
+                chan_bin=1;
+            end
+            if chan_bin ==1
+                gui_erp_waviewer.ERPwaviewer.plot_org.Grid =2;
+                gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=1;
+                gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
+            elseif chan_bin==2
+                gui_erp_waviewer.ERPwaviewer.plot_org.Grid =1;
+                gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=2;
+                gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
             end
         end
         gui_erp_waviewer.ERPwaviewer.CURRENTERP = CurrentERP;
@@ -323,14 +318,17 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             if strcmpi(ERPtooltype,'EStudio') || strcmpi(ERPtooltype,'ERPLAB')
                 if strcmpi(ERPtooltype,'ERPLAB')
                     try
-                        Selected_erpset = evalin('base','CURRENTERP');
-                        CURRENTERPStudio = Selected_erpset;
+                        ERPArray = evalin('base','CURRENTERP');
+                        CURRENTERPStudio = ERPArray;
                     catch
                         viewer_ERPDAT.Process_messg =3;
                         fprintf(2,'\n ERPsets error: Cannot get CURRENTERP from Workspace.\n');
                         return;
                     end
                     estudioworkingmemory('PlotOrg_ERPLAB',1);
+                else
+                    ERPArray=  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+                    CURRENTERPStudio = gui_erp_waviewer.ERPwaviewer.CURRENTERP;
                 end
                 try
                     ALLERPin = evalin('base','ALLERP');
@@ -349,21 +347,21 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
                     return;
                 end
                 
-                if isempty(Selected_erpset) || min(Selected_erpset(:))> length(ALLERPin) || max(Selected_erpset(:))> length(ALLERPin)
-                    Selected_erpset =  length(ALLERPin);
+                if isempty(ERPArray) || any(ERPArray(:)> length(ALLERPin))
+                    ERPArray =  length(ALLERPin);
                 end
-                if isempty(CURRENTERPStudio) || CURRENTERPStudio> length(ALLERPin)
+                if isempty(CURRENTERPStudio) || any(CURRENTERPStudio> length(ALLERPin))
                     CURRENTERPStudio =  length(ALLERPin);
                 end
                 
-                [x_index,y_index] = find(Selected_erpset==CURRENTERPStudio);
+                [x_index,y_index] = find(ERPArray==CURRENTERPStudio);
                 if isempty(y_index)
-                    y_index = numel(Selected_erpset);
+                    y_index = numel(ERPArray);
                 end
                 ERPwaveview_erpsetops.ALLERP = ALLERPin;
                 ERPwaveview_erpsetops.ERP = ALLERPin(CURRENTERPStudio);
                 ERPwaveview_erpsetops.CURRENTERP = CURRENTERPStudio;
-                ERPwaveview_erpsetops.SelectERPIdx = Selected_erpset;
+                ERPwaveview_erpsetops.SelectERPIdx = ERPArray;
                 ERPwaveview_erpsetops.PageIndex = y_index;
                 ERPwaveview_erpsetops.ERPLABFlag = 1;
                 
@@ -379,20 +377,19 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
                     ERPwaveview_erpsetops.butttons_datasets.Max = ds_length;
                 end
                 ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
-                ERPwaveview_erpsetops.butttons_datasets.Value = Selected_erpset;
+                ERPwaveview_erpsetops.butttons_datasets.Value = ERPArray;
             else
                 ERPwaveview_erpsetops.auto.Value = 0;
                 ERPwaveview_erpsetops.custom.Value =1;
                 ERPwaveview_erpsetops.butttons_datasets.Enable = 'on';
                 ERPwaveview_erpsetops.auto.Enable = 'off';
             end
-          
+            
             gui_erp_waviewer.ERPwaviewer.ALLERP =  ERPwaveview_erpsetops.ALLERP;
             gui_erp_waviewer.ERPwaviewer.ERP =        ERPwaveview_erpsetops.ERP;
             gui_erp_waviewer.ERPwaviewer.CURRENTERP=      ERPwaveview_erpsetops.CURRENTERP;
             gui_erp_waviewer.ERPwaviewer.SelectERPIdx=    ERPwaveview_erpsetops.SelectERPIdx;
             gui_erp_waviewer.ERPwaviewer.PageIndex=   ERPwaveview_erpsetops.PageIndex;
-            gui_erp_waviewer.ERPwaviewer.erp_binchan_op = ERPwaveview_erpsetops.auto.Value;
             ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
             ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
             ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];

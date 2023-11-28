@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022 && Nov. 2023
 
 
 function varargout = f_ERP_plotorg_waveviewer_GUI(varargin)
@@ -51,14 +51,10 @@ varargout{1} = box_erpwave_viewer_plotorg;
 
     function drawui_plot_org(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
-        try
-            ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
-            indexerp =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-        catch
-            beep;
-            disp('f_ERP_plotorg_waveviewer_GUI() error: Please run the ERP wave viewer again.');
-            return;
-        end
+        
+        ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
+        indexerp =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        
         
         for Numofselectederp = 1:numel(indexerp)
             SrateNum_mp(Numofselectederp,1)   =  ALLERP(indexerp(Numofselectederp)).srate;
@@ -74,6 +70,20 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if isempty(plotorg_Index) || plotorg_Index<=0 || plotorg_Index>6
             plotorg_Index=1;
             MERPWaveViewer_plotorg{1}=1;
+        end
+        ERPtooltype = erpgettoolversion('tooltype');
+        if strcmpi(ERPtooltype,'EStudio')
+            ERPTab_plotset_pars= estudioworkingmemory('ERPTab_plotset_pars');
+            try
+                overlay = ERPTab_plotset_pars{8};
+            catch
+                overlay=0;
+            end
+            if overlay==0
+                plotorg_Index=1;
+            else
+                plotorg_Index=3;
+            end
         end
         
         if numel(unique(SrateNum_mp))~=1  && (plotorg_Index~=1 && plotorg_Index~=3)
@@ -528,14 +538,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if ~isempty(messgStr) && viewerpanelIndex~=4
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
-        try
-            ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
-            indexerp =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-        catch
-            beep;
-            disp('f_ERP_plotorg_waveviewer_GUI() error: Please run the ERP wave viewer again.');
-            return;
-        end
+        ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
+        indexerp =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        
         for Numofselectederp = 1:numel(indexerp)
             SrateNum_mp(Numofselectederp,1)   =  ALLERP(indexerp(Numofselectederp)).srate;
             Datype{Numofselectederp} =   ALLERP(indexerp(Numofselectederp)).datatype;
@@ -837,7 +842,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
                     gui_plotorg_waveviewer.layout_custom.Value = 0;
                     gui_plotorg_waveviewer.rownum.Enable = 'off';
                     gui_plotorg_waveviewer.columnnum.Enable = 'off';
-                    
                     gui_plotorg_waveviewer.rowgap_auto.Value = 1;
                     gui_plotorg_waveviewer.rowgap_auto.Enable = 'off';
                     gui_plotorg_waveviewer.rowgapGTPcustom.String = '10';
@@ -2029,7 +2033,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.columnnum.Enable=LayOutauto;
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.rows = Plot_orgpar.gridlayout.rows;
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columns =Plot_orgpar.gridlayout.columns;
-            %             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columFormat = plotArrayFormtimpChag;
         catch
             beep;
             disp('The imported parameters didnot match with those of "Plot Organization".')
@@ -2276,14 +2279,9 @@ varargout{1} = box_erpwave_viewer_plotorg;
             GridValue=1; OverlayValue = 2; PageValue =3;
         end
         
-        try
-            ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
-            indexerp =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-        catch
-            beep;
-            disp('f_ERP_plotorg_waveviewer_GUI() error: Please run the ERP wave viewer again.');
-            return;
-        end
+        ALLERP = gui_erp_waviewer.ERPwaviewer.ALLERP;
+        indexerp =  gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        
         for Numofselectederp = 1:numel(indexerp)
             SrateNum_mp(Numofselectederp) =   ALLERP(indexerp(Numofselectederp)).srate;
         end
@@ -2449,7 +2447,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if max(ERPsetArray) >length(ALLERPIN)
             ERPsetArray =length(ALLERPIN);
         end
-        
         if gui_plotorg_waveviewer.plotorg_c1.Value ==1
             GridValue=1; OverlayValue = 2; PageValue =3;
             MERPWaveViewer_plotorg{1}=1;
@@ -2642,7 +2639,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
             ERPsetArray =length(ALLERPIN);
             gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPsetArray;
         end
-        
         if gui_plotorg_waveviewer.plotorg_c1.Value ==1
             GridValue=1; OverlayValue = 2; PageValue =3;
         elseif  gui_plotorg_waveviewer.plotorg_c2.Value ==1
@@ -2782,6 +2778,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
         estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
+        viewer_ERPDAT.Count_currentERP =5;
     end
 
 
@@ -2913,7 +2910,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.LayoutFlag = [0,0,0,0,0,1];
         end
         
-        
         [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,ERPsetArray);
         if GridValue ==1 %% if  the selected Channel is "Grid"
             plotArray = chanArray;
@@ -3016,7 +3012,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
                 end
             end
             gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data = Datanew;
-            
             if ~isempty(EmptyItemStr)
                 MessageViewer= char(strcat('Plot Organization > loadproper_change() - Undefined items in grid locations:',EmptyItemStr,32,'. Because they donot match with the selected labels'));
                 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -3112,7 +3107,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         MERPWaveViewer_plotorg{9}=str2num(gui_plotorg_waveviewer.columngapoverlapedit.String);
         MERPWaveViewer_plotorg{10}=gui_plotorg_waveviewer.layout_custom_edit_checkbox.Value;
         estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
-        
         viewer_ERPDAT.loadproper_count =5;
     end
 

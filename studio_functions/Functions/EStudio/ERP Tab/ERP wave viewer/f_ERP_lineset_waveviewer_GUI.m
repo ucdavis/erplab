@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022 && Nov. 2023
 
 
 function varargout = f_ERP_lineset_waveviewer_GUI(varargin)
@@ -286,7 +286,7 @@ varargout{1} = box_erplineset_viewer_property;
         gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
         
         %%------------------------Legend columns---------------------------
-        legendcolumnsdef =  round(sqrt( length(LegendArray)));
+        legendcolumnsdef =  ceil(sqrt( length(LegendArray)));
         try
             legendcolumns= MERPWaveViewer_linelegend{7};
         catch
@@ -749,10 +749,11 @@ varargout{1} = box_erplineset_viewer_property;
             legendset_str = table2cell(legendset_str);
         end
         gui_erp_waviewer.ERPwaviewer.Legend.data = legendset_str;
-        if gui_erplinset_waveviewer.font_colorauto.Value==1
-            gui_erplinset_waveviewer.legendcolumns.Value =round(sqrt(length(LegendArray)));
-            gui_erp_waviewer.ERPwaviewer.Legend.columns = round(sqrt(length(LegendArray)));
+        if  gui_erplinset_waveviewer.legendtextauto.Value==1
+            gui_erplinset_waveviewer.legendcolumns.Value =ceil(sqrt(length(LegendArray)));
+            gui_erp_waviewer.ERPwaviewer.Legend.columns = ceil(sqrt(length(LegendArray)));
         end
+    
         MERPWaveViewer_linelegend{1}=gui_erplinset_waveviewer.linesauto.Value;
         MERPWaveViewer_linelegend{2}= gui_erplinset_waveviewer.line_customtable.Data;
         MERPWaveViewer_linelegend{3}=gui_erplinset_waveviewer.font_colorauto.Value;

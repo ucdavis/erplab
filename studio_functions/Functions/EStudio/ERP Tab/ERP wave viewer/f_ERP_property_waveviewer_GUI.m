@@ -11,7 +11,7 @@
 function varargout = f_ERP_property_waveviewer_GUI(varargin)
 global gui_erp_waviewer;
 global viewer_ERPDAT;
-
+addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 gui_property_waveviewer = struct();
 
 %-----------------------------Name the title----------------------------------------------
@@ -77,12 +77,12 @@ varargout{1} = box_erpwave_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         New_pos = gui_erp_waviewer.screen_pos;
         if isempty(New_pos)
-            New_pos = [0.01,0.01,75,75];
+            New_pos = [75,75];
             erpworkingmemory('ERPWaveScreenPos',New_pos);
         end
         
         New_pos1 = roundn(New_pos,-3);
-        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2)),32,num2str(New_pos1(3)),32,num2str(New_pos1(4))]);
+        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2))]);
         
         gui_property_waveviewer.parameters_pos = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_pos_title,'String',New_poStr,...
             'callback',@Viewerpos,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
@@ -91,7 +91,7 @@ varargout{1} = box_erpwave_viewer_property;
         gui_property_waveviewer.viewer_pos_title1 = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title1,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
-        uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(left bottom width height) in %',...
+        uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(width, height) in %',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         set(gui_property_waveviewer.viewer_pos_title1, 'Sizes',[68 165]);
         set(gui_property_waveviewer.DataSelBox ,'Sizes',[30 25 25 25])
@@ -148,7 +148,6 @@ varargout{1} = box_erpwave_viewer_property;
             gui_erp_waviewer.ERPwaviewer.CURRENTERP = length(ALLERP);
             gui_erp_waviewer.ERPwaviewer.SelectERPIdx = length(ALLERP);
             gui_erp_waviewer.ERPwaviewer.PageIndex = 1;
-            
         catch
             beep;
             MessageViewer=['\n\n My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
@@ -227,7 +226,6 @@ varargout{1} = box_erpwave_viewer_property;
         end
         ERPwaviewer.version = erplabstudiover;
         
-        
         ERPwaviewer.ALLERP = [];
         ERPwaviewer.ERP = [];
         ERPwaviewer.CURRENTERP = [];
@@ -266,7 +264,6 @@ varargout{1} = box_erpwave_viewer_property;
         end
         
         ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
-        
         
         %         [pathx, filename, ext] = fileparts(erpfilename);
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
@@ -338,9 +335,9 @@ varargout{1} = box_erpwave_viewer_property;
         viewer_ERPDAT.Process_messg =2;
     end
 
-
+%%--------------------change gui width and heigth--------------------------
     function Viewerpos(Str,~)
-        New_pos = str2num(Str.String);
+        New_pos1 = str2num(Str.String);
         MessageViewer= char(strcat('Viewer Properties > Position'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -349,120 +346,74 @@ varargout{1} = box_erpwave_viewer_property;
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
-        if isempty(New_pos) || numel(New_pos)~=4
-            MessageViewer= char(strcat('Viewer Properties > Position- 4 numbers are needed for Viewer position (e.g., [1 1 1200 700])'));
+        try
+            New_posin = erpworkingmemory('EStudioScreenPos');
+        catch
+            New_posin = [75,75];
+        end
+        if isempty(New_posin) ||numel(New_posin)~=2
+            New_posin = [75,75];
+        end
+        New_posin(2) = abs(New_posin(2));
+        
+        New_pos = gui_erp_waviewer.Window.Position;
+        if isempty(New_pos1) || numel(New_pos1)~=2
+            MessageViewer= char(strcat('Viewer Properties > Position- 2 numbers are needed for Viewer position (e.g., [1 1 1200 700])'));
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            %             fprintf(2,['\n Warning: ',MessageViewer,'.\n']);
             viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
+            
+            new_pos =[ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
             gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
             return;
         end
+        erpworkingmemory('ERPWaviewerScreenPos',New_pos1);
         
-        xyValue = New_pos(1:2);
-        WHpos = New_pos(3:4);
-        if min(xyValue(:))<-100 || max(xyValue(:)) >100
-            MessageViewer= char(strcat('Viewer Properties > X and Y values should be between [-100 100]'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+        %        gui_erp_waviewer.screen_pos = New_pos;
+        try
+            POS4 = (New_pos1(2)-New_posin(2))/100;
+            new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+            set(gui_erp_waviewer.Window, 'Position', new_pos);
+        catch
+            erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for Viewer is invalid and it must be two numbers']);
             viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
+            set(gui_erp_waviewer.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+            erpworkingmemory('ERPWaviewerScreenPos',[75 75]);
         end
-        if  min(WHpos(:))<0 || max(WHpos(:))>100
-            MessageViewer= char(strcat('Viewer Properties > width and height values should be between [0 100]'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
+        gui_erp_waviewer.ERPwaviewer.FigOutpos = New_pos1;
         
-        if New_pos(1)>90 || New_pos(1)< -90
-            MessageViewer= char(strcat('Viewer Properties > Position: Left is better within [-90 90], otherwise, the main GUI will disappear.'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        
-        if  New_pos(2)< -90
-            MessageViewer= char(strcat('Viewer Properties > Position: Bottom should be larger than -90, otherwise, the main GUI will disappear.'));
-            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =4;
-            new_pos = gui_erp_waviewer.Window.Position;
-            new_pos =[ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100,ScreenPos(3)*new_pos(3)/100,ScreenPos(4)*new_pos(4)/100];
-            gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
-            return;
-        end
-        
-        erpworkingmemory('ERPWaveScreenPos',New_pos);
-        gui_erp_waviewer.screen_pos = New_pos;
-        New_pos1 = roundn(New_pos,-3);
-        New_poStr = char([num2str(New_pos1(1)),32,num2str(New_pos1(2)),32,num2str(New_pos1(3)),32,num2str(New_pos1(4))]);
-        gui_property_waveviewer.parameters_pos.String = New_poStr;
-        
-        
-        New_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
-        gui_erp_waviewer.Window.Position= New_pos;
+        viewer_ERPDAT.Count_currentERP=1;
         viewer_ERPDAT.Process_messg =2;
-        f_redrawERP_viewer_test();
     end
 
-%%Update the Viewer position automatically
-    function ViewerPos(~,~)
-        
-        ERPLAB_ERPWaviewer=  erpworkingmemory('ERPLAB_ERPWaviewer');
-        if ERPLAB_ERPWaviewer==1
-            viewer_ERPDAT.ERPset_Chan_bin_label=2;
-        end
-        
-        try
-            ScreenPos =  gui_erp_waviewer.monitor_size;
-        catch
-            ScreenPos =  [0 0 900 1800];
-        end
-        try
-            New_pos = gui_erp_waviewer.Window.Position;
-        catch
+
+    function Reset_Waviewer_panel_change(~,~)
+        if viewer_ERPDAT.Reset_Waviewer_panel~=8
             return;
         end
-        New_pos1 = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
-        
+        erpworkingmemory('ERPWaviewerScreenPos',[75 75]);
+        gui_erp_waviewer.ERPwaviewer.FigOutpos = [75 75];
         try
-            Old_pos = gui_erp_waviewer.screen_pos;
-            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),Old_pos(3),Old_pos(4)];
+            ScreenPos =  get( groot, 'Screensize' );
         catch
-            New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
+            ScreenPos =  get( 0, 'Screensize' );
         end
         
-        if New_pos1(1)>90 || New_pos1(1)< -90 || New_pos(2)< -90 || min(New_pos1(3:4))<-100 || max(New_pos1(3:4)) >100 %% from different size of monitor
-            New_pos = [0.01,0.01,75,75];
-            new_pos =[ScreenPos(3)*New_pos(1)/100,ScreenPos(4)*New_pos(2)/100,ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
-            set(gui_erp_waviewer.Window, 'Position', new_pos);
-            
-            zoomSpace = 100*((gui_erp_waviewer.ViewAxes.Widths+240)-gui_erp_waviewer.Window.Position(3))/gui_erp_waviewer.Window.Position(3);
-            if isempty(zoomSpace) || zoomSpace<0
-                zoomSpace = 0;
-            end
-            if zoomSpace ==0
-                gui_erp_waviewer.ScrollVerticalOffsets=0;
-                gui_erp_waviewer.ScrollHorizontalOffsets=0;
-            end
-            estudioworkingmemory('zoomSpace',zoomSpace);
-            gui_erp_waviewer.zoom_edit.String = num2str(roundn(zoomSpace,-1));
+        set(gui_erp_waviewer.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+        erpworkingmemory('ERPWaviewerScreenPos',[75 75]);
+        gui_property_waveviewer.parameters_pos.String = num2str([75 75]);
+        
+        %%name
+        ViewerName = 'My Viewer';
+        try
+            [version1 reldate] = geterplabstudioversion;
+            erplabstudiover = version1;
+        catch
+            erplabstudiover = '??';
         end
-        
-        New_pos = roundn(New_pos,-3);
-        New_poStr = char([num2str(New_pos(1)),32,num2str(New_pos(2)),32,num2str(New_pos(3)),32,num2str(New_pos(4))]);
-        
-        gui_property_waveviewer.parameters_pos.String = New_poStr;
-        %         erpworkingmemory('ERPWaveScreenPos',New_pos);
-        gui_erp_waviewer.screen_pos = New_pos;
+        currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
+        estudioworkingmemory('viewername',ViewerName);
+        gui_erp_waviewer.ERPwaviewer.figname = ViewerName;
+        gui_erp_waviewer.Window.Name = currvers;
     end
+
 end

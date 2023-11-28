@@ -251,7 +251,7 @@ EStudio_gui_erp_totl = createInterface();
         end
         if ~isempty(new_pos(2)) && new_pos(2) >100
             POS4 = (new_pos(2)-1)/100;
-            new_pos =[0,0-ScreenPos(4)*POS4,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
+            new_pos =[0,0-1.1*ScreenPos(4)*POS4,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
         else
             new_pos =[0,0,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
         end

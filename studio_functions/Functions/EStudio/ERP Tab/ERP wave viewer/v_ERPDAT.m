@@ -7,8 +7,6 @@ classdef v_ERPDAT < handle
         ERP_chan
         ERP_bin
         Count_currentERP
-        count_legend
-        page_xyaxis
         Process_messg
         loadproper_count
         count_twopanels
@@ -24,8 +22,6 @@ classdef v_ERPDAT < handle
         ERP_chan_change
         ERP_bin_change
         v_currentERP_change
-        legend_change
-        page_xyaxis_change
         v_messg_change
         loadproper_change
         count_twopanels_change
@@ -80,20 +76,6 @@ classdef v_ERPDAT < handle
         function set.Count_currentERP(obj,value)
             obj.Count_currentERP = value;
             notify(obj,'v_currentERP_change');
-        end
-        
-        %%m8
-        %capture the changes of legend
-        function set.count_legend(obj,value)
-            obj.count_legend = value;
-            notify(obj,'legend_change');
-        end
-        
-        %%m9
-        %Modify x/y axis based on the changed pages
-        function set.page_xyaxis(obj,value)
-            obj.page_xyaxis = value;
-            notify(obj,'page_xyaxis_change');
         end
         
         %%%m10

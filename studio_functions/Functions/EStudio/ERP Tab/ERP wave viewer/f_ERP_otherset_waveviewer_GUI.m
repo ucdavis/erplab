@@ -492,7 +492,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
 
 %%-------------------figure background color-------------------------------
     function figbackcolor(Str,~)
-        
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=7
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -655,8 +654,6 @@ varargout{1} = box_erplabelset_viewer_otherset;
                 viewer_ERPDAT.Process_messg =4;
                 return;
             end
-            %%may check the left and right edges for the defined
-            %%time=window
         else
             gui_erp_waviewer.ERPwaviewer.baselinecorr = 'none';
         end
@@ -853,6 +850,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         MERPWaveViewer_others{6} = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
         MERPWaveViewer_others{5} = gui_erp_waviewer.ERPwaviewer.baselinecorr;
         estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        
+        viewer_ERPDAT.Reset_Waviewer_panel=8;
     end
 
 %%------------------------change this panel--------------------------------
@@ -897,10 +896,11 @@ varargout{1} = box_erplabelset_viewer_otherset;
         MERPWaveViewer_others{6} = gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
         MERPWaveViewer_others{5} = gui_erp_waviewer.ERPwaviewer.baselinecorr;
         estudioworkingmemory('MERPWaveViewer_others',MERPWaveViewer_others);
+        viewer_ERPDAT.Count_currentERP=8;
     end
 
 
-
+%%----------------------execute "apply"------------------------------------
     function otherset_presskey(hObject, eventdata)
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')

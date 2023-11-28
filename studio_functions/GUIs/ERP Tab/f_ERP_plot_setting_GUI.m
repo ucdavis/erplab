@@ -1550,7 +1550,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
-        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);%%save the changed paras to memory file
         %%channel orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         if  ERPTab_plotset.chanorder_number.Value==1
@@ -1594,7 +1594,7 @@ varargout{1} = ERP_plotset_box;
         if observe_ERPDAT.Count_currentERP~=3
             return;
         end
-         ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');
         if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             enbaleflag = 'off';
         else

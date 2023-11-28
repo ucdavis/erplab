@@ -163,6 +163,10 @@ varargout{1} = Chanbin_waveviewer_box;
         
         estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin); %%save chan array and bin array
         estudioworkingmemory('MyViewer_chanbin',0);
+        
+        gui_erp_waviewer.ERPwaviewer.bin = Bin_sel;
+        gui_erp_waviewer.ERPwaviewer.chan = Chan_sel;
+        
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,8 +243,8 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         
         chanArray =  gui_erp_waviewer.ERPwaviewer.chan;
-        if isempty(chanArray) || any(chanArray<=0) || any(chanArray>  length(ERPwaveview_binchan.BinRange.String)-1)
-            chanArray =   [1: length(ERPwaveview_binchan.BinRange.String)-1];
+        if isempty(chanArray) || any(chanArray<=0) || any(chanArray>  length(ERPwaveview_binchan.ElecRange.String)-1)
+            chanArray =   [1:length(ERPwaveview_binchan.BinRange.String)-1];
             gui_erp_waviewer.ERPwaviewer.chan= chanArray;
         end
         if numel(binArray) == length(ERPwaveview_binchan.BinRange.String)-1
@@ -565,7 +569,6 @@ varargout{1} = Chanbin_waveviewer_box;
         gui_erp_waviewer.ERPwaviewer.bin = [1:length(ERPwaveview_binchan.BinRange.String)-1];
         gui_erp_waviewer.ERPwaviewer.chan = [1:length(ERPwaveview_binchan.ElecRange.String)-1];
         gui_erp_waviewer.ERPwaviewer.binchan_op = 0;
-        assignin('base','ALLERPwaviewer',gui_erp_waviewer.ERPwaviewer);
         
         %%save the parameters to memory file
         MERPWaveViewer_chanbin{1} = 0;
