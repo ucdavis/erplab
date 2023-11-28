@@ -11,6 +11,7 @@
 function varargout = f_ERP_lineset_waveviewer_GUI(varargin)
 
 global viewer_ERPDAT;
+global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'legend_change',@legend_change);
 addlistener(viewer_ERPDAT,'page_xyaxis_change',@page_xyaxis_change);
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
@@ -340,6 +341,17 @@ varargout{1} = box_erplineset_viewer_property;
         set(gui_erplinset_waveviewer.DataSelBox ,'Sizes',[20 200 20 25 25 25 25]);
         assignin('base','ALLERPwaviewer',ERPwaviewer);
         estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);
+        
+        gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
+        fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        labelfontsizeinum = str2num(char(fontsize));
+        gui_erp_waviewer.ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
+        gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto = gui_erplinset_waveviewer.font_colorauto.Value;
     end
 
 %%**************************************************************************%%
@@ -713,6 +725,14 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
         estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
         
+        gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
+        gui_erp_waviewer.ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
+        gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto = gui_erplinset_waveviewer.font_colorauto.Value;
+        
         f_redrawERP_viewer_test();
         viewer_ERPDAT.Process_messg =2;
     end
@@ -798,6 +818,17 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
         estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        
+        gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
+        fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        labelfontsizeinum = str2num(char(fontsize));
+        gui_erp_waviewer.ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
+        gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto = gui_erplinset_waveviewer.font_colorauto.Value;
     end
 
 %%--------changed the legend names based on the current page---------------
@@ -880,6 +911,16 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
         estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
+        fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        labelfontsizeinum = str2num(char(fontsize));
+        gui_erp_waviewer.ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
+        gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto = gui_erplinset_waveviewer.font_colorauto.Value;
     end
 
 
@@ -959,6 +1000,16 @@ varargout{1} = box_erplineset_viewer_property;
         MERPWaveViewer_linelegend{6}= gui_erplinset_waveviewer.legendtextauto.Value;
         MERPWaveViewer_linelegend{7}=gui_erplinset_waveviewer.legendcolumns.Value;
         estudioworkingmemory('MERPWaveViewer_linelegend',MERPWaveViewer_linelegend);%%save the parameters for this panel to memory file
+        gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Lines.data = gui_erplinset_waveviewer.line_customtable.Data;
+        fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
+            '40','50','60','70','80','90','100'};
+        labelfontsizeinum = str2num(char(fontsize));
+        gui_erp_waviewer.ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
+        gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.columns = gui_erplinset_waveviewer.legendcolumns.Value;
+        gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto = gui_erplinset_waveviewer.font_colorauto.Value;
     end
 
 

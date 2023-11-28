@@ -2418,13 +2418,9 @@ elseif length(latency)==2
         [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
         for Numofstione = 1:Num_plot
             for Numofstitwo = 1:Num_data
-                %                 if positive_up==1
-                %                     line(r_ax, [Lat{Numofstitwo,Numofstione} Lat{Numofstitwo,Numofstione}],[offset(Numofstione),squeeze(Amp_out(Numofstitwo,Numofstione))],'Color',line_colors(Numofstitwo,:,:),'LineWidth',1,'LineStyle','-.');
-                %                 else
                 Amp_all = squeeze(plot_erp_data(:,Numofstitwo,Numofstione));
                 [xxx, latsamp, latdiffms] = closest(timex, Lat{Numofstitwo,Numofstione});
                 line(r_ax, [Lat{Numofstitwo,Numofstione} Lat{Numofstitwo,Numofstione}],[offset(Numofstione),Amp_all(latsamp)],'Color',line_colors(Numofstitwo,:,:),'LineWidth',1,'LineStyle','-.');
-                %                 end
             end
         end
     elseif ismember_bc2(moption, { 'fareatlat', 'fareaplat','fninteglat','fareanlat'})%fractional area latency

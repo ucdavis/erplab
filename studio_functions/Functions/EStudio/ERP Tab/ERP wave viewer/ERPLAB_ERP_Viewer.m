@@ -256,7 +256,7 @@ try
     close(gui_erp_waviewer.Window);%%close previous GUI if exists
 catch
 end
-
+gui_erp_waviewer.ERPwaviewer = ERPwaviewer;
 
 createInterface_ERPWave_viewer(ERPtooltype);
 

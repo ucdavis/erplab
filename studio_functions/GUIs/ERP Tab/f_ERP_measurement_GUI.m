@@ -247,25 +247,6 @@ varargout{1} = erp_measurement_box;
             'String','Option','callback',@out_file_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(ERPMTops.measurement_type, 'ColumnSizes',[65 135 65],'RowSizes',[25 25 25 25 25 25]);
         
-        
-%         %-------------------------Setting for Viewer----------------------
-%         ERPMTops.mt_viewer = uiextras.HBox('Parent',ERPMTops.mt,'Spacing',1,'BackgroundColor',ColorB_def);
-%         ERPMTops.m_t_viewer_title = uicontrol('Style', 'text','Parent', ERPMTops.mt_viewer,'String','Viewer:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-%         set(ERPMTops.m_t_viewer_title,'HorizontalAlignment','left');
-%         ERPMTops.m_t_viewer_on = uicontrol('Style', 'radiobutton','Parent', ERPMTops.mt_viewer,'String','On',...
-%             'callback',@m_t_viewer_on,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-%         ERPMTops.m_t_viewer_on.KeyPressFcn = @erp_mt_presskey;
-%         ERPMTops.m_t_viewer_off = uicontrol('Style', 'radiobutton','Parent', ERPMTops.mt_viewer,'String','Off',...
-%             'callback',@m_t_viewer_off,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-%         ERPMTops.m_t_viewer_off.KeyPressFcn = @erp_mt_presskey;
-%         ERPMTops.m_t_viewer_on.Value = 0;
-%         ERPMTops.m_t_viewer_off.Value =1;
-%         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
-%         erpworkingmemory('ERPTab_mtviewer',ERPMTops.m_t_viewer_on.Value);
-%         
-%         uiextras.Empty('Parent', ERPMTops.mt_viewer,'BackgroundColor',ColorB_def); % 1A
-%         set(ERPMTops.mt_viewer,'Sizes',[70 60 60 70]);
-%         
         %%---------------------------Select ERPsets and Run options-----------
         ERPMTops.out_file_run = uiextras.HBox('Parent',ERPMTops.mt,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPMTops.cancel = uicontrol('Style', 'pushbutton','Parent',ERPMTops.out_file_run,'String','Cancel',...
@@ -608,7 +589,6 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         ERPMTops.apply.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_mesuretool',1);
-        
         binNums =  str2num(source.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binNums, [],1);
         if chk(1)
@@ -1177,7 +1157,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
-%         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
+        %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
         if ~isempty(latency)
             [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP, latency, binArray, chanArray,...
                 'Erpsets', ERPsetArray, 'Measure',MeasureName{IA}, 'Component', ERPMTops.def_erpvalue{8},...
@@ -1240,6 +1220,7 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
         end
+        observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1340,15 +1321,7 @@ varargout{1} = erp_measurement_box;
         end
         FileName =  ERPMTops.m_t_file.String;
         [pathNamex, fname, ext] = fileparts(FileName);
-        %         if isempty(fname)
-        %             msgboxText =  ['ERP Measurement Tool > Apply - Please give a name to the output file'];
-        %             erpworkingmemory('f_ERP_proces_messg',msgboxText);
-        %             observe_ERPDAT.Process_messg =4;
-        %             return;
-        %         end
-        if isempty(pathNamex)
-            ERPMTops.m_t_file.String = fullfile(pathName_folder,fname);
-        end
+        
         FileName=ERPMTops.m_t_file.String;
         erpworkingmemory('f_ERP_proces_messg',' ERP Measurement Tool > Viewer');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -1365,9 +1338,12 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{2} = str2num(ERPMTops.m_t_erpset.String);
         ERPMTops.Paras{3} = str2num(ERPMTops.m_t_bin.String);
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
+        estudioworkingmemory('selectederpstudio',ERPMTops.Paras{2});
+        estudioworkingmemory('ERP_BinArray',ERPMTops.Paras{3});
+        estudioworkingmemory('ERP_ChanArray',ERPMTops.Paras{4});
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
-%         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
+        %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
         erpworkingmemory('ERPTab_mtviewer',1);
         
         if ~isempty(latency)
@@ -1415,7 +1391,7 @@ varargout{1} = erp_measurement_box;
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
             f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
         end
-%         observe_ERPDAT.Count_currentERP=1;
+        observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1464,19 +1440,11 @@ varargout{1} = erp_measurement_box;
         ERPMTops.m_t_file_ops.Enable = Enable_label;
         ERPMTops.m_t_viewer.Enable = Enable_label;
         ERPMTops.m_t_advanced.Enable = Enable_label;
-%         ERPMTops.m_t_viewer_on.Enable = Enable_label;
-%         ERPMTops.m_t_viewer_off.Enable = Enable_label;
         ERPMTops.m_t_erpset.Enable = Enable_label;
         ERPMTops.m_t_erpset_ops.Enable = Enable_label;
         ERPMTops.cancel.Enable = Enable_label;
         ERPMTops.apply.Enable = Enable_label;
         ERPMTops.m_t_value.Enable = Enable_label;
-        
-%         if ERPMTops.m_t_viewer_on.Value==1
-%             ERPMTops.apply.Enable = 'on';
-%         else
-%             ERPMTops.apply.Enable = 'off';
-%         end
         observe_ERPDAT.Count_currentERP=12;
     end
 
@@ -1542,13 +1510,6 @@ varargout{1} = erp_measurement_box;
         %%path name
         try pathanme = ERPMTops.Paras{6}; catch pathanme=  ''; ERPMTops.Paras{6}='';end
         ERPMTops.m_t_file.String = pathanme;
-        %%viewer_on?
-%         m_t_viewer_on = ERPMTops.Paras{7};
-%         if isempty(m_t_viewer_on) || numel(m_t_viewer_on)~=1 || (m_t_viewer_on~=0 && m_t_viewer_on~=1)
-%             m_t_viewer_on = 0;ERPMTops.Paras{7}=0;
-%         end
-%         ERPMTops.m_t_viewer_on.Value=m_t_viewer_on;
-%         ERPMTops.m_t_viewer_off.Value=~m_t_viewer_on;
     end
 
 

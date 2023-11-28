@@ -16,6 +16,7 @@ function varargout = f_ERP_Binchan_waviewer_GUI(varargin)
 %
 global viewer_ERPDAT
 global observe_ERPDAT;
+global gui_erp_waviewer;
 
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);

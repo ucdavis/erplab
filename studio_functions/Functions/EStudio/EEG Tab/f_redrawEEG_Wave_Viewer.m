@@ -72,8 +72,6 @@ if ~isempty(observe_EEGDAT.ALLEEG)  && ~isempty(observe_EEGDAT.EEG)
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','ALLEEG', observe_EEGDAT.ALLEEG);
         assignin('base','CURRENTSET', observe_EEGDAT.CURRENTSET);
-        %%Insert something to call the function that can change the parameters in
-        %%the other panels
     end
     [xpos,ypos] = find(EEGset_selected==observe_EEGDAT.CURRENTSET);
     if ~isempty(ypos)
@@ -85,16 +83,19 @@ if ~isempty(observe_EEGDAT.ALLEEG)  && ~isempty(observe_EEGDAT.EEG)
         pagecurrentNum=1;
         PageStr = observe_EEGDAT.EEG.setname;
     end
+    Enableflag = 'on';
 else
     pageNum=1;
     pagecurrentNum=1;
     PageStr = 'No EEG was loaded';
+    Enableflag = 'off';
 end
 
 EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
 EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
 EStudio_gui_erp_totl.eegpageinfo_minus.Callback=@page_minus;
-EStudio_gui_erp_totl.eegpageinfo_edit.String=num2str(pagecurrentNum);
+set(EStudio_gui_erp_totl.eegpageinfo_edit,'String',num2str(pagecurrentNum),'Enable','on');
+
 EStudio_gui_erp_totl.eegpageinfo_edit.Callback=@page_edit;
 EStudio_gui_erp_totl.eegpageinfo_plus.Callback=@page_plus;
 if pageNum ==1
@@ -125,17 +126,17 @@ EStudio_gui_erp_totl.eegpageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.eegpageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.eegpageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 set(EStudio_gui_erp_totl.eegpageinfo_box, 'Sizes', [-1 70 50 70] );
-EStudio_gui_erp_totl.eeg_zoom_in_large.Callback=@zoomin_large;
-EStudio_gui_erp_totl.eeg_zoom_in_fivesmall.Callback=@zoomin_fivesmall;
-EStudio_gui_erp_totl.eeg_zoom_in_small.Callback=@zoomin_small;
-EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
-EStudio_gui_erp_totl.eeg_zoom_edit.Callback=@zoomedit;
-EStudio_gui_erp_totl.eeg_zoom_out_small.Callback = @zoomout_small;
-EStudio_gui_erp_totl.eeg_zoom_out_fivelarge.Callback =@zoomout_fivelarge;
-EStudio_gui_erp_totl.eeg_zoom_out_large.Callback =@zoomout_large;
-EStudio_gui_erp_totl.eeg_figurecommand.Callback=@Show_command;
-EStudio_gui_erp_totl.eeg_figuresaveas.Callback=@figure_saveas;
-EStudio_gui_erp_totl.eeg_figureout.Callback = @figure_out;
+set(EStudio_gui_erp_totl.eeg_zoom_in_large,'Callback',@zoomin_large,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_in_fivesmall,'Callback',@zoomin_fivesmall,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_in_small,'Callback',@zoomin_small,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_edit,'String',num2str(Startimes),'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_out_small,'Callback',@zoomout_small,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_figurecommand,'Callback',@Show_command,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
 
 set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 5]);
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
