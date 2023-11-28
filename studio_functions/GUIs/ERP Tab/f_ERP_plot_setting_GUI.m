@@ -667,7 +667,7 @@ varargout{1} = ERP_plotset_box;
         observe_ERPDAT.Process_messg=1;
         
         if isempty(ERPTab_plotset.chanorder{1,1}) || isempty(ERPTab_plotset.chanorder{1,2})
-            chanOrders = [1:observe_ERPDAT.ERP.nbchan];
+            chanOrders = [1:observe_ERPDAT.ERP.nchan];
             [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         else
             chanOrders =  ERPTab_plotset.chanorder{1,1} ;

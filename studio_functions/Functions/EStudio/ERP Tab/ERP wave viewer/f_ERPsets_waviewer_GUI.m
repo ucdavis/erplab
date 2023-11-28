@@ -21,6 +21,8 @@ addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
 addlistener(viewer_ERPDAT,'ERPset_Chan_bin_label_change',@ERPset_Chan_bin_label_change);
+addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
+
 
 ERPwaveview_erpsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
@@ -108,7 +110,7 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
         
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
         ERPwaveview_erpsetops.erpset_cancel = uicontrol('Style','pushbutton','Parent', ERPwaveview_erpsetops.help_apply_title  ,'String','Cancel',...
-            'callback',@erpset_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
+            'callback',@erpset_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title  );
         ERPwaveview_erpsetops.erpset_apply = uicontrol('Style','pushbutton','Parent',ERPwaveview_erpsetops.help_apply_title  ,'String','Apply',...
             'callback',@ERPset_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
@@ -140,7 +142,7 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
 
 
 %%-------------------------------Help--------------------------------------
-    function erpset_help(~,~)
+    function erpset_cancel(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -196,7 +198,6 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
         MessageViewer= char(strcat('ERPsets > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         
-        gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
         viewer_ERPDAT.Process_messg =2;
     end
 
@@ -254,6 +255,8 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
                 end
             end
         end
+        gui_erp_waviewer.ERPwaviewer.CURRENTERP = CurrentERP;
+        gui_erp_waviewer.ERPwaviewer.ERP = gui_erp_waviewer.ERPwaviewer.ALLERP(CurrentERP);
         gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
         
         estudioworkingmemory('MyViewer_ERPsetpanel',0);
@@ -263,7 +266,7 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
         ERPwaveview_erpsetops.erpset_cancel.ForegroundColor = [0 0 0];
         ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
         assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
-        viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;
+        viewer_ERPDAT.Count_currentERP = 2;
         f_redrawERP_viewer_test();%%Plot the waves
         MessageViewer= char(strcat('ERPsets > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
@@ -441,9 +444,6 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
 %%change the ERPset indeces when they are changed in Plot organization panel
     function ERPset_Chan_bin_label_change(~,~)
         if viewer_ERPDAT.ERPset_Chan_bin_label~=1  %% 1 means ERPset indeces were changed
-%             if viewer_ERPDAT.ERPset_Chan_bin_label==2%%Update Viewer based on the change in ERPLAB
-%                 erpselect_refresh();
-%             end
             return;
         end
         try
@@ -457,6 +457,23 @@ drawui_erpsetbinchan_viewer(ERPwaviewer,FonsizeDefault)
         if any(ERPsetArray(:) <= length(ERPwaveview_erpsetops.butttons_datasets.String))
             ERPwaveview_erpsetops.butttons_datasets.Value = ERPsetArray;
         end
+    end
+
+
+%%---------------------current ERPset change-------------------------------
+    function v_currentERP_change(~,~)
+        if viewer_ERPDAT.Count_currentERP~=1
+           return; 
+        end
+        
+        ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx; 
+        if any(ERPsetArray(:) > length(ERPwaveview_erpsetops.butttons_datasets.String))
+            ERPsetArray = length(ERPwaveview_erpsetops.butttons_datasets.String);
+            ERPwaveview_erpsetops.butttons_datasets.Value = ERPsetArray;
+            gui_erp_waviewer.ERPwaviewer.SelectERPIdx = length(ERPwaveview_erpsetops.butttons_datasets.String);
+        end
+        
+        
     end
 
 %%execute this panel when press "return" or "Enter"
