@@ -11,10 +11,11 @@
 function varargout = f_ERP_labelset_waveviewer_GUI(varargin)
 
 global viewer_ERPDAT;
+global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
-% addlistener(viewer_ERPDAT,'Process_messg_change',@Process_messg_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
+addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 
 gui_labelset_waveviewer = struct();
 
@@ -49,13 +50,6 @@ varargout{1} = box_erplabelset_viewer_property;
     function drawui_plot_property(FonsizeDefault)
         [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
         
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            disp('f_ERP_labelset_waveviewer_GUI() error: Please run the ERP wave viewer again.');
-            return;
-        end
         %%--------------------channel and bin setting----------------------
         gui_labelset_waveviewer.DataSelBox = uiextras.VBox('Parent', box_erplabelset_viewer_property,'BackgroundColor',ColorBviewer_def);
         
@@ -112,9 +106,9 @@ varargout{1} = box_erplabelset_viewer_property;
             gui_labelset_waveviewer.nolabel.Value = ~gui_labelset_waveviewer.customlabel.Value;
             customdefEnable = 'on';
         end
-        ERPwaviewer.chanbinsetlabel.location.auto = gui_labelset_waveviewer.labelauto.Value;
-        ERPwaviewer.chanbinsetlabel.location.no = gui_labelset_waveviewer.nolabel.Value;
-        ERPwaviewer.chanbinsetlabel.location.custom =gui_labelset_waveviewer.customlabel.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto = gui_labelset_waveviewer.labelauto.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no = gui_labelset_waveviewer.nolabel.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom =gui_labelset_waveviewer.customlabel.Value;
         if locationAuto ==1
             xperDef = 50;
             yperDef = 100;
@@ -150,9 +144,9 @@ varargout{1} = box_erplabelset_viewer_property;
             'callback',@label_center,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Enable',customdefEnable,'Value',CenDef); %
         gui_labelset_waveviewer.center.KeyPressFcn = @labels_presskey;
         set(gui_labelset_waveviewer.labelloc_title,'Sizes',[30 45 30 45 80]);
-        ERPwaviewer.chanbinsetlabel.location.xperc = str2num(char(gui_labelset_waveviewer.xperc_edit.String));
-        ERPwaviewer.chanbinsetlabel.location.yperc = str2num(char(gui_labelset_waveviewer.yperc_edit.String));
-        ERPwaviewer.chanbinsetlabel.location.center = gui_labelset_waveviewer.center.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc = str2num(char(gui_labelset_waveviewer.xperc_edit.String));
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc = str2num(char(gui_labelset_waveviewer.yperc_edit.String));
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center = gui_labelset_waveviewer.center.Value;
         
         %
         %%--------------------font and font size---------------------------
@@ -192,8 +186,8 @@ varargout{1} = box_erplabelset_viewer_property;
             'callback',@label_fontsize,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',LabelfontsizeValue,'Enable',customdefEnable); %
         gui_labelset_waveviewer.font_custom_size.KeyPressFcn = @labels_presskey;
         set(gui_labelset_waveviewer.font_custom_title,'Sizes',[30 110 30 70]);
-        ERPwaviewer.chanbinsetlabel.font = gui_labelset_waveviewer.font_custom_type.Value;
-        ERPwaviewer.chanbinsetlabel.fontsize = labelfontsizeinum(gui_labelset_waveviewer.font_custom_size.Value);
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font = gui_labelset_waveviewer.font_custom_type.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize = labelfontsizeinum(gui_labelset_waveviewer.font_custom_size.Value);
         
         %%--------------Label text color-----------
         try
@@ -212,21 +206,21 @@ varargout{1} = box_erplabelset_viewer_property;
         uiextras.Empty('Parent',gui_labelset_waveviewer.labelcolor_title);
         uiextras.Empty('Parent',gui_labelset_waveviewer.labelcolor_title);
         set(gui_labelset_waveviewer.labelcolor_title,'Sizes',[40 100 30 70]);
-        ERPwaviewer.chanbinsetlabel.textcolor = gui_labelset_waveviewer.labelcolor.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor = gui_labelset_waveviewer.labelcolor.Value;
         
         %%-----------------------help and apply----------------------------
         gui_labelset_waveviewer.help_apply_title = uiextras.HBox('Parent', gui_labelset_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title );
         gui_labelset_waveviewer.cancel =  uicontrol('Style','pushbutton','Parent', gui_labelset_waveviewer.help_apply_title  ,'String','Cancel',...
-            'callback',@label_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@label_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         gui_labelset_waveviewer.Apply= uicontrol('Style','pushbutton','Parent',gui_labelset_waveviewer.help_apply_title  ,'String','Apply',...
             'callback',@label_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',gui_labelset_waveviewer.help_apply_title  );
         set(gui_labelset_waveviewer.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(gui_labelset_waveviewer.DataSelBox ,'Sizes',[20 25 25 20 25 25 25]);
-        assignin('base','ALLERPwaviewer',ERPwaviewer);
         estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        estudioworkingmemory('MyViewer_labels',0);
     end
 
 %%***********************************************************************%%
@@ -262,19 +256,11 @@ varargout{1} = box_erplabelset_viewer_property;
         gui_labelset_waveviewer.label_customtable.Enable = Enable;
         gui_labelset_waveviewer.labelcolor.Value = 1;
         %%----------------Update the label-----------------
-        try
-            ALLERPwaviewer = evalin('base','ALLERPwaviewer');
-            ERPwaviewer = ALLERPwaviewer;
-        catch
-            beep;
-            disp('f_ERP_labelset_waveviewer_GUI() error: Please run the ERP wave viewer again.');
-            return;
-        end
         
-        binArray = ERPwaviewer.bin;
-        chanArray = ERPwaviewer.chan;
-        ERPsetArray = ERPwaviewer.SelectERPIdx;
-        ALLERPIN = ERPwaviewer.ALLERP;
+        binArray = gui_erp_waviewer.ERPwaviewer.bin;
+        chanArray = gui_erp_waviewer.ERPwaviewer.chan;
+        ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        ALLERPIN = gui_erp_waviewer.ERPwaviewer.ALLERP;
         if max(ERPsetArray) >length(ALLERPIN)
             ERPsetArray =length(ALLERPIN);
         end
@@ -283,17 +269,17 @@ varargout{1} = box_erplabelset_viewer_property;
             LabelName{ii,1} = '';
             LabelNamenum(ii,1) =ii;
         end
-        if ERPwaviewer.plot_org.Grid ==1 %% if  the selected Channel is "Grid"
+        if gui_erp_waviewer.ERPwaviewer.plot_org.Grid ==1 %% if  the selected Channel is "Grid"
             plotArray = chanArray;
             for Numofplot = 1:numel(plotArray)
                 LabelName{Numofplot,1} = chanStr{plotArray(Numofplot)};
             end
-        elseif ERPwaviewer.plot_org.Grid == 2 %% if the selected Bin is "Grid"
+        elseif gui_erp_waviewer.ERPwaviewer.plot_org.Grid == 2 %% if the selected Bin is "Grid"
             plotArray = binArray;
             for Numofplot = 1:numel(plotArray)
                 LabelName{Numofplot,1} = chanStr{plotArray(Numofplot)};
             end
-        elseif ERPwaviewer.plot_org.Grid == 3%% if the selected ERPset is "Grid"
+        elseif gui_erp_waviewer.ERPwaviewer.plot_org.Grid == 3%% if the selected ERPset is "Grid"
             plotArray = ERPsetArray;
             for Numoferpset = 1:numel(plotArray)
                 LabelName{Numoferpset,1} = {char(ALLERPIN(plotArray(Numoferpset)).erpname)};
@@ -304,7 +290,6 @@ varargout{1} = box_erplabelset_viewer_property;
                 LabelName{Numofplot,1} = chanStr{plotArray(Numofplot)};
             end
         end
-        
         labels_str = table(LabelNamenum,LabelName);
         labels_str = table2cell(labels_str);
         gui_labelset_waveviewer.label_customtable.Data = labels_str;
@@ -457,7 +442,7 @@ varargout{1} = box_erplabelset_viewer_property;
     end
 
 %%--------------------------Help-------------------------------------------
-    function label_help(~,~)
+    function label_cancel(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=5
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -473,38 +458,30 @@ varargout{1} = box_erplabelset_viewer_property;
             return;
         end
         
-        try
-            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
-        catch
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n Chan/Bin/ERPset Labels > Apply-f_ERP_labelset_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
-            return;
-        end
-        
-        if ERPwaviewer_apply.chanbinsetlabel.location.auto==1
+        if gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto==1
             Enable = 'off';
             gui_labelset_waveviewer.labelauto.Value = 1;
             gui_labelset_waveviewer.nolabel.Value = 0;
             gui_labelset_waveviewer.customlabel.Value = 0;
-        elseif ERPwaviewer_apply.chanbinsetlabel.location.no==1
+        elseif gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no==1
             Enable = 'off';
             gui_labelset_waveviewer.labelauto.Value = 0;
             gui_labelset_waveviewer.nolabel.Value = 1;
             gui_labelset_waveviewer.customlabel.Value = 0;
-        elseif ERPwaviewer_apply.chanbinsetlabel.location.custom==1
+        elseif gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom==1
             Enable = 'on';
             gui_labelset_waveviewer.labelauto.Value = 0;
             gui_labelset_waveviewer.nolabel.Value = 0;
             gui_labelset_waveviewer.customlabel.Value = 1;
         end
         gui_labelset_waveviewer.xperc_edit.Enable = Enable;
-        gui_labelset_waveviewer.xperc_edit.String = num2str( ERPwaviewer_apply.chanbinsetlabel.location.xperc);
+        gui_labelset_waveviewer.xperc_edit.String = num2str( gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc);
         gui_labelset_waveviewer.yperc_edit.Enable = Enable;
-        gui_labelset_waveviewer.yperc_edit.String = num2str( ERPwaviewer_apply.chanbinsetlabel.location.yperc);
+        gui_labelset_waveviewer.yperc_edit.String = num2str( gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc);
         gui_labelset_waveviewer.font_custom_type.Enable = Enable;
-        gui_labelset_waveviewer.font_custom_type.Value = ERPwaviewer_apply.chanbinsetlabel.font;
+        gui_labelset_waveviewer.font_custom_type.Value = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         gui_labelset_waveviewer.font_custom_size.Enable = Enable;
-        FontSize = ERPwaviewer_apply.chanbinsetlabel.fontsize;
+        FontSize = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize;
         fontsizeStr  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsizeStr));
@@ -514,9 +491,9 @@ varargout{1} = box_erplabelset_viewer_property;
         end
         gui_labelset_waveviewer.font_custom_size.Value = X_label;
         gui_labelset_waveviewer.labelcolor.Enable = Enable;
-        gui_labelset_waveviewer.labelcolor.Value = ERPwaviewer_apply.chanbinsetlabel.textcolor;
+        gui_labelset_waveviewer.labelcolor.Value = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
         gui_labelset_waveviewer.center.Enable = Enable;
-        gui_labelset_waveviewer.center.Value = ERPwaviewer_apply.chanbinsetlabel.location.center;
+        gui_labelset_waveviewer.center.Value = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
         
         estudioworkingmemory('MyViewer_labels',0);
         gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
@@ -545,49 +522,41 @@ varargout{1} = box_erplabelset_viewer_property;
         MessageViewer= char(strcat('Chan/Bin/ERPset Labels > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        try
-            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
-        catch
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n Chan/Bin/ERPset Labels > Apply-f_ERP_labelset_waveviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
-            return;
-        end
-        ERPwaviewer_apply.chanbinsetlabel.location.auto = gui_labelset_waveviewer.labelauto.Value;
-        ERPwaviewer_apply.chanbinsetlabel.location.no = gui_labelset_waveviewer.nolabel.Value;
-        ERPwaviewer_apply.chanbinsetlabel.location.custom =gui_labelset_waveviewer.customlabel.Value;
-        ERPwaviewer_apply.chanbinsetlabel.location.xperc = str2num(char(gui_labelset_waveviewer.xperc_edit.String));
-        ERPwaviewer_apply.chanbinsetlabel.location.yperc = str2num(char(gui_labelset_waveviewer.yperc_edit.String));
-        MERPWaveViewer_label{1} = ERPwaviewer_apply.chanbinsetlabel.location.auto;
-        MERPWaveViewer_label{2} = ERPwaviewer_apply.chanbinsetlabel.location.no;
-        MERPWaveViewer_label{3} =ERPwaviewer_apply.chanbinsetlabel.location.custom;
-        MERPWaveViewer_label{4} =ERPwaviewer_apply.chanbinsetlabel.location.xperc;
-        MERPWaveViewer_label{5} =ERPwaviewer_apply.chanbinsetlabel.location.yperc;
         
-        if ( ERPwaviewer_apply.chanbinsetlabel.location.no==1 ||  ERPwaviewer_apply.chanbinsetlabel.location.custom ==1) &&  (isempty(ERPwaviewer_apply.chanbinsetlabel.location.xperc) || isempty(ERPwaviewer_apply.chanbinsetlabel.location.yperc))
-            ERPwaviewer_apply.chanbinsetlabel.location.auto = 1;
-            ERPwaviewer_apply.chanbinsetlabel.location.no = 0;
-            ERPwaviewer_apply.chanbinsetlabel.location.custom =0;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto = gui_labelset_waveviewer.labelauto.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no = gui_labelset_waveviewer.nolabel.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom =gui_labelset_waveviewer.customlabel.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc = str2num(char(gui_labelset_waveviewer.xperc_edit.String));
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc = str2num(char(gui_labelset_waveviewer.yperc_edit.String));
+        MERPWaveViewer_label{1} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto;
+        MERPWaveViewer_label{2} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no;
+        MERPWaveViewer_label{3} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom;
+        MERPWaveViewer_label{4} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc;
+        MERPWaveViewer_label{5} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc;
+        
+        if ( gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no==1 ||  gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom ==1) &&  (isempty(gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc) || isempty(gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc))
+            gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto = 1;
+            gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no = 0;
+            gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom =0;
         end
-        ERPwaviewer_apply.chanbinsetlabel.location.center = gui_labelset_waveviewer.center.Value;
-        MERPWaveViewer_label{6} = ERPwaviewer_apply.chanbinsetlabel.location.center;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center = gui_labelset_waveviewer.center.Value;
+        MERPWaveViewer_label{6} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
         
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
-        ERPwaviewer_apply.chanbinsetlabel.font = gui_labelset_waveviewer.font_custom_type.Value;
-        MERPWaveViewer_label{7} = ERPwaviewer_apply.chanbinsetlabel.font;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font = gui_labelset_waveviewer.font_custom_type.Value;
+        MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         try
-            ERPwaviewer_apply.chanbinsetlabel.fontsize = labelfontsizeinum(gui_labelset_waveviewer.font_custom_size.Value);
+            gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize = labelfontsizeinum(gui_labelset_waveviewer.font_custom_size.Value);
         catch
-            ERPwaviewer_apply.chanbinsetlabel.fontsize = 10;
+            gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize = 10;
         end
-        ERPwaviewer_apply.chanbinsetlabel.textcolor = gui_labelset_waveviewer.labelcolor.Value;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor = gui_labelset_waveviewer.labelcolor.Value;
         MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
-        MERPWaveViewer_label{9}  = ERPwaviewer_apply.chanbinsetlabel.textcolor;
+        MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
         
-        ALLERPwaviewer=ERPwaviewer_apply;
-        assignin('base','ALLERPwaviewer',ALLERPwaviewer);
-        f_redrawERP_viewer_test();
+        viewer_ERPDAT.Count_currentERP = 1;
         viewer_ERPDAT.Process_messg =2;
         estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
     end
@@ -598,16 +567,10 @@ varargout{1} = box_erplabelset_viewer_property;
         if viewer_ERPDAT.loadproper_count ~=5
             return;
         end
-        try
-            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            disp('f_ERP_labelset_waveviewer_GUI() > Apply error: Please run the ERP wave viewer again.');
-            return;
-        end
-        AutoValue =  ERPwaviewer_apply.chanbinsetlabel.location.auto;
-        NoValue =  ERPwaviewer_apply.chanbinsetlabel.location.no;
-        CustomValue =  ERPwaviewer_apply.chanbinsetlabel.location.custom;
+        
+        AutoValue =  gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto;
+        NoValue =  gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no;
+        CustomValue =  gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom;
         if AutoValue ==1 && NoValue==0 && CustomValue==0
             gui_labelset_waveviewer.labelauto.Value = 1;
             gui_labelset_waveviewer.nolabel.Value = 0;
@@ -649,9 +612,9 @@ varargout{1} = box_erplabelset_viewer_property;
             gui_labelset_waveviewer.labelcolor.Enable = Enable;
             gui_labelset_waveviewer.label_customtable.Enable = Enable;
         end
-        Xperc = ERPwaviewer_apply.chanbinsetlabel.location.xperc;
-        Yperc  = ERPwaviewer_apply.chanbinsetlabel.location.yperc;
-        Center = ERPwaviewer_apply.chanbinsetlabel.location.center;
+        Xperc = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc;
+        Yperc  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc;
+        Center = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
         gui_labelset_waveviewer.xperc_edit.String = num2str(Xperc);
         gui_labelset_waveviewer.yperc_edit.String = num2str(Yperc);
         if Center ==1
@@ -659,29 +622,29 @@ varargout{1} = box_erplabelset_viewer_property;
         else
             gui_labelset_waveviewer.center.Value = 0;
         end
-        Labelfont = ERPwaviewer_apply.chanbinsetlabel.font;
+        Labelfont = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         gui_labelset_waveviewer.font_custom_type.Value = Labelfont;
-        Labelfontsize = ERPwaviewer_apply.chanbinsetlabel.fontsize;
+        Labelfontsize = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         fontsize = str2num(char(fontsize));
         [xsize,y] = find(fontsize ==Labelfontsize);
         gui_labelset_waveviewer.font_custom_size.Value = xsize;
-        textColor = ERPwaviewer_apply.chanbinsetlabel.textcolor;
+        textColor = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
         gui_labelset_waveviewer.labelcolor.Value = textColor;
-        viewer_ERPDAT.loadproper_count =6;
         
         %%save the parameters to memory file
-        MERPWaveViewer_label{1} = ERPwaviewer_apply.chanbinsetlabel.location.auto;
-        MERPWaveViewer_label{2} = ERPwaviewer_apply.chanbinsetlabel.location.no;
-        MERPWaveViewer_label{3} =ERPwaviewer_apply.chanbinsetlabel.location.custom;
-        MERPWaveViewer_label{4} =ERPwaviewer_apply.chanbinsetlabel.location.xperc;
-        MERPWaveViewer_label{5} =ERPwaviewer_apply.chanbinsetlabel.location.yperc;
-        MERPWaveViewer_label{6} = ERPwaviewer_apply.chanbinsetlabel.location.center;
-        MERPWaveViewer_label{7} = ERPwaviewer_apply.chanbinsetlabel.font;
+        MERPWaveViewer_label{1} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto;
+        MERPWaveViewer_label{2} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no;
+        MERPWaveViewer_label{3} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom;
+        MERPWaveViewer_label{4} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc;
+        MERPWaveViewer_label{5} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc;
+        MERPWaveViewer_label{6} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
+        MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
-        MERPWaveViewer_label{9}  = ERPwaviewer_apply.chanbinsetlabel.textcolor;
+        MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
         estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        viewer_ERPDAT.loadproper_count =6;
     end
 
 
@@ -704,62 +667,107 @@ varargout{1} = box_erplabelset_viewer_property;
 %%-----------------Reset this panel with the default parameters------------
 %%-------------------------------------------------------------------------
     function Reset_Waviewer_panel_change(~,~)
-        if viewer_ERPDAT.Reset_Waviewer_panel==5
-            try
-                ERPwaviewerin = evalin('base','ALLERPwaviewer');
-            catch
-                beep;
-                disp('f_ERP_labelset_waveviewer_GUI error: Restart ERPwave Viewer');
-                return;
-            end
-            gui_labelset_waveviewer.labelauto.Value=1; %
-            gui_labelset_waveviewer.nolabel.Value=0; %
-            gui_labelset_waveviewer.customlabel.Value=0; %
-            ERPwaviewerin.chanbinsetlabel.location.auto =1;
-            ERPwaviewerin.chanbinsetlabel.location.no =0;
-            ERPwaviewerin.chanbinsetlabel.location.custom=0;
-            %%label position
-            gui_labelset_waveviewer.xperc_edit.String = '50';
-            gui_labelset_waveviewer.xperc_edit.Enable ='off'; %
-            gui_labelset_waveviewer.yperc_edit.String ='100';
-            gui_labelset_waveviewer.yperc_edit.Enable='off'; %
-            gui_labelset_waveviewer.center.Value =1;
-            gui_labelset_waveviewer.center.Enable='off'; %
-            ERPwaviewerin.chanbinsetlabel.location.xperc =50;
-            ERPwaviewerin.chanbinsetlabel.location.yperc = 100;
-            ERPwaviewerin.chanbinsetlabel.location.center =1;
-            %%label font, fontsize and color
-            ERPwaviewerin.chanbinsetlabel.font =3;
-            ERPwaviewerin.chanbinsetlabel.fontsize =10;
-            ERPwaviewerin.chanbinsetlabel.textcolor=1;
-            fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
-            gui_labelset_waveviewer.font_custom_type.Value=3;
-            gui_labelset_waveviewer.font_custom_type.String = fonttype;
-            gui_labelset_waveviewer.font_custom_type.Enable='off'; %
-            gui_labelset_waveviewer.font_custom_size.Value=4;
-            gui_labelset_waveviewer.font_custom_size.Enable='off'; %
-            gui_labelset_waveviewer.labelcolor.Value=1;
-            gui_labelset_waveviewer.labelcolor.Enable='off'; %
-            assignin('base','ALLERPwaviewer',ERPwaviewerin);
-            gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
-            gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
-            box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
-            
-            %%save the default parameters to memory file
-            MERPWaveViewer_label{1} = ERPwaviewerin.chanbinsetlabel.location.auto;
-            MERPWaveViewer_label{2} = ERPwaviewerin.chanbinsetlabel.location.no;
-            MERPWaveViewer_label{3} =ERPwaviewerin.chanbinsetlabel.location.custom;
-            MERPWaveViewer_label{4} =ERPwaviewerin.chanbinsetlabel.location.xperc;
-            MERPWaveViewer_label{5} =ERPwaviewerin.chanbinsetlabel.location.yperc;
-            MERPWaveViewer_label{6} = ERPwaviewerin.chanbinsetlabel.location.center;
-            MERPWaveViewer_label{7} = ERPwaviewerin.chanbinsetlabel.font;
-            MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
-            MERPWaveViewer_label{9}  = ERPwaviewerin.chanbinsetlabel.textcolor;
-            estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
-            
-            viewer_ERPDAT.Reset_Waviewer_panel=6;
+        if viewer_ERPDAT.Reset_Waviewer_panel~=5
+            return;
         end
+        gui_labelset_waveviewer.labelauto.Value=1; %
+        gui_labelset_waveviewer.nolabel.Value=0; %
+        gui_labelset_waveviewer.customlabel.Value=0; %
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto =1;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no =0;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom=0;
+        %%label position
+        gui_labelset_waveviewer.xperc_edit.String = '50';
+        gui_labelset_waveviewer.xperc_edit.Enable ='off'; %
+        gui_labelset_waveviewer.yperc_edit.String ='100';
+        gui_labelset_waveviewer.yperc_edit.Enable='off'; %
+        gui_labelset_waveviewer.center.Value =1;
+        gui_labelset_waveviewer.center.Enable='off'; %
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc =50;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc = 100;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center =1;
+        %%label font, fontsize and color
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font =3;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize =10;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor=1;
+        fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
+        gui_labelset_waveviewer.font_custom_type.Value=3;
+        gui_labelset_waveviewer.font_custom_type.String = fonttype;
+        gui_labelset_waveviewer.font_custom_type.Enable='off'; %
+        gui_labelset_waveviewer.font_custom_size.Value=4;
+        gui_labelset_waveviewer.font_custom_size.Enable='off'; %
+        gui_labelset_waveviewer.labelcolor.Value=1;
+        gui_labelset_waveviewer.labelcolor.Enable='off'; %
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
+        box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
+        
+        %%save the default parameters to memory file
+        MERPWaveViewer_label{1} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto;
+        MERPWaveViewer_label{2} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no;
+        MERPWaveViewer_label{3} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom;
+        MERPWaveViewer_label{4} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc;
+        MERPWaveViewer_label{5} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc;
+        MERPWaveViewer_label{6} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
+        MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
+        MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
+        MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
+        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        viewer_ERPDAT.Reset_Waviewer_panel=6;
     end
+
+
+%%------------------------change this panel--------------------------------
+    function v_currentERP_change(~,~)
+        if  viewer_ERPDAT.Count_currentERP~=5
+            return;
+        end
+        gui_labelset_waveviewer.labelauto.Value=1; %
+        gui_labelset_waveviewer.nolabel.Value=0; %
+        gui_labelset_waveviewer.customlabel.Value=0; %
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto =1;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no =0;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom=0;
+        %%label position
+        gui_labelset_waveviewer.xperc_edit.String = '50';
+        gui_labelset_waveviewer.xperc_edit.Enable ='off'; %
+        gui_labelset_waveviewer.yperc_edit.String ='100';
+        gui_labelset_waveviewer.yperc_edit.Enable='off'; %
+        gui_labelset_waveviewer.center.Value =1;
+        gui_labelset_waveviewer.center.Enable='off'; %
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc =50;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc = 100;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center =1;
+        %%label font, fontsize and color
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font =3;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize =10;
+        gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor=1;
+        fonttype = {'Courier','Geneva','Helvetica','Monaco','Times'};
+        gui_labelset_waveviewer.font_custom_type.Value=3;
+        gui_labelset_waveviewer.font_custom_type.String = fonttype;
+        gui_labelset_waveviewer.font_custom_type.Enable='off'; %
+        gui_labelset_waveviewer.font_custom_size.Value=4;
+        gui_labelset_waveviewer.font_custom_size.Enable='off'; %
+        gui_labelset_waveviewer.labelcolor.Value=1;
+        gui_labelset_waveviewer.labelcolor.Enable='off'; %
+        gui_labelset_waveviewer.Apply.BackgroundColor =  [1 1 1];
+        gui_labelset_waveviewer.Apply.ForegroundColor = [0 0 0];
+        box_erplabelset_viewer_property.TitleColor= [0.5 0.5 0.9];
+        
+        %%save the default parameters to memory file
+        MERPWaveViewer_label{1} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.auto;
+        MERPWaveViewer_label{2} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no;
+        MERPWaveViewer_label{3} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom;
+        MERPWaveViewer_label{4} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc;
+        MERPWaveViewer_label{5} =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc;
+        MERPWaveViewer_label{6} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
+        MERPWaveViewer_label{7} = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
+        MERPWaveViewer_label{8}  = gui_labelset_waveviewer.font_custom_size.Value;
+        MERPWaveViewer_label{9}  = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
+        estudioworkingmemory('MERPWaveViewer_label',MERPWaveViewer_label);
+        viewer_ERPDAT.Count_currentERP=6;
+    end
+
 
 %%using "Return" key to execute this panel
     function labels_presskey(hObject, eventdata)

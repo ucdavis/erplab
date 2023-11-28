@@ -13,21 +13,15 @@
 % Initial setup
 %
 function varargout = f_ERP_Binchan_waviewer_GUI(varargin)
-%
 global viewer_ERPDAT
-% global observe_ERPDAT;
-% global gui_erp_waviewer;
-
+global gui_erp_waviewer;
 addlistener(viewer_ERPDAT,'loadproper_change',@loadproper_change);
 addlistener(viewer_ERPDAT,'v_currentERP_change',@v_currentERP_change);
 addlistener(viewer_ERPDAT,'count_twopanels_change',@count_twopanels_change);
 addlistener(viewer_ERPDAT,'Reset_Waviewer_panel_change',@Reset_Waviewer_panel_change);
-addlistener(viewer_ERPDAT,'ERPset_Chan_bin_label_change',@ERPset_Chan_bin_label_change);
-
 
 
 ERPwaveview_binchan = struct();
-%---------Setting the parameter which will be used in the other panels-----------
 
 try
     [version reldate,ColorBviewer_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
@@ -48,7 +42,6 @@ elseif nargin == 3 || nargin == 2
 elseif nargin == 4
     Chanbin_waveviewer_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channels and Bins', 'Padding', 5, ...
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
-    
 end
 
 try
@@ -72,54 +65,14 @@ varargout{1} = Chanbin_waveviewer_box;
         catch
             ColorBviewer_def =  [0.7765    0.7294    0.8627];
         end
-        try
-            ERPwaviewer = evalin('base','ALLERPwaviewer');
-            SelectedIndex = ERPwaviewer.SelectERPIdx;
-            ALLERP = ERPwaviewer.ALLERP;
-            if max(SelectedIndex(:))> length(ALLERP)
-                SelectedIndex =length(ALLERP);
-            end
-        catch
-            beep;
-            disp('f_ERP_Binchan_waviewer_GUI error: Restart ERPwave Viewer');
-            return;
-        end
+        
         ERPwaveview_binchan.vBox = uiextras.VBox('Parent', Chanbin_waveviewer_box, 'Spacing', 5,'BackgroundColor',ColorBviewer_def); % VBox for everything
         ERPtooltype = erpgettoolversion('tooltype');
+        MERPWaveViewer_chanbin{1}=0;
         
-        if ~strcmpi(ERPtooltype,'EStudio') %&& ~strcmpi(ERPtooltype,'ERPLAB')
-            ERPwaviewer.erp_binchan_op = 0;
-            MERPWaveViewer_chanbin{1}=0;
-        end
-        try
-            Enable_auto =  MERPWaveViewer_chanbin{1};
-        catch
-            Enable_auto =  1;
-            MERPWaveViewer_chanbin{1}=1;
-        end
-        if numel(Enable_auto)~=1 || (Enable_auto~=0 && Enable_auto~=1)
-            Enable_auto =  1;
-            MERPWaveViewer_chanbin{1}=1;
-        end
-        if Enable_auto ==1
-            Enable_label = 'off';
-        elseif Enable_auto ==0
-            Enable_label = 'on';
-        end
-        %%---------------------Options for selecting channel and bins-----------------------------------------------------
-        %         ERPwaveview_binchan.opts_title = uiextras.HBox('Parent', ERPwaveview_binchan.vBox, 'Spacing', 5,'BackgroundColor',ColorBviewer_def);
-        %         ERPwaveview_binchan.auto = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_binchan.opts_title,...
-        %             'String','Same as EStudio','callback',@Chanbin_auto,'Value',Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-        %         ERPwaveview_binchan.auto.KeyPressFcn = @setbinchan_presskey;
-        %
-        %         ERPwaveview_binchan.custom = uicontrol('Style', 'radiobutton','Parent', ERPwaveview_binchan.opts_title,...
-        %             'String','Custom','callback',@Chanbin_custom,'Value',~Enable_auto,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-        %         ERPwaveview_binchan.custom.KeyPressFcn = @setbinchan_presskey;
-        
-        %
         %%---------------------Display channel and bin labels-----------------------------------------------------
         ERPwaveview_binchan.DataSelGrid = uiextras.HBox('Parent', ERPwaveview_binchan.vBox,'BackgroundColor',ColorBviewer_def);
-        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,SelectedIndex);
+        [chanStr,binStr,diff_mark] = f_geterpschanbin(gui_erp_waviewer.ERPwaviewer.ALLERP,gui_erp_waviewer.ERPwaviewer.SelectERPIdx);
         
         Chanlist_name = cell(length(chanStr)+1,1);
         Chanlist_name(1) = {'All'};
@@ -128,7 +81,7 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         % Channel information
         Chanlist = chanStr;
-        Chan_seldef = ERPwaviewer.chan;
+        Chan_seldef = gui_erp_waviewer.ERPwaviewer.chan;
         if ~isempty(Chan_seldef)
             if any(Chan_seldef> numel(Chanlist))
                 Chan_seldef=   1:length(Chanlist);
@@ -140,21 +93,17 @@ varargout{1} = Chanbin_waveviewer_box;
             Chan_sel = Chan_seldef;
             MERPWaveViewer_chanbin{2} = Chan_seldef;
         else
-            try
-                Chan_sel = MERPWaveViewer_chanbin{2};
-            catch
-                MERPWaveViewer_chanbin{2} = Chan_seldef;
-                Chan_sel = Chan_seldef;
-            end
+            Chan_sel = 1:length(Chanlist);
+            MERPWaveViewer_chanbin{2} = Chan_sel;
         end
         Chan_sel = unique(Chan_sel);
         if isempty(Chan_sel) || any(Chan_sel(:)> length(Chanlist)) || any(Chan_sel(:)<=0)
             MERPWaveViewer_chanbin{2} = Chan_seldef;
             Chan_sel = Chan_seldef;
         end
-        ERPwaviewer.chan = Chan_sel;
+        gui_erp_waviewer.ERPwaviewer.chan = Chan_sel;
         ERPwaveview_binchan.ElecRange = uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2B
+            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable','on'); % 2B
         
         ERPwaveview_binchan.ElecRange.KeyPressFcn = @setbinchan_presskey;
         if  numel(Chan_sel) == numel(Chanlist)
@@ -165,9 +114,9 @@ varargout{1} = Chanbin_waveviewer_box;
         %%Bin information
         brange = cell(length(binStr)+1,1);
         BinNum = length(binStr);
-        Bin_seldef = ERPwaviewer.bin;
+        Bin_seldef = gui_erp_waviewer.ERPwaviewer.bin;
         if ~isempty(Bin_seldef)
-            if max(Bin_seldef)> BinNum
+            if any(Bin_seldef> BinNum)
                 Bin_seldef=   1:BinNum;
             end
         else
@@ -177,24 +126,20 @@ varargout{1} = Chanbin_waveviewer_box;
             MERPWaveViewer_chanbin{3} = Bin_seldef;
             Bin_sel = Bin_seldef;
         else
-            try
-                Bin_sel = MERPWaveViewer_chanbin{3};
-            catch
-                MERPWaveViewer_chanbin{3} = Bin_seldef;
-                Bin_sel = Bin_seldef;
-            end
+            Bin_sel = 1:BinNum;
+            MERPWaveViewer_chanbin{3} = Bin_sel;
         end
-        if isempty(Bin_sel) || max(Bin_sel(:))> length(binStr) || min(Bin_sel(:))> length(binStr) || min(Bin_sel(:))<=0
-            MERPWaveViewer_chanbin{3} = Bin_seldef;
-            Bin_sel = Bin_seldef;
+        if isempty(Bin_sel) || any(Bin_sel(:)> length(binStr)) || any(Bin_sel(:)<=0)
+            Bin_sel = 1:BinNum;
+            MERPWaveViewer_chanbin{3} = Bin_sel;
         end
-        ERPwaviewer.bin=Bin_sel;
+        gui_erp_waviewer.ERPwaviewer.bin=Bin_sel;
         brange(1) = {'All'};
         for Numofbin11 = 1:length(binStr)
             brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
         end
         ERPwaveview_binchan.BinRange =  uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','Min',1,'Max',BinNum+1,...
-            'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable',Enable_label); % 2C
+            'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable','on'); % 2C
         ERPwaveview_binchan.BinRange.KeyPressFcn = @setbinchan_presskey;
         if BinNum== numel(Bin_sel)
             ERPwaveview_binchan.BinRange.Value  =1;
@@ -203,24 +148,11 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         set(ERPwaveview_binchan.DataSelGrid, 'Sizes',[ -1.2 -2]);
         
-        if strcmpi(ERPtooltype,'EStudio')
-            ERPwaveview_binchan.auto.String = 'Same as EStudio';
-        else
-            ERPwaveview_binchan.auto.String = '';
-            ERPwaveview_binchan.auto.Enable = 'off';
-            ERPwaveview_binchan.custom.Value =1;
-            ERPwaveview_binchan.custom.String = '';
-            ERPwaveview_binchan.auto.Value = 0;
-            ERPwaveview_binchan.custom.Enable = 'off';
-            ERPwaveview_binchan.ElecRange.Enable = 'on';
-            ERPwaveview_binchan.BinRange.Enable = 'on';
-        end
-        
         %%Help and apply
         ERPwaveview_binchan.help_apply_title = uiextras.HBox('Parent', ERPwaveview_binchan.vBox,'BackgroundColor',ColorBviewer_def);
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         ERPwaveview_binchan.cancel = uicontrol('Style','pushbutton','Parent', ERPwaveview_binchan.help_apply_title  ,'String','Cancel',...
-            'callback',@setbinchan_help,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
+            'callback',@setbinchan_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'FontWeight','bold','HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title  );
         ERPwaveview_binchan.apply =  uicontrol('Style','pushbutton','Parent',ERPwaveview_binchan.help_apply_title  ,'String','Apply',...
             'callback',@setbinchan_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
@@ -228,8 +160,9 @@ varargout{1} = Chanbin_waveviewer_box;
         uiextras.Empty('Parent',ERPwaveview_binchan.help_apply_title );
         set(ERPwaveview_binchan.help_apply_title ,'Sizes',[40 70 20 70 20]);
         set(ERPwaveview_binchan.vBox, 'Sizes', [210 25]);
-        assignin('base','ALLERPwaviewer',ERPwaviewer);
-        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
+        
+        estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin); %%save chan array and bin array
+        estudioworkingmemory('MyViewer_chanbin',0);
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -276,7 +209,6 @@ varargout{1} = Chanbin_waveviewer_box;
                 BinSource.Value = 1;
             end
         end
-        
         estudioworkingmemory('MyViewer_chanbin',1);
         ERPwaveview_binchan.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
         ERPwaveview_binchan.apply.ForegroundColor = [1 1 1];
@@ -286,7 +218,7 @@ varargout{1} = Chanbin_waveviewer_box;
     end
 
 %%-------------------------------Help--------------------------------------
-    function setbinchan_help(~,~)
+    function setbinchan_cancel(~,~)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=2
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
@@ -299,16 +231,18 @@ varargout{1} = Chanbin_waveviewer_box;
         MessageViewer= char(strcat('Channels and Bins > Cancel'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        try
-            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
-        catch
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\nChannels and Bins > Cancel-f_ERP_Binchan_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
-            return;
+        
+        binArray =   gui_erp_waviewer.ERPwaviewer.bin;
+        if isempty(binArray) || any(binArray<=0) || any(binArray>length(ERPwaveview_binchan.BinRange.String)-1)
+            binArray = [1:length(ERPwaveview_binchan.BinRange.String)-1];
+            gui_erp_waviewer.ERPwaviewer.bin=binArray;
         end
         
-        binArray =  ERPwaviewer_apply.bin;
-        chanArray = ERPwaviewer_apply.chan;
+        chanArray =  gui_erp_waviewer.ERPwaviewer.chan;
+        if isempty(chanArray) || any(chanArray<=0) || any(chanArray>  length(ERPwaveview_binchan.BinRange.String)-1)
+            chanArray =   [1: length(ERPwaveview_binchan.BinRange.String)-1];
+            gui_erp_waviewer.ERPwaviewer.chan= chanArray;
+        end
         if numel(binArray) == length(ERPwaveview_binchan.BinRange.String)-1
             ERPwaveview_binchan.BinRange.Value =1;
         else
@@ -344,75 +278,62 @@ varargout{1} = Chanbin_waveviewer_box;
         MessageViewer= char(strcat('Channels and Bins > Apply'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        try
-            ERPwaviewer_apply = evalin('base','ALLERPwaviewer');
-        catch
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\nChannels and Bins > Apply-f_ERP_Binchan_waviewer_GUI() error: Cannot get parameters for whole panel.\n Please run My viewer again.\n\n');
-            return;
-        end
         
-        ERPwaviewer_apply.binchan_op = 0;
+        gui_erp_waviewer.ERPwaviewer.binchan_op = 0;
         ChanArrayValue = ERPwaveview_binchan.ElecRange.Value;
         if numel(ChanArrayValue)== 1 && ChanArrayValue ==1
             ChanArray = [1:length(ERPwaveview_binchan.ElecRange.String)-1];
         else
             ChanArray =  ChanArrayValue-1;
         end
-        ERPwaviewer_apply.chan = ChanArray;
+        gui_erp_waviewer.ERPwaviewer.chan = ChanArray;
         BinArrayValue = ERPwaveview_binchan.BinRange.Value;
         if BinArrayValue ==1
             BinArray = [1:length(ERPwaveview_binchan.BinRange.String)-1];
         else
             BinArray =  BinArrayValue-1;
         end
-        ERPwaviewer_apply.bin = BinArray;
+        gui_erp_waviewer.ERPwaviewer.bin = BinArray;
         
-        %%recover the label for bin and channel panel, and reset
-        %%backgroundcolor of "Apply"
         estudioworkingmemory('MyViewer_chanbin',0);
         ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
         Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
         ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
         ERPwaveview_binchan.cancel.BackgroundColor =  [1 1 1];
         ERPwaveview_binchan.cancel.ForegroundColor = [0 0 0];
-        assignin('base','ALLERPwaviewer',ERPwaviewer_apply);
         
-        %%save the parameters to memory file
         MERPWaveViewer_chanbin{1} = 0;
-        MERPWaveViewer_chanbin{2} =ERPwaviewer_apply.chan;
-        MERPWaveViewer_chanbin{3} =ERPwaviewer_apply.bin;
+        MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
+        MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
         estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         %%change  the other panels based on the changed bins and channels
-        viewer_ERPDAT.Count_currentERP = viewer_ERPDAT.Count_currentERP+1;
-        %%plot waves
-        f_redrawERP_viewer_test();
+        viewer_ERPDAT.Count_currentERP = 1;
         viewer_ERPDAT.Process_messg =2;
     end
 
 %%---------change channels and bins based on the selected ERPsets----------
     function v_currentERP_change(~,~)
-        
-        try
-            ERPwaviewer_S  = evalin('base','ALLERPwaviewer');
-        catch
+        if viewer_ERPDAT.Count_currentERP~=2
             return;
         end
-        ALLERP_S = ERPwaviewer_S.ALLERP;
-        Selected_ERPsetlabel = ERPwaviewer_S.SelectERPIdx;
         
-        if max(Selected_ERPsetlabel(:))> length(ALLERP_S)
-            Selected_ERPsetlabel =length(ALLERP_S);
+        ALLERP_S = gui_erp_waviewer.ERPwaviewer.ALLERP;
+        ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        
+        if any(ERPsetArray(:)> length(ALLERP_S))
+            ERPsetArray =length(ALLERP_S);
+            gui_erp_waviewer.ERPwaviewer.SelectERPIdx =ERPsetArray;
         end
         try
-            ERPwaviewer_S.ERP = ALLERP_S(Selected_ERPsetlabel(1));
-            ERPwaviewer_S.CURRENTERP =Selected_ERPsetlabel(1);
+            gui_erp_waviewer.ERPwaviewer.ERP = ALLERP_S(ERPsetArray(1));
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP =ERPsetArray(1);
         catch
-            ERPwaviewer_S.ERP = ALLERP_S(Selected_ERPsetlabel(1));
-            ERPwaviewer_S.CURRENTERP =Selected_ERPsetlabel(1);
+            gui_erp_waviewer.ERPwaviewer.ERP = ALLERP_S(ERPsetArray(1));
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP =ERPsetArray(1);
+            gui_erp_waviewer.ERPwaviewer.PageIndex=1;
         end
         
-        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP_S,Selected_ERPsetlabel);
+        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP_S,ERPsetArray);
         % Channel information
         Chanlist_name = cell(length(chanStr)+1,1);
         Chanlist_name(1) = {'All'};
@@ -447,7 +368,7 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.ElecRange.Min = 1;
         ERPwaveview_binchan.ElecRange.Max = length(ERPwaveview_binchan.ElecRange.String)+1;
         
-        %%Bin information
+        %%----------------------Bin information----------------------------
         brange = cell(length(binStr)+1,1);
         BinNum = length(binStr);
         Bin_selIndex = ERPwaveview_binchan.BinRange.Value;
@@ -480,7 +401,7 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             ChanArray =  ChanArrayValue-1;
         end
-        ERPwaviewer_S.chan = ChanArray;
+        gui_erp_waviewer.ERPwaviewer.chan = ChanArray;
         
         BinArrayValue =ERPwaveview_binchan.BinRange.Value ;
         if BinArrayValue ==1
@@ -488,15 +409,16 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             BinArray =  BinArrayValue-1;
         end
-        ERPwaviewer_S.bin = BinArray;
-        assignin('base','ALLERPwaviewer',ERPwaviewer_S);
+        gui_erp_waviewer.ERPwaviewer.bin = BinArray;
+        
         ERPwaveview_binchan.ElecRange.Enable = 'on';
         ERPwaveview_binchan.BinRange.Enable = 'on';
         %%save the parameters to memory file
         MERPWaveViewer_chanbin{1} = 0;
-        MERPWaveViewer_chanbin{2} =ERPwaviewer_S.chan;
-        MERPWaveViewer_chanbin{3} =ERPwaviewer_S.bin;
+        MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
+        MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
         estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
+        viewer_ERPDAT.Count_currentERP=3;
     end
 
 
@@ -507,26 +429,20 @@ varargout{1} = Chanbin_waveviewer_box;
             return;
         end
         
-        try
-            ERPwaviewer_S  = evalin('base','ALLERPwaviewer');
-        catch
-            return;
-        end
-        ALLERP_S = ERPwaviewer_S.ALLERP;
-        Selected_ERPsetlabel = ERPwaviewer_S.SelectERPIdx;
-        
-        if max(Selected_ERPsetlabel(:))> length(ALLERP_S)
-            Selected_ERPsetlabel =length(ALLERP_S);
+        ALLERP_S = gui_erp_waviewer.ERPwaviewer.ALLERP;
+        ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        if max(ERPsetArray(:))> length(ALLERP_S)
+            ERPsetArray =length(ALLERP_S);
         end
         try
-            ERPwaviewer_S.ERP = ALLERP_S(Selected_ERPsetlabel(1));
-            ERPwaviewer_S.CURRENTERP =Selected_ERPsetlabel(1);
+            gui_erp_waviewer.ERPwaviewer.ERP = ALLERP_S(ERPsetArray(1));
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP =ERPsetArray(1);
         catch
-            ERPwaviewer_S.ERP = ALLERP_S(Selected_ERPsetlabel(1));
-            ERPwaviewer_S.CURRENTERP =Selected_ERPsetlabel(1);
+            gui_erp_waviewer.ERPwaviewer.ERP = ALLERP_S(ERPsetArray(1));
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP =ERPsetArray(1);
         end
         
-        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP_S,Selected_ERPsetlabel);
+        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP_S,ERPsetArray);
         % Channel information
         Chanlist_name = cell(length(chanStr)+1,1);
         Chanlist_name(1) = {'All'};
@@ -535,7 +451,7 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         % Channel information
         Chanlist = chanStr;
-        Chan_sel =ERPwaviewer_S.chan;
+        Chan_sel =gui_erp_waviewer.ERPwaviewer.chan;
         if ~isempty(Chan_sel)
             if max(Chan_sel)> numel(Chanlist)
                 Chan_sel=   1:length(Chanlist);
@@ -543,7 +459,7 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             Chan_sel= 1:length(Chanlist);
         end
-        ERPwaviewer_S.chan = Chan_sel;
+        gui_erp_waviewer.ERPwaviewer.chan = Chan_sel;
         ERPwaveview_binchan.ElecRange.String = Chanlist_name;
         try
             if length(Chan_sel) ==  numel(chanStr)
@@ -560,7 +476,7 @@ varargout{1} = Chanbin_waveviewer_box;
         %%Bin information
         brange = cell(length(binStr)+1,1);
         BinNum = length(binStr);
-        Bin_sel = ERPwaviewer_S.bin;
+        Bin_sel = gui_erp_waviewer.ERPwaviewer.bin;
         if ~isempty(Bin_sel)
             if max(Bin_sel)> BinNum
                 Bin_sel=   1:BinNum;
@@ -578,11 +494,11 @@ varargout{1} = Chanbin_waveviewer_box;
         else
             ERPwaveview_binchan.BinRange.Value = Bin_sel+1;
         end
-        ERPwaviewer_S.bin = Bin_sel;
+        gui_erp_waviewer.ERPwaviewer.bin = Bin_sel;
         
         ERPtooltype = erpgettoolversion('tooltype');
         if ~strcmpi(ERPtooltype,'EStudio') && ~strcmpi(ERPtooltype,'ERPLAB')
-            ERPwaviewer_S.erp_binchan_op = 0;
+            gui_erp_waviewer.ERPwaviewer.erp_binchan_op = 0;
         end
         
         %%Auto or Custom
@@ -590,16 +506,14 @@ varargout{1} = Chanbin_waveviewer_box;
         ERPwaveview_binchan.BinRange.Enable = 'on';
         
         %%settings dependent on runing EStudio or ERPLAB or other way (e.g.,script).
-        
         ERPwaveview_binchan.ElecRange.Enable = 'on';
         ERPwaveview_binchan.BinRange.Enable = 'on';
         
-        assignin('base','ALLERPwaviewer',ERPwaviewer_S);
         %%save the parameters to memory file
-        ERPwaviewer_S.binchan_op=0;
+        gui_erp_waviewer.ERPwaviewer.binchan_op=0;
         MERPWaveViewer_chanbin{1} = 0;
-        MERPWaveViewer_chanbin{2} =ERPwaviewer_S.chan;
-        MERPWaveViewer_chanbin{3} =ERPwaviewer_S.bin;
+        MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
+        MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
         estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         viewer_ERPDAT.loadproper_count=3;
     end
@@ -623,97 +537,48 @@ varargout{1} = Chanbin_waveviewer_box;
 
 %%Reset this panel with the default parameters
     function Reset_Waviewer_panel_change(~,~)
-        
-        if viewer_ERPDAT.Reset_Waviewer_panel==2
-            try
-                ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-            catch
-                beep;
-                disp('f_ERP_Binchan_waviewer_GUI error: Restart ERPwave Viewer');
-                return;
-            end
-            
-            ERPwaveview_binchan.ElecRange.Enable = 'on';
-            ERPwaveview_binchan.BinRange.Enable = 'on';
-            Selected_erpset = evalin('base','CURRENTERP');
-            ALLERP = evalin('base','ALLERP');
-            if ~isempty(Selected_erpset) && ~isempty(ALLERP) && (Selected_erpset<= length(ALLERP)) && min(Selected_erpset)>0
-                [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,Selected_erpset);
-                Chanlist_name = cell(length(chanStr)+1,1);
-                Chanlist_name(1) = {'All'};
-                for Numofchan11 = 1:length(chanStr)
-                    Chanlist_name(Numofchan11+1) = {char(strcat(num2str(Numofchan11),'.',32,char(chanStr(Numofchan11))))};
-                end
-                ERPwaveview_binchan.ElecRange.String = Chanlist_name;
-                ERPwaveview_binchan.ElecRange.Value =1;
-                
-                brange = cell(length(binStr)+1,1);
-                brange(1) = {'All'};
-                for Numofbin11 = 1:length(binStr)
-                    brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
-                end
-                ERPwaveview_binchan.BinRange.String = brange;
-                ERPwaveview_binchan.BinRange.Value = 1;
-            end
-            ERPwaviewerIN.bin = [1:length(ERPwaveview_binchan.BinRange.String)-1];
-            ERPwaviewerIN.chan = [1:length(ERPwaveview_binchan.ElecRange.String)-1];
-            ERPwaviewerIN.binchan_op = 0;
-            assignin('base','ALLERPwaviewer',ERPwaviewerIN);
-            
-            %%save the parameters to memory file
-            MERPWaveViewer_chanbin{1} = 0;
-            MERPWaveViewer_chanbin{2} =ERPwaviewerIN.chan;
-            MERPWaveViewer_chanbin{3} =ERPwaviewerIN.bin;
-            estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
-            
-            ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
-            Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
-            ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
-            viewer_ERPDAT.Reset_Waviewer_panel=3;
-        end
-    end%%reset end
-
-%%Update the change of label indeces
-    function ERPset_Chan_bin_label_change(~,~)
-        if viewer_ERPDAT.ERPset_Chan_bin_label~=1
+        if viewer_ERPDAT.Reset_Waviewer_panel~=2
             return;
-        end
-        try
-            ERPwaviewerIN = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            disp('f_ERP_Binchan_waviewer_GUI error: Restart ERPwave Viewer');
-            return;
-        end
-        
-        
-        BinArray = ERPwaviewerIN.bin;
-        ChanArray =  ERPwaviewerIN.chan;
-        ChaNum= length(ERPwaveview_binchan.ElecRange.String)-1;
-        if max(ChanArray(:)) <=ChaNum
-            if ChaNum== numel(ChanArray)
-                ERPwaveview_binchan.ElecRange.Value=1;
-            else
-                ERPwaveview_binchan.ElecRange.Value= ChanArray+1;
-            end
-        end
-        BiNum = length(ERPwaveview_binchan.BinRange.String)-1;
-        if max(BinArray(:)) <=BiNum
-            if numel(BinArray)==BiNum
-                ERPwaveview_binchan.BinRange.Value=1;
-            else
-                ERPwaveview_binchan.BinRange.Value=BinArray+1;
-            end
         end
         ERPwaveview_binchan.ElecRange.Enable = 'on';
         ERPwaveview_binchan.BinRange.Enable = 'on';
+        Selected_erpset = evalin('base','CURRENTERP');
+        ALLERP = evalin('base','ALLERP');
+        if ~isempty(Selected_erpset) && ~isempty(ALLERP) && (Selected_erpset<= length(ALLERP)) && min(Selected_erpset)>0
+            [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERP,Selected_erpset);
+            Chanlist_name = cell(length(chanStr)+1,1);
+            Chanlist_name(1) = {'All'};
+            for Numofchan11 = 1:length(chanStr)
+                Chanlist_name(Numofchan11+1) = {char(strcat(num2str(Numofchan11),'.',32,char(chanStr(Numofchan11))))};
+            end
+            ERPwaveview_binchan.ElecRange.String = Chanlist_name;
+            ERPwaveview_binchan.ElecRange.Value =1;
+            
+            brange = cell(length(binStr)+1,1);
+            brange(1) = {'All'};
+            for Numofbin11 = 1:length(binStr)
+                brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
+            end
+            ERPwaveview_binchan.BinRange.String = brange;
+            ERPwaveview_binchan.BinRange.Value = 1;
+        end
+        gui_erp_waviewer.ERPwaviewer.bin = [1:length(ERPwaveview_binchan.BinRange.String)-1];
+        gui_erp_waviewer.ERPwaviewer.chan = [1:length(ERPwaveview_binchan.ElecRange.String)-1];
+        gui_erp_waviewer.ERPwaviewer.binchan_op = 0;
+        assignin('base','ALLERPwaviewer',gui_erp_waviewer.ERPwaviewer);
+        
         %%save the parameters to memory file
         MERPWaveViewer_chanbin{1} = 0;
-        MERPWaveViewer_chanbin{2} =ERPwaviewerIN.chan;
-        MERPWaveViewer_chanbin{3} =ERPwaviewerIN.bin;
+        MERPWaveViewer_chanbin{2} =gui_erp_waviewer.ERPwaviewer.chan;
+        MERPWaveViewer_chanbin{3} =gui_erp_waviewer.ERPwaviewer.bin;
         estudioworkingmemory('MERPWaveViewer_chanbin',MERPWaveViewer_chanbin);
         
-    end
+        ERPwaveview_binchan.apply.BackgroundColor = [1 1 1];
+        Chanbin_waveviewer_box.TitleColor= [0.5 0.5 0.9];
+        ERPwaveview_binchan.apply.ForegroundColor = [0 0 0];
+        viewer_ERPDAT.Reset_Waviewer_panel=3;
+    end%%reset end
+
 
 
 %%Execute the panel when press "Return" or "Enter"

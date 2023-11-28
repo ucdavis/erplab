@@ -28,7 +28,7 @@ else
     box_erpwave_viewer_property = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Viewer Properties', 'Padding', 5,...
         'FontSize', varargin{2},'BackgroundColor',ColorBviewer_def,'TitleColor',[0.5 0.5 0.9],'ForegroundColor','w');
 end
-gui_erp_waviewer.Window.WindowButtonMotionFcn = {@ViewerPos};
+% gui_erp_waviewer.Window.WindowButtonMotionFcn = {@ViewerPos};
 %-----------------------------Draw the panel-------------------------------------
 try
     FonsizeDefault = varargin{2};
@@ -71,7 +71,7 @@ varargout{1} = box_erpwave_viewer_property;
         gui_property_waveviewer.parameters_load = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_TN_title,'String',ViewerName,...
             'callback',@viewer_TN,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         set(gui_property_waveviewer.viewer_TN_title, 'Sizes',[70 165]);
-
+        
         gui_property_waveviewer.viewer_pos_title = uiextras.HBox('Parent', gui_property_waveviewer.DataSelBox,'BackgroundColor',ColorBviewer_def);
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_pos_title,'String','Position:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
@@ -94,7 +94,6 @@ varargout{1} = box_erpwave_viewer_property;
         uicontrol('Style','text','Parent',gui_property_waveviewer.viewer_pos_title1,'String','(left bottom width height) in %',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %
         set(gui_property_waveviewer.viewer_pos_title1, 'Sizes',[68 165]);
-        
         set(gui_property_waveviewer.DataSelBox ,'Sizes',[30 25 25 25])
     end
 
@@ -106,10 +105,23 @@ varargout{1} = box_erpwave_viewer_property;
 
 %%-------------------------Setting for load--------------------------------
     function parameters_load(~,~)
-        
         MessageViewer= char(strcat('Viewer Properties > Load'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
+        try
+            ALLERP = evalin('base','ALLERP');
+        catch
+            MessageViewer= char(strcat('Viewer Properties > Load: ALLERP is not available on workspace, you therfore cannot further handle'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
+        if isempty(ALLERP)
+            MessageViewer= char(strcat('Viewer Properties > Load: ALLERP is empty on workspace, you therfore cannot further handle'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
+            return;
+        end
         
         [filename, filepath,indxs] = uigetfile({'*.mat'}, ...
             'Load parametrs for "My viewer"', ...
@@ -130,19 +142,18 @@ varargout{1} = box_erpwave_viewer_property;
         erpFilename = char(strcat(erpfilename,ext));
         
         try
-            ERPwaviewer = importdata([filepath,erpFilename]);
-            ERPwaviewerdef  = evalin('base','ALLERPwaviewer');
-            ERPwaviewer.ALLERP= ERPwaviewerdef.ALLERP;
-            ERPwaviewer.ERP = ERPwaviewerdef.ERP;
-            ERPwaviewer.CURRENTERP = ERPwaviewerdef.CURRENTERP;
-            ERPwaviewer.SelectERPIdx = ERPwaviewerdef.SelectERPIdx;
-            ERPwaviewer.PageIndex = ERPwaviewerdef.PageIndex;
-            assignin('base','ALLERPwaviewer',ERPwaviewer);
+            gui_erp_waviewer.ERPwaviewer = importdata([filepath,erpFilename]);
+            gui_erp_waviewer.ERPwaviewer.ALLERP= ALLERP;
+            gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(end);
+            gui_erp_waviewer.ERPwaviewer.CURRENTERP = length(ALLERP);
+            gui_erp_waviewer.ERPwaviewer.SelectERPIdx = length(ALLERP);
+            gui_erp_waviewer.ERPwaviewer.PageIndex = 1;
+            
         catch
             beep;
             MessageViewer=['\n\n My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =3;
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         
@@ -192,14 +203,8 @@ varargout{1} = box_erpwave_viewer_property;
         MessageViewer= char(strcat('Viewer Properties > Save'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save: \n There is no "ALLERPwaviewer" on Workspace, Please run My Viewer again.\n\n');
-            return;
-        end
+        ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
+        
         pathstr = pwd;
         namedef ='Viewer';
         erpFilename = char(strcat(namedef,'.mat'));
@@ -260,14 +265,8 @@ varargout{1} = box_erpwave_viewer_property;
             return
         end
         
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n There is no "ALLERPwaviewer" on Workspace, Please run My Viewer again.\n\n');
-            return;
-        end
+        ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
+        
         
         %         [pathx, filename, ext] = fileparts(erpfilename);
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
@@ -333,16 +332,8 @@ varargout{1} = box_erpwave_viewer_property;
         end
         currvers  = ['ERPLAB Studio ' erplabstudiover,'-',32,ViewerName];
         estudioworkingmemory('viewername',ViewerName);
-        try
-            ERPwaviewer  = evalin('base','ALLERPwaviewer');
-        catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My Viewer > Viewer Propoerties > Title: \n There is no "ALLERPwaviewer" on Workspace, Please run My Viewer again.\n\n');
-            return;
-        end
-        ERPwaviewer.figname = ViewerName;
-        assignin('base','ALLERPwaviewer',ERPwaviewer);
+        
+        gui_erp_waviewer.ERPwaviewer.figname = ViewerName;
         gui_erp_waviewer.Window.Name = currvers;
         viewer_ERPDAT.Process_messg =2;
     end
@@ -442,7 +433,7 @@ varargout{1} = box_erpwave_viewer_property;
             return;
         end
         New_pos1 = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),100*New_pos(3)/ScreenPos(3),100*New_pos(4)/ScreenPos(4)];
-       
+        
         try
             Old_pos = gui_erp_waviewer.screen_pos;
             New_pos = [100*New_pos(1)/ScreenPos(3),100*New_pos(2)/ScreenPos(4),Old_pos(3),Old_pos(4)];

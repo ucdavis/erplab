@@ -19,39 +19,33 @@ end
 if nargin<2
     History = 'gui';
 end
-try
-    ALLERPwaviewerin = evalin('base','ALLERPwaviewer');
-    ERPwaviewerIN = ALLERPwaviewerin;
-catch
-    beep;
-    disp('f_preparms_erpwaviewer() error: There is no "ALLERPwaviewer" on Workspace, please run the ERP wave viewer again.');
-    return;
-end
+global gui_erp_waviewer;
 
-ALLERPIN = ERPwaviewerIN.ALLERP;
-ERPIN= ERPwaviewerIN.ERP;
-CURRENTERPIN = ERPwaviewerIN.CURRENTERP;
+
+ALLERPIN = gui_erp_waviewer.ERPwaviewer.ALLERP;
+ERPIN= gui_erp_waviewer.ERPwaviewer.ERP;
+CURRENTERPIN = gui_erp_waviewer.ERPwaviewer.CURRENTERP;
 
 if isempty(CURRENTERPIN) || CURRENTERPIN > length(ALLERPIN) %%checking index of current erpset
     CURRENTERPIN =length(ALLERPIN);
 end
 
 %%checking the indices of the selected ERPsets
-ERPsetArray = ERPwaviewerIN.SelectERPIdx;
+ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
 if max(ERPsetArray) >length(ALLERPIN)
     ERPsetArray =length(ALLERPIN);
 end
 
 %
 %%bin array and channel array
-binArray = ERPwaviewerIN.bin;
-chanArray = ERPwaviewerIN.chan;
+binArray = gui_erp_waviewer.ERPwaviewer.bin;
+chanArray = gui_erp_waviewer.ERPwaviewer.chan;
 PLOTORG =[1 2 3];%%The default parameters for plotting organization
 %%The first element is for  Grid; the second one is for Overlay; The last one is for Pages.
 try
-    PLOTORG(1) = ERPwaviewerIN.plot_org.Grid ;
-    PLOTORG(2) = ERPwaviewerIN.plot_org.Overlay;
-    PLOTORG(3) = ERPwaviewerIN.plot_org.Pages;
+    PLOTORG(1) = gui_erp_waviewer.ERPwaviewer.plot_org.Grid ;
+    PLOTORG(2) = gui_erp_waviewer.ERPwaviewer.plot_org.Overlay;
+    PLOTORG(3) = gui_erp_waviewer.ERPwaviewer.plot_org.Pages;
 catch
     PLOTORG = [1 2 3]; %%"Channels" is Grid; "Bins" is Overlay; "ERPsets" is Pages.
 end
@@ -112,10 +106,10 @@ if GridLayoutop==1
     end
 elseif  GridLayoutop==0
     try %%try to use the user defined parameters for "Grid"
-        plotBox(1) = ERPwaviewerIN.plot_org.gridlayout.rows;
-        plotBox(2) = ERPwaviewerIN.plot_org.gridlayout.columns;
-        columFormat =  ERPwaviewerIN.plot_org.gridlayout.columFormat;
-        DataDf = ERPwaviewerIN.plot_org.gridlayout.data;
+        plotBox(1) = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.rows;
+        plotBox(2) = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columns;
+        columFormat =  gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columFormat;
+        DataDf = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data;
         for Numofrows = 1:plotBox(1)
             for Numofcolumns = 1:plotBox(2)
                 SingleStr =  char(DataDf{Numofrows,Numofcolumns});
@@ -204,8 +198,8 @@ LineStylespec = cell(1,numel(OverlayArray));
 LineMarkerspec = cell(1,numel(OverlayArray));
 LineWidthspec = ones(1,numel(OverlayArray));
 try
-    LineData = ERPwaviewerIN.Lines.data;
-    if ERPwaviewerIN.Lines.auto
+    LineData = gui_erp_waviewer.ERPwaviewer.Lines.data;
+    if gui_erp_waviewer.ERPwaviewer.Lines.auto
         LineDataColor = linecolorsrgb;
     else
         for ii = 1:size(LineData,1)
@@ -287,13 +281,13 @@ TextcolorLeg = 1;
 Legcolumns = 1;
 try
     for NumofOverlay =1:numel(OverlayArray)
-        LegendName{NumofOverlay} = char(ERPwaviewerIN.Legend.data{NumofOverlay,2});
+        LegendName{NumofOverlay} = char(gui_erp_waviewer.ERPwaviewer.Legend.data{NumofOverlay,2});
     end
-    FontLegValue =  ERPwaviewerIN.Legend.font;
+    FontLegValue =  gui_erp_waviewer.ERPwaviewer.Legend.font;
     FontLeg = fonttype{FontLegValue};
-    FontSizeLeg =  ERPwaviewerIN.Legend.fontsize;
-    TextcolorLeg = ERPwaviewerIN.Legend.textcolor;
-    Legcolumns = ERPwaviewerIN.Legend.columns;
+    FontSizeLeg =  gui_erp_waviewer.ERPwaviewer.Legend.fontsize;
+    TextcolorLeg = gui_erp_waviewer.ERPwaviewer.Legend.textcolor;
+    Legcolumns = gui_erp_waviewer.ERPwaviewer.Legend.columns;
 catch
 end
 
@@ -303,17 +297,17 @@ CBELabels = [50 100 1];
 CBEFont = 'Helvetica';
 CBEFontsize=10;
 try
-    if ERPwaviewerIN.chanbinsetlabel.location.no ==1
+    if gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.no ==1
         CBELabels = [];
         CBEFont = '';
         CBEFontsize=[];
-    elseif ERPwaviewerIN.chanbinsetlabel.location.custom==1
-        CBELabels(1) = ERPwaviewerIN.chanbinsetlabel.location.xperc;
-        CBELabels(2) = ERPwaviewerIN.chanbinsetlabel.location.yperc;
-        CBELabels(3) = ERPwaviewerIN.chanbinsetlabel.location.center;
-        FontlabelValue =  ERPwaviewerIN.chanbinsetlabel.font;
+    elseif gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.custom==1
+        CBELabels(1) = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.xperc;
+        CBELabels(2) = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.yperc;
+        CBELabels(3) = gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.location.center;
+        FontlabelValue =  gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.font;
         CBEFont = fonttype{FontlabelValue};
-        CBEFontsize=ERPwaviewerIN.chanbinsetlabel.fontsize;
+        CBEFontsize=gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.fontsize;
     end
 catch
     
@@ -322,7 +316,7 @@ end
 %%label textcolor
 CBETcolor = [0 0 0];
 try
-    xlabelFontcolorValue =ERPwaviewerIN.chanbinsetlabel.textcolor;
+    xlabelFontcolorValue =gui_erp_waviewer.ERPwaviewer.chanbinsetlabel.textcolor;
     switch xlabelFontcolorValue
         case 1
             CBETcolor  = [0 0 0];%% black
@@ -348,7 +342,7 @@ end
 %%-----------------------------Polarity------------------------------------
 PolarityWave = 1;
 try
-    PolarityWave = ERPwaviewerIN.polarity;
+    PolarityWave = gui_erp_waviewer.ERPwaviewer.polarity;
 catch
 end
 
@@ -356,7 +350,7 @@ end
 %%-----------------------------standard error------------------------------
 Standerr = 0;
 try
-    StanderrValue = ERPwaviewerIN.SEM.error;
+    StanderrValue = gui_erp_waviewer.ERPwaviewer.SEM.error;
     if ~isnumeric(StanderrValue) || isempty(StanderrValue)
         Standerr = 0;
     else
@@ -364,7 +358,7 @@ try
     end
 catch
 end
-if ERPwaviewerIN.SEM.active==0
+if gui_erp_waviewer.ERPwaviewer.SEM.active==0
     Standerr = 0;
 else
     if Standerr<=0
@@ -375,7 +369,7 @@ end
 %%-------------------------------Transparency------------------------------
 Transparency = 0;
 try
-    TransparencyValue = ERPwaviewerIN.SEM.trans;
+    TransparencyValue = gui_erp_waviewer.ERPwaviewer.SEM.trans;
     if ~isnumeric(TransparencyValue) || isempty(TransparencyValue)
         Transparency = 0;
     else
@@ -384,7 +378,7 @@ try
 catch
 end
 
-if ERPwaviewerIN.SEM.active==0
+if gui_erp_waviewer.ERPwaviewer.SEM.active==0
     Transparency = 0;
     
 else
@@ -397,37 +391,37 @@ end
 %%------------------------------Grid space---------------------------------
 Gridspace = [1 10;1 10];
 try
-    Layoutop = ERPwaviewerIN.plot_org.gridlayout.op;
+    Layoutop = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.op;
     if Layoutop~=1
         %%for rows
-        rowgapop = ERPwaviewerIN.plot_org.gridlayout.rowgap.GTPOP;
+        rowgapop = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.rowgap.GTPOP;
         if rowgapop%%gap
             Gridspace(1,1) = 1;
-            rowgapValue =  ERPwaviewerIN.plot_org.gridlayout.rowgap.GTPValue;
+            rowgapValue =  gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.rowgap.GTPValue;
             if isempty(rowgapValue) || numel(rowgapValue)~=1 || rowgapValue<=0
                 rowgapValue = 10;
             end
             Gridspace(1,2) = rowgapValue;
         else%%overlay
             Gridspace(1,1) = 2;
-            rowoverlayValue =  ERPwaviewerIN.plot_org.gridlayout.rowgap.OverlayValue;
+            rowoverlayValue =  gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.rowgap.OverlayValue;
             if isempty(rowoverlayValue) || numel(rowoverlayValue)~=1 || rowoverlayValue<=0 ||  rowoverlayValue>100
                 rowoverlayValue = 40;
             end
             Gridspace(1,2) = rowoverlayValue;
         end
         %%for columns
-        columngapop = ERPwaviewerIN.plot_org.gridlayout.columngap.GTPOP;
+        columngapop = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columngap.GTPOP;
         if columngapop%%gap
             Gridspace(2,1) = 1;
-            columngapValue =  ERPwaviewerIN.plot_org.gridlayout.columngap.GTPValue;
+            columngapValue =  gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columngap.GTPValue;
             if isempty(columngapValue) || numel(columngapValue)~=1 || columngapValue<=0
                 columngapValue = 10;
             end
             Gridspace(2,2) = columngapValue;
         else%% overlay
             Gridspace(2,1) = 2;
-            columnoverlayValue =  ERPwaviewerIN.plot_org.gridlayout.columngap.OverlayValue;
+            columnoverlayValue =  gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columngap.OverlayValue;
             if isempty(columnoverlayValue) || numel(columnoverlayValue)~=1 || columnoverlayValue<=0 ||  columnoverlayValue>100
                 columnoverlayValue = 20;
             end
@@ -442,7 +436,7 @@ end
 %%-----------------------------Baseline correction-------------------------
 Blc = 'none';
 try
-    Blc = ERPwaviewerIN.baselinecorr;
+    Blc = gui_erp_waviewer.ERPwaviewer.baselinecorr;
 catch
 end
 
@@ -450,12 +444,12 @@ end
 %%---------------------------------x axis----------------------------------
 timeRange = [];%%time range is used to plot the wave(s)
 try
-    timeRange = ERPwaviewerIN.xaxis.timerange;
+    timeRange = gui_erp_waviewer.ERPwaviewer.xaxis.timerange;
 catch
 end
 timeticks = [];
 try
-    timeticks = ERPwaviewerIN.xaxis.timeticks;
+    timeticks = gui_erp_waviewer.ERPwaviewer.xaxis.timeticks;
 catch
 end
 if ~isempty(timeRange) && ~isempty(timeticks) %%check xticks
@@ -474,7 +468,7 @@ if ~isempty(timeRange) && ~isempty(timeticks) %%check xticks
 end
 xticklabel = 'on';
 try
-    xticklabelValue = ERPwaviewerIN.xaxis.label;
+    xticklabelValue = gui_erp_waviewer.ERPwaviewer.xaxis.label;
     if xticklabelValue==0
         xticklabel = 'off';
     else
@@ -485,7 +479,7 @@ end
 
 xlabelFont = 'Helvetica';
 try
-    xFontlabelValue =  ERPwaviewerIN.xaxis.font;
+    xFontlabelValue =  gui_erp_waviewer.ERPwaviewer.xaxis.font;
     xlabelFont = fonttype{xFontlabelValue};
 catch
 end
@@ -493,13 +487,13 @@ end
 
 xlabelFontsize = 10;
 try
-    xlabelFontsize =ERPwaviewerIN.xaxis.fontsize;
+    xlabelFontsize =gui_erp_waviewer.ERPwaviewer.xaxis.fontsize;
 catch
 end
 
 xlabelFontcolor = [0 0 0];
 try
-    xlabelFontcolorValue =ERPwaviewerIN.xaxis.fontcolor;
+    xlabelFontcolorValue =gui_erp_waviewer.ERPwaviewer.xaxis.fontcolor;
     switch xlabelFontcolorValue
         case 1
             xlabelFontcolor  = [0 0 0];%% black
@@ -522,7 +516,7 @@ catch
 end
 Xunits = 'on';
 try
-    XunitsValue =  ERPwaviewerIN.xaxis.units;
+    XunitsValue =  gui_erp_waviewer.ERPwaviewer.xaxis.units;
     if XunitsValue==1
         Xunits = 'on';
     else
@@ -534,8 +528,8 @@ end
 
 %%Minorticks for x axis
 try
-    MinorticksX(1) =  ERPwaviewerIN.xaxis.tminor.disp;
-    MinorticksX(2:numel(ERPwaviewerIN.xaxis.tminor.step)+1) = ERPwaviewerIN.xaxis.tminor.step;
+    MinorticksX(1) =  gui_erp_waviewer.ERPwaviewer.xaxis.tminor.disp;
+    MinorticksX(2:numel(gui_erp_waviewer.ERPwaviewer.xaxis.tminor.step)+1) = gui_erp_waviewer.ERPwaviewer.xaxis.tminor.step;
 catch
     MinorticksX = [0];%% off
 end
@@ -543,7 +537,7 @@ end
 %%Decimals for x ticklabels
 Xtickprecision = 0;
 try
-    Xtickprecision= ERPwaviewerIN.xaxis.tickdecimals;
+    Xtickprecision= gui_erp_waviewer.ERPwaviewer.xaxis.tickdecimals;
 catch
     Xtickprecision = 0;
 end
@@ -555,19 +549,19 @@ end
 %%display x ticks with millisecond or second?
 XdispFlag = 1;%% in millisecond
 try
-    XdispFlag = ERPwaviewerIN.xaxis.tdis;
+    XdispFlag = gui_erp_waviewer.ERPwaviewer.xaxis.tdis;
 catch
 end
 
 %%%--------------------------------y axis----------------------------------
 Yscales = [];
 try
-    Yscales = ERPwaviewerIN.yaxis.scales ;
+    Yscales = gui_erp_waviewer.ERPwaviewer.yaxis.scales ;
 catch
 end
 Yticks = [];
 try
-    Yticks = ERPwaviewerIN.yaxis.ticks;
+    Yticks = gui_erp_waviewer.ERPwaviewer.yaxis.ticks;
 catch
 end
 if ~isempty(Yscales) && ~isempty(Yticks) %%check Yticks
@@ -587,7 +581,7 @@ end
 
 yticklabel = 'on';
 try
-    yticklabelValue = ERPwaviewerIN.yaxis.label;
+    yticklabelValue = gui_erp_waviewer.ERPwaviewer.yaxis.label;
     if yticklabelValue==0
         yticklabel = 'off';
     else
@@ -598,20 +592,20 @@ end
 
 YlabelFont = 'Helvetica';
 try
-    YFontlabelValue =  ERPwaviewerIN.yaxis.font;
+    YFontlabelValue =  gui_erp_waviewer.ERPwaviewer.yaxis.font;
     YlabelFont = fonttype{YFontlabelValue};
 catch
 end
 
 YlabelFontsize = 12;
 try
-    YlabelFontsize =ERPwaviewerIN.yaxis.fontsize;
+    YlabelFontsize =gui_erp_waviewer.ERPwaviewer.yaxis.fontsize;
 catch
 end
 
 ylabelFontcolor = [0 0 0];
 try
-    ylabelFontcolorValue =ERPwaviewerIN.yaxis.fontcolor;
+    ylabelFontcolorValue =gui_erp_waviewer.ERPwaviewer.yaxis.fontcolor;
     switch ylabelFontcolorValue
         case 1
             ylabelFontcolor  = [0 0 0];%% black
@@ -635,7 +629,7 @@ end
 
 yunits = 'on';
 try
-    yunitsValue =  ERPwaviewerIN.yaxis.units;
+    yunitsValue =  gui_erp_waviewer.ERPwaviewer.yaxis.units;
     if yunitsValue==1
         yunits = 'on';
     else
@@ -647,7 +641,7 @@ end
 
 Ytickprecision = 1;
 try
-    Ytickprecision =  ERPwaviewerIN.yaxis.tickdecimals;
+    Ytickprecision =  gui_erp_waviewer.ERPwaviewer.yaxis.tickdecimals;
 catch
     Ytickprecision = 1;
 end
@@ -655,8 +649,8 @@ end
 
 %%Minorticks for y axis
 try
-    MinorticksY(1) =  ERPwaviewerIN.yaxis.yminor.disp;
-    MinorticksY(2:numel(ERPwaviewerIN.yaxis.yminor.step)+1) = ERPwaviewerIN.yaxis.yminor.step;
+    MinorticksY(1) =  gui_erp_waviewer.ERPwaviewer.yaxis.yminor.disp;
+    MinorticksY(2:numel(gui_erp_waviewer.ERPwaviewer.yaxis.yminor.step)+1) = gui_erp_waviewer.ERPwaviewer.yaxis.yminor.step;
 catch
     MinorticksY = [0];%% off
 end
@@ -666,7 +660,7 @@ end
 %%Background color of figure
 figbgdColor = [1 1 1];
 try
-    figbgdColor =  ERPwaviewerIN.figbackgdcolor;
+    figbgdColor =  gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
 catch
     figbgdColor = [1 1 1];
 end
@@ -676,7 +670,7 @@ if ~isnumeric(figbgdColor) || isempty(figbgdColor) || numel(figbgdColor)~=3 || m
 end
 
 
-PagesIndex = ERPwaviewerIN.PageIndex;
+PagesIndex = gui_erp_waviewer.ERPwaviewer.PageIndex;
 if isempty(PagesIndex)
     PagesIndex=1;
 end
@@ -688,7 +682,7 @@ catch
 end
 FigOutpos = [];
 try
-    FigOutpos=ERPwaviewerIN.FigOutpos;
+    FigOutpos=gui_erp_waviewer.ERPwaviewer.FigOutpos;
     FigOutpos = [ScreenPos(3)*FigOutpos(1)/100,ScreenPos(4)*FigOutpos(2)/100];
 catch
     FigOutpos = ScreenPos(3:4)*3/4;
