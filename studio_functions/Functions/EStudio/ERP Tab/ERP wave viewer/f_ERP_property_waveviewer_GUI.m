@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022
+% 2022  && Nov 2023
 
 
 function varargout = f_ERP_property_waveviewer_GUI(varargin)
@@ -132,30 +132,33 @@ varargout{1} = box_erpwave_viewer_property;
         end
         
         [pathstr, erpfilename, ext] = fileparts(filename) ;
-        if indxs==1
-            ext = '.mat';
-        elseif indxs==2
-            ext = '.mat';
-        else
-            ext = '.mat';
-        end
+        ext = '.mat';
+        
         erpFilename = char(strcat(erpfilename,ext));
         
         try
             gui_erp_waviewer.ERPwaviewer = importdata([filepath,erpFilename]);
             gui_erp_waviewer.ERPwaviewer.ALLERP= ALLERP;
-            gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(end);
-            gui_erp_waviewer.ERPwaviewer.CURRENTERP = length(ALLERP);
-            gui_erp_waviewer.ERPwaviewer.SelectERPIdx = length(ALLERP);
-            gui_erp_waviewer.ERPwaviewer.PageIndex = 1;
         catch
             beep;
-            MessageViewer=['\n\n My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
+            MessageViewer=['My viewer > Viewer Propoerties > Load: Cannot load the saved parameters of My viewer '];
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
         
+        try
+            CURRENTERP = evalin('base','CURRENTERP');
+        catch
+            CURRENTERP = [];
+        end
+        if isempty(CURRENTERP) || numel(CURRENTERP)~=1 || any(CURRENTERP>length(ALLERP))
+            CURRENTERP = length(ALLERP);
+        end
+        gui_erp_waviewer.ERPwaviewer.ERP = ALLERP(CURRENTERP);
+        gui_erp_waviewer.ERPwaviewer.CURRENTERP = CURRENTERP;
+        gui_erp_waviewer.ERPwaviewer.SelectERPIdx = CURRENTERP;
+        gui_erp_waviewer.ERPwaviewer.PageIndex = 1;
         %%check current version
         ERPtooltype = erpgettoolversion('tooltype');
         if strcmpi(ERPtooltype,'EStudio')
@@ -205,7 +208,7 @@ varargout{1} = box_erpwave_viewer_property;
         ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
         
         pathstr = pwd;
-        namedef ='Viewer';
+        namedef ='Advanced_ERPWave_Viewer';
         erpFilename = char(strcat(namedef,'.mat'));
         
         ERPtooltype = erpgettoolversion('tooltype');
@@ -234,10 +237,9 @@ varargout{1} = box_erpwave_viewer_property;
         try
             save([pathstr,filesep,erpFilename],'ERPwaviewer','-v7.3');
         catch
-            beep;
-            MessageViewer= char(strcat('Viewer Propoerties > Save: \n Cannot save the parameters of My viewer'));
+            MessageViewer= char(strcat('Viewer Propoerties > Save: Cannot save the parameters of My viewer'));
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =3;
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         MessageViewer= char(strcat('Viewer Properties > Save'));
@@ -251,7 +253,7 @@ varargout{1} = box_erpwave_viewer_property;
         viewer_ERPDAT.Process_messg =1;
         
         pathstr = pwd;
-        namedef ='Viewer';
+        namedef ='Advanced_ERPWave_Viewer';
         [erpfilename, erppathname, indxs] = uiputfile({'*.mat'}, ...
             ['Save "','Information of My Viewer', '" as'],...
             fullfile(pathstr,namedef));
@@ -265,15 +267,9 @@ varargout{1} = box_erpwave_viewer_property;
         
         ERPwaviewer  = gui_erp_waviewer.ERPwaviewer;
         
-        %         [pathx, filename, ext] = fileparts(erpfilename);
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        if indxs==1
-            ext = '.mat';
-        elseif indxs==2
-            ext = '.mat';
-        else
-            ext = '.mat';
-        end
+        ext = '.mat';
+        
         erpFilename = char(strcat(erpfilename,ext));
         
         ERPtooltype = erpgettoolversion('tooltype');
@@ -301,9 +297,9 @@ varargout{1} = box_erpwave_viewer_property;
         try
             save([erppathname,erpFilename],'ERPwaviewer','-v7.3');
         catch
-            beep;
-            viewer_ERPDAT.Process_messg =3;
-            fprintf(2,'\n\n My viewer > Viewer Propoerties > Save as: \n Cannot save the parameters of My viewer.\n\n');
+            MessageViewer= char(strcat('Viewer Propoerties > Save: Cannot save the parameters of My viewer'));
+            erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         MessageViewer= char(strcat('Viewer Properties > Save as'));
@@ -368,7 +364,6 @@ varargout{1} = box_erpwave_viewer_property;
         end
         erpworkingmemory('ERPWaviewerScreenPos',New_pos1);
         
-        %        gui_erp_waviewer.screen_pos = New_pos;
         try
             POS4 = (New_pos1(2)-New_posin(2))/100;
             new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];

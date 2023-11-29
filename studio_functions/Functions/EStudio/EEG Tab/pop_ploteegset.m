@@ -1,10 +1,33 @@
 % PURPOSE:  pop_ploteegset.m
-%           plot EEG waves
+%           plot continuous/epoched EEG waves
 %
 
 
-%%Insert usage here
+%%FORMAT:
+% [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
+%         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
+%         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History', 'gui');
 
+
+% Inputs:
+%
+%EEG                 -EEGSET
+%ChanArray           -index(es) of channel(s) to plot ( 5 10 11 ...)
+%ICArray             -index(es) of IC(s) to plot (1 2 5 3...). Please set
+%                     empty if you donot want to display ICs
+%Winlength           -the length of time-wondow to display the wave e.g.,
+%                     5s for continuous EEG; For epoched EEG, it is the
+%                     number of epochs, e.g., 5 epochs
+%AmpScale            -Verticl amplitude scales e.g., 50
+%ChanLabel           -display channel names or numbers. 1 is name and 0 is
+%                     number
+%Submean             -remove DC? 1 (yes) or 0 (no)
+%EventOnset          -display events? 1(yes) or 0 (no)
+%StackFlag           -stack the waves for different channels or ics. 1 or 0
+%NormFlag            -normalize the data? 1 or 0
+%Startimes           -the start time for the dispalyed data e.g.,from 2nd s
+%figureName          - figure name
+%figSize             -width and height for the figure  e.g., [1800 900]
 
 
 
@@ -343,7 +366,7 @@ switch shist
         displayEquiComERP(eegcom);
     case 2 % from script
         for i=1:length(EEG)
-            ALLERP(i) = erphistory(ALLERP(i), [], eegcom, 1);
+            ALLEEG(i) = erphistory(ALLEEG(i), [], eegcom, 1);
         end
     case 3
         % implicit

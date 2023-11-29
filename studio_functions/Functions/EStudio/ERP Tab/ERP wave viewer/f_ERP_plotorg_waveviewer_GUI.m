@@ -523,7 +523,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         set(gui_plotorg_waveviewer.DataSelBox,'Sizes',[150 25 25 25 25 25 25 25 25]);
         gui_plotorg_waveviewer.columFormatStr = '';
         estudioworkingmemory('MERPWaveViewer_plotorg',MERPWaveViewer_plotorg);%%save parameters for this panel to memory file
-        
         estudioworkingmemory('MyViewer_plotorg',0);
     end
 
@@ -609,11 +608,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         
         gui_plotorg_waveviewer.plotorg_c1.Value = 1;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
@@ -742,11 +737,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 1;
         gui_plotorg_waveviewer.plotorg_c3.Value = 0;
@@ -871,11 +862,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
         gui_plotorg_waveviewer.plotorg_c3.Value = 1;
@@ -1000,11 +987,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
         gui_plotorg_waveviewer.plotorg_c3.Value = 0;
@@ -1132,11 +1115,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
         gui_plotorg_waveviewer.plotorg_c3.Value = 0;
@@ -1264,11 +1243,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         end
         
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.plotorg_c1.Value = 0;
         gui_plotorg_waveviewer.plotorg_c2.Value = 0;
         gui_plotorg_waveviewer.plotorg_c3.Value = 0;
@@ -1357,11 +1332,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.layout_auto.Value =0;
         gui_plotorg_waveviewer.layout_custom.Value = 1;
         gui_plotorg_waveviewer.rownum.Enable = 'on';
@@ -1416,11 +1387,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
     end
 
 
@@ -1431,11 +1398,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
     end
 
 
@@ -1447,11 +1410,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.rowgap_auto.Value = 1;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'on';
         gui_plotorg_waveviewer.rowoverlap.Value =0;
@@ -1465,11 +1424,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         rowgap = str2num(Source.String);
         if isempty(rowgap) || numel(rowgap)~=1 || rowgap<=0
             MessageViewer= char(strcat('Plot Organization > Row > Gap should be larger than 0'));
@@ -1488,11 +1443,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();
         gui_plotorg_waveviewer.rowgap_auto.Value = 0;
         gui_plotorg_waveviewer.rowgapGTPcustom.Enable = 'off';
         gui_plotorg_waveviewer.rowoverlap.Value =1;
@@ -1506,11 +1457,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();%%change title color and background color for "cancel" and "apply"
+        
         rowoverlay = str2num(Source.String);
         if isempty(rowoverlay) || numel(rowoverlay)~=1 || rowoverlay<=0 || rowoverlay>=100
             MessageViewer= char(strcat('Plot Organization > Column > Overlap should be larger than 0 and smaller than 100'));
@@ -1547,11 +1495,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();%%change title color and background color for "cancel" and "apply"
+        
         columngap = str2num(Source.String);
         if isempty(columngap) || numel(columngap)~=1 || columngap<=0
             MessageViewer= char(strcat('Plot Organization > Column > Gap should be larger than 0'));
@@ -1570,11 +1515,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         
         colnOverlay = str2num(char( gui_plotorg_waveviewer.columngapoverlapedit.String));
         gui_plotorg_waveviewer.columngapgtpop.Value =0;
@@ -1594,11 +1535,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();%%change title color and background color for "cancel" and "apply"
+        
         columnoverlay = str2num(Source.String);
         if isempty(columnoverlay) || numel(columnoverlay)~=1 || columnoverlay<=0 || columnoverlay>=100
             Source.String = '40';
@@ -1615,11 +1553,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         if Source.Value==1
             gui_plotorg_waveviewer.layout_custom_edit.Enable = 'on';
         else
@@ -1695,11 +1629,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
         estudioworkingmemory('MyViewer_plotorg',1);
-        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
-        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
-        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+        track_changes_title_color();%%change title color and background color for "cancel" and "apply"
         MessageViewer= char(strcat('Plot Organization > Custom Grid Locations > Edit'));
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
@@ -3297,6 +3227,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
     end%%end of reset
 
 
+%%----------------Press Return key to execute the function-----------------
     function plotorg_presskey(hObject, eventdata)
         keypress = eventdata.Key;
         if strcmp (keypress, 'return') || strcmp (keypress, 'enter')
@@ -3309,4 +3240,15 @@ varargout{1} = box_erpwave_viewer_plotorg;
             return;
         end
     end
+
+%%----------change the title color and backgroundcolor for "cancel" and----
+%%--------------"Apply" if any of parameters was changed-------------------
+    function track_changes_title_color(~,~)
+        gui_plotorg_waveviewer.apply.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.apply.ForegroundColor = [1 1 1];
+        box_erpwave_viewer_plotorg.TitleColor= [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.cancel.BackgroundColor =  [0.4940 0.1840 0.5560];
+        gui_plotorg_waveviewer.cancel.ForegroundColor = [1 1 1];
+    end
+
 end

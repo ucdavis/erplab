@@ -158,11 +158,11 @@ gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel
 
 %%Setting title
 gui_erp_waviewer.pageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr{pagecurrentNum}];
-gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
-gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',@page_minus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'FontWeight','bold');
+gui_erp_waviewer.pageinfo_text = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style','text','String',gui_erp_waviewer.pageinfo_str,'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+gui_erp_waviewer.pageinfo_minus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','Callback',@page_minus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 gui_erp_waviewer.pageinfo_minus.Enable = 'off';
 gui_erp_waviewer.pageinfo_edit = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'edit', 'String', num2str(pagecurrentNum),'Callback',@page_edit,'FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1]);
-gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',@page_plus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'FontWeight','bold');
+gui_erp_waviewer.pageinfo_plus = uicontrol('Parent',gui_erp_waviewer.pageinfo_box,'Style', 'pushbutton', 'String', 'Next','Callback',@page_plus,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
 gui_erp_waviewer.pageinfo_plus.Enable = 'off';
 
 if pageNum ==1

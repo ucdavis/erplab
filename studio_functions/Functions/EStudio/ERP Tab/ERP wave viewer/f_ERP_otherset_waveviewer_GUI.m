@@ -859,35 +859,115 @@ varargout{1} = box_erplabelset_viewer_otherset;
         if viewer_ERPDAT.Count_currentERP~=7
             return;
         end
-        gui_otherset_waveviewer.polarity_up.Value =1;
-        gui_otherset_waveviewer.polarity_down.Value =0;
-        gui_erp_waviewer.ERPwaviewer.polarity = gui_otherset_waveviewer.polarity_up.Value;%% the polarity of wave
+        PolirityValue = gui_erp_waviewer.ERPwaviewer.polarity;
+        if PolirityValue ==1
+            gui_otherset_waveviewer.polarity_up.Value = 1;
+            gui_otherset_waveviewer.polarity_down.Value = 0;
+        else
+            gui_otherset_waveviewer.polarity_up.Value = 0;
+            gui_otherset_waveviewer.polarity_down.Value = 1;
+        end
         
-        %%SME
-        gui_otherset_waveviewer.show_SEM.Value =0;
-        gui_erp_waviewer.ERPwaviewer.SEM.active  = gui_otherset_waveviewer.show_SEM.Value;
-        gui_otherset_waveviewer.SEM_custom.Value =2;
-        gui_otherset_waveviewer.SEM_custom.Enable = 'off';
-        gui_erp_waviewer.ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
-        %%trans
-        gui_otherset_waveviewer.SEMtrans_custom.Value =3;
-        gui_erp_waviewer.ERPwaviewer.SEM.trans = (gui_otherset_waveviewer.SEMtrans_custom.Value-1)/10;
-        gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
-        gui_otherset_waveviewer.bsl_none.Value =1;
-        gui_erp_waviewer.ERPwaviewer.baselinecorr = 'none';
-        gui_otherset_waveviewer.bsl_pre.Value =0;
-        gui_otherset_waveviewer.bsl_post.Value =0;
-        gui_otherset_waveviewer.bsl_whole.Value =0;
-        gui_otherset_waveviewer.bsl_custom.Value =0;
-        gui_otherset_waveviewer.bsl_customedit.String = '';
-        gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
-        gui_otherset_waveviewer.figurebakcolor.String ='1,1,1';
-        gui_erp_waviewer.ERPwaviewer.figbackgdcolor =[1 1 1];
-        gui_otherset_waveviewer.apply.BackgroundColor =  [1 1 1];
-        gui_otherset_waveviewer.apply.ForegroundColor = [0 0 0];
-        box_erplabelset_viewer_otherset.TitleColor= [0.5 0.5 0.9];
-        gui_otherset_waveviewer.cancel.BackgroundColor =  [1 1 1];
-        gui_otherset_waveviewer.cancel.ForegroundColor = [0 0 0];
+        %
+        %%SEM settings
+        SEMValue =  gui_erp_waviewer.ERPwaviewer.SEM.active;
+        if isempty(SEMValue) || numel(SEMValue)~=1 || (SEMValue~=0 && SEMValue~=1)
+            SEMValue=0;
+            gui_erp_waviewer.ERPwaviewer.SEM.active=0;
+        end
+        if SEMValue==1
+            gui_otherset_waveviewer.show_SEM.Value =1;
+            gui_otherset_waveviewer.SEM_custom.Enable = 'on';
+            gui_otherset_waveviewer.SEMtrans_custom.Enable = 'on';
+            ERRORValue = gui_erp_waviewer.ERPwaviewer.SEM.error;
+            if isempty(ERRORValue) || ERRORValue<=0 || ERRORValue>10
+                ERRORValue = 1;
+                gui_erp_waviewer.ERPwaviewer.SEM.error = 1;
+            end
+            gui_otherset_waveviewer.SEM_custom.Value =ERRORValue+1;
+            SEMTrans = gui_erp_waviewer.ERPwaviewer.SEM.trans;
+            if isempty(SEMTrans) || SEMTrans<=0 || SEMTrans>1
+                SEMTrans = 2;
+                gui_erp_waviewer.ERPwaviewer.SEM.trans = 0.2;
+            end
+            gui_otherset_waveviewer.SEMtrans_custom.Value  = SEMTrans*10 +1;
+        else
+            gui_otherset_waveviewer.show_SEM.Value =0;
+            gui_otherset_waveviewer.SEM_custom.Enable = 'off';
+            gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
+            gui_otherset_waveviewer.SEM_custom.Value =1;
+            gui_otherset_waveviewer.SEMtrans_custom.Value =1;
+            gui_erp_waviewer.ERPwaviewer.SEM.error = 0;
+            gui_erp_waviewer.ERPwaviewer.SEM.trans = 0;
+        end
+        
+        %
+        %%Baseline settings
+        BalineCorrection = gui_erp_waviewer.ERPwaviewer.baselinecorr;
+        if numel(BalineCorrection) ==2
+            if ~isnumeric(BalineCorrection)
+                gui_otherset_waveviewer.bsl_none.Value =1;
+                gui_otherset_waveviewer.bsl_pre.Value =0;
+                gui_otherset_waveviewer.bsl_post.Value =0;
+                gui_otherset_waveviewer.bsl_whole.Value =0;
+                gui_otherset_waveviewer.bsl_custom.Value = 0;
+                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+                gui_erp_waviewer.ERPwaviewer.baselinecorr = 'none';
+            else
+                gui_otherset_waveviewer.bsl_none.Value =0;
+                gui_otherset_waveviewer.bsl_pre.Value =0;
+                gui_otherset_waveviewer.bsl_post.Value =0;
+                gui_otherset_waveviewer.bsl_whole.Value =0;
+                gui_otherset_waveviewer.bsl_custom.Value = 1;
+                gui_otherset_waveviewer.bsl_customedit.Enable = 'on';
+                gui_otherset_waveviewer.bsl_customedit.String = num2str(BalineCorrection);
+            end
+        else
+            if strcmpi(BalineCorrection,'pre')
+                gui_otherset_waveviewer.bsl_none.Value =0;
+                gui_otherset_waveviewer.bsl_pre.Value =1;
+                gui_otherset_waveviewer.bsl_post.Value =0;
+                gui_otherset_waveviewer.bsl_whole.Value =0;
+                gui_otherset_waveviewer.bsl_custom.Value = 0;
+                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+            elseif strcmpi(BalineCorrection,'post')
+                gui_otherset_waveviewer.bsl_none.Value =0;
+                gui_otherset_waveviewer.bsl_pre.Value =0;
+                gui_otherset_waveviewer.bsl_post.Value =1;
+                gui_otherset_waveviewer.bsl_whole.Value =0;
+                gui_otherset_waveviewer.bsl_custom.Value = 0;
+                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+            elseif strcmpi(BalineCorrection,'all') || strcmpi(BalineCorrection,'whole')
+                gui_otherset_waveviewer.bsl_none.Value =0;
+                gui_otherset_waveviewer.bsl_pre.Value =0;
+                gui_otherset_waveviewer.bsl_post.Value =0;
+                gui_otherset_waveviewer.bsl_whole.Value =1;
+                gui_otherset_waveviewer.bsl_custom.Value = 0;
+                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+            else
+                gui_otherset_waveviewer.bsl_none.Value =1;
+                gui_otherset_waveviewer.bsl_pre.Value =0;
+                gui_otherset_waveviewer.bsl_post.Value =0;
+                gui_otherset_waveviewer.bsl_whole.Value =0;
+                gui_otherset_waveviewer.bsl_custom.Value = 0;
+                gui_otherset_waveviewer.bsl_customedit.Enable = 'off';
+            end
+        end
+        
+        %
+        %%Background color
+        try
+            BackgroundColor =  gui_erp_waviewer.ERPwaviewer.figbackgdcolor;
+        catch
+            BackgroundColor = [1 1 1];
+        end
+        if isempty(BackgroundColor) ||  numel(BackgroundColor)~=3 || max(BackgroundColor)>1 ||min (BackgroundColor)<0
+            BackgroundColor = [1 1 1];
+        end
+        gui_otherset_waveviewer.figurebakcolor.String = num2str(BackgroundColor);
+        
+        gui_erp_waviewer.ERPwaviewer.figbackgdcolor = BackgroundColor;
+        viewer_ERPDAT.loadproper_count =0;
         %%save the reset parameters for this panel
         MERPWaveViewer_others{1} = gui_erp_waviewer.ERPwaviewer.polarity;
         MERPWaveViewer_others{2} = gui_erp_waviewer.ERPwaviewer.SEM.active;

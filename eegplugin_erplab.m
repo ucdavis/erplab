@@ -83,7 +83,6 @@ observe_EEGDAT.eeg_reset_def_paras = 0;
 %global needed for ERPLAB viewer
 global observe_ERPDAT;
 observe_ERPDAT = o_ERPDAT;
-observe_ERPDAT.Two_GUI = 0;
 observe_ERPDAT.ALLERP = [];
 observe_ERPDAT.CURRENTERP = [];
 observe_ERPDAT.ERP = [];
