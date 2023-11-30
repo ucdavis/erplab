@@ -703,13 +703,13 @@ varargout{1} = ERP_plotset_box;
             if jj==1
                 formatSpec = strcat(formatSpec,'%d\t',32);
             else
-                formatSpec = strcat(formatSpec,'%s\t',32);
+                formatSpec = strcat(formatSpec,'%s',32);
             end
         end
         formatSpec = strcat(formatSpec,'\n');
         columName = {'','Column1','Column2'};
         
-        fprintf(fileID,'%s\t %s\t %s\t\n',columName{1,:});
+        fprintf(fileID,'%s\t %s\t %s\n',columName{1,:});
         for row = 1:numel(chanOrders)
             rowdata = cell(1,3);
             rowdata{1,1} = char(['Row',num2str(row)]);
@@ -1007,7 +1007,11 @@ varargout{1} = ERP_plotset_box;
         [nrows,ncols] = size(AllabelArray);
         formatSpec ='';
         for jj = 1:ncols+1
-            formatSpec = strcat(formatSpec,'%s\t',32);
+            if jj==ncols+1
+                formatSpec = strcat(formatSpec,'%s');
+            else
+                formatSpec = strcat(formatSpec,'%s\t',32);
+            end
             if jj==1
                 columName{1,jj} = '';
             else

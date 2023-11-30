@@ -749,7 +749,7 @@ varargout{1} = box_erplineset_viewer_property;
             legendset_str = table2cell(legendset_str);
         end
         gui_erp_waviewer.ERPwaviewer.Legend.data = legendset_str;
-        if  gui_erplinset_waveviewer.legendtextauto.Value==1
+        if  gui_erp_waviewer.ERPwaviewer.Legend.FontColorAuto ==1
             gui_erplinset_waveviewer.legendcolumns.Value =ceil(sqrt(length(LegendArray)));
             gui_erp_waviewer.ERPwaviewer.Legend.columns = ceil(sqrt(length(LegendArray)));
         end
@@ -767,6 +767,7 @@ varargout{1} = box_erplineset_viewer_property;
         fontsize  = {'4','6','8','10','12','14','16','18','20','24','28','32','36',...
             '40','50','60','70','80','90','100'};
         labelfontsizeinum = str2num(char(fontsize));
+        gui_erp_waviewer.ERPwaviewer.Lines.auto = gui_erplinset_waveviewer.linesauto.Value;
         gui_erp_waviewer.ERPwaviewer.Legend.font = gui_erplinset_waveviewer.font_custom_type.Value;
         gui_erp_waviewer.ERPwaviewer.Legend.fontsize = labelfontsizeinum(gui_erplinset_waveviewer.font_custom_size.Value);
         gui_erp_waviewer.ERPwaviewer.Legend.textcolor = gui_erplinset_waveviewer.legendtextauto.Value;

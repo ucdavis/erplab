@@ -306,8 +306,8 @@ varargout{1} = box_erplabelset_viewer_otherset;
         else
             gui_otherset_waveviewer.SEM_custom.Enable = 'off';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
-            gui_otherset_waveviewer.SEM_custom.Value = 1;
-            gui_otherset_waveviewer.SEMtrans_custom.Value = 1;
+            %             gui_otherset_waveviewer.SEM_custom.Value = 1;
+            %             gui_otherset_waveviewer.SEMtrans_custom.Value = 1;
         end
     end
 
@@ -459,9 +459,10 @@ varargout{1} = box_erplabelset_viewer_otherset;
         
         bacselinePeriod = str2num(char(Str.String));
         if isempty(bacselinePeriod) || numel(bacselinePeriod)==1
-            viewer_ERPDAT.Process_messg =3;
             Str.String = '';
-            fprintf(2,'\n Other > Baseline Correction > Custom() error: \n Inputs must be two numbers.\n\n');
+            msgboxText =  strcat('Other > Baseline Correction > Custom() error: Inputs must be two numbers');
+            erpworkingmemory('ERPViewer_proces_messg',msgboxText);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         
@@ -504,18 +505,18 @@ varargout{1} = box_erplabelset_viewer_otherset;
         gui_otherset_waveviewer.cancel.ForegroundColor = [1 1 1];
         bgColor = str2num(Str.String);
         if isempty(bgColor)
-            viewer_ERPDAT.Process_messg =4;
             msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
             erpworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         
         if max(bgColor)>1 || min(bgColor) <0 ||  numel(bgColor)~=3
-            viewer_ERPDAT.Process_messg =4;
             msgboxText =  strcat('Other > Figure Background Color: Inputs are invalid and it should be,e.g., [1 1 1]');
             erpworkingmemory('ERPViewer_proces_messg',msgboxText);
             Str.String = num2str([1 1 1]);
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
     end
@@ -627,6 +628,7 @@ varargout{1} = box_erplabelset_viewer_otherset;
         %%SME
         gui_erp_waviewer.ERPwaviewer.SEM.active  = gui_otherset_waveviewer.show_SEM.Value;
         gui_erp_waviewer.ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
+        
         MERPWaveViewer_others{2} = gui_erp_waviewer.ERPwaviewer.SEM.active;
         MERPWaveViewer_others{3} = gui_erp_waviewer.ERPwaviewer.SEM.error;
         %%trans
@@ -895,12 +897,9 @@ varargout{1} = box_erplabelset_viewer_otherset;
             gui_otherset_waveviewer.show_SEM.Value =0;
             gui_otherset_waveviewer.SEM_custom.Enable = 'off';
             gui_otherset_waveviewer.SEMtrans_custom.Enable = 'off';
-            gui_otherset_waveviewer.SEM_custom.Value =1;
-            gui_otherset_waveviewer.SEMtrans_custom.Value =1;
-            gui_erp_waviewer.ERPwaviewer.SEM.error = 0;
-            gui_erp_waviewer.ERPwaviewer.SEM.trans = 0;
         end
-        
+        gui_erp_waviewer.ERPwaviewer.SEM.error = gui_otherset_waveviewer.SEM_custom.Value-1;
+        gui_erp_waviewer.ERPwaviewer.SEM.trans = (gui_otherset_waveviewer.SEMtrans_custom.Value-1)/10;
         %
         %%Baseline settings
         BalineCorrection = gui_erp_waviewer.ERPwaviewer.baselinecorr;

@@ -53,31 +53,10 @@ catch
 end
 handles.AllabelArray = AllabelArray;
 
-% usedIndex = zeros(length(AllabelArray),1);
-% for jj = 1:length(AllabelArray)
-%     for ii = 1:length(plotArrayFormt)
-%         if strcmp(AllabelArray{jj},plotArrayFormt{ii})
-%             usedIndex(jj) = 1;
-%         end
-%     end
-% end
-% handles.usedIndex = usedIndex;
 
 % f = waitbar(0.2,'Loading Custtom Grid Layout GUI...');
 Numrows = plotBox(1);
 Numcolumns = plotBox(2);
-% GridinforDatadef = cell(Numrows,Numcolumns);
-% count = 0;
-% for Numofrows = 1:Numrows
-%     for Numofcolumns = 1:Numcolumns
-%         count = count +1;
-%         if count> numel(plotArray)
-%             GridinforDatadef{Numofrows,Numofcolumns} = '';
-%         else
-%             GridinforDatadef{Numofrows,Numofcolumns} = char(plotArray{count});
-%         end
-%     end
-% end
 
 try
     GridinforData = varargin{2};
@@ -87,37 +66,7 @@ catch
 end
 handles.GridinforData = GridinforData;
 handles.GridinforData_def = GridinforData;
-% if isempty(GridinforData)
-%     GridinforData = GridinforDatadef;
-% end
-% if size(GridinforData,1)~= Numrows || size(GridinforData,2)~= Numcolumns
-%     GridinforData = GridinforDatadef;
-% end
 
-% FonsizeDefault = f_get_default_fontsize();
-% % tablePosition = handles.uitable1_layout.Position;
-% for Numofcolumns = 1:Numcolumns
-%     columFormat{Numofcolumns} = 'char';
-%     ColumnEditable(Numofcolumns) =1;
-%     ColumnName{1,Numofcolumns} = char(['C',num2str(Numofcolumns)]);
-% end
-%
-% for Numofrows = 1:Numrows
-%     RowName{1,Numofrows} = char(['R',num2str(Numofrows)]);
-% end
-% set(handles.uitable1_layout,'Data',GridinforData);
-% handles.uitable1_layout.ColumnEditable = logical(ColumnEditable);
-% handles.uitable1_layout.ColumnName = ColumnName;
-% handles.uitable1_layout.RowName = RowName;
-% handles.uitable1_layout.ColumnFormat = columFormat;
-% handles.uitable1_layout.FontSize = FonsizeDefault;
-% handles.uitable1_layout.CellEditCallback = {@MakerLabels,handles};
-
-% f = waitbar(0.7,'Loading Custtom Grid Layout GUI...');
-
-% [plotArrayFormt] = f_MarkLabels_gridlocations_ERP_Waveiwer(GridinforData,usedIndex,AllabelArray);
-% handles.listbox_Labels.String  = '';
-% handles.listbox_Labels.String = plotArrayFormt;
 % %
 % Color GUI
 %
@@ -127,25 +76,11 @@ set(handles.gui_chassis, 'Color', ColorBviewer_def);
 handles.textrow5.BackgroundColor = ColorBviewer_def;
 handles.text6_columns.BackgroundColor = ColorBviewer_def;
 handles.text7_message.BackgroundColor = ColorBviewer_def;
-% handles.listbox_Labels.Min = 0;
-% handles.listbox_Labels.Max =1;
-% handles.listbox_Labels.Enable = 'off';
-% handles.listbox_Labels.Value = 1;
 
 handles.text_rownum.String = num2str(Numrows);
 handles.edit1_columnsNum.String = num2str(Numcolumns);
 handles.text7_message.String = sprintf([' In the right panel:\n Blue labels: unused.\n Red labels: used more than once.\n Black labels: used once.\n *: Selected in main GUI.']);
 
-% Data = handles.uitable1_layout.Data;
-%
-% Data = f_checktable_gridlocations_waviewer(Data,AllabelArray);
-% try
-%     SingleCell = AllabelArray{handles.listbox_Labels.Value};
-% catch
-%     SingleCell = AllabelArray{1};
-% end
-% Data = f_add_bgcolor_cell(Data,SingleCell);
-% handles.uitable1_layout.Data=Data;
 %%
 
 handles = Datacreate(plotBox,GridinforData,plotArrayFormt,AllabelArray,handles);
@@ -471,47 +406,6 @@ guidata(hObject, handles);
 
 
 
-%%Mark the labels with different colors(blue: unused; black:used;  red:Repeated;* means items were selected in the main GUI)
-% function [LabelStrout] = f_MarkLabels_gridlocations_ERP_Waveiwer(Gridata,LabelStr,AllabelArray)
-% usedIndex = zeros(length(AllabelArray),1);
-% for jj = 1:length(AllabelArray)
-%     for ii = 1:length(LabelStr)
-%         if strcmp(AllabelArray{jj},LabelStr{ii})
-%             usedIndex(jj) = 1;
-%         end
-%     end
-% end
-%
-% LabelsFlag = [0 0 0];
-% for ii = 1:length(AllabelArray)
-%     code1 = 0;
-%     for jj = 1:size(Gridata,1)
-%         for kk = 1:size(Gridata,2)
-%             if strcmp(AllabelArray{ii},Gridata{jj,kk})
-%                 code1 = code1+1;
-%             end
-%         end
-%     end
-%
-%     if usedIndex(ii)==1%% the item will be marked with * if the labels was selected
-%         %         AllabelArray{ii} = strcat(AllabelArray{ii},'*');
-%         Numstr = strcat('*',num2str(ii));
-%     else
-%         Numstr = strcat(num2str(ii));
-%     end
-%
-%     if code1 ==0
-%         LabelStrout{ii} =  ['<HTML><FONT color="blue">',Numstr,'.',32,AllabelArray{ii},'</Font></html>'];
-%         LabelsFlag(1) = 1;
-%     elseif code1 >1
-%         LabelStrout{ii} =  ['<HTML><FONT color="red">',Numstr,'.',32,AllabelArray{ii},'</Font></html>'];
-%         LabelsFlag(3) = 1;
-%     else
-%         LabelStrout{ii} =  ['<HTML><FONT color="black">',Numstr,'.',32,AllabelArray{ii},'</Font></html>'];
-%         LabelsFlag(2) = 1;
-%     end
-% end
-
 
 function Data = f_add_bgcolor_cell(Data,SingleCell)
 colergen = @(color,text) ['<html><table border=0 width=400 bgcolor=',color,'><TR><TD>',text,'</TD></TR> </table>'];
@@ -524,49 +418,6 @@ for ii = 1:size(Data,1)
     end
 end
 
-
-% function [Data, EPStr]= f_checktable_gridlocations_waviewer(Data,LabelStr)
-% countEp = 0;
-% EPStr = '';
-% for ii = 1:size(Data,1)
-%     for jj = 1:size(Data,2)
-%         count = 0;
-%         for kk = 1:length(LabelStr)
-%             Data1=  strrep(Data{ii,jj},'<html><table border=0 width=400 bgcolor=#FFFF00><TR><TD>','');
-%             Data1 = strrep(Data1,'</TD></TR> </table>','');
-%             Data{ii,jj} = char(Data1);
-%             if strcmp(strtrim(char(LabelStr{kk})),strtrim(char(Data{ii,jj})))
-%                 Data{ii,jj} = char(LabelStr{kk});
-%                 count = count +1;
-%             end
-%         end
-%         if count==0
-%             countEp = countEp+1;
-%             if countEp==1
-%                 if ischar(Data{ii,jj})
-%                     if ~isempty(Data{ii,jj})
-%                     EPStr = char(Data{ii,jj});
-%                     end
-%                 elseif isnumeric(Data{ii,jj})
-%                     if ~isempty(Data{ii,jj})
-%                     EPStr = num2str(Data{ii,jj});
-%                     end
-%                 end
-%             else
-%                 if ischar(Data{ii,jj})
-%                     if ~isempty(Data{ii,jj})
-%                     EPStr = strcat(EPStr,',',char(Data{ii,jj}));
-%                     end
-%                 elseif isnumeric(Data{ii,jj})
-%                     if ~isempty(Data{ii,jj})
-%                     EPStr = strcat(EPStr,',',num2str(Data{ii,jj}));
-%                     end
-%                 end
-%             end
-%             Data{ii,jj} = '';
-%         end
-%     end
-% end
 
 
 
@@ -747,7 +598,7 @@ end
 function pushbutton8_Export_Callback(hObject, eventdata, handles)
 
 pathstr = pwd;
-namedef ='GridLocations';
+namedef ='GridLocations_viewer';
 [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
     ['Save Grid Locations as'],...
     fullfile(pathstr,namedef));
@@ -768,7 +619,11 @@ Data = f_checktable_gridlocations_waviewer(Data,AllabelArray);
 Data = f_gridlocation_respace_addnan(Data);
 formatSpec ='';
 for jj = 1:ncols+1
-    formatSpec = strcat(formatSpec,'%s\t',32);
+    if jj==ncols+1
+        formatSpec = strcat(formatSpec,'%s');
+    else
+        formatSpec = strcat(formatSpec,'%s\t',32);
+    end
     if jj==1
         columName{1,jj} = '';
     else

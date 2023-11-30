@@ -57,7 +57,7 @@ if diff_mark(1)==1
     end
     
     fprintf( ['\n',repmat('~',1,80) '\n']);
-    fprintf([repmat('~',1,17),'Channel Names vary across the selected ERPsets',repmat('~',1,17) '\n'])
+    fprintf([repmat('~',1,17),'Channel names vary across the selected ERPsets',repmat('~',1,17) '\n'])
     fprintf( [repmat('~',1,80) '\n']);
     hdrdists = '\n';
     for  jj = 1:length(ERPArray)
@@ -95,7 +95,7 @@ if diff_mark(2)==1
     end
     
     fprintf( ['\n',repmat('~',1,80) '\n']);
-    fprintf([repmat('~',1,17),'Bin Names vary across the selected ERPsets',repmat('~',1,17) '\n'])
+    fprintf([repmat('~',1,17),'Bin names vary across the selected ERPsets',repmat('~',1,17) '\n'])
     fprintf( [repmat('~',1,80) '\n']);
     hdrdists = '\n';
     for  jj = 1:length(ERPArray)
