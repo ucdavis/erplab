@@ -12,7 +12,6 @@
 function varargout = f_EEG_rmresp_mistak_conus_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
@@ -383,8 +382,6 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
-        
-        
         %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
         for Numofeeg = 1:numel(EEGArray)

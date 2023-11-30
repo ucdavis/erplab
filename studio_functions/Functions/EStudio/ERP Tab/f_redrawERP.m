@@ -929,6 +929,7 @@ if ~isempty(hplot)
     end
     p  = get(legendview,'position');
     h_legend = legend(legendview,hplot,qLegendName);
+    legend('boxoff');
     set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault);
 end
 end

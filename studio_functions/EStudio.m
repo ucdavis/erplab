@@ -35,6 +35,46 @@
 
 
 function [] = EStudio()
+EStudioversion = 10.02;
+
+
+
+SignalProcessingToolboxCheck;
+
+%%--------------------check memory file------------------------------------
+if exist('memoryerpstudiopanels.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('o_ERPDAT');
+    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'EStudioversion')
+end
+
+
+if exist('memoryerpstudio.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('o_ERPDAT');
+    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
+    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
+end
+
+if exist('memoryerp.erpm','file')==2
+    iserpmem = 1; % file for memory exists
+else
+    iserpmem = 0; % does not exist file for memory
+end
+if iserpmem==0
+    p1 = which('eegplugin_erplab');
+    p1 = p1(1:findstr(p1,'eegplugin_erplab.m')-1);
+    save(fullfile(p1,'memoryerp.erpm'),'EStudioversion')
+end
 
 %%close EEGLAB
 try
@@ -51,7 +91,7 @@ catch
 end
 
 
-EStudioversion = 10.02;
+
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 try
     clearvars observe_EEGDAT;
@@ -65,8 +105,20 @@ global observe_EEGDAT;
 global observe_ERPDAT;
 global viewer_ERPDAT;
 global EStudio_gui_erp_totl;
+global gui_erp_waviewer;
 viewer_ERPDAT = v_ERPDAT;
 
+%%Try to close existing GUI
+% global EStudio_gui_erp_totl_Window
+try
+    close(EStudio_gui_erp_totl.Window);
+catch
+end
+%%try to close existing Viewer
+try
+    close(gui_erp_waviewer.Window);%%close previous GUI if exists
+catch
+end
 
 %%---------------ADD FOLDER TO PATH-------------------
 estudiopath = which('EStudio','-all');
@@ -97,30 +149,7 @@ myaddpath( estudiopath, 'f_ERP_append_GUI.m',   [ 'GUIs' filesep 'ERP Tab']);
 
 
 
-SignalProcessingToolboxCheck;
 
-if exist('memoryerpstudiopanels.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudiopanels.erpm'),'EStudioversion')
-end
-
-
-if exist('memoryerpstudio.erpm','file')==2
-    iserpmem = 1; % file for memory exists
-else
-    iserpmem = 0; % does not exist file for memory
-end
-if iserpmem==0
-    p1 = which('o_ERPDAT');
-    p1 = p1(1:findstr(p1,'o_ERPDAT.m')-1);
-    save(fullfile(p1,'memoryerpstudio.erpm'),'EStudioversion')
-end
 
 
 % Sanity checks
@@ -133,12 +162,7 @@ catch
 end
 
 
-%%Try to close existing GUI
-% global EStudio_gui_erp_totl_Window
-try
-    close(EStudio_gui_erp_totl.Window);
-catch
-end
+
 
 %%close EStudio if it launched
 try
@@ -206,9 +230,8 @@ addlistener(observe_ERPDAT,'Messg_change',@Process_messg_change_main);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 
 
- erpworkingmemory('ViewerFlag', 0);%%measurement viewer: off
 erpworkingmemory('f_EEG_proces_messg_pre',{'',0});
-estudioworkingmemory('EStudioColumnNum',1);
+erpworkingmemory('ViewerFlag',0);
 erpworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
 erpworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/label ICs.
 

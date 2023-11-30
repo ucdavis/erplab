@@ -42,8 +42,13 @@ disp(' ERP Waveform Viewer is launching...');
 global viewer_ERPDAT;
 global gui_erp_waviewer;
 ERPtooltype = erpgettoolversion('tooltype');
-% global observe_ERPDAT;
-% if ~strcmpi(ERPtooltype,'EStudio')
+
+%%try to close existing Viewer
+try
+    close(gui_erp_waviewer.Window);%%close previous GUI if exists
+catch
+end
+
 viewer_ERPDAT = v_ERPDAT;
 % end
 % addlistener(observe_ERPDAT,'erpschange',@allErpChanged);
@@ -58,10 +63,7 @@ if ~strcmpi(ERPtooltype,'EStudio') &&  ~strcmpi(ERPtooltype,'ERPLAB')
     observe_ERPDAT.Count_currentERP = 0;
     observe_ERPDAT.Process_messg = 0;
 end
-try
-    close(EStudio_gui_erp_totl.Window);
-catch
-end
+
 
 if exist('memoryerpstudiopanels.erpm','file')==2
     iserpmem = 1; % file for memory exists
@@ -250,10 +252,6 @@ gui_erp_waviewer.ERPwaviewer.FigOutpos=[];
 %
 % estudioworkingmemory('zoomSpace',0);%%sett for zoom in and zoom out
 
-try
-    close(gui_erp_waviewer.Window);%%close previous GUI if exists
-catch
-end
 
 createInterface_ERPWave_viewer(ERPtooltype);
 

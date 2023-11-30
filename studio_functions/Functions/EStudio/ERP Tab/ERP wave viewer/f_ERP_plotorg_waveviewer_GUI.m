@@ -1687,7 +1687,8 @@ varargout{1} = box_erpwave_viewer_plotorg;
             columFormatout = columFormat;
         end
         gui_plotorg_waveviewer.columFormatStr = columFormatout;
-        gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columFormat = columFormatout;
+        gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columFormat = columFormatout';
+        
         gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.data =TableDataDf;
         if gui_erp_waviewer.ERPwaviewer.plot_org.Grid==1
             try
@@ -2102,7 +2103,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex==4
             erpworkingmemory('ERPViewer_proces_messg',messgStr);
-            fprintf(2,['\n Warning: ',messgStr,'.\n']);
             viewer_ERPDAT.Process_messg =4;
             return;
         end
@@ -2161,7 +2161,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         Plot_orgpar.gridlayout.columngap.OverlayValue = gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.columngap.OverlayValue;
         Plot_orgpar.gridlayout.GridLayoutAuto= gui_erp_waviewer.ERPwaviewer.plot_org.gridlayout.GridLayoutAuto;
         pathstr = pwd;
-        namedef ='LayoutInfor';
+        namedef ='LayoutInfor_viewer';
         [erpfilename, erppathname, indxs] = uiputfile({'*.mat'}, ...
             ['Save "','Information of Plot Organization', '" as'],...
             fullfile(pathstr,namedef));
@@ -2178,7 +2178,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         catch
             MessageViewer = ['Plot Organization > Save as: Cannot save the parameters for "Plot Organization", please try again'];
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-            viewer_ERPDAT.Process_messg =3;
+            viewer_ERPDAT.Process_messg =4;
             return;
         end
         MessageViewer= char(strcat('Plot Organization > Save as'));

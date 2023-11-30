@@ -2450,15 +2450,15 @@ varargout{1} = box_erpxtaxes_viewer_property;
         
         try
             ERPIN = gui_erp_waviewer.ERPwaviewer.ERP;
-            timeArray(1) = gui_erp_waviewer.ERPwaviewer.ERP.times(1);
-            timeArray(2) = gui_erp_waviewer.ERPwaviewer.ERP.times(end);
-            [timeticks stepX]= default_time_ticks_studio(ERPIN, [timeArray(1),timeArray(2)]);
+            timeArraydef(1) = gui_erp_waviewer.ERPwaviewer.ERP.times(1);
+            timeArraydef(2) = gui_erp_waviewer.ERPwaviewer.ERP.times(end);
+            [timeticksdef stepX]= default_time_ticks_studio(ERPIN, [timeArraydef(1),timeArraydef(2)]);
             if ~isempty(stepX) && numel(stepX) ==1
                 stepX = floor(stepX/2);
             end
         catch
-            timeticks = [];
-            timeArray = [];
+            timeticksdef = [];
+            timeArraydef = [];
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%----------------------------Setting for X axis-------------------
@@ -2466,16 +2466,28 @@ varargout{1} = box_erpxtaxes_viewer_property;
         xSecondflag = erpworkingmemory('MyViewer_xaxis_second');
         xmSecondflag =  erpworkingmemory('MyViewer_xaxis_msecond');
         xdispysecondValue =  gui_erpxyaxeset_waveviewer.xmillisecond.Value;%%millisecond
-        
-        if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
+        timerange =  str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
+        if isempty(timerange) || numel(timerange)~=2 || timerange(1) >= timeArraydef(2) || timerange(2) <= timeArraydef(1)
+            timerange =timeArraydef;
             if xdispysecondValue==1
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timerange);
             else
-                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArray/1000);
-                gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timerange/1000);
             end
         end
+        if gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
+            if xdispysecondValue==1
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArraydef);
+            else
+                gui_erpxyaxeset_waveviewer.timerange_edit.String = num2str(timeArraydef/1000);
+            end
+        end
+        if xdispysecondValue==1
+            gui_erpxyaxeset_waveviewer.xticks_precision.String = {'0','1','2','3','4','5','6'};
+        else
+            gui_erpxyaxeset_waveviewer.xticks_precision.String = {'1','2','3','4','5','6'};
+        end
+        
         
         if xdispysecondValue==1
             xtick_precision =gui_erpxyaxeset_waveviewer.xticks_precision.Value-1;
@@ -2490,11 +2502,11 @@ varargout{1} = box_erpxtaxes_viewer_property;
                 gui_erpxyaxeset_waveviewer.xticks_precision.Value=1;
             end
         end
-        if gui_erpxyaxeset_waveviewer.xtimetickauto.Value ==1
+        if gui_erpxyaxeset_waveviewer.xtimetickauto.Value ==1 && gui_erpxyaxeset_waveviewer.xtimerangeauto.Value==1
             if xdispysecondValue==0
-                timetickstrs = num2str(str2num(char(timeticks))/1000);
+                timetickstrs = num2str(str2num(char(timeticksdef))/1000);
             else
-                timetickstrs = timeticks;
+                timetickstrs = timeticksdef;
             end
             timetickstrs= f_decimal(char(timetickstrs),xtick_precision);
             gui_erpxyaxeset_waveviewer.timeticks_edit.String = char(timetickstrs);
@@ -2545,6 +2557,38 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.timeminorticks_custom.String = num2str(stepX);
         end
         
+        if xdispysecondValue==1
+            gui_erp_waviewer.ERPwaviewer.xaxis.timerange = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
+        else
+            gui_erp_waviewer.ERPwaviewer.xaxis.timerange = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String)*1000;
+        end
+        timeRange = gui_erp_waviewer.ERPwaviewer.xaxis.timerange ;
+        %%getting xticks
+        if xdispysecondValue==1
+            xticksArray = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
+        else
+            xticksArray = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String))*1000;
+        end
+        count_xtks = 0;
+        xticks_exm = [];
+        if ~isempty(xticksArray) && numel(timeRange) ==2 %%check if xticks exceed the defined time range
+            for Numofxticks = 1:numel(xticksArray)
+                if xticksArray(Numofxticks)< timeRange(1) || xticksArray(Numofxticks)> timeRange(2)
+                    count_xtks =count_xtks+1;
+                    xticks_exm(count_xtks) = Numofxticks;
+                end
+            end
+            xticksArray(xticks_exm) = [];
+        end
+        
+        xticckMinorstep = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
+        if xdispysecondValue==1
+            gui_erp_waviewer.ERPwaviewer.xaxis.tminor.step = xticckMinorstep;
+        else
+            gui_erp_waviewer.ERPwaviewer.xaxis.tminor.step = xticckMinorstep*1000;
+        end
+        gui_erp_waviewer.ERPwaviewer.xaxis.timeticks = xticksArray;
+        
         MERPWaveViewer_xaxis = estudioworkingmemory('MERPWaveViewer_xaxis');
         if xdispysecondValue==1
             MERPWaveViewer_xaxis{1}=1;
@@ -2591,6 +2635,10 @@ varargout{1} = box_erpxtaxes_viewer_property;
         catch
             yRangeLabel = num2str(yylim_out(1,:));
         end
+        yrange = str2num(gui_erpxyaxeset_waveviewer.yrange_edit.String);
+        if isempty(yrange) || numel(yrange)~=2
+            yrange = str2num(yRangeLabel);
+        end
         
         if gui_erpxyaxeset_waveviewer.yrangeauto.Value ==1
             gui_erpxyaxeset_waveviewer.yrange_edit.String = yRangeLabel;
@@ -2602,7 +2650,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         end
         ytick_precision= gui_erpxyaxeset_waveviewer.yticks_precision.Value-1;
         yticksLabel= f_decimal(char(yticksLabel),ytick_precision);
-        if gui_erpxyaxeset_waveviewer.ytickauto.Value ==1
+        if gui_erpxyaxeset_waveviewer.ytickauto.Value ==1 && gui_erpxyaxeset_waveviewer.yrangeauto.Value ==1
             gui_erpxyaxeset_waveviewer.yticks_edit.String = yticksLabel;
         end
         
@@ -2610,7 +2658,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         if gui_erpxyaxeset_waveviewer.yminorstep_auto.Value==1
             yticksStr = str2num(char(gui_erpxyaxeset_waveviewer.yticks_edit.String));
             stepY = [];
-            yscaleRange =  (str2num(yRangeLabel));
+            
             if ~isempty(yticksStr) && numel(yticksStr)>1
                 if numel(yticksStr)>=2
                     for Numofxticks = 1:numel(yticksStr)-1
@@ -2619,7 +2667,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
                     %%adjust the left edge
                     steyleft =  (yticksStr(2)-yticksStr(1))/2;
                     for ii = 1:1000
-                        if  (yticksStr(1)- steyleft*ii)>=yscaleRange(1)
+                        if  (yticksStr(1)- steyleft*ii)>=yrange(1)
                             stepY   = [(yticksStr(1)- steyleft*ii),stepY];
                         else
                             break;
@@ -2628,7 +2676,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
                     %%adjust the right edge
                     steyright =  (yticksStr(end)-yticksStr(end-1))/2;
                     for ii = 1:1000
-                        if  (yticksStr(end)+ steyright*ii)<=yscaleRange(end)
+                        if  (yticksStr(end)+ steyright*ii)<=yrange(end)
                             stepY   = [stepY,(yticksStr(end)+ steyright*ii)];
                         else
                             break;
@@ -2639,37 +2687,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             gui_erpxyaxeset_waveviewer.yminorstepedit.String=char(num2str(stepY));
         end
         
-        if xdispysecondValue==1
-            gui_erp_waviewer.ERPwaviewer.xaxis.timerange = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String);
-        else
-            gui_erp_waviewer.ERPwaviewer.xaxis.timerange = str2num(gui_erpxyaxeset_waveviewer.timerange_edit.String)*1000;
-        end
-        timeRange = gui_erp_waviewer.ERPwaviewer.xaxis.timerange ;
-        %%getting xticks
-        if xdispysecondValue==1
-            xticksArray = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String));
-        else
-            xticksArray = str2num(char(gui_erpxyaxeset_waveviewer.timeticks_edit.String))*1000;
-        end
-        count_xtks = 0;
-        xticks_exm = [];
-        if ~isempty(xticksArray) && numel(timeRange) ==2 %%check if xticks exceed the defined time range
-            for Numofxticks = 1:numel(xticksArray)
-                if xticksArray(Numofxticks)< timeRange(1) || xticksArray(Numofxticks)> timeRange(2)
-                    count_xtks =count_xtks+1;
-                    xticks_exm(count_xtks) = Numofxticks;
-                end
-            end
-            xticksArray(xticks_exm) = [];
-        end
         
-        xticckMinorstep = str2num(char(gui_erpxyaxeset_waveviewer.timeminorticks_custom.String));
-        if xdispysecondValue==1
-            gui_erp_waviewer.ERPwaviewer.xaxis.tminor.step = xticckMinorstep;
-        else
-            gui_erp_waviewer.ERPwaviewer.xaxis.tminor.step = xticckMinorstep*1000;
-        end
-        gui_erp_waviewer.ERPwaviewer.xaxis.timeticks = xticksArray;
         
         %%y axis
         YScales = str2num(char(gui_erpxyaxeset_waveviewer.yrange_edit.String));

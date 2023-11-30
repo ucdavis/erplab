@@ -184,6 +184,9 @@ histoflags = fliplr(ERP.ntrials.arflags);
 % Table
 %
 if fidsumm~=-99
+    fprintf(fidsumm, ['\n',repmat('_',1,100) '\n']);
+    fprintf(fidsumm, ['ERP Name:',32,ERP.erpname '\n']);
+    fprintf(fidsumm, [repmat('_',1,100) '\n']);
     hdr = {'Bin' '#(%) accepted' '#(%) rejected' '# F2' '# F3' '# F4' '# F5' '# F6' '# F7' '# F8' };
     fprintf(fidsumm, '%s %15s %15s %7s %7s %7s %7s %7s %7s %7s\n', hdr{:});
 end

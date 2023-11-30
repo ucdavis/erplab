@@ -393,7 +393,6 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [1 1 1];
             ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [0 0 0];
             ERPsets_waveviewer_box.TitleColor= [0.5 0.5 0.9];
-            
             viewer_ERPDAT.Reset_Waviewer_panel=2;
         end
     end
@@ -406,7 +405,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         end
         
         ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-        if any(ERPsetArray(:) > length(ERPwaveview_erpsetops.butttons_datasets.String))
+        if isempty(ERPsetArray) || any(ERPsetArray(:) > length(ERPwaveview_erpsetops.butttons_datasets.String))
             ERPsetArray = length(ERPwaveview_erpsetops.butttons_datasets.String);
             ERPwaveview_erpsetops.butttons_datasets.Value = ERPsetArray;
             gui_erp_waviewer.ERPwaviewer.CURRENTERP = ERPsetArray;

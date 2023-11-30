@@ -553,7 +553,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             end
             
             if numel(Selected_erpset) ==1
-                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'-',Suffix_str),ERP.filename,Selected_erpset(Numoferp));
+                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_',Suffix_str),ERP.filename,Selected_erpset(Numoferp));
                 if isempty(Answer)
                     beep;
                     disp('User selectd cancal');

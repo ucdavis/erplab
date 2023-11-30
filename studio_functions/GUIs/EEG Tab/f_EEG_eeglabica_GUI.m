@@ -88,9 +88,9 @@ varargout{1} = EStudio_box_eeglab_ica;
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
         
         uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','to','FontSize',FonsizeDefault-1,'BackgroundColor',ColorB_def); % 1B
         
-        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target dataset','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
+        uicontrol('Style','text','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Target dataset','FontSize',FonsizeDefault-1,'BackgroundColor',ColorB_def); % 1B
         EStduio_eegtab_eeglab_ica.targetEEG_tras= uicontrol('Style','Edit','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','',...
             'callback',@trans_weight_targeteeg,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
         

@@ -12,7 +12,6 @@
 function varargout = f_EEG_Plot_setting_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 

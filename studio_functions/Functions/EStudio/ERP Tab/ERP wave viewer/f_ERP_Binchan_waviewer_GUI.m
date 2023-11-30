@@ -346,19 +346,14 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         % Channel information
         Chanlist = chanStr;
-        Chan_selindex = ERPwaveview_binchan.ElecRange.Value;
-        if numel(Chan_selindex) ==1 && Chan_selindex==1
-            Chan_sel = [1:numel(ERPwaveview_binchan.ElecRange.String)-1];
-        else
-            Chan_sel =Chan_selindex-1;
+        Chan_selindex = gui_erp_waviewer.ERPwaviewer.chan;
+        if isempty(Chan_selindex) || any(Chan_selindex>length(Chanlist)) || any(Chan_selindex(:)<=0)
+           Chan_selindex =[1:length(Chanlist)]; 
+           gui_erp_waviewer.ERPwaviewer.chan= Chan_selindex;
         end
-        if ~isempty(Chan_sel)
-            if max(Chan_sel)> numel(Chanlist)
-                Chan_sel=   1:length(Chanlist);
-            end
-        else
-            Chan_sel= 1:length(Chanlist);
-        end
+     
+         Chan_sel =Chan_selindex;
+         
         ERPwaveview_binchan.ElecRange.String = Chanlist_name;
         try
             if length(Chan_sel) ==  numel(chanStr)
@@ -375,19 +370,12 @@ varargout{1} = Chanbin_waveviewer_box;
         %%----------------------Bin information----------------------------
         brange = cell(length(binStr)+1,1);
         BinNum = length(binStr);
-        Bin_selIndex = ERPwaveview_binchan.BinRange.Value;
-        if numel(Bin_selIndex) ==1  && Bin_selIndex==1
-            Bin_sel = [1:numel(ERPwaveview_binchan.BinRange.String)-1];
-        else
-            Bin_sel = Bin_selIndex-1;
+        Bin_selIndex = gui_erp_waviewer.ERPwaviewer.bin;
+        if isempty(Bin_selIndex) || any(Bin_selIndex>BinNum) || any(Bin_selIndex<=0)
+            Bin_selIndex = [1:BinNum];
+            gui_erp_waviewer.ERPwaviewer.bin=Bin_selIndex;
         end
-        if ~isempty(Bin_sel)
-            if max(Bin_sel)> BinNum
-                Bin_sel=   1:BinNum;
-            end
-        else
-            Bin_sel= 1:BinNum;
-        end
+        Bin_sel = Bin_selIndex;
         brange(1) = {'All'};
         for Numofbin11 = 1:length(binStr)
             brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
