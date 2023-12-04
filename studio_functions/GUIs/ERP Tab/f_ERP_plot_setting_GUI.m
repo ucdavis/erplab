@@ -683,7 +683,7 @@ varargout{1} = ERP_plotset_box;
         end
         
         pathstr = pwd;
-        namedef ='Channel_order';
+        namedef ='Channel_order_erp';
         [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
             ['Export ERP channel order (for plotting only)'],...
             fullfile(pathstr,namedef));

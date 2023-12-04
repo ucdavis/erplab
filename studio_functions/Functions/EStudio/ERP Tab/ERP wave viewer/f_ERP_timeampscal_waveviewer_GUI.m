@@ -104,7 +104,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
             timeArray = timeArraydef;
             MERPWaveViewer_xaxis{3} = timeArray;
         end
-        if numel(timeArray)~=2 ||  isempty(timeArray)
+        if isempty(timeArray)|| numel(timeArray)~=2 ||  timeArray(1)>=timeArraydef(2) || timeArray(2)<=timeArraydef(1)
             timeArray = timeArraydef;
             MERPWaveViewer_xaxis{3} = timeArray;
         end
@@ -112,6 +112,13 @@ varargout{1} = box_erpxtaxes_viewer_property;
             timeArray = timeArraydef;
             MERPWaveViewer_xaxis{3} = timeArray;
         end
+        try
+            [timeticks, ~]= default_time_ticks_studio(ERPIN, [timeArray(1),timeArray(2)]);
+            timeticksdef = timeticks;
+        catch
+            
+        end
+        
         if xdispysecondValue==0
             timeArray = timeArray/1000;
         end
@@ -166,6 +173,7 @@ varargout{1} = box_erpxtaxes_viewer_property;
         gui_erp_waviewer.ERPwaviewer.xaxis.trangeauto = gui_erpxyaxeset_waveviewer.xtimerangeauto.Value;
         
         %%----------------------time ticks---------------------------------
+        
         stepX = [];
         try
             timeticksAuto= MERPWaveViewer_xaxis{4};
@@ -483,9 +491,6 @@ varargout{1} = box_erpxtaxes_viewer_property;
         %%-----------Y scale---------
         ALLERPIN = gui_erp_waviewer.ERPwaviewer.ALLERP;
         ERPArrayin = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
-        BinArrayIN = [];
-        ChanArrayIn = [];
-        plotOrg = [1 2 3];
         try
             plotOrg(1) = gui_erp_waviewer.ERPwaviewer.plot_org.Grid;
             plotOrg(2) = gui_erp_waviewer.ERPwaviewer.plot_org.Overlay;

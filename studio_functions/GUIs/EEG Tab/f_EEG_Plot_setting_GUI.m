@@ -495,8 +495,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         pathstr = pwd;
-        namedef ='Channel_order';
-        [erpfilename, erppathname, indxs] = uiputfile({'*.txt';'*.xlsx;*.xls'}, ...
+        namedef ='Channel_order_eeg';
+        [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
             ['Export EEG channel order (for plotting only)'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
@@ -505,30 +505,28 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        if indxs==2
-            ext = '.xls';
-        else
-            ext = '.txt';
-        end
+        ext = '.tsv';
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         fileID = fopen(erpFilename,'w+');
         
-        formatSpec ='';
+        formatSpec =['%s\t',32];
         for jj = 1:2
             if jj==1
                 formatSpec = strcat(formatSpec,'%d\t',32);
             else
-                formatSpec = strcat(formatSpec,'%s\t',32);
+                formatSpec = strcat(formatSpec,'%s',32);
             end
         end
         formatSpec = strcat(formatSpec,'\n');
-        
+        columName = {'','Column1','Column2'};
+        fprintf(fileID,'%s\t %s\t %s\n',columName{1,:});
         for row = 1:numel(chanOrders)
-            if indxs==1
-                fprintf(fileID,formatSpec,Data{row,:});
-            else
-                fprintf(fileID,formatSpec,Data{row,1},Data{row,2});
+            rowdata = cell(1,3);
+            rowdata{1,1} = char(['Row',num2str(row)]);
+            for jj = 1:2
+                rowdata{1,jj+1} = Data{row,jj};
             end
+            fprintf(fileID,formatSpec,rowdata{1,:});
         end
         fclose(fileID);
         disp(['A new EEG channel order file was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
@@ -567,8 +565,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
         
-        
-        [erpfilename, erppathname, indxs] = uigetfile({'*.txt'}, ...
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv'}, ...
             ['Import EEG channel order (for plotting only)'],...
             'MultiSelect', 'off');
         if isequal(erpfilename,0) || indxs~=1
@@ -577,19 +574,24 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        ext = '.txt';
+        ext = '.tsv';
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         
-        DataInput =  readcell(erpFilename);
+        DataInput =  readtable(erpFilename, "FileType","text");
         if isempty(DataInput)
             EStduio_gui_EEG_plotset.chanorder{1,1}=[];
             EStduio_gui_EEG_plotset.chanorder{1,2} = '';
         end
+        DataInput = table2cell(DataInput);
         chanorders = [];
         chanlabes = [];
+        DataInput = DataInput(:,2:end);
         for ii = 1:size(DataInput,1)
             if isnumeric(DataInput{ii,1})
                 chanorders(ii) = DataInput{ii,1};
+            else
+                chanorders(ii) =0;
+                disp(['The values is not a number at Row:',32,num2str(ii),', Column 1\n']);
             end
             if ischar(DataInput{ii,2})
                 chanlabes{ii} = DataInput{ii,2};

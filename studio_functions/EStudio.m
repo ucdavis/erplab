@@ -37,10 +37,7 @@
 function [] = EStudio()
 EStudioversion = 10.02;
 
-
-
 SignalProcessingToolboxCheck;
-
 %%--------------------check memory file------------------------------------
 if exist('memoryerpstudiopanels.erpm','file')==2
     iserpmem = 1; % file for memory exists
@@ -119,6 +116,14 @@ try
     close(gui_erp_waviewer.Window);%%close previous GUI if exists
 catch
 end
+% Sanity checks
+try
+    test = uix.HBoxFlex();
+catch
+    beep;
+    disp('The GUI Layout Toolbox might not be installed. Quitting')
+    return
+end
 
 %%---------------ADD FOLDER TO PATH-------------------
 estudiopath = which('EStudio','-all');
@@ -129,6 +134,7 @@ estudiopath = estudiopath{1};
 estudiopath= estudiopath(1:findstr(estudiopath,'EStudio.m')-1);
 % add all ERPLAB subfolders
 addpath(genpath(estudiopath));
+
 
 %%-------------------------------------------------------------------------
 %%-----------add path for each folder that contained in EStudio------------
@@ -147,29 +153,6 @@ myaddpath( estudiopath, 'ERPLAB_ERP_Viewer.m',   [ 'Functions' filesep 'EStudio'
 myaddpath( estudiopath, 'f_EEG_avg_erp_GUI.m',   [ 'GUIs' filesep 'EEG Tab']);
 myaddpath( estudiopath, 'f_ERP_append_GUI.m',   [ 'GUIs' filesep 'ERP Tab']);
 
-
-
-
-
-
-% Sanity checks
-try
-    test = uix.HBoxFlex();
-catch
-    beep;
-    disp('The GUI Layout Toolbox might not be installed. Quitting')
-    return
-end
-
-
-
-
-%%close EStudio if it launched
-try
-    global EStudio_gui_erp_totl
-    close(EStudio_gui_erp_totl.Window);
-catch
-end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%-------------------------------EEG-------------------------------------%%
@@ -323,9 +306,9 @@ EStudio_gui_erp_totl = createInterface();
         EStudio_gui_erp_totl.eegplotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.eegViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegpageinfo_box = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegpageinfo_text = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        EStudio_gui_erp_totl.eegpageinfo_minus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'FontWeight','bold');
+        EStudio_gui_erp_totl.eegpageinfo_minus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Prev.','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStudio_gui_erp_totl.eegpageinfo_edit = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'edit', 'String', '','FontSize',FonsizeDefault+2,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eegpageinfo_plus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'FontWeight','bold');
+        EStudio_gui_erp_totl.eegpageinfo_plus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStudio_gui_erp_totl.eeg_plot_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.eeg_plot_title,'BackgroundColor',figbgdColor);
         EStudio_gui_erp_totl.eeg_plot_button_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -349,7 +332,7 @@ EStudio_gui_erp_totl = createInterface();
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         EStudio_gui_erp_totl.eeg_figuresaveas = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Save Figure as',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        EStudio_gui_erp_totl.eeg_figureout = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
+        EStudio_gui_erp_totl.eeg_figureout = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Create Static/Exportable Plot',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
