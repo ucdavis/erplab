@@ -357,7 +357,6 @@ varargout{1} = box_erpwave_viewer_property;
             MessageViewer= char(strcat('Viewer Properties > Position- 2 numbers are needed for Viewer position (e.g., [1 1 1200 700])'));
             erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
             viewer_ERPDAT.Process_messg =4;
-            
             new_pos =[ScreenPos(3)*New_pos(3)/100,ScreenPos(4)*New_pos(4)/100];
             gui_property_waveviewer.parameters_pos.String = num2str(new_pos);
             return;
@@ -367,7 +366,13 @@ varargout{1} = box_erpwave_viewer_property;
         try
             POS4 = (New_pos1(2)-New_posin(2))/100;
             new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+           if new_pos(2)+new_pos(4)<ScreenPos(4)
             set(gui_erp_waviewer.Window, 'Position', new_pos);
+           else%%exceed
+               new_pos(2) = ScreenPos(4) - (new_pos(2)+new_pos(4));
+              set(gui_erp_waviewer.Window, 'Position', new_pos); 
+           end
+            
         catch
             erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for Viewer is invalid and it must be two numbers']);
             viewer_ERPDAT.Process_messg =4;
@@ -380,7 +385,7 @@ varargout{1} = box_erpwave_viewer_property;
         viewer_ERPDAT.Process_messg =2;
     end
 
-
+%%------------------------------reset--------------------------------------
     function Reset_Waviewer_panel_change(~,~)
         if viewer_ERPDAT.Reset_Waviewer_panel~=8
             return;

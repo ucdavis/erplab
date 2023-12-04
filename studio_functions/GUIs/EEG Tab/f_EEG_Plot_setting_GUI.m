@@ -225,12 +225,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
             if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg))
                 Winlength = floor(Frames/multiplier_winleg);
-                %%<insert warnign message here>
+                MessageViewer= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
+                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+                observe_EEGDAT.eeg_panel_message=4;
             end
         else
             if isempty(Winlength)|| Winlength<=0 || numel(Winlength)~=1
                 Winlength = 5;
-                %%<insert warnign message here>
+                MessageViewer= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
+                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+                observe_EEGDAT.eeg_panel_message=4;
             end
         end
         Source.String = num2str(Winlength);
@@ -252,9 +256,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
         vscale_Value = str2num(Source.String);
         
-        if isempty(vscale_Value) || numel(vscale_Value)~=1 || vscale_Value<=0
+        if isempty(vscale_Value) || numel(vscale_Value)~=1 || any(vscale_Value<=0)
             Source.String = '50';
-            %%insert warning message here if needed.
+            MessageViewer= char(strcat('Plot Setting > Vertical scale:The input is invalid which should be a positive value and we therfore use the default one'));
+            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+            observe_EEGDAT.eeg_panel_message=4;
         end
     end
 
@@ -458,7 +464,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
     function chanorder_custom_exp(~,~)
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         
-        if ~isempty(messgStr) %%&& eegpanelIndex~=2
+        if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
