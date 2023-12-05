@@ -64,8 +64,6 @@ try
 catch
 end
 
-erplab_default_values; % script
-currvers  = ['erplab' erplabver];
 
 erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
 global observe_EEGDAT;

@@ -1391,7 +1391,7 @@ varargout{1} = erp_measurement_box;
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
             erpworkingmemory('ViewerFlag', 1);
             observe_ERPDAT.Count_currentERP=1;
-            erpworkingmemory('f_ERP_proces_messg','ERP Measurement Tool > View:You must cancel Viewer for measurement tool if you want to handle the main window of EStudio');
+            erpworkingmemory('f_ERP_proces_messg','ERP Measurement Tool > View:The main ERPLAB Studio window will be frozen until you close the Viewer window for the ERP Measurement Tool');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
         end
