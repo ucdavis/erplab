@@ -184,7 +184,10 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.ViewAxes.Heights = 0.95*EStudio_gui_erp_totl.ViewAxes.Position(4);
     EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
 end
-
+ EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
+    EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
+    EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
+    EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
 end
 
 %%-------------------------------------------------------------------------

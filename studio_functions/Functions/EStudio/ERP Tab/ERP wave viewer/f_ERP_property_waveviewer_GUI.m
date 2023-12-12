@@ -89,13 +89,13 @@ varargout{1} = box_erpwave_viewer_property;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         gui_property_waveviewer.parameters_pos_width = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_wz_title,'String',num2str(New_pos(1)),...
             'callback',@Viewerpos_width,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
-        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','ms,',...
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','%,',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','Height:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         gui_property_waveviewer.parameters_pos_height = uicontrol('Style','edit','Parent',gui_property_waveviewer.viewer_wz_title,'String',num2str(New_pos(2)),...
             'callback',@Viewerpos_height,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
-        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','ms',...
+        uicontrol('Style','text','Parent', gui_property_waveviewer.viewer_wz_title,'String','%',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def); %1A
         
         set(gui_property_waveviewer.viewer_wz_title, 'Sizes',[40 55 20 45 55 20]);
@@ -441,7 +441,7 @@ varargout{1} = box_erpwave_viewer_property;
         erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
         viewer_ERPDAT.Process_messg =1;
         try
-            ScreenPos =  get( groot, 'Screensize' );
+            ScreenPos =   gui_erp_waviewer.monitor_size;
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
@@ -483,7 +483,7 @@ varargout{1} = box_erpwave_viewer_property;
         erpworkingmemory('ERPWaviewerScreenPos',[75 75]);
         gui_erp_waviewer.ERPwaviewer.FigOutpos = [75 75];
         try
-            ScreenPos =  get( groot, 'Screensize' );
+            ScreenPos =   gui_erp_waviewer.monitor_size;
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end

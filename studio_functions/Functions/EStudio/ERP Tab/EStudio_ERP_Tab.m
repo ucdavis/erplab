@@ -59,14 +59,16 @@ EStudio_gui_erp_totl.panel{12} = f_ERP_grandaverageGUI(EStudio_gui_erp_totl.sett
 EStudio_gui_erp_totl.panelSizes(12) = 260;
 EStudio_gui_erp_totl.panel{13} = f_ERP_append_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(13) = 120;
-EStudio_gui_erp_totl.panel{14} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(14) = 280;
-EStudio_gui_erp_totl.panel{15} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(15) = 170;
-EStudio_gui_erp_totl.panel{16} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(16) = 160;
-EStudio_gui_erp_totl.panel{17} = f_ERP_simulation_panel(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(17) = 820;
+EStudio_gui_erp_totl.panel{14} = f_ERP_resample_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(14) = 190;
+EStudio_gui_erp_totl.panel{15} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(15) = 280;
+EStudio_gui_erp_totl.panel{16} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(16) = 170;
+EStudio_gui_erp_totl.panel{17} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(17) = 160;
+EStudio_gui_erp_totl.panel{18} = f_ERP_simulation_panel(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(18) = 820;
 set(EStudio_gui_erp_totl.settingLayout, 'Heights', EStudio_gui_erp_totl.panelSizes);
 EStudio_gui_erp_totl.panelscroll.Heights = sum(EStudio_gui_erp_totl.panelSizes);
 
@@ -88,9 +90,9 @@ set( EStudio_gui_erp_totl.panel{14}, 'MinimizeFcn', {@nMinimize, 14} );
 set( EStudio_gui_erp_totl.panel{15}, 'MinimizeFcn', {@nMinimize, 15} );
 set( EStudio_gui_erp_totl.panel{16}, 'MinimizeFcn', {@nMinimize, 16} );
 set( EStudio_gui_erp_totl.panel{17}, 'MinimizeFcn', {@nMinimize, 17} );
-
+set( EStudio_gui_erp_totl.panel{18}, 'MinimizeFcn', {@nMinimize, 18} );
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [3:17];
+whichpanel = [3:18];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.panel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.settingLayout, 'Sizes' );

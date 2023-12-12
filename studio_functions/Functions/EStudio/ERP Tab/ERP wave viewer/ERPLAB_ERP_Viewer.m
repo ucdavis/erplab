@@ -335,8 +335,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
-        gui_erp_waviewer.monitor_size = ScreenPos;
-        gui_erp_waviewer.screen_pos = new_pos;
+        gui_erp_waviewer.monitor_size = ScreenPos;%%save monitor size
+        gui_erp_waviewer.screen_pos = new_pos;%%GUI size
         if  ~isempty(new_pos(2)) && new_pos(2) >100
             POS4 = (100-new_pos(2))/100;
             new_pos =[0,ScreenPos(4)*POS4,ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100];
@@ -416,7 +416,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
         %% + Create the view
         p = gui_erp_waviewer.ViewContainer;
         gui_erp_waviewer.ViewAxes = uiextras.HBox( 'Parent', p,'BackgroundColor',ColorBviewer_def);
-        gui_erp_waviewer.Resize=1;
+        gui_erp_waviewer.Resize=0;
     end % createInterface_ERPWave_viewer
 
 
@@ -459,17 +459,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch ERP Waveform Viewer.\
     function onhelp(~,~)
         
     end
-
-%%Resize the GUI automatically as the user changes the size of the window at run-time.
-%     function WAviewerResize(~,~)
-%         if gui_erp_waviewer.Resize ~= 0
-%             new_pos = gui_erp_waviewer.Window.Position;
-%             erpworkingmemory('ERPWaveScreenPos',new_pos);
-%             gui_erp_waviewer.screen_pos = new_pos;
-% %             set(gui_erp_waviewer.Window, 'Position', new_pos);
-%             f_redrawERP_viewer_test();
-%         end
-%     end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%

@@ -102,5 +102,12 @@ if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
 end
 
 
+MyViewer_chanbin = estudioworkingmemory('ERPTab_resample');
+if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
+    messgStr  = char( 'Changes on "Resample ERPsets" have not been applied');
+    erpanelIndex =14;
+end
+
+
 
 return;

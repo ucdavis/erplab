@@ -120,11 +120,58 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %-----------------select the ERPset of interest--------------------------
-    function selectdata(~,EventData)
+    function selectdata(Source,EventData)
         [messgStr,viewerpanelIndex] = f_check_erpviewerpanelchanges();
         if ~isempty(messgStr) && viewerpanelIndex~=1
             viewer_ERPDAT.count_twopanels = viewer_ERPDAT.count_twopanels +1;
         end
+        %%check if  the sampling rate or time range is the same across
+        %%selected ERPsets-------2023 Dec.
+        ERPSetArray = Source.Value;
+        if numel(ERPSetArray)>1
+            ERPSetArraydef= gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+            for ii = 1:numel(ERPSetArray)
+                sratearray(ii) = viewer_ERPDAT.ALLERP(ERPSetArray(ii)).srate;
+                samplearray(ii) = viewer_ERPDAT.ALLERP(ERPSetArray(ii)).pnts;
+                erpstartarray(ii) = viewer_ERPDAT.ALLERP(ERPSetArray(ii)).xmin;
+                erpendarray(ii) = viewer_ERPDAT.ALLERP(ERPSetArray(ii)).xmax;
+            end
+            
+            sratearray = unique(sratearray);
+            if numel(sratearray)>1
+                Source.Value=ERPSetArraydef;
+                messgStr =  strcat('Bugs may occur becuase sampling rate vary across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                erpworkingmemory('ERPViewer_proces_messg',messgStr);
+                viewer_ERPDAT.Process_messg =3;
+                viewer_ERPDAT.Count_currentERP = 2;
+                return;
+            end
+            samplearray = unique(samplearray);
+            if numel(samplearray)>1
+                Source.Value=ERPSetArraydef;
+                messgStr =  strcat('Bugs may occur becuase time points vary across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                erpworkingmemory('ERPViewer_proces_messg',messgStr);
+                viewer_ERPDAT.Process_messg =4;
+                return;
+            end
+            erpstartarray = unique(erpstartarray);
+            if numel(erpstartarray)>1
+                Source.Value=ERPSetArraydef;
+                messgStr =  strcat('Bugs may occur becuase epoch start time varies across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                erpworkingmemory('ERPViewer_proces_messg',messgStr);
+                viewer_ERPDAT.Process_messg =4;
+                return;
+            end
+            erpendarray = unique(erpendarray);
+            if numel(erpendarray)>1
+                Source.Value=ERPSetArraydef;
+                messgStr =  strcat('Bugs may occur becuase epoch stop time varies across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                erpworkingmemory('ERPViewer_proces_messg',messgStr);
+                viewer_ERPDAT.Process_messg =4;
+                return;
+            end
+        end
+        
         estudioworkingmemory('MyViewer_ERPsetpanel',1);
         ERPwaveview_erpsetops.erpset_apply.BackgroundColor = [0.4940 0.1840 0.5560];
         ERPwaveview_erpsetops.erpset_apply.ForegroundColor = [1 1 1];

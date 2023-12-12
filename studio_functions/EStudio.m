@@ -270,17 +270,17 @@ EStudio_gui_erp_totl = createInterface();
             erpworkingmemory('EStudioScreenPos',[75 75]);
         end
         EStudio_gui_erp_totl.Window.Resize = 0;
-        
+        EStudio_gui_erp_totl.ScreenPos = ScreenPos;
         % + File menu
         EStudio_gui_erp_totl.FileMenu = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'File');
         uimenu( EStudio_gui_erp_totl.FileMenu, 'Label', 'Exit', 'Callback', @onExit);
         
         %%-----------Setting------------------------------------------------
-        EStudio_gui_erp_totl.Setting = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Setting');
+        EStudio_gui_erp_totl.Setting = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Settings');
         
         %%ERPStudio Memory
-        EStudio_gui_erp_totl.set_ERP_memory = uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'EStudio Memory Setting','separator','off');
-        uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset EStudio Working Memory', 'Callback', 'erplabstudioamnesia(1)','separator','off');
+        EStudio_gui_erp_totl.set_ERP_memory = uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Memory Settings','separator','off');
+        uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Reset Working Memory', 'Callback', 'erplabstudioamnesia(1)','separator','off');
         uimenu( EStudio_gui_erp_totl.set_ERP_memory, 'Label', 'Save a copy of the current working memory as...', 'Callback', 'working_mem_save_load(1)','separator','off');
         comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
@@ -535,7 +535,7 @@ EStudio_gui_erp_totl = createInterface();
 %%--------------------Setting for EStudio window size----------------------
     function EStudiowinsize(~,~)
         try
-            ScreenPos =  get( groot, 'Screensize' );
+            ScreenPos= EStudio_gui_erp_totl.ScreenPos;
         catch
             ScreenPos =  get( 0, 'Screensize' );
         end
@@ -585,9 +585,9 @@ EStudio_gui_erp_totl = createInterface();
             set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
             erpworkingmemory('EStudioScreenPos',[75 75]);
         end
-        
+        f_redrawEEG_Wave_Viewer();
         f_redrawERP();
-        EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+        %         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%
