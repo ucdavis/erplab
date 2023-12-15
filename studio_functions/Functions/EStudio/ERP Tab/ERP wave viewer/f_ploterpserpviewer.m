@@ -659,11 +659,17 @@ if length(DataType)==1 && strcmpi(char(DataType), 'ERP')
         if ~strcmpi(qBlc,'no') && ~strcmpi(qBlc,'none')%% when the baseline correction is "pre","post","whole"
             
             if strcmpi(qBlc,'pre')
-                indxtimelock = find(ERP.times==0) ;   % zero-time locked
+                [xxx, indxtimelock, latdiffms] = closest(ERP.times,0);   % zero-time locked
+                if isempty(indxtimelock)
+                    indxtimelock=1;
+                end
                 aa = 1;
             elseif strcmpi(qBlc,'post')
                 indxtimelock = length(ERP.times);
-                aa = find(ERP.times==0);
+                [xxx, aa, latdiffms] = closest(ERP.times,0);% zero-time locked
+                if isempty(aa)
+                    aa=length(ERP.times);%%ned to further confirm
+                end
             elseif strcmpi(qBlc,'all') || strcmpi(qBlc,'whole')
                 indxtimelock = length(ERP.times);
                 aa = 1;

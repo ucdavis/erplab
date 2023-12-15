@@ -55,7 +55,7 @@ varargout{1} = box_erp_resample;
         
         %%------------------current sampling rate--------------------------
         gui_erp_resample.csrate_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', gui_erp_resample.csrate_title,'String','Current Sampling rate:',...
+        uicontrol('Style','text','Parent', gui_erp_resample.csrate_title,'String','Current sampling rate:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_resample.csrate_edit = uicontrol('Style','edit','Parent', gui_erp_resample.csrate_title,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
@@ -65,7 +65,7 @@ varargout{1} = box_erp_resample;
         
         %%---------------------new sampling rate---------------------------
         gui_erp_resample.nwsrate_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_resample.nwsrate_checkbox = uicontrol('Style','checkbox','Parent', gui_erp_resample.nwsrate_title,'String','New Sampling rate:',...
+        gui_erp_resample.nwsrate_checkbox = uicontrol('Style','checkbox','Parent', gui_erp_resample.nwsrate_title,'String','New sampling rate:',...
             'callback',@nwsrate_checkbox,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
         gui_erp_resample.nwsrate_checkbox.KeyPressFcn = @erp_resample_presskey;
         gui_erp_resample.Paras{1} = gui_erp_resample.nwsrate_checkbox.Value;
@@ -366,7 +366,11 @@ varargout{1} = box_erp_resample;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
+        if gui_erp_resample.nwsrate_checkbox.Value==0 && gui_erp_resample.nwtimewindow_checkbox.Value==0
+            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: Please select "New sampling rate" or "New TW"');
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
         %%Send message to Message panel
         erpworkingmemory('f_ERP_proces_messg','resample ERPsets');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -377,6 +381,7 @@ varargout{1} = box_erp_resample;
             erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: New sampling rate must be a positive value');
             observe_ERPDAT.Process_messg =4;
         end
+        
         
         %%----------------------------check new time window----------------
         NewStart = str2num(gui_erp_resample.nwtimewindow_editleft.String);
@@ -436,8 +441,16 @@ varargout{1} = box_erp_resample;
         ALLERPCOM = evalin('base','ALLERPCOM');
         
         for Numoferp = 1:numel(Selected_erpset)
-            TimeRange = [NewStart,Newend];
+            
             ERP = ALLERP_advance(Selected_erpset(Numoferp));
+            if gui_erp_resample.nwsrate_checkbox.Value==0
+                Freq2resamp =  ERP.srate;
+            end
+            if gui_erp_resample.nwtimewindow_checkbox.Value==0
+                TimeRange = [ERP.times(1),ERP.times(end)];
+            else
+                TimeRange = [NewStart,Newend];
+            end
             [ERP, ERPCOM] = pop_resamplerp(ERP, 'Freq2resamp',Freq2resamp, 'TimeRange',TimeRange,...
                 'Saveas', 'off', 'History', 'gui');
             if Numoferp==1

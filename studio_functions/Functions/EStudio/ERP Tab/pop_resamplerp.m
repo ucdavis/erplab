@@ -148,7 +148,20 @@ else
         ERP.bindata = newdata;
     end
 end
+
+count = 0;
+check_left = [];
+for ii = 1:numel(ERP.times)
+    if ERP.times(ii)< TimeRange(1) || ERP.times(ii)> TimeRange(2)
+        count = count+1;
+        check_left(count) = ii;
+    end
+end
+ERP.bindata(:,check_left,:) =[];
+ERP.times(check_left) = [];
 ERP.pnts = size(ERP.bindata,2);
+ERP.xmax = ERP.times(end)/1000;
+ERP.xmin = ERP.times(1)/1000;
 
 
 EEG = eeg_emptyset();
@@ -170,7 +183,7 @@ ERP.bindata = EEG.data;
 ERP.times = EEG.times;
 ERP.pnts= EEG.pnts;
 ERP.EVENTLIST.eventinfo = [];
-
+ERP.binerror = [];
 
 if strcmpi(p.Results.Saveas,'on')
     issaveas = 1;

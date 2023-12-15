@@ -140,7 +140,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             sratearray = unique(sratearray);
             if numel(sratearray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase sampling rate vary across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                messgStr =  strcat('Bugs may occur becuase sampling rate vary across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
                 erpworkingmemory('ERPViewer_proces_messg',messgStr);
                 viewer_ERPDAT.Process_messg =3;
                 viewer_ERPDAT.Count_currentERP = 2;
@@ -149,7 +149,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             samplearray = unique(samplearray);
             if numel(samplearray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase time points vary across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                messgStr =  strcat('Bugs may occur becuase time points vary across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
                 erpworkingmemory('ERPViewer_proces_messg',messgStr);
                 viewer_ERPDAT.Process_messg =4;
                 return;
@@ -157,7 +157,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             erpstartarray = unique(erpstartarray);
             if numel(erpstartarray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase epoch start time varies across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                messgStr =  strcat('Bugs may occur becuase epoch start time varies across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
                 erpworkingmemory('ERPViewer_proces_messg',messgStr);
                 viewer_ERPDAT.Process_messg =4;
                 return;
@@ -165,7 +165,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             erpendarray = unique(erpendarray);
             if numel(erpendarray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase epoch stop time varies across the selected ERPsets, you may select one ERPset or make samling rate to be the same using "Resample ERPset" panel in the main GUI');
+                messgStr =  strcat('Bugs may occur becuase epoch stop time varies across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
                 erpworkingmemory('ERPViewer_proces_messg',messgStr);
                 viewer_ERPDAT.Process_messg =4;
                 return;

@@ -756,7 +756,7 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Process_messg =1;
         
         SelectedERP = ERPsetops.butttons_datasets.Value;
-        ERPset_remained = setdiff(1:size(observe_ERPDAT.ALLERP,1),SelectedERP);
+        ERPset_remained = setdiff(1:length(observe_ERPDAT.ALLERP),SelectedERP);
         
         if isempty(ERPset_remained)
             observe_ERPDAT.ALLERP = [];
