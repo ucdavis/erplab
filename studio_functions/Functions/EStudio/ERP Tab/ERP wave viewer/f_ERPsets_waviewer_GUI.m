@@ -140,34 +140,38 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             sratearray = unique(sratearray);
             if numel(sratearray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase sampling rate vary across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
-                erpworkingmemory('ERPViewer_proces_messg',messgStr);
-                viewer_ERPDAT.Process_messg =3;
+                msgboxText = ['You cannot select these ERPsets at the same time because they differ in timing parameters (sampling rate, prestimulus period, and/or epoch length).\n'...
+                    'You can equate the temporal parameters using the Resample ERPsets panel in ERPLAB Studio.'];
+                title = 'ERPLAB Studio: Advanced Wave Viewer>ERPsets';
+                errorfound(sprintf(msgboxText), title);
                 viewer_ERPDAT.Count_currentERP = 2;
                 return;
             end
             samplearray = unique(samplearray);
             if numel(samplearray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase time points vary across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
-                erpworkingmemory('ERPViewer_proces_messg',messgStr);
-                viewer_ERPDAT.Process_messg =4;
+                msgboxText = ['You cannot select these ERPsets at the same time because they differ in timing parameters (sampling rate, prestimulus period, and/or epoch length).\n'...
+                    'You can equate the temporal parameters using the Resample ERPsets panel in ERPLAB Studio.'];
+                title = 'ERPLAB Studio: Advanced Wave Viewer>ERPsets';
+                errorfound(sprintf(msgboxText), title);
                 return;
             end
             erpstartarray = unique(erpstartarray);
             if numel(erpstartarray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase epoch start time varies across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
-                erpworkingmemory('ERPViewer_proces_messg',messgStr);
-                viewer_ERPDAT.Process_messg =4;
+                msgboxText = ['You cannot select these ERPsets at the same time because they differ in timing parameters (sampling rate, prestimulus period, and/or epoch length).\n'...
+                    'You can equate the temporal parameters using the Resample ERPsets panel in ERPLAB Studio.'];
+                title = 'ERPLAB Studio: Advanced Wave Viewer>ERPsets';
+                errorfound(sprintf(msgboxText), title);
                 return;
             end
             erpendarray = unique(erpendarray);
             if numel(erpendarray)>1
                 Source.Value=ERPSetArraydef;
-                messgStr =  strcat('Bugs may occur becuase epoch stop time varies across the selected ERPsets, you may select one ERPset or make sampling rate to be the same using "Resample ERPsets" panel in the main GUI');
-                erpworkingmemory('ERPViewer_proces_messg',messgStr);
-                viewer_ERPDAT.Process_messg =4;
+                msgboxText = ['You cannot select these ERPsets at the same time because they differ in timing parameters (sampling rate, prestimulus period, and/or epoch length).\n'...
+                    'You can equate the temporal parameters using the Resample ERPsets panel in ERPLAB Studio.'];
+                title = 'ERPLAB Studio: Advanced Wave Viewer>ERPsets';
+                errorfound(sprintf(msgboxText), title);
                 return;
             end
         end

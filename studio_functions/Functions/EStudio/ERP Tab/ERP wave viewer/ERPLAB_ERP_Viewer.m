@@ -36,7 +36,7 @@
 
 function  ERPLAB_ERP_Viewer(ALLERP,selectedERP_index,binArray,chanArray,Parameterfile)
 tic;%
-disp(' ERP Waveform Viewer is launching...');
+disp('ERP Waveform Viewer is launching. Please be patient...');
 
 
 global viewer_ERPDAT;

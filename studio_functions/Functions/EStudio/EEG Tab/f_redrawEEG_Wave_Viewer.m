@@ -139,20 +139,18 @@ set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Ena
 set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
 
 set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 5]);
+if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
+    EEG = observe_EEGDAT.EEG;
+    OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
+end
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
-hold(EStudio_gui_erp_totl.myeegviewer,'on');
-EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
-pause(0.1);
-EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
-EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
+
+
 Pos = EStudio_gui_erp_totl.myeegviewer.Position;
 EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
 estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
-    EEG = observe_EEGDAT.EEG;
-    OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
-    
     % %%Plot the eeg waves
     if ~isempty(OutputViewereegpar)
         f_plotviewereegwave(EEG,OutputViewereegpar{1},OutputViewereegpar{2},...
@@ -169,6 +167,9 @@ if isempty(observe_EEGDAT.EEG)
 else
     %     set(EStudio_gui_erp_totl.myeegviewer, 'XTick', [], 'XTickLabel', []);
 end
+EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
 end % redrawDemo
 
 
@@ -208,6 +209,7 @@ if isempty(observe_EEGDAT.EEG)
 end
 MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<<)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
+observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -246,7 +248,6 @@ end
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_panel_message=1;
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
@@ -264,6 +265,7 @@ if isempty(observe_EEGDAT.EEG)
 end
 MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
+observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -381,6 +383,7 @@ global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
 MessageViewer= char(strcat('Increasing start time for the displayed EEG (>)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
+observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -440,7 +443,6 @@ EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_panel_message=1;
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
 end
@@ -451,6 +453,7 @@ global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
 MessageViewer= char(strcat('Increasing start time for the displayed EEG (>>)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
+observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -510,7 +513,6 @@ EStudio_gui_erp_totl.eeg_zoom_edit.String = num2str(Startimes);
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_panel_message=1;
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
 end
@@ -526,6 +528,7 @@ if isempty(observe_EEGDAT.EEG)
 end
 MessageViewer= char(strcat('Changing the start time to be maximal (>|)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
+observe_EEGDAT.eeg_panel_message=1;
 try
     Winlength =   EEG_plotset{3};
 catch
@@ -556,7 +559,7 @@ Startimes = StartimesMax;
 
 estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_panel_message=1;
+
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
@@ -885,7 +888,6 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
             end
         catch
         end
-        
         try
             observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
@@ -906,10 +908,11 @@ EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
 if observe_EEGDAT.eeg_panel_message==1
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
+    pause(0.5);
 elseif observe_EEGDAT.eeg_panel_message==2
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('2- ',Processed_Method,': Complete');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0.5 0];
-    
+    pause(0.5);
 elseif observe_EEGDAT.eeg_panel_message==3
     if ~strcmp(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
@@ -1025,7 +1028,7 @@ if nargin<9
     Submean = 0;
 end
 if isempty(Submean) || numel(Submean)~=1 || (Submean~=0 && Submean~=1)
-    Submean = 0;
+    Submean = 1;
 end
 
 
@@ -1082,7 +1085,7 @@ end
 
 %%determine the time range that will be dispalyed
 lowlim = round(Startimes*multiplier+1);
-highlim = round(min((Startimes+Winlength)*multiplier,Allsamples));
+highlim = round(min((Startimes+Winlength)*multiplier+1,Allsamples));
 
 
 %%--------------------prepare event array if any --------------------------
@@ -1133,46 +1136,23 @@ end
 
 chanNum = numel(ChanArray);
 
-%%-------------------------------IC data----------------------------------
+
+%%-------------------------------IC and original data----------------------
 dataica = [];
-meandataica =[];
-if ICdispFlag==1
-    if ~isempty(EEG.icaweights) && ~isempty(ICArray)%%pop_eegplot from eeglab
-        tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
-        try
-            dataica = tmpdata(ICArray,:);
-        catch
-            dataica = tmpdata(:,:);
-            ICArray = [1:size(tmpdata,1)];
-        end
-        switch Submean % subtract the mean ?
-            case 1
-                meandataica = mean(dataica(:,lowlim:highlim)');
-                if any(isnan(meandataica))
-                    meandataica = nan_mean(dataica(:,lowlim:highlim)');
-                end
-            otherwise, meandataica = zeros(1,numel(ICArray));
-        end
-        
+if ~isempty(EEG.icaweights) && ~isempty(ICArray)%%pop_eegplot from eeglab
+    tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
+    try
+        dataica = tmpdata(ICArray,:);
+    catch
+        dataica = tmpdata(:,:);
+        ICArray = [1:size(tmpdata,1)];
     end
 end
 
-
-% Removing DC for original data?
-% -------------------------
-dataeeg = [];
-meandata = [];
 if EEGdispFlag==1
     dataeeg = EEG.data(ChanArray,:);
-    switch Submean % subtract the mean ?
-        case 1
-            meandata = mean(dataeeg(:,lowlim:highlim)');
-            if any(isnan(meandata))
-                meandata = nan_mean(dataeeg(:,lowlim:highlim)');
-            end
-        otherwise, meandata = zeros(1,numel(ChanArray));
-    end
-    
+else
+    dataeeg =[];
 end
 
 %%---------------------------Normalize-------------------------------------
@@ -1182,7 +1162,7 @@ if NormFlag==1
     if ~isempty(dataeeg)
         datastd = std(dataeeg(:,1:min(1000,Allsamples)),[],2);%
         for i = 1:size(dataeeg,1)
-            dataeeg(i,:,:) = dataeeg(i,:,:)*datastd(i);
+            dataeeg(i,:,:) = dataeeg(i,:,:)/datastd(i);
             %             if ~isempty(data2)
             %                 data2(i,:,:) = data2(i,:,:)*datastd(i);
             %             end
@@ -1191,15 +1171,9 @@ if NormFlag==1
     
     %%norm for IC data
     if ~isempty(dataica)
-        tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
-        try
-            dataica1 = tmpdata(ICArray,:);
-        catch
-            dataica1 =  tmpdata(:,:);
-        end
         dataicstd = std(dataica(:,1:min(1000,Allsamples)),[],2);
         for i = 1:size(dataica,1)
-            dataica(i,:,:) = dataica(i,:,:)*dataicstd(i);
+            dataica(i,:,:) = dataica(i,:,:)/dataicstd(i);
             %        if ~isempty(data2)
             %            data2(i,:,:) = data2(i,:,:)*dataicstd(i);
             %        end
@@ -1207,7 +1181,39 @@ if NormFlag==1
     end
 end
 
+% Removing DC for IC data?
+% -------------------------
+meandataica =[];
+if ICdispFlag==1
+    if ~isempty(EEG.icaweights) && ~isempty(ICArray) && ~isempty(dataica)%%pop_eegplot from eeglab
+        switch Submean % subtract the mean ?
+            case 1
+                meandataica = mean(dataica(:,lowlim:highlim)');
+                if any(isnan(meandataica))
+                    meandataica = nan_mean(dataica(:,lowlim:highlim)');
+                end
+            otherwise, meandataica = zeros(1,numel(ICArray));
+        end
+    end
+end
+
+% Removing DC for original data?
+% -------------------------
+meandata = [];
+if EEGdispFlag==1 && ~isempty(dataeeg)
+    switch Submean % subtract the mean ?
+        case 1
+            meandata = mean(dataeeg(:,lowlim:highlim)');
+            if any(isnan(meandata))
+                meandata = nan_mean(dataeeg(:,lowlim:highlim)');
+            end
+        otherwise, meandata = zeros(1,numel(ChanArray));
+    end
+end
+
 data = [dataeeg;dataica];
+meandata = [meandata,meandataica];
+
 
 Colorgbwave = [];
 %%set the wave color for each channel
@@ -1254,8 +1260,6 @@ if ~isempty(data)
 end
 
 
-
-meandata = [meandata,meandataica];
 PlotNum =0;
 if ICdispFlag==1 && EEGdispFlag==1
     if ~isempty(EEG.icaweights) && ~isempty(ICArray)
@@ -1383,7 +1387,7 @@ end
 if StackFlag==1
     AmpScale=0;
 end
-DEFAULT_GRID_SPACING =Winlength/5;
+DEFAULT_GRID_SPACING =1;
 
 % -------------------------------------------------------------------------
 % -----------------draw EEG wave if any------------------------------------
@@ -1395,35 +1399,17 @@ if ndims(EEG.data)==2
         Ampsc = AmpScale*[1:PlotNum]';
         for ii = size(data,1):-1:1
             try
-                plot(myeegviewer, (data(ii,:)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(myeegviewer, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.75);%%
             catch
-                plot(myeegviewer, (data(ii,:)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(myeegviewer, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
         end
-        
-        %             if isempty(dataica) && ~isempty(dataeeg)%%only EEG data
-        %             plot(myeegviewer, bsxfun(@plus, data(end:-1:1,lowlim:highlim), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', Colorgbwave(end:-1:1,:), 'clipping','on','LineWidth',0.5);%%
-        %         elseif ~isempty(dataica) && isempty(dataeeg)%%only IC data
-        %             plot(myeegviewer, bsxfun(@plus, data(end:-1:1,lowlim:highlim), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.75);%%
-        %
-        %         else
-        %             tvmid = size(data,1)-size(dataica,1)+1;
-        %             %%plot ic
-        %             plot(myeegviewer, bsxfun(@plus, data(end:-1:tvmid,lowlim:highlim), AmpScale*[1:size(dataica,1)]'-meandata(end:-1:tvmid)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.75);%%
-        %             %%plot eeg
-        %             plot(myeegviewer, bsxfun(@plus, data(tvmid-1:-1:1,lowlim:highlim), AmpScale*[size(dataica,1)+1:PlotNum]'-meandata(tvmid-1:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
-        %         end
-        
         set(myeegviewer,'TickDir', 'in','LineWidth',1);
         %%xtick
         AmpScale = OldAmpScale;
-        set(myeegviewer, 'Xlim',[1 Winlength*multiplier],...
+        set(myeegviewer, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
         set(myeegviewer, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'));
     end
@@ -1508,23 +1494,6 @@ if ndims(EEG.data)==3
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
         end
-        %         if isempty(dataica) && ~isempty(dataeeg)%%only EEG data
-        %                         plot(myeegviewer, bsxfun(@plus, dataplot(end:-1:1,:), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                             'color', bsxfun(@plus,Colorgbwave(end:-1:1,:),[0 0 0])', 'clipping','on','LineWidth',0.5);%%
-        %
-        %
-        %         elseif ~isempty(dataica) && isempty(dataeeg)%%only IC data
-        %             plot(myeegviewer, bsxfun(@plus, dataplot(end:-1:1,:), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.75);%%
-        %         else
-        %             tvmid = size(dataplot,1)-size(dataica,1)+1;
-        %             %%plot ic
-        %             plot(myeegviewer, bsxfun(@plus, dataplot(end:-1:tvmid,:), AmpScale*[1:size(dataica,1)]'-meandata(end:-1:tvmid)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.75);%%
-        %             %%plot eeg
-        %             plot(myeegviewer, bsxfun(@plus, dataplot(tvmid-1:-1:1,:), AmpScale*[size(dataica,1)+1:PlotNum]'-meandata(tvmid-1:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
-        %         end
         %------------------------Xticks------------------------------------
         tagpos  = [];
         tagtext = [];
@@ -1614,9 +1583,16 @@ set(myeegviewer,'YTickLabel',cellstr(YLabels),...
     'FontWeight','normal',...
     'TickDir', 'in',...
     'LineWidth',0.5);%%,'HorizontalAlignment','center'
-try
-    set(myeegviewer, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
-catch
+% try
+%     set(myeegviewer, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
+% catch
+% end
+count=0;
+for ii = length(myeegviewer.YTickLabel):-1:2
+    count = count+1;
+    Cellsing = strrep(myeegviewer.YTickLabel{ii},'_','\_');
+    myeegviewer.YTickLabel{ii} = strcat('\color[rgb]{',num2str(Colorgbwave(count,:)),'}', Cellsing);
 end
+
 
 end

@@ -34,9 +34,12 @@
 % Now with more in nested functions
 
 
-function [] = EStudio()
-EStudioversion = 10.02;
+function [] = estudio()
 
+tic;%
+disp(' EStudio is launching. Please be patient...');
+
+EStudioversion = 10.02;
 SignalProcessingToolboxCheck;
 %%--------------------check memory file------------------------------------
 if exist('memoryerpstudiopanels.erpm','file')==2
@@ -86,8 +89,6 @@ try
     eeg_global;
 catch
 end
-
-
 
 erplab_running_version('Version',EStudioversion,'tooltype','EStudio');
 try
@@ -221,6 +222,10 @@ erpworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/la
 EStudio_gui_erp_totl = struct();
 EStudio_gui_erp_totl = createInterface();
 
+timeElapsed = toc;
+fprintf([32,'It took',32,num2str(timeElapsed),'s to launch EStudio.\n\n']);
+
+
     function EStudio_gui_erp_totl = createInterface()
         try
             [version reldate] = geterplabstudioversion;
@@ -296,6 +301,7 @@ EStudio_gui_erp_totl = createInterface();
         EStudio_gui_erp_totl.tabmvpa = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPA Tab
         EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP', 'MVPA'};
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 1;
+        EStudio_gui_erp_totl.context_tabs.SelectionChangedFcn = @SelectedTab;
         EStudio_gui_erp_totl.context_tabs.HighlightColor = [0 0 0];
         EStudio_gui_erp_totl.context_tabs.FontWeight = 'bold';
         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
@@ -313,6 +319,8 @@ EStudio_gui_erp_totl = createInterface();
         EStudio_gui_erp_totl.eegpageinfo_plus = uicontrol('Parent',EStudio_gui_erp_totl.eegpageinfo_box,'Style', 'pushbutton', 'String', 'Next','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStudio_gui_erp_totl.eeg_plot_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.eeg_plot_title,'BackgroundColor',figbgdColor);
+        
+        
         EStudio_gui_erp_totl.eeg_plot_button_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eeg_zoom_in_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','|<',...
@@ -646,6 +654,22 @@ if isempty(ind)
     if exist(newpath) == 7
         addpath(newpath);
     end
+end
+
+end
+
+
+%%--------------------plot the wave if select new Tab----------------------
+function SelectedTab(~,~)
+global EStudio_gui_erp_totl;
+
+if EStudio_gui_erp_totl.context_tabs.Selection==2%% ERP Tab
+  f_redrawERP();  
+elseif EStudio_gui_erp_totl.context_tabs.Selection==3%% ERP Tab
+ 
+    
+else%%EEG Tab
+  f_redrawEEG_Wave_Viewer();  
 end
 
 end

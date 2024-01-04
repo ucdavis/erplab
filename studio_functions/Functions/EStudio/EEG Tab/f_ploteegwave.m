@@ -209,7 +209,7 @@ set(fig_gui, 'Renderer', 'painters');%%vector figure
 
 %%determine the time range that will be dispalyed
 lowlim = round(Startimes*multiplier+1);
-highlim = round(min((Startimes+Winlength)*multiplier,Allsamples));
+highlim = round(min((Startimes+Winlength)*multiplier+1,Allsamples));
 
 
 %%--------------------prepare event array if any --------------------------
@@ -263,9 +263,8 @@ end
 
 chanNum = numel(ChanArray);
 
-%%-------------------------------IC data----------------------------------
+%%-------------------------------IC and original data----------------------
 dataica = [];
-meandataica =[];
 if ~isempty(ICArray)
     ICdispFlag=1;
     if ~isempty(EEG.icaweights) && ~isempty(ICArray)%%pop_eegplot from eeglab
@@ -276,38 +275,17 @@ if ~isempty(ICArray)
             dataica = tmpdata(:,:);
             ICArray = [1:size(tmpdata,1)];
         end
-        switch Submean % subtract the mean ?
-            case 1
-                meandataica = mean(dataica(:,lowlim:highlim)');
-                if any(isnan(meandataica))
-                    meandataica = nan_mean(dataica(:,lowlim:highlim)');
-                end
-            otherwise, meandataica = zeros(1,numel(ICArray));
-        end
-        
     end
 else
     ICdispFlag=0;
 end
 
-
-% Removing DC for original data?
-% -------------------------
-dataeeg = [];
-meandata = [];
 if ~isempty(ChanArray)
     EEGdispFlag=1;
     dataeeg = EEG.data(ChanArray,:);
-    switch Submean % subtract the mean ?
-        case 1
-            meandata = mean(dataeeg(:,lowlim:highlim)');
-            if any(isnan(meandata))
-                meandata = nan_mean(dataeeg(:,lowlim:highlim)');
-            end
-        otherwise, meandata = zeros(1,numel(ChanArray));
-    end
 else
-    EEGdispFlag=1;
+    dataeeg =[];
+    EEGdispFlag=0;
 end
 
 %%---------------------------Normalize-------------------------------------
@@ -317,7 +295,7 @@ if NormFlag==1
     if ~isempty(dataeeg)
         datastd = std(dataeeg(:,1:min(1000,Allsamples)),[],2);%
         for i = 1:size(dataeeg,1)
-            dataeeg(i,:,:) = dataeeg(i,:,:)*datastd(i);
+            dataeeg(i,:,:) = dataeeg(i,:,:)/datastd(i);
             %             if ~isempty(data2)
             %                 data2(i,:,:) = data2(i,:,:)*datastd(i);
             %             end
@@ -326,15 +304,9 @@ if NormFlag==1
     
     %%norm for IC data
     if ~isempty(dataica)
-        tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
-        try
-            dataica1 = tmpdata(ICArray,:);
-        catch
-            dataica1 = tmpdata(:,:);
-        end
         dataicstd = std(dataica(:,1:min(1000,Allsamples)),[],2);
         for i = 1:size(dataica,1)
-            dataica(i,:,:) = dataica(i,:,:)*dataicstd(i);
+            dataica(i,:,:) = dataica(i,:,:)/dataicstd(i);
             %        if ~isempty(data2)
             %            data2(i,:,:) = data2(i,:,:)*dataicstd(i);
             %        end
@@ -342,8 +314,38 @@ if NormFlag==1
     end
 end
 
+% Removing DC for IC data?
+% -------------------------
+meandataica =[];
+if ICdispFlag==1
+    if ~isempty(EEG.icaweights) && ~isempty(ICArray) && ~isempty(dataica)%%pop_eegplot from eeglab
+        switch Submean % subtract the mean ?
+            case 1
+                meandataica = mean(dataica(:,lowlim:highlim)');
+                if any(isnan(meandataica))
+                    meandataica = nan_mean(dataica(:,lowlim:highlim)');
+                end
+            otherwise, meandataica = zeros(1,numel(ICArray));
+        end
+    end
+end
+
+% Removing DC for original data?
+% -------------------------
+meandata = [];
+if EEGdispFlag==1 && ~isempty(dataeeg)
+    switch Submean % subtract the mean ?
+        case 1
+            meandata = mean(dataeeg(:,lowlim:highlim)');
+            if any(isnan(meandata))
+                meandata = nan_mean(dataeeg(:,lowlim:highlim)');
+            end
+        otherwise, meandata = zeros(1,numel(ChanArray));
+    end
+end
 
 data = [dataeeg;dataica];
+meandata = [meandata,meandataica];
 
 Colorgbwave = [];
 %%set the wave color for each channel
@@ -390,9 +392,6 @@ if ~isempty(data)
 end
 
 
-
-
-meandata = [meandata,meandataica];
 PlotNum =0;
 if ICdispFlag==1 && EEGdispFlag==1
     if ~isempty(EEG.icaweights) && ~isempty(ICArray)
@@ -535,32 +534,17 @@ if ndims(EEG.data)==2
         Ampsc = AmpScale*[1:PlotNum]';
         for ii = size(data,1):-1:1
             try
-                plot(hbig, (data(ii,:)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.75);%%
             catch
-                plot(hbig, (data(ii,:)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
         end
-        %         if isempty(dataica) && ~isempty(dataeeg)%%only EEG data
-        %             plot(hbig, bsxfun(@plus, data(end:-1:1,lowlim:highlim), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
-        %         elseif ~isempty(dataica) && isempty(dataeeg)%%only IC data
-        %             plot(hbig, bsxfun(@plus, data(end:-1:1,lowlim:highlim), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.5);%%
-        %         else
-        %             tvmid = size(data,1)-size(dataica,1)+1;
-        %             %%plot ic
-        %             plot(hbig, bsxfun(@plus, data(end:-1:tvmid,lowlim:highlim), AmpScale*[1:size(dataica,1)]'-meandata(end:-1:tvmid)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.5);%%
-        %             %%plot eeg
-        %             plot(hbig, bsxfun(@plus, data(tvmid-1:-1:1,lowlim:highlim), AmpScale*[size(dataica,1)+1:PlotNum]'-meandata(tvmid-1:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
-        %         end
         set(hbig,'TickDir', 'in','LineWidth',1);
         %%xtick
         AmpScale = OldAmpScale;
-        set(hbig, 'Xlim',[1 Winlength*multiplier],...
+        set(hbig, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
         set(hbig, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'));
     end
@@ -646,22 +630,6 @@ if ndims(EEG.data)==3
             end
         end
         
-        
-        %         if isempty(dataica) && ~isempty(dataeeg)%%only EEG data
-        %             plot(hbig, bsxfun(@plus, dataplot(end:-1:1,:), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
-        %         elseif ~isempty(dataica) && isempty(dataeeg)%%only IC data
-        %             plot(hbig, bsxfun(@plus, dataplot(end:-1:1,:), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.5);%%
-        %         else
-        %             tvmid = size(dataplot,1)-size(dataica,1)+1;
-        %             %%plot ic
-        %             plot(hbig, bsxfun(@plus, dataplot(end:-1:tvmid,:), AmpScale*[1:size(dataica,1)]'-meandata(end:-1:tvmid)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', [0.6667    0.2902    0.2667], 'clipping','on','LineWidth',0.5);%%
-        %             %%plot eeg
-        %             plot(hbig, bsxfun(@plus, dataplot(tvmid-1:-1:1,:), AmpScale*[size(dataica,1)+1:PlotNum]'-meandata(tvmid-1:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-        %                 'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
-        %         end
         %------------------------Xticks------------------------------------
         tagpos  = [];
         tagtext = [];
@@ -754,11 +722,15 @@ set(hbig,'YTickLabel',cellstr(YLabels),...
     'FontWeight','normal',...
     'TickDir', 'in',...
     'LineWidth',0.5);%%,'HorizontalAlignment','center'
-try
-    set(hbig, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
-catch
+% try
+%     set(hbig, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
+% catch
+% end
+count=0;
+for ii = length(hbig.YTickLabel):-1:2
+    count = count+1;
+    hbig.YTickLabel{ii} = ['\color[rgb]{',num2str(Colorgbwave(count,:)),'}', strrep(hbig.YTickLabel{ii},'_','\_')];
 end
-
 
 set(gcf,'color',[1 1 1]);
 prePaperType = get(fig_gui,'PaperType');

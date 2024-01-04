@@ -69,8 +69,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
             'String','','callback',@det_algo,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_epoch.det_algo.KeyPressFcn=  @eeg_artdetect_presskey;
         
-        Det_algostr = {'Simple voltage threshold','Moving window peak-to-peak threshold',...
-            'Step-like artifacts','Sample to sample voltage threshold',...
+        Det_algostr = {'Simple voltage threshold','Moving window peak-to-peak',...
+            'Step-like artifacts','Sample to sample voltage',...
             'Blocking & flat line'};
         Eegtab_EEG_art_det_epoch.det_algo.String = Det_algostr;
         Eegtab_EEG_art_det_epoch.det_algo.Value =1;
@@ -117,8 +117,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         %%test period
         Eegtab_EEG_art_det_epoch.periods_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.periods_title,...
-            'String','Test period (start end) [ms]','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+        Eegtab_EEG_art_det_epoch.periods_editext=uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.periods_title,...
+            'String','Test period [ms] (start end)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.periods_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.periods_title,...
             'callback',@periods_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.periods_edit.KeyPressFcn=  @eeg_artdetect_presskey;
@@ -128,7 +128,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%Voltage limits
         Eegtab_EEG_art_det_epoch.voltage_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.voltage_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.voltage_title,...
-            'String','Voltage limits[uV] (e.g., -100 100)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Voltage limits [uV] (e.g., -100 100)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_epoch.voltage_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_epoch.voltage_title,...
             'callback',@voltage_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_epoch.voltage_edit.KeyPressFcn=  @eeg_artdetect_presskey;
@@ -205,6 +205,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.periods_edit.String = num2str(temperiod);
         end
         if Source.Value==1
+            Eegtab_EEG_art_det_epoch.periods_editext.String='Test period [ms] (start end)';
             Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage limits[uV] (e.g., -100 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
@@ -213,12 +214,15 @@ varargout{1} = Eegtab_box_art_det_epoch;
             end
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+            
         elseif Source.Value==2%%peak-to-peak
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage threshold [uV] (e.g., 100)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='on';
-            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window full width [ms]';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window width [ms]';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '100';
@@ -228,15 +232,16 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.movewindow_edit.String = '200';
             end
             windwostep = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='Window step [ms]';
             if isempty(windwostep) || numel(windwostep)~=1
                 Eegtab_EEG_art_det_epoch.windowstep_edit.String = '100';
             end
         elseif Source.Value==3
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage threshold [uV] (e.g., 100)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='on';
-            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window full width [ms]';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window width [ms]';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '100';
@@ -250,7 +255,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.windowstep_edit.String = '50';
             end
         elseif Source.Value==4
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage threshold [uV] (e.g., 30)';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
@@ -259,11 +266,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '30';
             end
         elseif Source.Value==5
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Amplitude tolerance (e.g., 2)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Amp. tolerance [uV] (e.g., 2)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
-            Eegtab_EEG_art_det_epoch.movewindow_text.String = 'Duration [ms]';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String = 'Flat line    duration [ms]   ';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '1';

@@ -89,8 +89,10 @@ varargout{1} = box_eegset_gui;
             EEGArray=1;
             estudioworkingmemory('EEGArray',EEGArray);
         end
+        try
         EStduio_eegtab_EEG_set.butttons_datasets.Value = EEGArray;
-        
+        catch   
+        end
         %%---------------------Options for EEGsets-----------------------------------------------------
         EStduio_eegtab_EEG_set.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.dupeselected = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Duplicate', ...
@@ -119,7 +121,7 @@ varargout{1} = box_eegset_gui;
         EStduio_eegtab_EEG_set.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
             'Callback', @curr_folder,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115]);
-        set(vBox, 'Sizes', [20 370 25 25 25]);
+        set(vBox, 'Sizes', [20 280 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
     end
 
@@ -1171,5 +1173,5 @@ for Numofpanel = 1:length(whichpanel)
         set( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes', szs );
         EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(szs);
     end
-end 
+end
 end

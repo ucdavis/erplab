@@ -80,7 +80,7 @@ varargout{1} = box_erp_resample;
         %%----------------current time-window------------------------------
         gui_erp_resample.ctimewindow_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',gui_erp_resample.ctimewindow_title,...
-            'String','Current TW','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Current epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_resample.ctimewindow_editleft = uicontrol('Style','edit','Parent', gui_erp_resample.ctimewindow_title,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         uicontrol('Style', 'text','Parent',gui_erp_resample.ctimewindow_title,...
@@ -89,12 +89,12 @@ varargout{1} = box_erp_resample;
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         uicontrol('Style', 'text','Parent',gui_erp_resample.ctimewindow_title,...
             'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(gui_erp_resample.ctimewindow_title,'Sizes',[70 65  40 65 25]);
+        set(gui_erp_resample.ctimewindow_title,'Sizes',[90 55  40 55 25]);
         
         %%--------------------new time window--------------------------------
         gui_erp_resample.nwtimewindow_title = uiextras.HBox('Parent', gui_erp_resample.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_resample.nwtimewindow_checkbox= uicontrol('Style', 'checkbox','Parent',gui_erp_resample.nwtimewindow_title,...
-            'callback',@nwtimewindow_checkbox,'String','New TW','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
+            'callback',@nwtimewindow_checkbox,'String','New epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off');
         gui_erp_resample.Paras{3} = gui_erp_resample.nwtimewindow_checkbox.Value;
         gui_erp_resample.nwtimewindow_checkbox.KeyPressFcn = @erp_resample_presskey;
         gui_erp_resample.nwtimewindow_editleft = uicontrol('Style','edit','Parent', gui_erp_resample.nwtimewindow_title,'String','',...
@@ -109,7 +109,7 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.nwtimewindow_editright.KeyPressFcn = @erp_resample_presskey;
         uicontrol('Style', 'text','Parent',gui_erp_resample.nwtimewindow_title,...
             'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(gui_erp_resample.nwtimewindow_title,'Sizes',[70 65  40 65 25]);
+        set(gui_erp_resample.nwtimewindow_title,'Sizes',[90 55  40 55 25]);
         
         %%------------------------cancel & apply-----------------------------
         gui_erp_resample.advance_help_title = uiextras.HBox('Parent',gui_erp_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);

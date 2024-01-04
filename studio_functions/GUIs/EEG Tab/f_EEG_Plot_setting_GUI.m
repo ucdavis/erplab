@@ -79,23 +79,23 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.v_scale_edit.KeyPressFcn = @eeg_plotset_presskey;
         EEG_plotset{4} = str2num(EStduio_gui_EEG_plotset.v_scale_edit.String);
         %%Channel labels  name/number?
-        EStduio_gui_EEG_plotset.chanlab_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_plotset.chanlab_text = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'text', 'String', 'Channel Labels:',...
-            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_plotset.chanlab_name = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'radiobutton', 'String', 'Name',...
-            'Callback', @chanlab_name,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
-        EStduio_gui_EEG_plotset.chanlab_name.KeyPressFcn = @eeg_plotset_presskey;
-        EStduio_gui_EEG_plotset.chanlab_numb = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'radiobutton', 'String', 'Number',...
-            'Callback', @chanlab_numb,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
-        EStduio_gui_EEG_plotset.chanlab_numb.KeyPressFcn = @eeg_plotset_presskey;
-        EEG_plotset{5} = EStduio_gui_EEG_plotset.chanlab_name.Value;
-        set(EStduio_gui_EEG_plotset.chanlab_title,'Sizes',[100 60 70]);
+        %         EStduio_gui_EEG_plotset.chanlab_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        %         EStduio_gui_EEG_plotset.chanlab_text = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'text', 'String', 'Channel Labels:',...
+        %             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        %         EStduio_gui_EEG_plotset.chanlab_name = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'radiobutton', 'String', 'Name',...
+        %             'Callback', @chanlab_name,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
+        %         EStduio_gui_EEG_plotset.chanlab_name.KeyPressFcn = @eeg_plotset_presskey;
+        %         EStduio_gui_EEG_plotset.chanlab_numb = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'radiobutton', 'String', 'Number',...
+        %             'Callback', @chanlab_numb,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
+        %         EStduio_gui_EEG_plotset.chanlab_numb.KeyPressFcn = @eeg_plotset_presskey;
+        EEG_plotset{5} = 1;%EStduio_gui_EEG_plotset.chanlab_name.Value;
+        %         set(EStduio_gui_EEG_plotset.chanlab_title,'Sizes',[100 60 70]);
         
         
         %%Remove DC or display event?
         EStduio_gui_EEG_plotset.removedc_event_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_gui_EEG_plotset.rem_DC = uicontrol('Parent',EStduio_gui_EEG_plotset.removedc_event_title, 'Style', 'checkbox', 'String', 'Remove DC',...
-            'Callback', @rm_DC,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
+            'Callback', @rm_DC,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         EStduio_gui_EEG_plotset.rem_DC.KeyPressFcn = @eeg_plotset_presskey;
         EStduio_gui_EEG_plotset.disp_event = uicontrol('Parent',EStduio_gui_EEG_plotset.removedc_event_title, 'Style', 'checkbox', 'String', 'Events',...
             'Callback', @disp_event,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
@@ -154,7 +154,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         uiextras.Empty('Parent', EStduio_gui_EEG_plotset.reset_apply); % 1A
         set(EStduio_gui_EEG_plotset.reset_apply, 'Sizes',[10,-1,30,-1,10]);
         
-        set(EStduio_gui_EEG_plotset.DataSelBox,'Sizes',[25 25 25 25 25 20 25 25 30]);
+        set(EStduio_gui_EEG_plotset.DataSelBox,'Sizes',[25 25 25 25 20 25 25 30]);
         estudioworkingmemory('EEG_plotset',EEG_plotset);
         
         EStduio_gui_EEG_plotset.chanorder{1,1} = [];
@@ -282,41 +282,41 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 
 %%-------------------------channel label: name-----------------------------
-    function chanlab_name(~,~)
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-        end
-        estudioworkingmemory('EEGTab_plotset',1);
-        EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
-        EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-        
-        EStduio_gui_EEG_plotset.chanlab_name.Value=1;
-        EStduio_gui_EEG_plotset.chanlab_numb.Value =0;
-    end
+%     function chanlab_name(~,~)
+%         %%first checking if the changes on the other panels have been applied
+%         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+%         if ~isempty(messgStr) && eegpanelIndex~=2
+%             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+%         end
+%         estudioworkingmemory('EEGTab_plotset',1);
+%         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+%         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
+%         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+%         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+%         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+%
+%         EStduio_gui_EEG_plotset.chanlab_name.Value=1;
+%         EStduio_gui_EEG_plotset.chanlab_numb.Value =0;
+%     end
 
 
 %%-------------------------channel label: number---------------------------
-    function chanlab_numb(~,~)
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-        end
-        estudioworkingmemory('EEGTab_plotset',1);
-        EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
-        EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-        
-        EStduio_gui_EEG_plotset.chanlab_name.Value=0;
-        EStduio_gui_EEG_plotset.chanlab_numb.Value =1;
-    end
+%     function chanlab_numb(~,~)
+%         %%first checking if the changes on the other panels have been applied
+%         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+%         if ~isempty(messgStr) && eegpanelIndex~=2
+%             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+%         end
+%         estudioworkingmemory('EEGTab_plotset',1);
+%         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+%         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
+%         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+%         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+%         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+%
+%         EStduio_gui_EEG_plotset.chanlab_name.Value=0;
+%         EStduio_gui_EEG_plotset.chanlab_numb.Value =1;
+%     end
 
 
 
@@ -751,13 +751,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.v_scale_edit.String = num2str(VScale);
         
         %%Channel labels  name/number?
-        try ChandispFlag = EEG_plotset{5}; catch  ChandispFlag =1; end
-        if isempty(ChandispFlag) || numel(ChandispFlag)~=1 || (ChandispFlag~=0 && ChandispFlag~=1)
-            ChandispFlag = 1;
-            EEG_plotset{5}=1;
-        end
-        EStduio_gui_EEG_plotset.chanlab_name.Value =ChandispFlag;
-        EStduio_gui_EEG_plotset.chanlab_numb.Value =~ChandispFlag;
+        %         try ChandispFlag = EEG_plotset{5}; catch  ChandispFlag =1; end
+        %         if isempty(ChandispFlag) || numel(ChandispFlag)~=1 || (ChandispFlag~=0 && ChandispFlag~=1)
+        %             ChandispFlag = 1;
+        %             EEG_plotset{5}=1;
+        %         end
+        %         EStduio_gui_EEG_plotset.chanlab_name.Value =ChandispFlag;
+        %         EStduio_gui_EEG_plotset.chanlab_numb.Value =~ChandispFlag;
         
         %%Remove DC
         try RMean = EEG_plotset{6}; catch  RMean =0; end
@@ -883,7 +883,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         EEG_plotset{4} =VScale;
         %%Channel labels  name/number?
-        EEG_plotset{5}= EStduio_gui_EEG_plotset.chanlab_name.Value;
+        EEG_plotset{5}=1;% EStduio_gui_EEG_plotset.chanlab_name.Value;
         %%Remove DC
         EEG_plotset{6}=EStduio_gui_EEG_plotset.rem_DC.Value;
         %%display event?
@@ -951,14 +951,19 @@ varargout{1} = EStudio_box_EEG_plot_set;
             Enableflag = 'off';
         else
             Enableflag = 'on';
+            if size(observe_EEGDAT.EEG.data,3)==1
+                EStduio_gui_EEG_plotset.timerange.String = 'Time Range:';
+            else
+                EStduio_gui_EEG_plotset.timerange.String = '# of Epochs:';
+            end
         end
         
         EStduio_gui_EEG_plotset.disp_orgdata.Enable = Enableflag;
         EStduio_gui_EEG_plotset.disp_IC.Enable = Enableflag;
         EStduio_gui_EEG_plotset.WinLength_edit.Enable = Enableflag;
         EStduio_gui_EEG_plotset.v_scale_edit.Enable = Enableflag;
-        EStduio_gui_EEG_plotset.chanlab_name.Enable = Enableflag;
-        EStduio_gui_EEG_plotset.chanlab_numb.Enable = Enableflag;
+        %         EStduio_gui_EEG_plotset.chanlab_name.Enable = Enableflag;
+        %         EStduio_gui_EEG_plotset.chanlab_numb.Enable = Enableflag;
         EStduio_gui_EEG_plotset.rem_DC.Enable = Enableflag;
         EStduio_gui_EEG_plotset.disp_event.Enable = Enableflag;
         EStduio_gui_EEG_plotset.disp_stack.Enable = Enableflag;
@@ -970,6 +975,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
         EStduio_gui_EEG_plotset.plotset_cancel.Enable = Enableflag;
         EStduio_gui_EEG_plotset.plot_apply.Enable = Enableflag;
+        if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.EEG.icachansind)
+            EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
+        else
+            EStduio_gui_EEG_plotset.disp_IC.Enable = 'off';
+            EStduio_gui_EEG_plotset.disp_IC.Value = 0;
+        end
         if strcmp(Enableflag,'on')
             if EStduio_gui_EEG_plotset.chanorder_custom.Value ==1
                 Enableflag = 'on';
@@ -979,6 +990,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = Enableflag;
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
         end
+        
         observe_EEGDAT.count_current_eeg=4;
     end
 
