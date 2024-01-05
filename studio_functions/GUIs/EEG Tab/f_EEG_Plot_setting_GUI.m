@@ -981,6 +981,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.disp_IC.Enable = 'off';
             EStduio_gui_EEG_plotset.disp_IC.Value = 0;
         end
+        if EStduio_gui_EEG_plotset.disp_IC.Value==0
+            EEG_plotset=  estudioworkingmemory('EEG_plotset');
+            EEG_plotset{2}=0;
+            estudioworkingmemory('EEG_plotset',EEG_plotset);
+        end
         if strcmp(Enableflag,'on')
             if EStduio_gui_EEG_plotset.chanorder_custom.Value ==1
                 Enableflag = 'on';

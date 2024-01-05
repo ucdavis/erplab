@@ -524,6 +524,7 @@ DEFAULT_GRID_SPACING =Winlength/5;
 % -------------------------------------------------------------------------
 % -----------------draw EEG wave if any------------------------------------
 % -------------------------------------------------------------------------
+leftintv = [];
 %%Plot continuous EEG
 tmpcolor = [ 0 0 0.4 ];
 if ndims(EEG.data)==2
@@ -547,6 +548,9 @@ if ndims(EEG.data)==2
         set(hbig, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
         set(hbig, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'));
+        %%
+        %%-----------------plot scale------------------
+        leftintv = Winlength*multiplier+1;
     end
 end
 
@@ -592,9 +596,13 @@ if ndims(EEG.data)==3
         end
         
         %%add the gap between epochs if any
+        Epochintv = [];
+        
         if ~isempty(tmpind)
             if (numel(tmpind)==1 && tmpind(end) == numel(tmptag)) || (numel(tmpind)==1 && tmpind(1) == 1)
                 dataplot =   data(:,lowlim:highlim);
+                Epochintv(1,1) =1;
+                Epochintv(1,2) =numel(lowlim:highlim);
             else
                 tmpind = unique(setdiff([0,tmpind, numel(tmptag)],1));
                 dataplotold =    data(:,lowlim:highlim);
@@ -609,6 +617,8 @@ if ndims(EEG.data)==3
                         GapRight =  numel(tmptag);
                     end
                     dataplot_new = [dataplot_new,dataplotold(:,GapLeft:GapRight),nan(size(dataplotold,1),GapSize)];
+                    Epochintv(ii-1,1) = GapLeft+(ii-2)*GapSize;
+                    Epochintv(ii-1,2) = GapRight+(ii-2)*GapSize;
                 end
                 if ~isempty(dataplot_new)
                     dataplot = dataplot_new;
@@ -618,6 +628,19 @@ if ndims(EEG.data)==3
             end
         end
         
+        %%plot background color for trias with artifact
+        try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
+        tmpcolsbgc = [1 1 0.783];
+        if ~isempty(Epochintv)
+            for jj = 1:size(Epochintv,1)
+                if jj<= numel(trialsMakrs)
+                    if trialsMakrs(jj)==1
+                        patch(hbig,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
+                            [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                    end
+                end
+            end
+        end
         
         Ampsc = AmpScale*[1:PlotNum]';
         for ii = size(dataplot,1):-1:1
@@ -704,8 +727,26 @@ if ndims(EEG.data)==3
             'XTick',xtickstr,...
             'FontWeight','normal',...
             'xaxislocation', 'bottom');
+        %%
+        %%-----------------plot scale------------------
+        leftintv = (Winlength*multiplier+epochNum*GapSize);
     end
 end
+
+%%
+%%-----------------plot y scale------------------
+if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
+    props = get(hbig);
+    ytick_bottom = props.TickLength(1)*diff(props.XLim);
+    xtick_bottom = props.TickLength(1)*diff(props.YLim);
+    leftintv = leftintv+ytick_bottom*2.5;
+    rightintv = leftintv;
+    line(hbig,[leftintv,rightintv],[0 AmpScale],'color','k','LineWidth',1, 'clipping','off');
+    line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
+    line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpScale AmpScale],'color','k','LineWidth',1, 'clipping','off');
+    text(hbig,leftintv,1.5*xtick_bottom+AmpScale, [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',props.FontSize);
+end
+
 
 %%ytick ticklabels
 if isempty(OldAmpScale) || OldAmpScale==0

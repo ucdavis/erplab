@@ -145,8 +145,6 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
 end
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
 hold(EStudio_gui_erp_totl.myeegviewer,'on');
-
-
 Pos = EStudio_gui_erp_totl.myeegviewer.Position;
 EStudio_gui_erp_totl.myeegviewer.Position = [Pos(1)*0.5,Pos(2)*0.5,Pos(3)*1.15,Pos(4)*1.05];%%x,y,width,height
 estudioworkingmemory('egfigsize',[EStudio_gui_erp_totl.myeegviewer.Position(3),EStudio_gui_erp_totl.myeegviewer.Position(4)]);
@@ -908,11 +906,11 @@ EStudio_gui_erp_totl.eegProcess_messg.FontSize = FonsizeDefault;
 if observe_EEGDAT.eeg_panel_message==1
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('1- ',Processed_Method,': Running....');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0 0];
-    pause(0.5);
+    pause(0.1);
 elseif observe_EEGDAT.eeg_panel_message==2
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('2- ',Processed_Method,': Complete');
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [0 0.5 0];
-    pause(0.5);
+    pause(0.1);
 elseif observe_EEGDAT.eeg_panel_message==3
     if ~strcmp(EStudio_gui_erp_totl.eegProcess_messg.String,strcat('3- ',Processed_Method,': Error (see Command Window)'))
         fprintf([Processed_Method,32,32,32,datestr(datetime('now')),'\n.']);
@@ -925,7 +923,7 @@ else
     end
     EStudio_gui_erp_totl.eegProcess_messg.String =  strcat('Warning:',32,Processed_Method,32,'(see Command Window).');
     
-    pause(0.5);
+    pause(0.1);
     EStudio_gui_erp_totl.eegProcess_messg.ForegroundColor = [1 0.65 0];
 end
 if  observe_EEGDAT.eeg_panel_message==2 || observe_EEGDAT.eeg_panel_message==3
@@ -1251,7 +1249,7 @@ if ~isempty(data)
             end
             
             if jj*3~=ICNum
-                Colorgb_IC = [Colorgb_IC; Coloricrgb(1:ICNum-jj*6,:)];
+                Colorgb_IC = [Colorgb_IC; Coloricrgb(1:ICNum-jj*3,:)];
             end
             
         end
@@ -1392,6 +1390,7 @@ DEFAULT_GRID_SPACING =1;
 % -------------------------------------------------------------------------
 % -----------------draw EEG wave if any------------------------------------
 % -------------------------------------------------------------------------
+leftintv = [];ytick_bottom=[];
 %%Plot continuous EEG
 tmpcolor = [ 0 0 0.4 ];
 if ndims(EEG.data)==2
@@ -1412,6 +1411,10 @@ if ndims(EEG.data)==2
         set(myeegviewer, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
         set(myeegviewer, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'));
+        
+        %%
+        %%-----------------plot scale------------------
+        leftintv = Winlength*multiplier+1;
     end
 end
 
@@ -1445,9 +1448,6 @@ if ndims(EEG.data)==3
             for ii = 1:numel(tmpind)
                 alltag1(ii)  = alltag1(ii)+(ii-1)*GapSize;
             end
-            %      	set(myeegviewer1,'XTickLabel', tagnum,'YTickLabel', [],...
-            % 		 'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)],...
-            % 		'XTick',alltag-lowlim+Trialstag/2, 'YTick',[],'xaxislocation', 'top');
             for ii = 1:numel(tagnum)
                 text(myeegviewer, [alltag1(ii)-lowlim+Trialstag/2],ylims(2)+1.1, [32,num2str(tagnum(ii))], ...
                     'color', 'k', ...
@@ -1457,9 +1457,13 @@ if ndims(EEG.data)==3
         end
         
         %%add the gap between epochs if any
+        Epochintv = [];
+        
         if ~isempty(tmpind)
             if (numel(tmpind)==1 && tmpind(end) == numel(tmptag)) || (numel(tmpind)==1 && tmpind(1) == 1)
                 dataplot =   data(:,lowlim:highlim);
+                Epochintv(1,1) =1;
+                Epochintv(1,2) =numel(lowlim:highlim);
             else
                 tmpind = unique(setdiff([0,tmpind, numel(tmptag)],1));
                 dataplotold =    data(:,lowlim:highlim);
@@ -1474,11 +1478,27 @@ if ndims(EEG.data)==3
                         GapRight =  numel(tmptag);
                     end
                     dataplot_new = [dataplot_new,dataplotold(:,GapLeft:GapRight),nan(size(dataplotold,1),GapSize)];
+                    Epochintv(ii-1,1) = GapLeft+(ii-2)*GapSize;
+                    Epochintv(ii-1,2) = GapRight+(ii-2)*GapSize;
                 end
                 if ~isempty(dataplot_new)
                     dataplot = dataplot_new;
                 else
                     dataplot = dataplotold;
+                end
+            end
+        end
+        
+        %%plot background color for trias with artifact
+        try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
+        tmpcolsbgc = [1 1 0.783];
+        if ~isempty(Epochintv)
+            for jj = 1:size(Epochintv,1)
+                if jj<= numel(trialsMakrs)
+                    if trialsMakrs(jj)==1
+                        patch(myeegviewer,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
+                            [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                    end
                 end
             end
         end
@@ -1494,6 +1514,10 @@ if ndims(EEG.data)==3
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
         end
+        
+        
+        
+        
         %------------------------Xticks------------------------------------
         tagpos  = [];
         tagtext = [];
@@ -1568,10 +1592,29 @@ if ndims(EEG.data)==3
             'XTick',xtickstr,...
             'FontWeight','normal',...
             'xaxislocation', 'bottom');
+        
+        %%
+        %%-----------------plot scale------------------
+        leftintv = (Winlength*multiplier+epochNum*GapSize);
     end
 end
 
-%%ytick ticklabels
+
+%%
+%%----------------------------plot y scale---------------------------------
+if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
+    props = get(myeegviewer);
+    ytick_bottom = props.TickLength(1)*diff(props.XLim);
+    xtick_bottom = props.TickLength(1)*diff(props.YLim);
+    leftintv = leftintv+ytick_bottom*2.5;
+    rightintv = leftintv;
+    line(myeegviewer,[leftintv,rightintv],[0 AmpScale],'color','k','LineWidth',1, 'clipping','off');
+    line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
+    line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpScale AmpScale],'color','k','LineWidth',1, 'clipping','off');
+    text(myeegviewer,leftintv,1.5*xtick_bottom+AmpScale, [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',props.FontSize);
+end
+
+%%---------------------------ytick ticklabels------------------------------
 set(myeegviewer, 'ylim',[0 (PlotNum+1)*OldAmpScale],'YTick',[0:OldAmpScale:PlotNum*OldAmpScale]);
 [YLabels,chaName,ICName] = f_eeg_read_chan_IC_names(EEG.chanlocs,ChanArray,ICArray,ChanLabel);
 YLabels = flipud(char(YLabels,''));
