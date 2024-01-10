@@ -83,8 +83,8 @@ transpa   = def{3};
 prec      = def{4};
 filename  = def{5};
 
-% version = geterplabversion;
-set(handles.gui_chassis,'Name', ['EStudio ' '2022.1' '   -   Export spectrum for selected ERPset as ".csv"'])
+version = geterplabversion;
+set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Export spectrum for selected ERPset as ".csv"'])
 
 [pathx, erpfilename, ext] = fileparts(filename); 
 ERPFileName = char(strcat(erpfilename,'.csv'));

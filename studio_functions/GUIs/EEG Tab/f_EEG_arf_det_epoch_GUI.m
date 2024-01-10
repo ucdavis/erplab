@@ -6,7 +6,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% Oct. 2023
+% Oct. 2023 && Jan. 2024
 
 
 function varargout = f_EEG_arf_det_epoch_GUI(varargin)
@@ -93,7 +93,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.markflgas_title,'FontWeight','bold',...
             'String','Mark Flag (flag 1 is reserved):','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         
-       
+        
         
         Eegtab_EEG_art_det_epoch.markflgas_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.mflag1 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
@@ -104,22 +104,22 @@ varargout{1} = Eegtab_box_art_det_epoch;
             'callback',@mflag3,'String','3','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag4 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag4,'String','4','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
-        set( Eegtab_EEG_art_det_epoch.markflgas_title1,'Sizes',[75 75 75 75]);
+        %         set( Eegtab_EEG_art_det_epoch.markflgas_title1,'Sizes',[75 75 75 75]);
         
-       
         
-        Eegtab_EEG_art_det_epoch.markflgas_title2 = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_art_det_epoch.mflag5 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title2,...
+        
+        %         Eegtab_EEG_art_det_epoch.markflgas_title2 = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_epoch.mflag5 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag5,'String','5','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
-        Eegtab_EEG_art_det_epoch.mflag6 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title2,...
+        Eegtab_EEG_art_det_epoch.mflag6 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag6,'String','6','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
-        Eegtab_EEG_art_det_epoch.mflag7 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title2,...
+        Eegtab_EEG_art_det_epoch.mflag7 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag7,'String','7','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
-        Eegtab_EEG_art_det_epoch.mflag8 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title2,...
+        Eegtab_EEG_art_det_epoch.mflag8 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag8,'String','8','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag = [1,0,0,0,0,0,0,0];
-          set( Eegtab_EEG_art_det_epoch.markflgas_title2,'Sizes',[75 75 75 75]);
-        
+        %         set( Eegtab_EEG_art_det_epoch.markflgas_title2,'Sizes',[75 75 75 75]);
+        set( Eegtab_EEG_art_det_epoch.markflgas_title1,'Sizes',[33 33 33 33 33 33 33 33]);
         %%test period
         Eegtab_EEG_art_det_epoch.periods_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.periods_editext=uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.periods_title,...
@@ -170,7 +170,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.detar_run_title);
         set(Eegtab_EEG_art_det_epoch.detar_run_title,'Sizes',[10,-1,30,-1,10]);
         
-        set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 25 25 25 35 35 35 30 30]);
+        set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 25 25 35 35 35 30 30]);
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
     end
 
@@ -221,7 +221,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
             Eegtab_EEG_art_det_epoch.movewindow_text.String='';
             Eegtab_EEG_art_det_epoch.windowstep_text.String='';
-            
+            Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
         elseif Source.Value==2%%peak-to-peak
             Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
@@ -259,9 +260,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if isempty(windwostep) || numel(windwostep)~=1
                 Eegtab_EEG_art_det_epoch.windowstep_edit.String = '50';
             end
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='Window step [ms]';
         elseif Source.Value==4
-            Eegtab_EEG_art_det_epoch.movewindow_text.String='';
-            Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+            
             Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
@@ -270,11 +271,16 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '30';
             end
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
         elseif Source.Value==5
             Eegtab_EEG_art_det_epoch.voltage_text.String = 'Amp. tolerance [uV] (e.g., 2)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
             Eegtab_EEG_art_det_epoch.movewindow_text.String = 'Flat line    duration [ms]   ';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
@@ -1125,10 +1131,13 @@ varargout{1} = Eegtab_box_art_det_epoch;
                     EEG.setname = EEGName;
                 end
                 fileName_full = Answer{2};
-                if isempty(fileName_full)
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                elseif ~isempty(fileName_full)
+                if ~isempty(fileName_full)
+                    checkfileindex = checkfilexists(fileName_full);
+                else
+                    checkfileindex=0;
+                end
+                
+                if ~isempty(fileName_full) && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(fileName_full);
                     if strcmp(pathstr,'')
                         pathstr = cd;
@@ -1142,6 +1151,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
                 end
             end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
@@ -1249,7 +1261,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.periods_edit.String = num2str(temperiod);
         end
         algValue =Eegtab_EEG_art_det_epoch.det_algo.Value;
+        
         if algValue==1
+            Eegtab_EEG_art_det_epoch.periods_editext.String='Test period [ms] (start end)';
             Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage limits[uV] (e.g., -100 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
@@ -1258,12 +1272,18 @@ varargout{1} = Eegtab_box_art_det_epoch;
             end
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
         elseif algValue==2%%peak-to-peak
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage threshold [uV] (e.g., 100)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='on';
-            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window full width [ms]';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window width [ms]';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '100';
@@ -1273,20 +1293,20 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.movewindow_edit.String = '200';
             end
             windwostep = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='Window step [ms]';
             if isempty(windwostep) || numel(windwostep)~=1
                 Eegtab_EEG_art_det_epoch.windowstep_edit.String = '100';
             end
         elseif algValue==3
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage threshold [uV] (e.g., 100)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='on';
-            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window full width [ms]';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='Move window width [ms]';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '100';
             end
-            
             windowlength = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);%%moving window
             if isempty(windowlength) || numel(windowlength)~=1
                 Eegtab_EEG_art_det_epoch.movewindow_edit.String = '200';
@@ -1295,8 +1315,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if isempty(windwostep) || numel(windwostep)~=1
                 Eegtab_EEG_art_det_epoch.windowstep_edit.String = '50';
             end
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='Window step [ms]';
         elseif algValue==4
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Voltage threshold [uV] (e.g., 30)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Threshold [uV] (e.g., 100)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='off';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
@@ -1304,21 +1325,29 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if isempty(VoltageValue) || numel(VoltageValue)~=1
                 Eegtab_EEG_art_det_epoch.voltage_edit.String = '30';
             end
+            Eegtab_EEG_art_det_epoch.movewindow_text.String='';
+            Eegtab_EEG_art_det_epoch.windowstep_text.String='';
+            Eegtab_EEG_art_det_epoch.movewindow_edit.String = '';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
         elseif algValue==5
-            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Amplitude tolerance (e.g., 2)';
+            Eegtab_EEG_art_det_epoch.voltage_text.String = 'Amp. tolerance [uV] (e.g., 2)';
             set(Eegtab_EEG_art_det_epoch.voltage_title,'Sizes',[100,-1]);
             Eegtab_EEG_art_det_epoch.movewindow_edit.Enable ='on';
             Eegtab_EEG_art_det_epoch.windowstep_edit.Enable ='off';
-            Eegtab_EEG_art_det_epoch.movewindow_text.String = 'Duration [ms]';
+            Eegtab_EEG_art_det_epoch.windowstep_edit.String = '';
+            Eegtab_EEG_art_det_epoch.movewindow_text.String = 'Flat line    duration [ms]   ';
             VoltageValue = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
             if isempty(VoltageValue) || numel(VoltageValue)~=1
-                Eegtab_EEG_art_det_epoch.voltage_edit.String = '2';
+                Eegtab_EEG_art_det_epoch.voltage_edit.String = '1';
             end
             windowlength = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);%%moving window
             if isempty(windowlength) || numel(windowlength)~=1
                 Eegtab_EEG_art_det_epoch.movewindow_edit.String = num2str(floor((observe_EEGDAT.EEG.times(end)-observe_EEGDAT.EEG.times(1))/2));
             end
         end
+        
+        
+        
         Eegtab_EEG_art_det_epoch.mflag1.Enable = 'off';
         observe_EEGDAT.count_current_eeg=19;
     end
@@ -1362,4 +1391,23 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.detectar_run.ForegroundColor = [0 0 0];
     end
 
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end

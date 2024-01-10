@@ -366,6 +366,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+         EStduio_gui_EEG_plotset.v_scale_edit.String = '5';
     end
 
 %%----------------------channel order-number-------------------------------

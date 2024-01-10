@@ -607,23 +607,19 @@ varargout{1} = EEG_binepoch_box;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
+        
         FilterMethod = '_be';
-        if numel(EEGArray)>1
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,FilterMethod);
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        elseif numel(EEGArray)==1
-            Save_file_label =0;
-            ALLEEG_advance = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,FilterMethod);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
         end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
@@ -640,40 +636,9 @@ varargout{1} = EEG_binepoch_box;
                 eegh(LASTCOM);
             end
             erpworkingmemory('Change2epocheeg',1);%%force the option to be Epoched EEG in "EEGsets" panel
-            if numel(EEGArray) ==1
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_',FilterMethod)),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-            end
             
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -708,12 +673,7 @@ varargout{1} = EEG_binepoch_box;
         
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             fprintf( [repmat('-',1,100) '\n']);
-        %             return;
-        %         end
+        
         
     end
 
@@ -908,5 +868,24 @@ varargout{1} = EEG_binepoch_box;
     end
 
 
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end
 %Progem end: ERP Measurement tool

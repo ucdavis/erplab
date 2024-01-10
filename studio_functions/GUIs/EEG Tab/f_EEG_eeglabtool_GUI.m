@@ -142,7 +142,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)%%loop for subjects
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             if ~isempty(EEG.comments)
@@ -158,9 +158,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;
-        %         end
+        
     end
 
 
@@ -189,9 +187,9 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        %         try
+        
         ALLEEG= observe_EEGDAT.ALLEEG;
-        Editsetsuffix = 'eeginfo';
+        Editsetsuffix = '_eeginfo';
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
             beep;
@@ -222,7 +220,8 @@ varargout{1} = EStudio_box_eeglab_tool;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -257,12 +256,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
         
     end
 
@@ -304,7 +297,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             Save_file_label = Answer{2};
         end
         %%loop for subjects
-        %         try
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
@@ -324,8 +316,8 @@ varargout{1} = EStudio_box_eeglab_tool;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -359,12 +351,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
+        
     end
 
 
@@ -409,7 +396,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             end
         end
         
-        Editsetsuffix = 'chanlos';
+        Editsetsuffix = '_chanlos';
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
             beep;
@@ -433,8 +420,11 @@ varargout{1} = EStudio_box_eeglab_tool;
                 EEG = ALLEEG_advance(Numofeeg);
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
+                checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
+                if checkfileindex==1
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
+                end
                 ALLEEG_advance(Numofeeg) = EEG;
             end
         else
@@ -460,11 +450,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
         
     end
 
@@ -494,7 +479,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -536,11 +521,14 @@ varargout{1} = EStudio_box_eeglab_tool;
                         EEG.filename = [file_name,ext];
                         EEG.filepath = pathstr;
                         EEG.saved = 'yes';
+                        checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
                         %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
+                        if checkfileindex==1
+                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                            EEG = eegh(LASTCOM, EEG);
+                            if Numofeeg==1
+                                eegh(LASTCOM);
+                            end
                         end
                     end
                 end
@@ -567,11 +555,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
         
     end
 
@@ -632,17 +615,18 @@ varargout{1} = EStudio_box_eeglab_tool;
         fprintf(LASTCOM,'\n');
         
         eegh(LASTCOM);
-        
-        if Save_file_label
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = ALLEEG_advance(Numofeeg);
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
-                ALLEEG_advance(Numofeeg) = EEG;
-                eegh(LASTCOM);
-            end
+        EEG = ALLEEG_advance(EEGArray);
+        checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
+        if Save_file_label && checkfileindex==1
+            %             for Numofeeg = 1:numel(EEGArray)
+            %                 EEG = ALLEEG_advance(Numofeeg);
+            [pathstr, file_name, ext] = fileparts(EEG.filename);
+            EEG.filename = [file_name,'.set'];
+            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+            EEG = eegh(LASTCOM, EEG);
+            ALLEEG_advance(EEGArray) = EEG;
+            eegh(LASTCOM);
+            %             end
         else
             for Numofeeg = 1:numel(EEGArray)
                 ALLEEG_advance(Numofeeg).filename = '';
@@ -667,12 +651,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
-        
     end
 
 %%----------------adjust event latencies-----------------------------------
@@ -711,8 +689,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -809,11 +785,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         end%%end loop for subject
         
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
+        
     end
 
 
@@ -892,13 +864,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             fprintf(['Your may select two or more channels, but only one channel is required.\n']);
-        %             fprintf( ['\n',repmat('-',1,100) '\n']);
-        %             return;
-        %         end
         
     end
 
@@ -952,11 +917,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
         
     end
 
@@ -1018,4 +978,23 @@ varargout{1} = EStudio_box_eeglab_tool;
         observe_EEGDAT.count_current_eeg=6;
     end
 
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end

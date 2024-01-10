@@ -21,8 +21,10 @@ invalidchan = [];
 [checkindex,invalidchan] = checktheta(theta);
 checkindex1 = checktheta(radius);
 if checkindex || checkindex1
-    errormessg  = 'Please do channel location first';
-    return;
+    msgboxText = ['Please do channel location first before display the wave with front-back/left-right '];
+    title = 'Estudio: f_estudio_chan_frontback_left_right() inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
 end
 
 namesfield = fieldnames(chanlocs);
@@ -53,12 +55,12 @@ for jj = 1:length(simplabelIndexNew)
         break;
     end
     if oldindex~=simplabelIndexNew(jj)
-         oldindex=simplabelIndexNew(jj);
-   [xpos,ypos]= find(simplabelIndexNew == simplabelIndexNew(jj));
-    if ~isempty(ypos)
-        [x_ychanposcell,y_ychanposcell] = sort(ychanpos(ypos),'descend');
-        Ixpos(ypos) = Ixpos(ypos(y_ychanposcell));
-    end
+        oldindex=simplabelIndexNew(jj);
+        [xpos,ypos]= find(simplabelIndexNew == simplabelIndexNew(jj));
+        if ~isempty(ypos)
+            [x_ychanposcell,y_ychanposcell] = sort(ychanpos(ypos),'descend');
+            Ixpos(ypos) = Ixpos(ypos(y_ychanposcell));
+        end
     end
 end
 chanindexnew=[validechan(Ixpos),invalidchan];

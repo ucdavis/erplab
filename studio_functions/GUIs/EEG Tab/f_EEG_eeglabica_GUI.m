@@ -165,7 +165,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             Save_file_label = Answer{2};
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -183,7 +182,8 @@ varargout{1} = EStudio_box_eeglab_ica;
                 eegh(LASTCOM);
             end
             fprintf(['\n',LASTCOM,'\n']);
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -218,12 +218,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        %             return;
-        %         end
+        
     end
 
 
@@ -275,12 +270,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
         observe_EEGDAT.eeg_panel_message =2;
         erpworkingmemory('eegicinspectFlag',1);
-        %         catch
-        %             %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             erpworkingmemory('eegicinspectFlag',0);
-        %             return;
-        %         end
         
     end
 
@@ -422,7 +411,8 @@ varargout{1} = EStudio_box_eeglab_ica;
                 eegh(LASTCOM);
             end
             fprintf(['\n',LASTCOM,'\n']);
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -461,12 +451,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        %             return;
-        %         end
         
     end
 %%----------------------------Target EEG for ICA weight transfer-----------
@@ -608,7 +592,8 @@ varargout{1} = EStudio_box_eeglab_ica;
                 eegh(LASTCOM);
             end
             fprintf(['\n',LASTCOM,'\n']);
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -695,9 +680,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %              observe_EEGDAT.eeg_panel_message =3;
-        %         end
         
     end
 
@@ -750,10 +732,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         end%%end loop for subject
         
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;
-        %
-        %         end
     end
 
 
@@ -805,9 +783,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;
-        %         end
     end
 
 
@@ -901,9 +876,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties');
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %         end
     end
 
 
@@ -956,9 +928,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %         end
         
     end
 
@@ -1042,4 +1011,23 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         observe_EEGDAT.count_current_eeg=7;
     end
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end

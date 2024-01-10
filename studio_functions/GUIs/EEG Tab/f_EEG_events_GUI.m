@@ -55,45 +55,60 @@ varargout{1} = EStudio_eeg_events_box;
         else
             EnableFlag= 'on';
         end
-        %%Summarize EEG event codes
-        EStduio_eegtab_EEG_events.summarize_code_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_events.summarize_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.summarize_code_title,...
-            'String','Summarize event code','callback',@summarize_code,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        %%Shift EEG event codes
-        EStduio_eegtab_EEG_events.shift_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.summarize_code_title,...
-            'String','Shift event code','callback',@shift_code,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
-        %%Create and RTs
+        %%----------------title "EventList Operations"---------------------
+        EStduio_eegtab_EEG_events.eventop_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.eventop_title,'FontWeight','bold',...
+            'String','EventList Operations:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        
+        %%Create eventlist and Import eventlist
         EStduio_eegtab_EEG_events.create_rt_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.create_eventlist = uicontrol('Style', 'pushbutton','Parent',   EStduio_eegtab_EEG_events.create_rt_title ,...
             'String','Create eventlist','callback',@create_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        %%export reaction times
-        EStduio_eegtab_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',   EStduio_eegtab_EEG_events.create_rt_title ,...
-            'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
-        %%Import and export eventlist
-        EStduio_eegtab_EEG_events.imp_exp_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.imp_exp_title ,...
+        EStduio_eegtab_EEG_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.create_rt_title ,...
             'String','Import eventlist','callback',@imp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        %%export evetnlist to text file
-        EStduio_eegtab_EEG_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.imp_exp_title ,...
-            'String','Export eventlist','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        
+        %%export eventlist
+        EStduio_eegtab_EEG_events.imp_exp_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        
+        EStduio_eegtab_EEG_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title,...
+            'String','Exp. eventlist','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        %%transfer event info to EEG.event
+        %         EStduio_eegtab_EEG_events.transfer_event_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.imp_exp_title ,...
+            'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        
+        set(EStduio_eegtab_EEG_events.imp_exp_title,'Sizes',[-1 180]);
+        
+        %%------------title for "Other Operations"-------------------------
+        EStduio_eegtab_EEG_events.eventotherop_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.eventotherop_title,'FontWeight','bold',...
+            'String','Other Operations:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        
+        %%Summarize EEG event codes
+        EStduio_eegtab_EEG_events.summarize_code_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.summarize_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.summarize_code_title,...
+            'String','Summarize event codes/bins in cmd window','callback',@summarize_code,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.summarize_code_title);
+        set( EStduio_eegtab_EEG_events.summarize_code_title,'Sizes',[265 -1]);
         
         %%Shuffle events/bins/samples/
         EStduio_eegtab_EEG_events.shuffle_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.eeg_shuffle = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.shuffle_title ,...
             'String','Shuffle events/bins/samples','callback',@eeg_shuffle,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent',EStduio_eegtab_EEG_events.shuffle_title); % 1A
-        set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[190 30]);
+        uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.shuffle_title);
+        set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[265 -1]);
         
-        %%transfer event info to EEG.event
-        EStduio_eegtab_EEG_events.transfer_event_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.transfer_event_title ,...
-            'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent',EStduio_eegtab_EEG_events.transfer_event_title); % 1A
-        set(EStduio_eegtab_EEG_events.transfer_event_title,'Sizes',[190 30]);
+        %%-----------------
+        %%Shift EEG event codes
+        EStduio_eegtab_EEG_events.shiftcodes_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.shift_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.shiftcodes_title,...
+            'String','Shift event codes','callback',@shift_code,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        %%export reaction times
+        EStduio_eegtab_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.shiftcodes_title ,...
+            'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[30 30 30 30 30]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 30]);
     end
 
 %%**************************************************************************%%
@@ -177,7 +192,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
-            msgboxText = ['EEG Events >  Shift event code: EEG.event is empty for the current EEG'];
+            msgboxText = ['EEG Events >  Shift event codes: EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
@@ -190,7 +205,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shift event code');
+        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shift event codes');
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -198,26 +213,22 @@ varargout{1} = EStudio_eeg_events_box;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
-        if numel(EEGArray)>1
-            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_shift');
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        elseif numel(EEGArray)==1
-            Save_file_label =0;
-            ALLEEG_advance = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_shift');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
         end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         
         %% Get previous input parameters
         def  = erpworkingmemory('pop_erplabShiftEventCodes');
         if isempty(def)
-            def = {};
+            def = {'',0,'earlier',0};%%Jan 8 2024 GH
         end
         
         EEG = observe_EEGDAT.EEG;
@@ -258,7 +269,7 @@ varargout{1} = EStudio_eeg_events_box;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
-                WanMessage = ['\n EEG Events >  Shift event code for EEGset:',32,EEG.setname...
+                WanMessage = ['\n EEG Events >  Shift event codes for EEGset:',32,EEG.setname...
                     '\n Previously Created ERPLAB EVENTLIST Detected.\n Running this function changes your event codes, and so your prior Eventlist will be deleted.\n Re-create a new ERPLAB Eventlist afterwards.\n'];
                 fprintf(2,WanMessage);
             end
@@ -269,40 +280,9 @@ varargout{1} = EStudio_eeg_events_box;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            if numel(EEGArray) ==1
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shift')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-            end
             
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -370,21 +350,17 @@ varargout{1} = EStudio_eeg_events_box;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
-        if numel(EEGArray)>1
-            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_elist');
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        elseif numel(EEGArray)==1
-            Save_file_label =0;
-            ALLEEG_advance = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_elist');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
         end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         
         
         %% Get previous input parameters
@@ -434,40 +410,9 @@ varargout{1} = EStudio_eeg_events_box;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            if numel(EEGArray) ==1
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_elist')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-            end
             
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -672,10 +617,13 @@ varargout{1} = EStudio_eeg_events_box;
                     EEG.setname = EEGName;
                 end
                 fileName_full = Answer{2};
+                if  ~isempty(fileName_full)
+                    checkfileindex = checkfilexists(fileName_full);
+                end
                 if isempty(fileName_full)
                     EEG.filename = '';
                     EEG.saved = 'no';
-                elseif ~isempty(fileName_full)
+                elseif ~isempty(fileName_full) && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(fileName_full);
                     if strcmp(pathstr,'')
                         pathstr = cd;
@@ -735,7 +683,7 @@ varargout{1} = EStudio_eeg_events_box;
         erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
-        if ~isfield(observe_EEGDAT.EEG,'EVENLIST') || isempty(observe_EEGDAT.EEG)
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
             msgboxText =  ['EEG Events >Export eventlist: Please check the current EEG.EVENTLIST'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
@@ -831,21 +779,17 @@ varargout{1} = EStudio_eeg_events_box;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
-        if numel(EEGArray)>1
-            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_shuffled');
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        elseif numel(EEGArray)==1
-            Save_file_label =0;
-            ALLEEG_advance = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_shuffled');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
         end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         
         %% Get previous input parameters
         def = erpworkingmemory('pop_eventshuffler');
@@ -929,40 +873,8 @@ varargout{1} = EStudio_eeg_events_box;
                 break;
             end
             
-            if numel(EEGArray) ==1
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shuffled')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-            end
-            
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -1032,21 +944,17 @@ varargout{1} = EStudio_eeg_events_box;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
-        if numel(EEGArray)>1
-            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_transf');
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        elseif numel(EEGArray)==1
-            Save_file_label =0;
-            ALLEEG_advance = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_transf');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
         end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         
         %% Call GUI
         answer = overwriteventGUI;
@@ -1109,40 +1017,8 @@ varargout{1} = EStudio_eeg_events_box;
                     break;
                 end
             end
-            if numel(EEGArray) ==1
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_transf')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                end
-            end
-            
-            if Save_file_label
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -1240,4 +1116,23 @@ varargout{1} = EStudio_eeg_events_box;
         observe_EEGDAT.count_current_eeg=9;
     end
 
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end

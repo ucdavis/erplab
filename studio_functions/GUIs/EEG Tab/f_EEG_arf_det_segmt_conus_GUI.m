@@ -24,7 +24,7 @@ EEG_art_det_segmt_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Delete Time Segments for Continuous EEG',... 
+    Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Delete Time Segments for Continuous EEG',...
         'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @segment_help); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_art_det_segmt_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Time Segments for Continuous EEG', ...
@@ -200,7 +200,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 
 %%------------------------segement detection help--------------------------
     function segment_help(~,~)
-       web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');  
+        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
     end
 
 
@@ -248,7 +248,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
         
         estudioworkingmemory('EEGTab_detect_segmt_conus',1);
-        
         beforeEventcodeBufferMS= str2num(Source.String);
         if isempty(beforeEventcodeBufferMS) || numel(beforeEventcodeBufferMS)~=1
             erpworkingmemory('f_EEG_proces_messg',['Delete Time Segments for Continuous EEG > Buffer before eventcode should have one number']);
@@ -256,7 +255,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             Source.String = '3000';
             return;
         end
-        
     end
 
 
@@ -580,10 +578,13 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                     EEG.setname = EEGName;
                 end
                 fileName_full = Answer{2};
+                if ~isempty(fileName_full)
+                    checkfileindex = checkfilexists(fileName_full);
+                end
                 if isempty(fileName_full)
                     EEG.filename = '';
                     EEG.saved = 'no';
-                elseif ~isempty(fileName_full)
+                elseif ~isempty(fileName_full) && checkfileindex
                     [pathstr, file_name, ext] = fileparts(fileName_full);
                     if strcmp(pathstr,'')
                         pathstr = cd;
@@ -621,12 +622,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( [repmat('-',1,100) '\n']);
-        %             return;
-        %         end
     end
 
 
@@ -725,3 +720,23 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
     end
 
 end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
+end
+

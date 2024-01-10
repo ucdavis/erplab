@@ -1,4 +1,4 @@
- function varargout = gui_erplabShiftEventCodes(varargin)
+function varargout = gui_erplabShiftEventCodes(varargin)
 % GUI_ERPLABSHIFTEVENTCODES MATLAB code for gui_erplabShiftEventCodes.fig
 %      GUI_ERPLABSHIFTEVENTCODES, by itself, creates a new GUI_ERPLABSHIFTEVENTCODES or raises the existing
 %      singleton*.
@@ -27,11 +27,11 @@
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @gui_erplabShiftEventCodes_OpeningFcn, ...
-                   'gui_OutputFcn',  @gui_erplabShiftEventCodes_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @gui_erplabShiftEventCodes_OpeningFcn, ...
+    'gui_OutputFcn',  @gui_erplabShiftEventCodes_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -74,7 +74,7 @@ end
 if iscell(handles.eventcodes)
     handles.eventcodes_txt = strjoin(handles.eventcodes, ',');
 else
-     handles.eventcodes_txt = handles.eventcodes; 
+    handles.eventcodes_txt = handles.eventcodes;
 end
 
 set(handles.editboxEventCodes, ...
@@ -100,6 +100,14 @@ switch handles.roundingInput
         set(handles.uipanelRounding,   ...
             'SelectedObject', handles.radioBtnRoundEarlier);
 end
+
+ERPtooltype = erpgettoolversion('tooltype');%%GH Jan 2024
+if strcmpi(ERPtooltype,'EStudio')
+    handles.checkbox_displayEEG.Enable = 'off';
+    handles.checkbox_displayEEG.Value = 0;
+else
+    handles.checkbox_displayEEG.Enable = 'on';
+end%%end
 
 
 % Set Window title
@@ -168,7 +176,7 @@ display('Shifting events...');
 %     editString = editString(~cellfun('isempty',editString));
 %     handles.eventcodes = (editString);
 % end
-%     
+%
 %handles.eventcodes = str2num(editString);  %#ok<ST2NM>
 
 % Save the input variables to output
@@ -193,7 +201,7 @@ function pushbutton_cancel_Callback(hObject, eventdata, handles)
 disp('User selected Cancel')
 
 % Clear all input variables
-handles.output = []; 
+handles.output = [];
 
 % Update handles structure
 guidata(hObject, handles);
@@ -201,7 +209,7 @@ uiresume(handles.gui_chassis);
 
 % --- Executes when selected object changed in uipanelRounding.
 function uipanelRounding_SelectionChangedFcn(hObject, eventdata, handles)
-% hObject    handle to the selected object in uipanelRounding 
+% hObject    handle to the selected object in uipanelRounding
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -239,8 +247,8 @@ function editboxEventCodes_Callback(hObject, eventdata, handles)
 % Strip any non-numeric token and replace w/ whitespace (' ')
 %editString         = regexprep(get(hObject,'String'), '[^0-9:]', ' ');
 
-%in 2023, accept both non-numeric and numeric ecodes 
-try 
+%in 2023, accept both non-numeric and numeric ecodes
+try
     editString = eval(num2str(get(hObject,'String'))); %if numeric
 catch
     editString = regexp(get(hObject,'String'),'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
@@ -248,18 +256,18 @@ catch
 end
 %handles.eventcodes = str2num(editString);  %#ok<ST2NM>
 %numeric events
-need_to_flat = 0; 
+need_to_flat = 0;
 for ec = 1:length(editString);
     
-    try 
+    try
         temp_nums = num2cell(eval(num2str(editString{ec}))); %evaluate & flatten any numeric expression
         editString{ec} = cellfun(@num2str,temp_nums,'UniformOutput',false); %change to string
-        need_to_flat = 1; 
+        need_to_flat = 1;
     catch
         
-    end 
+    end
 end
-    
+
 %flatten cell array
 if need_to_flat == 1
     editString =[editString{:}];
@@ -314,7 +322,7 @@ function checkbox_displayEEG_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkbox_displayEEG
 % returns contents of editbox_EndEventCodeBufferMS as a double
-handles.displayEEG = get(hObject,'Value'); 
+handles.displayEEG = get(hObject,'Value');
 
 % Save the new value
 guidata(hObject,handles);

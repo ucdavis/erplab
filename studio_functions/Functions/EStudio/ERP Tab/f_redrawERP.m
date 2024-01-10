@@ -93,6 +93,8 @@ commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'Backg
 EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Advanced Wave Viewer',...
     'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
+EStudio_gui_erp_totl.erp_winsize = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Window Size',...
+    'Callback',@EStudiowinsize, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 EStudio_gui_erp_totl.erp_figurecommand = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Show Command',...
     'Callback',@Show_command, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Save Figure as',...
@@ -100,7 +102,7 @@ EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Sty
 EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Create Static/Exportable Plot',...
     'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [150 -1 100 100 170 5]);
+set(commandfig_panel, 'Sizes', [150 -1 100 100 100 170 5]);
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -184,16 +186,76 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.ViewAxes.Heights = 0.95*EStudio_gui_erp_totl.ViewAxes.Position(4);
     EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
 end
- EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
-    EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
-    EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
 end
 
 %%-------------------------------------------------------------------------
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
 
+%%--------------------Setting for EStudio window size----------------------
+function EStudiowinsize(~,~)
+global EStudio_gui_erp_totl;
+global observe_ERPDAT;
+
+try
+    ScreenPos= EStudio_gui_erp_totl.ScreenPos;
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+try
+    New_pos = EStudio_gui_erp_totl.Window.Position;
+catch
+    return;
+end
+try
+    New_posin = erpworkingmemory('EStudioScreenPos');
+catch
+    New_posin = [75,75];
+end
+if isempty(New_posin) ||numel(New_posin)~=2
+    New_posin = [75,75];
+end
+New_posin(2) = abs(New_posin(2));
+
+app = feval('EStudio_pos_gui',New_posin);
+waitfor(app,'Finishbutton',1);
+try
+    New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+    app.delete; %delete app from view
+    pause(0.5); %wait for app to leave
+catch
+    disp('User selected Cancel');
+    return;
+end
+try New_pos1(2) = abs(New_pos1(2));catch; end;
+
+if isempty(New_pos1) || numel(New_pos1)~=2
+    erpworkingmemory('f_ERP_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+    observe_ERPDAT.Process_messg =4;
+    return;
+end
+erpworkingmemory('EStudioScreenPos',New_pos1);
+try
+    POS4 = (New_pos1(2)-New_posin(2))/100;
+    new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+    if new_pos(2) <  -abs(new_pos(4))%%if
+        
+    end
+    set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+catch
+    erpworkingmemory('f_ERP_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+    observe_ERPDAT.Process_messg =4;
+    set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+    erpworkingmemory('EStudioScreenPos',[75 75]);
+end
+f_redrawEEG_Wave_Viewer();
+f_redrawERP();
+%         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+end
 
 %------------------Display the waveform for proir ERPset-------------------
 function page_minus(~,~,EStudio_gui_erp_totl)
@@ -277,7 +339,7 @@ observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
 
-%%Edit the index of ERPsets
+%%--------------------Edit the index of ERPsets----------------------------
 function page_edit(Str,~,EStudio_gui_erp_totl)
 global observe_ERPDAT;
 
@@ -425,6 +487,8 @@ catch
 end
 observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
+
+
 
 %%--------------------------show the command-------------------------------
 function Show_command(~,~)

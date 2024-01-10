@@ -299,10 +299,13 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                         EEG.setname = EEGName;
                     end
                     fileName_full = Answer{2};
+                    if ~isempty(fileName_full)
+                        checkfileindex = checkfilexists(fileName_full);
+                    end
                     if isempty(fileName_full)
                         EEG.filename = '';
                         EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
+                    elseif ~isempty(fileName_full) && checkfileindex==1
                         [pathstr, file_name, ext] = fileparts(fileName_full);
                         if strcmp(pathstr,'')
                             pathstr = cd;
@@ -342,12 +345,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
-        
     end
 
 
@@ -448,10 +445,13 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                         EEG.setname = EEGName;
                     end
                     fileName_full = Answer{2};
+                    if ~isempty(fileName_full)
+                        checkfileindex = checkfilexists(fileName_full);
+                    end
                     if isempty(fileName_full)
                         EEG.filename = '';
                         EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
+                    elseif ~isempty(fileName_full) && checkfileindex==1
                         [pathstr, file_name, ext] = fileparts(fileName_full);
                         if strcmp(pathstr,'')
                             pathstr = cd;
@@ -491,11 +491,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is erros in processing procedure
-        %             return;
-        %         end
     end
 
 
@@ -580,10 +575,13 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                         EEG.setname = EEGName;
                     end
                     fileName_full = Answer{2};
+                    if ~isempty(fileName_full)
+                        checkfileindex = checkfilexists(fileName_full);
+                    end
                     if isempty(fileName_full)
                         EEG.filename = '';
                         EEG.saved = 'no';
-                    elseif ~isempty(fileName_full)
+                    elseif ~isempty(fileName_full) && checkfileindex==1
                         [pathstr, file_name, ext] = fileparts(fileName_full);
                         if strcmp(pathstr,'')
                             pathstr = cd;
@@ -623,12 +621,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( ['\n',repmat('-',1,100) '\n']);
-        %             return;
-        %         end
     end
 
 
@@ -676,3 +668,23 @@ varargout{1} = EStudio_eeg_box_edit_chan;
     end
 
 end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
+end
+

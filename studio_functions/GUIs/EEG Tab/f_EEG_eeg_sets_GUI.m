@@ -4,7 +4,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2023
+% 2023 && 2024
 
 % ERPLAB Studio Toolbox
 %
@@ -51,6 +51,7 @@ drawui_EEGset(FonsizeDefault);
 
 varargout{1} = box_eegset_gui;
 
+estudioworkingmemory('Startimes',0);%%set default value
 
 % Grab local structure from global ERP (update local structure instead of
 % replacing it)
@@ -90,8 +91,8 @@ varargout{1} = box_eegset_gui;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         try
-        EStduio_eegtab_EEG_set.butttons_datasets.Value = EEGArray;
-        catch   
+            EStduio_eegtab_EEG_set.butttons_datasets.Value = EEGArray;
+        catch
         end
         %%---------------------Options for EEGsets-----------------------------------------------------
         EStduio_eegtab_EEG_set.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -191,6 +192,7 @@ varargout{1} = box_eegset_gui;
                 assignin('base','CURRENTSET',CURRENTSET);
             end
         end
+        estudioworkingmemory('Startimes',0);
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
@@ -255,6 +257,7 @@ varargout{1} = box_eegset_gui;
                 assignin('base','CURRENTSET',CURRENTSET);
             end
         end
+        estudioworkingmemory('Startimes',1);
         observe_EEGDAT.count_current_eeg=2;
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
@@ -430,7 +433,6 @@ varargout{1} = box_eegset_gui;
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Import');
         observe_EEGDAT.eeg_panel_message =1;
@@ -830,10 +832,15 @@ varargout{1} = box_eegset_gui;
                 end
                 [pathx, filename, ext] = fileparts(FileName);
                 filename = [filename '.set'];
-                [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
-                observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
-                eegh(LASTCOM);
-                disp(['Saved to',32,pathName,filename]);
+                checkfileindex = checkfilexists([pathName,filename]);
+                if checkfileindex==1
+                    [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
+                    observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
+                    eegh(LASTCOM);
+                    disp(['Saved to',32,pathName,filename]);
+                else
+                    disp(['User selected Cancel for saving',32,filename]);
+                end
             end
             observe_EEGDAT.eeg_panel_message =2;
         catch
@@ -895,10 +902,15 @@ varargout{1} = box_eegset_gui;
             end
             [pathx, filename, ext] = fileparts(erpfilename);
             filename = [filename '.set'];
-            [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',erppathname);
-            eegh(LASTCOM);
-            observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
-            disp(['Saved to',32,erppathname,filename]);
+            checkfileindex = checkfilexists([erppathname,filename]);
+            if checkfileindex==1
+                [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',erppathname);
+                eegh(LASTCOM);
+                observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
+                disp(['Saved to',32,erppathname,filename]);
+            else
+                disp(['User selected Cancel for saving',32,filename]);
+            end
         end
         
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -977,7 +989,7 @@ varargout{1} = box_eegset_gui;
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
         observe_EEGDAT.CURRENTSET = CURRENTSET;
         %%save to workspace
-        
+        estudioworkingmemory('Startimes',0);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
         observe_EEGDAT.eeg_panel_message =2;
@@ -1002,8 +1014,6 @@ varargout{1} = box_eegset_gui;
             end
         end
     end
-
-
 
 %%%--------------Up this panel--------------------------------------
     function count_current_eeg_change(~,~)
@@ -1172,6 +1182,25 @@ for Numofpanel = 1:length(whichpanel)
         szs(whichpanel(Numofpanel)) = 25;
         set( EStudio_gui_erp_totl.eegsettingLayout, 'Sizes', szs );
         EStudio_gui_erp_totl.eegpanelscroll.Heights = sum(szs);
+    end
+end
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
     end
 end
 end

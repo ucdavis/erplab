@@ -588,52 +588,18 @@ varargout{1} = EEG_chan_operation_gui;
         Save_file_label = [];
         if gui_eegtab_chan_optn.mode_create.Value
             
-            if numel(EEGArray) > 1
-                Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_chop');
-                if isempty(Answer)
-                    beep;
-                    disp('User selected Cancel');
-                    return;
-                end
-                if ~isempty(Answer{1})
-                    ALLEEG_out = Answer{1};
-                    Save_file_label = Answer{2};
-                end
-                
-            elseif numel(EEGArray)== 1
-                ALLEEG_out = observe_EEGDAT.ALLEEG;
-                EEG = observe_EEGDAT.ALLEEG(EEGArray);
-                EEG.filepath = pathName_def;
-                Answer = f_EEG_save_single_file(strcat(EEG.setname,'_chop'),EEG.filename,EEGArray);
-                if isempty(Answer)
-                    beep;
-                    disp('User selectd cancal');
-                    return;
-                end
-                Save_file_label =0;
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        EEG.filename = EEG.setname;
-                        Save_file_label =0;
-                    elseif ~isempty(fileName_full)
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        ext = '.set';
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        Save_file_label =1;
-                    end
-                    
-                end
-                ALLEEG_out(EEGArray) = EEG;clear EEG;
+            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_chop');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
             end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+            
+            
         elseif   gui_eegtab_chan_optn.mode_modify.Value
             ALLEEG_out = observe_EEGDAT.ALLEEG;
         end
@@ -666,7 +632,8 @@ varargout{1} = EEG_chan_operation_gui;
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
-                if Save_file_label==1
+                checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+                if Save_file_label==1 && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(EEG.filename);
                     EEG.filename = [file_name,'.set'];
                     [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
@@ -695,18 +662,6 @@ varargout{1} = EEG_chan_operation_gui;
         
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-        %             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        %             Selected_EEG_afd =observe_EEGDAT.CURRENTSET;
-        %             estudioworkingmemory('EEGArray',Selected_EEG_afd);
-        %             assignin('base','EEG',observe_EEGDAT.EEG);
-        %             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        %             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        %
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%
-        %         end
         
     end
 
@@ -814,4 +769,25 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
     end
+end
+
+
+%%----------------check if the file already exists-------------------------
+function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
+checkfileindex=0;
+
+[pathstr, file_name, ext] = fileparts(filenamex);
+filenamex = [pathstr, file_name,'.set'];
+
+if exist(filenamex, 'file')~=0
+    msgboxText =  ['This EEG Data already exist.\n'...;
+        'Would you like to overwrite it?'];
+    title  = 'Estudio: WARNING!';
+    button = askquest(sprintf(msgboxText), title);
+    if strcmpi(button,'no')
+        checkfileindex=0;
+    else
+        checkfileindex=1;
+    end
+end
 end

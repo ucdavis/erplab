@@ -264,7 +264,7 @@ end
 chanNum = numel(ChanArray);
 
 %%-------------------------------IC and original data----------------------
-dataica = [];
+dataica = []; chaNum = 0;
 if ~isempty(ICArray)
     ICdispFlag=1;
     if ~isempty(EEG.icaweights) && ~isempty(ICArray)%%pop_eegplot from eeglab
@@ -283,9 +283,11 @@ end
 if ~isempty(ChanArray)
     EEGdispFlag=1;
     dataeeg = EEG.data(ChanArray,:);
+    chaNum = numel(ChanArray);
 else
     dataeeg =[];
     EEGdispFlag=0;
+    chaNum = 0;
 end
 
 %%---------------------------Normalize-------------------------------------
@@ -316,7 +318,7 @@ end
 
 % Removing DC for IC data?
 % -------------------------
-meandataica =[];
+meandataica =[];ICNum = 0;
 if ICdispFlag==1
     if ~isempty(EEG.icaweights) && ~isempty(ICArray) && ~isempty(dataica)%%pop_eegplot from eeglab
         switch Submean % subtract the mean ?
@@ -328,6 +330,9 @@ if ICdispFlag==1
             otherwise, meandataica = zeros(1,numel(ICArray));
         end
     end
+    ICNum = numel(ICArray);
+else
+    ICNum = 0;
 end
 
 % Removing DC for original data?
@@ -628,15 +633,36 @@ if ndims(EEG.data)==3
             end
         end
         
-        %%plot background color for trias with artifact
+        %%-----------plot background color for trias with artifact---------
+        %%highlight waves with labels
+        Ampsc = AmpScale*[1:PlotNum]';
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
+        try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
-        if ~isempty(Epochintv)
+        if ~isempty(Epochintv) && chaNum~=0
             for jj = 1:size(Epochintv,1)
-                if jj<= numel(trialsMakrs)
+                [xpos,~]=find(trialsMakrschan(:,jj)==1);
+                if jj<= numel(trialsMakrs) && ~isempty(xpos)
                     if trialsMakrs(jj)==1
                         patch(hbig,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
                             [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                        %%highlight the wave if the channels exist
+                        ChanArray = reshape(ChanArray,1,numel(ChanArray));
+                        [~,ypos1]=find(ChanArray==xpos);
+                        if ~isempty(ypos1)
+                            for kk = ypos1
+                                dataChan = nan(1,size(dataplot,2));
+                                dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(kk,Epochintv(jj,1):Epochintv(jj,2));
+                                try
+                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-kk+1)-meandata(kk))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        'color', Colorgbwave(kk,:), 'clipping','on','LineWidth',1.5);%%
+                                catch
+                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-kk+1)-meandata(kk))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                                end
+                            end
+                            
+                        end
                     end
                 end
             end

@@ -134,11 +134,12 @@ set(EStudio_gui_erp_totl.eeg_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag)
 set(EStudio_gui_erp_totl.eeg_zoom_out_small,'Callback',@zoomout_small,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_winsize,'Callback',@EStudiowinsize,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figurecommand,'Callback',@Show_command,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
 
-set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 170 5]);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 100 170 5]);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     EEG = observe_EEGDAT.EEG;
     OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
@@ -170,6 +171,71 @@ EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x ax
 EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
 end % redrawDemo
 
+%%-------------------------------------------------------------------------
+%%-----------------------------Subfunctions--------------------------------
+%%-------------------------------------------------------------------------
+
+
+
+%%--------------------Setting for EStudio window size----------------------
+function EStudiowinsize(~,~)
+global observe_EEGDAT;
+global EStudio_gui_erp_totl;%%Global variable
+try
+    ScreenPos= EStudio_gui_erp_totl.ScreenPos;
+catch
+    ScreenPos =  get( 0, 'Screensize' );
+end
+try
+    New_pos = EStudio_gui_erp_totl.Window.Position;
+catch
+    return;
+end
+try
+    New_posin = erpworkingmemory('EStudioScreenPos');
+catch
+    New_posin = [75,75];
+end
+if isempty(New_posin) ||numel(New_posin)~=2
+    New_posin = [75,75];
+end
+New_posin(2) = abs(New_posin(2));
+
+app = feval('EStudio_pos_gui',New_posin);
+waitfor(app,'Finishbutton',1);
+try
+    New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+    app.delete; %delete app from view
+    pause(0.5); %wait for app to leave
+catch
+    disp('User selected Cancel');
+    return;
+end
+try New_pos1(2) = abs(New_pos1(2));catch; end;
+
+if isempty(New_pos1) || numel(New_pos1)~=2
+    erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+    observe_EEGDAT.eeg_panel_message =4;
+    return;
+end
+erpworkingmemory('EStudioScreenPos',New_pos1);
+try
+    POS4 = (New_pos1(2)-New_posin(2))/100;
+    new_pos =[New_pos(1),New_pos(2)-ScreenPos(4)*POS4,ScreenPos(3)*New_pos1(1)/100,ScreenPos(4)*New_pos1(2)/100];
+    if new_pos(2) <  -abs(new_pos(4))%%if
+        
+    end
+    set(EStudio_gui_erp_totl.Window, 'Position', new_pos);
+catch
+    erpworkingmemory('f_EEG_proces_messg',['The defined Window Size for EStudio is invalid and it must be two numbers']);
+    observe_EEGDAT.eeg_panel_message =4;
+    set(EStudio_gui_erp_totl.Window, 'Position', [0 0 0.75*ScreenPos(3) 0.75*ScreenPos(4)]);
+    erpworkingmemory('EStudioScreenPos',[75 75]);
+end
+f_redrawEEG_Wave_Viewer();
+f_redrawERP();
+%         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
+end
 
 
 %%------------------set to 0----------------------------------------
@@ -800,13 +866,9 @@ catch
     figurename = '';
 end
 History = 'off';
-try
-    observe_EEGDAT.eeg_panel_message=1;
-    OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,History,figurename);
-    observe_EEGDAT.eeg_panel_message=2;
-catch
-    observe_EEGDAT.eeg_panel_message=3;
-end
+observe_EEGDAT.eeg_panel_message=1;
+OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,History,figurename);
+observe_EEGDAT.eeg_panel_message=2;
 end
 
 
@@ -1136,7 +1198,7 @@ chanNum = numel(ChanArray);
 
 
 %%-------------------------------IC and original data----------------------
-dataica = [];
+dataica = [];chaNum=0;
 if ~isempty(EEG.icaweights) && ~isempty(ICArray)%%pop_eegplot from eeglab
     tmpdata = eeg_getdatact(EEG, 'component', [1:size(EEG.icaweights,1)]);
     try
@@ -1149,8 +1211,10 @@ end
 
 if EEGdispFlag==1
     dataeeg = EEG.data(ChanArray,:);
+    chaNum = numel(ChanArray);
 else
     dataeeg =[];
+    chaNum = 0;
 end
 
 %%---------------------------Normalize-------------------------------------
@@ -1181,7 +1245,7 @@ end
 
 % Removing DC for IC data?
 % -------------------------
-meandataica =[];
+meandataica =[];ICNum=0;
 if ICdispFlag==1
     if ~isempty(EEG.icaweights) && ~isempty(ICArray) && ~isempty(dataica)%%pop_eegplot from eeglab
         switch Submean % subtract the mean ?
@@ -1193,6 +1257,9 @@ if ICdispFlag==1
             otherwise, meandataica = zeros(1,numel(ICArray));
         end
     end
+    ICNum = numel(ICArray);
+else
+    ICNum = 0;
 end
 
 % Removing DC for original data?
@@ -1390,7 +1457,7 @@ DEFAULT_GRID_SPACING =1;
 % -------------------------------------------------------------------------
 % -----------------draw EEG wave if any------------------------------------
 % -------------------------------------------------------------------------
-leftintv = [];ytick_bottom=[];
+leftintv = [];
 %%Plot continuous EEG
 tmpcolor = [ 0 0 0.4 ];
 if ndims(EEG.data)==2
@@ -1489,22 +1556,43 @@ if ndims(EEG.data)==3
             end
         end
         
-        %%plot background color for trias with artifact
+        %%-----------plot background color for trias with artifact---------
+        %%highlight waves with labels
+        Ampsc = AmpScale*[1:PlotNum]';
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
+        try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
-        if ~isempty(Epochintv)
+        if ~isempty(Epochintv) && chaNum~=0
             for jj = 1:size(Epochintv,1)
-                if jj<= numel(trialsMakrs)
+                [xpos,~]=find(trialsMakrschan(:,jj)==1);
+                if jj<= numel(trialsMakrs) && ~isempty(xpos)
                     if trialsMakrs(jj)==1
                         patch(myeegviewer,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
                             [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                        %%highlight the wave if the channels exist
+                        ChanArray = reshape(ChanArray,1,numel(ChanArray));
+                        [~,ypos1]=find(ChanArray==xpos);
+                        if ~isempty(ypos1)
+                            for kk = ypos1
+                                dataChan = nan(1,size(dataplot,2));
+                                dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(kk,Epochintv(jj,1):Epochintv(jj,2));
+                                try
+                                    plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-kk+1)-meandata(kk))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        'color', Colorgbwave(kk,:), 'clipping','on','LineWidth',1.5);%%
+                                catch
+                                    plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-kk+1)-meandata(kk))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                                end
+                            end
+                            
+                        end
                     end
                 end
             end
         end
         
         %%
-        Ampsc = AmpScale*[1:PlotNum]';
+        
         for ii = size(dataplot,1):-1:1
             try
                 plot(myeegviewer, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
