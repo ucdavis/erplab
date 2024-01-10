@@ -15,7 +15,7 @@ To ask questions, subscribe to the ERPLAB email list (https://erpinfo.org/erplab
 
 To install ERPLAB v10.03, download the zip file (linked above), unzip and place the folder in the 'plugins' folder of your existing [EEGLAB](https://sccn.ucsd.edu/eeglab/download.php) installation (e.g.  `/Users/Steve/Documents/MATLAB/eeglab2019_1/plugins/erplab/`). More [installation help can be found here](https://github.com/lucklab/erplab/wiki/Installation).
 
-To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. [Find our tutorial here.](https://github.com/lucklab/erplab/wiki/Tutorial)
+To run ERPLAB, ensure that the correct EEGLAB folder is in your current Matlab path, and run `eeglab` as a command from the Matlab Command Window. If you are new to ERPLAB, we strongly recommend that you go through the [ERPLAB Tutorial](https://github.com/lucklab/erplab/wiki/Tutorial) before using ERPLAB with your own data.
 
 We encourage most users to use this latest major version.
 
