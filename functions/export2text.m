@@ -93,6 +93,18 @@ try
                 binfilename = [ prefname2 '_'  strbindescr  ext ]; % ...and add ext
                 fid = fopen(binfilename, 'w');
                 
+                % David Garrett made change here 12/01/23
+                % If bin label has characters that are not readable, 
+                % we change the label to bin number
+
+                if fid == -1
+                    binstr = num2str(nbin);
+                    strbindescr = binstr;               
+                    binfilename = [ prefname2 '_'  strbindescr  ext ];
+                    disp(['Warning: Original bin label has characters that are not readable, it will now be saved as: ' binfilename]);
+                    fid = fopen(binfilename, 'w');
+                end
+                
                 if transpose==0 % no transpose
                         
                         %
