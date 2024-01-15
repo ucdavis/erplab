@@ -1082,8 +1082,20 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_ar');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
+        
         for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG(EEGArray(Numofeeg));
+            EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Artifact Detection for Epoched EEG > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Artifact detection algorithm:',32,Det_algostr{AlgFlag},'\n']);
@@ -1118,44 +1130,21 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_ar')),EEG.filename,EEGArray(Numofeeg));
-            if isempty(Answer)
-                disp('User selected cancel.');
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
             
-            if ~isempty(Answer)
-                EEGName = Answer{1};
-                if ~isempty(EEGName)
-                    EEG.setname = EEGName;
-                end
-                fileName_full = Answer{2};
-                if ~isempty(fileName_full)
-                    checkfileindex = checkfilexists(fileName_full);
-                else
-                    checkfileindex=0;
-                end
-                
-                if ~isempty(fileName_full) && checkfileindex==1
-                    [pathstr, file_name, ext] = fileparts(fileName_full);
-                    if strcmp(pathstr,'')
-                        pathstr = cd;
-                    end
-                    EEG.filename = [file_name,ext];
-                    EEG.filepath = pathstr;
-                    EEG.saved = 'yes';
-                    %%----------save the current sdata as--------------------
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                    if Numofeeg==1
-                        eegh(LASTCOM);
-                    end
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                end
-            end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1
@@ -1178,12 +1167,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.count_current_eeg=1;
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( [repmat('-',1,100) '\n']);
-        %             return;
-        %         end
         
     end
 

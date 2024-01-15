@@ -1,4 +1,4 @@
-%%This function is to Compute Averaged ERP from Epoched EEG.
+%%This function is to Compute Averaged ERPs from Epoched EEG.
 
 
 % *** This function is part of ERPLAB Studio Toolbox ***
@@ -26,13 +26,13 @@ EEG_avg_erp = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERP from Epoched EEG',...
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERPs from Epoched EEG',...
         'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @avg_help); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERP from Epoched EEG',...
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs from Epoched EEG',...
         'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @avg_help);
 else
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERP from Epoched EEG',...
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs from Epoched EEG',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @avg_help);
 end
 
@@ -428,7 +428,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERP from Epoched EEG > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs from Epoched EEG > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
@@ -511,7 +511,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERP from Epoched EEG > Run');
+        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs from Epoched EEG > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
@@ -648,17 +648,28 @@ varargout{1} = Eegtab_box_avg_erp;
             assignin('base','ALLERPCOM',ERPCOM);
         end
         
+        Answer = f_ERP_save_multi_file(ALLEEG,EEGArray,'');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         %         try
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
-            EEG = ALLEEG(setindex);
+            EEG = ALLEEG_advance(setindex);
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Compute Averaged ERP from Epoched EEG > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Compute Averaged ERPs from Epoched EEG > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run the pop_ command with the user input from the GUI
             
-            [ERP, ERPCOM]  = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
+            [ERP, ERPCOM]  = pop_averager(ALLEEG_advance, 'DSindex', setindex, 'Criterion', artcritestr,...
                 'SEM', stdsstr, 'Saveas', 'on', 'Warning', 'on', 'ExcludeBoundary', excboundstr,...
                 'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
                 'History', 'implicit','Saveas','off');
@@ -672,44 +683,24 @@ varargout{1} = Eegtab_box_avg_erp;
             end
             fprintf([ERPCOM,'\n']);
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            ERP.erpname = '_avg';
-            ERP.filename = '_avg.erp';
-            if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-                Selected_erpset_indx = 1;
-            else
-                Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
-            end
-            
-            Answer = f_ERP_save_single_file(ERP.erpname,ERP.filename,Selected_erpset_indx);
-            if isempty(Answer)
-                disp('User selectd cancal');
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                return;
-            end
-            
-            if ~isempty(Answer)
-                ERPName = Answer{1};
-                if ~isempty(ERPName)
-                    ERP.erpname = ERPName;
+            ERP.erpname = EEG.setname;
+            [pathstr, file_name, ~] = fileparts(EEG.filename);
+            ERP.filename = [file_name,'.erp'];
+            ERP.filepath=EEG.filepath;
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(ERP.filename);
+                ext = '.erp';
+               pathstr= ERP.filepath;
+                if strcmp(pathstr,'')
+                    pathstr = cd;
                 end
-                fileName_full = Answer{2};
-                if isempty(fileName_full)
-                    ERP.filename = ERP.erpname;
-                elseif ~isempty(fileName_full)
-                    
-                    [pathstr, file_name, ext] = fileparts(fileName_full);
-                    ext = '.erp';
-                    if strcmp(pathstr,'')
-                        pathstr = cd;
-                    end
-                    ERP.filename = [file_name,ext];
-                    ERP.filepath = pathstr;
-                    %%----------save the current sdata as--------------------
-                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    ERP = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                    if Numofeeg==1
-                        eegh(ERPCOM);
-                    end
+                ERP.filename = [file_name,ext];
+                ERP.filepath = pathstr;
+                %%----------save the current sdata as--------------------
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                ERP = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                if Numofeeg==1
+                    eegh(ERPCOM);
                 end
             end
             

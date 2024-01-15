@@ -760,7 +760,7 @@ varargout{1} = ERP_plotset_box;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv'}, ...
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;*.txt'}, ...
             ['Import ERP channel order (for plotting only)'],...
             'MultiSelect', 'off');
         if isequal(erpfilename,0) || indxs~=1
@@ -769,10 +769,15 @@ varargout{1} = ERP_plotset_box;
         end
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        ext = '.tsv';
+        if ~strcmpi(ext,'.tsv') && ~strcmpi(ext,'.txt')
+            msgboxText = ['Either ",tsv" or ".txt" is allowed'];
+            title = 'Estudio: ERP Tab >Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            return
+        end
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         
-        DataInput =  readtable(erpFilename, "FileType","text");
+        DataInput =  readtable(erpFilename, "FileType","text",'Delimiter', '\t');
         if isempty(DataInput)
             ERPTab_plotset.chanorder{1,1}=[];
             ERPTab_plotset.chanorder{1,2} = '';
@@ -781,22 +786,49 @@ varargout{1} = ERP_plotset_box;
         chanorders = [];
         chanlabes = [];
         DataInput = DataInput(:,2:end);
+
+        chan_check = ones(length(labels),1);
         for ii = 1:size(DataInput,1)
             if isnumeric(DataInput{ii,1})
                 chanorders(ii) = DataInput{ii,1};
+                if chanorders(ii)>length(labels)
+                    msgboxText = ['The defined channel order should be not more than',32,num2sr(length(labels)),32,'for row',32,num2str(ii)];
+                    title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+                    errorfound(sprintf(msgboxText), title);
+                    return
+                end
+                chanlabes{ii} = labels{chanorders(ii)};
+                chan_check(ii) = DataInput{ii,1};
+            elseif ischar(DataInput{ii,1})
+                newStr = split(DataInput{ii,1},["."]);
+                if length(newStr)~=2 || ~isnumeric(str2num(newStr{1,1})) || ~ischar(newStr{2,1})
+                    msgboxText = ['The defined channel format for row',32,num2str(ii),32, 'should be:\n Row  Channel\n  1    1. FP1\n ...   ...\n'];
+                    title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+                    errorfound(sprintf(msgboxText), title);
+                    return
+                end
+                chanorders(ii) = str2num(newStr{1,1});
+                chan_check(ii) = f_chanlabel_check(newStr{2,1},labels);
+                if chan_check(ii)==0
+                    msgboxText = ['The defined channel format for row',32,num2str(ii),32,'can not match any of channel labels'];
+                    title = 'Estudio:  ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+                    errorfound(sprintf(msgboxText), title);
+                    return
+                end
+                chanlabes{ii} = labels{chan_check(ii)};
             else
-                chanorders(ii) =0;
-                disp(['The values is not a number at Row:',32,num2str(ii),', Column 1\n']);
-            end
-            if ischar(DataInput{ii,2})
-                chanlabes{ii} = DataInput{ii,2};
+                msgboxText = ['The defined channel format should be either numberic or char for row',32,num2str(ii)];
+                title = 'Estudio:  ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+                errorfound(sprintf(msgboxText), title);
+                return
             end
         end
+        
         chanorders1 = unique(chanorders);
         if any(chanorders(:)>length(labels)) || any(chanorders(:)<=0)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that some of the defined chan orders are invalid or replicated, please check the file'));
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=4;
+             msgboxText = ['It seems that some of the defined chan orders are invalid or replicated, please check the file'];
+            title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
             ERPTab_plotset.chanorder_number.Value=1;
             ERPTab_plotset.chanorder_front.Value=0;
             ERPTab_plotset.chanorder_custom.Value=0;
@@ -805,9 +837,9 @@ varargout{1} = ERP_plotset_box;
             return;
         end
         if numel(chanorders1)~= observe_ERPDAT.ERP.nchan
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The number of the defined chan orders must be',32,num2str(observe_ERPDAT.ERP.nchan)]);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=4;
+           msgboxText = ['The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
+            title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
             ERPTab_plotset.chanorder_number.Value=1;
             ERPTab_plotset.chanorder_front.Value=0;
             ERPTab_plotset.chanorder_custom.Value=0;
@@ -817,8 +849,10 @@ varargout{1} = ERP_plotset_box;
         end
         [C,IA]= ismember_bc2(chanlabes,labels);
         if any(IA==0)
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The names of channels must be the same to the current ERP']);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+           msgboxText = ['The channel labels are not the same to those for the current EEG (see command window)'];
+            title = 'Estudio: ERP Tab >  Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title); 
+            
             [xpos,ypos] =find(IA==0);
             if ~isempty(ypos)
                 labelsmatch = '';
@@ -855,9 +889,10 @@ varargout{1} = ERP_plotset_box;
             IA = unique(IA);
         end
         if numel(IA)~=observe_ERPDAT.ERP.nchan
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: There are some replicated channel labels']);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=4;
+             msgboxText = ['There are some replicated channel labels'];
+            title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            
             ERPTab_plotset.chanorder_number.Value=1;
             ERPTab_plotset.chanorder_front.Value=0;
             ERPTab_plotset.chanorder_custom.Value=0;
@@ -1572,8 +1607,8 @@ varargout{1} = ERP_plotset_box;
                 ERPTab_plotset.chanorder{1,2} = labels;
             end
         elseif ERPTab_plotset.chanorder_custom.Value==1
+            ERPTab_plotset.chanorderIndex = 3;
             if isempty(ERPTab_plotset.chanorder{1,1})
-                ERPTab_plotset.chanorderIndex = 3;
                 MessageViewer= char(strcat('Plot Setting > Apply:There were no custom-defined chan orders and we therefore used the default orders'));
                 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
                 observe_ERPDAT.Process_messg=4;
@@ -1860,4 +1895,16 @@ varargout{1} = ERP_plotset_box;
         end
     end
 
+end
+
+
+
+function IA = f_chanlabel_check(Checklabel,allabels)
+IA = 0;
+for ii = 1:length(allabels)
+    if strcmpi(strtrim(Checklabel),strtrim(allabels{ii}))
+        IA = ii;
+        break;
+    end
+end
 end

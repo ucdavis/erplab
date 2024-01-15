@@ -54,14 +54,14 @@ try
         [eloc, labels, theta, radius, indices] = readlocs(EEG.chanlocs);
         chanorders =   EEG_plotset{11};
         chanorderindex = chanorders{1};
-        chanorderindex1 = unique(chanorderindex);
+        chanorderindex1 = unique(chanorderindex,'stable');
         chanorderlabels = chanorders{2};
         [C,IA]= ismember_bc2(chanorderlabels,labels);
         Chanlanelsinst = labels(ChanArray);
         if ~any(IA==0) && numel(chanorderindex1) == length(labels)
             [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
             [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
-            ChanArray = IA2(chanorderindex(IA1));
+            ChanArray = IA1(IA2);
         end
     end
 catch

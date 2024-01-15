@@ -66,7 +66,7 @@ try
         if ~any(IA==0) && numel(chanorderindex1) == length(labels)
             [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
             [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
-            ChanArray = IA2(chanorderindex(IA1));
+            ChanArray = IA1(IA2);
         end
     end
 catch

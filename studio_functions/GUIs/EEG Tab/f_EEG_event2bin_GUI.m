@@ -78,19 +78,19 @@ varargout{1} = EStudio_box_EEG_event2bin;
             'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[60 -1 60]);
         
-        %%----------------cancel and apply---------------------------------
-        EStduio_eegtab_EEG_event2bin.reset_apply = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        %%----------------cancel and Run---------------------------------
+        EStduio_eegtab_EEG_event2bin.reset_Run = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         
-        EStduio_eegtab_EEG_event2bin.bdf_cancel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_apply,...
+        EStduio_eegtab_EEG_event2bin.bdf_cancel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Cancel','callback',@BDF_eeg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
-        EStduio_eegtab_EEG_event2bin.event2bin_advanced = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_apply,...
+        EStduio_eegtab_EEG_event2bin.event2bin_advanced = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Advanced','callback',@event2bin_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.KeyPressFcn=  @eeg_event2bin_presskey;
         
-        EStduio_eegtab_EEG_event2bin.bdf_apply = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_apply,...
-            'String','Apply','callback',@eeg_bdf_apply,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        EStduio_eegtab_EEG_event2bin.bdf_apply.KeyPressFcn=  @eeg_event2bin_presskey;
+        EStduio_eegtab_EEG_event2bin.bdf_Run = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
+            'String','Run','callback',@eeg_bdf_Run,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        EStduio_eegtab_EEG_event2bin.bdf_Run.KeyPressFcn=  @eeg_event2bin_presskey;
         
         
         set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 30]);
@@ -119,9 +119,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        %%change color for cancel and apply
-        EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [1 1 1];
+        %%change color for cancel and Run
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [1 1 1];
         EStudio_box_EEG_event2bin.TitleColor= [0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [1 1 1];
@@ -147,9 +147,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        %%change color for cancel and apply
-        EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [1 1 1];
+        %%change color for cancel and Run
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [0.5137    0.7569    0.9176];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [1 1 1];
         EStudio_box_EEG_event2bin.TitleColor= [0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [1 1 1];
@@ -198,8 +198,8 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         
         estudioworkingmemory('EEGTab_event2bin',0);
-        EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
-        EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [0 0 0];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
@@ -217,8 +217,8 @@ varargout{1} = EStudio_box_EEG_event2bin;
         
         
         estudioworkingmemory('EEGTab_event2bin',0);
-        EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
-        EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [0 0 0];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
@@ -386,18 +386,18 @@ varargout{1} = EStudio_box_EEG_event2bin;
         
     end
 
-%%---------------------------Apply-----------------------------------------
-    function eeg_bdf_apply(~,~)
+%%---------------------------Run-----------------------------------------
+    function eeg_bdf_Run(~,~)
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Apply');
+        erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         estudioworkingmemory('EEGTab_event2bin',0);
-        EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
-        EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [0 0 0];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
@@ -516,7 +516,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'off';
-            EStduio_eegtab_EEG_event2bin.bdf_apply.Enable = 'off';
+            EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'off';
             observe_EEGDAT.count_current_eeg=10;
             return;
         end
@@ -526,7 +526,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'on';
-        EStduio_eegtab_EEG_event2bin.bdf_apply.Enable = 'on';
+        EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'on';
         observe_EEGDAT.count_current_eeg=10;
     end
 
@@ -542,17 +542,17 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if ChangeFlag~=1
             return;
         end
-        eeg_bdf_apply();
+        eeg_bdf_Run();
         estudioworkingmemory('EEGTab_event2bin',0);
-        EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
-        EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [0 0 0];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
     end
 
 
-%%--------------press return to execute "Apply"----------------------------
+%%--------------press return to execute "Run"----------------------------
     function eeg_event2bin_presskey(hObject, eventdata)
         keypress = eventdata.Key;
         ChangeFlag =  estudioworkingmemory('EEGTab_event2bin');
@@ -560,10 +560,10 @@ varargout{1} = EStudio_box_EEG_event2bin;
             return;
         end
         if strcmp (keypress, 'return') || strcmp (keypress , 'enter')
-            eeg_bdf_apply();
+            eeg_bdf_Run();
             estudioworkingmemory('EEGTab_event2bin',0);
-            EStduio_eegtab_EEG_event2bin.bdf_apply.BackgroundColor =  [1 1 1];
-            EStduio_eegtab_EEG_event2bin.bdf_apply.ForegroundColor = [0 0 0];
+            EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+            EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
             EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
             EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
             EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];

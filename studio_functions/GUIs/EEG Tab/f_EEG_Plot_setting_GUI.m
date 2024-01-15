@@ -6,7 +6,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% Agust 2023
+% Agust 2023 && 2024
 
 
 function varargout = f_EEG_Plot_setting_GUI(varargin)
@@ -366,7 +366,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-         EStduio_gui_EEG_plotset.v_scale_edit.String = '5';
+        EStduio_gui_EEG_plotset.v_scale_edit.String = '5';
     end
 
 %%----------------------channel order-number-------------------------------
@@ -492,11 +492,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
             chanOrders =  EStduio_gui_EEG_plotset.chanorder{1,1} ;
             labels=  EStduio_gui_EEG_plotset.chanorder{1,2};
         end
-        Data = cell(length(chanOrders),2);
+        Data = cell(length(chanOrders),1);
         for ii =1:length(chanOrders)
             try
-                Data{ii,1} = chanOrders(ii);
-                Data{ii,2} = labels{ii};
+                Data{ii,1} = [num2str(chanOrders(ii)),'.',32,labels{ii}];
             catch
             end
         end
@@ -516,23 +515,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         fileID = fopen(erpFilename,'w+');
         
-        formatSpec =['%s\t',32];
-        for jj = 1:2
-            if jj==1
-                formatSpec = strcat(formatSpec,'%d\t',32);
-            else
-                formatSpec = strcat(formatSpec,'%s',32);
-            end
-        end
-        formatSpec = strcat(formatSpec,'\n');
-        columName = {'','Column1','Column2'};
-        fprintf(fileID,'%s\t %s\t %s\n',columName{1,:});
+        formatSpec =['%s\t',32,'%s\n'];
+        columName = {'Row','Channel'};
+        fprintf(fileID,'%s\t %s\n',columName{1,:});
         for row = 1:numel(chanOrders)
-            rowdata = cell(1,3);
-            rowdata{1,1} = char(['Row',num2str(row)]);
-            for jj = 1:2
-                rowdata{1,jj+1} = Data{row,jj};
-            end
+            rowdata = cell(1,2);
+            rowdata{1,1} = char(num2str(row));
+            rowdata{1,2} = Data{row,1};
             fprintf(fileID,formatSpec,rowdata{1,:});
         end
         fclose(fileID);
@@ -572,19 +561,23 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv'}, ...
-            ['Import EEG channel order (for plotting only)'],...
-            'MultiSelect', 'off');
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;*.txt'}, ...
+            ['Import EEG channel order (for plotting only)'], 'MultiSelect','off');
         if isequal(erpfilename,0) || indxs~=1
             disp('User selected Cancel')
             return
         end
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
-        ext = '.tsv';
+        if ~strcmpi(ext,'.tsv') && ~strcmpi(ext,'.txt')
+            msgboxText = ['Either ",tsv" or ".txt" is allowed'];
+            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            return
+        end
         erpFilename = char(strcat(erppathname,erpfilename,ext));
         
-        DataInput =  readtable(erpFilename, "FileType","text");
+        DataInput =  readtable(erpFilename, "FileType","text",'Delimiter', '\t');
         if isempty(DataInput)
             EStduio_gui_EEG_plotset.chanorder{1,1}=[];
             EStduio_gui_EEG_plotset.chanorder{1,2} = '';
@@ -593,22 +586,49 @@ varargout{1} = EStudio_box_EEG_plot_set;
         chanorders = [];
         chanlabes = [];
         DataInput = DataInput(:,2:end);
+        chan_check = ones(length(labels),1);
+        
         for ii = 1:size(DataInput,1)
             if isnumeric(DataInput{ii,1})
                 chanorders(ii) = DataInput{ii,1};
+                if chanorders(ii)>length(labels)
+                    msgboxText = ['The defined channel order should be not more than',32,num2sr(length(labels)),32,'for row',32,num2str(ii)];
+                    title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+                    errorfound(sprintf(msgboxText), title);
+                    return
+                end
+                chanlabes{ii} = labels{chanorders(ii)};
+                chan_check(ii) = DataInput{ii,1};
+            elseif ischar(DataInput{ii,1})
+                newStr = split(DataInput{ii,1},["."]);
+                if length(newStr)~=2 || ~isnumeric(str2num(newStr{1,1})) || ~ischar(newStr{2,1})
+                    msgboxText = ['The defined channel format for row',32,num2str(ii),32, 'should be:\n Row  Channel\n  1    1. FP1\n ...   ...\n'];
+                    title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+                    errorfound(sprintf(msgboxText), title);
+                    return
+                end
+                chanorders(ii) = str2num(newStr{1,1});
+                chan_check(ii) = f_chanlabel_check(newStr{2,1},labels);
+                if chan_check(ii)==0
+                    msgboxText = ['The defined channel format for row',32,num2str(ii),32,'can not match any of channel labels'];
+                    title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+                    errorfound(sprintf(msgboxText), title);
+                    return
+                end
+                chanlabes{ii} = labels{chan_check(ii)};
             else
-                chanorders(ii) =0;
-                disp(['The values is not a number at Row:',32,num2str(ii),', Column 1\n']);
-            end
-            if ischar(DataInput{ii,2})
-                chanlabes{ii} = DataInput{ii,2};
+                msgboxText = ['The defined channel format should be either numberic or char for row',32,num2str(ii)];
+                title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+                errorfound(sprintf(msgboxText), title);
+                return
             end
         end
         chanorders1 = unique(chanorders);
         if any(chanorders(:)>length(labels)) || any(chanorders(:)<=0)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that some of the defined chan orders are invalid or replicated, please check the file'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText = ['It seems that some of the defined chan orders are invalid or replicated, please check the file'];
+            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -618,9 +638,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         if numel(chanorders1)~= observe_EEGDAT.EEG.nbchan
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)]);
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText = ['The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
+            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -629,10 +650,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
             return;
         end
         
-        [C,IA]= ismember_bc2(chanlabes,labels);
-        if any(IA==0)
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: The channel labels must be the same to the current EEG']);
-            [xpos,ypos] =find(IA==0);
+        if any(chan_check==0)
+            
+            msgboxText = ['The channel labels are not the same to those for the current EEG (see command window)'];
+            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            [xpos,ypos] =find(chan_check==0);
             if ~isempty(ypos)
                 labelsmatch = '';
                 for ii = 1:numel(ypos)
@@ -644,7 +667,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 end
                 disp(['The defined labels that didnot match: ',32,labelsmatch]);
             end
-            ypos = setdiff([1:length(labels)],setdiff(IA,0));
+            ypos = setdiff([1:length(labels)],setdiff(chan_check,0));
             if ~isempty(ypos)
                 labelsmatch = '';
                 for ii = 1:numel(ypos)
@@ -656,8 +679,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 end
                 disp(['The labels  that didnot match for the current data: ',32,labelsmatch]);
             end
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -666,13 +687,14 @@ varargout{1} = EStudio_box_EEG_plot_set;
             return;
         end
         
-        if ~isempty(IA)
-            IA = unique(IA);
+        if ~isempty(chan_check)
+            chan_check = unique(chan_check);
         end
-        if numel(IA)~=observe_EEGDAT.EEG.nbchan
-            MessageViewer= strcat(['Plot Setting > Channel order>Custom>Import: There are some replicated channel labels']);
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+        if numel(chan_check)~=observe_EEGDAT.EEG.nbchan
+             msgboxText = ['There are some replicated channel labels'];
+            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
+            errorfound(sprintf(msgboxText), title);
+            
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -682,7 +704,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         EStduio_gui_EEG_plotset.chanorder{1,1}=chanorders;
         EStduio_gui_EEG_plotset.chanorder{1,2} = chanlabes;
-        
     end
 
 
@@ -1041,4 +1062,15 @@ varargout{1} = EStudio_box_EEG_plot_set;
             return;
         end
     end
+end
+
+
+function IA = f_chanlabel_check(Checklabel,allabels)
+IA = 0;
+for ii = 1:length(allabels)
+    if strcmpi(strtrim(Checklabel),strtrim(allabels{ii}))
+        IA = ii;
+        break;
+    end
+end
 end
