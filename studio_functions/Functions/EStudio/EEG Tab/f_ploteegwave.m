@@ -30,7 +30,7 @@ nbchan = EEG.nbchan;
 if nargin<2
     ChanArray = 1:nbchan;
 end
-if isempty(ChanArray) || min(ChanArray(:)) >nbchan || max(ChanArray(:))> nbchan||  min(ChanArray(:))<=0
+if ~isempty(ChanArray) &&( min(ChanArray(:)) >nbchan || max(ChanArray(:))> nbchan||  min(ChanArray(:))<=0)
     ChanArray = 1:nbchan;
 end
 
@@ -422,7 +422,7 @@ end
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
 ylims = [0 (PlotNum+1)*AmpScale];
-if EventOnset==1
+if EventOnset==1 && ~isempty(data)
     MAXEVENTSTRING = 75;
     if MAXEVENTSTRING<0
         MAXEVENTSTRING = 0;
@@ -541,10 +541,10 @@ if ndims(EEG.data)==2
         for ii = size(data,1):-1:1
             try
                 plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                    'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.75);%%
+                    'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.5);%%
             catch
                 plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                    'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
+                    'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
             end
         end
         set(hbig,'TickDir', 'in','LineWidth',1);
@@ -556,6 +556,8 @@ if ndims(EEG.data)==2
         %%
         %%-----------------plot scale------------------
         leftintv = Winlength*multiplier+1;
+    else
+        set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
     end
 end
 
@@ -639,7 +641,7 @@ if ndims(EEG.data)==3
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
         try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
-        if ~isempty(Epochintv) && chaNum~=0
+        if ~isempty(Epochintv) %%&& chaNum~=0
             for jj = 1:size(Epochintv,1)
                 [xpos,~]=find(trialsMakrschan(:,jj)==1);
                 if jj<= numel(trialsMakrs) && ~isempty(xpos)
@@ -650,14 +652,14 @@ if ndims(EEG.data)==3
                         ChanArray = reshape(ChanArray,1,numel(ChanArray));
                         [~,ypos1]=find(ChanArray==xpos);
                         if ~isempty(ypos1)
-                            for kk = ypos1
+                            for kk = 1:numel(ypos1)
                                 dataChan = nan(1,size(dataplot,2));
-                                dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(kk,Epochintv(jj,1):Epochintv(jj,2));
+                                dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
                                 try
-                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-kk+1)-meandata(kk))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                                        'color', Colorgbwave(kk,:), 'clipping','on','LineWidth',1.5);%%
+                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
                                 catch
-                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-kk+1)-meandata(kk))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                                         'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
                                 end
                             end
@@ -672,10 +674,10 @@ if ndims(EEG.data)==3
         for ii = size(dataplot,1):-1:1
             try
                 plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                    'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.75);%%
+                    'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.5);%%
             catch
                 plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                    'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
+                    'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
             end
         end
         
@@ -756,6 +758,8 @@ if ndims(EEG.data)==3
         %%
         %%-----------------plot scale------------------
         leftintv = (Winlength*multiplier+epochNum*GapSize);
+    else
+        set(hbig, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
     end
 end
 
@@ -771,32 +775,33 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
     line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
     line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpScale AmpScale],'color','k','LineWidth',1, 'clipping','off');
     text(hbig,leftintv,1.5*xtick_bottom+AmpScale, [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',props.FontSize);
-end
-
-
-%%ytick ticklabels
-if isempty(OldAmpScale) || OldAmpScale==0
-    OldAmpScale=50;
-end
-set(hbig, 'ylim',[0 (PlotNum+1)*OldAmpScale],'YTick',[0:OldAmpScale:PlotNum*OldAmpScale]);
-[YLabels,chaName,ICName] = f_eeg_read_chan_IC_names(EEG.chanlocs,ChanArray,ICArray,ChanLabel);
-YLabels = flipud(char(YLabels,''));
-set(hbig,'YTickLabel',cellstr(YLabels),...
-    'TickLength',[.005 .005],...
-    'Color','none',...
-    'XColor','k',...
-    'YColor','k',...
-    'FontWeight','normal',...
-    'TickDir', 'in',...
-    'LineWidth',0.5);%%,'HorizontalAlignment','center'
-% try
-%     set(hbig, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
-% catch
-% end
-count=0;
-for ii = length(hbig.YTickLabel):-1:2
-    count = count+1;
-    hbig.YTickLabel{ii} = ['\color[rgb]{',num2str(Colorgbwave(count,:)),'}', strrep(hbig.YTickLabel{ii},'_','\_')];
+    
+    
+    %%ytick ticklabels
+    if isempty(OldAmpScale) || OldAmpScale==0
+        OldAmpScale=50;
+    end
+    set(hbig, 'ylim',[0 (PlotNum+1)*OldAmpScale],'YTick',[0:OldAmpScale:PlotNum*OldAmpScale]);
+    [YLabels,chaName,ICName] = f_eeg_read_chan_IC_names(EEG.chanlocs,ChanArray,ICArray,ChanLabel);
+    YLabels = flipud(char(YLabels,''));
+    set(hbig,'YTickLabel',cellstr(YLabels),...
+        'TickLength',[.005 .005],...
+        'Color','none',...
+        'XColor','k',...
+        'YColor','k',...
+        'FontWeight','normal',...
+        'TickDir', 'in',...
+        'LineWidth',0.5);%%,'HorizontalAlignment','center'
+    % try
+    %     set(hbig, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
+    % catch
+    % end
+    
+    count=0;
+    for ii = length(hbig.YTickLabel):-1:2
+        count = count+1;
+        hbig.YTickLabel{ii} = ['\color[rgb]{',num2str(Colorgbwave(count,:)),'}', strrep(hbig.YTickLabel{ii},'_','\_')];
+    end
 end
 
 set(gcf,'color',[1 1 1]);

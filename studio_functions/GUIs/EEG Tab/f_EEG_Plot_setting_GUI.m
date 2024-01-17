@@ -366,7 +366,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-        EStduio_gui_EEG_plotset.v_scale_edit.String = '5';
+        if Source.Value==1
+            EStduio_gui_EEG_plotset.v_scale_edit.String = '5';
+        else
+            EStduio_gui_EEG_plotset.v_scale_edit.String = '50';
+        end
     end
 
 %%----------------------channel order-number-------------------------------
@@ -592,7 +596,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             if isnumeric(DataInput{ii,1})
                 chanorders(ii) = DataInput{ii,1};
                 if chanorders(ii)>length(labels)
-                    msgboxText = ['The defined channel order should be not more than',32,num2sr(length(labels)),32,'for row',32,num2str(ii)];
+                    msgboxText = ['The defined channel order should be not more than',32,num2str(length(labels)),32,'for row',32,num2str(ii)];
                     title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
                     errorfound(sprintf(msgboxText), title);
                     return
@@ -691,7 +695,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             chan_check = unique(chan_check);
         end
         if numel(chan_check)~=observe_EEGDAT.EEG.nbchan
-             msgboxText = ['There are some replicated channel labels'];
+            msgboxText = ['There are some replicated channel labels'];
             title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
             
@@ -1017,7 +1021,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = Enableflag;
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
         end
-        
+        if observe_EEGDAT.EEG.trials>1
+            EStduio_gui_EEG_plotset.rem_DC.Enable = 'off';
+            EStduio_gui_EEG_plotset.rem_DC.Value=0;
+        else
+            EStduio_gui_EEG_plotset.rem_DC.Enable = 'on';
+        end
         observe_EEGDAT.count_current_eeg=4;
     end
 

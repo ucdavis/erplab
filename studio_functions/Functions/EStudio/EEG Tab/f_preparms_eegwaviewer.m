@@ -5,7 +5,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% August 2023
+% 2023 && 2024
 
 function OutputViewerpareeg = f_preparms_eegwaviewer(EEG,matlabfig,History,figureName)
 
@@ -220,6 +220,9 @@ end
 
 
 if matlabfig==1
+    if EEGdisp==0
+       ChanArray = []; 
+    end
     [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);

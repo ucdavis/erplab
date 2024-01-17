@@ -48,22 +48,54 @@ labelsvalid = labels(validechan);
 ychanpos = ychanpos(Ixpos);
 simplabelIndexNew = simplabelIndex(Ixpos);
 chanindexnew = Ixpos;
-
+simplabelIndexNew_uq = unique(simplabelIndexNew,'stable');
+% if numel(unique(simplabelIndexNew))~=1
 oldindex = 0;
-for jj = 1:length(simplabelIndexNew)
-    if jj>length(simplabelIndexNew)
+count = 0;
+validechanNew = [];
+for jj = 1:length(simplabelIndexNew_uq)
+    if jj>length(simplabelIndexNew_uq)
         break;
     end
-    if oldindex~=simplabelIndexNew(jj)
-        oldindex=simplabelIndexNew(jj);
-        [xpos,ypos]= find(simplabelIndexNew == simplabelIndexNew(jj));
+    if oldindex~=simplabelIndexNew_uq(jj)
+        oldindex=simplabelIndexNew_uq(jj);
+        [xpos,ypos]= find(simplabelIndexNew == simplabelIndexNew_uq(jj));
         if ~isempty(ypos)
+            count = count+1;
             [x_ychanposcell,y_ychanposcell] = sort(ychanpos(ypos),'descend');
             Ixpos(ypos) = Ixpos(ypos(y_ychanposcell));
+            
+            labelscell = labelsvalid(validechan(Ixpos(ypos)));
+            validechanNew = [validechanNew validechan(Ixpos(ypos))];
+            
         end
     end
 end
-chanindexnew=[validechan(Ixpos),invalidchan];
+
+%%--------------------------check HEOG & VEOG------------------------------
+chanindexnew=[validechanNew,invalidchan];
+[C,IA] = ismember_bc2('HEOG',labels);
+if IA~=0
+    [xpos,ypos] = find(chanindexnew==IA);
+    chanindexnew(ypos) = [];
+    chanindexnew = [IA,chanindexnew];
+end
+
+[C,IA] = ismember_bc2('VEOG',labels);
+if IA~=0
+    [xpos,ypos] = find(chanindexnew==IA);
+    chanindexnew(ypos) = [];
+    chanindexnew = [IA,chanindexnew];
+end
+
+% else
+%    msgboxText = ['There is only one type for channel label and we cannot do for front-back/left-right'];
+%     title = 'Estudio: f_estudio_chan_frontback_left_right() inputs';
+%     errorfound(sprintf(msgboxText), title);
+%    chanindexnew = [1:length(chanlocs)];
+% end
+
+
 end
 
 
@@ -91,7 +123,7 @@ function [Simplabels,simplabelIndex,SamAll] = Simplelabels(labels)
 SamAll = 0;
 for ii = 1:length(labels)
     labelcell = labels{ii};
-    labelcell(regexp(labelcell,'[1,2,3,4,5,6,7,8,9,10,z,Z]'))=[];
+    labelcell(regexp(labelcell,'[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,z,Z]'))=[];
     labelsNew{ii} = labelcell;
 end
 
@@ -128,5 +160,4 @@ for ii = 1:length(chanlocs)
     xposchan(ii) =   getfield(chanlocs(ii),'X');
     yposchan(ii) =   getfield(chanlocs(ii),'Y');
 end
-
 end

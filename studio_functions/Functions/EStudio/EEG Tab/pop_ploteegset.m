@@ -182,8 +182,10 @@ end
 %%channel array
 qchanArray = p_Results.ChanArray;
 nbchan = EEG.nbchan;
-if isempty(qchanArray) ||  min(qchanArray(:))>nbchan ||  max(qchanArray(:))>nbchan  ||  min(qchanArray(:))<=0
-    qchanArray = [1:nbchan];
+if ~isempty(qchanArray)
+    if  min(qchanArray(:))>nbchan ||  max(qchanArray(:))>nbchan  ||  min(qchanArray(:))<=0
+        qchanArray = [1:nbchan];
+    end
 end
 
 %%IC array (the default is empty, that is, donot display ICs)
