@@ -1562,7 +1562,7 @@ if ndims(EEG.data)==3
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
         try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
-        if ~isempty(Epochintv) %%&& chaNum~=0
+        if ~isempty(Epochintv)
             for jj = 1:size(Epochintv,1)
                 [xpos,~]=find(trialsMakrschan(:,jj)==1);
                 if jj<= numel(trialsMakrs) && ~isempty(xpos)
@@ -1570,21 +1570,22 @@ if ndims(EEG.data)==3
                         patch(myeegviewer,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
                             [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
                         %%highlight the wave if the channels exist
-                        ChanArray = reshape(ChanArray,1,numel(ChanArray));
-                        [~,ypos1]=find(ChanArray==xpos);
-                        if ~isempty(ypos1)
-                            for kk = 1:numel(ypos1)
-                                dataChan = nan(1,size(dataplot,2));
-                                dataChan (1,Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
-                                try
-                                    plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                                        'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
-                                catch
-                                    plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                                        'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                        if  chaNum~=0
+                            ChanArray = reshape(ChanArray,1,numel(ChanArray));
+                            [~,ypos1]=find(ChanArray==xpos);
+                            if ~isempty(ypos1)
+                                for kk = 1:numel(ypos1)
+                                    dataChan = nan(1,size(dataplot,2));
+                                    dataChan (1,Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
+                                    try
+                                        plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                            'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
+                                    catch
+                                        plot(myeegviewer, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                            'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                                    end
                                 end
                             end
-                            
                         end
                     end
                 end

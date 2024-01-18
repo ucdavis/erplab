@@ -22,7 +22,7 @@ function varargout = f_ERP_save_multi_file(varargin)
 
 % Edit the above text to modify the response to help f_ERP_save_multi_file
 
-% Last Modified by GUIDE v2.5 10-Jan-2024 13:52:20
+% Last Modified by GUIDE v2.5 16-Jan-2024 19:20:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -84,19 +84,22 @@ ColumnName_table = {'ERP name','File name'};
 
 set(handles.uitable1_erpset_table,'ColumnName',cellstr(ColumnName_table));
 set(handles.uitable1_erpset_table,'RowName',cellstr(num2str(EEGArray')));
-
-
+handles.uitable1_erpset_table.ColumnEditable(1) = true;
+handles.uitable1_erpset_table.ColumnEditable(2) = false;
 for Numoferpset = 1:numel(EEGArray)
     DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix);
     DataString{Numoferpset,2} = '';
 end
 
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
+set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
 set(handles.uitable1_erpset_table,'Enable','on');
 set(handles.checkbox3_filename_erpname,'Enable','off');
 set(handles.edit_path,'Enable','off','String','');
 set(handles.pushbutton_path_browse,'Enable','off');
+
+
+% handles.uitable1_erpset_table.DisplayDataChangedFcn = {@tableDisplayDataChangedFcn,hObject,handles};
 %
 % % Color GUI
 % %
@@ -111,7 +114,7 @@ handles = setfonterplabestudio(handles);
 guidata(hObject, handles);
 handles.uitable1_erpset_table.BackgroundColor = [1 1 1];
 handles.checkbox1_suffix.BackgroundColor = [1 1 1];
-handles.checkbox3_filename_erpname.BackgroundColor = [1 1 1];
+% handles.checkbox3_filename_erpname.BackgroundColor = [1 1 1];
 % UIWAIT makes savemyerpGUI wait for user response (see UIRESUME)
 uiwait(handles.gui_chassis);
 
@@ -153,7 +156,7 @@ for Numoferpset = 1:numel(EEGArray)
     DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
+% set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
 if handles.checkbox2_save_label.Value
     set(handles.uitable1_erpset_table,'Enable','off');
 else
@@ -165,27 +168,8 @@ end
 
 function edit_suffix_name_Callback(hObject, eventdata, handles)
 
-% Suffix_string = handles.edit_suffix_name.String;
-% if isempty(Suffix_string)
-%     msgboxText =  'You must enter a suffix at least!';
-%     title = 'EStudio: f_ERP_save_multi_file() error';
-%     errorfound(msgboxText, title);
-%     return
-% end
-%
-% if handles.checkbox1_suffix.Value
-%
-%     DataString_before = handles.uitable1_erpset_table.Data;
-%     for Numoferpset = 1:size(DataString_before,1)
-%         DataString{Numoferpset,1} = char(strcat(DataString_before{Numoferpset,1},'-',char(Suffix_string)));
-%         DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
-%     end
-%
-%     set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-%     set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
-%     set(handles.uitable1_erpset_table,'Enable','off');
-%     handles.suffix=Suffix_string;
-% end
+
+
 
 % --- Executes during object creation, after setting all properties.
 function edit_suffix_name_CreateFcn(hObject, eventdata, handles)
@@ -238,15 +222,14 @@ end
 function checkbox3_filename_erpname_Callback(hObject, eventdata, handles)
 Value_filename_erpname = handles.checkbox3_filename_erpname.Value;
 
-set(handles.uitable1_erpset_table,'Enable','off');
+% set(handles.uitable1_erpset_table,'Enable','off');
 DataString_before = handles.uitable1_erpset_table.Data;
 
 for Numoferpset = 1:size(DataString_before,1)
-    
     DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
     fileName = char(DataString_before{Numoferpset,1});
     if isempty(fileName)
-        fileName = strcat(num2str(Numoferpset),'set');
+        fileName = strcat(num2str(Numoferpset),'.set');
     end
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
@@ -258,7 +241,14 @@ for Numoferpset = 1:size(DataString_before,1)
 end
 
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
+% set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
+if handles.checkbox3_filename_erpname.Value==0
+    handles.uitable1_erpset_table.ColumnEditable(1) = true;
+    handles.uitable1_erpset_table.ColumnEditable(2) = false;
+else
+    handles.uitable1_erpset_table.ColumnEditable(1) = true;
+    handles.uitable1_erpset_table.ColumnEditable(2) = true;
+end
 
 
 
@@ -284,6 +274,28 @@ for Numofselected = 1:numel(EEGArray)
         return
     end
 end
+
+if handles.checkbox3_filename_erpname.Value==1
+    DataString_before = handles.uitable1_erpset_table.Data;
+
+for Numoferpset = 1:size(DataString_before,1)
+    DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
+    fileName = char(DataString_before{Numoferpset,1});
+    if isempty(fileName)
+        fileName = strcat(num2str(Numoferpset),'.set');
+    end
+    [pathstr, file_name, ext] = fileparts(fileName);
+    if isempty(file_name)
+        file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
+    else
+        file_name = [file_name,'.erp'];
+    end
+    DataString{Numoferpset,2} = file_name;
+end
+
+set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
+end
+guidata(hObject, handles);
 
 
 
@@ -320,8 +332,6 @@ if size(Data_String,1)> numel(EEGArray)%
     errorfound(msgboxText, title);
     return
 end
-
-
 
 for Numofselected = 1:numel(EEGArray)
     if  isempty(Data_String{Numofselected,1})
@@ -428,5 +438,3 @@ if isequal(select_path,0)
     select_path = cd;
 end
 handles.edit_path.String = select_path;
-
-

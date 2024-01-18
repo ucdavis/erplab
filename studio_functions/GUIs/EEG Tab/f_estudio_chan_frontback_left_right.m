@@ -73,7 +73,7 @@ for jj = 1:length(simplabelIndexNew_uq)
 end
 
 %%--------------------------check HEOG & VEOG------------------------------
-chanindexnew=[validechanNew,invalidchan];
+chanindexnew=[invalidchan,validechanNew];
 [C,IA] = ismember_bc2('HEOG',labels);
 if IA~=0
     [xpos,ypos] = find(chanindexnew==IA);

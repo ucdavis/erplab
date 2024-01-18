@@ -107,7 +107,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             'callback',@ERPset_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %,'HorizontalAlignment','left'
         uiextras.Empty('Parent',ERPwaveview_erpsetops.help_apply_title );
         set(ERPwaveview_erpsetops.help_apply_title ,'Sizes',[40 70 20 70 20]);
-        set(ERPwaveview_erpsetops.vBox, 'Sizes', [390 25]);
+        set(ERPwaveview_erpsetops.vBox, 'Sizes', [290 25]);
         ERPwaveview_erpsetops.ERPLABFlag = 0;
         gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
         

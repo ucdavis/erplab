@@ -124,7 +124,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_number = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default order',...
             'Callback', @chanorder_number,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         EStduio_gui_EEG_plotset.chanorder_number.KeyPressFcn=  @eeg_plotset_presskey;
-        EStduio_gui_EEG_plotset.chanorder_front = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Front-back/left-right',...
+        EStduio_gui_EEG_plotset.chanorder_front = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Simple 10/20 order',...
             'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
         EStduio_gui_EEG_plotset.chanorder_front.KeyPressFcn=  @eeg_plotset_presskey;
         set(EStduio_gui_EEG_plotset.chanorder_no_title,'Sizes',[120 -1]);
@@ -392,7 +392,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
     end
 
-%%-----------------channel order-front-back/left-right---------------------
+%%-----------------channel order-Simple 10/20 order---------------------
     function chanorder_front(~,~)
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -412,7 +412,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         try
             chanlocs = observe_EEGDAT.EEG.chanlocs;
             if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right:please do "chan locations" first in EEGLAB Tool panel.'));
+                MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 order:please do "chan locations" first in EEGLAB Tool panel.'));
                 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
                 observe_EEGDAT.eeg_panel_message=4;
                 EStduio_gui_EEG_plotset.chanorder_number.Value=1;
@@ -422,7 +422,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
             end
         catch
-            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 order: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message=4;
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
@@ -452,7 +452,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'on';
         
         if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 order: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message=4;
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;

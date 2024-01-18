@@ -843,7 +843,13 @@ NumOverlay = size(bindata,3);
 
 
 %%get y axis
-y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
+ERP1 = ERP;
+ERP1.bindata = ERP.bindata(qERPArray,:,:);
+[def, minydef, maxydef] = default_amp_ticks(ERP1, qbinArray);
+minydef = floor(minydef);
+maxydef = ceil(maxydef);
+y_scale_def = [minydef,maxydef];
+
 yMaxdef = ceil(max(bindata(:)))-floor(min(bindata(:)));
 try
     isyaxislabel = qGridspace(1,1);
@@ -853,8 +859,8 @@ catch
     Ypert = 10;
 end
 
-if isempty( qYScales)
-    qYScales = [floor(min(bindata(:))),ceil(max(bindata(:)))];
+if isempty( qYScales) || numel(qYScales)~=2
+    qYScales = y_scale_def;
 end
 
 if isyaxislabel==1 %% y axis GAP
@@ -868,9 +874,9 @@ if isyaxislabel==1 %% y axis GAP
             yscaleall = 2*max(abs(qYScales));
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
-        if yscaleall < y_scale_def(2)-y_scale_def(1)
-            yscaleall = y_scale_def(2)-y_scale_def(1);
-        end
+%         if yscaleall < y_scale_def(2)-y_scale_def(1)
+%             yscaleall = y_scale_def(2)-y_scale_def(1);
+%         end
         
         for Numofrows = 1:Numrows
             OffSetY(Numofrows) = yscaleall*(Numrows-Numofrows)*(Ypert/100+1);
@@ -892,9 +898,9 @@ else%% y axis Overlay
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
         
-        if yscaleall < y_scale_def(2)-y_scale_def(1)
-            yscaleall = y_scale_def(2)-y_scale_def(1);
-        end
+%         if yscaleall < y_scale_def(2)-y_scale_def(1)
+%             yscaleall = y_scale_def(2)-y_scale_def(1);
+%         end
         
         if Numrows ==1
             OffSetY = 0;
@@ -905,7 +911,7 @@ else%% y axis Overlay
             OffSetY(Numrows)=0;
         end
     else
-        qYScales = [ceil(max(bindata(:))), floor(min(bindata(:)))];
+        qYScales = y_scale_def;
         if Numrows ==1
             OffSetY = 0;
         else

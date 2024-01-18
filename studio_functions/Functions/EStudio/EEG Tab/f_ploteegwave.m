@@ -648,22 +648,24 @@ if ndims(EEG.data)==3
                     if trialsMakrs(jj)==1
                         patch(hbig,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
                             [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
-                        %%highlight the wave if the channels exist
-                        ChanArray = reshape(ChanArray,1,numel(ChanArray));
-                        [~,ypos1]=find(ChanArray==xpos);
-                        if ~isempty(ypos1)
-                            for kk = 1:numel(ypos1)
-                                dataChan = nan(1,size(dataplot,2));
-                                dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
-                                try
-                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                                        'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
-                                catch
-                                    plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
-                                        'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                        %%highlight the wave if the channels that were
+                        %%marked as artifacts
+                        if chaNum~=0
+                            ChanArray = reshape(ChanArray,1,numel(ChanArray));
+                            [~,ypos1]=find(ChanArray==xpos);
+                            if ~isempty(ypos1)
+                                for kk = 1:numel(ypos1)
+                                    dataChan = nan(1,size(dataplot,2));
+                                    dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
+                                    try
+                                        plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                            'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
+                                    catch
+                                        plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                            'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                                    end
                                 end
                             end
-                            
                         end
                     end
                 end

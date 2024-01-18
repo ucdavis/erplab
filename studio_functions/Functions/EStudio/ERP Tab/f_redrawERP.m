@@ -156,11 +156,11 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
             OutputViewerparerp{3},OutputViewerparerp{4},OutputViewerparerp{5},...
             OutputViewerparerp{6},OutputViewerparerp{9},OutputViewerparerp{10},OutputViewerparerp{11},...
             OutputViewerparerp{12},OutputViewerparerp{13},...
-            EStudio_gui_erp_totl.erptabwaveiwer,EStudio_gui_erp_totl.erptabwaveiwer_legend);
+            EStudio_gui_erp_totl.erptabwaveiwer,EStudio_gui_erp_totl.erptabwaveiwer_legend,OutputViewerparerp{7});
     else
         return;
     end
-    pb_height =  OutputViewerparerp{7}*Resolation(4);  %px
+    pb_height =  1.5*Resolation(4);  %px
     Fillscreen = OutputViewerparerp{8};
     if isempty(Fillscreen) || numel(Fillscreen)~=1 || (Fillscreen~=0 && Fillscreen~=1)
         Fillscreen=1;
@@ -608,8 +608,8 @@ end
 
 
 
-function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,YtickInterval,columNum,...
-    positive_up,BinchanOverlay,rowNums,GridposArray,waveview,legendview)
+function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,yscale,columNum,...
+    positive_up,BinchanOverlay,rowNums,GridposArray,waveview,legendview,Yticks)
 
 FonsizeDefault = f_get_default_fontsize();
 %%matlab version
@@ -641,26 +641,33 @@ if isempty(timeRangedef)
     timeRangedef = ERP.times;
 end
 fs= ERP.srate;
-qYScales = [-YtickInterval,YtickInterval];
+qYScales = yscale;
 Ypert =20;
-%%get y axis
-y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
-
+%%get y axis\
+ERP1 = ERP;
+ERP1.bindata = ERP.bindata(ChanArray,:,:);
+[def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+minydef = floor(minydef);
+maxydef = ceil(maxydef);
+y_scale_def = [minydef,maxydef];
+if isempty(qYScales) || numel(qYScales)~=2
+    qYScales = y_scale_def;
+end
 if numel(qYScales)==2
     yscaleall = qYScales(end)-qYScales(1);
 else
     yscaleall = 2*max(abs(qYScales));
     qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
 end
-if yscaleall < y_scale_def(2)-y_scale_def(1)
-    yscaleall = y_scale_def(2)-y_scale_def(1);
-end
+% if yscaleall < y_scale_def(2)-y_scale_def(1)
+%     yscaleall = y_scale_def(2)-y_scale_def(1);
+% end
 for Numofrows = 1:rowNums
     OffSetY(Numofrows) = yscaleall*(rowNums-Numofrows)*(Ypert/100+1);
 end
 
 qYticksdef = str2num(char(default_amp_ticks_viewer(qYScales)));
-qYticks = [-YtickInterval,0, YtickInterval];
+qYticks = Yticks;
 if isempty(qYticks) || numel(qYticks)<2
     qYticks = qYticksdef;
 end
@@ -802,7 +809,7 @@ for Numofrows = 1:rowNums
             %%----------------------Adjust y axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             props = get(waveview);
-            if qPolarityWave
+            if qPolarityWave==1
                 props.YTick = qYticks+OffSetY(Numofrows);
             else
                 props.YTick =  fliplr (-1*qYticks)+OffSetY(Numofrows);
@@ -852,7 +859,7 @@ for Numofrows = 1:rowNums
             end
             
             if ~isempty(qYScales)  && numel(qYScales)==2 %qYScales(end))+OffSetY(1)
-                if  qPolarityWave==0
+                if  qPolarityWave~=1
                     qYScalestras =   fliplr (-1*qYScales);
                 else
                     qYScalestras = qYScales;
@@ -981,10 +988,10 @@ for Numofrows = 1:rowNums
         catch
         end
     end%% end of columns
-    ylim([1.1*(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+qYScales(end))]);
+    ylim([1.1*(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+1.1*qYScales(end))]);
     if qPolarityWave==-1
         ylimleftedge = min([1.1*(min(OffSetY(:))+qYScales(1)),-abs(y_scale_def(2))]);
-        ylim([ylimleftedge,1.1*(max(OffSetY(:))+qYScales(end))]);
+        ylim([ylimleftedge,1.1*(max(OffSetY(:))+1.1*qYScales(end))]);
     end
 end%% end of rows
 set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');

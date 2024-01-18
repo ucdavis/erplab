@@ -212,7 +212,8 @@ for s = 1:nSubs %decoding is performed within each subject independently
         %% Step 7: Loop through each timepoint 
         % Do SVM_ECOC at each time point
         parfor (t = 1:nSamps,ParWorkers)
-        %for t = 1:nSamps
+%             for t = 1:nSamps
+
             mdl = []; 
             % grab data for timepoint t
             %toi = ismember(times,times(t)-svmECOC.window/2:times(t)+svmECOC.window/2);
@@ -257,8 +258,12 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 
                 if nBins > 2      
                     for d = 1:nDecoders
+%                         try
                         BetaWeights_Raw(iter,t,i,d,:) = mdl.BinaryLearners{d}.Beta;% SVM weights uncorrected
-                    end  
+%                         catch
+%                           disp([num2str(iter),',',num2str(t),',',num2str(i),',',num2str(d),',']);  
+%                         end
+                        end  
                 else
                     %binary decoder
                     for d = 1:nDecoders

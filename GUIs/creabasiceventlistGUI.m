@@ -31,33 +31,33 @@ function varargout = creabasiceventlistGUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-        'gui_Singleton',  gui_Singleton, ...
-        'gui_OpeningFcn', @creabasiceventlistGUI_OpeningFcn, ...
-        'gui_OutputFcn',  @creabasiceventlistGUI_OutputFcn, ...
-        'gui_LayoutFcn',  [] , ...
-        'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @creabasiceventlistGUI_OpeningFcn, ...
+    'gui_OutputFcn',  @creabasiceventlistGUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
-        gui_State.gui_Callback = str2func(varargin{1});
+    gui_State.gui_Callback = str2func(varargin{1});
 end
 
 if nargout
-        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
-        gui_mainfcn(gui_State, varargin{:});
+    gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
 
 %--------------------------------------------------------------------------
 function creabasiceventlistGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 try
-        def = varargin{1};
+    def = varargin{1};
 catch
-        def = {'' 'boundary' -99 1 1};
+    def = {'' 'boundary' -99 1 1};
 end
 try
-        multieeg = varargin{2};
+    multieeg = varargin{2};
 catch
-        multieeg = 0;
+    multieeg = 0;
 end
 
 elname             = def{1};
@@ -67,7 +67,7 @@ rwwarn             = def{4};
 alphanum           = def{5};
 
 if iscell(newboundarynumcode)
-        newboundarynumcode = cell2mat(newboundarynumcode);
+    newboundarynumcode = cell2mat(newboundarynumcode);
 end
 
 handles.output = [];
@@ -75,46 +75,54 @@ handles.owfp   = 0;  % over write file permission
 set(handles.edit_elname,'String',elname);
 
 if isempty(elname)
-        set(handles.edit_elname,'Enable','off');
-        set(handles.pushbutton_browse,'Enable','off');  
-        set(handles.checkbox_create_eventlist,'Value',0);
+    set(handles.edit_elname,'Enable','off');
+    set(handles.pushbutton_browse,'Enable','off');
+    set(handles.checkbox_create_eventlist,'Value',0);
 else
-        set(handles.checkbox_create_eventlist,'Value',1);
-        set(handles.edit_elname,'Enable','on');
-        set(handles.pushbutton_browse,'Enable','on');
+    set(handles.checkbox_create_eventlist,'Value',1);
+    set(handles.edit_elname,'Enable','on');
+    set(handles.pushbutton_browse,'Enable','on');
 end
 set(handles.checkbox_addm99,'Value',0);
 if isempty(boundarystrcode)
-        set(handles.checkbox_convert_boundary,'Value',0);
-        set(handles.edit_boundarycode,'Enable', 'off');
-        set(handles.edit_numericode,'Enable', 'off');
+    set(handles.checkbox_convert_boundary,'Value',0);
+    set(handles.edit_boundarycode,'Enable', 'off');
+    set(handles.edit_numericode,'Enable', 'off');
 else
-        set(handles.checkbox_convert_boundary,'Value',1);
-        set(handles.edit_boundarycode,'Enable', 'on');
-        set(handles.edit_numericode,'Enable', 'on');
-                
-        if iscell(boundarystrcode)
-              bb = sprintf('%s ', boundarystrcode{:});
-        else
-              bb = char(boundarystrcode);
-        end
-        set(handles.edit_boundarycode, 'String', bb);
-        set(handles.edit_numericode, 'String',num2str(newboundarynumcode));
+    set(handles.checkbox_convert_boundary,'Value',1);
+    set(handles.edit_boundarycode,'Enable', 'on');
+    set(handles.edit_numericode,'Enable', 'on');
+    
+    if iscell(boundarystrcode)
+        bb = sprintf('%s ', boundarystrcode{:});
+    else
+        bb = char(boundarystrcode);
+    end
+    set(handles.edit_boundarycode, 'String', bb);
+    set(handles.edit_numericode, 'String',num2str(newboundarynumcode));
 end
 
 set(handles.ELwarning,'Value', rwwarn);
 set(handles.checkbox_alphanum,'Value', alphanum);
 if multieeg==1
-        set(handles.pushbutton_advanced, 'Enable', 'off')
+    set(handles.pushbutton_advanced, 'Enable', 'off')
 else
-        set(handles.pushbutton_advanced, 'Enable', 'on')
+    set(handles.pushbutton_advanced, 'Enable', 'on')
 end
 
 %
 % Name & version
 %
 version = geterplabversion;
-set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   CREATE BASIC EVENTLIST GUI'])
+ERPtooltype = erpgettoolversion('tooltype');%%GH Jan 2024
+if strcmpi(ERPtooltype,'EStudio')
+    set(handles.gui_chassis,'Name', ['Estudio ' version '   -   CREATE BASIC EVENTLIST GUI']);
+    handles.checkbox_create_eventlist.String = 'Export EventList to text file (file name will be suffix that added to eeg setname)';
+
+else
+    set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   CREATE BASIC EVENTLIST GUI']);
+    handles.checkbox_create_eventlist.String = 'Export EventList to text file';
+end
 
 %
 % Color GUI
@@ -150,11 +158,11 @@ pause(0.5)
 function checkbox_create_eventlist_Callback(hObject, eventdata, handles)
 
 if get(hObject,'Value')
-        set(handles.edit_elname,'Enable','on');
-        set(handles.pushbutton_browse,'Enable','on');
+    set(handles.edit_elname,'Enable','on');
+    set(handles.pushbutton_browse,'Enable','on');
 else
-        set(handles.edit_elname,'Enable','off');
-        set(handles.pushbutton_browse,'Enable','off');
+    set(handles.edit_elname,'Enable','off');
+    set(handles.pushbutton_browse,'Enable','off');
 end
 
 %--------------------------------------------------------------------------
@@ -164,10 +172,10 @@ fullname = char(get(hObject, 'String'));
 [elpathname, elfilename, ext] = fileparts(fullname);
 
 if strcmpi(elpathname,'')
-        elpathname = cd;
+    elpathname = cd;
 end
 if ~strcmpi(ext,'.txt')
-        ext='.txt';
+    ext='.txt';
 end
 
 elfilename = [elfilename ext];
@@ -181,7 +189,7 @@ guidata(hObject, handles);
 function edit_elname_CreateFcn(hObject, eventdata, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
@@ -194,26 +202,26 @@ prename = get(handles.edit_elname,'String');
 [elfname, elpathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST text file as', prename);
 
 if isequal(elfname,0)
-        disp('User selected Cancel')
-        handles.owfp = 0;  % over write file permission
-        guidata(hObject, handles);
-        return
+    disp('User selected Cancel')
+    handles.owfp = 0;  % over write file permission
+    guidata(hObject, handles);
+    return
 else
-        [pathx, elfilename, ext] = fileparts(elfname);
-        
-        if ~strcmpi(ext,'.txt')
-                ext='.txt';
-        end
-        
-        elfilename = [elfilename ext];
-        handles.elfilename  = elfilename;
-        handles.elpathname  = elpathname;
-        set(handles.edit_elname,'String', fullfile(elpathname, elfilename));
-        handles.owfp     = 1;  % over write file permission
-        
-        % Update handles structure
-        guidata(hObject, handles);
-        disp(['For EVENTLIST text file, user selected ', fullfile(elpathname, elfilename)])
+    [pathx, elfilename, ext] = fileparts(elfname);
+    
+    if ~strcmpi(ext,'.txt')
+        ext='.txt';
+    end
+    
+    elfilename = [elfilename ext];
+    handles.elfilename  = elfilename;
+    handles.elpathname  = elpathname;
+    set(handles.edit_elname,'String', fullfile(elpathname, elfilename));
+    handles.owfp     = 1;  % over write file permission
+    
+    % Update handles structure
+    guidata(hObject, handles);
+    disp(['For EVENTLIST text file, user selected ', fullfile(elpathname, elfilename)])
 end
 
 %--------------------------------------------------------------------------
@@ -227,83 +235,83 @@ function pushbutton_apply_Callback(hObject, eventdata, handles)
 fullname  = char(get(handles.edit_elname, 'String'));
 
 if get(handles.checkbox_create_eventlist, 'Value') && ~strcmp(fullname,'')
+    
+    [elpathname, elfilename, ext] = fileparts(fullname);
+    
+    if strcmpi(elpathname,'')
+        elpathname = cd;
+    end
+    if ~strcmpi(ext,'.txt')
+        ext='.txt';
+    end
+    
+    elfilename = fullfile(elpathname, [elfilename ext]);
+    owfp = handles.owfp;  % over write file permission
+    
+    if exist(elfilename, 'file')~=0 && owfp==0
+        question = ['%s already exists!\n\n'...
+            'Do you want to replace it?'];
+        title    = 'ERPLAB: Overwriting Confirmation';
+        button   = askquest(sprintf(question, elfilename), title);
         
-        [elpathname, elfilename, ext] = fileparts(fullname);
-        
-        if strcmpi(elpathname,'')
-                elpathname = cd;
-        end        
-        if ~strcmpi(ext,'.txt')
-                ext='.txt';
+        if ~strcmpi(button, 'yes')
+            return
         end
-      
-        elfilename = fullfile(elpathname, [elfilename ext]);
-        owfp = handles.owfp;  % over write file permission
-        
-        if exist(elfilename, 'file')~=0 && owfp==0
-                question = ['%s already exists!\n\n'...
-                           'Do you want to replace it?'];
-                title    = 'ERPLAB: Overwriting Confirmation';
-                button   = askquest(sprintf(question, elfilename), title);
-                
-                if ~strcmpi(button, 'yes')
-                        return
-                end
-        end
-        
-        disp(['For EVENTLIST text file, user selected ', fullfile(elpathname, elfilename)])        
+    end
+    
+    disp(['For EVENTLIST text file, user selected ', fullfile(elpathname, elfilename)])
 else
-        elfilename = '';
+    elfilename = '';
 end
 if get(handles.checkbox_addm99,'Value')
-      boundarystrcode1    = {'boundary'};
-      newboundarynumcode1 = -99;
+    boundarystrcode1    = {'boundary'};
+    newboundarynumcode1 = -99;
 else
-      boundarystrcode1    = {''};
-      newboundarynumcode1 = [];
+    boundarystrcode1    = {''};
+    newboundarynumcode1 = [];
 end
 if get(handles.checkbox_convert_boundary,'Value')
-      boundarystrcode2    = strtrim(char(get(handles.edit_boundarycode, 'String')));
-      boundarystrcode2    = regexp(boundarystrcode2,'\s*\w*\s*', 'match');
-      newboundarynumcode2 = str2num(get(handles.edit_numericode, 'String'));      
-      
-      if isempty(newboundarynumcode2)
-            msgboxText =  'You must specify a numeric code!';
-            title = 'ERPLAB: empty input';
-            errorfound(msgboxText, title);
+    boundarystrcode2    = strtrim(char(get(handles.edit_boundarycode, 'String')));
+    boundarystrcode2    = regexp(boundarystrcode2,'\s*\w*\s*', 'match');
+    newboundarynumcode2 = str2num(get(handles.edit_numericode, 'String'));
+    
+    if isempty(newboundarynumcode2)
+        msgboxText =  'You must specify a numeric code!';
+        title = 'ERPLAB: empty input';
+        errorfound(msgboxText, title);
+        return
+    end
+    if isempty(boundarystrcode2)
+        msgboxText =  'You must specify a boundary code!';
+        title = 'ERPLAB: empty input';
+        errorfound(msgboxText, title);
+        return
+    end
+    if length(newboundarynumcode2)~=length(boundarystrcode2)
+        msgboxText =  'You must specify the same amount of numeric and string codes!';
+        title = 'ERPLAB: different inputs';
+        errorfound(msgboxText, title);
+        return
+    end
+    if get(handles.checkbox_addm99,'Value')
+        newboundarynumcode2 = newboundarynumcode2(~ismember_bc2(boundarystrcode2, 'boundary'));
+        boundarystrcode2    = boundarystrcode2(~ismember_bc2(boundarystrcode2, 'boundary'));
+        if isempty(boundarystrcode2)
+            msgboxText =  '''boundary'' event is already specified!\nUncheck one option or change the event name.';
+            title = 'ERPLAB: redundant input';
+            errorfound(sprintf(msgboxText), title);
             return
-      end      
-      if isempty(boundarystrcode2)
-            msgboxText =  'You must specify a boundary code!';
-            title = 'ERPLAB: empty input';
-            errorfound(msgboxText, title);
-            return
-      end      
-      if length(newboundarynumcode2)~=length(boundarystrcode2)
-            msgboxText =  'You must specify the same amount of numeric and string codes!';
-            title = 'ERPLAB: different inputs';
-            errorfound(msgboxText, title);
-            return
-      end           
-      if get(handles.checkbox_addm99,'Value')            
-            newboundarynumcode2 = newboundarynumcode2(~ismember_bc2(boundarystrcode2, 'boundary'));
-            boundarystrcode2    = boundarystrcode2(~ismember_bc2(boundarystrcode2, 'boundary'));            
-            if isempty(boundarystrcode2)
-                  msgboxText =  '''boundary'' event is already specified!\nUncheck one option or change the event name.';
-                  title = 'ERPLAB: redundant input';
-                  errorfound(sprintf(msgboxText), title);
-                  return
-            end
-      end
-      if strcmp(boundarystrcode2, boundarystrcode1)
-            msgboxText =  '''boundary'' event is already specified to be numerically encoded.';
-            title = 'ERPLAB: duplicated inputs';
-            errorfound(msgboxText, title);
-            return
-      end
+        end
+    end
+    if strcmp(boundarystrcode2, boundarystrcode1)
+        msgboxText =  '''boundary'' event is already specified to be numerically encoded.';
+        title = 'ERPLAB: duplicated inputs';
+        errorfound(msgboxText, title);
+        return
+    end
 else
-      boundarystrcode2    = [];
-      newboundarynumcode2 = [];
+    boundarystrcode2    = [];
+    newboundarynumcode2 = [];
 end
 
 alphanum = get(handles.checkbox_alphanum, 'Value'); % for letterkilla. Oct 10, 2012
@@ -340,7 +348,7 @@ return
 %--------------------------------------------------------------------------
 function edit_boundarycode_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
@@ -349,27 +357,27 @@ function edit_numericode_Callback(hObject, eventdata, handles)
 %--------------------------------------------------------------------------
 function edit_numericode_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-        set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','white');
 end
 
 %--------------------------------------------------------------------------
 function checkbox_addm99_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
-        set(handles.checkbox_convert_boundary,'Value', 0);
-        set(handles.edit_boundarycode,'Enable', 'off');
-        set(handles.edit_numericode,'Enable', 'off');
+    set(handles.checkbox_convert_boundary,'Value', 0);
+    set(handles.edit_boundarycode,'Enable', 'off');
+    set(handles.edit_numericode,'Enable', 'off');
 else
-        set(hObject, 'Value', 1)
+    set(hObject, 'Value', 1)
 end
 
 %--------------------------------------------------------------------------
 function checkbox_convert_boundary_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
-        set(handles.checkbox_addm99,'Value', 0);
-        set(handles.edit_boundarycode,'Enable', 'on');
-        set(handles.edit_numericode,'Enable', 'on');
+    set(handles.checkbox_addm99,'Value', 0);
+    set(handles.edit_boundarycode,'Enable', 'on');
+    set(handles.edit_numericode,'Enable', 'on');
 else
-        set(hObject, 'Value', 1)
+    set(hObject, 'Value', 1)
 end
 
 %--------------------------------------------------------------------------
@@ -388,13 +396,13 @@ uiresume(handles.gui_chassis);
 %--------------------------------------------------------------------------
 function gui_chassis_CloseRequestFcn(hObject, eventdata, handles)
 if isequal(get(handles.gui_chassis, 'waitstatus'), 'waiting')
-        % The GUI is still in UIWAIT, us UIRESUME
-        handles.output = [];
-        % Update handles structure
-        guidata(hObject, handles);
-        uiresume(handles.gui_chassis);
+    % The GUI is still in UIWAIT, us UIRESUME
+    handles.output = [];
+    % Update handles structure
+    guidata(hObject, handles);
+    uiresume(handles.gui_chassis);
 else
-        % The GUI is no longer waiting, just close it
-        delete(handles.gui_chassis);
+    % The GUI is no longer waiting, just close it
+    delete(handles.gui_chassis);
 end
 

@@ -83,11 +83,9 @@ ERPtooltype = erpgettoolversion('tooltype');%%GH Jan 2024
 if strcmpi(ERPtooltype,'EStudio')
    handles.uipanel1.Title = 'File name suffix (will be added to EEG dataset name)';
    set(handles.gui_chassis,'Name', ['Estudio ' version '   -   Save Reaction Time GUI'])
-
 else
  handles.uipanel1.Title = 'File name';   
  set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   Save Reaction Time GUI'])
-
 end%%end
 
 %

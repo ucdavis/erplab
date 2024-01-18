@@ -396,15 +396,24 @@ varargout{1} = EStudio_eeg_events_box;
         else
             stralphanum = 'off';
         end
-        
+       
+        [pathx, filename, ext] = fileparts(elname);
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
+            filenameeeg = EEG.filename;
+                [pathxeeg, filenameeeg, ext] = fileparts(filenameeeg);
+                if isempty(filenameeeg)
+                    filename = [num2str(EEGArray(Numofeeg)),'_',filename,'.txt'];
+                else
+                    filename = strcat(filenameeeg,'_',filename,'.txt');
+                end
+                filename = fullfile(pathx, filename);
+                
             %% Run pop_ command again with the inputs from the GUI
-            [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', elname, 'BoundaryString', boundarystrcode,...
+            [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', filename, 'BoundaryString', boundarystrcode,...
                 'BoundaryNumeric', newboundarynumcode,'Warning', striswarning, 'AlphanumericCleaning', stralphanum, 'History', 'gui');
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1

@@ -46,47 +46,63 @@ varargout{1} = ERP_plotset_box;
         [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         
         ERPTab_plotset.plotop = uiextras.VBox('Parent',ERP_plotset_box, 'Spacing',1,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Time Range:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
-        ERPTab_plotset.ticks = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.timet_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.ticks,'String','Auto',...
+        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Time Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 1B
+        %%time range
+        ERPTab_plotset.timerange = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.timet_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.timerange,'String','Auto',...
             'callback',@timet_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
         ERPTab_plotset.timet_auto.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.ticks,'String','Low','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.timet_low = uicontrol('Style', 'edit','Parent',ERPTab_plotset.ticks,'BackgroundColor',[1 1 1],...
+        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','Range','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.timet_low = uicontrol('Style', 'edit','Parent',ERPTab_plotset.timerange,'BackgroundColor',[1 1 1],...
             'String','','callback',@low_ticks_change,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
         ERPTab_plotset.timet_low.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.ticks,'String','High','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.timet_high = uicontrol('Style', 'edit','Parent',ERPTab_plotset.ticks,'String','',...
+        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.timet_high = uicontrol('Style', 'edit','Parent',ERPTab_plotset.timerange,'String','',...
             'callback',@high_ticks_change,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         ERPTab_plotset.timet_high.KeyPressFcn=  @erp_plotsetting_presskey;
-        uicontrol('Style','text','Parent', ERPTab_plotset.ticks,'String','Step','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.timet_step = uicontrol('Style', 'edit','Parent',ERPTab_plotset.ticks,'String','',...
+        uicontrol('Style','text','Parent', ERPTab_plotset.timerange,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(ERPTab_plotset.timerange, 'Sizes', [50 50 50 30 50 20]);
+        %%time ticks
+        ERPTab_plotset.timeticks = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.timetick_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.timeticks,'String','Auto',...
+            'callback',@timetick_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+        ERPTab_plotset.timetick_auto.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent', ERPTab_plotset.timeticks,'String','Time ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.timet_step = uicontrol('Style', 'edit','Parent',ERPTab_plotset.timeticks,'String','',...
             'callback',@ticks_step_change,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         ERPTab_plotset.timet_step.KeyPressFcn=  @erp_plotsetting_presskey;
-        set(ERPTab_plotset.ticks, 'Sizes', [60 -1 -1 -1 -1 -1 -1]);
+        uicontrol('Style','text','Parent', ERPTab_plotset.timeticks,'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(ERPTab_plotset.timeticks, 'Sizes', [50 100 80 20]);
         
-        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Y Scale:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        %%amplitude scale
+        uicontrol('Style','text','Parent', ERPTab_plotset.plotop,'String','Amplitude Axis:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         ERPTab_plotset.yscale = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         ERPTab_plotset.yscale_auto = uicontrol('Style','checkbox','Parent',ERPTab_plotset.yscale,'String','Auto',...
             'callback',@yscale_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
         ERPTab_plotset.yscale_auto.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent',ERPTab_plotset.yscale,'String','Scale','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.yscale_low = uicontrol('Style', 'edit','Parent',ERPTab_plotset.yscale,'BackgroundColor',[1 1 1],...
+            'String','','callback',@yscale_low,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
+        ERPTab_plotset.yscale_low.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscale,'String','to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.yscale_high = uicontrol('Style', 'edit','Parent',ERPTab_plotset.yscale,'String','',...
+            'callback',@yscale_high,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+        ERPTab_plotset.yscale_high.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscale,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(ERPTab_plotset.yscale, 'Sizes', [50 50 50 30 50 20]);
         
-        tooltiptext = sprintf('Tick Length:\nSize of Y Ticks');
-        uicontrol('Style','text','Parent',ERPTab_plotset.yscale,'String','Ticks','TooltipString',tooltiptext,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.yscale_change = uicontrol('Style','edit','Parent',ERPTab_plotset.yscale,'BackgroundColor',[1 1 1],...
-            'String','','callback',@yscale_change,'Enable','off','FontSize',FonsizeDefault,'Enable','off');
-        ERPTab_plotset.yscale_change.KeyPressFcn=  @erp_plotsetting_presskey;
-        tooltiptext = sprintf('Minimum Vertical Spacing:\nSmallest possible distance in inches between zero lines before plots go off the page.');
-        uicontrol('Style','text','Parent',ERPTab_plotset.yscale,'String','Spacing','TooltipString',tooltiptext,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.min_vspacing = uicontrol('Style','edit','Parent',ERPTab_plotset.yscale,'String','',...
-            'callback',@min_vspacing,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        ERPTab_plotset.min_vspacing.KeyPressFcn=  @erp_plotsetting_presskey;
-        tooltiptext = sprintf('Fill Screen:\nDynamically expand plots to fill screen.');
-        ERPTab_plotset.fill_screen = uicontrol('Style','checkbox','Parent',ERPTab_plotset.yscale,'String','Fill','callback',@fill_screen,...
-            'TooltipString',tooltiptext,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off');
-        ERPTab_plotset.fill_screen.KeyPressFcn=  @erp_plotsetting_presskey;
-        set(ERPTab_plotset.yscale, 'Sizes', [50 45 35 50 35 60]);
+        %%y ticks
+        ERPTab_plotset.yscaleticks = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.ytick_auto = uicontrol('Style','checkbox','Parent', ERPTab_plotset.yscaleticks,'String','Auto',...
+            'callback',@ytick_auto,'Value',1,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2B
+        ERPTab_plotset.ytick_auto.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','Amp. ticks, every','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.yscale_step = uicontrol('Style', 'edit','Parent',ERPTab_plotset.yscaleticks,'String','',...
+            'callback',@yscale_step,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+        ERPTab_plotset.yscale_step.KeyPressFcn=  @erp_plotsetting_presskey;
+        uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(ERPTab_plotset.yscaleticks, 'Sizes', [50 100 80 20]);
         
         
         ERPTab_plotset.polarity_waveform = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -170,7 +186,7 @@ varargout{1} = ERP_plotset_box;
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         set(ERPTab_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         
-        set(ERPTab_plotset.plotop, 'Sizes', [20 25 20 25 25 25 20 20 25 20 25 25 30]);
+        set(ERPTab_plotset.plotop, 'Sizes', [20 25 25 20 25 25 25 25 20 20 25 20 25 25 30]);
         ERPTab_plotset.chanorderIndex = 1;
         ERPTab_plotset.chanorder{1,1}=[];
         ERPTab_plotset.chanorder{1,2} = '';
@@ -180,6 +196,11 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.timet_auto_reset = 1;
         ERPTab_plotset.timeticks_auto_reset = 1;
         ERPTab_plotset.gridlayputarray = [];
+        ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
+        ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
+        ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
+        ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
+        
     end
 
 %%**************************************************************************%%
@@ -208,17 +229,12 @@ varargout{1} = ERP_plotset_box;
         if src.Value == 1
             ERPTab_plotset.timet_low.Enable = 'off';
             ERPTab_plotset.timet_high.Enable = 'off';
-            ERPTab_plotset.timet_step.Enable = 'off';
+            
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
             ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
-            Min_time=floor(observe_ERPDAT.ERP.times(1)/5)*5;
-            Max_time = ceil(observe_ERPDAT.ERP.times(end)/5)*5;
-            [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [Min_time,Max_time]);
-            ERPTab_plotset.timet_step.String = num2str(xstep);
         else
             ERPTab_plotset.timet_low.Enable = 'on';
             ERPTab_plotset.timet_high.Enable = 'on';
-            ERPTab_plotset.timet_step.Enable = 'on';
         end
     end
 
@@ -244,7 +260,7 @@ varargout{1} = ERP_plotset_box;
         xtixlk_max = str2num(ERPTab_plotset.timet_high.String);
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(1));
-            msgboxText =  ['Plot Setting> Time range- Input of low edge must be a single numeric'];
+            msgboxText =  ['Plot Setting> Time Axis- Input of low edge must be a single numeric'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -252,7 +268,7 @@ varargout{1} = ERP_plotset_box;
         
         if any(xtixlk_max<=xtixlk_min)
             src.String = num2str(observe_ERPDAT.ERP.times(1));
-            msgboxText =  ['Plot Setting> Time range- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
+            msgboxText =  ['Plot Setting> Time Axis- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -285,20 +301,74 @@ varargout{1} = ERP_plotset_box;
         if isempty(xtixlk_max) || numel(xtixlk_max)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(end));
             beep;
-            msgboxText =  ['Plot Setting> Y Scale- Input of ticks edge must be a single numeric'];
+            msgboxText =  ['Plot Setting> Amplitude Axis- Input of ticks edge must be a single numeric'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if any(xtixlk_max < xtixlk_min)
             src.String =  num2str(observe_ERPDAT.ERP.times(end));
-            msgboxText =  ['Plot Setting> Time range- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
+            msgboxText =  ['Plot Setting> Time Axis- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
     end
 
+
+%%---------------------------time ticks automatically----------------------
+    function timetick_auto(Source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        if ERPTab_plotset.timetick_auto.Value==1
+            timeStart = str2num(ERPTab_plotset.timet_low.String);
+            if isempty(timeStart) || numel(timeStart)~=1 || timeStart>=observe_ERPDAT.ERP.times(end) %%|| timeStart<observe_ERPDAT.ERP.times(1)
+                timeStart = observe_ERPDAT.ERP.times(1);
+                ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
+                msgboxText =  ['Plot Setting> Time Axis- Time ticks>Auto: left edge of time range must be a single number and smaller than ',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
+                erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                observe_ERPDAT.Process_messg =4;
+            end
+            timEnd = str2num(ERPTab_plotset.timet_high.String);
+            if isempty(timEnd) || numel(timEnd)~=1 || timEnd<observe_ERPDAT.ERP.times(1) %%|| timEnd> observe_ERPDAT.ERP.times(end)
+                timEnd = observe_ERPDAT.ERP.times(end);
+                ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
+                msgboxText =  ['Plot Setting> Time Axis- Time ticks>Auto: right edge of time range must be a single number and larger than ',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
+                erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                observe_ERPDAT.Process_messg =4;
+            end
+            if timeStart>timEnd
+                ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
+                ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
+                timeStart = observe_ERPDAT.ERP.times(1);
+                timEnd = observe_ERPDAT.ERP.times(end);
+                ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
+                msgboxText =  ['Plot Setting> Time Axis- Time ticks>Auto: left edge of time range must be smaller than right one'];
+                erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                observe_ERPDAT.Process_messg =4;
+            end
+            [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [timeStart,timEnd]);
+            ERPTab_plotset.timet_step.String = num2str(xstep);
+            ERPTab_plotset.timet_step.Enable = 'off';
+        else
+            ERPTab_plotset.timet_step.Enable = 'on';
+        end
+        
+    end
 
 %%----------------------Step of time ticks--------------------------------*
     function ticks_step_change( src, ~ )
@@ -330,7 +400,7 @@ varargout{1} = ERP_plotset_box;
         tick_step = str2num(src.String);
         if isempty(tick_step) || numel(tick_step)~=1 || any(tick_step<=0)
             src.String = num2str(xtickstepdef);
-            msgboxText =  ['Plot Setting> Time range- The input of Step must be a single positive value'];
+            msgboxText =  ['Plot Setting> Time Axis - The input of Step for time ticks must be a single positive value'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -338,7 +408,7 @@ varargout{1} = ERP_plotset_box;
         
     end
 
-%%---------------------------------Auto y scale---------------------------------*
+%%---------------------------------Auto Amplitude Axis---------------------------------*
     function yscale_auto( src, ~ )
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=2;
@@ -356,35 +426,205 @@ varargout{1} = ERP_plotset_box;
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
-        if ERPTab_plotset.positive_up.Value==1
-            positive_up = 1;
-        else
-            positive_up = -1;
-        end
-        if src.Value == 1
-            ERPTab_plotset.yscale_change.Enable = 'off';
-            YScale =prctile(observe_ERPDAT.ERP.bindata(:)*positive_up,95)*2/3;
-            
-            if YScale>= 0&&YScale <=0.1
-                YScale = 0.1;
-            elseif YScale< 0&& YScale > -0.1
-                YScale = -0.1;
-            else
-                YScale = round(YScale);
+        if ERPTab_plotset.yscale_auto.Value ==1
+            BinArray= estudioworkingmemory('ERP_BinArray');
+            BinNum = observe_ERPDAT.ERP.nbin;
+            if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
+                BinArray = [1:BinNum];
             end
-            ERPTab_plotset.yscale_change.String = YScale;
-            ERPTab_plotset.min_vspacing.Enable = 'off';
-            ERPTab_plotset.min_vspacing.String = 1.5;
+            ChanArray=estudioworkingmemory('ERP_ChanArray');
+            if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+                ChanArray = [1:observe_ERPDAT.ERP.nchan];
+                estudioworkingmemory('ERP_ChanArray',ChanArray);
+            end
+            ERP1 = observe_ERPDAT.ERP;
+            ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+            [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+            ERPTab_plotset.yscale_low.Enable = 'off';
+            ERPTab_plotset.yscale_high.Enable = 'off';
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
         else
-            ERPTab_plotset.yscale_change.Enable = 'on';
-            ERPTab_plotset.min_vspacing.Enable = 'on';
+            ERPTab_plotset.yscale_low.Enable = 'on';
+            ERPTab_plotset.yscale_high.Enable = 'on';
         end
     end
 
 
-%%---------------------------------y scale change---------------------------------*
-    function yscale_change(src, ~ )
+%%------------------------left edge of y scale-----------------------------
+    function yscale_low(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        BinNum = observe_ERPDAT.ERP.nbin;
+        if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
+            BinArray = [1:BinNum];
+        end
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        ERP1 = observe_ERPDAT.ERP;
+        ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+        
+        [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
+        Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
+        Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
+        
+        if isempty(Yscales_low) || numel(Yscales_low)~=1
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            Yscales_low= minydef;
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            observe_ERPDAT.Process_messg =4;
+        end
+        if any(Yscales_high<=Yscales_low)
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            observe_ERPDAT.Process_messg =4;
+        end
+        
+    end
+
+
+%%-------------------right edge of y scale---------------------------------
+    function yscale_high(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        BinNum = observe_ERPDAT.ERP.nbin;
+        if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
+            BinArray = [1:BinNum];
+        end
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        ERP1 = observe_ERPDAT.ERP;
+        ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+        
+        [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
+        Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
+        Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
+        
+        if isempty(Yscales_high) || numel(Yscales_high)~=1
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+            Yscales_high= maxydef;
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
+            observe_ERPDAT.Process_messg =4;
+        end
+        if any(Yscales_high<=Yscales_low)
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            observe_ERPDAT.Process_messg =4;
+        end
+    end
+
+%%------------------y ticks automatically----------------------------------
+    function ytick_auto(Source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        BinNum = observe_ERPDAT.ERP.nbin;
+        if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
+            BinArray = [1:BinNum];
+        end
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        ERP1 = observe_ERPDAT.ERP;
+        ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+        [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
+        
+        Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
+        Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
+        if isempty(Yscales_low) || numel(Yscales_low)~=1
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            Yscales_low= minydef;
+        end
+        if isempty(Yscales_high) || numel(Yscales_high)~=1
+            Yscales_high= maxydef;
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+        end
+        if any(Yscales_high<=Yscales_low)
+            Yscales_high= maxydef;
+            Yscales_low= minydef;
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+        end
+        if ERPTab_plotset.ytick_auto.Value==1
+            defyticks = default_amp_ticks_viewer([Yscales_low,Yscales_high]);
+            defyticks = str2num(defyticks);
+            if ~isempty(defyticks) && numel(defyticks)>=2
+                ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
+            else
+                ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
+            end
+            ERPTab_plotset.yscale_step.Enable = 'off';
+        else
+            ERPTab_plotset.yscale_step.Enable = 'on';
+        end
+        
+    end
+
+
+%%---------------------------------Amplitude Axis change---------------------------------*
+    function yscale_step(src, ~ )
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=2;
             return;
@@ -402,70 +642,11 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         val = str2num(src.String);
         if isempty(val)  || numel(val)~=1 || any(val(:)<=0)
-            if ERPTab_plotset.positive_up.Value==1
-                positive_up = 1;
-            else
-                positive_up = -1;
-            end
-            YScaledef =prctile(observe_ERPDAT.ERP.bindata(:)*positive_up,95)*2/3;
-            if YScaledef>= 0&&YScaledef <=0.1
-                YScaledef = 0.1;
-            elseif YScaledef< 0&& YScaledef > -0.1
-                YScaledef = -0.1;
-            else
-                YScaledef = round(YScaledef);
-            end
-            src.String = num2str(YScaledef);
-            msgboxText =  ['Plot Setting> y scale - Input must be a positive value'];
+            src.String = '';
+            msgboxText =  ['Plot Setting> Amplitude Axis - Input must be a positive value'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
         end
-    end
-
-
-%%-------------------------- Y scale spacing-------------------------------
-    function min_vspacing( src, ~ )
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=2;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
-        end
-        estudioworkingmemory('ERPTab_plotset',1);
-        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
-        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        val = str2num(src.String);
-        if isempty(val) || numel(val)~=1 || any(val(:)<0)
-            msgboxText =  ['Plot Setting> y scale > spacing - Input of spacing must be a positive value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
-            src.String = '1.5';
-        end
-    end
-
-%%-----------------fill screen---------------------------------------------*
-    function fill_screen( src, ~ )
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=2;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=2
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
-        end
-        estudioworkingmemory('ERPTab_plotset',1);
-        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
-        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
     end
 
 %------------------Set the polarity of waveform is up or not-------------------
@@ -528,6 +709,45 @@ varargout{1} = ERP_plotset_box;
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        BinNum = observe_ERPDAT.ERP.nbin;
+        if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
+            BinArray = [1:BinNum];
+        end
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        
+        if ERPTab_plotset.pagesel.Value==1
+            nplot = numel(ChanArray);
+            plotarray = ChanArray;
+            [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+        else
+            nplot = numel(BinArray);
+            plotarray = BinArray;
+            labelsdef =observe_ERPDAT.ERP.bindescr;
+        end
+        gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
+        count = 0;
+        for ii = 1:ERPTab_plotset.rowNum_set.Value
+            for jj = 1:ERPTab_plotset.columns.Value
+                count = count+1;
+                if count>nplot
+                    break;
+                end
+                gridlayputarraydef{ii,jj} = labelsdef{plotarray(count)};
+            end
+        end
+        if ERPTab_plotset.gridlayoutdef.Value ==1
+            rowNum = ceil(sqrt(nplot));
+            ERPTab_plotset.rowNum_set.Value=rowNum;
+            ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
+            ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+        end
+        
     end
 
 %%----------------------channel order-number-------------------------------
@@ -770,7 +990,7 @@ varargout{1} = ERP_plotset_box;
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
         if ~strcmpi(ext,'.tsv') && ~strcmpi(ext,'.txt')
-            msgboxText = ['Either ",tsv" or ".txt" is allowed'];
+            msgboxText = ['Either ".tsv" or ".txt" is allowed'];
             title = 'Estudio: ERP Tab >Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
             return
@@ -786,7 +1006,7 @@ varargout{1} = ERP_plotset_box;
         chanorders = [];
         chanlabes = [];
         DataInput = DataInput(:,2:end);
-
+        
         chan_check = ones(length(labels),1);
         for ii = 1:size(DataInput,1)
             if isnumeric(DataInput{ii,1})
@@ -826,7 +1046,7 @@ varargout{1} = ERP_plotset_box;
         
         chanorders1 = unique(chanorders);
         if any(chanorders(:)>length(labels)) || any(chanorders(:)<=0)
-             msgboxText = ['It seems that some of the defined chan orders are invalid or replicated, please check the file'];
+            msgboxText = ['It seems that some of the defined chan orders are invalid or replicated, please check the file'];
             title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
             ERPTab_plotset.chanorder_number.Value=1;
@@ -837,7 +1057,7 @@ varargout{1} = ERP_plotset_box;
             return;
         end
         if numel(chanorders1)~= observe_ERPDAT.ERP.nchan
-           msgboxText = ['The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
+            msgboxText = ['The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
             title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
             ERPTab_plotset.chanorder_number.Value=1;
@@ -849,9 +1069,9 @@ varargout{1} = ERP_plotset_box;
         end
         [C,IA]= ismember_bc2(chanlabes,labels);
         if any(IA==0)
-           msgboxText = ['The channel labels are not the same to those for the current EEG (see command window)'];
+            msgboxText = ['The channel labels are not the same to those for the current EEG (see command window)'];
             title = 'Estudio: ERP Tab >  Plot Settings > Channel Order > Custom > Import:';
-            errorfound(sprintf(msgboxText), title); 
+            errorfound(sprintf(msgboxText), title);
             
             [xpos,ypos] =find(IA==0);
             if ~isempty(ypos)
@@ -889,7 +1109,7 @@ varargout{1} = ERP_plotset_box;
             IA = unique(IA);
         end
         if numel(IA)~=observe_ERPDAT.ERP.nchan
-             msgboxText = ['There are some replicated channel labels'];
+            msgboxText = ['There are some replicated channel labels'];
             title = 'Estudio: ERP Tab > Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
             
@@ -1189,6 +1409,9 @@ varargout{1} = ERP_plotset_box;
         observe_ERPDAT.Process_messg =1;
         %
         %%------------------------------time range-------------------------
+        ERPTab_plotset.timet_auto.Value=ERPTab_plotset.paras{1};
+        ERPTab_plotset.timetick_auto.Value=ERPTab_plotset.paras{2};
+        
         ERPTab_plotset_pars =  estudioworkingmemory('ERPTab_plotset_pars');
         timelowdef = observe_ERPDAT.ERP.times(1);
         timehighdef= observe_ERPDAT.ERP.times(end);
@@ -1197,7 +1420,7 @@ varargout{1} = ERP_plotset_box;
             Enablerange = 'off';
             timelow = timelowdef;
             timehigh = timehighdef;
-            xtickstep = xtickstepdef;
+            
         else
             Enablerange = 'on';
             try
@@ -1208,13 +1431,20 @@ varargout{1} = ERP_plotset_box;
                 timelow = timelowdef;
                 timehigh = timehighdef;
             end
+            
+        end
+        if ERPTab_plotset.timetick_auto.Value==1
+            xtickstep = xtickstepdef;
+            Enablerange1 = 'off';
+        else
             try
                 xtickstep = ERPTab_plotset_pars{2};
             catch
                 xtickstep = xtickstepdef;
             end
+            Enablerange1 = 'on';
         end
-        ERPTab_plotset.timet_auto.Value = ERPTab_plotset.timet_auto_reset;
+        
         
         if isempty(timelow) || numel(timelow)~=1 || timelow>=timehighdef
             timelow = timelowdef;
@@ -1231,90 +1461,113 @@ varargout{1} = ERP_plotset_box;
         end
         ERPTab_plotset.timet_low.Enable = Enablerange;
         ERPTab_plotset.timet_high.Enable =  Enablerange;
-        ERPTab_plotset.timet_step.Enable = Enablerange;
+        ERPTab_plotset.timet_step.Enable = Enablerange1;
         ERPTab_plotset.timet_low.String = num2str(timelow);
         ERPTab_plotset.timet_high.String = num2str(timehigh);
         ERPTab_plotset.timet_step.String =  num2str(xtickstep);
+        ERPTab_plotset_pars{1} = [timelow,timehigh];
+        ERPTab_plotset_pars{2}= xtickstep;
         %
-        %%------------------------y scale----------------------------------
-        if ERPTab_plotset.positive_up.Value==1
-            positive_up = 1;
-        else
-            positive_up = -1;
+        %%------------------------Amplitude Axis----------------------------------
+        
+        ERPTab_plotset.yscale_auto.Value = ERPTab_plotset.paras{3};
+        ERPTab_plotset.ytick_auto.Value = ERPTab_plotset.paras{4};
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
-        YScaledef =prctile(observe_ERPDAT.ERP.bindata(:)*positive_up,95)*2/3;
-        if YScaledef>= 0&&YScaledef <=0.1
-            YScaledef = 0.1;
-        elseif YScaledef< 0&& YScaledef > -0.1
-            YScaledef = -0.1;
-        else
-            YScaledef = round(YScaledef);
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        ERP1 = observe_ERPDAT.ERP;
+        ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+        [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
+        
+        try Yscale = ERPTab_plotset_pars{3}; catch Yscale=[]; end
+        try Yscales_low = Yscale(1);catch Yscales_low=[];end
+        try Yscales_high = Yscale(2);catch Yscales_high=[];end
+        if isempty(Yscales_low) || numel(Yscales_low)~=1
+            ERPTab_plotset.yscale_low.String = str2num(minydef);
+            Yscales_low= minydef;
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            observe_ERPDAT.Process_messg =4;
+        end
+        if isempty(Yscales_high) || numel(Yscales_high)~=1
+            ERPTab_plotset.yscale_high.String = str2num(maxydef);
+            Yscales_high= maxydef;
+            
+        end
+        if any(Yscales_high<=Yscales_low)
+            ERPTab_plotset.yscale_low.String = str2num(minydef);
+            ERPTab_plotset.yscale_high.String = str2num(maxydef);
+            Yscales_high= maxydef;
+            Yscales_low= minydef;
         end
         
-        if ERPTab_plotset.timeticks_auto_reset==1
+        if  ERPTab_plotset.yscale_auto.Value==0
+            ERPTab_plotset.yscale_low.Enable = 'on';
+            ERPTab_plotset.yscale_high.Enable = 'on';
+        else
+            Yscales_high= maxydef;
+            Yscales_low= minydef;
+            ERPTab_plotset.yscale_low.Enable = 'off';
+            ERPTab_plotset.yscale_high.Enable = 'off';
+        end
+        ERPTab_plotset.yscale_low.String = num2str(Yscales_low);
+        ERPTab_plotset.yscale_high.String = num2str(Yscales_high);
+        ERPTab_plotset_pars{3} = [Yscales_low,Yscales_high];
+        
+        
+        if ERPTab_plotset.ytick_auto.Value==1
             Enableflag = 'off';
-            yscale = YScaledef;
-            min_vspacing = 1.5;
+            defyticks = default_amp_ticks_viewer([Yscales_low,Yscales_high]);
+            defyticks = str2num(defyticks);
+            if ~isempty(defyticks) && numel(defyticks)>=2
+                ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
+            else
+                ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
+            end
         else
             Enableflag = 'on';
-            yscale= ERPTab_plotset_pars{3};
-            min_vspacing = ERPTab_plotset_pars{4};
+            yscale= ERPTab_plotset_pars{4};
+            ERPTab_plotset.yscale_step.String = num2str(yscale);
         end
-        if isempty(yscale) || numel(yscale)~=1 ||  any(yscale(:)<=0)
-            yscale = YScaledef;
-            ERPTab_plotset_pars{3} = yscale;
-        end
-        if isempty(min_vspacing) || numel(min_vspacing)~=1 || any(min_vspacing(:)<0)
-            min_vspacing =1.5;
-            ERPTab_plotset_pars{4}=1.5;
-        end
-        ERPTab_plotset.yscale_auto.Value = ERPTab_plotset.timeticks_auto_reset;
-        ERPTab_plotset.yscale_change.String = num2str(yscale);
-        ERPTab_plotset.yscale_change.Enable = Enableflag;
-        ERPTab_plotset.min_vspacing.String = num2str(min_vspacing);
-        ERPTab_plotset.min_vspacing.Enable = Enableflag;
+        ERPTab_plotset.yscale_step.Enable = Enableflag;
         
-        %
-        %%fill screeen?
-        try
-            fill_screen =  ERPTab_plotset_pars{5};
-        catch
-            fill_screen=1;
-        end
-        if isempty(fill_screen) || numel(fill_screen)~=1 || (fill_screen~=0 && fill_screen~=1)
-            fill_screen=1;
-            ERPTab_plotset_pars{5}=1;
-        end
-        ERPTab_plotset.fill_screen.Value = fill_screen;
         
         %
         %%Number of columns?
-        ColumnNum= ERPTab_plotset_pars{6};
+        ColumnNum= ERPTab_plotset_pars{5};
         if isempty(ColumnNum) || numel(ColumnNum)~=1 || any(ColumnNum<=0)
             ColumnNum =1;
-            ERPTab_plotset_pars{6}=1;
+            ERPTab_plotset_pars{5}=1;
         end
         ERPTab_plotset.columns.Value =ColumnNum; % 2E Plot_column
         ERPTab_plotset.columns.Enable = 'on';
         
         %
         %%polarity?
-        positive_up =  ERPTab_plotset_pars{7};
+        positive_up =  ERPTab_plotset_pars{6};
         if isempty(positive_up) ||  numel(positive_up)~=1 || (positive_up~=0&&positive_up~=1)
             positive_up=1;
-            ERPTab_plotset_pars{7}=1;
+            ERPTab_plotset_pars{6}=1;
         end
         ERPTab_plotset.positive_up.Value =positive_up;
         ERPTab_plotset.negative_up.Value = ~positive_up;
         %
         %%overlay?
-        Bin_chan_overlay=ERPTab_plotset_pars{8};
+        Bin_chan_overlay=ERPTab_plotset_pars{7};
         if isempty(Bin_chan_overlay) || numel(Bin_chan_overlay)~=1 || (Bin_chan_overlay~=0 && Bin_chan_overlay~=1)
             Bin_chan_overlay=0;
-            ERPTab_plotset_pars{8}=0;
+            ERPTab_plotset_pars{7}=0;
         end
         set(ERPTab_plotset.pagesel,'Value',Bin_chan_overlay+1);
-        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        
         
         %
         %%channel order
@@ -1346,13 +1599,13 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
             ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
         end
-        try rowNum = ERPTab_plotset_pars{9};catch rowNum=1;ERPTab_plotset_pars{9}=1; end
+        try rowNum = ERPTab_plotset_pars{8};catch rowNum=1;ERPTab_plotset_pars{8}=1; end
         ERPTab_plotset.rowNum_set.Value=rowNum;
         
         
-        try gridlayoutdef =  ERPTab_plotset_pars{10};catch gridlayoutdef =1; ERPTab_plotset_pars{10}=1;  end
+        try gridlayoutdef =  ERPTab_plotset_pars{9};catch gridlayoutdef =1; ERPTab_plotset_pars{9}=1;  end
         if isempty(gridlayoutdef) || numel(gridlayoutdef)~=1 || (gridlayoutdef~=0 && gridlayoutdef~=1)
-            gridlayoutdef =1; ERPTab_plotset_pars{10}=1;
+            gridlayoutdef =1; ERPTab_plotset_pars{9}=1;
         end
         ERPTab_plotset.gridlayoutdef.Value=gridlayoutdef;%%default grid layout?
         ERPTab_plotset.gridlayout_custom.Value = ~gridlayoutdef;
@@ -1366,16 +1619,6 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.rowNum_set.Enable =EnableFlag;
         ERPTab_plotset.columns.Enable =EnableFlag;
         
-        ChanArray=estudioworkingmemory('ERP_ChanArray');
-        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
-            ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            estudioworkingmemory('ERP_ChanArray',ChanArray);
-        end
-        BinArray= estudioworkingmemory('ERP_BinArray');
-        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
-            BinArray = [1:observe_ERPDAT.ERP.nbin];
-            estudioworkingmemory('ERP_BinArray',BinArray);
-        end
         if ERPTab_plotset.pagesel.Value==1
             nplot = numel(ChanArray);
             [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
@@ -1407,7 +1650,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray=gridlayputarraydef;
         end
         
-        try gridlayputarray= ERPTab_plotset_pars{11};catch gridlayputarray= gridlayputarraydef ;ERPTab_plotset_pars{11}=gridlayputarraydef; end
+        try gridlayputarray= ERPTab_plotset_pars{10};catch gridlayputarray= gridlayputarraydef ;ERPTab_plotset_pars{10}=gridlayputarraydef; end
         ERPTab_plotset.gridlayputarray=gridlayputarray;
         ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
@@ -1443,7 +1686,6 @@ varargout{1} = ERP_plotset_box;
         timeStartdef = observe_ERPDAT.ERP.times(1);
         timEnddef = observe_ERPDAT.ERP.times(end);
         [def xstepdef]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
-        
         timeStart = str2num(ERPTab_plotset.timet_low.String);
         if isempty(timeStart) || numel(timeStart)~=1 ||  timeStart>=observe_ERPDAT.ERP.times(end)
             timeStart = timeStartdef;
@@ -1476,53 +1718,60 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset_pars{1} = [timeStart,timEnd];
         
         xtickstep = str2num(ERPTab_plotset.timet_step.String);
-        if isempty(xtickstep) || numel(xtickstep)~=1 || xtickstep> floor((timEnd-timeStart)/2) || any(xtickstep<=0)
+        if isempty(xtickstep) || numel(xtickstep)~=1 ||  any(xtickstep<=0)
             xtickstep = xstepdef;
             ERPTab_plotset.timet_step.String = num2str(xtickstep);
-            MessageViewer= char(['Plot Setting > Apply: the step of the time range should be a positive number that belows',32,num2str(floor((timEnd-timeStart)/2))]);
+            MessageViewer= char(['Plot Setting > Apply: the step of the time ticks should be a positive number that belows',32,num2str(floor((timEnd-timeStart)/2))]);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
         ERPTab_plotset_pars{2} = xtickstep;
         
         %
-        %%Y scale
-        if ERPTab_plotset.positive_up.Value==1
-            positive_up = 1;
-        else
-            positive_up = -1;
+        %%Amplitude Axis
+        BinArray= estudioworkingmemory('ERP_BinArray');
+        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            estudioworkingmemory('ERP_BinArray',BinArray);
         end
-        YScaledef =prctile(observe_ERPDAT.ERP.bindata(:)*positive_up,95)*2/3;
-        if YScaledef>= 0&&YScaledef <=0.1
-            YScaledef = 0.1;
-        elseif YScaledef< 0&& YScaledef > -0.1
-            YScaledef = 0.1;
-        else
-            YScaledef = round(YScaledef);
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
+        ERP1 = observe_ERPDAT.ERP;
+        ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+        [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
         
-        Yscales = str2num(ERPTab_plotset.yscale_change.String);
-        if isempty(Yscales) || numel(Yscales)~=1 || any(Yscales(:)<=0.1)
-            ERPTab_plotset.yscale_change.String = str2num(YScaledef);
-            Yscales= YScaledef;
-            MessageViewer= char(['Plot Setting > Apply: the tick of y scale should be lager than 0.1']);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=4;
+        Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
+        Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
+        if isempty(Yscales_low) || numel(Yscales_low)~=1
+            ERPTab_plotset.yscale_low.String = str2num(minydef);
+            Yscales_low= minydef;
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            observe_ERPDAT.Process_messg =4;
         end
-        ERPTab_plotset_pars{3} = Yscales;
+        if isempty(Yscales_high) || numel(Yscales_high)~=1
+            ERPTab_plotset.yscale_high.String = str2num(maxydef);
+            Yscales_high= maxydef;
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
+            observe_ERPDAT.Process_messg =4;
+        end
+        if any(Yscales_high<=Yscales_low)
+            ERPTab_plotset.yscale_low.String = str2num(minydef);
+            ERPTab_plotset.yscale_high.String = str2num(maxydef);
+            Yscales_high= maxydef;
+            Yscales_low= minydef;
+            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            observe_ERPDAT.Process_messg =4;
+        end
+        ERPTab_plotset_pars{3} = [Yscales_low,Yscales_high];
         
-        min_vspacing = str2num(ERPTab_plotset.min_vspacing.String);
-        if isempty(min_vspacing) || numel(min_vspacing)~=1 || any(min_vspacing<=0)
-            min_vspacing=1.5;
-            ERPTab_plotset.min_vspacing.String = '1.5';
-            MessageViewer= char(['Plot Setting > Apply: the spacing for y scale should be a positive value']);
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=4;
-        end
-        ERPTab_plotset_pars{4} = min_vspacing;
-        %
-        %%fill screen?
-        ERPTab_plotset_pars{5} = ERPTab_plotset.fill_screen.Value;
+        
+        ERPTab_plotset_pars{4} = str2num(ERPTab_plotset.yscale_step.String);
+        
         %%Number of columns
         columNum = round(ERPTab_plotset.columns.Value);
         if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
@@ -1532,38 +1781,30 @@ varargout{1} = ERP_plotset_box;
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
-        ERPTab_plotset_pars{6} =columNum;
+        ERPTab_plotset_pars{5} =columNum;
         
         %
         %%polarity (positive up?)
-        ERPTab_plotset_pars{7} =ERPTab_plotset.positive_up.Value;
+        ERPTab_plotset_pars{6} =ERPTab_plotset.positive_up.Value;
         %
         %%overlay?
         if ERPTab_plotset.pagesel.Value==1
-            ERPTab_plotset_pars{8} =0;
+            ERPTab_plotset_pars{7} =0;
         else
-            ERPTab_plotset_pars{8} =  1;
+            ERPTab_plotset_pars{7} =  1;
         end
         
-        ERPTab_plotset_pars{9}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
-        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
+        ERPTab_plotset_pars{8}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
+        ERPTab_plotset_pars{9} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
         
-        ChanArray=estudioworkingmemory('ERP_ChanArray');
-        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
-            ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            estudioworkingmemory('ERP_ChanArray',ChanArray);
-        end
-        BinArray= estudioworkingmemory('ERP_BinArray');
-        if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
-            BinArray = [1:observe_ERPDAT.ERP.nbin];
-            estudioworkingmemory('ERP_BinArray',BinArray);
-        end
+        
+        
         if ERPTab_plotset.pagesel.Value==1
             [~,plotArraystr] = readlocs(observe_ERPDAT.ERP.chanlocs(ChanArray));
         else
             plotArraystr= observe_ERPDAT.ERP.bindescr(BinArray);
         end
-        rowNum = ERPTab_plotset_pars{9} ;
+        rowNum = ERPTab_plotset_pars{8} ;
         gridlayputarraydef = cell(rowNum,columNum);
         count = 0;
         for ii = 1:rowNum
@@ -1588,7 +1829,7 @@ varargout{1} = ERP_plotset_box;
         else
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
-        ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
+        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayputarray;
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);%%save the changed paras to memory file
         %%channel orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
@@ -1623,6 +1864,12 @@ varargout{1} = ERP_plotset_box;
             end
         end
         estudioworkingmemory('ERP_chanorders',{ERPTab_plotset.chanorderIndex,ERPTab_plotset.chanorder});
+        
+        ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
+        ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
+        ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
+        ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
+        
         observe_ERPDAT.Count_currentERP=1;
     end
 
@@ -1642,11 +1889,18 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.timet_auto.Enable =enbaleflag;
         ERPTab_plotset.timet_low.Enable =enbaleflag;
         ERPTab_plotset.timet_high.Enable =enbaleflag;
+        
+        ERPTab_plotset.timetick_auto.Enable =enbaleflag;
         ERPTab_plotset.timet_step.Enable =enbaleflag;
+        
         ERPTab_plotset.yscale_auto.Enable =enbaleflag;
-        ERPTab_plotset.yscale_change.Enable =enbaleflag;
-        ERPTab_plotset.min_vspacing.Enable =enbaleflag;
-        ERPTab_plotset.fill_screen.Enable =enbaleflag;
+        ERPTab_plotset.yscale_low.Enable =enbaleflag;
+        ERPTab_plotset.yscale_high.Enable =enbaleflag;
+        
+        ERPTab_plotset.ytick_auto.Enable =enbaleflag;
+        ERPTab_plotset.yscale_step.Enable =enbaleflag;
+        
+        
         ERPTab_plotset.columns.Enable =enbaleflag;
         ERPTab_plotset.positive_up.Enable =enbaleflag;
         ERPTab_plotset.negative_up.Enable =enbaleflag;
@@ -1668,15 +1922,8 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Count_currentERP =4;
             return;
         end
-        if ERPTab_plotset.timet_auto.Value==1
-            ERPTab_plotset.timet_low.Enable ='off';
-            ERPTab_plotset.timet_high.Enable ='off';
-            ERPTab_plotset.timet_step.Enable ='off';
-        end
-        if ERPTab_plotset.yscale_auto.Value ==1
-            ERPTab_plotset.yscale_change.Enable ='off';
-            ERPTab_plotset.min_vspacing.Enable ='off';
-        end
+        
+        
         if ERPTab_plotset.chanorder_number.Value==1 ||  ERPTab_plotset.chanorder_front.Value==1
             ERPTab_plotset.chanorder_custom_exp.Enable ='off';
             ERPTab_plotset.chanorder_custom_imp.Enable ='off';
@@ -1688,8 +1935,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.timet_low.Enable = 'off';
             ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
             ERPTab_plotset.timet_high.Enable =  'off';
-            [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
-            ERPTab_plotset.timet_step.String = num2str(xstep);
         end
         timeStart = str2num(ERPTab_plotset.timet_low.String);
         if isempty(timeStart) || numel(timeStart)~=1 || timeStart>observe_ERPDAT.ERP.times(end) %%|| timeStart<observe_ERPDAT.ERP.times(1)
@@ -1697,12 +1942,10 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
         end
         timEnd = str2num(ERPTab_plotset.timet_high.String);
-        
         if isempty(timEnd) || numel(timEnd)~=1 || timEnd<observe_ERPDAT.ERP.times(1) %%|| timEnd> observe_ERPDAT.ERP.times(end)
             timEnd = observe_ERPDAT.ERP.times(end);
             ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
         end
-        
         if timeStart>timEnd
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
             ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
@@ -1710,58 +1953,74 @@ varargout{1} = ERP_plotset_box;
             timEnd = observe_ERPDAT.ERP.times(end);
         end
         ERPTab_plotset_pars{1} = [timeStart,timEnd];
+        [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [timeStart,timEnd]);
+        if ERPTab_plotset.timetick_auto.Value==1
+            ERPTab_plotset.timet_step.String = num2str(xstep);
+            ERPTab_plotset.timet_step.Enable = 'off';
+        end
         xtickstep = str2num(ERPTab_plotset.timet_step.String);
         if isempty(xtickstep) || numel(xtickstep)~=1 || xtickstep> floor((timEnd-timeStart)/2)
-            [def xtickstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [timEnd,timeStart]);
-            ERPTab_plotset.timet_step.String = num2str(xtickstep);
+            xtickstep= xstep;
+            ERPTab_plotset.timet_step.String = num2str(xstep);
         end
         ERPTab_plotset_pars{2} = xtickstep;
         %
-        %%Y scale
-        if ERPTab_plotset.positive_up.Value==1
-            positive_up = 1;
-        else
-            positive_up = -1;
-        end
-        YScaledef =prctile(observe_ERPDAT.ERP.bindata(:)*positive_up,95)*2/3;
-        if YScaledef>= 0&&YScaledef <=0.1
-            YScaledef = 0.1;
-        elseif YScaledef< 0&& YScaledef > -0.1
-            YScaledef = -0.1;
-        else
-            YScaledef = round(YScaledef);
-        end
-        if ERPTab_plotset.yscale_auto.Value ==1
-            ERPTab_plotset.yscale_change.String = num2str(YScaledef);
-            ERPTab_plotset.min_vspacing.String = 1.5;
-        end
-        Yscales = str2num(ERPTab_plotset.yscale_change.String);
-        if isempty(Yscales) || numel(Yscales)~=1 || any(Yscales(:)<=0.1)
-            ERPTab_plotset.yscale_change.String = num2str(YScaledef);
-            Yscales= YScaledef;
-        end
-        ERPTab_plotset_pars{3} = Yscales;
-        
-        min_vspvalue = str2num(ERPTab_plotset.min_vspacing.String);
-        if isempty(min_vspvalue) || numel(min_vspvalue)~=1 || any(min_vspvalue(:)<=0)
-            ERPTab_plotset.min_vspacing.String = '1.5';
-            min_vspvalue = 1.5;
-        end
-        ERPTab_plotset_pars{4} = min_vspvalue;
-        
-        %%fill screen?
-        ERPTab_plotset_pars{5} = ERPTab_plotset.fill_screen.Value;
-        
-        ChanArray=estudioworkingmemory('ERP_ChanArray');
-        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
-            ChanArray = [1:observe_ERPDAT.ERP.nchan];
-            estudioworkingmemory('ERP_ChanArray',ChanArray);
-        end
+        %%Amplitude Axis
+        %%Yscale
         BinArray= estudioworkingmemory('ERP_BinArray');
         if isempty(BinArray) || any(BinArray<=0) || any(BinArray>observe_ERPDAT.ERP.nbin)
             BinArray = [1:observe_ERPDAT.ERP.nbin];
             estudioworkingmemory('ERP_BinArray',BinArray);
         end
+        ChanArray=estudioworkingmemory('ERP_ChanArray');
+        if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+            estudioworkingmemory('ERP_ChanArray',ChanArray);
+        end
+        ERP1 = observe_ERPDAT.ERP;
+        ERP1.bindata = ERP1.bindata(ChanArray,:,:);
+        [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
+        if ERPTab_plotset.yscale_auto.Value ==1
+            ERPTab_plotset.yscale_low.Enable = 'off';
+            ERPTab_plotset.yscale_high.Enable = 'off';
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+        end
+        Yscales_low = str2num(ERPTab_plotset.yscale_low.String);
+        Yscales_high = str2num(ERPTab_plotset.yscale_high.String);
+        if isempty(Yscales_low) || numel(Yscales_low)~=1
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            Yscales_low= minydef;
+        end
+        if isempty(Yscales_high) || numel(Yscales_high)~=1
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+            Yscales_high= maxydef;
+        end
+        
+        if any(Yscales_high<=Yscales_low)
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            Yscales_low= minydef;
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+            Yscales_high= maxydef;
+        end
+        ERPTab_plotset_pars{3} = [Yscales_low,Yscales_high];
+        
+        if ERPTab_plotset.ytick_auto.Value==1
+            defyticks = default_amp_ticks_viewer([Yscales_low,Yscales_high]);
+            defyticks = str2num(defyticks);
+            if ~isempty(defyticks) && numel(defyticks)>=2
+                
+                ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
+            else
+                ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
+            end
+            ERPTab_plotset.yscale_step.Enable = 'off';
+        end
+        
+        ERPTab_plotset_pars{4} = str2num(ERPTab_plotset.yscale_step.String);
+        
         if ERPTab_plotset.pagesel.Value==1
             nplot = numel(ChanArray);
             plotarray = ChanArray;
@@ -1804,20 +2063,26 @@ varargout{1} = ERP_plotset_box;
             columNum =1;
             ERPTab_plotset.columns.Value = 1;
         end
-        ERPTab_plotset_pars{6} =columNum;
+        ERPTab_plotset_pars{5} =columNum;
         %%polarity (positive up?)
-        ERPTab_plotset_pars{7} =ERPTab_plotset.positive_up.Value;
+        ERPTab_plotset_pars{6} =ERPTab_plotset.positive_up.Value;
         
         %%overlay?
         if ERPTab_plotset.pagesel.Value==1
-            ERPTab_plotset_pars{8} =0;
+            ERPTab_plotset_pars{7} =0;
         else
-            ERPTab_plotset_pars{8} =  1;
+            ERPTab_plotset_pars{7} =  1;
         end
-        ERPTab_plotset_pars{9}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
-        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
-        ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
+        ERPTab_plotset_pars{8}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
+        ERPTab_plotset_pars{9} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
+        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayputarray;
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        
+        ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
+        ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
+        ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
+        ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
+        
         observe_ERPDAT.Count_currentERP=4;
     end
 
@@ -1894,7 +2159,6 @@ varargout{1} = ERP_plotset_box;
             end
         end
     end
-
 end
 
 

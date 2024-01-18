@@ -66,7 +66,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
             2,'String', ERPlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
         try ERPsetops.butttons_datasets.Value=1; catch end;
-        set(vBox, 'Sizes', 350);
+        set(vBox, 'Sizes', 290);
         
         %%---------------------Options for ERPsets-----------------------------------------------------
         ERPsetops.buttons2 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);

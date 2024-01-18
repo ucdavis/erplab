@@ -121,7 +121,7 @@ if isempty(xtickstep) || numel(xtickstep)~=1 || any(xtickstep<=0) || xtickstep >
 end
 
 %%y scale
-try PolarityValue=ERPTab_plotset_pars{7};catch PolarityValue=1; end
+try PolarityValue=ERPTab_plotset_pars{6};catch PolarityValue=1; end
 if isempty(PolarityValue) || numel(PolarityValue)~=1 || (PolarityValue~=1&&PolarityValue~=0)
     PolarityValue=1;
 end
@@ -132,38 +132,79 @@ else
     positive_up = -1;
     PolarityWave=0;
 end
+ERP1 = ERP;
+ERP1.bindata = ERP.bindata(ChanArray,:,:);
+[def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
+minydef = floor(minydef);
+maxydef = ceil(maxydef);
 
-YScaledef =prctile(ERP.bindata(:)*positive_up,95)*2/3;
-if YScaledef>= 0&&YScaledef <=0.1
-    YScaledef = 0.1;
-elseif YScaledef< 0&& YScaledef > -0.1
-    YScaledef = 0.1;
+
+try yscale = ERPTab_plotset_pars{3};catch yscale= [minydef,maxydef]; end
+if isempty(yscale) || numel(yscale)~=2
+    yscale= [minydef,maxydef];
+end
+
+YtickSpace=1.5;
+Fillscreen=1;
+
+defyticks = default_amp_ticks_viewer(yscale);
+defyticks = str2num(defyticks);
+if ~isempty(defyticks) && numel(defyticks)>=2
+    ytickstepdef = min(diff(defyticks));
 else
-    YScaledef = round(YScaledef);
+    ytickstepdef = floor((yscale(2)-yscale(1))/2);
 end
-try YtickInterval = ERPTab_plotset_pars{3};catch YtickInterval= YScaledef; end
-if isempty(YtickInterval) || numel(YtickInterval)~=1 || any(YtickInterval<0.1)
-    YtickInterval= YScaledef;
-end
-
-try YtickSpace  =ERPTab_plotset_pars{4};catch YtickSpace=1.5; end
-if isempty(YtickSpace) || numel(YtickSpace)~=1 || any(YtickSpace<=0)
-    YtickSpace=1.5;
+try yscale_step = ERPTab_plotset_pars{4};catch yscale_step=ytickstepdef;  end
+if isempty(yscale_step) || numel(yscale_step)~=1 || any(yscale_step<=0)
+    yscale_step = ytickstepdef;
 end
 
-try Fillscreen = ERPTab_plotset_pars{5};catch Fillscreen=1; end
-if isempty(Fillscreen) || numel(Fillscreen)~=1 || (Fillscreen~=0 && Fillscreen~=1)
-    Fillscreen=1;
+Yticks = [];
+if yscale(2)<=0 || yscale(1)>=0
+    Yticks = yscale(1);
+    for ii=1:1000
+        ytickcheck = Yticks(end)+yscale_step;
+        if ytickcheck>yscale(2)
+            break;
+        else
+            Yticks(numel(Yticks)+1) =ytickcheck;
+        end
+    end
+elseif yscale(1)<0  && yscale(2)>0
+    Yticks = 0;
+    for ii=1:1000
+        ytickcheck = Yticks(1)-yscale_step;
+        if ytickcheck<yscale(1)
+            break;
+        else
+            Yticks = [ytickcheck,Yticks];
+        end
+    end
+    for ii=1:1000
+        ytickcheck = Yticks(end)+yscale_step;
+        if ytickcheck>yscale(2)
+            break;
+        else
+            Yticks = [Yticks,ytickcheck];
+        end
+    end
+else
+    Yticks = yscale;
+end
+if isempty(Yticks) || numel(Yticks)==1
+    Yticks = yscale;
 end
 
-try columNum =ERPTab_plotset_pars{6}; catch columNum=1; end
+
+
+try columNum =ERPTab_plotset_pars{5}; catch columNum=1; end
 
 if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
     columNum=1;
 end
 
 
-try Binchan_Overlay = ERPTab_plotset_pars{8}; catch Binchan_Overlay=0; end
+try Binchan_Overlay = ERPTab_plotset_pars{7}; catch Binchan_Overlay=0; end
 if isempty(Binchan_Overlay) || numel(Binchan_Overlay)~=1 || (Binchan_Overlay~=0 && Binchan_Overlay~=1)
     Binchan_Overlay=0;
 end
@@ -175,7 +216,6 @@ if Binchan_Overlay==0
     PLOTORG = [1 2 3];
     nplot = numel(BinArray);
     LegendName = ERP.bindescr(BinArray);
-    
 else
     rowNumdef = numel(BinArray);
     plotArray = BinArray;
@@ -185,10 +225,10 @@ else
     [~, chanlabels, ~, ~, ~] = readlocs(ERP.chanlocs(ChanArray));
     LegendName = chanlabels(ChanArray);
 end
-try rowNum = ERPTab_plotset_pars{9};catch rowNum=rowNumdef; end
+try rowNum = ERPTab_plotset_pars{8};catch rowNum=rowNumdef; end
 
 
-try layoutDef = ERPTab_plotset_pars{10};catch layoutDef=1;end
+try layoutDef = ERPTab_plotset_pars{9};catch layoutDef=1;end
 % if layoutDef==1
 %     rowNum=rowNumdef;
 % end
@@ -208,7 +248,7 @@ for Numofrow = 1:rowNum
     end
 end
 GridposArray =zeros(rowNum,columNum);
-try DataDf = ERPTab_plotset_pars{11};catch DataDf = [];end
+try DataDf = ERPTab_plotset_pars{10};catch DataDf = [];end
 if layoutDef==1
     GridposArray = GridposArraydef;
 else
@@ -274,8 +314,8 @@ xlabelFontsize = FonsizeDefault;
 xlabelFontcolor = [0 0 0];
 Xunits = 'off';
 MinorticksX = [0];
-Yscales = [-YtickInterval YtickInterval];
-Yticks = [-YtickInterval,0,YtickInterval];
+Yscales = yscale;
+
 yticklabel = 'on';
 yunits = 'off';
 MinorticksY = 0;
@@ -300,7 +340,7 @@ end
 
 FigOutpos = [ScreenPos(3)*new_pos(1)/100,ScreenPos(4)*new_pos(2)/100]*8/9;
 if isempty(FigureName)
-FigureName = ERP.erpname;
+    FigureName = ERP.erpname;
 end
 
 if matlabfig==1
@@ -320,8 +360,8 @@ else
     OutputViewerparerp{3} =timeStart;
     OutputViewerparerp{4} =timEnd;
     OutputViewerparerp{5} =xtickstep;
-    OutputViewerparerp{6} =YtickInterval;
-    OutputViewerparerp{7} =YtickSpace;
+    OutputViewerparerp{6} =yscale;
+    OutputViewerparerp{7} =Yticks;
     OutputViewerparerp{8} =Fillscreen;
     OutputViewerparerp{9} = columNum;
     OutputViewerparerp{10} =positive_up;
