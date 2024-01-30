@@ -208,11 +208,10 @@ for s = 1:nSubs %decoding is performed within each subject independently
             
         end
         
-
         %% Step 7: Loop through each timepoint 
         % Do SVM_ECOC at each time point
-        parfor (t = 1:nSamps,ParWorkers)
-%             for t = 1:nSamps
+%         parfor (t = 1:nSamps,ParWorkers)
+            for t = 1:nSamps
 
             mdl = []; 
             % grab data for timepoint t

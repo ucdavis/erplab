@@ -218,9 +218,13 @@ erpworkingmemory('f_EEG_proces_messg_pre',{'',0});
 erpworkingmemory('ViewerFlag',0);
 erpworkingmemory('Change2epocheeg',0);%%Indicate whether we need to force "Epoched EEG" to be selected in EEGsets panel after epoched EEG.
 erpworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/label ICs.
-
+estudioworkingmemory('ERPTab_zoomSpace',0);%%zoom in/out for erp tab
 EStudio_gui_erp_totl = struct();
 EStudio_gui_erp_totl = createInterface();
+
+f_redrawERP();
+
+f_redrawEEG_Wave_Viewer();
 
 timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
@@ -248,7 +252,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             'HandleVisibility', 'on',...
             'tag', 'EStudio',...
             'DockControls','off');%%donot allow to dock
-        
         % set the window size
         %%screen size
         ScreenPos = [];
@@ -339,7 +342,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eeg_winsize = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Window Size',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
         EStudio_gui_erp_totl.eeg_figurecommand = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Show Command',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         EStudio_gui_erp_totl.eeg_figuresaveas = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Save Figure as',...
@@ -412,7 +415,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         uiextras.Empty('Parent', commandfig_panel); % 1A
         EStudio_gui_erp_totl.erp_winsize = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Window Size',...
-            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+            'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
         EStudio_gui_erp_totl.erp_figurecommand = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Show Command',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Save Figure as',...
@@ -429,6 +432,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
         EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
         EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
+        
     end % createInterface
 
 

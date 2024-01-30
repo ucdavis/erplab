@@ -530,6 +530,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             disp('User selected Cancel');
             return;
         end
+        
         [EEG,  Lastcom]= pop_loadset('filename',filename,'filepath',filepath);
         EEG = eegh(Lastcom, EEG);
         eegh(Lastcom);%%ALLCOM
@@ -539,7 +540,10 @@ estudioworkingmemory('Startimes',0);%%set default value
             OLDSET = length(ALLEEG);
         end
         [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
+        
         eegh(LASTCOM);
+        
+        
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0

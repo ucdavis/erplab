@@ -24,6 +24,7 @@ end
 if isempty(ColorB_def)
     ColorB_def = [0.95 0.95 0.95];
 end
+
 % We first clear the existing axes ready to build a new one
 if ishandle( EStudio_gui_erp_totl.ViewAxes )
     delete( EStudio_gui_erp_totl.ViewAxes );
@@ -38,6 +39,30 @@ set(0,'units','inches')
 Inch_SS = get(0,'screensize');
 %Calculates the resolution (pixels per inch)
 Resolation = Pix_SS./Inch_SS;
+
+
+try
+    EStudio_gui_erp_totl.ScrollVerticalOffsets = EStudio_gui_erp_totl.ViewAxes.VerticalOffsets/EStudio_gui_erp_totl.ViewAxes.Heights;
+    EStudio_gui_erp_totl.ScrollHorizontalOffsets = EStudio_gui_erp_totl.ViewAxes.HorizontalOffsets/EStudio_gui_erp_totl.ViewAxes.Widths;
+catch
+    EStudio_gui_erp_totl.ScrollVerticalOffsets=0;
+    EStudio_gui_erp_totl.ScrollHorizontalOffsets=0;
+end
+zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
+if isempty(zoomSpace)
+    zoomSpace = 0;
+else
+    if zoomSpace<0
+        zoomSpace =0;
+    end
+end
+if zoomSpace ==0
+    EStudio_gui_erp_totl.ScrollVerticalOffsets=0;
+    EStudio_gui_erp_totl.ScrollHorizontalOffsets=0;
+end
+
+
+
 ERPArray= estudioworkingmemory('selectederpstudio');
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     if isempty(ERPArray) ||any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) || any(ERPArray(:)<=0)
@@ -90,11 +115,20 @@ EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_to
 
 %%save figure, command....
 commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+
+EStudio_gui_erp_totl.zoom_in = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom In',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomin,'Enable',Enableflag);
+EStudio_gui_erp_totl.zoom_edit = uicontrol('Parent',commandfig_panel,'Style','edit','String',num2str(zoomSpace),...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomedit,'Enable',Enableflag);
+
+EStudio_gui_erp_totl.zoom_out = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom Out',...
+    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout,'Enable',Enableflag);
+
 EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Advanced Wave Viewer',...
     'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
 EStudio_gui_erp_totl.erp_winsize = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Window Size',...
-    'Callback',@EStudiowinsize, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
+    'Callback',@EStudiowinsize, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 EStudio_gui_erp_totl.erp_figurecommand = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Show Command',...
     'Callback',@Show_command, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Save Figure as',...
@@ -102,7 +136,7 @@ EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Sty
 EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Create Static/Exportable Plot',...
     'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [150 -1 100 100 100 170 5]);
+set(commandfig_panel, 'Sizes', [70 50 70 150 -1 100 100 100 170 5]);
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -160,31 +194,55 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     else
         return;
     end
-    pb_height =  1.5*Resolation(4);  %px
-    Fillscreen = OutputViewerparerp{8};
-    if isempty(Fillscreen) || numel(Fillscreen)~=1 || (Fillscreen~=0 && Fillscreen~=1)
-        Fillscreen=1;
-    end
-    BinchanOverlay = OutputViewerparerp{11};
-    if isempty(BinchanOverlay) || numel(BinchanOverlay)~=1   || (BinchanOverlay~=0 && BinchanOverlay~=1 )
-        BinchanOverlay=0;
-    end
-    if BinchanOverlay == 0
-        splot_n = numel(OutputViewerparerp{1});
-    else
-        splot_n = numel(OutputViewerparerp{2});
+    pb_height =  1*Resolation(4);  %px
+    
+    Fill=1;
+    splot_n = OutputViewerparerp{12};
+    if isempty(splot_n) || any(splot_n<=0)
+        splot_n = size(OutputViewerparerp{13},1);
     end
     EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
     EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
     EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
-    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fillscreen
-        pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
-    end
-    %         EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
-    EStudio_gui_erp_totl.ViewAxes.Heights = 0.95*EStudio_gui_erp_totl.ViewAxes.Position(4);
+    
     EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
+    
+    if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fill
+        pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
+    else
+        pb_height = 0.9*pb_height;
+    end
+    if zoomSpace <0
+        EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
+    else
+        EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
+    end
+    
+    widthViewer = EStudio_gui_erp_totl.ViewAxes.Position(3)-EStudio_gui_erp_totl.ViewAxes.Position(2);
+    if zoomSpace <0
+        EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer;
+    else
+        EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
+    end
+    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
+    
+    %%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
+    if zoomSpace~=0 && zoomSpace>0
+        if EStudio_gui_erp_totl.ScrollVerticalOffsets<=1
+            try
+                EStudio_gui_erp_totl.ViewAxes.VerticalOffsets= EStudio_gui_erp_totl.ScrollVerticalOffsets*EStudio_gui_erp_totl.ViewAxes.Heights;
+            catch
+            end
+        end
+        if EStudio_gui_erp_totl.ScrollHorizontalOffsets<=1
+            try
+                EStudio_gui_erp_totl.ViewAxes.HorizontalOffsets =EStudio_gui_erp_totl.ScrollHorizontalOffsets*EStudio_gui_erp_totl.ViewAxes.Widths;
+            catch
+            end
+        end
+    end
+    
 end
 EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
 EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
@@ -195,6 +253,111 @@ end
 %%-------------------------------------------------------------------------
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
+
+
+%%----------------Zoom in-------------------------------------------------
+function zoomin(~,~)
+global observe_ERPDAT;
+
+[messgStr,viewerpanelIndex] = f_check_erptab_panelchanges();
+if ~isempty(messgStr)
+    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
+end
+zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
+if isempty(zoomSpace)
+    estudioworkingmemory('ERPTab_zoomSpace',0);
+else
+    if zoomSpace<0
+        zoomSpace = 0;
+    end
+    zoomSpace =zoomSpace+10;
+    estudioworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
+end
+MessageViewer= char(strcat('Zoom In'));
+erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+try
+    observe_ERPDAT.Process_messg =1;
+    f_redrawERP();
+    observe_ERPDAT.Process_messg =2;
+catch
+    observe_ERPDAT.Process_messg =3;
+end
+end
+
+
+function zoomedit(Source,~)
+global observe_ERPDAT;
+
+[messgStr,viewerpanelIndex] = f_check_erptab_panelchanges();
+if ~isempty(messgStr)
+    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
+end
+
+zoomspaceEdit = str2num(Source.String);
+MessageViewer= char(strcat('Zoom Editor'));
+erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
+    estudioworkingmemory('ERPTab_zoomSpace',zoomspaceEdit);
+    try
+        observe_ERPDAT.Process_messg =1;
+        f_redrawERP();
+        observe_ERPDAT.Process_messg =2;
+        return;
+    catch
+        observe_ERPDAT.Process_messg =3;
+        return;
+    end
+else
+    if isempty(zoomspaceEdit)
+        erpworkingmemory('f_ERP_proces_messg',['\n Zoom Editor:The input must be a number']);
+        observe_ERPDAT.Process_messg =4;
+        return;
+    end
+    if numel(zoomspaceEdit)>1
+        erpworkingmemory('f_ERP_proces_messg',['Zoom Editor:The input must be a single number']);
+        observe_ERPDAT.Process_messg =4;
+        return;
+    end
+    if zoomspaceEdit<0
+        erpworkingmemory('f_ERP_proces_messg',[' Zoom Editor:The input must be a positive number.']);
+        observe_ERPDAT.Process_messg =4;
+        return;
+    end
+end
+
+end
+
+
+%%----------------Zoom out-------------------------------------------------
+function zoomout(~,~)
+global observe_ERPDAT;
+
+[messgStr,viewerpanelIndex] = f_check_erptab_panelchanges();
+if ~isempty(messgStr)
+    observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels +1;
+end
+
+zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
+if isempty(zoomSpace)
+    estudioworkingmemory('ERPTab_zoomSpace',0)
+else
+    zoomSpace =zoomSpace-10;
+    if zoomSpace <0
+        zoomSpace =0;
+    end
+    estudioworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
+end
+MessageViewer= char(strcat('Zoom Out'));
+erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+observe_ERPDAT.Process_messg =1;
+f_redrawERP();
+observe_ERPDAT.Process_messg =2;
+end
+
+
+
+
+
 
 %%--------------------Setting for EStudio window size----------------------
 function EStudiowinsize(~,~)
@@ -698,15 +861,32 @@ qtimeRangedef = round(qtimeRange/100)*100;
 qXticks = xtickstep+qtimeRangedef(1);
 for ii=1:1000
     xtickcheck = qXticks(end)+xtickstep;
-    if xtickcheck>qtimeRangedef(2)
+    if xtickcheck>qtimeRange(2)
         break;
     else
         qXticks(numel(qXticks)+1) =xtickcheck;
     end
 end
-if isempty(qXticks)|| stepX==xtickstep
+if isempty(qXticks)
     qXticks =  timeticksdef;
 end
+
+[xxx, latsamp1, latdiffms] = closest(ERP.times, qtimeRange);
+qtimes = ERP.times(latsamp1(1):latsamp1(2));
+
+
+[xxx, latsamp, latdiffms] = closest(qtimes, 0);
+if isempty(latsamp) || any(latsamp<=0)
+    labelxrange = 0;
+else
+    labelxrange = qtimes(latsamp)-qtimes(1);
+end
+if labelxrange<=0
+    CBELabels = [1 100 1];
+else
+    CBELabels(1) = 100*labelxrange/(qtimeRange(2)-qtimeRange(1))+1;
+end
+
 %%remove the margins of a plot
 ax = waveview;
 outerpos = ax.OuterPosition;
@@ -965,14 +1145,14 @@ for Numofrows = 1:rowNums
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             ypercentage =100;
             ypos_LABEL = (qYScalestras(end)-qYScalestras(1))*(ypercentage)/100+qYScalestras(1);
-            xpercentage = 50;
+            xpercentage = CBELabels(1);
             xpos_LABEL = (Xtimerangetrasf(end)-Xtimerangetrasf(1))*xpercentage/100 + Xtimerangetrasf(1);
             labelcbe =  strrep(char(labelcbe),'_','\_');
             try
                 labelcbe = regexp(labelcbe, '\;', 'split');
             catch
             end
-            text(waveview,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe),'FontName', fontnames,'HorizontalAlignment', 'center');%'FontWeight', 'bold',
+            text(waveview,xpos_LABEL,ypos_LABEL+OffSetY(Numofrows), char(labelcbe),'FontName', fontnames,'HorizontalAlignment', 'left');%'FontWeight', 'bold',
         else
         end
         try

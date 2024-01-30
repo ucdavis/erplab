@@ -190,7 +190,7 @@ if ~isempty(FigureName)
     hbig= axes('Parent',fig_gui,'Color','none','Box','on','FontWeight','normal', 'XTick', [], 'YTick', []);
     hold on;
 end
-
+% drawnow;
 try
     Pos = hbig.Position;
     hbig.Position = [Pos(1)*0.5,Pos(2)*0.95,Pos(3)*1.15,Pos(4)*0.95];

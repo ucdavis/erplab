@@ -134,7 +134,7 @@ set(EStudio_gui_erp_totl.eeg_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag)
 set(EStudio_gui_erp_totl.eeg_zoom_out_small,'Callback',@zoomout_small,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.eeg_winsize,'Callback',@EStudiowinsize,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_winsize,'Callback',@EStudiowinsize,'Enable','on');
 set(EStudio_gui_erp_totl.eeg_figurecommand,'Callback',@Show_command,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
@@ -445,6 +445,7 @@ end
 function zoomout_small(~,~)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
+% tic;%
 MessageViewer= char(strcat('Increasing start time for the displayed EEG (>)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
 observe_EEGDAT.eeg_panel_message=1;
@@ -509,6 +510,9 @@ estudioworkingmemory('Startimes',Startimes);
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
+% timeElapsed = toc;
+% fprintf([32,'It took',32,num2str(timeElapsed),'s plot eeg waves.\n\n']);
+
 end
 
 
@@ -627,7 +631,6 @@ erpworkingmemory('f_EEG_proces_messg',MessageViewer);
 EStudio_gui_erp_totl.eeg_zoom_edit.String =num2str(Startimes);
 f_redrawEEG_Wave_Viewer();
 observe_EEGDAT.eeg_panel_message=2;
-
 end
 
 
@@ -1469,6 +1472,7 @@ if ndims(EEG.data)==2
                 plot(myeegviewer, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
+%             drawnow;
         end
         set(myeegviewer,'TickDir', 'in','LineWidth',1);
         %%xtick
@@ -1493,7 +1497,6 @@ Srate = EEG.srate;
 Freqlimits = [];
 if ndims(EEG.data)==3
     if ~isempty(data) && PlotNum~=0
-        
         % plot trial limits
         % -----------------
         tmptag = [lowlim:highlim];
@@ -1601,6 +1604,7 @@ if ndims(EEG.data)==3
                 plot(myeegviewer, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
+%             drawnow;
         end
         
         

@@ -299,13 +299,13 @@ qtimeRangdef = round(timeRange/100)*100;
 qXticks = xtickstep+qtimeRangdef(1);
 for ii=1:1000
     xtickcheck = qXticks(end)+xtickstep;
-    if xtickcheck>qtimeRangdef(2)
+    if xtickcheck>timeRange(2)
         break;
     else
         qXticks(numel(qXticks)+1) =xtickcheck;
     end
 end
-if isempty(qXticks)|| stepX==xtickstep
+if isempty(qXticks)%%|| stepX==xtickstep
     qXticks =  timeticksdef;
 end
 timeticks = qXticks;
@@ -322,7 +322,24 @@ MinorticksY = 0;
 YlabelFontsize = FonsizeDefault;
 ylabelFontcolor = [0 0 0];
 TextcolorLeg = 1;
-CBELabels = [50 100 1];
+
+[xxx, latsamp1, latdiffms] = closest(ERP.times, timeRange);
+qtimes = ERP.times(latsamp1(1):latsamp1(2));
+
+[xxx, latsamp, latdiffms] = closest(qtimes, 0);
+if isempty(latsamp) || any(latsamp<=0)
+   labelxrange = 0; 
+else
+labelxrange = qtimes(latsamp)-qtimes(1);
+end
+CBELabels = [1 100 1];
+if labelxrange<=0
+    CBELabels = [1 100 1];
+else
+   CBELabels(1) = 100*labelxrange/(timeRange(2)-timeRange(1))+1;
+end
+
+% CBELabels = [0 100 1];
 Legcolumns = ceil(sqrt(length(LegendName)));
 CBETcolor = [0 0 0];
 XdispFlag = 1;

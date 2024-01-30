@@ -368,8 +368,11 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(def)
             def = {'' 'boundary' -99 1 1};
         end
-        multieeg =1;
-        
+        if numel(EEGArray)>1
+            multieeg =1;
+        else
+            multieeg=0;
+        end
         %% Call GUI
         inputstrMat = creabasiceventlistGUI(def, multieeg);  % GUI
         
@@ -396,24 +399,21 @@ varargout{1} = EStudio_eeg_events_box;
         else
             stralphanum = 'off';
         end
-       
+        
         [pathx, filename, ext] = fileparts(elname);
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            filenameeeg = EEG.filename;
-                [pathxeeg, filenameeeg, ext] = fileparts(filenameeeg);
-                if isempty(filenameeeg)
-                    filename = [num2str(EEGArray(Numofeeg)),'_',filename,'.txt'];
-                else
-                    filename = strcat(filenameeeg,'_',filename,'.txt');
-                end
-                filename = fullfile(pathx, filename);
-                
+            
+            filename1 = strcat(filename,'.txt');
+            filename1 = fullfile(pathx, filename1);
+            if multieeg==1
+                filename1 ='';
+            end
             %% Run pop_ command again with the inputs from the GUI
-            [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', filename, 'BoundaryString', boundarystrcode,...
+            [EEG, LASTCOM] = pop_creabasiceventlist(EEG, 'Eventlist', filename1, 'BoundaryString', boundarystrcode,...
                 'BoundaryNumeric', newboundarynumcode,'Warning', striswarning, 'AlphanumericCleaning', stralphanum, 'History', 'gui');
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1

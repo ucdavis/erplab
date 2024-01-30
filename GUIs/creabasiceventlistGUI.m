@@ -117,11 +117,14 @@ version = geterplabversion;
 ERPtooltype = erpgettoolversion('tooltype');%%GH Jan 2024
 if strcmpi(ERPtooltype,'EStudio')
     set(handles.gui_chassis,'Name', ['Estudio ' version '   -   CREATE BASIC EVENTLIST GUI']);
-    handles.checkbox_create_eventlist.String = 'Export EventList to text file (file name will be suffix that added to eeg setname)';
-
 else
     set(handles.gui_chassis,'Name', ['ERPLAB ' version '   -   CREATE BASIC EVENTLIST GUI']);
-    handles.checkbox_create_eventlist.String = 'Export EventList to text file';
+end
+if multieeg==1
+    set(handles.checkbox_create_eventlist,'Enable','off','Value',0);
+    set(handles.pushbutton_browse,'Enable','off');
+    set(handles.edit_elname,'Enable','off');
+      set(handles.edit_elname,'String','Export to text file is unavailable when multiple EEGsets are selected');
 end
 
 %

@@ -78,18 +78,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
         set(EStduio_gui_EEG_plotset.time_scales_title,'Sizes',[70 50 80 50]);
         EStduio_gui_EEG_plotset.v_scale_edit.KeyPressFcn = @eeg_plotset_presskey;
         EEG_plotset{4} = str2num(EStduio_gui_EEG_plotset.v_scale_edit.String);
-        %%Channel labels  name/number?
-        %         EStduio_gui_EEG_plotset.chanlab_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        %         EStduio_gui_EEG_plotset.chanlab_text = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'text', 'String', 'Channel Labels:',...
-        %             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        %         EStduio_gui_EEG_plotset.chanlab_name = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'radiobutton', 'String', 'Name',...
-        %             'Callback', @chanlab_name,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
-        %         EStduio_gui_EEG_plotset.chanlab_name.KeyPressFcn = @eeg_plotset_presskey;
-        %         EStduio_gui_EEG_plotset.chanlab_numb = uicontrol('Parent',EStduio_gui_EEG_plotset.chanlab_title, 'Style', 'radiobutton', 'String', 'Number',...
-        %             'Callback', @chanlab_numb,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
-        %         EStduio_gui_EEG_plotset.chanlab_numb.KeyPressFcn = @eeg_plotset_presskey;
+        
         EEG_plotset{5} = 1;%EStduio_gui_EEG_plotset.chanlab_name.Value;
-        %         set(EStduio_gui_EEG_plotset.chanlab_title,'Sizes',[100 60 70]);
         
         
         %%Remove DC or display event?
@@ -121,13 +111,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
             'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         EStduio_gui_EEG_plotset.chanorder_no_title = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_plotset.chanorder_number = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default order',...
+        EStduio_gui_EEG_plotset.chanorder_number = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default',...
             'Callback', @chanorder_number,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         EStduio_gui_EEG_plotset.chanorder_number.KeyPressFcn=  @eeg_plotset_presskey;
-        EStduio_gui_EEG_plotset.chanorder_front = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Simple 10/20 order',...
+        EStduio_gui_EEG_plotset.chanorder_front = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Simple 10/20 system order',...
             'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
         EStduio_gui_EEG_plotset.chanorder_front.KeyPressFcn=  @eeg_plotset_presskey;
-        set(EStduio_gui_EEG_plotset.chanorder_no_title,'Sizes',[120 -1]);
+        set(EStduio_gui_EEG_plotset.chanorder_no_title,'Sizes',[80 -1]);
         %%channel order-custom
         EStduio_gui_EEG_plotset.chanorder_custom_title = uiextras.HBox('Parent',EStduio_gui_EEG_plotset.DataSelBox,'BackgroundColor',ColorB_def);
         EStduio_gui_EEG_plotset.chanorder_custom = uicontrol('Parent',EStduio_gui_EEG_plotset.chanorder_custom_title, 'Style', 'radiobutton', 'String', 'Custom',...
@@ -280,46 +270,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 
-
-%%-------------------------channel label: name-----------------------------
-%     function chanlab_name(~,~)
-%         %%first checking if the changes on the other panels have been applied
-%         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-%         if ~isempty(messgStr) && eegpanelIndex~=2
-%             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-%         end
-%         estudioworkingmemory('EEGTab_plotset',1);
-%         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-%         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
-%         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-%         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-%         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-%
-%         EStduio_gui_EEG_plotset.chanlab_name.Value=1;
-%         EStduio_gui_EEG_plotset.chanlab_numb.Value =0;
-%     end
-
-
-%%-------------------------channel label: number---------------------------
-%     function chanlab_numb(~,~)
-%         %%first checking if the changes on the other panels have been applied
-%         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-%         if ~isempty(messgStr) && eegpanelIndex~=2
-%             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-%         end
-%         estudioworkingmemory('EEGTab_plotset',1);
-%         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-%         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
-%         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-%         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-%         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
-%
-%         EStduio_gui_EEG_plotset.chanlab_name.Value=0;
-%         EStduio_gui_EEG_plotset.chanlab_numb.Value =1;
-%     end
-
-
-
 %%---------------------------Events:on-------------------------------------
     function disp_event(Source,~)
         %%first checking if the changes on the other panels have been applied
@@ -409,10 +359,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
         EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+        
         try
             chanlocs = observe_EEGDAT.EEG.chanlocs;
             if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 order:please do "chan locations" first in EEGLAB Tool panel.'));
+                MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
                 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
                 observe_EEGDAT.eeg_panel_message=4;
                 EStduio_gui_EEG_plotset.chanorder_number.Value=1;
@@ -422,7 +373,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
             end
         catch
-            MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 order: It seems that chanlocs for the current EEG is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 system order: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message=4;
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
@@ -430,7 +381,31 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
         end
+        
+        %%check if the channels belong to 10/20 system
+        [eloc, labels, theta, radius, indices] = readlocs( observe_EEGDAT.EEG.chanlocs);
+        [Simplabels,simplabelIndex,SamAll] =  Simplelabels(labels);
+        count = 0;
+        for ii = 1:length(Simplabels)
+            [xpos,ypos]= find(simplabelIndex==ii);
+            if ~isempty(ypos)  && numel(ypos)>= floor(length(observe_EEGDAT.EEG.chanlocs)/2)
+                count = count+1;
+                if count==1
+                    msgboxText= char(strcat('We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
+                    title      =  'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
+                    errorfound(msgboxText, title);
+                    EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+                    EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+                    EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+                    EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+                    EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+                    break;
+                end
+            end
+        end
+        
     end
 
 %%----------------------channel order-custom-------------------------------
@@ -776,15 +751,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         EStduio_gui_EEG_plotset.v_scale_edit.String = num2str(VScale);
         
-        %%Channel labels  name/number?
-        %         try ChandispFlag = EEG_plotset{5}; catch  ChandispFlag =1; end
-        %         if isempty(ChandispFlag) || numel(ChandispFlag)~=1 || (ChandispFlag~=0 && ChandispFlag~=1)
-        %             ChandispFlag = 1;
-        %             EEG_plotset{5}=1;
-        %         end
-        %         EStduio_gui_EEG_plotset.chanlab_name.Value =ChandispFlag;
-        %         EStduio_gui_EEG_plotset.chanlab_numb.Value =~ChandispFlag;
-        
         %%Remove DC
         try RMean = EEG_plotset{6}; catch  RMean =0; end
         if isempty(RMean) || numel(RMean)~=1 || (RMean~=0 && RMean~=1)
@@ -1080,6 +1046,40 @@ for ii = 1:length(allabels)
     if strcmpi(strtrim(Checklabel),strtrim(allabels{ii}))
         IA = ii;
         break;
+    end
+end
+end
+
+%%--------------------------check the labels-------------------------------
+function [Simplabels,simplabelIndex,SamAll] = Simplelabels(labels)
+labelsrm = ['['];
+for ii=1:1000
+    labelsrm = char([labelsrm,',',num2str(ii)]);
+end
+labelsrm = char([labelsrm,',z,Z]']);
+
+SamAll = 0;
+for ii = 1:length(labels)
+    labelcell = labels{ii};
+    labelcell(regexp(labelcell,labelsrm))=[];
+    labelsNew{ii} = labelcell;
+end
+
+%%get the simple
+[~,X,Z] = unique(labelsNew,'stable');
+Simplabels = labelsNew(X);
+if length(Simplabels)==1
+    SamAll = 1;
+end
+
+simplabelIndex = zeros(1,length(labels));
+count = 0;
+for jj = 1:length(Simplabels)
+    for kk = 1:length(labelsNew)
+        if strcmp(Simplabels{jj},labelsNew{kk})
+            count = count+1;
+            simplabelIndex(kk) =   jj;
+        end
     end
 end
 end

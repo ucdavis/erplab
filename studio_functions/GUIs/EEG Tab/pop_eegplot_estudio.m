@@ -1,4 +1,4 @@
-%%canged by GH Oct 2023 when developing EStudio toolbox
+%%changed by GH Oct 2023 when developing EStudio toolbox
 
 
 

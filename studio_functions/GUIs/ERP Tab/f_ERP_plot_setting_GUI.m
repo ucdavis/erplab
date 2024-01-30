@@ -128,13 +128,13 @@ varargout{1} = ERP_plotset_box;
             'FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         ERPTab_plotset.chanorder_no_title = uiextras.HBox('Parent',ERPTab_plotset.plotop ,'BackgroundColor',ColorB_def);
-        ERPTab_plotset.chanorder_number = uicontrol('Parent',ERPTab_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default order',...
+        ERPTab_plotset.chanorder_number = uicontrol('Parent',ERPTab_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Default',...
             'Callback', @chanorder_number,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         ERPTab_plotset.chanorder_number.KeyPressFcn=  @erp_plotsetting_presskey;
-        ERPTab_plotset.chanorder_front = uicontrol('Parent',ERPTab_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Front-back/left-right',...
+        ERPTab_plotset.chanorder_front = uicontrol('Parent',ERPTab_plotset.chanorder_no_title, 'Style', 'radiobutton', 'String', 'Simple 10/20 system order',...
             'Callback', @chanorder_front,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',0);
         ERPTab_plotset.chanorder_front.KeyPressFcn=  @erp_plotsetting_presskey;
-        set(ERPTab_plotset.chanorder_no_title,'Sizes',[120 -1]);
+        set(ERPTab_plotset.chanorder_no_title,'Sizes',[80 -1]);
         %%channel order-custom
         ERPTab_plotset.chanorder_custom_title = uiextras.HBox('Parent',ERPTab_plotset.plotop ,'BackgroundColor',ColorB_def);
         ERPTab_plotset.chanorder_custom = uicontrol('Parent',ERPTab_plotset.chanorder_custom_title, 'Style', 'radiobutton', 'String', 'Custom',...
@@ -804,7 +804,7 @@ varargout{1} = ERP_plotset_box;
         try
             chanlocs = observe_ERPDAT.ERP.chanlocs;
             if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right:please do "chan locations" first in EEGLAB Tool panel.'));
+                MessageViewer= char(strcat('Plot Setting > Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
                 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
                 observe_ERPDAT.Process_messg=4;
                 ERPTab_plotset.chanorder_number.Value=1;
@@ -814,7 +814,7 @@ varargout{1} = ERP_plotset_box;
                 ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             end
         catch
-            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current ERP is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Setting > Simple 10/20 system order: It seems that chanlocs for the current ERP is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
@@ -822,7 +822,31 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom.Value=0;
             ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+            return;
         end
+        
+        %%check if the channels belong to 10/20 system
+        [eloc, labels, theta, radius, indices] = readlocs( observe_ERPDAT.ERP.chanlocs);
+        [Simplabels,simplabelIndex,SamAll] =  Simplelabels(labels);
+        count = 0;
+        for ii = 1:length(Simplabels)
+            [xpos,ypos]= find(simplabelIndex==ii);
+            if ~isempty(ypos)  && numel(ypos)>= floor(length(observe_ERPDAT.ERP.chanlocs)/2)
+                count = count+1;
+                if count==1
+                    msgboxText= char(strcat('We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
+                    title      =  'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
+                    errorfound(msgboxText, title);
+                    ERPTab_plotset.chanorder_number.Value=1;
+                    ERPTab_plotset.chanorder_front.Value=0;
+                    ERPTab_plotset.chanorder_custom.Value=0;
+                    ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+                    ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+                    break;
+                end
+            end
+        end
+        
     end
 
 %%----------------------channel order-custom-------------------------------
@@ -850,7 +874,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
         ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
         if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Front-back/left-right: It seems that chanlocs for the current EEG is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Setting > Simple 10/20 system order: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
@@ -2172,3 +2196,39 @@ for ii = 1:length(allabels)
     end
 end
 end
+
+
+%%--------------------------check the labels-------------------------------
+function [Simplabels,simplabelIndex,SamAll] = Simplelabels(labels)
+labelsrm = ['['];
+for ii=1:1000
+    labelsrm = char([labelsrm,',',num2str(ii)]);
+end
+labelsrm = char([labelsrm,',z,Z]']);
+
+SamAll = 0;
+for ii = 1:length(labels)
+    labelcell = labels{ii};
+    labelcell(regexp(labelcell,labelsrm))=[];
+    labelsNew{ii} = labelcell;
+end
+
+%%get the simple
+[~,X,Z] = unique(labelsNew,'stable');
+Simplabels = labelsNew(X);
+if length(Simplabels)==1
+    SamAll = 1;
+end
+
+simplabelIndex = zeros(1,length(labels));
+count = 0;
+for jj = 1:length(Simplabels)
+    for kk = 1:length(labelsNew)
+        if strcmp(Simplabels{jj},labelsNew{kk})
+            count = count+1;
+            simplabelIndex(kk) =   jj;
+        end
+    end
+end
+end
+
