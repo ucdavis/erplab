@@ -186,7 +186,7 @@ varargout{1} = ERP_plotset_box;
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         set(ERPTab_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         
-        set(ERPTab_plotset.plotop, 'Sizes', [20 25 25 20 25 25 25 25 20 20 25 20 25 25 30]);
+        set(ERPTab_plotset.plotop, 'Sizes', [20 20 20 20 20 20 25 25 20 20 25 20 25 25 30]);
         ERPTab_plotset.chanorderIndex = 1;
         ERPTab_plotset.chanorder{1,1}=[];
         ERPTab_plotset.chanorder{1,2} = '';
@@ -200,7 +200,6 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
         ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
-        
     end
 
 %%**************************************************************************%%

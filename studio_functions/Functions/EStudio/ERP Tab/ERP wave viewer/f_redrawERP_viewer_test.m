@@ -235,14 +235,14 @@ if splot_n*pb_height<(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plo
 else
     pb_height = 0.9*pb_height;
 end
-if zoomSpace <0
-    gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height;
+if zoomSpace <=0
+    gui_erp_waviewer.ViewAxes.Heights = 0.95*gui_erp_waviewer.ViewAxes.Position(4);
 else
     gui_erp_waviewer.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
 end
 
 widthViewer = gui_erp_waviewer.ViewAxes.Position(3)-gui_erp_waviewer.ViewAxes.Position(2);
-if zoomSpace <0
+if zoomSpace <=0
     gui_erp_waviewer.ViewAxes.Widths = widthViewer;
 else
     gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);

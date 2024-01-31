@@ -255,7 +255,6 @@ else
     if isempty(DataDf) || size(DataDf,1)~=rowNum || size(DataDf,2)~=columNum
         GridposArray = GridposArraydef;
     else
-        
         for Numofrow = 1:rowNum
             for Numofcolumn = 1:columNum
                 SingleStr =  char(DataDf{Numofrow,Numofcolumn});%%find the index for each cell

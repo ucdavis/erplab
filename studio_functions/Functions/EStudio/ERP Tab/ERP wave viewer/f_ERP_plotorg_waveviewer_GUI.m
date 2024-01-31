@@ -1322,6 +1322,63 @@ varargout{1} = box_erpwave_viewer_plotorg;
         gui_plotorg_waveviewer.columnoverlay.Value = 0;
         gui_plotorg_waveviewer.columnoverlay.Enable = 'off';
         gui_plotorg_waveviewer.columngapoverlapedit.Enable = 'off';
+        
+        binArray = gui_erp_waviewer.ERPwaviewer.bin;
+        chanArray = gui_erp_waviewer.ERPwaviewer.chan;
+        ERPsetArray = gui_erp_waviewer.ERPwaviewer.SelectERPIdx;
+        ALLERPIN = gui_erp_waviewer.ERPwaviewer.ALLERP;
+        if max(ERPsetArray) >length(ALLERPIN)
+            ERPsetArray =length(ALLERPIN);
+            gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPsetArray;
+        end
+        if gui_plotorg_waveviewer.plotorg_c1.Value ==1
+            GridValue=1; OverlayValue = 2; PageValue =3;
+        elseif  gui_plotorg_waveviewer.plotorg_c2.Value ==1
+            GridValue=1; OverlayValue = 3; PageValue =2;
+        elseif  gui_plotorg_waveviewer.plotorg_c3.Value ==1
+            GridValue=2; OverlayValue = 1; PageValue =3;
+        elseif  gui_plotorg_waveviewer.plotorg_c4.Value ==1
+            GridValue=2; OverlayValue = 3; PageValue =1;
+        elseif gui_plotorg_waveviewer.plotorg_c5.Value ==1
+            GridValue=3; OverlayValue = 1; PageValue =2;
+        elseif gui_plotorg_waveviewer.plotorg_c6.Value ==1
+            GridValue=3; OverlayValue = 2; PageValue =1;
+        end
+        gui_erp_waviewer.ERPwaviewer.plot_org.Grid =GridValue;
+        gui_erp_waviewer.ERPwaviewer.plot_org.Overlay = OverlayValue;
+        gui_erp_waviewer.ERPwaviewer.plot_org.Pages = PageValue;
+        
+        [chanStr,binStr,diff_mark] = f_geterpschanbin(ALLERPIN,ERPsetArray);
+        if numel(binArray)> length(binStr)
+            binArray = [1:length(binStr)];
+            gui_erp_waviewer.ERPwaviewer.bin = binArray;
+        end
+        if numel(chanArray)> length(chanStr)
+            chanArray = [1:length(chanStr)];
+            gui_erp_waviewer.ERPwaviewer.chan = chanArray;
+        end
+        
+        if GridValue ==1 %% if  the selected Channel is "Grid"
+            plotArray = chanArray;
+        elseif GridValue == 2 %% if the selected Bin is "Grid"
+            plotArray = binArray;
+        elseif GridValue == 3%% if the selected ERPset is "Grid"
+            plotArray = ERPsetArray;
+        else
+            plotArray = chanArray;
+        end
+        
+        plotBox = f_getrow_columnautowaveplot(plotArray);%% the first element is number of rows and the second element is the number of columns
+        if gui_plotorg_waveviewer.layout_auto.Value
+            try
+                gui_plotorg_waveviewer.rownum.Value = plotBox(1);
+                gui_plotorg_waveviewer.columnnum.Value = plotBox(2);
+            catch
+                gui_plotorg_waveviewer.rownum.Value=1;
+                gui_plotorg_waveviewer.columnnum.Value=1;
+            end
+        end
+        
     end
 
 

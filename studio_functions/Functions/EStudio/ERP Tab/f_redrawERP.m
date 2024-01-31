@@ -213,14 +213,14 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     else
         pb_height = 0.9*pb_height;
     end
-    if zoomSpace <0
-        EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height;
+    if zoomSpace <=0
+        EStudio_gui_erp_totl.ViewAxes.Heights = 0.95*EStudio_gui_erp_totl.ViewAxes.Position(4);
     else
         EStudio_gui_erp_totl.ViewAxes.Heights = splot_n*pb_height*(1+zoomSpace/100);
     end
     
     widthViewer = EStudio_gui_erp_totl.ViewAxes.Position(3)-EStudio_gui_erp_totl.ViewAxes.Position(2);
-    if zoomSpace <0
+    if zoomSpace <=0
         EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer;
     else
         EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
