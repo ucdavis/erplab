@@ -768,15 +768,14 @@ end
 %%
 %%-----------------plot y scale------------------
 if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
-    props = get(hbig);
-    ytick_bottom = props.TickLength(1)*diff(props.XLim);
-    xtick_bottom = props.TickLength(1)*diff(props.YLim);
+    ytick_bottom = hbig.TickLength(1)*diff(hbig.XLim);
+    xtick_bottom = hbig.TickLength(1)*diff(hbig.YLim);
     leftintv = leftintv+ytick_bottom*2.5;
     rightintv = leftintv;
     line(hbig,[leftintv,rightintv],[0 AmpScale],'color','k','LineWidth',1, 'clipping','off');
     line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
     line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpScale AmpScale],'color','k','LineWidth',1, 'clipping','off');
-    text(hbig,leftintv,1.5*xtick_bottom+AmpScale, [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',props.FontSize);
+    text(hbig,leftintv,1.5*xtick_bottom+AmpScale, [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
     
     
     %%ytick ticklabels

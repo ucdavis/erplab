@@ -485,29 +485,34 @@ varargout{1} = ERP_filtering_box;
                     axis(p_ax,[floor(ERP_FFT.times(1)),ceil(ERP_FFT.times(end)), 1.1*min(temp(:)) 1.1*max(temp(:))]);
                     xticks(p_ax,FreqTick);
                     if count == 1
-                        title(p_ax,[ERP_FFT.chanlocs(count).labels],'FontSize',14); %#ok<*NODEF>
+                        title(p_ax,char(strrep(ERP_FFT.chanlocs(count).labels,'_','\_')),'FontSize',14,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
                         legend(p_ax,ERP_FFT.bindescr,'FontSize',14);
                         legend(p_ax,'boxoff');
                     else
-                        title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',14);
+                        title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',14,'FontWeight','normal','Color','k','Interpreter','none');
                     end
-                    xlabel(p_ax,'Frequency/Hz','FontSize',14);
+                    xlabel(p_ax,'Frequency/Hz','FontSize',14,'FontWeight','normal','Color','k');
                     if gui_erp_spectral.phase.Value
-                        ylabel(p_ax,'Angle/degree','FontSize',14);
+                        ylabel(p_ax,'Angle/degree','FontSize',14,'FontWeight','normal','Color','k');
                     elseif gui_erp_spectral.amplitude.Value
-                        ylabel(p_ax,'Amplitude/\muV','FontSize',14);
+                        ylabel(p_ax,'Amplitude/\muV','FontSize',14,'FontWeight','normal','Color','k');
                     elseif gui_erp_spectral.power.Value
-                        ylabel(p_ax,'Power/\muV^2','FontSize',14);
+                        ylabel(p_ax,'Power/\muV^2','FontSize',14,'FontWeight','normal','Color','k');
                     elseif gui_erp_spectral.db.Value
-                        ylabel(p_ax,'Decibels/dB','FontSize',14);
+                        ylabel(p_ax,'Decibels/dB','FontSize',14,'FontWeight','normal','Color','k');
                     end
                     for NUmoflabel = 1:length(ERP_FFT.times)
                         X_label{NUmoflabel} = [];
                     end
                     set(gca,'TickDir','out');
-                    set(gca,'LineWidth',2);
+                    set(gca,'LineWidth',1);
+                     set(gca,'Color','w',...
+                            'XColor','k',...
+                            'YColor','k',...
+                            'ZColor','k');
                 end
             end
+            set(fig,'Color','w');
         end%%end loop for ERPSET
     end
 
@@ -899,7 +904,6 @@ varargout{1} = ERP_filtering_box;
                 for Numofcolumn = 1:ColumnNum
                     for Numofrow = 1: RowNum
                         count = count+1;
-                        %                         waitbar(count/(ColumnNum*RowNum),Hw);
                         if ColumnNum*RowNum<5
                             pause(1);
                         end
@@ -917,21 +921,21 @@ varargout{1} = ERP_filtering_box;
                         xticks(p_ax,FreqTick);
                         xlim([floor(ERP_FFT.times(1)),ceil(ERP_FFT.times(end))]);
                         if count == 1
-                            title(p_ax,[ERP_FFT.chanlocs(count).labels],'FontSize',14);
+                            title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',14,'FontWeight','normal','Color','k','Interpreter','none');
                             legend(p_ax,ERP_FFT.bindescr,'FontSize',14);
                             legend(p_ax,'boxoff');
                         else
-                            title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',14);
+                            title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',14,'FontWeight','normal','Color','k','Interpreter','none');
                         end
-                        xlabel(p_ax,'Frequency/Hz','FontSize',14);
+                        xlabel(p_ax,'Frequency/Hz','FontSize',14,'FontWeight','normal','Color','k');
                         if gui_erp_spectral.phase.Value
-                            ylabel(p_ax,'Angle/degree','FontSize',14);
+                            ylabel(p_ax,'Angle/degree','FontSize',14,'FontWeight','normal','Color','k');
                         elseif gui_erp_spectral.amplitude.Value
-                            ylabel(p_ax,'Amplitude/\muV','FontSize',14);
+                            ylabel(p_ax,'Amplitude/\muV','FontSize',14,'FontWeight','normal','Color','k');
                         elseif gui_erp_spectral.power.Value
-                            ylabel(p_ax,'Power/\muV^2','FontSize',14);
+                            ylabel(p_ax,'Power/\muV^2','FontSize',14,'FontWeight','normal','Color','k');
                         elseif gui_erp_spectral.db.Value
-                            ylabel(p_ax,'Decibels/dB','FontSize',14);
+                            ylabel(p_ax,'Decibels/dB','FontSize',14,'FontWeight','normal','Color','k');
                         end
                         for Numoflabel = 1:length(ERP_FFT.times)
                             X_label{Numoflabel} = [];
@@ -1018,6 +1022,7 @@ varargout{1} = ERP_filtering_box;
                     end
                 end
             end
+            set(fig,'color','w');
         end%%end loop for ERPSET
     end
 

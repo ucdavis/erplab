@@ -1,7 +1,5 @@
 %This function is to plot ERP waves with single or multiple columns on one page.
 
-
-
 % Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis,
@@ -60,8 +58,6 @@ if zoomSpace ==0
     EStudio_gui_erp_totl.ScrollVerticalOffsets=0;
     EStudio_gui_erp_totl.ScrollHorizontalOffsets=0;
 end
-
-
 
 ERPArray= estudioworkingmemory('selectederpstudio');
 if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
@@ -965,25 +961,6 @@ for Numofrows = 1:rowNums
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
             end
-            
-            %             if numel(OffSetY)==1 && OffSetY==0
-            %                 if ~qPolarityWave
-            %                     YscalesNew =  sort(y_scale_def*(-1));
-            %                 else
-            %                     YscalesNew =  y_scale_def;
-            %                 end
-            %                 set(waveview,'ylim',YscalesNew);
-            %             else
-            %                 if qPolarityWave
-            %                     ylimleftedge = min([floor(y_scale_def(1)),qYScales(1)]);
-            %                     ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
-            %                 else
-            %                     ylimleftedge = -max([abs(ceil(y_scale_def(end))),abs(qYScales(end))]);
-            %                     ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
-            %                 end
-            % %                 set(waveview,'ylim',[ylimleftedge,ylimrightedge]);
-            %             end
-            %
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust y axis------------------------%%
