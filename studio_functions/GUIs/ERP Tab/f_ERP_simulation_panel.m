@@ -12,7 +12,7 @@ function varargout = f_ERP_simulation_panel(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
-
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
@@ -620,7 +620,6 @@ varargout{1} = ERP_simulation_box;
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             Str.Enable = 'off';
             EnableFlag = 'off';
-            
             gui_erp_simulation.erpsetedit.Enable = EnableFlag;
             gui_erp_simulation.erpsetpopup.Enable = EnableFlag;
             gui_erp_simulation.channeledit.Enable = EnableFlag;
@@ -2647,6 +2646,71 @@ varargout{1} = ERP_simulation_box;
         else
             return;
         end
+    end
+
+%%--------------reset this panel with the default parameters---------------
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=15
+            return;
+        end
+        gui_erp_simulation.apply.BackgroundColor =  [ 1 1 1];
+        gui_erp_simulation.apply.ForegroundColor = [0 0 0];
+        ERP_simulation_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_simulation.simulation_cancel.BackgroundColor =  [1 1 1];
+        gui_erp_simulation.simulation_cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_stimulation',0);
+        gui_erp_simulation.realerp_check.Value=0;
+        EnableFlag = 'off';
+        gui_erp_simulation.erpsetedit.Enable = EnableFlag;
+        gui_erp_simulation.erpsetedit.String = '';
+        gui_erp_simulation.erpsetpopup.Enable = EnableFlag;
+        gui_erp_simulation.channeledit.Enable = EnableFlag;
+        gui_erp_simulation.channeledit.String = '';
+        gui_erp_simulation.channelpopup.Enable = EnableFlag;
+        gui_erp_simulation.binedit.Enable = EnableFlag;
+        gui_erp_simulation.binedit.String = '';
+        gui_erp_simulation.binpopup.Enable = EnableFlag;
+        EnableFlagn = 'on';
+        gui_erp_simulation.epoch_start.Enable = EnableFlagn;
+        gui_erp_simulation.epoch_start.String = '-200';
+        gui_erp_simulation.epoch_stop.Enable = EnableFlagn;
+        gui_erp_simulation.epoch_stop.String = '799';
+        gui_erp_simulation.srate.Enable = EnableFlagn;
+        gui_erp_simulation.srate.Value=1;
+        gui_erp_simulation.srateedit.Enable = EnableFlagn;
+        gui_erp_simulation.srateedit.String = '1000';
+        gui_erp_simulation.srateperiod.Enable = EnableFlagn;
+        gui_erp_simulation.srateperiod.Value=0;
+        gui_erp_simulation.srateperiodedit.Enable = EnableFlagn;
+        gui_erp_simulation.srateperiodedit.String = '1';
+        %%ex-Gaussian
+        gui_erp_simulation.exgua_op.Value =1;
+        gui_erp_simulation.exgua_peakamp.Enable = 'on';
+        gui_erp_simulation.exgua_peakamp.String = '1';
+        gui_erp_simulation.exgua_mean.Enable = 'on';
+        gui_erp_simulation.exgua_mean.String = '100';
+        gui_erp_simulation.exgua_sd.Enable = 'on';
+        gui_erp_simulation.exgua_sd.String = '50';
+        gui_erp_simulation.exgua_tau.Enable = 'on';
+        gui_erp_simulation.exgua_tau.String = '0';
+        gui_erp_simulation.impulse_op.Value = 0;
+        gui_erp_simulation.impulse_peakamp.Enable = 'off';
+        gui_erp_simulation.impulse_latency.Enable = 'off';
+        gui_erp_simulation.square_op.Value = 0;
+        gui_erp_simulation.square_onset.Enable = 'off';
+        gui_erp_simulation.square_offset.Enable = 'off';
+        gui_erp_simulation.square_peakamp.Enable = 'off';
+        %%sin noise
+        gui_erp_simulation.sin_op.Value=0;
+        gui_erp_simulation.sin_amp.Enable = 'off';
+        gui_erp_simulation.sin_fre.Enable = 'off';
+        %%white noise
+        gui_erp_simulation.white_op.Value=0;
+        gui_erp_simulation.white_amp.Enable ='off';
+        %%pink noise
+        gui_erp_simulation.pink_op.Value=0;
+        gui_erp_simulation.pink_amp.Enable = 'off';
+        plot_erp_simulation();
     end
 end
 %Progem end: ERP simulation

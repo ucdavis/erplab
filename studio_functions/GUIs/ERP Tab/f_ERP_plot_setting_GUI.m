@@ -2207,6 +2207,13 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.positive_up.Value =1;
         ERPTab_plotset.negative_up.Value = 0;
         ERPTab_plotset.pagesel.Value = 1;
+        
+        ERPTab_plotset.chanorder_number.Value=1;
+        ERPTab_plotset.chanorder_front.Value=0;
+        ERPTab_plotset.chanorder_custom.Value=0;
+        ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+        ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+        
         ERPTab_plotset.gridlayoutdef.Value = 1;
         ERPTab_plotset.gridlayout_custom.Value = 0;
         ERPTab_plotset.gridlayout_export.Enable ='off';
@@ -2245,6 +2252,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
         ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        ERPTab_plotset.chanorderIndex=1;
         ERPTab_plotset.chanorder{1,1} = 1:length(labelsdef);
         ERPTab_plotset.chanorder{1,2} = labelsdef;
         estudioworkingmemory('ERP_chanorders',{ERPTab_plotset.chanorderIndex,ERPTab_plotset.chanorder});

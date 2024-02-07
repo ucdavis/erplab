@@ -260,73 +260,61 @@ varargout{1} = ERP_CSD_gui;
         
         
         %%---------------------Compute CSD for each ERPset----------------
-        try
-            erpworkingmemory('f_ERP_proces_messg','Convert Voltage to CSD');
-            observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-            ALLERPCOM = evalin('base','ALLERPCOM');
-            %   Set names of slected ERPsets
-            Save_file_label = 0;
-            Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_CSD');
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            
-            if ~isempty(Answer{1})
-                ALLERP_out = Answer{1};
-                Save_file_label = Answer{2};
-            end
-            gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
-            gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
-            gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
-            
-            
-            %%Loop for the selcted ERPsets
-            for  Numofselectederp = 1:numel(Selectederp_Index)
-                ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
-                [ERP, ERPCOM] = pop_currentsourcedensity(ERP);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                %%display the loctions of electrodes for each selected ERPsets.
-                path_to_pic = which('CSD_elec_plot.png');
-                if numel(path_to_pic) ~= 0     % iff a path to the pic exists, show it
-                    myImage = imread('CSD_elec_plot.png');
-                    imshow(myImage,'Parent',gui_erp_CSD.erp_h_erp);
-                end
-                
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;%%Save the transformed ERPset
-                if Save_file_label==1
-                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                end
-            end%%Loop for ERPsets end
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-            assignin('base','ALLERPCOM',ALLERPCOM);
-            assignin('base','ERPCOM',ERPCOM);
-            erpworkingmemory('f_ERP_bin_opt',1);
-            try
-                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1:length(observe_ERPDAT.ALLERP)];
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1;
-            catch
-                Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            end
-            
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =2;
+        
+        erpworkingmemory('f_ERP_proces_messg','Convert Voltage to CSD');
+        observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
+        ALLERPCOM = evalin('base','ALLERPCOM');
+        %   Set names of slected ERPsets
+        Save_file_label = 0;
+        Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_CSD');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
             return;
-        catch
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            Selected_ERP_afd =observe_ERPDAT.CURRENTERP;
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            erpworkingmemory('f_ERP_bin_opt',1);
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =3;%%
         end
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+        
+        if ~isempty(Answer{1})
+            ALLERP_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
+        gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
+        gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
+        
+        
+        %%Loop for the selcted ERPsets
+        for  Numofselectederp = 1:numel(Selectederp_Index)
+            ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
+            [ERP, ERPCOM] = pop_currentsourcedensity(ERP);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            %%display the loctions of electrodes for each selected ERPsets.
+            path_to_pic = which('CSD_elec_plot.png');
+            if numel(path_to_pic) ~= 0     % iff a path to the pic exists, show it
+                myImage = imread('CSD_elec_plot.png');
+                imshow(myImage,'Parent',gui_erp_CSD.erp_h_erp);
+            end
+            
+            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;%%Save the transformed ERPset
+            if Save_file_label==1
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+        end%%Loop for ERPsets end
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        erpworkingmemory('f_ERP_bin_opt',1);
+        try
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1:length(observe_ERPDAT.ALLERP)];
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1;
+        catch
+            Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+        end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        observe_ERPDAT.Count_currentERP = 1;
+        observe_ERPDAT.Process_messg =2;
     end
 
 %%----------------------function cancel------------------------------------
@@ -431,7 +419,7 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.location.BackgroundColor =  [1 1 1];
         gui_erp_CSD.location.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_csd',0);
-        gui_erp_CSD.erp_h_erp    =  axes( 'Parent', gui_erp_CSD.erp_history_table, 'ActivePositionProperty', 'Position');
+        %         gui_erp_CSD.erp_h_erp    =  axes( 'Parent', gui_erp_CSD.erp_history_table, 'ActivePositionProperty', 'Position');
         set( gui_erp_CSD.erp_h_erp,'xticklabel', [], 'yticklabel', []);
         gui_erp_CSD.sif_num.String = '4';
         gui_erp_CSD.scl_num.String = '0.00001';

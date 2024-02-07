@@ -13,8 +13,10 @@ function varargout = f_ERP_measurement_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERP_change);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
-ERPMTops = struct();
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
+
+ERPMTops = struct();
 %---------------------------gui-------------------------------------------
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -1559,6 +1561,44 @@ varargout{1} = erp_measurement_box;
         else
             return;
         end
+    end
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=11
+            return;
+        end
+        ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
+        ERPMTops.m_t_value.ForegroundColor = [0 0 0];
+        erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        ERPMTops.cancel.BackgroundColor =  [1 1 1];
+        ERPMTops.cancel.ForegroundColor = [0 0 0];
+        ERPMTops.apply.BackgroundColor =  [1 1 1];
+        ERPMTops.apply.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_mesuretool',0);
+        ERPMTops.m_t_type.Value=1;
+        Selectederp_Index= estudioworkingmemory('selectederpstudio');
+        if isempty(Selectederp_Index) || any(Selectederp_Index> length(observe_ERPDAT.ALLERP))
+            Selectederp_Index =  length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            observe_ERPDAT.CURRENTERP = Selectederp_Index;
+            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+        end
+        ERPMTops.m_t_erpset.String= vect2colon(Selectederp_Index,'Sort','on');%%Dec 20 2022
+        BinArray = estudioworkingmemory('ERP_BinArray');
+        ChanArray =  estudioworkingmemory('ERP_ChanArray');
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
+        if chk(1)==1
+            BinArray =  [1:observe_ERPDAT.ERP.nbin];
+        end
+        ERPMTops.m_t_bin.String = vect2colon(BinArray);
+        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
+        if chk(2)==1
+            ChanArray =  [1:observe_ERPDAT.ERP.nchan];
+        end
+        ERPMTops.m_t_chan.String = vect2colon(ChanArray);
+        ERPMTops.m_t_TW.String = '';
+        ERPMTops.m_t_file.String = '';
+        observe_ERPDAT.Reset_erp_paras_panel=12;
     end
 
 end%Progem end

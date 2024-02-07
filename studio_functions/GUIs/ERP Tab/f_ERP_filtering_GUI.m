@@ -792,23 +792,19 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.params{9} = gui_erp_filtering.DC_remove.Value;
         
         try
-            FilterMethod = 'filtered';
-            if numel(Selected_erpset)>1
-                Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,FilterMethod);
-                if isempty(Answer)
-                    beep;
-                    disp('User selected Cancel');
-                    return;
-                end
-                if ~isempty(Answer{1})
-                    ALLERP_advance = Answer{1};
-                    Save_file_label = Answer{2};
-                end
-                
-            elseif numel(Selected_erpset)==1
-                Save_file_label =0;
-                ALLERP_advance = observe_ERPDAT.ALLERP;
+            
+            Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,'filtered');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
             end
+            if ~isempty(Answer{1})
+                ALLERP_advance = Answer{1};
+                Save_file_label = Answer{2};
+            end
+            
+            
             
             BinArray = [];
             ChanArray = [];
@@ -863,38 +859,7 @@ varargout{1} = ERP_filtering_box;
                         ERP = ERP;
                     end
                 end
-                if numel(Selected_erpset) ==1
-                    Answer = f_ERP_save_single_file(char(strcat(ERP.erpname,'_',FilterMethod)),ERP.filename,Selected_erpset(Numoferp));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        return;
-                    end
-                    
-                    if ~isempty(Answer)
-                        ERPName = Answer{1};
-                        if ~isempty(ERPName)
-                            ERP.erpname = ERPName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            ERP.filename = '';
-                            ERP.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            ERP.filename = [file_name,ext];
-                            ERP.filepath = pathstr;
-                            ERP.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                        end
-                    end
-                end
+                
                 observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
                 if Save_file_label
                     [pathstr, file_name, ext] = fileparts(ERP.filename);

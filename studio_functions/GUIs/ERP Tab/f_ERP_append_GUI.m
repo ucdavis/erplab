@@ -10,6 +10,7 @@ function varargout = f_ERP_append_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 gui_erp_append = struct();
 
@@ -686,4 +687,28 @@ varargout{1} = box_erp_append;
         end
     end
 
+%%--------------reset this panel with the default parameters---------------
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=13
+            return;
+        end
+        estudioworkingmemory('ERPTab_append',0);
+        gui_erp_append.append_run.BackgroundColor =  [1 1 1];
+        gui_erp_append.append_run.ForegroundColor = [0 0 0];
+        box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_append.append_cancel.BackgroundColor =  [1 1 1];
+        gui_erp_append.append_cancel.ForegroundColor = [0 0 0];
+        gui_erp_append.append_advance.BackgroundColor =  [1 1 1];
+        gui_erp_append.append_advance.ForegroundColor = [0 0 0];
+        gui_erp_append.sameerpset.Value=1;
+        gui_erp_append.erpset_custom.Value=0;
+        gui_erp_append.erpset_edit.Enable = 'off';
+        ERPArray = estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || numel(ERPArray)==1
+            gui_erp_append.erpset_edit.String='';
+        else
+            gui_erp_append.erpset_edit.String=num2str(ERPArray);
+        end
+        observe_ERPDAT.Reset_erp_paras_panel=14;
+    end
 end

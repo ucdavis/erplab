@@ -1475,7 +1475,7 @@ varargout{1} = EEG_filtering_box;
         estudioworkingmemory('EEGTab_filter',0);
         gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
-%         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
+        %         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         
@@ -1486,10 +1486,14 @@ varargout{1} = EEG_filtering_box;
         %%-------------------setting for IIR Butterworth-------------------
         gui_eegtab_filtering.hp_halfpow.String = '---';
         gui_eegtab_filtering.hp_halfamp.Enable = 'off';
-        gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+        gui_eegtab_filtering.lp_halfamp.Enable = 'on';
         gui_eegtab_filtering.hp_tog.Value = 0;
         gui_eegtab_filtering.lp_tog.Value = 1;
-        gui_eegtab_filtering.DC_remove.Enable = 'off';
+        if observe_EEGDAT.EEG.trials>1
+            gui_eegtab_filtering.DC_remove.Enable = 'off';
+        else
+            gui_eegtab_filtering.DC_remove.Enable = 'on';
+        end
         gui_eegtab_filtering.DC_remove.Value = 0;
         gui_eegtab_filtering.hp_halfamp.String = '0';
         gui_eegtab_filtering.lp_halfamp.String = '30';
@@ -1506,7 +1510,6 @@ varargout{1} = EEG_filtering_box;
         try nchan=observe_EEGDAT.EEG.nbchan;catch nchan=1;end
         defx = {0 30 2 1:nchan 1 'butter' 0 []};
         erpworkingmemory('pop_basicfilter',defx);
-        
         observe_EEGDAT.Reset_eeg_paras_panel=5;
     end
 

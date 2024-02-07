@@ -659,7 +659,8 @@ if ~isempty(Pagecurrent) && Pagecurrent>0 && Pagecurrent<= pageNum%%
     Source.String = num2str(Pagecurrent);
     observe_EEGDAT.CURRENTSET = EEGset_selected(Pagecurrent);
     observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-    observe_EEGDAT.count_current_eeg =2;
+    %     observe_EEGDAT.count_current_eeg =2;
+    estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer();%%replot the waves
 end
 end
@@ -707,7 +708,8 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     MessageViewer= char(strcat('Plot wave for the previous EEGset'));
     erpworkingmemory('f_EEG_proces_messg',MessageViewer);
     observe_EEGDAT.eeg_panel_message=1;
-    observe_EEGDAT.count_current_eeg =2;
+    %     observe_EEGDAT.count_current_eeg =2;
+    estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer();
     observe_EEGDAT.eeg_panel_message=2;
 else
@@ -759,7 +761,8 @@ if  Pagecurrent>0 && Pagecurrent<=pageNum
     MessageViewer= char(strcat('Plot wave for the next EEGset'));
     erpworkingmemory('f_EEG_proces_messg',MessageViewer);
     observe_EEGDAT.eeg_panel_message=1;
-    observe_EEGDAT.count_current_eeg =2;
+    %     observe_EEGDAT.count_current_eeg =2;
+    estudioworkingmemory('Startimes',0);
     f_redrawEEG_Wave_Viewer();
     observe_EEGDAT.eeg_panel_message=2;
 else
@@ -1738,11 +1741,6 @@ if ~isempty(data) && PlotNum~=0
         'FontWeight','normal',...
         'TickDir', 'in',...
         'LineWidth',0.5);%%,'HorizontalAlignment','center'
-    % try
-    %     set(myeegviewer, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
-    % catch
-    % end
-    
     count=0;
     for ii = length(myeegviewer.YTickLabel):-1:2
         count = count+1;

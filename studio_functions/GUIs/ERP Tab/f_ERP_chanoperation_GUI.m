@@ -581,53 +581,17 @@ varargout{1} = ERP_chan_operation_gui;
         %%%Create a new ERPset for the bin-operated ERPsets
         Save_file_label = [];
         if gui_erp_chan_operation.mode_create.Value
-            if numel(Selectederp_Index) > 1
-                Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_chop');
-                if isempty(Answer)
-                    beep;
-                    disp('User selected Cancel');
-                    return;
-                end
-                if ~isempty(Answer{1})
-                    ALLERP_out = Answer{1};
-                    Save_file_label = Answer{2};
-                end
-                
-            elseif numel(Selectederp_Index)== 1
-                ALLERP_out = observe_ERPDAT.ALLERP;
-                ERP = observe_ERPDAT.ALLERP(Selectederp_Index);
-                ERP.filepath = pathName_def;
-                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_chop'),ERP.filename,Selectederp_Index);
-                if isempty(Answer)
-                    beep;
-                    disp('User selectd cancal');
-                    return;
-                end
-                Save_file_label =0;
-                if ~isempty(Answer)
-                    ERPName = Answer{1};
-                    if ~isempty(ERPName)
-                        ERP.erpname = ERPName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        ERP.filename = ERP.erpname;
-                        Save_file_label =0;
-                    elseif ~isempty(fileName_full)
-                        
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        ext = '.erp';
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        ERP.filename = [file_name,ext];
-                        ERP.filepath = pathstr;
-                        Save_file_label =1;
-                    end
-                    
-                end
-                ALLERP_out(Selectederp_Index) = ERP;clear ERP;
+            Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_chop');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
             end
+            if ~isempty(Answer{1})
+                ALLERP_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+            
         elseif   gui_erp_chan_operation.mode_modify.Value
             ALLERP_out = observe_ERPDAT.ALLERP;
         end
@@ -644,55 +608,45 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.Paras{2} =gui_erp_chan_operation.locaInfor.Value;
         gui_erp_chan_operation.Paras{3} = gui_erp_chan_operation.mode_modify.Value;
         
-        try
-            erpworkingmemory('f_ERP_proces_messg','ERP Bin Operations');
-            observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-            ALLERPCOM = evalin('base','ALLERPCOM');
-            for Numofselectederp = 1:numel(Selectederp_Index)%%Bin Operations for each selected ERPset
-                ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
-                [ERP, ERPCOM] = pop_erpchanoperator(ERP, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                if gui_erp_chan_operation.mode_modify.Value%% If select "Modify Existing ERPset (recursive updating)"
-                    ERP.erpname = strcat(ERP.erpname,'_chop');
-                    observe_ERPDAT.ALLERP(Selectederp_Index(Numofselectederp)) = ERP;
-                    observe_ERPDAT.ERP= observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-                elseif gui_erp_chan_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
-                    observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
-                    if Save_file_label==1
-                        [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Selectederp_Index(Numofselectederp)).erpname,...
-                            'filename', ALLERP_out(Selectederp_Index(Numofselectederp)).filename, 'filepath',ALLERP_out(Selectederp_Index(Numofselectederp)).filepath);
-                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                    end
-                end
-            end
+        erpworkingmemory('f_ERP_proces_messg','ERP Bin Operations');
+        observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
+        ALLERPCOM = evalin('base','ALLERPCOM');
+        for Numofselectederp = 1:numel(Selectederp_Index)%%Bin Operations for each selected ERPset
+            ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
+            [ERP, ERPCOM] = pop_erpchanoperator(ERP, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            if gui_erp_chan_operation.mode_create.Value%%Save the labels of the selected ERPsets
-                try
-                    Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1:length(observe_ERPDAT.ALLERP)];
-                    observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1;
-                catch
-                    Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
-                    observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+            if gui_erp_chan_operation.mode_modify.Value%% If select "Modify Existing ERPset (recursive updating)"
+                ERP.erpname = strcat(ERP.erpname,'_chop');
+                observe_ERPDAT.ALLERP(Selectederp_Index(Numofselectederp)) = ERP;
+                observe_ERPDAT.ERP= observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            elseif gui_erp_chan_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
+                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+                if Save_file_label==1
+                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Selectederp_Index(Numofselectederp)).erpname,...
+                        'filename', ALLERP_out(Selectederp_Index(Numofselectederp)).filename, 'filepath',ALLERP_out(Selectederp_Index(Numofselectederp)).filepath);
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
                 end
-                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-                estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             end
-            assignin('base','ALLERPCOM',ALLERPCOM);
-            assignin('base','ERPCOM',ERPCOM);
-            erpworkingmemory('f_ERP_bin_opt',1);
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =2;
-            return;
-        catch
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            Selected_ERP_afd =observe_ERPDAT.CURRENTERP;
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            erpworkingmemory('f_ERP_bin_opt',1);
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =3;%%
-            return;
         end
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+        if gui_erp_chan_operation.mode_create.Value%%Save the labels of the selected ERPsets
+            try
+                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1:length(observe_ERPDAT.ALLERP)];
+                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1;
+            catch
+                Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+            end
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        erpworkingmemory('f_ERP_bin_opt',1);
+        observe_ERPDAT.Count_currentERP = 1;
+        observe_ERPDAT.Process_messg =2;
+        return;
+        
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 

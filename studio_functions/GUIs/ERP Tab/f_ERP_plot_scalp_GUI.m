@@ -1871,6 +1871,7 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
         gui_erp_scalp_map.map_type_2d_type_outside.Enable = 'on';
         gui_erp_scalp_map.map_extras_cmapb_disp.Value =0;
+        gui_erp_scalp_map.map_extras_cmap_ops.Value =1;
         observe_ERPDAT.Reset_erp_paras_panel=5;
     end
 end

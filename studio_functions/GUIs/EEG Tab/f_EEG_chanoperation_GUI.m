@@ -587,7 +587,6 @@ varargout{1} = EEG_chan_operation_gui;
         %%%Create a new ERPset for the bin-operated ERPsets
         Save_file_label = [];
         if gui_eegtab_chan_optn.mode_create.Value
-            
             Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_chop');
             if isempty(Answer)
                 beep;
@@ -598,8 +597,6 @@ varargout{1} = EEG_chan_operation_gui;
                 ALLEEG_out = Answer{1};
                 Save_file_label = Answer{2};
             end
-            
-            
         elseif   gui_eegtab_chan_optn.mode_modify.Value
             ALLEEG_out = observe_EEGDAT.ALLEEG;
         end
@@ -659,10 +656,8 @@ varargout{1} = EEG_chan_operation_gui;
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -779,7 +774,7 @@ varargout{1} = EEG_chan_operation_gui;
         estudioworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
-%         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
+        %         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
         for ii = 1:100

@@ -254,6 +254,19 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         
         %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_delchan');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -287,43 +300,21 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             if CreateeegFlag==0
                 ALLEEG(EEGArray(Numofeeg)) = EEG;
             else
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_delchan')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if ~isempty(fileName_full)
-                        checkfileindex = checkfilexists(fileName_full);
-                    end
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full) && checkfileindex==1
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                    [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+                if Save_file_label && checkfileindex==1
+                    [pathstr, file_name, ext] = fileparts(EEG.filename);
+                    EEG.filename = [file_name,'.set'];
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                    EEG.filepath = '';
                 end
+                [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             end
             fprintf( [repmat('-',1,100) '\n']);
         end
@@ -378,6 +369,20 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
         %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
+        Save_file_label=0;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_rnchan');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -432,44 +437,22 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             if CreateeegFlag==0
                 ALLEEG(EEGArray(Numofeeg)) = EEG;
             else
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_rnchan')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    observe_EEGDAT.eeg_panel_message =2;
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if ~isempty(fileName_full)
-                        checkfileindex = checkfilexists(fileName_full);
-                    end
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full) && checkfileindex==1
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                    [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+                if Save_file_label && checkfileindex==1
+                    [pathstr, file_name, ext] = fileparts(EEG.filename);
+                    EEG.filename = [file_name,'.set'];
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                    EEG.filepath = '';
                 end
+                [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                
             end
             fprintf( [repmat('-',1,100) '\n']);
         end
@@ -514,11 +497,23 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
-        
-        
         %%loop for the selected EEGsets
-        %         try
+        Save_file_label=0;
         ALLEEG = observe_EEGDAT.ALLEEG;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_editchan');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -563,42 +558,24 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             if CreateeegFlag==0
                 ALLEEG(EEGArray(Numofeeg)) = EEG;
             else
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_editchan')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if ~isempty(fileName_full)
-                        checkfileindex = checkfilexists(fileName_full);
-                    end
-                    if isempty(fileName_full)
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    elseif ~isempty(fileName_full) && checkfileindex==1
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    end
-                    [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+                if Save_file_label && checkfileindex==1
+                    [pathstr, file_name, ext] = fileparts(EEG.filename);
+                    EEG.filename = [file_name,'.set'];
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                    EEG.filepath = '';
+                end
+                
+                [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                if Numofeeg==1
+                    eegh(LASTCOM);
                 end
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -639,7 +616,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             observe_EEGDAT.count_current_eeg=8;
             return;
         end
-        
         EStduio_eegtab_EEG_edit_chan.mode_modify.Enable ='on';
         EStduio_eegtab_EEG_edit_chan.mode_create.Enable = 'on';
         EStduio_eegtab_EEG_edit_chan.delete_chan.Enable='on';
@@ -672,7 +648,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if observe_EEGDAT.Reset_eeg_paras_panel~=6
             return;
         end
-%         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('EEGTab_editchan',0);
         EStduio_eegtab_EEG_edit_chan.mode_modify.Value =1;
         EStduio_eegtab_EEG_edit_chan.mode_create.Value = 0;

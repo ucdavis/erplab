@@ -10,6 +10,7 @@ function varargout = f_ERP_grandaverageGUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 gui_erp_grdavg = struct();
 %-----------------------------Name the title----------------------------------------------
@@ -699,6 +700,31 @@ varargout{1} = ERP_grdavg_box_gui;
         else
             return;
         end
+    end
+
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=12
+            return;
+        end
+        estudioworkingmemory('ERPTab_gravg',0);
+        gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
+        gui_erp_grdavg.run.ForegroundColor = [0 0 0];
+        ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_grdavg.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
+        gui_erp_grdavg.weigavg.Value = 0;
+        gui_erp_grdavg.excldnullbin.Value = 0;
+        gui_erp_grdavg.jacknife.Value = 0;
+        gui_erp_grdavg.warn.Value = 0;
+        gui_erp_grdavg.cmpsd.Value = 1;
+        gui_erp_grdavg.cbdatq.Value = 1;
+        gui_erp_grdavg.cbdatq_custom.Value = 0;
+        gui_erp_grdavg.cbdatq_def.Value = 1;
+        gui_erp_grdavg.cbdatq_custom_op.Enable = 'off';
+        gui_erp_grdavg.cbdatq_def.Enable = 'on';
+        gui_erp_grdavg.cbdatq_custom.Enable = 'on';
+        observe_ERPDAT.Reset_erp_paras_panel=13;
     end
 
 end

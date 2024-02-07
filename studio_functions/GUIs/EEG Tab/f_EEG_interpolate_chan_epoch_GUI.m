@@ -596,156 +596,151 @@ varargout{1} = box_interpolate_chan_epoch;
         
         
         %%loop for the selected EEGsets
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Interpolate marked epochs (advanced options)*',32,32,32,32,datestr(datetime('now')),'\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                
-                %%%%---------------Call GUI--------------------------
-                dlg_title = {['Dataset',32,num2str(EEGArray(Numofeeg)),': Interpolate Marked Artifact Epochs']};
-                %defaults
-                defx = {0, 'spherical',[],[],[],0,10};
-                def = erpworkingmemory('pop_artinterp');
-                def{2} = interpolationMethod;
-                
-                if ~isempty(ChanArrayig) && max(ChanArrayig(:)) <= EEG.nbchan
-                    def{5} = ChanArrayig;
-                end
-                
-                if isempty(def)
-                    def = defx;
-                else
-                    def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
-                end
-                
-                try
-                    chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
-                catch
-                    chanlabels = [];
-                end
-                histoflags = summary_rejectflags(EEG);
-                
-                %check currently activated flags
-                flagcheck = sum(histoflags);
-                active_flags = (flagcheck>1);
-                
-                answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
-                
-                if isempty(answer)
-                    disp('User selected Cancel');
+        %         try
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Interpolate marked epochs (advanced options)*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            %%%%---------------Call GUI--------------------------
+            dlg_title = {['Dataset',32,num2str(EEGArray(Numofeeg)),': Interpolate Marked Artifact Epochs']};
+            %defaults
+            defx = {0, 'spherical',[],[],[],0,10};
+            def = erpworkingmemory('pop_artinterp');
+            def{2} = interpolationMethod;
+            
+            if ~isempty(ChanArrayig) && max(ChanArrayig(:)) <= EEG.nbchan
+                def{5} = ChanArrayig;
+            end
+            
+            if isempty(def)
+                def = defx;
+            else
+                def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
+            end
+            
+            try
+                chanlabels = {EEG(1).chanlocs.labels}; %only works on single datasets
+            catch
+                chanlabels = [];
+            end
+            histoflags = summary_rejectflags(EEG);
+            
+            %check currently activated flags
+            flagcheck = sum(histoflags);
+            active_flags = (flagcheck>1);
+            
+            answer = artifactinterpGUI(dlg_title, def, defx, chanlabels, active_flags);
+            
+            if isempty(answer)
+                disp('User selected Cancel');
+                observe_EEGDAT.eeg_panel_message =2;
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return
+            end
+            
+            replaceFlag =  answer{1};
+            interpolationMethod      =  answer{2};
+            replaceChannelInd     =  answer{3};
+            replaceChannelLabel     =  answer{4};
+            ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
+            many_electrodes = answer{6};
+            threshold_perc = answer{7};
+            viewstr = 'off';
+            
+            
+            if isempty(replaceFlag)
+                erpworkingmemory('f_EEG_proces_messg','Interpolate chan >  Advanced options for interpolate marked epochs: None of epochs was marked');
+                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return;
+            end
+            
+            if ~isempty(find(replaceFlag<1 | replaceFlag>16, 1))
+                msgboxText  ='Interpolate chan >  Run: flag cannot be greater than 16 nor lesser than 1';
+                erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return;
+            end
+            erpworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
+                answer{6}, answer{7}});
+            
+            [EEG, LASTCOM] = pop_artinterp(EEG, 'FlagToUse', replaceFlag, 'InterpMethod', interpolationMethod, ...
+                'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
+                'InterpAnyChan', many_electrodes, 'Threshold',threshold_perc,...
+                'Review', viewstr, 'History', 'implicit');
+            
+            if isempty(LASTCOM)
+                erpworkingmemory('f_EEG_proces_messg','Interpolate chan >  Run: Please check you data or you selected cancel');
+                observe_EEGDAT.eeg_panel_message =4;
+                return;
+            end
+            EEG = eegh(LASTCOM, EEG);
+            fprintf(['\n',LASTCOM,'\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            if CreateeegFlag==0
+                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
+            else
+                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_interp')),EEG.filename,EEGArray(Numofeeg));
+                if isempty(Answer)
+                    disp('User selected cancel.');
                     observe_EEGDAT.eeg_panel_message =2;
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    return
-                end
-                
-                replaceFlag =  answer{1};
-                interpolationMethod      =  answer{2};
-                replaceChannelInd     =  answer{3};
-                replaceChannelLabel     =  answer{4};
-                ignoreChannels  =  unique_bc2(answer{5}); % avoids repeted channels
-                many_electrodes = answer{6};
-                threshold_perc = answer{7};
-                viewstr = 'off';
-                
-                
-                if isempty(replaceFlag)
-                    erpworkingmemory('f_EEG_proces_messg','Interpolate chan >  Advanced options for interpolate marked epochs: None of epochs was marked');
-                    observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
                     return;
                 end
-                
-                if ~isempty(find(replaceFlag<1 | replaceFlag>16, 1))
-                    msgboxText  ='Interpolate chan >  Run: flag cannot be greater than 16 nor lesser than 1';
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    return;
-                end
-                erpworkingmemory('pop_artinterp', {answer{1} answer{2} answer{3} answer{4} answer{5} ...
-                    answer{6}, answer{7}});
-                
-                [EEG, LASTCOM] = pop_artinterp(EEG, 'FlagToUse', replaceFlag, 'InterpMethod', interpolationMethod, ...
-                    'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
-                    'InterpAnyChan', many_electrodes, 'Threshold',threshold_perc,...
-                    'Review', viewstr, 'History', 'implicit');
-                
-                if isempty(LASTCOM)
-                    erpworkingmemory('f_EEG_proces_messg','Interpolate chan >  Run: Please check you data or you selected cancel');
-                    observe_EEGDAT.eeg_panel_message =4;
-                    return;
-                end
-                EEG = eegh(LASTCOM, EEG);
-                fprintf(['\n',LASTCOM,'\n']);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-                if CreateeegFlag==0
-                    observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
-                else
-                    Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_interp')),EEG.filename,EEGArray(Numofeeg));
-                    if isempty(Answer)
-                        disp('User selected cancel.');
-                        observe_EEGDAT.eeg_panel_message =2;
-                        return;
+                if ~isempty(Answer)
+                    EEGName = Answer{1};
+                    if ~isempty(EEGName)
+                        EEG.setname = EEGName;
                     end
-                    if ~isempty(Answer)
-                        EEGName = Answer{1};
-                        if ~isempty(EEGName)
-                            EEG.setname = EEGName;
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        EEG.filename = '';
+                        EEG.saved = 'no';
+                    elseif ~isempty(fileName_full)
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
                         end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            EEG.filename = '';
-                            EEG.saved = 'no';
-                        elseif ~isempty(fileName_full)
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            EEG.filename = [file_name,ext];
-                            EEG.filepath = pathstr;
-                            EEG.saved = 'yes';
-                            %%----------save the current sdata as--------------------
-                            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                            EEG = eegh(LASTCOM, EEG);
-                            if Numofeeg==1
-                                eegh(LASTCOM);
-                            end
-                        end
-                        [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                        EEG.filename = [file_name,ext];
+                        EEG.filepath = pathstr;
+                        EEG.saved = 'yes';
+                        %%----------save the current sdata as--------------------
+                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                        EEG = eegh(LASTCOM, EEG);
                         if Numofeeg==1
                             eegh(LASTCOM);
                         end
                     end
+                    [observe_EEGDAT.ALLEEG,~,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
                 end
-                fprintf( ['\n',repmat('-',1,100) '\n']);
             end
-            
-            if CreateeegFlag==1
-                try
-                    Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-                    observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-                catch
-                    Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-                    observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-                end
-                observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-                estudioworkingmemory('EEGArray',Selected_EEG_afd);
-                assignin('base','EEG',observe_EEGDAT.EEG);
-                assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-                assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            end
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.count_current_eeg=1;
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
             fprintf( ['\n',repmat('-',1,100) '\n']);
-            return;
         end
+        
+        if CreateeegFlag==1
+            try
+                Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+            catch
+                Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+                observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+            end
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            estudioworkingmemory('EEGArray',Selected_EEG_afd);
+            assignin('base','EEG',observe_EEGDAT.EEG);
+            assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
     end
 
 
@@ -1011,8 +1006,21 @@ varargout{1} = box_interpolate_chan_epoch;
             return;
         end
         %%loop for the selected EEGsets
-        %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_ar');
+            if isempty(Answer)
+                beep;
+                disp('User selected Cancel');
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG = Answer{1};
+                Save_file_label = Answer{2};
+            end
+            
+        end
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -1086,53 +1094,32 @@ varargout{1} = box_interpolate_chan_epoch;
             end
             
             if CreateeegFlag==0
-                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
+                ALLEEG(EEGArray(Numofeeg)) = EEG;
             else
-                Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_interp')),EEG.filename,EEGArray(Numofeeg));
-                if isempty(Answer)
-                    disp('User selected cancel.');
-                    return;
-                end
-                if ~isempty(Answer)
-                    EEGName = Answer{1};
-                    if ~isempty(EEGName)
-                        EEG.setname = EEGName;
-                    end
-                    fileName_full = Answer{2};
-                    if ~isempty(fileName_full)
-                        checkfileindex = checkfilexists(fileName_full);
-                    else
-                        checkfileindex==0;
-                    end
-                    if ~isempty(fileName_full) && checkfileindex==1
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        EEG.filename = [file_name,ext];
-                        EEG.filepath = pathstr;
-                        EEG.saved = 'yes';
-                        %%----------save the current sdata as--------------------
-                        [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                        EEG = eegh(LASTCOM, EEG);
-                        if Numofeeg==1
-                            eegh(LASTCOM);
-                        end
-                    else
-                        EEG.filename = '';
-                        EEG.saved = 'no';
-                    end
-                    [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+                if Save_file_label && checkfileindex==1
+                    [pathstr, file_name, ext] = fileparts(EEG.filename);
+                    EEG.filename = [file_name,'.set'];
+                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                    EEG = eegh(LASTCOM, EEG);
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                    EEG.filepath = '';
                 end
+                [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+                
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
-        
+        observe_EEGDAT.ALLEEG = ALLEEG;
         if CreateeegFlag==1
-            observe_EEGDAT.ALLEEG = ALLEEG;
             try
                 Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
@@ -1290,7 +1277,7 @@ varargout{1} = box_interpolate_chan_epoch;
             return;
         end
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
-%         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
+        %         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
@@ -1303,7 +1290,7 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value=0;
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value= 1;
-        Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0; 
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0;
         observe_EEGDAT.Reset_eeg_paras_panel=16;
     end
 

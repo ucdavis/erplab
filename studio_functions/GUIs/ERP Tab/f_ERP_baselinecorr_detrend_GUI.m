@@ -442,26 +442,15 @@ varargout{1} = ERP_basecorr_detrend_box;
         else
             Suffix_str = char(strcat('baselinecorr'));
         end
-        if numel(Selected_erpset)>1
-            if gui_erp_blc_dt.dt.Value ==1
-                Suffix_str = char(strcat('detrend'));
-            else
-                Suffix_str = char(strcat('baselinecorr'));
-            end
-            Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,Suffix_str);
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLERP_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-            
-        elseif numel(Selected_erpset)==1
-            Save_file_label = 0;
-            ALLERP_advance = observe_ERPDAT.ALLERP;
+        Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,Suffix_str);
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLERP_advance = Answer{1};
+            Save_file_label = Answer{2};
         end
         
         %%%%-------------------Loop fpor baseline correction---------------
@@ -533,7 +522,6 @@ varargout{1} = ERP_basecorr_detrend_box;
                 ChanArray = [1:ERP.nchan];
             end
             
-            
             if gui_erp_blc_dt.dt.Value ==1
                 [ERP ERPCOM] = pop_erplindetrend( ERP, BaselineMethod , 'Saveas', 'off','History','gui');
             else
@@ -550,38 +538,6 @@ varargout{1} = ERP_basecorr_detrend_box;
                 ERP_before_bl.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
                 ERP_before_bl.history = ERP.history;
                 ERP = ERP_before_bl;
-            end
-            
-            if numel(Selected_erpset) ==1
-                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_',Suffix_str),ERP.filename,Selected_erpset(Numoferp));
-                if isempty(Answer)
-                    beep;
-                    disp('User selectd cancal');
-                    return;
-                end
-                
-                if ~isempty(Answer)
-                    ERPName = Answer{1};
-                    if ~isempty(ERPName)
-                        ERP.erpname = ERPName;
-                    end
-                    fileName_full = Answer{2};
-                    if isempty(fileName_full)
-                        ERP.filename = ERP.erpname;
-                    elseif ~isempty(fileName_full)
-                        
-                        [pathstr, file_name, ext] = fileparts(fileName_full);
-                        ext = '.erp';
-                        if strcmp(pathstr,'')
-                            pathstr = cd;
-                        end
-                        ERP.filename = [file_name,ext];
-                        ERP.filepath = pathstr;
-                        %%----------save the current sdata as--------------------
-                        [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                    end
-                end
             end
             
             if Save_file_label

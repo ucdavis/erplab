@@ -10,6 +10,7 @@ function varargout = f_ERP_resample_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 gui_erp_resample = struct();
 
@@ -585,6 +586,37 @@ varargout{1} = box_erp_resample;
         else
             return;
         end
+    end
+
+%%--------------reset this panel with the default parameters---------------
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=14
+            return;
+        end
+        estudioworkingmemory('ERPTab_resample',0);
+        gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
+        gui_erp_resample.resample_run.ForegroundColor = [0 0 0];
+        box_erp_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_resample.resample_cancel.BackgroundColor =  [1 1 1];
+        gui_erp_resample.resample_cancel.ForegroundColor = [0 0 0];
+        if ~isempty(observe_ERPDAT.ERP)
+            gui_erp_resample.csrate_edit.String = num2str(observe_ERPDAT.ERP.srate);
+            gui_erp_resample.ctimewindow_editleft.String = num2str(observe_ERPDAT.ERP.times(1));
+            gui_erp_resample.ctimewindow_editright.String = num2str(observe_ERPDAT.ERP.times(end));
+        else
+            gui_erp_resample.csrate_edit.String = '';
+            gui_erp_resample.ctimewindow_editleft.String = '';
+            gui_erp_resample.ctimewindow_editright.String = '';
+        end
+        gui_erp_resample.nwsrate_checkbox.Value=0;
+        gui_erp_resample.nwsrate_edit.Enable = 'off';
+        gui_erp_resample.nwsrate_edit.String='';
+        gui_erp_resample.nwtimewindow_editleft.Enable ='off';
+        gui_erp_resample.nwtimewindow_editright.Enable = 'off';
+        gui_erp_resample.nwtimewindow_checkbox.Value=0;
+        gui_erp_resample.nwtimewindow_editleft.String ='';
+        gui_erp_resample.nwtimewindow_editright.String = '';
+        observe_ERPDAT.Reset_erp_paras_panel=15;
     end
 
 end

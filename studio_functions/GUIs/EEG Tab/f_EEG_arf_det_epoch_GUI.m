@@ -804,11 +804,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.detectar_run.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_epoch.detectar_run.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
-        
-        
         Eegtab_EEG_art_det_epoch.det_algo.Value = Eegtab_EEG_art_det_epoch.Paras{1};
         Eegtab_EEG_art_det_epoch.chan_edit.String = vect2colon(Eegtab_EEG_art_det_epoch.Paras{2});
-        
         Eegtab_EEG_art_det_epoch.mflag=Eegtab_EEG_art_det_epoch.Paras{3};
         Eegtab_EEG_art_det_epoch.mflag1.Value=1;
         Eegtab_EEG_art_det_epoch.mflag2.Value=0;
@@ -928,7 +925,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
-        
     end
 
 
@@ -1159,7 +1155,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         else
             Eegtab_EEG_art_det_epoch.mflag= [1,0,0,0,0,0,0,0];
         end
-        
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{3} = Eegtab_EEG_art_det_epoch.mflag;
@@ -1167,7 +1162,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{5} = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
-        
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
