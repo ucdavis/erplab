@@ -11,6 +11,7 @@ classdef o_ERPDAT < handle
         Process_messg
         Two_GUI
         erp_two_panels
+        Reset_erp_paras_panel
     end
     
     
@@ -26,6 +27,7 @@ classdef o_ERPDAT < handle
         Messg_change
         Two_GUI_change
         erp_two_panels_change
+        Reset_erp_panel_change
     end
     
     
@@ -129,6 +131,18 @@ classdef o_ERPDAT < handle
                 warning('off');
                 obj_erp.erp_two_panels = values_erp;
                 notify(obj_erp,'erp_two_panels_change');
+            catch
+                warning('on');
+            end
+        end
+        
+        
+        %%two panels
+        function set.Reset_erp_paras_panel(obj_erp,values_erp)
+            try
+                warning('off');
+                obj_erp.Reset_erp_paras_panel = values_erp;
+                notify(obj_erp,'Reset_erp_panel_change');
             catch
                 warning('on');
             end

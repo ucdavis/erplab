@@ -13,7 +13,7 @@ function varargout = f_ERP_plot_setting_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
-
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 ERPTab_plotset = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
@@ -228,7 +228,6 @@ varargout{1} = ERP_plotset_box;
         if src.Value == 1
             ERPTab_plotset.timet_low.Enable = 'off';
             ERPTab_plotset.timet_high.Enable = 'off';
-            
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
             ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
         else
@@ -1170,7 +1169,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.gridlayout_import.Enable ='off';
         ERPTab_plotset.rowNum_set.Enable ='off';
         ERPTab_plotset.columns.Enable ='off';
-        ERPTab_plotset.columns.Value=1;
+        %         ERPTab_plotset.columns.Value=1;
         ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
@@ -1819,9 +1818,6 @@ varargout{1} = ERP_plotset_box;
         
         ERPTab_plotset_pars{8}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
         ERPTab_plotset_pars{9} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
-        
-        
-        
         if ERPTab_plotset.pagesel.Value==1
             [~,plotArraystr] = readlocs(observe_ERPDAT.ERP.chanlocs(ChanArray));
         else
@@ -1842,7 +1838,6 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         [Griddata, checkflag,labelsIndex]= f_tranf_check_import_grid(ERPTab_plotset.gridlayputarray,ERPTab_plotset.pagesel.Value);
-        
         if checkflag==1
             if ERPTab_plotset.pagesel.Value==1
                 estudioworkingmemory('ERP_ChanArray',labelsIndex);
@@ -1887,12 +1882,10 @@ varargout{1} = ERP_plotset_box;
             end
         end
         estudioworkingmemory('ERP_chanorders',{ERPTab_plotset.chanorderIndex,ERPTab_plotset.chanorder});
-        
         ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
         ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
-        
         observe_ERPDAT.Count_currentERP=1;
     end
 
@@ -1912,18 +1905,13 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.timet_auto.Enable =enbaleflag;
         ERPTab_plotset.timet_low.Enable =enbaleflag;
         ERPTab_plotset.timet_high.Enable =enbaleflag;
-        
         ERPTab_plotset.timetick_auto.Enable =enbaleflag;
         ERPTab_plotset.timet_step.Enable =enbaleflag;
-        
         ERPTab_plotset.yscale_auto.Enable =enbaleflag;
         ERPTab_plotset.yscale_low.Enable =enbaleflag;
         ERPTab_plotset.yscale_high.Enable =enbaleflag;
-        
         ERPTab_plotset.ytick_auto.Enable =enbaleflag;
         ERPTab_plotset.yscale_step.Enable =enbaleflag;
-        
-        
         ERPTab_plotset.columns.Enable =enbaleflag;
         ERPTab_plotset.positive_up.Enable =enbaleflag;
         ERPTab_plotset.negative_up.Enable =enbaleflag;
@@ -1945,8 +1933,6 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Count_currentERP =4;
             return;
         end
-        
-        
         if ERPTab_plotset.chanorder_number.Value==1 ||  ERPTab_plotset.chanorder_front.Value==1
             ERPTab_plotset.chanorder_custom_exp.Enable ='off';
             ERPTab_plotset.chanorder_custom_imp.Enable ='off';
@@ -2034,7 +2020,6 @@ varargout{1} = ERP_plotset_box;
             defyticks = default_amp_ticks_viewer([Yscales_low,Yscales_high]);
             defyticks = str2num(defyticks);
             if ~isempty(defyticks) && numel(defyticks)>=2
-                
                 ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
             else
                 ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
@@ -2070,7 +2055,6 @@ varargout{1} = ERP_plotset_box;
             rowNum = ceil(sqrt(nplot));
             ERPTab_plotset.rowNum_set.Value=rowNum;
             ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
-            
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         else
             EnableFlag = 'on';
@@ -2181,6 +2165,90 @@ varargout{1} = ERP_plotset_box;
                 end
             end
         end
+    end
+
+
+%%---------------reset the parameters for all panels-----------------------
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=3
+            return;
+        end
+        estudioworkingmemory('ERPTab_plotset',0);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 1 1 1];
+        ERPTab_plotset.plot_apply.ForegroundColor = [0 0 0];
+        ERP_plotset_box.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [1 1 1];
+        ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
+        ERPTab_plotset.timet_auto.Value=1;
+        ERPTab_plotset.timet_low.Enable = 'off';
+        ERPTab_plotset.timet_high.Enable = 'off';
+        ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
+        ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
+        ERPTab_plotset.timetick_auto.Value=1;
+        [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
+        ERPTab_plotset.timet_step.String = num2str(xstep);
+        ERPTab_plotset.yscale_auto.Value=1;
+        [def, minydef, maxydef] = default_amp_ticks(observe_ERPDAT.ERP, [1:observe_ERPDAT.ERP.nbin]);
+        minydef = floor(minydef);
+        maxydef = ceil(maxydef);
+        ERPTab_plotset.yscale_low.Enable = 'off';
+        ERPTab_plotset.yscale_high.Enable = 'off';
+        ERPTab_plotset.yscale_low.String = num2str(minydef);
+        ERPTab_plotset.yscale_high.String = num2str(maxydef);
+        ERPTab_plotset.ytick_auto.Value=1;
+        defyticks = default_amp_ticks_viewer([minydef,maxydef]);
+        defyticks = str2num(defyticks);
+        if ~isempty(defyticks) && numel(defyticks)>=2
+            ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
+        else
+            ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
+        end
+        ERPTab_plotset.yscale_step.Enable = 'off';
+        ERPTab_plotset.positive_up.Value =1;
+        ERPTab_plotset.negative_up.Value = 0;
+        ERPTab_plotset.pagesel.Value = 1;
+        ERPTab_plotset.gridlayoutdef.Value = 1;
+        ERPTab_plotset.gridlayout_custom.Value = 0;
+        ERPTab_plotset.gridlayout_export.Enable ='off';
+        ERPTab_plotset.gridlayout_import.Enable ='off';
+        ERPTab_plotset.rowNum_set.Enable ='off';
+        ERPTab_plotset.columns.Enable ='off';
+        ERPTab_plotset_pars{1} = [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)];
+        ERPTab_plotset_pars{2} = xstep;
+        ERPTab_plotset_pars{3} = [minydef,maxydef];
+        ERPTab_plotset_pars{4} = str2num(ERPTab_plotset.yscale_step.String);
+        ERPTab_plotset_pars{6} =ERPTab_plotset.positive_up.Value;
+        ERPTab_plotset_pars{7} =0;
+        ChanArray = [1:observe_ERPDAT.ERP.nchan];
+        rowNum = ceil(sqrt(numel(ChanArray)));
+        ERPTab_plotset.rowNum_set.Value=rowNum;
+        ERPTab_plotset.columns.Value =ceil(numel(ChanArray)/rowNum);
+        gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
+        [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+        count = 0;
+        for ii = 1:ERPTab_plotset.rowNum_set.Value
+            for jj = 1:ERPTab_plotset.columns.Value
+                count = count+1;
+                if count>numel(ChanArray)
+                    break;
+                end
+                gridlayputarraydef{ii,jj} = labelsdef{count};
+            end
+        end
+        ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+        ERPTab_plotset_pars{5} =ERPTab_plotset.columns.Value;
+        ERPTab_plotset_pars{8}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
+        ERPTab_plotset_pars{9} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
+        ERPTab_plotset_pars{10} = gridlayputarraydef;
+        ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
+        ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
+        ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
+        ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
+        estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
+        ERPTab_plotset.chanorder{1,1} = 1:length(labelsdef);
+        ERPTab_plotset.chanorder{1,2} = labelsdef;
+        estudioworkingmemory('ERP_chanorders',{ERPTab_plotset.chanorderIndex,ERPTab_plotset.chanorder});
+        observe_ERPDAT.Reset_erp_paras_panel=4;
     end
 end
 

@@ -1,14 +1,10 @@
 %PURPOSE  : Plot EPR waves within one axes
 
-
-
 % Author: Guanghui Zhang & Steve J. Luck
 % Center for Mind and Brain
 % University of California, Davis
 % Davis, CA
 % 2022 & 2023
-
-
 
 function f_redrawERP_viewer_test()
 
@@ -246,7 +242,6 @@ if zoomSpace <=0
     gui_erp_waviewer.ViewAxes.Widths = widthViewer;
 else
     gui_erp_waviewer.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
-    
 end
 gui_erp_waviewer.plotgrid.Units = 'normalized';
 

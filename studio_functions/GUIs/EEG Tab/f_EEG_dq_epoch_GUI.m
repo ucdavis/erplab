@@ -12,9 +12,9 @@
 function varargout = f_EEG_dq_epoch_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %---------------------------Initialize parameters------------------------------------
 EEG_dq_epoch = struct();
@@ -655,6 +655,28 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];
         EEG_dq_epoch.dq_run.ForegroundColor = [0 0 0];
+    end
+
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=18
+            return;
+        end
+        estudioworkingmemory('EEGTab_dq_epoch',0);
+%         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
+        EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
+        EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
+        EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];
+        EEG_dq_epoch.dq_run.ForegroundColor = [0 0 0];
+        
+        EEG_dq_epoch.def_para.Value=1;
+        EEG_dq_epoch.custom_para.Value=0;
+        EEG_dq_epoch.custom_para_op.Enable = 'off';
+        EEG_dq_epoch.all_marks.Value = 1;
+        EEG_dq_epoch.excld_marks.Value = 0;
+        EEG_dq_epoch.marked_epochs.Value = 0;
+        observe_EEGDAT.Reset_eeg_paras_panel=19;
     end
 
 end

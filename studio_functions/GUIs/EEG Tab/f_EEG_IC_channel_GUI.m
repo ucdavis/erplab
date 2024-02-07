@@ -13,9 +13,8 @@ function varargout = f_EEG_IC_channel_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 
 EStduio_eegtab_EEG_IC_chan = struct();
@@ -213,8 +212,8 @@ varargout{1} = EStudio_eeg_box_ic_chan;
 %%---------------------Cancel what have changed----------------------------
     function plot_eeg_cancel(Source,~)
         if isempty(observe_EEGDAT.EEG)
-           Source.Enable = 'off';
-           return;
+            Source.Enable = 'off';
+            return;
         end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -479,6 +478,40 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         else
             return;
         end
+    end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=2
+            return;
+        end
+        %%------------------------------channel----------------------------
+        Chanlist_name =  EStduio_eegtab_EEG_IC_chan.ElecRange.String;
+        if length(Chanlist_name)==1
+            ChanArray = [];
+        else
+            ChanArray = [1:length(Chanlist_name)-1];
+        end
+        EStduio_eegtab_EEG_IC_chan.ElecRange.Value=1;
+        
+        %%-------------------------------ICs-------------------------------
+        ICNamestrs = EStduio_eegtab_EEG_IC_chan.ICRange.String;
+        if length(ICNamestrs)==1
+            ICValue=[];
+        else
+            ICValue = [1:length(ICNamestrs)-1];
+        end
+        EStduio_eegtab_EEG_IC_chan.ICRange.Value=1;
+        
+        estudioworkingmemory('EEG_ICArray',ICValue);
+        estudioworkingmemory('EEG_ChanArray',ChanArray);
+        estudioworkingmemory('EEGTab_chanic',0);
+        EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
+%         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];
+        EStduio_eegtab_EEG_IC_chan.plot_reset.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_IC_chan.plot_reset.ForegroundColor = [0 0 0];
+        observe_EEGDAT.Reset_eeg_paras_panel=3;
     end
 
 end

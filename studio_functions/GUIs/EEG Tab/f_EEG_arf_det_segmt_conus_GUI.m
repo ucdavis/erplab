@@ -12,9 +12,9 @@
 function varargout = f_EEG_arf_det_segmt_conus_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %---------------------------Initialize parameters------------------------------------
 EEG_art_det_segmt_conus = struct();
@@ -719,6 +719,26 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [0 0 0];
     end
 
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=11
+            return;
+        end
+        estudioworkingmemory('EEGTab_detect_segmt_conus',0);
+%         Eegtab_box_art_det_segmt_conus.TitleColor= [0.0500    0.2500    0.5000];
+        EEG_art_det_segmt_conus.detectsegmt_preview.BackgroundColor =  [1 1 1];
+        EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [0 0 0];
+        EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 1 1 1];
+        EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [0 0 0];
+        EEG_art_det_segmt_conus.time_threshold_edit.String = '7000';
+        EEG_art_det_segmt_conus.buffer_before_edit.String = '3000';
+        EEG_art_det_segmt_conus.buffer_after_edit.String = '3000';
+        EEG_art_det_segmt_conus.event_exp_edit.String = '';
+        EEG_art_det_segmt_conus.event_exp_select.Value = 1;
+        EEG_art_det_segmt_conus.boundaryevent.Value = 0;
+        observe_EEGDAT.Reset_eeg_paras_panel=12;
+    end
 end
 
 

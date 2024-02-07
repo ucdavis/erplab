@@ -13,7 +13,7 @@
 function varargout = f_ERP_erpsetsGUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 ERPsetops = struct();
 %---------Setting the parameter which will be used in the other panels-----------
@@ -1133,6 +1133,14 @@ varargout{1} = box_erpset_gui;
         else
             ERPlistName{1} = 'No erpset is available' ;
         end
+    end
+
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=1
+          return;  
+        end
+        observe_ERPDAT.Reset_erp_paras_panel=2;
     end
 
 end

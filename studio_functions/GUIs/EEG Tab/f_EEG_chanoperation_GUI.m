@@ -11,8 +11,8 @@
 function varargout = f_EEG_chanoperation_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 gui_eegtab_chan_optn = struct();
 
@@ -768,6 +768,28 @@ varargout{1} = EEG_chan_operation_gui;
         else
             return;
         end
+    end
+
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=9
+            return;
+        end
+        estudioworkingmemory('EEGTab_chanop',0);
+        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
+%         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
+        gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
+        for ii = 1:100
+            dsnames{ii,1} = '';
+        end
+        gui_eegtab_chan_optn.edit_bineq.Data= dsnames;
+        gui_eegtab_chan_optn.locaInfor.Value=1;
+        gui_eegtab_chan_optn.mode_modify.Value = 1;
+        gui_eegtab_chan_optn.mode_create.Value = 0;
+        observe_EEGDAT.Reset_eeg_paras_panel=10;
     end
 end
 

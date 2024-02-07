@@ -11,7 +11,7 @@ function varargout = f_ERP_baselinecorr_detrend_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
-
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -806,5 +806,28 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
     end
 
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=5
+            return;
+        end
+        estudioworkingmemory('ERPTab_baseline_detrend',0);
+        gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
+        gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];
+        ERP_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_blc_dt.Cancel.BackgroundColor =  [1 1 1];
+        gui_erp_blc_dt.Cancel.ForegroundColor = [0 0 0];
+        gui_erp_blc_dt.blc.Value =1;
+        gui_erp_blc_dt.dt.Value = 0;
+        gui_erp_blc_dt.pre.Value=1;
+        gui_erp_blc_dt.post.Value=0;
+        gui_erp_blc_dt.whole.Value=0;
+        gui_erp_blc_dt.custom.Value=0;
+        gui_erp_blc_dt.custom_edit.Enable = 'off';
+        gui_erp_blc_dt.custom_edit.String = '';
+        gui_erp_blc_dt.all_bin_chan.Value = 1;
+        gui_erp_blc_dt.Selected_bin_chan.Value = 0;
+        observe_ERPDAT.Reset_erp_paras_panel=6;
+    end
 end
-%Progem end: ERP Measurement tool
+%Progem end:

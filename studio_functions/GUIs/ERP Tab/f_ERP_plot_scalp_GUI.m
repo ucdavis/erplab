@@ -10,6 +10,7 @@ function varargout = f_ERP_plot_scalp_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 gui_erp_scalp_map = struct();
 %-----------------------------Name the title----------------------------------------------
@@ -1838,4 +1839,38 @@ varargout{1} = ERP_plot_scalp_gui;
         end
     end
 
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=4
+            return;
+        end
+        estudioworkingmemory('ERPTab_topos',0);
+        gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
+        gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
+        ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_scalp_map.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_scalp_map.cancel.ForegroundColor = [0 0 0];
+        gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
+        try binArray = [1:observe_ERPDAT.ERP.nbin]; catch binArray = [];end
+        gui_erp_scalp_map.bin_plot_edit.String = num2str(binArray);
+        gui_erp_scalp_map.latency_plot_edit.String = '';
+        gui_erp_scalp_map.max_min.Value = 1;
+        gui_erp_scalp_map.custom_option.Value = 0;
+        gui_erp_scalp_map.abs_max.Value = 0;
+        gui_erp_scalp_map.bar_scale_custom_option_edit.Enable = 'off';
+        gui_erp_scalp_map.bar_scale_custom_option_edit.String = '';
+        gui_erp_scalp_map.map_type_2d.Value=1;
+        gui_erp_scalp_map.map_type_3d.Value=0;
+        set(gui_erp_scalp_map.map_type_2d_type,'Enable','on','Value',1);
+        gui_erp_scalp_map.map_type_3d_spl.Enable = 'off';
+        gui_erp_scalp_map.map_extras_view_ops.Enable = 'off';
+        gui_erp_scalp_map.map_extras_view_ops.String = '+X';
+        gui_erp_scalp_map.map_extras_view_ops.Value = 1;
+        gui_erp_scalp_map.map_extras_view_location.String = num2str([-180 30]);
+        gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+        gui_erp_scalp_map.map_type_2d_type_outside.Enable = 'on';
+        gui_erp_scalp_map.map_extras_cmapb_disp.Value =0;
+        observe_ERPDAT.Reset_erp_paras_panel=5;
+    end
 end

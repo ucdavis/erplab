@@ -14,7 +14,7 @@ function varargout = f_EEG_rmresp_mistak_conus_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 EEG_rmresp_mistak_conus = struct();
 %-----------------------------Name the title----------------------------------------------
@@ -632,6 +632,55 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             end
         end
     end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=13
+            return;
+        end
+        estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
+%         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
+        EEG_rmresp_mistak_conus.rmresp_mistake_cancel.BackgroundColor =  [1 1 1];
+        EEG_rmresp_mistak_conus.rmresp_mistake_cancel.ForegroundColor = [0 0 0];
+        EEG_rmresp_mistak_conus.rmresp_mistake_run.BackgroundColor =  [ 1 1 1];
+        EEG_rmresp_mistak_conus.rmresp_mistake_run.ForegroundColor = [0 0 0];
+        EEG_rmresp_mistak_conus.Stimulus_edit.String = '';
+        EEG_rmresp_mistak_conus.response_edit.String = '';
+        EEG = observe_EEGDAT.EEG;
+        if ~isempty(EEG)
+            try
+                if ischar(EEG.event(1).type)
+                    ec_type_is_str = 0;
+                else
+                    ec_type_is_str = 1;
+                end
+            catch
+                ec_type_is_str = 1;
+            end
+            
+            evT = struct2table(EEG.event);
+            %         if ec_type_is_str
+            %             all_ev = str2double(evT.type);
+            %         else
+            all_ev = evT.type;
+            %         end
+            
+            all_ev_unique = unique(all_ev);
+            try
+                all_ev_unique(isnan(all_ev_unique)) = [];
+            catch
+            end
+            for ii = 1:length(all_ev_unique)
+                ColumnNameStr{ii} = ['Ev.',32,num2str(ii)];
+            end
+            EEG_rmresp_mistak_conus.stimulusall.Data = all_ev_unique';
+            EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
+            EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
+            EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
+        end
+        observe_EEGDAT.Reset_eeg_paras_panel=14;
+    end
+
 end
 
 

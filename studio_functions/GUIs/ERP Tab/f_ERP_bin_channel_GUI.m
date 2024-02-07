@@ -13,7 +13,7 @@ function varargout = f_ERP_bin_channel_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
-
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 ERPTab_bin_chan = struct();
 
@@ -255,8 +255,8 @@ varargout{1} = EStudio_box_bin_chan;
         end
         estudioworkingmemory('ERP_BinArray',BinArray);
         observe_ERPDAT.Count_currentERP=3;
-      
-         f_redrawERP();
+        
+        f_redrawERP();
         erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Two_GUI =2;
@@ -324,7 +324,7 @@ varargout{1} = EStudio_box_bin_chan;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
         if ViewerFlag==1
-           Enableflag='off'; 
+            Enableflag='off';
         end
         ERPTab_bin_chan.ElecRange.Enable = Enableflag;
         ERPTab_bin_chan.BinRange.Enable = Enableflag;
@@ -372,4 +372,28 @@ varargout{1} = EStudio_box_bin_chan;
         end
     end
 
+
+%%---------------reset the parameters for all panels-----------------------
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=2
+            return;
+        end
+        estudioworkingmemory('ERPTab_chanbin',0);
+        ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 1 1 1];
+        ERPTab_bin_chan.plot_apply.ForegroundColor = [0 0 0];
+        EStudio_box_bin_chan.TitleColor= [ 0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_bin_chan.plot_reset.BackgroundColor =  [1 1 1];
+        ERPTab_bin_chan.plot_reset.ForegroundColor = [0 0 0];
+        if isempty(observe_ERPDAT.ERP)
+            BinArray=[];ChanArray = [];
+        else
+            BinArray = [1:observe_ERPDAT.ERP.nbin];
+            ChanArray= [1:observe_ERPDAT.ERP.nchan];
+        end
+        ERPTab_bin_chan.BinRange.Value=1;
+        estudioworkingmemory('ERP_BinArray',BinArray);
+        ERPTab_bin_chan.ElecRange.Value = 1;
+        estudioworkingmemory('ERP_ChanArray',ChanArray);
+        observe_ERPDAT.Reset_erp_paras_panel=3;
+    end
 end

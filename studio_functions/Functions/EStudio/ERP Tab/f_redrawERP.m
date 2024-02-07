@@ -23,10 +23,7 @@ if isempty(ColorB_def)
     ColorB_def = [0.95 0.95 0.95];
 end
 
-% We first clear the existing axes ready to build a new one
-if ishandle( EStudio_gui_erp_totl.ViewAxes )
-    delete( EStudio_gui_erp_totl.ViewAxes );
-end
+
 %Sets the units of your root object (screen) to pixels
 set(0,'units','pixels')
 %Obtains this pixel information
@@ -45,6 +42,9 @@ try
 catch
     EStudio_gui_erp_totl.ScrollVerticalOffsets=0;
     EStudio_gui_erp_totl.ScrollHorizontalOffsets=0;
+end
+if ishandle( EStudio_gui_erp_totl.ViewAxes )
+    delete( EStudio_gui_erp_totl.ViewAxes );
 end
 zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
@@ -131,8 +131,11 @@ EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Sty
     'Callback',@figure_saveas, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Create Static/Exportable Plot',...
     'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
+EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
+    'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
+
 uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [70 50 70 150 -1 100 100 100 170 5]);
+set(commandfig_panel, 'Sizes', [70 50 70 150 -1 90 100 100 170 50  5]);
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -413,6 +416,7 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
+EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
 %         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
 end
 
@@ -734,6 +738,20 @@ observe_ERPDAT.Process_messg =2;
 end
 
 
+%%------------------------Reset parameters---------------------------------
+function erptab_reset(~,~)
+global observe_ERPDAT;
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    return;
+end
+
+MessageViewer= char(strcat('Reset parameters for ERP panels '));
+erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+observe_ERPDAT.Process_messg =1;
+observe_ERPDAT.Reset_erp_paras_panel = 1;
+f_redrawERP();
+observe_ERPDAT.Process_messg =2;
+end
 
 
 function Advanced_viewer(Source,~)

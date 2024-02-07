@@ -12,10 +12,9 @@
 function varargout = f_EEG_shift_eventcode_conus_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 EEG_shift_eventcode_conus = struct();
 %-----------------------------Name the title----------------------------------------------
@@ -525,7 +524,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Shift Event Codes for Continuous EEG > Shift events*',32,32,32,32,datestr(datetime('now')),'\n']);
-            
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             
@@ -710,6 +708,25 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [0 0 0];
         EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 1 1 1];
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [0 0 0];
+    end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=12
+            return;
+        end
+        estudioworkingmemory('EEGTab_shiftcodes_conus',0);
+%         Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
+        EEG_shift_eventcode_conus.shiftcodes_cancel.BackgroundColor =  [1 1 1];
+        EEG_shift_eventcode_conus.shiftcodes_cancel.ForegroundColor = [0 0 0];
+        EEG_shift_eventcode_conus.shiftcodes_run.BackgroundColor =  [ 1 1 1];
+        EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [0 0 0];
+        EEG_shift_eventcode_conus.event_codes_edit.String ='';
+        EEG_shift_eventcode_conus.roundearlier.Value = 1;
+        EEG_shift_eventcode_conus.roundnearest.Value = 0;
+        EEG_shift_eventcode_conus.roundlater.Value = 0;
+        EEG_shift_eventcode_conus.timeshift_edit.String = '0';
+        observe_EEGDAT.Reset_eeg_paras_panel=13;
     end
 end
 

@@ -14,9 +14,10 @@ function varargout = f_EEG_avg_erp_GUI(varargin)
 global observe_EEGDAT;
 global EStudio_gui_erp_totl;
 global observe_ERPDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
+
 
 %---------------------------Initialize parameters------------------------------------
 EEG_avg_erp = struct();
@@ -690,7 +691,7 @@ varargout{1} = Eegtab_box_avg_erp;
             if Save_file_label
                 [pathstr, file_name, ext] = fileparts(ERP.filename);
                 ext = '.erp';
-               pathstr= ERP.filepath;
+                pathstr= ERP.filepath;
                 if strcmp(pathstr,'')
                     pathstr = cd;
                 end
@@ -812,6 +813,29 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
         EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
+    end
+
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=19
+            return;
+        end
+        estudioworkingmemory('EEGTab_avg_erp',0);
+%         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
+        EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
+        EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
+        EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
+        EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
+        EEG_avg_erp.all_marks.Value = 0;
+        EEG_avg_erp.excld_marks.Value = 1;
+        EEG_avg_erp.marked_epochs.Value = 0;
+        EEG_avg_erp.def_para.Value=1;
+        EEG_avg_erp.custom_para.Value=0;
+        EEG_avg_erp.no_dq.Value=0;
+        EEG_avg_erp.custom_para_op.Enable = 'off';
+        EEG_avg_erp.invalidepoch.Value = 0;
+%         observe_EEGDAT.Reset_eeg_paras_panel=0;
     end
 
 end

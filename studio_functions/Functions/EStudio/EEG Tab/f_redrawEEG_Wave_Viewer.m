@@ -14,6 +14,7 @@ global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
 addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+% addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 if nargin>1
     help f_redrawEEG_Wave_Viewer;
@@ -138,8 +139,8 @@ set(EStudio_gui_erp_totl.eeg_winsize,'Callback',@EStudiowinsize,'Enable','on');
 set(EStudio_gui_erp_totl.eeg_figurecommand,'Callback',@Show_command,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
-
-set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 100 100 170 5]);
+set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 90 100 100 170 50 5]);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     EEG = observe_EEGDAT.EEG;
     OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
@@ -227,6 +228,7 @@ catch
 end
 f_redrawEEG_Wave_Viewer();
 f_redrawERP();
+EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/2;
 %         EStudio_gui_erp_totl.context_tabs.TabSize = (new_pos(3)-20)/3;
 end
 
@@ -839,6 +841,29 @@ end
 end
 
 
+%%------------------------Reset parameters---------------------------------
+function eeg_paras_reset(~,~)
+global observe_EEGDAT;
+if isempty(observe_EEGDAT.EEG)
+    return;
+end
+
+%%first check if the changed parameters have been applied in any panels
+[messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+if ~isempty(messgStr)
+    observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
+end
+
+MessageViewer= char(strcat('Reset parameters for EEG panels'));
+erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+observe_EEGDAT.eeg_panel_message=1;
+observe_EEGDAT.Reset_eeg_paras_panel=1;
+f_redrawEEG_Wave_Viewer();
+observe_EEGDAT.eeg_panel_message=2;
+end
+
+
+
 %%-----------------Pop figure---------------------------------------------
 function figure_out(~,~)
 global observe_EEGDAT;
@@ -916,11 +941,6 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
                 'Have you Labelled ICs? \n\n',...
                 'Please select "No" if you didnot. \n\n'];
             title       = 'EStudio: Label ICs';
-        elseif eegicinspectFlag==2
-            question = ['We strongly recommend your to update artifact marks for epoched EEG before any further analyses. Otherwise, there may be some bugs.\n\n',...
-                'Have you updated artifact marks? \n\n',...
-                'Please select "No" if you didnot. \n\n'];
-            title       = 'EStudio: Update artifact marks';
         end
         
         BackERPLABcolor = [1 0.9 0.3];
@@ -1607,9 +1627,6 @@ if ndims(EEG.data)==3
             end
             %             drawnow;
         end
-        
-        
-        
         
         %------------------------Xticks------------------------------------
         tagpos  = [];

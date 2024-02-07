@@ -7,7 +7,7 @@ classdef o_EEGDATA < handle
         count_current_eeg
         eeg_panel_message
         eeg_two_panels
-        eeg_reset_def_paras
+        Reset_eeg_paras_panel
     end
     
     
@@ -18,7 +18,7 @@ classdef o_EEGDATA < handle
         count_current_eeg_change
         eeg_panel_change_message
         eeg_two_panels_change
-        eeg_reset_def_paras_change
+        Reset_eeg_panel_change
     end
     
     
@@ -57,7 +57,6 @@ classdef o_EEGDATA < handle
         end
         
         %%count current eeg change
-        
         function set.count_current_eeg(obj_eeg,values_eeg)
             try
                 warning('off');
@@ -68,8 +67,6 @@ classdef o_EEGDATA < handle
             warning('on');
         end
         
-        
-        
         %%message
         function set.eeg_panel_message(obj_eeg,values_eeg)
             try
@@ -79,8 +76,6 @@ classdef o_EEGDATA < handle
             catch
                 warning('on');
             end
-            
-            
         end
         
         %%two panels
@@ -94,16 +89,15 @@ classdef o_EEGDATA < handle
             end
         end
         
-        
         %%reset for the default parameters
-        function set.eeg_reset_def_paras(obj_eeg,values_eeg)
+        function set.Reset_eeg_paras_panel(obj_eeg,values_eeg)
             try
                 warning('off');
-                obj_eeg.eeg_reset_def_paras = values_eeg;
-                notify(obj_eeg,'eeg_reset_def_paras_change');
+                obj_eeg.Reset_eeg_paras_panel = values_eeg;
+                notify(obj_eeg,'Reset_eeg_panel_change');
             catch
+                warning('on');
             end
-            warning('on');
         end
     end
     

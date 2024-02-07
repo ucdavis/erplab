@@ -12,8 +12,8 @@ function varargout = f_EEG_interpolate_chan_epoch_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 
 Eegtab_EEG_interpolate_chan_epoch = struct();
@@ -1283,6 +1283,30 @@ varargout{1} = box_interpolate_chan_epoch;
             return;
         end
     end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=15
+            return;
+        end
+        estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
+%         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_run.ForegroundColor = [0 0 0];
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value= 1;
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_inverse.Value= 1;
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_spherical.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.ignore_chan.Value=0;
+        Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value= 1;
+        Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0; 
+        observe_EEGDAT.Reset_eeg_paras_panel=16;
+    end
+
 end
 
 %%----------------check if the file already exists-------------------------

@@ -12,10 +12,9 @@
 function varargout = f_EEG_dq_fre_conus_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 EEG_dq_fre_conus = struct();
 %-----------------------------Name the title----------------------------------------------
@@ -74,7 +73,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             fqband      = def{2};
             fqlabels    = def{3};
         catch
-            fqband     =  [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 fqnyq]; %defaults
+            fqband     =  [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 256]; %defaults
             fqlabels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'};
         end
         data_tab = [fqlabels num2cell(fqband)];
@@ -545,4 +544,26 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
     end
 
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=14
+            return;
+        end
+        estudioworkingmemory('EEGTab_dq_fre_conus',0);
+%         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
+        EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
+        EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];
+        EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 1 1 1];
+        EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
+        if isempty(observe_EEGDAT.EEG)
+            EEG_dq_fre_conus.chans_edit.String = '';
+        else
+            EEG_dq_fre_conus.chans_edit.String = vect2colon([1:observe_EEGDAT.EEG.nbchan]);
+        end
+        fqband     =  [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 100]; %defaults
+        fqlabels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'};
+        data_tab = [fqlabels' num2cell(fqband)];
+        EEG_dq_fre_conus.bandtable.Data=data_tab;
+        observe_EEGDAT.Reset_eeg_paras_panel=15;
+    end
 end

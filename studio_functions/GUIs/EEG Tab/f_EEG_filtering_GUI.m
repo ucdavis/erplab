@@ -2,7 +2,7 @@
 %Center for Mind and Brain
 %University of California, Davis
 %Davis, CA, USA
-%Sep. 2023
+%Sep. 2023 && 2024
 
 % ERPLAB Studio
 
@@ -10,9 +10,8 @@ function varargout = f_EEG_filtering_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 gui_eegtab_filtering = struct();
 %%---------------------------gui-------------------------------------------
 try
@@ -1135,8 +1134,6 @@ varargout{1} = EEG_filtering_box;
             Save_file_label = Answer{2};
         end
         
-        
-        
         for Numofeeg = 1:numel(EEGArray)
             if EEGArray(Numofeeg)> length(ALLEEG)
                 msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
@@ -1468,6 +1465,49 @@ varargout{1} = EEG_filtering_box;
         else
             return;
         end
+    end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=4
+            return;
+        end
+        estudioworkingmemory('EEGTab_filter',0);
+        gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
+%         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
+        gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
+        
+        %%----------------------channel selection--------------------------
+        gui_eegtab_filtering.all_chan.Value = 1;
+        gui_eegtab_filtering.Selected_chan.Value = 0;
+        
+        %%-------------------setting for IIR Butterworth-------------------
+        gui_eegtab_filtering.hp_halfpow.String = '---';
+        gui_eegtab_filtering.hp_halfamp.Enable = 'off';
+        gui_eegtab_filtering.lp_halfamp.Enable = 'off';
+        gui_eegtab_filtering.hp_tog.Value = 0;
+        gui_eegtab_filtering.lp_tog.Value = 1;
+        gui_eegtab_filtering.DC_remove.Enable = 'off';
+        gui_eegtab_filtering.DC_remove.Value = 0;
+        gui_eegtab_filtering.hp_halfamp.String = '0';
+        gui_eegtab_filtering.lp_halfamp.String = '30';
+        gui_eegtab_filtering.roll_off.Value=2;
+        fs = observe_EEGDAT.EEG.srate;
+        if fs <=0
+            fs = 256;
+        end
+        typef = 0;
+        filterorder = 2*gui_eegtab_filtering.roll_off.Value;
+        [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, 0,30,fs);
+        hp_halfpow_string =num2str(roundn(frec3dB(1),-2));
+        gui_eegtab_filtering.lp_halfpow.String = hp_halfpow_string;
+        try nchan=observe_EEGDAT.EEG.nbchan;catch nchan=1;end
+        defx = {0 30 2 1:nchan 1 'butter' 0 []};
+        erpworkingmemory('pop_basicfilter',defx);
+        
+        observe_EEGDAT.Reset_eeg_paras_panel=5;
     end
 
 end

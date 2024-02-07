@@ -17,6 +17,9 @@ global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
+
+
 EStduio_eegtab_EEG_set = struct();
 %---------Setting the parameter which will be used in the other panels-----------
 
@@ -1168,6 +1171,17 @@ estudioworkingmemory('Startimes',0);%%set default value
             EEGtypeFlag = [];
         end
     end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=1
+            return;
+        end
+        
+      observe_EEGDAT.Reset_eeg_paras_panel=2;  
+    end
+
+
 end
 
 %%----Oct 2023---GH

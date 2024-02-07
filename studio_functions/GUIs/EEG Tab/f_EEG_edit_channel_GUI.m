@@ -12,9 +12,8 @@ function varargout = f_EEG_edit_channel_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_reset_def_paras_change',@eeg_reset_def_paras_change);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 
 EStduio_eegtab_EEG_edit_chan = struct();
@@ -667,6 +666,19 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
     end
 
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=6
+            return;
+        end
+%         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
+        estudioworkingmemory('EEGTab_editchan',0);
+        EStduio_eegtab_EEG_edit_chan.mode_modify.Value =1;
+        EStduio_eegtab_EEG_edit_chan.mode_create.Value = 0;
+        EStduio_eegtab_EEG_edit_chan.select_edit_chan.String = '';
+        observe_EEGDAT.Reset_eeg_paras_panel=7;
+    end
 end
 
 

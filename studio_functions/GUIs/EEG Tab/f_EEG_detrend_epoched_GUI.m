@@ -9,10 +9,9 @@
 function varargout = f_EEG_detrend_epoched_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -102,7 +101,7 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.other_option = uiextras.HBox('Parent',gui_eeg_epoch_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eeg_epoch_dt.other_option,'BackgroundColor',ColorB_def);
         gui_eeg_epoch_dt.reset = uicontrol('Parent',gui_eeg_epoch_dt.other_option,'Style','pushbutton',...
-            'String','Cancel','callback',@Reset_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Cancel','callback',@blc_dt_cancel,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_epoch_dt.other_option);
         gui_eeg_epoch_dt.apply = uicontrol('Style','pushbutton','Parent',gui_eeg_epoch_dt.other_option,...
             'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -443,7 +442,7 @@ varargout{1} = EEG_epoch_detrend_box;
 
 
 %%-----------------Setting for save option---------------------------------
-    function Reset_blc_dt(Source,~)
+    function blc_dt_cancel(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable= 'off';
             return;
@@ -541,6 +540,26 @@ varargout{1} = EEG_epoch_detrend_box;
         observe_EEGDAT.count_current_eeg=21;
     end
 
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=17
+            return;
+        end
+%         EEG_epoch_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
+        gui_eeg_epoch_dt.reset.BackgroundColor =  [ 1 1 1];
+        gui_eeg_epoch_dt.reset.ForegroundColor = [0 0 0];
+        gui_eeg_epoch_dt.apply .BackgroundColor =  [1 1 1];
+        gui_eeg_epoch_dt.apply .ForegroundColor = [0 0 0];
+        estudioworkingmemory('EEGTab_detrend_epoch',0);
+        
+        gui_eeg_epoch_dt.pre.Value=1;
+        gui_eeg_epoch_dt.post.Value=0;
+        gui_eeg_epoch_dt.whole.Value=0;
+        gui_eeg_epoch_dt.custom.Value=0;
+        gui_eeg_epoch_dt.custom_edit.Enable = 'off';
+        gui_eeg_epoch_dt.custom_edit.String = '';
+        observe_EEGDAT.Reset_eeg_paras_panel=18;
+    end
 end
 
 

@@ -14,7 +14,7 @@ function varargout = f_EEG_Plot_setting_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 %---------------------------Initialize parameters------------------------------------
 
 EStduio_gui_EEG_plotset = struct();
@@ -1036,6 +1036,87 @@ varargout{1} = EStudio_box_EEG_plot_set;
         else
             return;
         end
+    end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=3
+            return;
+        end
+        estudioworkingmemory('EEGTab_plotset',0);
+        EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
+        EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
+%         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
+        EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [1 1 1];
+        EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [0 0 0];
+        
+        %%display original data?
+        EStduio_gui_EEG_plotset.disp_orgdata.Value=1;
+        EEG_plotset{1}=1;
+        %%display IC?
+        EEG_plotset{2}=0;
+        EStduio_gui_EEG_plotset.disp_IC.Value = 0;
+        if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.icachansind)
+            EStduio_gui_EEG_plotset.disp_IC.Enable = 'off';
+        else
+            EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
+        end
+        
+        %%Displayed Window length (the defalut is 5s/trials )?
+        EEG_plotset{3} =5;
+        if ~isempty(observe_EEGDAT.EEG)
+            Winlength =5;
+            [chaNum,sampleNum,trialNum]=size(observe_EEGDAT.EEG.data);
+            Frames = sampleNum*trialNum;
+            if observe_EEGDAT.EEG.trials>1 % time in second or in trials
+                multiplier_winleg = size(observe_EEGDAT.EEG.data,2);
+            else
+                multiplier_winleg = observe_EEGDAT.EEG.srate;
+            end
+            if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg)) || numel(Winlength)~=1
+                EEG_plotset{3} = floor(Frames/multiplier_winleg);
+            end
+        end
+        EStduio_gui_EEG_plotset.WinLength_edit.String = num2str(EEG_plotset{3});
+        
+        %%vertical scale
+        EEG_plotset{4} =50;
+        EStduio_gui_EEG_plotset.v_scale_edit.String = num2str(EEG_plotset{4});
+        
+        %%Remove DC
+        if ~isempty(observe_EEGDAT.EEG)
+            if observe_EEGDAT.EEG.trials>1
+                EEG_plotset{6}=0;
+                EStduio_gui_EEG_plotset.rem_DC.Enable='off';
+            else
+                EEG_plotset{6}=1;
+                EStduio_gui_EEG_plotset.rem_DC.Enable='on';
+            end
+        end
+        EStduio_gui_EEG_plotset.rem_DC.Value=EEG_plotset{6};
+        
+        %%display event?
+        EEG_plotset{7} =1;
+        EStduio_gui_EEG_plotset.disp_event.Value = 1;
+        
+        %%Stack?
+        EEG_plotset{8}=0;
+        EStduio_gui_EEG_plotset.disp_stack.Value = 0;
+        
+        %%Norm?
+        EEG_plotset{9}=0;
+        EStduio_gui_EEG_plotset.disp_norm.Value = 0;
+        %%channel order
+        EEG_plotset{10} =1;
+        EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+        EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+        EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+        EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+        EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+        EStduio_gui_EEG_plotset.chanorder{1,1} = [];
+        EStduio_gui_EEG_plotset.chanorder{1,2} = '';
+        estudioworkingmemory('EEG_plotset',EEG_plotset);
+        observe_EEGDAT.Reset_eeg_paras_panel=4;
     end
 end
 

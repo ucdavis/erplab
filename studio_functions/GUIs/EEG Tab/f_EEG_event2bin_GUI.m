@@ -12,9 +12,9 @@
 function varargout = f_EEG_event2bin_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %---------------------------Initialize parameters------------------------------------
 
@@ -594,6 +594,23 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if count~=0
             fprintf(['\n',repmat('-',1,100) '\n\n\n']);
         end
+    end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=7
+            return;
+        end
+        estudioworkingmemory('EEGTab_event2bin',0);
+        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
+%         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
+        EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
+        EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
+        EStduio_eegtab_EEG_event2bin.BDF_edit.String= '';
+        def = {'' '' '' 0 [] [] 0 0 0 1 0};
+        erpworkingmemory('pop_binlister',def);
+        observe_EEGDAT.Reset_eeg_paras_panel=8;
     end
 end
 

@@ -12,9 +12,10 @@
 function varargout = f_EEG_arf_det_conus_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
+
 
 %---------------------------Initialize parameters------------------------------------
 Eegtab_EEG_art_det_conus = struct();
@@ -1011,6 +1012,30 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
     end
 
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=10
+            return;
+        end
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
+%         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+        if isempty(observe_EEGDAT.EEG)
+            Eegtab_EEG_art_det_conus.chan_edit.String = '';
+        else
+            Eegtab_EEG_art_det_conus.chan_edit.String = vect2colon([1:observe_EEGDAT.EEG.nbchan]);
+        end
+        Eegtab_EEG_art_det_conus.voltage_edit.String = '500';
+        Eegtab_EEG_art_det_conus.movewindow_edit.String = '500';
+        Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
+        observe_EEGDAT.Reset_eeg_paras_panel=11;
+    end
 end
 
 

@@ -11,9 +11,9 @@
 function varargout = f_EEG_eeglabica_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %---------------------------Initialize parameters------------------------------------
 
@@ -1010,6 +1010,16 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.classifyics_iclabel.Enable= 'off';
         end
         observe_EEGDAT.count_current_eeg=7;
+    end
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=5
+            return;
+        end
+        EStduio_eegtab_eeglab_ica.CurrentEEG_tras.String = num2str(observe_EEGDAT.CURRENTSET);
+        EStduio_eegtab_eeglab_ica.CurrentEEG_tras.String = '';
+        observe_EEGDAT.Reset_eeg_paras_panel=6;
     end
 end
 

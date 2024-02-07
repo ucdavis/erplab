@@ -9,10 +9,9 @@
 function varargout = f_EEG_binepoch_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %%---------------------------gui-------------------------------------------
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -180,7 +179,6 @@ varargout{1} = EEG_binepoch_box;
         web('https://github.com/ucdavis/erplab/wiki/Epoching-Bins/','-browser');
     end
 
-
 %%----------------input baseline period defined by user----------------------
     function timerange_edit(Source,~)
         if isempty(observe_EEGDAT.EEG)
@@ -216,7 +214,6 @@ varargout{1} = EEG_binepoch_box;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
-        
         if lat_osci(1)>= lat_osci(2)
             beep;
             msgboxText =  ['Extract Bin-based Epochs - The first value must be smaller than the second one for time range'];
@@ -225,7 +222,6 @@ varargout{1} = EEG_binepoch_box;
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
-        
         if lat_osci(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-based Epochs - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
@@ -234,7 +230,6 @@ varargout{1} = EEG_binepoch_box;
             return;
         end
     end
-
 
 %%----------------------None baseline correction---------------------------
     function none_eeg(Source,~)
@@ -246,7 +241,6 @@ varargout{1} = EEG_binepoch_box;
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         %%change color for cancel and apply
         gui_eegtab_binepoch.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.apply.ForegroundColor = [1 1 1];
@@ -264,8 +258,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.custom_edit.String = '';
     end
 
-
-
 %%----------------Setting for "pre"-----------------------------------------
     function pre_eeg(Source,~)
         if isempty(observe_EEGDAT.EEG)
@@ -276,7 +268,6 @@ varargout{1} = EEG_binepoch_box;
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         %%change color for cancel and apply
         gui_eegtab_binepoch.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.apply.ForegroundColor = [1 1 1];
@@ -284,7 +275,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_binepoch',1);
-        
         gui_eegtab_binepoch.none.Value =0;
         gui_eegtab_binepoch.pre.Value=1;
         gui_eegtab_binepoch.post.Value=0;
@@ -305,7 +295,6 @@ varargout{1} = EEG_binepoch_box;
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         %%change color for cancel and apply
         gui_eegtab_binepoch.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.apply.ForegroundColor = [1 1 1];
@@ -341,7 +330,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_binepoch',1);
-        
         gui_eegtab_binepoch.none.Value =0;
         gui_eegtab_binepoch.pre.Value=0;
         gui_eegtab_binepoch.post.Value=0;
@@ -369,7 +357,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_binepoch',1);
-        
         gui_eegtab_binepoch.none.Value =0;
         gui_eegtab_binepoch.pre.Value=0;
         gui_eegtab_binepoch.post.Value=0;
@@ -377,7 +364,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.custom.Value=1;
         gui_eegtab_binepoch.custom_edit.Enable = 'on';
     end
-
 
 %%-----------------------Custom baseline period----------------------------
     function precustom_edit(Source,~)
@@ -477,7 +463,6 @@ varargout{1} = EEG_binepoch_box;
             return;
         end
     end
-
 
 %%--------------------------Setting for plot-------------------------------
     function apply_blc_dt(Source,~)
@@ -673,8 +658,6 @@ varargout{1} = EEG_binepoch_box;
         
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
-        
     end
 
 
@@ -700,7 +683,6 @@ varargout{1} = EEG_binepoch_box;
                 Enable_Label = 'on';
             end
         end
-        
         gui_eegtab_binepoch.timerange_edit.Enable = Enable_Label;
         gui_eegtab_binepoch.none.Enable= Enable_Label;
         gui_eegtab_binepoch.pre.Enable= Enable_Label;
@@ -715,7 +697,6 @@ varargout{1} = EEG_binepoch_box;
         else
             gui_eegtab_binepoch.custom_edit.Enable = 'off';
         end
-        
         
         def  = erpworkingmemory('pop_epochbin');
         if isempty(def)
@@ -792,7 +773,6 @@ varargout{1} = EEG_binepoch_box;
         else
             gui_eegtab_binepoch.custom_edit.String ='';
         end
-        
     end
 
 
@@ -826,8 +806,6 @@ varargout{1} = EEG_binepoch_box;
         end
         observe_EEGDAT.count_current_eeg =11;
     end
-
-
 
 %%--------------press return to execute "Apply"----------------------------
     function eeg_binepoch_presskey(hObject, eventdata)
@@ -867,7 +845,28 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
     end
 
-
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=8
+            return;
+        end
+        estudioworkingmemory('EEGTab_binepoch',0);
+        gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
+        gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
+%         EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
+        gui_eegtab_binepoch.cancel.BackgroundColor =  [1 1 1];
+        gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
+        gui_eegtab_binepoch.timerange_edit.String = '-200 800';
+        gui_eegtab_binepoch.none.Value =0;
+        gui_eegtab_binepoch.pre.Value=1;
+        gui_eegtab_binepoch.post.Value=0;
+        gui_eegtab_binepoch.whole.Value=0;
+        gui_eegtab_binepoch.custom.Value=0;
+        gui_eegtab_binepoch.custom_edit.Enable = 'off';
+        gui_eegtab_binepoch.custom_edit.String = '';
+        erpworkingmemory('pop_epochbin',{[-200 800]  'pre'});
+        observe_EEGDAT.Reset_eeg_paras_panel=9;
+    end
 end
 
 
