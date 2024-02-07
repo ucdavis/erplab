@@ -494,9 +494,9 @@ varargout{1} = ERP_grdavg_box_gui;
         stderror   = gui_erp_grdavg.cmpsd.Value; % 0;1
         jk         = gui_erp_grdavg.jacknife.Value; % 0;1
         if jk
-            Answer = f_ERP_save_single_file(strcat('_jackknife'),'',length(observe_ERPDAT.ALLERP)+1);
+            Answer = f_ERP_save_single_file(strcat('jackknife'),'',length(observe_ERPDAT.ALLERP)+1);
         else
-            Answer = f_ERP_save_single_file(strcat('_grand'),'',length(observe_ERPDAT.ALLERP)+1);
+            Answer = f_ERP_save_single_file(strcat('grand'),'',length(observe_ERPDAT.ALLERP)+1);
         end
         if isempty(Answer)
             beep;
@@ -543,9 +543,9 @@ varargout{1} = ERP_grdavg_box_gui;
         GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
         if  ~gui_erp_grdavg.cbdatq.Value
             dq_option  = 0; % data quality combine option. 0 - off, 1 - on/default, 2 - on/custom
+            dq_spec = GAv_combo_defaults;
         elseif gui_erp_grdavg.cbdatq.Value && gui_erp_grdavg.cbdatq_def.Value
             dq_option  = 1;
-            
             dq_spec = GAv_combo_defaults;
         elseif gui_erp_grdavg.cbdatq.Value && gui_erp_grdavg.cbdatq_custom.Value
             dq_option  = 2;
@@ -579,7 +579,6 @@ varargout{1} = ERP_grdavg_box_gui;
         ALLERPCOM = evalin('base','ALLERPCOM');
         ALLERP = observe_ERPDAT.ALLERP;
         if jk==1 % Jackknife
-            
             [ALLERP, ERPCOM]  = pop_jkgaverager(ALLERP, 'Erpsets', erpset, 'Criterion', artcrite,...
                 'SEM', stdsstr, 'Weighted', Weightedstr, 'Erpname', jkerpname, 'Filename', jkfilename,...
                 'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr);
@@ -588,7 +587,6 @@ varargout{1} = ERP_grdavg_box_gui;
             observe_ERPDAT.CURRENTERP = Selected_ERP_afd(1);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            
             if Save_file_label==1
                 for Numofselectederp =1:numel(Selected_ERP_afd)
                     ERP_save = observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp));
@@ -597,7 +595,6 @@ varargout{1} = ERP_grdavg_box_gui;
                 end
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            
         else
             [ERP, ERPCOM]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
                 'ExcludeNullBin', excnullbinstr,'Weighted', Weightedstr, 'Saveas', 'off',...
@@ -620,10 +617,8 @@ varargout{1} = ERP_grdavg_box_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         erpworkingmemory('f_ERP_bin_opt',1);
-        observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
+        observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
-        
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 

@@ -11,6 +11,7 @@ function varargout = f_ERP_filtering_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 %%---------------------------gui-------------------------------------------
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
@@ -261,8 +262,6 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_filter',1);
-        
-        
         gui_erp_filtering.all_bin_chan.Value = 1;
         gui_erp_filtering.Selected_bin_chan.Value = 0;
     end
@@ -286,12 +285,9 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_filter',1);
-        
         gui_erp_filtering.all_bin_chan.Value = 0;
         gui_erp_filtering.Selected_bin_chan.Value = 1;
     end
-
-
 
 %%--------------------------------High-pass filtering toggle------------------
     function  highpass_toggle(source,~)
@@ -312,7 +308,6 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_filtering.advanced.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_filter',1);
-        
         
         fs = observe_ERPDAT.ERP.srate;
         locutoff = 0.1;
@@ -1304,7 +1299,7 @@ varargout{1} = ERP_filtering_box;
             observe_ERPDAT.Process_messg =3;
             return;
         end
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+        
     end
 
 
@@ -1556,5 +1551,39 @@ varargout{1} = ERP_filtering_box;
         end
     end
 
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=6
+            return;
+        end
+        estudioworkingmemory('ERPTab_filter',0);
+        gui_erp_filtering.apply.BackgroundColor =  [1 1 1];
+        gui_erp_filtering.apply.ForegroundColor = [0 0 0];
+        ERP_filtering_box.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_filtering.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_filtering.cancel.ForegroundColor = [0 0 0];
+        gui_erp_filtering.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_filtering.advanced.ForegroundColor = [0 0 0];
+        gui_erp_filtering.all_bin_chan.Value = 1;
+        gui_erp_filtering.Selected_bin_chan.Value = 0;
+        gui_erp_filtering.roll_off.Value=2;
+        fs = observe_ERPDAT.ERP.srate;
+        if fs <=0
+            fs = 256;
+        end
+        typef = 0;
+        hicutoff = 30;
+        locutoff = 0;
+        filterorder = 2*gui_erp_filtering.roll_off.Value;
+        [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
+        gui_erp_filtering.hp_halfpow.String = '---';
+        gui_erp_filtering.lp_halfpow.String = num2str(roundn(frec3dB,-2));;
+        gui_erp_filtering.hp_halfamp.Enable = 'off';
+        gui_erp_filtering.lp_halfamp.Enable = 'on';
+        gui_erp_filtering.hp_halfamp.String = '0';
+        gui_erp_filtering.lp_halfamp.String = '30';
+        gui_erp_filtering.hp_tog.Value = 0;
+        gui_erp_filtering.lp_tog.Value = 1;
+        observe_ERPDAT.Reset_erp_paras_panel=7;
+    end
 end
-%Progem end: ERP Measurement tool
+%Progem end:
