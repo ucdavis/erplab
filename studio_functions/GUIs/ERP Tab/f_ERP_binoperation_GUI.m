@@ -10,6 +10,7 @@ function varargout = f_ERP_binoperation_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 gui_erp_bin_operation = struct();
 
@@ -199,7 +200,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_bin_operation.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_binop',1);
-
+        
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
@@ -582,7 +583,7 @@ varargout{1} = ERP_bin_operation_gui;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
         if ViewerFlag==1;
-           Enable_label = 'off';  
+            Enable_label = 'off';
         end
         gui_erp_bin_operation.mode_modify.Enable=Enable_label;
         gui_erp_bin_operation.mode_create.Enable=Enable_label;
@@ -631,6 +632,25 @@ varargout{1} = ERP_bin_operation_gui;
         else
             return;
         end
+    end
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=8
+            return;
+        end
+        gui_erp_bin_operation.run.BackgroundColor =  [1 1 1];
+        gui_erp_bin_operation.run.ForegroundColor = [0 0 0];
+        ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_binop',0);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+        end
+        gui_erp_bin_operation.edit_bineq.Data = dsnames;
+        gui_erp_bin_operation.mode_modify.Value = 1;
+        gui_erp_bin_operation.mode_create.Value = 0;
+        observe_ERPDAT.Reset_erp_paras_panel=9;
     end
 
 end

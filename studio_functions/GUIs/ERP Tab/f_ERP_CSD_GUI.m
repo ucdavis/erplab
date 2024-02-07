@@ -10,6 +10,7 @@ function varargout = f_ERP_CSD_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 
 gui_erp_CSD = struct();
@@ -358,7 +359,7 @@ varargout{1} = ERP_CSD_gui;
         if observe_ERPDAT.Count_currentERP~=9
             return;
         end
-         ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || ViewerFlag==1
             Enable_label = 'off';
         else
@@ -415,5 +416,26 @@ varargout{1} = ERP_CSD_gui;
         else
             return;
         end
+    end
+
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=9
+            return;
+        end
+        gui_erp_CSD.run.BackgroundColor =  [1 1 1];
+        gui_erp_CSD.run.ForegroundColor = [0 0 0];
+        ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
+        gui_erp_CSD.location.BackgroundColor =  [1 1 1];
+        gui_erp_CSD.location.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_csd',0);
+        gui_erp_CSD.erp_h_erp    =  axes( 'Parent', gui_erp_CSD.erp_history_table, 'ActivePositionProperty', 'Position');
+        set( gui_erp_CSD.erp_h_erp,'xticklabel', [], 'yticklabel', []);
+        gui_erp_CSD.sif_num.String = '4';
+        gui_erp_CSD.scl_num.String = '0.00001';
+        gui_erp_CSD.hr_num.String = '10';
+        observe_ERPDAT.Reset_erp_paras_panel=10;
     end
 end

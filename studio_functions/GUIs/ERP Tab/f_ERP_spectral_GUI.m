@@ -11,6 +11,7 @@ function varargout = f_ERP_spectral_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 
 defaulpar =  erpworkingmemory('f_ERP_spectral');
@@ -506,10 +507,10 @@ varargout{1} = ERP_filtering_box;
                     end
                     set(gca,'TickDir','out');
                     set(gca,'LineWidth',1);
-                     set(gca,'Color','w',...
-                            'XColor','k',...
-                            'YColor','k',...
-                            'ZColor','k');
+                    set(gca,'Color','w',...
+                        'XColor','k',...
+                        'YColor','k',...
+                        'ZColor','k');
                 end
             end
             set(fig,'Color','w');
@@ -1032,7 +1033,7 @@ varargout{1} = ERP_filtering_box;
         if observe_ERPDAT.Count_currentERP~=10
             return;
         end
-         ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enable_label = 'off';
         else
@@ -1120,5 +1121,28 @@ varargout{1} = ERP_filtering_box;
             return;
         end
     end
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=10
+            return;
+        end
+        gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.plot.ForegroundColor = [0 0 0];
+        ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_spectral.save.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.save.ForegroundColor = [0 0 0];
+        gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
+        gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('ERPTab_spectral',0);
+        gui_erp_spectral.hamwin_on.Value = 1;
+        gui_erp_spectral.hamwin_off.Value = 0;
+        gui_erp_spectral.phase.Value = 1;
+        gui_erp_spectral.amplitude.Value =0;
+        gui_erp_spectral.power.Value =0;
+        gui_erp_spectral.db.Value =0;
+        observe_ERPDAT.Reset_erp_paras_panel=11;
+    end
 end
-%Progem end: ERP Measurement tool
+%Progem end:

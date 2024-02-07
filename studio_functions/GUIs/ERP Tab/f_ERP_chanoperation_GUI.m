@@ -10,8 +10,9 @@ function varargout = f_ERP_chanoperation_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
-gui_erp_chan_operation = struct();
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
+gui_erp_chan_operation = struct();
 %-----------------------------Name the title----------------------------------------------
 % global ERP_chan_operation_gui;
 try
@@ -701,7 +702,7 @@ varargout{1} = ERP_chan_operation_gui;
         if observe_ERPDAT.Count_currentERP~=7
             return;
         end
-         ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100
@@ -786,5 +787,25 @@ varargout{1} = ERP_chan_operation_gui;
         else
             return;
         end
+    end
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=7
+            return;
+        end
+        estudioworkingmemory('ERPTab_chanop',0);
+        gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
+        ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
+        gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
+        for ii = 1:1000
+            dsnames{ii,1} = '';
+        end
+        gui_erp_chan_operation.edit_bineq.Data = dsnames;
+        gui_erp_chan_operation.locaInfor.Value=1;
+        gui_erp_chan_operation.mode_modify.Value = 1;
+        gui_erp_chan_operation.mode_create.Value = 0;
+        observe_ERPDAT.Reset_erp_paras_panel=8;
     end
 end
