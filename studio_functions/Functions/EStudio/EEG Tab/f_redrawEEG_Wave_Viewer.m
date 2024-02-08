@@ -844,8 +844,15 @@ function eeg_paras_reset(~,~)
 global observe_EEGDAT;
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
-if isempty(observe_EEGDAT.EEG)
+if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
     return;
+else
+    dataindex(1) = 1;
+end
+if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+    dataindex(2) = 0;
+else
+    dataindex(2) = 1;
 end
 
 %%first check if the changed parameters have been applied in any panels
@@ -854,35 +861,59 @@ if ~isempty(messgStr)
     observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
 end
 
-MessageViewer= char(strcat('Reset parameters for EEG panels'));
-erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-% app = feval('estudio_reset_paras',[1 0 0 0]);
-% waitfor(app,'Finishbutton',1);
-% reset_paras = [0 0 0 0];
-% try
-%     reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-%     app.delete; %delete app from view
-%     pause(0.1); %wait for app to leave
-% catch
-%     disp('User selected Cancel');
-%     return;
-% end
-% 
-% observe_EEGDAT.eeg_panel_message=1;
-% if reset_paras(2)==1
-%     EStudio_gui_erp_totl.clear_alleeg = 1;
-% else
-%     EStudio_gui_erp_totl.clear_alleeg = 0;
-% end
-% 
-% if reset_paras(1)==1
-observe_EEGDAT.Reset_eeg_paras_panel=1;
-%     if EStudio_gui_erp_totl.clear_alleeg == 0
-f_redrawEEG_Wave_Viewer();
-%     end
-% end
+erpworkingmemory('f_EEG_proces_messg','Reset parameters for EEG panels');
+app = feval('estudio_reset_paras',[1 0 0 0],dataindex);
+waitfor(app,'Finishbutton',1);
+reset_paras = [0 0 0 0];
+try
+    reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+    app.delete; %delete app from view
+    pause(0.1); %wait for app to leave
+catch
+    disp('User selected Cancel');
+    return;
+end
 
+observe_EEGDAT.eeg_panel_message=1;
+if reset_paras(2)==1
+    EStudio_gui_erp_totl.clear_alleeg = 1;
+else
+    EStudio_gui_erp_totl.clear_alleeg = 0;
+end
+
+if reset_paras(1)==1
+    observe_EEGDAT.Reset_eeg_paras_panel=1;
+    if EStudio_gui_erp_totl.clear_alleeg == 0
+        f_redrawEEG_Wave_Viewer();
+    else
+        observe_EEGDAT.ALLEEG = [];
+        observe_EEGDAT.EEG = [];
+        observe_EEGDAT.CURRENTSET  = 0;
+        estudioworkingmemory('EEGArray',1);
+        observe_EEGDAT.count_current_eeg =1;
+    end
+end
 observe_EEGDAT.eeg_panel_message=2;
+%%---------------- -------------erp tab------------------------------------
+if reset_paras(4)==1
+    EStudio_gui_erp_totl.clear_allerp = 1;
+else
+    EStudio_gui_erp_totl.clear_allerp = 0;
+end
+
+if reset_paras(3)==1
+    observe_ERPDAT.Reset_erp_paras_panel = 1;
+    if EStudio_gui_erp_totl.clear_allerp == 0
+        f_redrawERP();
+    else
+        observe_ERPDAT.ALLERP = [];
+        observe_ERPDAT.ERP = [];
+        observe_ERPDAT.CURRENTERP  = 1;
+        estudioworkingmemory('selectederpstudio',1);
+        observe_ERPDAT.Count_currentERP = 1;
+    end
+end
+
 end
 
 

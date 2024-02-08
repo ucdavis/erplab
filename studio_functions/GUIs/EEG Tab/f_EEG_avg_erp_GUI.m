@@ -836,12 +836,5 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.custom_para_op.Enable = 'off';
         EEG_avg_erp.invalidepoch.Value = 0;
         observe_EEGDAT.Reset_eeg_paras_panel=20;
-%         if EStudio_gui_erp_totl.clear_alleeg == 1
-%             observe_EEGDAT.ALLEEG = [];
-%             observe_EEGDAT.EEG = [];
-%             observe_EEGDAT.CURRENTSET  = 0; 
-%             estudioworkingmemory('EEGArray',1);
-%             observe_EEGDAT.count_current_eeg =1;
-%         end
     end
 end

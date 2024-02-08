@@ -10,6 +10,7 @@ function varargout = f_ERP_simulation_panel(varargin)
 
 % global gui_erp_simulation;
 global observe_ERPDAT;
+global EStudio_gui_erp_totl;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
@@ -2711,6 +2712,8 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.pink_op.Value=0;
         gui_erp_simulation.pink_amp.Enable = 'off';
         plot_erp_simulation();
+        
+        
     end
 end
 %Progem end: ERP simulation
