@@ -1399,7 +1399,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             return;
         end
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
-%         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
+        %         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.detectar_cancel.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_epoch.detectar_cancel.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_epoch.detectar_run.BackgroundColor =  [ 1 1 1];
@@ -1429,7 +1429,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.chan_edit.String = '';
             Eegtab_EEG_art_det_epoch.periods_edit.String = '';
         else
-            Eegtab_EEG_art_det_epoch.periods_edit.String = num2str([observe_EEGDAT.EEG.times(1),observe_EEGDAT.EEG.times(end)]);
+            if observe_EEGDAT.EEG.trials==1
+                Eegtab_EEG_art_det_epoch.periods_edit.String = '';
+            else
+                Eegtab_EEG_art_det_epoch.periods_edit.String = num2str([observe_EEGDAT.EEG.times(1),observe_EEGDAT.EEG.times(end)]);
+            end
             Eegtab_EEG_art_det_epoch.chan_edit.String=vect2colon([1:observe_EEGDAT.EEG.nbchan]);
         end
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;

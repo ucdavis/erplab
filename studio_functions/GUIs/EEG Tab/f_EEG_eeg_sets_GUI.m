@@ -1022,7 +1022,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
     end
 
-%%%--------------Up this panel--------------------------------------
+%%%--------------Update this panel--------------------------------------
     function count_current_eeg_change(~,~)
         if observe_EEGDAT.count_current_eeg ~=1
             return;
@@ -1101,6 +1101,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
             EStduio_eegtab_EEG_set.butttons_datasets.Enable = 'off';
+            EStduio_eegtab_EEG_set.butttons_datasets.Value=1;
             [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
             EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
         end
@@ -1120,7 +1121,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.eeg_panel_message=2;
     end
 
 %----------------------Get the information of the updated EEGsets----------
@@ -1177,10 +1177,8 @@ estudioworkingmemory('Startimes',0);%%set default value
         if observe_EEGDAT.Reset_eeg_paras_panel~=1
             return;
         end
-        
       observe_EEGDAT.Reset_eeg_paras_panel=2;  
     end
-
 
 end
 

@@ -1291,6 +1291,13 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value= 1;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0;
+        if observe_EEGDAT.EEG.trials ==1%%Force the "interpolate marked epochs" to be grayed out.
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
+        else
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
+            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
+        end
         observe_EEGDAT.Reset_eeg_paras_panel=16;
     end
 

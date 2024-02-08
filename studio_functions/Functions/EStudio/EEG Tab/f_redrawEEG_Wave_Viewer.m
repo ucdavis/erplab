@@ -159,6 +159,8 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     end
 end
 if isempty(observe_EEGDAT.EEG)
+    EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
+    hold(EStudio_gui_erp_totl.myeegviewer,'on');
     set(EStudio_gui_erp_totl.myeegviewer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 else
 end
@@ -200,7 +202,7 @@ waitfor(app,'Finishbutton',1);
 try
     New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
     app.delete; %delete app from view
-    pause(0.5); %wait for app to leave
+    pause(0.1); %wait for app to leave
 catch
     disp('User selected Cancel');
     return;
@@ -240,13 +242,6 @@ global EStudio_gui_erp_totl;%%Global variable
 if isempty(observe_EEGDAT.EEG)
     return;
 end
-% if observe_EEGDAT.EEG.trials==1
-%     MessageViewer= char(strcat('Changing the start time of EEG to be 0s (|<)'));
-% else
-%     MessageViewer= char(strcat('Start the EEG from the first epoch (<<)'));
-% end
-% erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-% observe_EEGDAT.eeg_panel_message=1;
 if observe_EEGDAT.EEG.trials>1 % time in second or in trials
     Startimes =1;
 else
@@ -847,6 +842,8 @@ end
 %%------------------------Reset parameters---------------------------------
 function eeg_paras_reset(~,~)
 global observe_EEGDAT;
+global observe_ERPDAT;
+global EStudio_gui_erp_totl;
 if isempty(observe_EEGDAT.EEG)
     return;
 end
@@ -859,9 +856,32 @@ end
 
 MessageViewer= char(strcat('Reset parameters for EEG panels'));
 erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-observe_EEGDAT.eeg_panel_message=1;
+% app = feval('estudio_reset_paras',[1 0 0 0]);
+% waitfor(app,'Finishbutton',1);
+% reset_paras = [0 0 0 0];
+% try
+%     reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+%     app.delete; %delete app from view
+%     pause(0.1); %wait for app to leave
+% catch
+%     disp('User selected Cancel');
+%     return;
+% end
+% 
+% observe_EEGDAT.eeg_panel_message=1;
+% if reset_paras(2)==1
+%     EStudio_gui_erp_totl.clear_alleeg = 1;
+% else
+%     EStudio_gui_erp_totl.clear_alleeg = 0;
+% end
+% 
+% if reset_paras(1)==1
 observe_EEGDAT.Reset_eeg_paras_panel=1;
+%     if EStudio_gui_erp_totl.clear_alleeg == 0
 f_redrawEEG_Wave_Viewer();
+%     end
+% end
+
 observe_EEGDAT.eeg_panel_message=2;
 end
 
@@ -936,7 +956,6 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
         EEGArray = observe_EEGDAT.CURRENTSET;
     end
     if numel(EEGArray) ==1
-        
         %%set a reminder that can give the users second chance to update
         %%current EEGset
         if  eegicinspectFlag==1

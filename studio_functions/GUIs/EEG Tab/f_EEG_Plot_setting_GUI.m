@@ -987,11 +987,13 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = Enableflag;
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
         end
-        if observe_EEGDAT.EEG.trials>1
-            EStduio_gui_EEG_plotset.rem_DC.Enable = 'off';
-            EStduio_gui_EEG_plotset.rem_DC.Value=0;
-        else
-            EStduio_gui_EEG_plotset.rem_DC.Enable = 'on';
+        if ~isempty(observe_EEGDAT.EEG)
+            if observe_EEGDAT.EEG.trials>1
+                EStduio_gui_EEG_plotset.rem_DC.Enable = 'off';
+                EStduio_gui_EEG_plotset.rem_DC.Value=0;
+            else
+                EStduio_gui_EEG_plotset.rem_DC.Enable = 'on';
+            end
         end
         observe_EEGDAT.count_current_eeg=4;
     end
@@ -1046,7 +1048,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         estudioworkingmemory('EEGTab_plotset',0);
         EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [0 0 0];
-%         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
+        %         EStudio_box_EEG_plot_set.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [1 1 1];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [0 0 0];
         

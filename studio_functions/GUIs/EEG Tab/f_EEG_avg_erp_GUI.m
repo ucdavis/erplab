@@ -822,7 +822,7 @@ varargout{1} = Eegtab_box_avg_erp;
             return;
         end
         estudioworkingmemory('EEGTab_avg_erp',0);
-%         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
+        %         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
         EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
@@ -835,7 +835,13 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.no_dq.Value=0;
         EEG_avg_erp.custom_para_op.Enable = 'off';
         EEG_avg_erp.invalidepoch.Value = 0;
-%         observe_EEGDAT.Reset_eeg_paras_panel=0;
+        observe_EEGDAT.Reset_eeg_paras_panel=20;
+%         if EStudio_gui_erp_totl.clear_alleeg == 1
+%             observe_EEGDAT.ALLEEG = [];
+%             observe_EEGDAT.EEG = [];
+%             observe_EEGDAT.CURRENTSET  = 0; 
+%             estudioworkingmemory('EEGArray',1);
+%             observe_EEGDAT.count_current_eeg =1;
+%         end
     end
-
 end
