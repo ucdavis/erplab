@@ -24,13 +24,13 @@ EEG_rmresp_mistak_conus = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Remove Response Mistakes for Continuous EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @rmresp_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Remove Response Mistakes for Continuous EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @rmresp_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Remove Response Mistakes for Continuous EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @rmresp_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @rmresp_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -109,9 +109,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 %%**************************************************************************%%
 
 %%---------------------------Help------------------------------------------
-    function rmresp_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-    end
+%     function rmresp_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+%     end
 
 %%----------------------edit chans-----------------------------------------
     function Stimulus_edit(Source,~)

@@ -26,13 +26,13 @@ Eegtab_EEG_art_det_conus = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Rejection for Continuous EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @art_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @art_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @art_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @art_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -105,18 +105,12 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         %%-----------------------Cancel and Run----------------------------
         Eegtab_EEG_art_det_conus.detar_run_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
-        
         Eegtab_EEG_art_det_conus.detectar_advanced = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Advanced','callback',@detectar_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
         Eegtab_EEG_art_det_conus.detectar_preview = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Preview','callback',@detectar_preview,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
         Eegtab_EEG_art_det_conus.detectar_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Finalize','callback',@detectar_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        %         set(Eegtab_EEG_art_det_conus.detar_run_title,'Sizes',[70,-1,70]);
-        
-        
         set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 35 35 35 30]);
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
     end
@@ -127,9 +121,9 @@ varargout{1} = Eegtab_box_art_det_conus;
 %%**************************************************************************%%
 
 %%-----------------------artifact detection help---------------------------
-    function art_help(~,~)
-        web(' https://github.com/ucdavis/erplab/wiki/Artifact-Rejection-in-Continuous-Data/','-browser');
-    end
+%     function art_help(~,~)
+%         web(' https://github.com/ucdavis/erplab/wiki/Artifact-Rejection-in-Continuous-Data/','-browser');
+%     end
 
 %%----------------------edit chans-----------------------------------------
     function chan_edit(Source,~)

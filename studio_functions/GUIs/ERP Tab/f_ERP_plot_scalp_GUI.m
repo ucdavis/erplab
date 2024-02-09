@@ -19,13 +19,13 @@ gui_erp_scalp_map = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     ERP_plot_scalp_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Scalp Maps',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @scap_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     ERP_plot_scalp_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Scalp Maps',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @scap_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     ERP_plot_scalp_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Scalp Maps',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @scap_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @scap_help
 end
 
 %-----------------------------Draw the panel-------------------------------------

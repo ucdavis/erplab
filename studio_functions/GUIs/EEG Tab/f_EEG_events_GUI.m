@@ -24,13 +24,13 @@ EStduio_eegtab_EEG_events = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     EStudio_eeg_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG Events', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @event_help); % Create boxpanel
+        'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @event_help);
+        'BackgroundColor',ColorB_def);
 else
     EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @event_help);
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -116,9 +116,9 @@ varargout{1} = EStudio_eeg_events_box;
 %%**************************************************************************%%
 
 %%-----------------------event help----------------------------------------
-    function event_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-    end
+%     function event_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+%     end
 
 
 %%----------Summarize the event codes for the selected EEG-----------------

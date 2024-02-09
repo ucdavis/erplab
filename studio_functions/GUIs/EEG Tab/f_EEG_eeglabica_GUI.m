@@ -25,13 +25,13 @@ EStduio_eegtab_eeglab_ica = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGLAB ICA (only for one selected dataset)',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @eeglabica_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (only for one selected dataset)',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @eeglabica_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     EStudio_box_eeglab_ica = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGLAB ICA (only for one selected dataset)',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @eeglabica_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%%, 'HelpFcn', @eeglabica_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -126,9 +126,9 @@ varargout{1} = EStudio_box_eeglab_ica;
 %%**************************************************************************%%
 
 %%--------------------eeglab ica help--------------------------------------
-    function eeglabica_help(~,~)
-        web('https://eeglab.org/tutorials/','-browser');
-    end
+%     function eeglabica_help(~,~)
+%         web('https://eeglab.org/tutorials/','-browser');
+%     end
 
 %%-----------------Decompose the data by ICA-------------------------------
     function icadecomp_eeg(Source,~)

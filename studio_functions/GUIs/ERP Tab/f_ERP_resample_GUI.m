@@ -24,13 +24,13 @@ end
 if nargin == 0
     fig = figure(); % Parent figure
     box_erp_resample = uiextras.BoxPanel('Parent', fig, 'Title', 'Resample ERPsets', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @resample_help); % Create boxpanel
+        'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     box_erp_resample = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Resample ERPsets', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @resample_help);
+        'BackgroundColor',ColorB_def);
 else
     box_erp_resample = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Resample ERPsets', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @resample_help);
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @resample_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -133,9 +133,9 @@ varargout{1} = box_erp_resample;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 %%-------------------------resample help------------------------------------
-    function resample_help(~,~)
-        %         web('https://github.com/lucklab/erplab/wiki/resampleing-ERPSETS','-browser');
-    end
+%     function resample_help(~,~)
+%         %         web('https://github.com/lucklab/erplab/wiki/resampleing-ERPSETS','-browser');
+%     end
 
 
 %%-------------------checkbox for new sampling rate------------------------

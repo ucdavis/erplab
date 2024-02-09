@@ -26,13 +26,13 @@ end
 if nargin == 0
     fig = figure(); % Parent figure
     erp_measurement_box = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Measurement Tool',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @ERPmeasr_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     erp_measurement_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Measurement Tool',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @ERPmeasr_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     erp_measurement_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Measurement Tool',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @ERPmeasr_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @ERPmeasr_help
 end
 
 try
@@ -269,9 +269,9 @@ varargout{1} = erp_measurement_box;
 %%****************************************************************************************************************************************
 
 %%-----------------Help------------------------------
-    function ERPmeasr_help(~,~)
-        web('https://github.com/lucklab/erplab/wiki/ERP-Measurement-Tool','-browser');
-    end
+%     function ERPmeasr_help(~,~)
+%         web('https://github.com/lucklab/erplab/wiki/ERP-Measurement-Tool','-browser');
+%     end
 
 %%---------------------------Setting for the Measurement type-----------------------------%%
     function Mesurement_type(source_measure_type,~)

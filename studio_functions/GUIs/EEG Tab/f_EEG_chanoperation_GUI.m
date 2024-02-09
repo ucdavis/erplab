@@ -26,13 +26,13 @@ end
 if nargin == 0
     fig = figure(); % Parent figure
     EEG_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG Channel Operations', ...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @chanop_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EEG_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Channel Operations',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @chanop_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     EEG_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Channel Operations',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @chanop_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @chanop_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -137,9 +137,9 @@ varargout{1} = EEG_chan_operation_gui;
 %%**************************************************************************%%
 
 % %%------------------Edit bin---------------------------------------------
-    function chanop_help(~,~)%% It seems that it can be ignored
-        web('https://github.com/lucklab/erplab/wiki/EEG-and-ERP-Channel-Operations','-browser');
-    end
+%     function chanop_help(~,~)%% It seems that it can be ignored
+%         web('https://github.com/lucklab/erplab/wiki/EEG-and-ERP-Channel-Operations','-browser');
+%     end
 
 
 %%-------------------Equation editor---------------------------------------

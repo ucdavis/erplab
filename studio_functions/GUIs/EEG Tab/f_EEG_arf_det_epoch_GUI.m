@@ -25,13 +25,13 @@ Eegtab_EEG_art_det_epoch = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Detection for Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @artepo_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Detection for Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @artepo_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_art_det_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Detection for Epoched EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @artepo_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @artepo_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -170,7 +170,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 25 25 35 35 35 30 30]);
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
-        
     end
 
 
@@ -179,9 +178,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
 %%**************************************************************************%%
 
 %%--------------------------help-------------------------------------------
-    function artepo_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Artifact-Detection-in-Epoched-Data/','-browser');
-    end
+%     function artepo_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Artifact-Detection-in-Epoched-Data/','-browser');
+%     end
 
 %%-------------------Artifact detection algorithms-------------------------
     function det_algo(Source,~)

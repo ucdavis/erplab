@@ -19,13 +19,13 @@ addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 if nargin == 0
     fig = figure(); % Parent figure
     ERP_simulation_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Create Artificial ERP Waveform',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @simuerp_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     ERP_simulation_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Create Artificial ERP Waveform',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @simuerp_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     ERP_simulation_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Create Artificial ERP Waveform',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @simuerp_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @simuerp_help
 end
 
 gui_erp_simulation = struct();
@@ -593,9 +593,9 @@ varargout{1} = ERP_simulation_box;
 %%****************************************************************************************************************************************
 
 %%---------------------------Help------------------------------------------
-    function simuerp_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Create-an-Artificial-ERP-Waveform','-browser');
-    end
+%     function simuerp_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Create-an-Artificial-ERP-Waveform','-browser');
+%     end
 
 %%---------------------Match with real ERP?--------------------------------
     function erpcheckbox(Str,~)

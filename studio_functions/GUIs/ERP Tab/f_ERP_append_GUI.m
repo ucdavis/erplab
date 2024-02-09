@@ -24,13 +24,13 @@ end
 if nargin == 0
     fig = figure(); % Parent figure
     box_erp_append = uiextras.BoxPanel('Parent', fig, 'Title', 'Append ERPsets', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @append_help); % Create boxpanel
+        'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     box_erp_append = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Append ERPsets', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @append_help);
+        'BackgroundColor',ColorB_def);
 else
     box_erp_append = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Append ERPsets', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @append_help);
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @append_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -94,9 +94,9 @@ varargout{1} = box_erp_append;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 %%-------------------------Append help------------------------------------
-    function append_help(~,~)
-        web('https://github.com/lucklab/erplab/wiki/Appending-ERPSETS','-browser');
-    end
+%     function append_help(~,~)
+%         web('https://github.com/lucklab/erplab/wiki/Appending-ERPSETS','-browser');
+%     end
 
 %%-------------------------same_to_erpset----------------------------------
     function same_to_erpset(~,~)

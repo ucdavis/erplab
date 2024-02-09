@@ -21,13 +21,13 @@ gui_erp_CSD = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     ERP_CSD_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Convert Voltage to CSD', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @tool_link); % Create boxpanel
+        'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     ERP_CSD_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Convert Voltage to CSD', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @tool_link);
+        'BackgroundColor',ColorB_def);
 else
     ERP_CSD_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Convert Voltage to CSD', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @tool_link);
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -108,6 +108,11 @@ varargout{1} = ERP_CSD_gui;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+%%---------------------CSD tool link-------------------------------------
+%     function tool_link(~,~)
+%         web('https://github.com/lucklab/erplab/wiki/Current-Source-Density-(CSD)-tool','-browser');
+%     end
+
 
     function CSD_undock_loct(~,~)
         if isempty(observe_ERPDAT.ERP)
@@ -221,10 +226,7 @@ varargout{1} = ERP_CSD_gui;
         end
     end
 
-%%---------------------CSD tool link-------------------------------------
-    function tool_link(~,~)
-        web('https://github.com/lucklab/erplab/wiki/Current-Source-Density-(CSD)-tool','-browser');
-    end
+
 %%---------------------Run-------------------------------------------------
     function apply_run(~,~)
         if isempty(observe_ERPDAT.ERP)

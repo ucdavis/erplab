@@ -19,13 +19,13 @@ gui_erp_grdavg = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Average across ERPsets ', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @tool_link); % Create boxpanel  tool_link
+        'BackgroundColor',ColorB_def); % Create boxpanel  tool_link
 elseif nargin == 1
     ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average across ERPsets ',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @tool_link);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average across ERPsets ',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @tool_link);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -128,6 +128,11 @@ varargout{1} = ERP_grdavg_box_gui;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%---------------------grand average tool link-----------------------------
+%     function tool_link(~,~)
+%         web('https://github.com/lucklab/erplab/wiki/Averaging-Across-ERPSETS-_-Creating-Grand-Averages','-browser');
+%     end
 
 %%---------------checkbox for weighted average-----------------------------
     function checkbox_weigavg(source,~)
@@ -348,10 +353,6 @@ varargout{1} = ERP_grdavg_box_gui;
         GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
         custom_spec  = grandaverager_DQ(GAv_combo_defaults);
         estudioworkingmemory('grandavg_custom_DQ',custom_spec);
-    end
-%%---------------------grand average tool link-----------------------------
-    function tool_link(~,~)
-        web('https://github.com/lucklab/erplab/wiki/Averaging-Across-ERPSETS-_-Creating-Grand-Averages','-browser');
     end
 
 %%--------------------------------cancel-----------------------------------

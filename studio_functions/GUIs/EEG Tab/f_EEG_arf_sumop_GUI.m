@@ -26,13 +26,13 @@ Eegtab_EEG_art_sumop = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Options for Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @sumart_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Options for Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @sumart_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Options for Epoched EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @sumart_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @sumart_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -99,7 +99,6 @@ varargout{1} = Eegtab_box_art_sumop;
             'String','Summarize EEG artifact in a graphic','callback',@art_graphic,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_graphic_title,'BackgroundColor',ColorB_def);
         set(Eegtab_EEG_art_sumop.art_graphic_title, 'Sizes',[15 -1 15]);
-        
         set(Eegtab_EEG_art_sumop.DataSelBox,'Sizes',[30 30 30 30 30]);
     end
 
@@ -110,9 +109,9 @@ varargout{1} = Eegtab_box_art_sumop;
 %%**************************************************************************%%
 
 %%---------------------------help------------------------------------------
-    function sumart_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-    end
+%     function sumart_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+%     end
 
 %%----------------clear artifact detection marks---------------------------
     function clear_art_det(Source,~)

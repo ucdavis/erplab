@@ -18,13 +18,13 @@ addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 if nargin == 0
     fig = figure(); % Parent figure
     EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Linear Detrend for Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @detrend_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend for Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @detrend_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend for Epoched EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @detrend_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @detrend_help
 end
 
 gui_eeg_epoch_dt = struct();
@@ -116,9 +116,9 @@ varargout{1} = EEG_epoch_detrend_box;
 %%*************************************************************************
 
 %%---------------------------function--------------------------------------
-    function detrend_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-    end
+%     function detrend_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+%     end
 
 
 %%----------------Setting for "pre"----------------------------------------

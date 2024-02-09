@@ -20,13 +20,13 @@ gui_erp_bin_operation = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     ERP_bin_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Bin Operations', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @binop_help); % Create boxpanel
+        'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Bin Operations', 'Padding',...
-        5,'BackgroundColor',ColorB_def, 'HelpFcn', @binop_help);
+        5,'BackgroundColor',ColorB_def);
 else
     ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Bin Operations', 'Padding', 5,...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @binop_help);
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def); %'HelpFcn', @binop_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -114,9 +114,9 @@ varargout{1} = ERP_bin_operation_gui;
 %%**************************************************************************%%
 
 % %%------------------help---------------------------------------------
-    function binop_help(~,~)%% It seems that it can be ignored
-        web('https://github.com/lucklab/erplab/wiki/ERP-Bin-Operations','-browser');
-    end
+%     function binop_help(~,~)%% It seems that it can be ignored
+%         web('https://github.com/lucklab/erplab/wiki/ERP-Bin-Operations','-browser');
+%     end
 
 
 %%-------------------Equation editor---------------------------------------

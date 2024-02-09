@@ -18,13 +18,13 @@ addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 if nargin == 0
     fig = figure(); % Parent figure
     EEG_binepoch_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Extract Bin-based Epochs', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @epoch_help); % Create boxpanel
+        'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     EEG_binepoch_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-based Epochs', 'Padding', 5,...
-        'BackgroundColor',ColorB_def, 'HelpFcn', @epoch_help);
+        'BackgroundColor',ColorB_def);
 else
     EEG_binepoch_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Extract Bin-based Epochs', 'Padding', 5, ...
-        'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @epoch_help);
+        'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @epoch_help
 end
 
 gui_eegtab_binepoch = struct();

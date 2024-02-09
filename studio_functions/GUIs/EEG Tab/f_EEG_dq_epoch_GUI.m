@@ -25,13 +25,13 @@ EEG_dq_epoch = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics from Epoched EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @dq_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics from Epoched EEG', ...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @dq_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics from Epoched EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @dq_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @dq_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -197,9 +197,9 @@ varargout{1} = Eegtab_box_dq_epoch;
 %%**************************************************************************%%
 
 %%------------------------------help---------------------------------------
-    function dq_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/ERPLAB-Data-Quality-Metrics/','-browser');
-    end
+%     function dq_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/ERPLAB-Data-Quality-Metrics/','-browser');
+%     end
 
 
 %%--------------------------------default parameters-----------------------

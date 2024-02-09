@@ -224,7 +224,6 @@ EStudio_gui_erp_totl = struct();
 EStudio_gui_erp_totl = createInterface();
 
 f_redrawERP();
-
 f_redrawEEG_Wave_Viewer();
 
 timeElapsed = toc;
@@ -294,6 +293,10 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         comLoadWM = ['clear vmemoryerp; vmemoryerp = working_mem_save_load(2); assignin(''base'',''vmemoryerp'',vmemoryerp);'];
         uimenu( EStudio_gui_erp_totl.set_ERP_memory,'Label','Load a previous working memory file','CallBack',comLoadWM,'separator','off');
         
+        EStudio_gui_erp_totl.help_title = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Help');
+        EStudio_gui_erp_totl.estudio_about = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'About ERPLAB Studio','separator','off','CallBack',@about_estudio);
+        EStudio_gui_erp_totl.eegpanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'EEG Panel Help','separator','off','CallBack',@eegpanel_help);
+        EStudio_gui_erp_totl.erppanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'ERP Panel Help','separator','off','CallBack',@erppanel_help);
         %%window size
         %         uimenu( EStudio_gui_erp_totl.Setting, 'Label', 'Window Size', 'Callback', @EStudiowinsize);
         
@@ -302,7 +305,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.context_tabs = uiextras.TabPanel('Parent', EStudio_gui_erp_totl.Window, 'Padding', 5,'BackgroundColor',ColorB_def,'FontSize',FonsizeDefault+1);
         EStudio_gui_erp_totl.tabEEG = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def );%%EEG Tab
         EStudio_gui_erp_totl.tabERP = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%ERP Tab
-%         EStudio_gui_erp_totl.tabmvpa = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPA Tab
+        %         EStudio_gui_erp_totl.tabmvpa = uix.HBoxFlex( 'Parent', EStudio_gui_erp_totl.context_tabs, 'Spacing', 10,'BackgroundColor',ColorB_def);%%MVPA Tab
         EStudio_gui_erp_totl.context_tabs.TabNames = {'EEG','ERP'};%, 'MVPA'
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 1;
         EStudio_gui_erp_totl.context_tabs.SelectionChangedFcn = @SelectedTab;
@@ -350,7 +353,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         EStudio_gui_erp_totl.eeg_figureout = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Create Static/Exportable Plot',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-         EStudio_gui_erp_totl.eeg_reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
+        EStudio_gui_erp_totl.eeg_reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -440,6 +443,24 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
         
     end % createInterface
+
+
+    function about_estudio(~,~)
+        
+        
+    end
+
+
+    function eegpanel_help(~,~)
+        
+        
+    end
+
+
+    function erppanel_help(~,~)
+        
+        
+    end
 
 
 %%---------------------------------allEEG-------------------------------------

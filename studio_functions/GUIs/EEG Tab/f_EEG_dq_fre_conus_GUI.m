@@ -24,13 +24,13 @@ EEG_dq_fre_conus = struct();
 if nargin == 0
     fig = figure(); % Parent figure
     Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Spectral Data Quality for Continuous EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @freqd_help); % Create boxpanel
+        'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
     Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Data Quality for Continuous EEG',...
-        'Padding', 5,'BackgroundColor',ColorB_def, 'HelpFcn', @freqd_help);
+        'Padding', 5,'BackgroundColor',ColorB_def);
 else
     Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Data Quality for Continuous EEG',...
-        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def, 'HelpFcn', @freqd_help);
+        'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @freqd_help
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -130,9 +130,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 %%**************************************************************************%%
 
 %%--------------------------help-------------------------------------------
-    function freqd_help(~,~)
-        web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-    end
+%     function freqd_help(~,~)
+%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
+%     end
 
 %%----------------------check changed cell(s)------------------------------
     function checkcellchanged(Source,~)
