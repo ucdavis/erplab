@@ -20,11 +20,11 @@ ERPTab_plotset = struct();
 %-----------------------------Name the title----------------------------------------------
 if nargin == 0
     fig = figure(); % Parent figure
-    ERP_plotset_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Setting', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    ERP_plotset_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Plot Settings', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    ERP_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Setting', 'Padding', 5,'BackgroundColor',ColorB_def);
+    ERP_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    ERP_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Setting', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    ERP_plotset_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Plot Settings', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -258,7 +258,7 @@ varargout{1} = ERP_plotset_box;
         xtixlk_max = str2num(ERPTab_plotset.timet_high.String);
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(1));
-            msgboxText =  ['Plot Setting> Time Axis- Input of low edge must be a single numeric'];
+            msgboxText =  ['Plot Settings> Time Axis- Input of low edge must be a single numeric'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -266,7 +266,7 @@ varargout{1} = ERP_plotset_box;
         
         if any(xtixlk_max<=xtixlk_min)
             src.String = num2str(observe_ERPDAT.ERP.times(1));
-            msgboxText =  ['Plot Setting> Time Axis- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
+            msgboxText =  ['Plot Settings> Time Axis- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -299,14 +299,14 @@ varargout{1} = ERP_plotset_box;
         if isempty(xtixlk_max) || numel(xtixlk_max)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(end));
             beep;
-            msgboxText =  ['Plot Setting> Amplitude Axis- Input of ticks edge must be a single numeric'];
+            msgboxText =  ['Plot Settings> Amplitude Axis- Input of ticks edge must be a single numeric'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if any(xtixlk_max < xtixlk_min)
             src.String =  num2str(observe_ERPDAT.ERP.times(end));
-            msgboxText =  ['Plot Setting> Time Axis- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
+            msgboxText =  ['Plot Settings> Time Axis- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -337,7 +337,7 @@ varargout{1} = ERP_plotset_box;
             if isempty(timeStart) || numel(timeStart)~=1 || timeStart>=observe_ERPDAT.ERP.times(end) %%|| timeStart<observe_ERPDAT.ERP.times(1)
                 timeStart = observe_ERPDAT.ERP.times(1);
                 ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
-                msgboxText =  ['Plot Setting> Time Axis- Time ticks>Auto: left edge of time range must be a single number and smaller than ',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
+                msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: left edge of time range must be a single number and smaller than ',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
             end
@@ -345,7 +345,7 @@ varargout{1} = ERP_plotset_box;
             if isempty(timEnd) || numel(timEnd)~=1 || timEnd<observe_ERPDAT.ERP.times(1) %%|| timEnd> observe_ERPDAT.ERP.times(end)
                 timEnd = observe_ERPDAT.ERP.times(end);
                 ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
-                msgboxText =  ['Plot Setting> Time Axis- Time ticks>Auto: right edge of time range must be a single number and larger than ',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
+                msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: right edge of time range must be a single number and larger than ',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
             end
@@ -355,7 +355,7 @@ varargout{1} = ERP_plotset_box;
                 timeStart = observe_ERPDAT.ERP.times(1);
                 timEnd = observe_ERPDAT.ERP.times(end);
                 ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
-                msgboxText =  ['Plot Setting> Time Axis- Time ticks>Auto: left edge of time range must be smaller than right one'];
+                msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: left edge of time range must be smaller than right one'];
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
             end
@@ -398,7 +398,7 @@ varargout{1} = ERP_plotset_box;
         tick_step = str2num(src.String);
         if isempty(tick_step) || numel(tick_step)~=1 || any(tick_step<=0)
             src.String = num2str(xtickstepdef);
-            msgboxText =  ['Plot Setting> Time Axis - The input of Step for time ticks must be a single positive value'];
+            msgboxText =  ['Plot Settings> Time Axis - The input of Step for time ticks must be a single positive value'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -491,13 +491,13 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
         
@@ -544,13 +544,13 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
             Yscales_high= maxydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
     end
@@ -641,7 +641,7 @@ varargout{1} = ERP_plotset_box;
         val = str2num(src.String);
         if isempty(val)  || numel(val)~=1 || any(val(:)<=0)
             src.String = '';
-            msgboxText =  ['Plot Setting> Amplitude Axis - Input must be a positive value'];
+            msgboxText =  ['Plot Settings> Amplitude Axis - Input must be a positive value'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
         end
@@ -802,7 +802,7 @@ varargout{1} = ERP_plotset_box;
         try
             chanlocs = observe_ERPDAT.ERP.chanlocs;
             if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                MessageViewer= char(strcat('Plot Setting > Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
+                MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
                 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
                 observe_ERPDAT.Process_messg=4;
                 ERPTab_plotset.chanorder_number.Value=1;
@@ -812,7 +812,7 @@ varargout{1} = ERP_plotset_box;
                 ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             end
         catch
-            MessageViewer= char(strcat('Plot Setting > Simple 10/20 system order: It seems that chanlocs for the current ERP is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order: It seems that chanlocs for the current ERP is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
@@ -833,7 +833,7 @@ varargout{1} = ERP_plotset_box;
                 count = count+1;
                 if count==1
                     msgboxText= char(strcat('We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
-                    title      =  'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
+                    title      =  'Estudio: Plot Settings > Channel order>Simple 10/20 system order:';
                     errorfound(msgboxText, title);
                     ERPTab_plotset.chanorder_number.Value=1;
                     ERPTab_plotset.chanorder_front.Value=0;
@@ -872,7 +872,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
         ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
         if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Simple 10/20 system order: It seems that chanlocs for the current EEG is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
@@ -887,13 +887,13 @@ varargout{1} = ERP_plotset_box;
 %%---------------------export channel orders-------------------------------
     function chanorder_custom_exp(~,~)
         if strcmpi(observe_ERPDAT.ERP.erpname,'No ERPset loaded')
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export: Current ERP is empty'));
+            MessageViewer= char(strcat('Plot Settings > Channel order>Custom>Export: Current ERP is empty'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             return;
         end
         if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export: It seems that chanlocs for the current EEG is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Settings > Channel order>Custom>Export: It seems that chanlocs for the current EEG is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
@@ -904,7 +904,7 @@ varargout{1} = ERP_plotset_box;
             return;
         end
         
-        MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export'));
+        MessageViewer= char(strcat('Plot Settings > Channel order>Custom>Export'));
         erpworkingmemory('f_ERP_proces_messg',MessageViewer);
         observe_ERPDAT.Process_messg=1;
         
@@ -963,7 +963,7 @@ varargout{1} = ERP_plotset_box;
         fclose(fileID);
         disp(['A new ERP channel order file was created at <a href="matlab: open(''' erpFilename ''')">' erpFilename '</a>'])
         
-        MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export'));
+        MessageViewer= char(strcat('Plot Settings > Channel order>Custom>Export'));
         erpworkingmemory('f_ERP_proces_messg',MessageViewer);
         observe_ERPDAT.Process_messg=2;
     end
@@ -988,7 +988,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
         if ~isfield(observe_ERPDAT.ERP,'chanlocs') || isempty(observe_ERPDAT.ERP.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that chanlocs for the current ERP is empty and please check it out'));
+            MessageViewer= char(strcat('Plot Settings > Channel order>Custom>Import: It seems that chanlocs for the current ERP is empty and please check it out'));
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
@@ -1338,12 +1338,12 @@ varargout{1} = ERP_plotset_box;
             DataInput =  readtable([filepath,filename], "FileType","text");
         catch
             DataInput =  readtable([filepath,filename], "FileType","text");
-            erpworkingmemory('f_ERP_proces_messg',['Plot Setting > Grid Layout > Import:','Cannot import:',filepath,filename]);
+            erpworkingmemory('f_ERP_proces_messg',['Plot Settings > Grid Layout > Import:','Cannot import:',filepath,filename]);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if isempty(DataInput)
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -1352,7 +1352,7 @@ varargout{1} = ERP_plotset_box;
         
         [rows,columns] = size(DataInput);
         if columns<=2
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid and one column is designed besides the first column that is row title');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid and one column is designed besides the first column that is row title');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -1360,7 +1360,7 @@ varargout{1} = ERP_plotset_box;
         DataInput = DataInput(:,2:end);
         [Griddata, checkflag ]= f_tranf_check_import_grid(DataInput,overlapindex);
         if checkflag==0
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting > Grid Layout > Import is invalid or didnot match with existing labels');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid or didnot match with existing labels');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -1427,7 +1427,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_ERP_proces_messg','Plot Setting>Cancel');
+        erpworkingmemory('f_ERP_proces_messg','Plot Settings>Cancel');
         observe_ERPDAT.Process_messg =1;
         %
         %%------------------------------time range-------------------------
@@ -1516,7 +1516,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = str2num(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
@@ -1699,7 +1699,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_plotset.plot_reset.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_ERP_proces_messg','Plot Setting>Apply');
+        erpworkingmemory('f_ERP_proces_messg','Plot Settings>Apply');
         observe_ERPDAT.Process_messg =1;
         ERPTab_plotset.timet_auto_reset = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.timeticks_auto_reset = ERPTab_plotset.yscale_auto.Value;
@@ -1712,7 +1712,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(timeStart) || numel(timeStart)~=1 ||  timeStart>=observe_ERPDAT.ERP.times(end)
             timeStart = timeStartdef;
             ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
-            MessageViewer= char(['Plot Setting > Apply: Low edge of the time range should be smaller',32,num2str(observe_ERPDAT.ERP.times(end)),32,...
+            MessageViewer= char(['Plot Settings > Apply: Low edge of the time range should be smaller',32,num2str(observe_ERPDAT.ERP.times(end)),32,...
                 'we therefore set to be',32,num2str(timeStart)]);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
@@ -1722,7 +1722,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(timEnd) || numel(timEnd)~=1 || timEnd<=observe_ERPDAT.ERP.times(1)
             timEnd = timEnddef;
             ERPTab_plotset.timet_high.String = num2str(timEnd);
-            MessageViewer= char(['Plot Setting > Apply: High edge of the time range should be larger',32,num2str(timeStartdef),32,...
+            MessageViewer= char(['Plot Settings > Apply: High edge of the time range should be larger',32,num2str(timeStartdef),32,...
                 'we therefore set to be',32,num2str(timEnddef)]);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
@@ -1733,7 +1733,7 @@ varargout{1} = ERP_plotset_box;
             timeStart = timeStartdef;
             ERPTab_plotset.timet_low.String = num2str(timeStart);
             ERPTab_plotset.timet_high.String = num2str(timEnd);
-            MessageViewer= char(['Plot Setting > Apply: Low edge of the time range should be smaller than the high one and we therefore used the defaults']);
+            MessageViewer= char(['Plot Settings > Apply: Low edge of the time range should be smaller than the high one and we therefore used the defaults']);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
@@ -1743,7 +1743,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(xtickstep) || numel(xtickstep)~=1 ||  any(xtickstep<=0)
             xtickstep = xstepdef;
             ERPTab_plotset.timet_step.String = num2str(xtickstep);
-            MessageViewer= char(['Plot Setting > Apply: the step of the time ticks should be a positive number that belows',32,num2str(floor((timEnd-timeStart)/2))]);
+            MessageViewer= char(['Plot Settings > Apply: the step of the time ticks should be a positive number that belows',32,num2str(floor((timEnd-timeStart)/2))]);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
@@ -1772,13 +1772,13 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = str2num(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if isempty(Yscales_high) || numel(Yscales_high)~=1
             ERPTab_plotset.yscale_high.String = str2num(maxydef);
             Yscales_high= maxydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set right edge of amplitude scale to be a single number and we used the default one ');
             observe_ERPDAT.Process_messg =4;
         end
         if any(Yscales_high<=Yscales_low)
@@ -1786,7 +1786,7 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.yscale_high.String = str2num(maxydef);
             Yscales_high= maxydef;
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Setting> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
+            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
             observe_ERPDAT.Process_messg =4;
         end
         ERPTab_plotset_pars{3} = [Yscales_low,Yscales_high];
@@ -1799,7 +1799,7 @@ varargout{1} = ERP_plotset_box;
         if isempty(columNum) || numel(columNum)~=1 || any(columNum<=0)
             columNum =1;
             ERPTab_plotset.columns.String = '1';
-            MessageViewer= char(['Plot Setting > Apply: the number of columns should be a positive value']);
+            MessageViewer= char(['Plot Settings > Apply: the number of columns should be a positive value']);
             erpworkingmemory('f_ERP_proces_messg',MessageViewer);
             observe_ERPDAT.Process_messg=4;
         end
@@ -1868,7 +1868,7 @@ varargout{1} = ERP_plotset_box;
         elseif ERPTab_plotset.chanorder_custom.Value==1
             ERPTab_plotset.chanorderIndex = 3;
             if isempty(ERPTab_plotset.chanorder{1,1})
-                MessageViewer= char(strcat('Plot Setting > Apply:There were no custom-defined chan orders and we therefore used the default orders'));
+                MessageViewer= char(strcat('Plot Settings > Apply:There were no custom-defined chan orders and we therefore used the default orders'));
                 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
                 observe_ERPDAT.Process_messg=4;
                 ERPTab_plotset.chanorder_number.Value=1;
@@ -1896,7 +1896,10 @@ varargout{1} = ERP_plotset_box;
         if observe_ERPDAT.Count_currentERP~=3
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             enbaleflag = 'off';
         else

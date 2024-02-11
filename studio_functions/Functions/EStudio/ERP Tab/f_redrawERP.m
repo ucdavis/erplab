@@ -78,7 +78,7 @@ if ~isempty(observe_ERPDAT.ALLERP)  && ~isempty(observe_ERPDAT.ERP)
     else
         pageNum=1;
         pagecurrentNum=1;
-        PageStr = observe_EEGDAT.EEG.setname;
+        PageStr = observe_ERPDAT.ERP.erpname;
     end
     Enableflag = 'on';
 else
@@ -119,8 +119,8 @@ EStudio_gui_erp_totl.zoom_edit = uicontrol('Parent',commandfig_panel,'Style','ed
 
 EStudio_gui_erp_totl.zoom_out = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom Out',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout,'Enable',Enableflag);
-
-EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Advanced Wave Viewer',...
+uiextras.Empty('Parent', commandfig_panel); % 1A
+EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Advanced Waveform Viewer',...
     'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
 EStudio_gui_erp_totl.erp_winsize = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Window Size',...
@@ -135,7 +135,7 @@ EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pu
     'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 
 uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [70 50 70 150 -1 90 100 100 170 50  5]);
+set(commandfig_panel, 'Sizes', [70 50 70 -1 160 -1 90 100 100 170 50  5]);
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -787,6 +787,14 @@ if reset_paras(1)==1
         estudioworkingmemory('EEGArray',1);
         observe_EEGDAT.count_current_eeg =1;
     end
+else
+    if EStudio_gui_erp_totl.clear_alleeg == 1
+        observe_EEGDAT.ALLEEG = [];
+        observe_EEGDAT.EEG = [];
+        observe_EEGDAT.CURRENTSET  = 0;
+        estudioworkingmemory('EEGArray',1);
+        observe_EEGDAT.count_current_eeg =1;
+    end
 end
 
 
@@ -804,6 +812,15 @@ if reset_paras(3)==1
     if EStudio_gui_erp_totl.clear_allerp == 0
         f_redrawERP();
     else
+        observe_ERPDAT.ALLERP = [];
+        observe_ERPDAT.ERP = [];
+        observe_ERPDAT.CURRENTERP  = 1;
+        estudioworkingmemory('selectederpstudio',1);
+        observe_ERPDAT.Count_currentERP = 1;
+    end
+else
+    if EStudio_gui_erp_totl.clear_allerp == 1
+        
         observe_ERPDAT.ALLERP = [];
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;

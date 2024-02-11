@@ -2530,10 +2530,13 @@ varargout{1} = ERP_simulation_box;
 
 %%-------enable the panel for real data------------------------------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=17
+        if observe_ERPDAT.Count_currentERP~=19
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             gui_erp_simulation.realerp_check.Value =0;
             EnableFlag = 'off';
@@ -2609,6 +2612,7 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
         end
         plot_erp_simulation();
+        %         observe_ERPDAT.Count_currentERP=18;
     end
 
 %%-------execute "apply" before doing any change for other panels----------
@@ -2712,8 +2716,7 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.pink_op.Value=0;
         gui_erp_simulation.pink_amp.Enable = 'off';
         plot_erp_simulation();
-        
-        
+        observe_ERPDAT.Reset_erp_paras_panel=16;
     end
 end
 %Progem end: ERP simulation

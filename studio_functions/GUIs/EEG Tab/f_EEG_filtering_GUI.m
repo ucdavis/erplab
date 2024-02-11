@@ -862,7 +862,7 @@ varargout{1} = EEG_filtering_box;
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,FilterMethod);
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -1126,7 +1126,7 @@ varargout{1} = EEG_filtering_box;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,FilterMethod);
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})

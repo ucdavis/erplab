@@ -204,8 +204,11 @@ end
 %%history
 fn = fieldnames(p.Results);
 skipfields = {'ALLEEG','CURRENTSET'};
+if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
+   eegcom     = sprintf( 'ERP = pop_rename2chan( %s %s', 'ALLERP,',num2str(CURRENTSET)); 
+else
 eegcom     = sprintf( 'EEG = pop_rename2chan( %s %s', 'ALLEEG,',num2str(CURRENTSET));
-
+end
 for q=1:length(fn)
     fn2com = fn{q}; % inputname
     if ~ismember_bc2(fn2com, skipfields)

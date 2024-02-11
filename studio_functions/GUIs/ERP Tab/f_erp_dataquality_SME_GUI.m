@@ -21,11 +21,11 @@ end
 
 if nargin == 0
     fig = figure(); % Parent figure
-    Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality (aSME)', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'View Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality (aSME)', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality (aSME)', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 varargout{1} = Erp_information;
@@ -52,30 +52,30 @@ drawui_erp_information(FonsizeDefault);
         
         %%----------------------------Setting midian SME---------------------
         gui_erp_DQSME.Median_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.Median_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','Median:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_DQSME.Median_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','Median aSME:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_DQSME.Median_sme_title,'HorizontalAlignment','left');
         
         gui_erp_DQSME.Median_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.Median_sme,'String','','FontSize',FonsizeDefault);
         set(gui_erp_DQSME.Median_sme_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_DQSME.Median_sme,'Sizes',[60 400]);
+        set(gui_erp_DQSME.Median_sme,'Sizes',[100 400]);
         
         %%----------------------------Setting min. SME---------------------
         gui_erp_DQSME.min_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.min_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','Min:','FontSize',FonsizeDefault);
+        gui_erp_DQSME.min_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','Min aSME:','FontSize',FonsizeDefault);
         set(gui_erp_DQSME.min_sme_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         gui_erp_DQSME.min_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.min_sme,'String','','FontSize',FonsizeDefault);
         set(gui_erp_DQSME.min_sme_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_DQSME.min_sme,'Sizes',[40 400]);
+        set(gui_erp_DQSME.min_sme,'Sizes',[80 400]);
         
         %%----------------------------Setting max. SME---------------------
         gui_erp_DQSME.max_sme = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.max_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','Max:','FontSize',FonsizeDefault);
+        gui_erp_DQSME.max_sme_title = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','Max aSME:','FontSize',FonsizeDefault);
         set(gui_erp_DQSME.max_sme_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
         
         gui_erp_DQSME.max_sme_name = uicontrol('Style','text','Parent', gui_erp_DQSME.max_sme,'String','','FontSize',FonsizeDefault);
         set(gui_erp_DQSME.max_sme_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_DQSME.max_sme,'Sizes',[40 400]);
+        set(gui_erp_DQSME.max_sme,'Sizes',[80 400]);
         
         gui_erp_DQSME.DQSME_option = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_DQSME.DQSME_option_table  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option,'String','Show in a table',...
@@ -119,10 +119,13 @@ drawui_erp_information(FonsizeDefault);
         else
             Enableflag = 'on';
         end
-         ViewerFlag=erpworkingmemory('ViewerFlag');
-         if ViewerFlag==1
-           Enableflag = 'off';  
-         end
+        ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
+        if ViewerFlag==1
+            Enableflag = 'off';
+        end
         ERP_SME_summary = f_dq_summary(observe_ERPDAT.ERP);
         Median_tw =ERP_SME_summary{3,1};
         Median_name = strcat(num2str(roundn(ERP_SME_summary{1,1},-2)),', chan.',num2str(ERP_SME_summary{2,1}),',',32,num2str(Median_tw(1)),'-',num2str(Median_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,1}));
@@ -163,7 +166,7 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.CURRENTERP = SelectedERP;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','Data Quality (aSME) > Show in a table');
+        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
         observe_ERPDAT.Process_messg =1;
         for Numoferp = 1:numel(SelectedERP)
             DQ_Table_GUI(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)),observe_ERPDAT.ALLERP,SelectedERP(Numoferp),1);
@@ -186,7 +189,7 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.CURRENTERP = SelectedERP;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','Data Quality (aSME) > Save to file');
+        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Save to file');
         observe_ERPDAT.Process_messg =1;
         
         
@@ -205,7 +208,7 @@ drawui_erp_information(FonsizeDefault);
             catch
                 msgboxText =  ['No information for data quality is found!'];
                 question = [  'No information for data quality is found!'];
-                title       = 'ERPLAB Studio: "Save to file" on "Data quality (aSME)".';
+                title       = 'ERPLAB Studio: "Save to file" on "View Data Quality Metrics".';
                 button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
             end
             
@@ -229,7 +232,7 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.CURRENTERP = SelectedERP;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','Data Quality (aSME) > Show measures on Command Window');
+        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show measures on Command Window');
         observe_ERPDAT.Process_messg =1;
         erpset_summary(observe_ERPDAT.ALLERP(SelectedERP));
         observe_ERPDAT.Process_messg =2;

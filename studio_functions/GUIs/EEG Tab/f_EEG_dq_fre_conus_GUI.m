@@ -1,4 +1,4 @@
-%%This function is to compute Spectral Data Quality for Continuous EEG.
+%%This function is to compute Spectral Data Quality (Continuous EEG Only).
 
 
 % *** This function is part of ERPLAB Studio Toolbox ***
@@ -23,13 +23,13 @@ EEG_dq_fre_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Spectral Data Quality for Continuous EEG',...
+    Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Spectral Data Quality (Continuous EEG Only)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Data Quality for Continuous EEG',...
+    Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Data Quality (Continuous EEG Only)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Data Quality for Continuous EEG',...
+    Eegtab_box_dq_fre_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Spectral Data Quality (Continuous EEG Only)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @freqd_help
 end
 
@@ -185,13 +185,13 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
-            erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality for Continuous EEG >  Index(es) of chans should be positive number(s)');
+            erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG Only) >  Index(es) of chans should be positive number(s)');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String= vect2colon([1:ChaNum]);
             return;
         end
         if any(ChanArray(:)> ChaNum)
-            erpworkingmemory('f_EEG_proces_messg',['Spectral Data Quality for Continuous EEG >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)]);
+            erpworkingmemory('f_EEG_proces_messg',['Spectral Data Quality (Continuous EEG Only) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String= vect2colon([1:ChaNum]);
             return;
@@ -241,7 +241,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             EEG_dq_fre_conus.chans_edit.String  = vect2colon(chan_label_select);
         else
             beep;
-            disp('User selected Cancel');
+%             disp('User selected Cancel');
             return
         end
     end
@@ -296,7 +296,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         row_del = EEG_dq_fre_conus.sel_row;
         if curr_rows <= 1
             beep
-            erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality for Continuous EEG > Remove selected rows: Already at 1 rows');
+            erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG Only) > Remove selected rows: Already at 1 rows');
             observe_EEGDAT.eeg_panel_message =4;
         else
             new_rows = curr_rows - 1;
@@ -364,7 +364,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality for Continuous EEG > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG Only) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
@@ -395,7 +395,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if ~isempty(messgStr) && eegpanelIndex~=14
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality for Continuous EEG > Run');
+        erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG Only) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -414,7 +414,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         chanArray =  str2num(EEG_dq_fre_conus.chans_edit.String);
         bnchan = observe_EEGDAT.EEG.nbchan;
         if isempty(chanArray) || any(chanArray(:)<=0) || any(chanArray(:)>bnchan)
-            erpworkingmemory('f_EEG_proces_messg',['Spectral Data Quality for Continuous EEG > Run: Index(es) of the chans must be between 1 and ',32,num2str(bnchan)]);
+            erpworkingmemory('f_EEG_proces_messg',['Spectral Data Quality (Continuous EEG Only) > Run: Index(es) of the chans must be between 1 and ',32,num2str(bnchan)]);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -431,7 +431,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Spectral Data Quality for Continuous EEG > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Spectral Data Quality (Continuous EEG Only) > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
             
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
@@ -445,7 +445,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                 fqlabels, 'viewGUI','true','History', 'implicit');
             
             if isempty(LASTCOM)
-                disp('User selected cancel or errors occur.');
+%                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end

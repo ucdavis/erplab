@@ -666,7 +666,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         if observe_ERPDAT.Count_currentERP~=5
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
         if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP') || ViewerFlag==1
             Enable_Label = 'off';
         else

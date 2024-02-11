@@ -157,7 +157,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_ica');
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %%disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -351,7 +351,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_rmic');
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -383,7 +383,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             result       = inputgui( 'uilist', uilist, 'geometry', geom, 'helpcom', 'pophelp(''pop_subcomp'')', ...
                 'title', ['eegset',32,num2str(EEGArray(Numofeeg)),':Remove IC -- pop_subcomp()']);
             if length(result) == 0
-                disp('User selected cancel');
+                %disp('User selected Cancel');
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end
@@ -565,7 +565,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_trafweights');
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})

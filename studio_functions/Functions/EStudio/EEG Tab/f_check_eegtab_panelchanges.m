@@ -33,14 +33,14 @@ end
 %%Channel operations
 MyViewer_chanop = estudioworkingmemory('EEGTab_chanop');
 if ~isempty(MyViewer_chanop) && MyViewer_chanop==1
-    messgStr  = char( 'Changes on "EEG Channel Operations" have not been applied');
+    messgStr  = char( 'Changes on "Channel Operations" have not been applied');
     eegpanelIndex =4;
 end
 
 %%Assign events to bins
 MyViewer_event2bin = estudioworkingmemory('EEGTab_event2bin');
 if ~isempty(MyViewer_event2bin) && MyViewer_event2bin==1
-    messgStr  = char( 'Changes on "Assign Events to Bins" have not been applied');
+    messgStr  = char( 'Changes on "Assign Events to Bins (BINLISTER)" have not been applied');
     eegpanelIndex =5;
 end
 
@@ -48,7 +48,7 @@ end
 %%Bin-based epoch
 MyViewer_binepoch = estudioworkingmemory('EEGTab_binepoch');
 if ~isempty(MyViewer_binepoch) && MyViewer_binepoch==1
-    messgStr  = char( 'Changes on "Extract Bin-based Epochs" have not been applied');
+    messgStr  = char( 'Changes on "Extract Bin-Based Epochs (Continuous EEG Only)" have not been applied');
     eegpanelIndex =6;
 end
 
@@ -57,7 +57,7 @@ end
 %%Bin-based epoch
 MyViewer_editchan = estudioworkingmemory('EEGTab_editchan');
 if ~isempty(MyViewer_editchan) && MyViewer_editchan==1
-    messgStr  = char( 'Changes on "Edit Channels" have not been applied');
+    messgStr  = char( 'Changes on "Edit Channel Info" have not been applied');
     eegpanelIndex =7;
 end
 
@@ -66,14 +66,14 @@ end
 %%interpolate
 MyViewer_interpolatechan = estudioworkingmemory('EEGTab_interpolated_chan_epoch');
 if ~isempty(MyViewer_interpolatechan) && MyViewer_interpolatechan==1
-    messgStr  = char( 'Changes on "Interpolate chan for epoched EEG" have not been applied');
+    messgStr  = char( 'Changes on "Interpolate Channels" have not been applied');
     eegpanelIndex =8;
 end
 
 %%detect artifact for epoched EEG
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detect_arts_epoch');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Artifact Detection for Epoched EEG" have not been applied');
+    messgStr  = char( 'Changes on "Artifact Detection (Epoched EEG Only)" have not been applied');
     eegpanelIndex =9;
 end
 
@@ -82,7 +82,7 @@ end
 %%detect artifact for continuous EEG
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detect_arts_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Artifact Detection for Continuous EEG" have not been applied');
+    messgStr  = char( 'Changes on "Delete Time Segments (Continuous EEG Only)" have not been applied');
     eegpanelIndex =10;
 end
 
@@ -90,7 +90,7 @@ end
 %%delete time segements
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detect_segmt_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Delete Time Segments for Continuous EEG" have not been applied');
+    messgStr  = char( 'Changes on "Reject Artifactual Time Segments (Continuous EEG Only)" have not been applied');
     eegpanelIndex =11;
 end
 
@@ -99,7 +99,7 @@ end
 %%Shift Event Codes for Continuous EEG
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_shiftcodes_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Shift Event Codes for Continuous EEG" have not been applied');
+    messgStr  = char( 'Changes on "Shift Event Codes (Continuous EEG Only)" have not been applied');
     eegpanelIndex =12;
 end
 
@@ -108,7 +108,7 @@ end
 %%Remove response mistakes for Continuous EEG
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_rmresposmistak_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Remove Response Mistakes for Continuous EEG" have not been applied');
+    messgStr  = char( 'Changes on "Remove Response Errors (Continuous EEG Only)" have not been applied');
     eegpanelIndex =13;
 end
 
@@ -116,7 +116,7 @@ end
 %%spectral data quality
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_dq_fre_conus');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Spectral Data Quality for Continuous EEG" have not been applied');
+    messgStr  = char( 'Changes on "Spectral Data Quality (Continuous EEG Only)" have not been applied');
     eegpanelIndex =14;
 end
 
@@ -124,14 +124,14 @@ end
 %%linear detrend
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detrend_epoch');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Linear Detrend for Epoched EEG" have not been applied');
+    messgStr  = char( 'Changes on "Linear Detrend (Epoched EEG Only)" have not been applied');
     eegpanelIndex =15;
 end
 
 %%data quality for epoched eeg
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_dq_epoch');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Data Quality Metrics for Epoched EEG" have not been applied');
+    messgStr  = char( 'Changes on "Data Quality Metrics (Epoched EEG Only)" have not been applied');
     eegpanelIndex =16;
 end
 
@@ -139,7 +139,7 @@ end
 %%compute averaged ERP
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_avg_erp');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Compute Averaged ERP for Epoched EEG" have not been applied');
+    messgStr  = char( 'Changes on "Compute Averaged ERPs (Epoched EEG Only)" have not been applied');
     eegpanelIndex =17;
 end
 

@@ -25,13 +25,13 @@ catch
 end
 if nargin == 0
     fig = figure(); % Parent figure
-    EEG_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG Channel Operations', ...
+    EEG_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Channel Operations', ...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EEG_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Channel Operations',...
+    EEG_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel Operations',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EEG_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Channel Operations',...
+    EEG_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel Operations',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @chanop_help
 end
 
@@ -256,14 +256,14 @@ varargout{1} = EEG_chan_operation_gui;
             formcell    = textscan(fid_formula, '%s','delimiter', '\r');
             formulas    = char(formcell{:});
         catch
-            msgboxText =  ['EEG Channel Operations - Please, check your file:\n '...
+            msgboxText =  ['Channel Operations - Please, check your file:\n '...
                 fullname '\n'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if size(formulas,2)>256
-            msgboxText =  ['EEG Channel Operations - Formulas length exceed 256 characters,'...
+            msgboxText =  ['Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
@@ -497,7 +497,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Channel Operations > Apply');
+        erpworkingmemory('f_EEG_proces_messg','Channel Operations > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         estudioworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
@@ -525,7 +525,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Channel Operations > Apply');
+        erpworkingmemory('f_EEG_proces_messg','Channel Operations > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         estudioworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
@@ -547,7 +547,7 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(EEGArray)
             EEGArray = observe_EEGDAT.CURRENTSET;
             if isempty(EEGArray)
-                msgboxText =  ['EEG Channel Operations - No EEGset was selected'];
+                msgboxText =  ['Channel Operations - No EEGset was selected'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
                 return;
@@ -564,7 +564,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         if isempty(Formula_str)
-            msgboxText =  ['EEG Channel Operations - You have not yet written a formula'];
+            msgboxText =  ['Channel Operations - You have not yet written a formula'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
@@ -578,7 +578,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         [option, recall, goeson] = checkformulas(cellstr(Formula_str), ['pop_eegchanoperator'], editormode);
         if goeson==0
-            msgboxText =  ['EEG Channel Operations - See Command Window'];
+            msgboxText =  ['Channel Operations - See Command Window'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
@@ -590,7 +590,7 @@ varargout{1} = EEG_chan_operation_gui;
             Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_chop');
             if isempty(Answer)
                 beep;
-                disp('User selected Cancel');
+                %%disp('User selected Cancel');
                 return;
             end
             if ~isempty(Answer{1})

@@ -790,111 +790,95 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.params{8} =gui_erp_filtering.roll_off.Value;
         gui_erp_filtering.params{9} = gui_erp_filtering.DC_remove.Value;
         
-        try
-            
-            Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,'filtered');
-            if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLERP_advance = Answer{1};
-                Save_file_label = Answer{2};
-            end
-            
-            
-            
-            BinArray = [];
-            ChanArray = [];
-            for Numoferp = 1:numel(Selected_erpset)
-                if (checked_ERPset_Index_bin_chan(1)==1 || checked_ERPset_Index_bin_chan(2)==2) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                    if checked_ERPset_Index_bin_chan(1) ==1
-                        msgboxText =  ['Number of bins across the selected ERPsets is different!'];
-                    elseif checked_ERPset_Index_bin_chan(2)==2
-                        msgboxText =  ['Number of channels across the selected ERPsets is different!'];
-                    elseif checked_ERPset_Index_bin_chan(1)==1 && checked_ERPset_Index_bin_chan(2)==2
-                        msgboxText =  ['Number of channels and bins vary across the selected ERPsets'];
-                    end
-                    question = [  '%s\n\n "All" will be active instead of "Selected bin and chan".'];
-                    title       = 'EStudio: Filtering';
-                    button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
-                    BinArray = [];
-                    ChanArray = [];
-                end
-                
-                ERP = ALLERP_advance(Selected_erpset(Numoferp));
-                if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.Selected_bin_chan.Value ==1
-                    BinArray = estudioworkingmemory('ERP_BinArray');
-                    ChanArray = estudioworkingmemory('ERP_ChanArray');
-                    [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
-                    if chk(1)==1
-                        BinArray =  [1:ERP.nbin];
-                    end
-                    [chk, msgboxText] = f_ERP_chckbinandchan(ERP,[], ChanArray,2);
-                    if chk(2)==1
-                        ChanArray =  [1:ERP.nchan];
-                    end
-                end
-                
-                if gui_erp_filtering.all_bin_chan.Value == 1
-                    BinArray = [1:ERP.nbin];
-                    ChanArray = [1:ERP.nchan];
-                end
-                ERP_AF = ERP;
-                %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
-                [ERP, ERPCOM] = pop_filterp(ERP, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
-                    'Saveas', 'off', 'History', 'gui');
-                
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                if Numoferp==1
-                    [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-                end
-                if ~isempty(BinArray)&& ~isempty(ChanArray)
-                    try
-                        ERP_AF.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
-                        ERP.bindata = ERP_AF.bindata;
-                    catch
-                        ERP = ERP;
-                    end
-                end
-                
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
-                if Save_file_label
-                    [pathstr, file_name, ext] = fileparts(ERP.filename);
-                    ERP.filename = [file_name,'.erp'];
-                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    %                     [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                end
-            end
-            assignin('base','ALLERPCOM',ALLERPCOM);
-            assignin('base','ERPCOM',ERPCOM);
-            erpworkingmemory('ERPfilter',1);
-            try
-                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selected_erpset)+1:length(observe_ERPDAT.ALLERP)];
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selected_erpset)+1;
-            catch
-                Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =2;
-        catch
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            Selected_ERP_afd =observe_ERPDAT.CURRENTERP;
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            erpworkingmemory('ERPfilter',1);
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =3;%%There is erros in processing procedure
+        Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,'filtered');
+        if isempty(Answer)
+            beep;
+            disp('User selected Cancel');
             return;
         end
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+        if ~isempty(Answer{1})
+            ALLERP_advance = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
+        BinArray = [];
+        ChanArray = [];
+        for Numoferp = 1:numel(Selected_erpset)
+            if (checked_ERPset_Index_bin_chan(1)==1 || checked_ERPset_Index_bin_chan(2)==2) && gui_erp_filtering.Selected_bin_chan.Value ==1
+                if checked_ERPset_Index_bin_chan(1) ==1
+                    msgboxText =  ['Number of bins across the selected ERPsets is different!'];
+                elseif checked_ERPset_Index_bin_chan(2)==2
+                    msgboxText =  ['Number of channels across the selected ERPsets is different!'];
+                elseif checked_ERPset_Index_bin_chan(1)==1 && checked_ERPset_Index_bin_chan(2)==2
+                    msgboxText =  ['Number of channels and bins vary across the selected ERPsets'];
+                end
+                question = [  '%s\n\n "All" will be active instead of "Selected bin and chan".'];
+                title       = 'EStudio: Filtering';
+                button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
+                BinArray = [];
+                ChanArray = [];
+            end
+            
+            ERP = ALLERP_advance(Selected_erpset(Numoferp));
+            if (checked_ERPset_Index_bin_chan(1)==0 && checked_ERPset_Index_bin_chan(2)==0) && gui_erp_filtering.Selected_bin_chan.Value ==1
+                BinArray = estudioworkingmemory('ERP_BinArray');
+                ChanArray = estudioworkingmemory('ERP_ChanArray');
+                [chk, msgboxText] = f_ERP_chckbinandchan(ERP, BinArray, [],1);
+                if chk(1)==1
+                    BinArray =  [1:ERP.nbin];
+                end
+                [chk, msgboxText] = f_ERP_chckbinandchan(ERP,[], ChanArray,2);
+                if chk(2)==1
+                    ChanArray =  [1:ERP.nchan];
+                end
+            end
+            
+            if gui_erp_filtering.all_bin_chan.Value == 1
+                BinArray = [1:ERP.nbin];
+                ChanArray = [1:ERP.nchan];
+            end
+            ERP_AF = ERP;
+            %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
+            [ERP, ERPCOM] = pop_filterp(ERP, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
+                'Saveas', 'off', 'History', 'gui');
+            
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if Numoferp==1
+                [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+            end
+            if ~isempty(BinArray)&& ~isempty(ChanArray)
+                try
+                    ERP_AF.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
+                    ERP.bindata = ERP_AF.bindata;
+                catch
+                    ERP = ERP;
+                end
+            end
+            
+            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(ERP.filename);
+                ERP.filename = [file_name,'.erp'];
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                %                     [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+        end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        erpworkingmemory('ERPfilter',1);
+        try
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selected_erpset)+1:length(observe_ERPDAT.ALLERP)];
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selected_erpset)+1;
+        catch
+            Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+        end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+        observe_ERPDAT.Count_currentERP = 1;
+        observe_ERPDAT.Process_messg =2;
     end
 
 %%-------------------Setting for advance  option---------------------------
@@ -1370,6 +1354,9 @@ varargout{1} = ERP_filtering_box;
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if isempty(observe_ERPDAT.ALLERP)  || isempty(observe_ERPDAT.ERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             gui_erp_filtering.apply.Enable = 'off';
             gui_erp_filtering.advanced.Enable = 'off';

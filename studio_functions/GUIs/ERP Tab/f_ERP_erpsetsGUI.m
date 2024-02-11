@@ -78,14 +78,15 @@ varargout{1} = box_erpset_gui;
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
-            'Callback', @imp_erp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export',...
-            'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
             'Callback', @load,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.clearselected = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Clear', ...
             'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        ERPsetops.importexport = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Import',...
+            'Callback', @imp_erp,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        ERPsetops.export = uicontrol('Parent',buttons3, 'Style', 'pushbutton', 'String', 'Export',...
+            'Callback', @exp_erp,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save',...
             'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -1098,6 +1099,9 @@ varargout{1} = box_erpset_gui;
             Edit_label = 'off';
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if ViewerFlag==1
             Edit_label = 'off';
             ERPsetops.importexport.Enable=Edit_label;

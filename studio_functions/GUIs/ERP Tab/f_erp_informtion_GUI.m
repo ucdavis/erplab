@@ -158,6 +158,9 @@ drawui_erp_information(FonsizeDefault);
             Enable_label = 'off';
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if ViewerFlag==1
             Enable_label = 'off';
         end

@@ -25,13 +25,13 @@ Eegtab_EEG_art_det_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Rejection for Continuous EEG',...
+    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Reject Artifactual Time Segments (Continuous EEG Only)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG',...
+    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Reject Artifactual Time Segments (Continuous EEG Only)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Rejection for Continuous EEG',...
+    Eegtab_box_art_det_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Reject Artifactual Time Segments (Continuous EEG Only)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @art_help
 end
 
@@ -146,14 +146,14 @@ varargout{1} = Eegtab_box_art_det_conus;
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
         if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG >  Index(es) of chans should be positive number(s)');
+            erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) >  Index(es) of chans should be positive number(s)');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String= vect2colon([1:ChaNum]);
             return;
         end
         
         if min(ChanArray(:))> ChaNum || max(ChanArray(:)) > ChaNum
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)]);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String= vect2colon([1:ChaNum]);
             return;
@@ -206,7 +206,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             Eegtab_EEG_art_det_conus.chan_edit.String  = vect2colon(chan_label_select);
         else
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return
         end
         
@@ -233,14 +233,14 @@ varargout{1} = Eegtab_box_art_det_conus;
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         Voltagevalue= str2num(Source.String);
         if isempty(Voltagevalue) || (numel(Voltagevalue)~=1 && numel(Voltagevalue)~=2)
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Voltage threshold must have one or two values']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Voltage threshold must have one or two values']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '500';
             return;
         end
         if numel(Voltagevalue)==2
             if Voltagevalue(2) >= Voltagevalue(1)
-                erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Voltage threshold: When 2 thresholds are specified, the first one must be lesser than the second one']);
+                erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Voltage threshold: When 2 thresholds are specified, the first one must be lesser than the second one']);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Source.String = '500';
                 return;
@@ -270,7 +270,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         windowlength= str2num(Source.String);
         if isempty(windowlength) || numel(windowlength) ~=1 ||  min(windowlength(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Move window width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Move window width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '500';
             return;
@@ -278,7 +278,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         windowStep = str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String);
         if windowlength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Step width cannot be larger than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Step width cannot be larger than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             %             Source.String = '';
             return;
@@ -306,7 +306,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         windowstep= str2num(Source.String);
         if isempty(windowstep) || numel(windowstep) ~=1 ||  min(windowstep(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Window step width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Window step width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -315,7 +315,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         windowStep = str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String);
         windowlength = str2num(Eegtab_EEG_art_det_conus.movewindow_edit.String);
         if windowlength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Step width must be smaller than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Step width must be smaller than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             %             Source.String = '';
             return;
@@ -333,7 +333,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Advanced');
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) > Advanced');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -355,7 +355,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         ChanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
         nbchan = observe_EEGDAT.EEG.nbchan;
         if isempty(ChanArray) || min(ChanArray(:)) <=0 || max(ChanArray(:)) <=0 || min(ChanArray(:)) > nbchan || max(ChanArray(:)) > nbchan
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -363,14 +363,14 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%----------if simple voltage threshold------------
         Volthreshold = sort(str2num(Eegtab_EEG_art_det_conus.voltage_edit.String));
         if isempty(Volthreshold) || (numel(Volthreshold)~=1 && numel(Volthreshold)~=2)
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: Voltage threshold must have one or two values']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: Voltage threshold must have one or two values']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
         
         if numel(Volthreshold)==2
             if Volthreshold(2) >= Volthreshold(1)
-                erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: When 2 thresholds are specified, the first one must be lesser than the second one']);
+                erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: When 2 thresholds are specified, the first one must be lesser than the second one']);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 return;
             end
@@ -380,7 +380,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%Moving window full width
         WindowLength = str2num(Eegtab_EEG_art_det_conus.movewindow_edit.String);
         if isempty(WindowLength) || numel(WindowLength) ~=1 ||  min(WindowLength(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: Move window width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: Move window width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '500';
             return;
@@ -388,21 +388,21 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         windowStep = str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String);
         if WindowLength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: Step width cannot be larger than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: Step width cannot be larger than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         
         if isempty(windowStep) || numel(windowStep) ~=1 ||  min(windowStep(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: Window step width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: Window step width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         %%WindowStep
         if WindowLength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Advanced: Step width must be smaller than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Advanced: Step width must be smaller than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -438,7 +438,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         answer    = continuousartifactGUI(EEG.srate, EEG.nbchan, EEG.chanlocs);
         if isempty(answer)
-            disp('User selected Cancel')
+%             disp('User selected Cancel')
             observe_EEGDAT.eeg_panel_message =2;
             return
         end
@@ -502,7 +502,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Artifact Rejection for Continuous EEG > Advanced*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Reject Artifactual Time Segments (Continuous EEG Only) > Advanced*',32,32,32,32,datestr(datetime('now')),'\n']);
             
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if max(chanArray(:)) > EEG.nbchan
@@ -523,7 +523,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 ,'review','on','History','implicit');
             
             if isempty(LASTCOM)
-                disp('User selected cancel or errors occur.');
+%                 disp('User selected cancel or errors occur.');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -535,7 +535,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             
             Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_rmar')),EEG.filename,EEGArray(Numofeeg));
             if isempty(Answer)
-                disp('User selected cancel.');
+%                 disp('User selected cancel.');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -603,13 +603,13 @@ varargout{1} = Eegtab_box_art_det_conus;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview');
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) > Preview');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview: Only work for single EEG');
+            erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Only work for single EEG');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = 'Only for single EEG';
             Source.Enable = 'off';
@@ -630,7 +630,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         ChanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
         nbchan = observe_EEGDAT.EEG.nbchan;
         if isempty(ChanArray) || min(ChanArray(:)) <=0 || max(ChanArray(:)) <=0 || min(ChanArray(:)) > nbchan || max(ChanArray(:)) > nbchan
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -639,7 +639,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%----------if simple voltage threshold------------
         Volthreshold = sort(str2num(Eegtab_EEG_art_det_conus.voltage_edit.String));
         if isempty(Volthreshold) || (numel(Volthreshold)~=1 && numel(Volthreshold)~=2)
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: Voltage threshold must have one or two values']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Voltage threshold must have one or two values']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             
             return;
@@ -647,7 +647,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         if numel(Volthreshold)==2
             if Volthreshold(2) >= Volthreshold(1)
-                erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: When 2 thresholds are specified, the first one must be lesser than the second one']);
+                erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: When 2 thresholds are specified, the first one must be lesser than the second one']);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 return;
             end
@@ -657,7 +657,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%Moving window full width
         WindowLength = str2num(Eegtab_EEG_art_det_conus.movewindow_edit.String);
         if isempty(WindowLength) || numel(WindowLength) ~=1 ||  min(WindowLength(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: Move window width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Move window width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '500';
             return;
@@ -665,21 +665,21 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         windowStep = str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String);
         if WindowLength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: Step width cannot be larger than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Step width cannot be larger than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         
         if isempty(windowStep) || numel(windowStep) ~=1 ||  min(windowStep(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: Window step width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Window step width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         %%WindowStep
         if WindowLength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Preview: Step width must be smaller than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Step width must be smaller than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -700,20 +700,20 @@ varargout{1} = Eegtab_box_art_det_conus;
             EEG = observe_EEGDAT.EEG;
         end
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
-        fprintf(['*Artifact Rejection for Continuous EEG > Preview*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf(['*Reject Artifactual Time Segments (Continuous EEG Only) > Preview*',32,32,32,32,datestr(datetime('now')),'\n']);
         fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
         
         [EEG,LASTCOM]= pop_continuousartdet( EEG , 'ampth',  Volthreshold, 'chanArray',  ChanArray, 'colorseg', colorseg,...
             'firstdet', 'on', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
             'winms',  WindowLength,'review','on','History','implicit' );
         if isempty(LASTCOM)
-            disp('User selected cancel or errors occur.');
+%             disp('User selected cancel or errors occur.');
         else
             fprintf([LASTCOM,'\n']);
         end
         eegh(LASTCOM);
         fprintf( [repmat('-',1,100) '\n']);
-        erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview');
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) > Preview');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -728,7 +728,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Finalize');
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) > Finalize');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -750,7 +750,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         ChanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
         nbchan = observe_EEGDAT.EEG.nbchan;
         if isempty(ChanArray) || min(ChanArray(:)) <=0 || max(ChanArray(:)) <=0 || min(ChanArray(:)) > nbchan || max(ChanArray(:)) > nbchan
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -758,14 +758,14 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%----------if simple voltage threshold------------
         Volthreshold = sort(str2num(Eegtab_EEG_art_det_conus.voltage_edit.String));
         if isempty(Volthreshold) || (numel(Volthreshold)~=1 && numel(Volthreshold)~=2)
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: Voltage threshold must have one or two values']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: Voltage threshold must have one or two values']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
         
         if numel(Volthreshold)==2
             if Volthreshold(2) >= Volthreshold(1)
-                erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: When 2 thresholds are specified, the first one must be lesser than the second one']);
+                erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: When 2 thresholds are specified, the first one must be lesser than the second one']);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 return;
             end
@@ -775,7 +775,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%Moving window full width
         WindowLength = str2num(Eegtab_EEG_art_det_conus.movewindow_edit.String);
         if isempty(WindowLength) || numel(WindowLength) ~=1 ||  min(WindowLength(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: Move window width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: Move window width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '500';
             return;
@@ -783,21 +783,21 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         windowStep = str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String);
         if WindowLength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: Step width cannot be larger than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: Step width cannot be larger than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         
         if isempty(windowStep) || numel(windowStep) ~=1 ||  min(windowStep(:))<=0
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: Window step width must be a positive number']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: Window step width must be a positive number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         %%WindowStep
         if WindowLength <= max(windowStep(:))
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Rejection for Continuous EEG > Finalize: Step width must be smaller than the window width']);
+            erpworkingmemory('f_EEG_proces_messg',['Reject Artifactual Time Segments (Continuous EEG Only) > Finalize: Step width must be smaller than the window width']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -817,7 +817,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Artifact Rejection for Continuous EEG > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Reject Artifactual Time Segments (Continuous EEG Only) > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
             
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if max(ChanArray(:)) > EEG.nbchan
@@ -841,7 +841,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             end
             Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_rmar')),EEG.filename,EEGArray(Numofeeg));
             if isempty(Answer)
-                disp('User selected cancel.');
+%                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -935,7 +935,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
-            %             erpworkingmemory('f_EEG_proces_messg','Artifact Rejection for Continuous EEG > Preview: Only work for single EEG, and we threfore gray it out');
+            %             erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG Only) > Preview: Only work for single EEG, and we threfore gray it out');
             %             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_art_det_conus.detectar_preview.String = 'Only for single EEG';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable = 'off';

@@ -184,7 +184,6 @@ end
 %%adjust the number of channels and channel names
 for Numofchan = 1:numel(qchanArray)
     try
-        
         qChanlocsnew(Numofchan)  = qChanlocsnew(Numofchan);
     catch
         qChanlocsnew(Numofchan)  = EEG.chanlocs(qchanArray(Numofchan));
@@ -204,8 +203,11 @@ end
 %%history
 fn = fieldnames(p.Results);
 skipfields = {'ALLEEG','CURRENTSET'};
+if isfield(EEG,'datatype') && strcmpi(EEG.datatype,'ERP')
+   eegcom     = sprintf( 'ERP = pop_editdatachanlocs( %s %s', 'ALLERP,',num2str(CURRENTSET)); 
+else
 eegcom     = sprintf( 'EEG = pop_editdatachanlocs( %s %s', 'ALLEEG,',num2str(CURRENTSET));
-
+end
 for q=1:length(fn)
     fn2com = fn{q}; % inputname
     if ~ismember_bc2(fn2com, skipfields)
@@ -225,10 +227,7 @@ for q=1:length(fn)
                 if size(fn2res,1)==1
                     fn2res_trans = char(num2str(fn2res));
                 else
-                    fn2res_trans = char(num2str(fn2res(1,:)));
-                    for ii = 2:size(fn2res,1)
-                        fn2res_trans  =  char(strcat(fn2res_trans,';',num2str(fn2res(ii,:))));
-                    end
+                    fn2res_trans = vect2colon(fn2res);
                 end
                 fn2res = fn2res_trans;
                 eegcom = sprintf( '%s, ''%s'', [%s', eegcom,fn2com,fn2res);

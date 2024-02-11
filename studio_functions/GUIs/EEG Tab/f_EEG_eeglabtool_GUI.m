@@ -58,13 +58,13 @@ varargout{1} = EStudio_box_eeglab_tool;
         else
             EnableFlag = 'on';
         end
-        %%About this dataset and dataset information
+        %%About this dataset and Edit Dataset Info
         EStduio_eegtab_eeglab_tool.datainfo_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         
         EStduio_eegtab_eeglab_tool.about_eegdata = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.datainfo_title,...
             'String','About this dataset','callback',@about_eegdata,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_tool.edit_eeginfor = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.datainfo_title,...
-            'String','Dataset information','callback',@edit_eeginfor,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Edit Dataset Info','callback',@edit_eeginfor,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         
         %%Edit eeg events and channel locations
@@ -172,7 +172,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         if ~isempty(messgStr) &&  eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Dataset information');
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Edit Dataset Info');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -181,7 +181,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Dataset information: Only only for one selected dataset');
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Edit Dataset Info: Only only for one selected dataset');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
             return;
@@ -193,7 +193,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %%disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -211,7 +211,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             [EEG, LASTCOM] = pop_editset(EEG);
             fprintf(LASTCOM,'\n');
             if isempty(LASTCOM)
-                disp('User selected cancel');
+                %disp('User selected Cancel');
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 break;
             end
@@ -288,7 +288,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -307,7 +307,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             %%Edit events contained in EEG dataset structure
             [EEG, LASTCOM] =  pop_editeventvals(EEG);
             if isempty(LASTCOM)
-                disp('User selected cancel');
+                %disp('User selected Cancel');
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 break;
             end
@@ -400,7 +400,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -586,7 +586,7 @@ varargout{1} = EStudio_box_eeglab_tool;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -608,7 +608,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         if isempty(LASTCOM)
-            disp('User selected cancel');
+            %disp('User selected Cancel');
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
         end

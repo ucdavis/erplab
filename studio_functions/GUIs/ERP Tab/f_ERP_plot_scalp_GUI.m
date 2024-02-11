@@ -1703,7 +1703,10 @@ varargout{1} = ERP_plot_scalp_gui;
         if observe_ERPDAT.Count_currentERP~=4
             return;
         end
-        ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             Enable_lab = 'off';
         else

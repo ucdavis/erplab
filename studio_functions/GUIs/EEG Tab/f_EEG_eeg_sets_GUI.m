@@ -265,7 +265,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         f_redrawEEG_Wave_Viewer();
         observe_EEGDAT.eeg_panel_message=2;
         
-        whichpanel = [12:17];
+        whichpanel = [11:17];
         EEGTab_close_open_Panels(whichpanel);
     end
 
@@ -507,7 +507,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             
             whichpanel = [18:22];
         else
-            whichpanel = [12:17];
+            whichpanel = [11:17];
         end
         EEGTab_close_open_Panels(whichpanel);
     end
@@ -604,7 +604,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
             whichpanel = [18:22];
         else
-            whichpanel = [12:17];
+            whichpanel = [11:17];
         end
         EEGTab_close_open_Panels(whichpanel);
     end

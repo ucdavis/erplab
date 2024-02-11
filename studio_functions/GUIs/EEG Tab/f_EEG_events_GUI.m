@@ -1,4 +1,4 @@
-%%This function is operation for EEG events
+%%This function is operation for EventList
 
 % *** This function is part of ERPLAB Studio Toolbox ***
 % Author: Guanghui Zhang & Steven Luck
@@ -23,13 +23,13 @@ EStduio_eegtab_EEG_events = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG Events', 'Padding', 5,...
+    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', fig, 'Title', 'EventList', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,...
+    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EventList', 'Padding', 5,...
         'BackgroundColor',ColorB_def);
 else
-    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG Events', 'Padding', 5,...
+    EStudio_eeg_events_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EventList', 'Padding', 5,...
         'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @event_help
 end
 
@@ -96,19 +96,12 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.shuffle_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_events.eeg_shuffle = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.shuffle_title ,...
             'String','Shuffle events/bins/samples','callback',@eeg_shuffle,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.shuffle_title);
-        set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[265 -1]);
-        
-        %%-----------------
-        %%Shift EEG event codes
-        EStduio_eegtab_EEG_events.shiftcodes_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_events.shift_code = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.shiftcodes_title,...
-            'String','Shift event codes','callback',@shift_code,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         %%export reaction times
-        EStduio_eegtab_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.shiftcodes_title ,...
+        EStduio_eegtab_EEG_events.exp_rt = uicontrol('Style', 'pushbutton','Parent',  EStduio_eegtab_EEG_events.shuffle_title ,...
             'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[170 -1]);
         
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 30]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30]);
     end
 
 %%**************************************************************************%%
@@ -129,7 +122,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
-            msgboxText = ['EEG Events >  Summarize event code:EEG.event is empty for the current EEG'];
+            msgboxText = ['EventList >  Summarize event code:EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
@@ -140,7 +133,7 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Summarize event code');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Summarize event code');
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -152,12 +145,12 @@ varargout{1} = EStudio_eeg_events_box;
             
             if isempty(EEG.event)
                 CheckFlag = 0;
-                msgboxText = ['EEG Events >  Summarize event code:EEG.event is empty for',32,EEG.setname];
+                msgboxText = ['EventList >  Summarize event code:EEG.event is empty for',32,EEG.setname];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
             elseif isempty([EEG(1).event.type])
                 CheckFlag = 0;
-                msgboxText = ['EEG Events >  Summarize event code:EEG.event.type is empty for',32,EEG.setname];
+                msgboxText = ['EventList >  Summarize event code:EEG.event.type is empty for',32,EEG.setname];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
             else
@@ -174,147 +167,7 @@ varargout{1} = EStudio_eeg_events_box;
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Summarize event code');
-        observe_EEGDAT.eeg_panel_message =2;
-    end
-
-
-
-%%--------------Shift the event codes for the selected EEG-----------------
-    function shift_code(Source,~)
-        if isempty(observe_EEGDAT.EEG)
-            Source.Enable= 'off';
-            return;
-        end
-        if observe_EEGDAT.EEG.trials>1
-            Source.Enable= 'off';
-            return;
-        end
-        if isempty(observe_EEGDAT.EEG.event)
-            Source.Enable= 'off';
-            msgboxText = ['EEG Events >  Shift event codes: EEG.event is empty for the current EEG'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
-            return;
-        end
-        
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr)
-            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-        end
-        
-        
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shift event codes');
-        observe_EEGDAT.eeg_panel_message =1;
-        
-        EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
-            EEGArray = observe_EEGDAT.CURRENTSET;
-        end
-        
-        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_shift');
-        if isempty(Answer)
-            beep;
-            disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
-        
-        %% Get previous input parameters
-        def  = erpworkingmemory('pop_erplabShiftEventCodes');
-        if isempty(def)
-            def = {'',0,'earlier',0};%%Jan 8 2024 GH
-        end
-        
-        EEG = observe_EEGDAT.EEG;
-        %% Detected if prior Eventlist exists in the EEG
-        if(isfield(EEG, 'EVENTLIST'))
-            if(~isempty(EEG.EVENTLIST))
-                eventlist_detected = true;
-            else
-                eventlist_detected = false;
-            end
-        else
-            eventlist_detected = false;
-        end
-        
-        def = [def, eventlist_detected];
-        def{4} = false;
-        %% Call GUI
-        inputstrMat = gui_erplabShiftEventCodes(def);  % GUI
-        
-        % Exit when CANCEL button is pressed
-        if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
-            beep;
-            disp('User selected Cancel');
-            return;
-        end
-        eventcodes          = inputstrMat{1};
-        timeshift           = inputstrMat{2};
-        rounding            = inputstrMat{3};
-        displayEEG          = false;
-        displayFeedback     = 'both';
-        
-        % Save GUI input to working memory
-        erpworkingmemory('pop_erplabShiftEventCodes', ...
-            {eventcodes, timeshift, rounding, displayEEG, displayFeedback});
-        
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            if(isfield(EEG, 'EVENTLIST') && ~isempty(EEG.EVENTLIST))
-                WanMessage = ['\n EEG Events >  Shift event codes for EEGset:',32,EEG.setname...
-                    '\n Previously Created ERPLAB EVENTLIST Detected.\n Running this function changes your event codes, and so your prior Eventlist will be deleted.\n Re-create a new ERPLAB Eventlist afterwards.\n'];
-                fprintf(2,WanMessage);
-            end
-            
-            %% Run pop_ command again with the inputs from the GUI
-            [EEG, LASTCOM] = pop_erplabShiftEventCodes(EEG,'Eventcodes',eventcodes,'Timeshift',timeshift,'Rounding',rounding,'DisplayEEG', displayEEG,'DisplayFeedback', displayFeedback,'History', 'gui');
-            EEG = eegh(LASTCOM, EEG);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            
-            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
-            if Save_file_label && checkfileindex==1
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            else
-                EEG.filename = '';
-                EEG.saved = 'no';
-                EEG.filepath = '';
-            end
-            [observe_EEGDAT.ALLEEG, EEG,~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end
-        
-        try
-            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-        catch
-            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-        end
-        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
-        assignin('base','EEG',observe_EEGDAT.EEG);
-        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
-        observe_EEGDAT.count_current_eeg=1;
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Summarize event code');
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -336,13 +189,13 @@ varargout{1} = EStudio_eeg_events_box;
         
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
-            msgboxText = ['EEG Events >  Create eventlist: EEG.event is empty for the current EEG'];
+            msgboxText = ['EventList >  Create eventlist: EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Create eventlist');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Create eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -353,7 +206,7 @@ varargout{1} = EStudio_eeg_events_box;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_elist');
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -475,11 +328,11 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
         observe_EEGDAT.eeg_panel_message =1;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
-            erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs: No EVETLIST, please create one first');
+            erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs: No EVETLIST, please create one first');
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -527,7 +380,7 @@ varargout{1} = EStudio_eeg_events_box;
             
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             if ~isfield(EEG, 'EVENTLIST')
-                erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs:EVENTLIST structure is empty');
+                erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs:EVENTLIST structure is empty');
                 observe_EEGDAT.eeg_panel_message =4;
             else
                 filenameeeg = EEG.filename;
@@ -556,7 +409,7 @@ varargout{1} = EStudio_eeg_events_box;
                 end
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export RTs');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
@@ -583,7 +436,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Import eventlist');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Import eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -602,7 +455,7 @@ varargout{1} = EStudio_eeg_events_box;
             ELfullname = fullfile(pathname, filename);
             
             if isequal(filename,0)
-                disp('User selected Cancel');
+                %disp('User selected Cancel');
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return
             else
@@ -689,11 +542,11 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export eventlist');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
-            msgboxText =  ['EEG Events >Export eventlist: Please check the current EEG.EVENTLIST'];
+            msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             return;
@@ -757,7 +610,7 @@ varargout{1} = EStudio_eeg_events_box;
             end
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Export eventlist');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
@@ -780,7 +633,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shuffle events/bins/samples');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Shuffle events/bins/samples');
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -791,7 +644,7 @@ varargout{1} = EStudio_eeg_events_box;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_shuffled');
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -823,7 +676,7 @@ varargout{1} = EStudio_eeg_events_box;
             specfieldstr = 'data';
             valueatfield = 'off';
         else
-            erpworkingmemory('f_EEG_proces_messg','EEG Events >  Shuffle events/bins/samples: invalid field');
+            erpworkingmemory('f_EEG_proces_messg','EventList >  Shuffle events/bins/samples: invalid field');
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -831,7 +684,7 @@ varargout{1} = EStudio_eeg_events_box;
         if ~isnumeric(valueatfield) && ~strcmpi(valueatfield, 'all') && ~strcmpi(valueatfield, 'off')
             valueatfield = str2num(valueatfield);
             if isempty(valueatfield)
-                msgboxText =  'EEG Events >  Shuffle events/bins/samples:Invalid value for "codes to shuffle"';
+                msgboxText =  'EventList >  Shuffle events/bins/samples:Invalid value for "codes to shuffle"';
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
                 return;
@@ -875,7 +728,7 @@ varargout{1} = EStudio_eeg_events_box;
                     eegh(LASTCOM);
                 end
             else
-                msgboxText =  ['EEG Events >  Shuffle events/bins/samples:', msgboxText];
+                msgboxText =  ['EventList >  Shuffle events/bins/samples:', msgboxText];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n\n']);
@@ -934,7 +787,7 @@ varargout{1} = EStudio_eeg_events_box;
         
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
-            msgboxText = ['EEG Events >  Transfer event to EEG.event: EEG.event is empty for the current EEG'];
+            msgboxText = ['EventList >  Transfer event to EEG.event: EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             Source.Enable= 'off';
             observe_EEGDAT.eeg_panel_message =4;
@@ -945,7 +798,7 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             return;
         end
-        erpworkingmemory('f_EEG_proces_messg','EEG Events >  Transfer event to EEG.event');
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Transfer event to EEG.event');
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -956,7 +809,7 @@ varargout{1} = EStudio_eeg_events_box;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_transf');
         if isempty(Answer)
             beep;
-            disp('User selected Cancel');
+            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -1019,7 +872,7 @@ varargout{1} = EStudio_eeg_events_box;
                         eegh(LASTCOM);
                     end
                 else
-                    msgboxText =  ['EEG Events >  Transfer event to EEG.event:', msgboxText];
+                    msgboxText =  ['EventList >  Transfer event to EEG.event:', msgboxText];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
                     observe_EEGDAT.eeg_panel_message =4;
                     fprintf( ['\n',repmat('-',1,100) '\n\n']);
@@ -1073,8 +926,6 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event)
             EnableFlag = 'off';
             EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
-            %%Shift EEG event codes
-            EStduio_eegtab_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
             %%Create and RTs
             EStduio_eegtab_EEG_events.create_eventlist.Enable=EnableFlag;
             %%export reaction times
@@ -1085,15 +936,12 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
-            %             if  ~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.event)
-            %                 EStudio_eeg_events_box.Title = 'No events were found for  the current EEG';
-            %                 EStudio_eeg_events_box.ForegroundColor= [1 0 0];
-            %             end
+            
             observe_EEGDAT.count_current_eeg=9;
             return;
         end
         
-        EStudio_eeg_events_box.Title = 'EEG Events';
+        EStudio_eeg_events_box.Title = 'EventList';
         EStudio_eeg_events_box.ForegroundColor= [1 1 1];
         
         
@@ -1107,7 +955,6 @@ varargout{1} = EStudio_eeg_events_box;
         %%Summarize EEG event codes
         EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
         %%Shift EEG event codes
-        EStduio_eegtab_EEG_events.shift_code.Enable=EnableFlag;%%continous eeg
         %%Create and RTs
         EStduio_eegtab_EEG_events.create_eventlist.Enable=EnableFlag;
         %%export reaction times

@@ -110,4 +110,12 @@ end
 
 
 
+MyViewer_chanbin = estudioworkingmemory('ERPTab_editchan');
+if ~isempty(MyViewer_chanbin) && MyViewer_chanbin==1
+    messgStr  = char( 'Changes on "Edit Channel Info" have not been applied');
+    erpanelIndex =15;
+end
+
+
+
 return;

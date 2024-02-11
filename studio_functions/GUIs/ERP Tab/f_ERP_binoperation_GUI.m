@@ -19,13 +19,13 @@ gui_erp_bin_operation = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    ERP_bin_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Bin Operations', 'Padding', 5,...
+    ERP_bin_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Bin Operations', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Bin Operations', 'Padding',...
+    ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin Operations', 'Padding',...
         5,'BackgroundColor',ColorB_def);
 else
-    ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Bin Operations', 'Padding', 5,...
+    ERP_bin_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin Operations', 'Padding', 5,...
         'FontSize', varargin{2},'BackgroundColor',ColorB_def); %'HelpFcn', @binop_help
 end
 
@@ -216,14 +216,14 @@ varargout{1} = ERP_bin_operation_gui;
             formcell    = textscan(fid_formula, '%s','delimiter', '\r');
             formulas    = char(formcell{:});
         catch
-            msgboxText =  ['ERP Bin Operations - Please, check your file:\n '...
+            msgboxText =  ['Bin Operations - Please, check your file:\n '...
                 fullname '\n'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if size(formulas,2)>256
-            msgboxText =  ['ERP Bin Operations - Formulas length exceed 256 characters.\n'...
+            msgboxText =  ['Bin Operations - Formulas length exceed 256 characters.\n'...
                 'Be sure to press [Enter] after you have entered each formula.'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -385,7 +385,7 @@ varargout{1} = ERP_bin_operation_gui;
             end
         end
         if isempty(Formula_str)
-            msgboxText =  ['ERP Bin Operations - You have not yet written a formula'];
+            msgboxText =  ['Bin Operations - You have not yet written a formula'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -433,7 +433,7 @@ varargout{1} = ERP_bin_operation_gui;
             Save_file_label =0;
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERP Bin Operations');
+        erpworkingmemory('f_ERP_proces_messg','Bin Operations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ALLERPCOM = evalin('base','ALLERPCOM');
         for Numofselectederp = 1:numel(Selectederp_Index)%%Bin Operations for each selected ERPset
@@ -473,7 +473,6 @@ varargout{1} = ERP_bin_operation_gui;
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;
-        
     end
 
 %%---------------------------cancel----------------------------------------
@@ -532,7 +531,10 @@ varargout{1} = ERP_bin_operation_gui;
             set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
-        if ViewerFlag==1;
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
+        if ViewerFlag==1
             Enable_label = 'off';
         end
         gui_erp_bin_operation.mode_modify.Enable=Enable_label;

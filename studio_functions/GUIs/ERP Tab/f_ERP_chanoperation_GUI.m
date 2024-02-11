@@ -22,13 +22,13 @@ catch
 end
 if nargin == 0
     fig = figure(); % Parent figure
-    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Channel Operations', 'Padding', 5,...
+    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Channel Operations', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Channel Operations', 'Padding', 5,...
+    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel Operations', 'Padding', 5,...
         'BackgroundColor',ColorB_def);
 else
-    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Channel Operations', 'Padding', 5,...
+    ERP_chan_operation_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Channel Operations', 'Padding', 5,...
         'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @chanop_help
 end
 
@@ -250,14 +250,14 @@ varargout{1} = ERP_chan_operation_gui;
             formcell    = textscan(fid_formula, '%s','delimiter', '\r');
             formulas    = char(formcell{:});
         catch
-            msgboxText =  ['ERP Channel Operations - Please, check your file:\n '...
+            msgboxText =  ['Channel Operations - Please, check your file:\n '...
                 fullname '\n'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
         end
         if size(formulas,2)>256
-            msgboxText =  ['ERP Channel Operations - Formulas length exceed 256 characters,'...
+            msgboxText =  ['Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -555,7 +555,7 @@ varargout{1} = ERP_chan_operation_gui;
             end
         end
         if isempty(Formula_str)
-            msgboxText =  ['ERP Channel Operations - You have not yet written a formula'];
+            msgboxText =  ['Channel Operations - You have not yet written a formula'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -646,8 +646,6 @@ varargout{1} = ERP_chan_operation_gui;
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
         return;
-        
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 
@@ -657,6 +655,9 @@ varargout{1} = ERP_chan_operation_gui;
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
+         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
+        end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100

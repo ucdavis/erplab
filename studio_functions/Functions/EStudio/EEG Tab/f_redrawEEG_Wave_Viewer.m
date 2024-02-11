@@ -892,6 +892,14 @@ if reset_paras(1)==1
         estudioworkingmemory('EEGArray',1);
         observe_EEGDAT.count_current_eeg =1;
     end
+else
+    if EStudio_gui_erp_totl.clear_alleeg == 1
+        observe_EEGDAT.ALLEEG = [];
+        observe_EEGDAT.EEG = [];
+        observe_EEGDAT.CURRENTSET  = 0;
+        estudioworkingmemory('EEGArray',1);
+        observe_EEGDAT.count_current_eeg =1;
+    end
 end
 observe_EEGDAT.eeg_panel_message=2;
 %%---------------- -------------erp tab------------------------------------
@@ -906,6 +914,15 @@ if reset_paras(3)==1
     if EStudio_gui_erp_totl.clear_allerp == 0
         f_redrawERP();
     else
+        observe_ERPDAT.ALLERP = [];
+        observe_ERPDAT.ERP = [];
+        observe_ERPDAT.CURRENTERP  = 1;
+        estudioworkingmemory('selectederpstudio',1);
+        observe_ERPDAT.Count_currentERP = 1;
+    end
+else
+    if EStudio_gui_erp_totl.clear_allerp == 1
+        
         observe_ERPDAT.ALLERP = [];
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
