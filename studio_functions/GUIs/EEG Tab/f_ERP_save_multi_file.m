@@ -55,7 +55,7 @@ try
 catch
     suffix  = '';
     EEGLAB = [];
-    EEGLAB.setname = 'No erpset was selected';
+    EEGLAB.erpname = 'No erpset was selected';
     EEGLAB.filename ='No erpset was selected';
     EEGLAB.event = [];
     EEGLAB.chanlocs = [];
@@ -87,7 +87,7 @@ set(handles.uitable1_erpset_table,'RowName',cellstr(num2str(EEGArray')));
 handles.uitable1_erpset_table.ColumnEditable(1) = true;
 handles.uitable1_erpset_table.ColumnEditable(2) = false;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix);
+    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix);
     DataString{Numoferpset,2} = '';
 end
 
@@ -152,7 +152,7 @@ end
 
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix_edit);
+    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix_edit);
     DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
@@ -229,7 +229,7 @@ for Numoferpset = 1:size(DataString_before,1)
     DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
     fileName = char(DataString_before{Numoferpset,1});
     if isempty(fileName)
-        fileName = strcat(num2str(Numoferpset),'.set');
+        fileName = strcat(num2str(Numoferpset),'.erp');
     end
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
@@ -282,7 +282,7 @@ for Numoferpset = 1:size(DataString_before,1)
     DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
     fileName = char(DataString_before{Numoferpset,1});
     if isempty(fileName)
-        fileName = strcat(num2str(Numoferpset),'.set');
+        fileName = strcat(num2str(Numoferpset),'.erp');
     end
     [pathstr, file_name, ext] = fileparts(fileName);
     if isempty(file_name)
@@ -349,7 +349,7 @@ if isempty(pathName)
 end
 
 for Numoferpset = 1:numel(EEGArray)
-    ALLERP(EEGArray(Numoferpset)).setname = Data_String{Numoferpset,1};
+    ALLERP(EEGArray(Numoferpset)).erpname = Data_String{Numoferpset,1};
     fileName = char(Data_String{Numoferpset,2});
     if isempty(fileName)
         fileName = Data_String{Numoferpset,1};

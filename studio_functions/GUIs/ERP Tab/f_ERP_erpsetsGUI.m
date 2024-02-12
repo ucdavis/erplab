@@ -92,8 +92,8 @@ varargout{1} = box_erpset_gui;
             'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Save As...', ...
             'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPsetops.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
-            'Callback', @toggledots,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        ERPsetops.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder',...
+            'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115])
     end
 
@@ -495,7 +495,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
-        ERPsetops.dotstoggle.Enable=Edit_label;
+        ERPsetops.curr_folder.Enable='on';
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         
@@ -728,7 +728,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
-        ERPsetops.dotstoggle.Enable=Edit_label;
+        ERPsetops.curr_folder.Enable='on';
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         SelectedERP = observe_ERPDAT.CURRENTERP;
@@ -786,7 +786,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
-        ERPsetops.dotstoggle.Enable=Edit_label;
+        ERPsetops.curr_folder.Enable='on';
         ERPsetops.butttons_datasets.Min =1;
         ERPsetops.butttons_datasets.Max =length(ERPlistName)+1;
         ERPsetops.butttons_datasets.Enable = Edit_label;
@@ -926,12 +926,11 @@ varargout{1} = box_erpset_gui;
             [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
         end
         observe_ERPDAT.Process_messg =2;
-        
     end
 
 
 %---------------- Enable/Disable dot structure-----------------------------
-    function toggledots(~,~)
+    function curr_folder(~,~)
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=1;
             return;
@@ -947,14 +946,14 @@ varargout{1} = box_erpset_gui;
             pathName =cd;
         end
         title = 'Select one forlder for saving files in following procedures';
-        sel_path = uigetdir(pathName,title);
+        sel_path1 = uigetdir(pathName,title);
         
-        if isequal(sel_path,0)
-            sel_path = cd;
+        if isequal(sel_path1,0)
+            sel_path1 = cd;
         end
-        userpath(sel_path);
-        cd(sel_path);
-        erpworkingmemory('ERP_save_folder',sel_path);
+        userpath(sel_path1);
+        cd(sel_path1);
+        erpworkingmemory('ERP_save_folder',sel_path1);
     end
 
 
@@ -970,7 +969,6 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        
         erpworkingmemory('f_ERP_proces_messg','ERPsets-select ERPset(s)');
         observe_ERPDAT.Process_messg =1;
         
@@ -980,90 +978,10 @@ varargout{1} = box_erpset_gui;
         Current_ERP_selected=Selected_ERPsetlabel(1);
         observe_ERPDAT.CURRENTERP = Current_ERP_selected;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_ERP_selected);
-        
-        checked_ERPset_Index_bin_chan = f_checkerpsets(observe_ERPDAT.ALLERP,Selected_ERPsetlabel);
-        
-        msgboxText = {};
-        if checked_ERPset_Index_bin_chan(1) ==1
-            msgboxText =  ['Number of bins across ERPsets is different!'];
-        elseif checked_ERPset_Index_bin_chan(2)==2
-            msgboxText =  ['Number of channels across ERPsets is different!'];
-        elseif checked_ERPset_Index_bin_chan(3) ==3
-            msgboxText =  ['Type of data across ERPsets is different!'];
-        elseif checked_ERPset_Index_bin_chan(4)==4
-            msgboxText =  ['Number of samples across ERPsets is different!'];
-        elseif checked_ERPset_Index_bin_chan(5)==5
-            msgboxText =  ['Start time of epoch across ERPsets is different!'];
-        end
-        if ischar(msgboxText)
-            if checked_ERPset_Index_bin_chan(1) ==1 && checked_ERPset_Index_bin_chan(2) ==0
-                question = [  '%s\n See details at command window.\n\n',...
-                    ' (a). "Bins" will be deactive on "Bins and Channel Selection".\n\n',...
-                    ' (b). "Plot Scalp Maps" panel will be deactive.\n\n',...
-                    ' (c). "Selected bin and chan" will be deactive on "Baseline correction & Linear detrend".\n\n',...
-                    ' (d). "ERP Channel Operations" panel will be deactive.\n\n',...
-                    ' (e). "ERP Bin Operations" panel will be deactive.\n\n',...
-                    ' (f). "Covert Voltage to CSD" panel will be deactive.\n\n',...
-                    ' (g). "Save values" will be deactive on "ERP Measurement Tool".\n\n',...
-                    ' (h). "Average across ERPsets" will be deactive.\n\n'];
-            elseif checked_ERPset_Index_bin_chan(1) ==0 && checked_ERPset_Index_bin_chan(2) ==2
-                
-                question = [  '%s\n See details at command window.\n\n',...
-                    ' (a). "Channels" will be deactive on "Bins and Channel Selection".\n\n',...
-                    ' (b). "Plot Scalp Maps" panel will be deactive.\n\n',...
-                    ' (c). "Selected bin and chan" will be deactive on "Baseline correction & Linear detrend".\n\n',...
-                    ' (d). "ERP Channel Operations" panel will be deactive.\n\n',...
-                    ' (e). "ERP Bin Operations" panel will be deactive.\n\n',...
-                    ' (f). "Covert Voltage to CSD" panel will be deactive.\n\n',...
-                    ' (g). "Save values" will be deactive on "ERP Measurement Tool".\n\n',...
-                    ' (h). "Average across ERPsets" will be deactive.\n\n'];
-            elseif checked_ERPset_Index_bin_chan(1) ==1 && checked_ERPset_Index_bin_chan(2) ==2
-                msgboxText =  ['Both the number of channels and the number of bins vary across ERPsets!'];
-                question = [  '%s\n See details at command window.\n\n',...
-                    ' (a). "Channels" and "Bins" will be deactive on "Bins and Channel Selection".\n\n',...
-                    ' (b). "Plot Scalp Maps" panel will be deactive.\n\n',...
-                    ' (c). "Selected bin and chan" will be deactive on "Baseline correction & Linear detrend".\n\n',...
-                    ' (d). "ERP Channel Operations" panel will be deactive.\n\n',...
-                    ' (e). "ERP Bin Operations" panel will be deactive.\n\n',...
-                    ' (f). "Covert Voltage to CSD" panel will be deactive.\n\n',...
-                    ' (g). "Save values" will be deactive on "ERP Measurement Tool".\n\n',...
-                    ' (h). "Average across ERPsets" will be deactive.\n\n'];
-            else
-                msgboxText =  [];
-                question = [  ];
-            end
-            if ~isempty(question)
-                BackERPLABcolor = [1 0.9 0.3];
-                title       = 'EStudio: ERPsets';
-                oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-                set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-                button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
-                set(0,'DefaultUicontrolBackgroundColor',oldcolor);
-            end
-        end
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
         f_redrawERP();
     end
-
-% Gets [ind, erp] for input ds where ds is a dataset structure, ind is the
-% index of the corresponding ERP, and ERP is the corresponding ERP
-% structure.
-    function varargout = ds2erp(ds)
-        [~,cvtc] = size(observe_ERPDAT.ALLERP);
-        for z = 1:cvtc
-            fp1 = observe_ERPDAT.ALLERP(1,z).filepath;
-            fp2 = cell2mat(ds(5));
-            fp1(regexp(fp1,'[/]')) = [];
-            fp2(regexp(fp2,'[/]')) = [];
-            if strcmp(observe_ERPDAT.ALLERP(1,z).erpname,cell2mat(ds(1)))&&strcmp(fp1,fp2)
-                varargout{1} = z;
-                varargout{2} = observe_ERPDAT.ALLERP(1,z);
-            end
-            
-        end
-    end
-
 
 %%%--------------Up this panel--------------------------------------
     function Count_currentERPChanged(~,~)
@@ -1116,7 +1034,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
-        ERPsetops.dotstoggle.Enable=Edit_label;
+        ERPsetops.curr_folder.Enable='on';
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
@@ -1142,7 +1060,7 @@ varargout{1} = box_erpset_gui;
 
     function Reset_erp_panel_change(~,~)
         if observe_ERPDAT.Reset_erp_paras_panel~=1
-          return;  
+            return;
         end
         observe_ERPDAT.Reset_erp_paras_panel=2;
     end

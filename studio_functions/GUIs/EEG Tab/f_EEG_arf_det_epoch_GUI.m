@@ -1449,7 +1449,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
-checkfileindex=0;
+checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr, file_name,'.set'];
 if exist(filenamex, 'file')~=0

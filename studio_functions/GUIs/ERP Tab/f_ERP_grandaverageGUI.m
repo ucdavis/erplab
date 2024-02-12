@@ -584,6 +584,9 @@ varargout{1} = ERP_grdavg_box_gui;
             [ALLERP, ERPCOM]  = pop_jkgaverager(ALLERP, 'Erpsets', erpset, 'Criterion', artcrite,...
                 'SEM', stdsstr, 'Weighted', Weightedstr, 'Erpname', jkerpname, 'Filename', jkfilename,...
                 'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr);
+            if isempty(ERPCOM)
+                return;
+            end
             Selected_ERP_afd = setdiff([1:length(ALLERP)],[1:length(observe_ERPDAT.ALLERP)]);
             observe_ERPDAT.ALLERP = ALLERP;
             observe_ERPDAT.CURRENTERP = Selected_ERP_afd(1);
@@ -601,6 +604,9 @@ varargout{1} = ERP_grdavg_box_gui;
             [ERP, ERPCOM]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
                 'ExcludeNullBin', excnullbinstr,'Weighted', Weightedstr, 'Saveas', 'off',...
                 'DQ_flag',dq_option,'DQ_spec',dq_spec,'Warning', wavgstr, 'History', 'gui');
+            if isempty(ERPCOM)
+                return;
+            end
             ERP.erpname = erpName_new;
             ERP.filename = fileName_new;
             ERP.filepath = pathName_new;
@@ -630,7 +636,7 @@ varargout{1} = ERP_grdavg_box_gui;
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
-         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1

@@ -122,8 +122,8 @@ estudioworkingmemory('Startimes',0);%%set default value
             'String', 'Save', 'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
             'String', 'Save As...', 'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        EStduio_eegtab_EEG_set.dotstoggle = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
-            'Callback', @curr_folder,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        EStduio_eegtab_EEG_set.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
+            'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115]);
         set(vBox, 'Sizes', [20 280 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
@@ -496,7 +496,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
-        EStduio_eegtab_EEG_set.dotstoggle.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.curr_folder.Enable='on';
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
@@ -595,7 +595,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
-        EStduio_eegtab_EEG_set.dotstoggle.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.curr_folder.Enable='on';
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
@@ -782,7 +782,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
-        EStduio_eegtab_EEG_set.dotstoggle.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.curr_folder.Enable='on';
         EStduio_eegtab_EEG_set.butttons_datasets.Min =1;
         EStduio_eegtab_EEG_set.butttons_datasets.Max =length(EEGlistName)+1;
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
@@ -1116,7 +1116,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.clearselected.Enable=Edit_label;
         EStduio_eegtab_EEG_set.savebutton.Enable= Edit_label;
         EStduio_eegtab_EEG_set.saveasbutton.Enable=Edit_label;
-        EStduio_eegtab_EEG_set.dotstoggle.Enable=Edit_label;
+        EStduio_eegtab_EEG_set.curr_folder.Enable='on';
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
@@ -1205,7 +1205,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
-checkfileindex=0;
+checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr, file_name,'.set'];
 if exist(filenamex, 'file')~=0

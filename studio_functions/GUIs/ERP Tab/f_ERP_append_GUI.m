@@ -405,6 +405,9 @@ varargout{1} = box_erp_append;
                 [ERP, ERPCOM] = pop_appenderp(ALLERP, 'Erpsets', erpset, 'Prefixes', prefixliststr, 'Saveas', 'off', 'History', 'gui');
             end
         end
+        if isempty(ERPCOM)
+            return;
+        end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);%%SAVE the command
         pathName_def =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
@@ -531,6 +534,9 @@ varargout{1} = box_erp_append;
         end
         
         [ERP, ERPCOM] = pop_appenderp(ALLERP, 'Erpsets', ERPArray, 'Prefixes', prefixliststr, 'Saveas', 'off', 'History', 'gui');
+        if isempty(ERPCOM)
+            return;
+        end
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);%%SAVE the command
         pathName_def =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
@@ -542,7 +548,7 @@ varargout{1} = box_erp_append;
         Save_file_label =0;
         Answer = f_ERP_save_single_file(strcat('append'),'',length(observe_ERPDAT.ALLERP)+1);
         if isempty(Answer)
-            disp('User selected Cancel.');
+            %             disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer)
@@ -639,10 +645,10 @@ varargout{1} = box_erp_append;
             end
             
             if length(unique(numchans))>1
-                msgboxText = 'Append ERPsets > The selected ERPsets have different number of channel';
+                msgboxText = 'Append ERPsets > The selected ERPsets have different number of channels';
             end
             if length(unique(chckdatatype))>1
-                msgboxText = 'Append ERPsets > The selected ERPsets have different data type';
+                msgboxText = 'Append ERPsets > The selected ERPsets have different data types';
             end
         end
     end

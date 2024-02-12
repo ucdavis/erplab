@@ -430,7 +430,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             [~,EEG, LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,EEGArray(Numofeeg),stim_codes,resp_codes);
             
             if isempty(LASTCOM)
-%                 disp('User selected cancel');
+                %                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -442,7 +442,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             
             Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_shift')),EEG.filename,EEGArray(Numofeeg));
             if isempty(Answer)
-%                 disp('User selected cancel');
+                %                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -456,7 +456,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
                 if ~isempty(fileName_full)
                     checkfileindex = checkfilexists(fileName_full);
                 else
-                    checkfileindex=0;
+                    checkfileindex=1;
                 end
                 if ~isempty(fileName_full) && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(fileName_full);
@@ -639,7 +639,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             return;
         end
         estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
-%         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
+        %         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.BackgroundColor =  [1 1 1];
         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.ForegroundColor = [0 0 0];
         EEG_rmresp_mistak_conus.rmresp_mistake_run.BackgroundColor =  [ 1 1 1];
@@ -686,7 +686,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
-checkfileindex=0;
+checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr, file_name,'.set'];
 if exist(filenamex, 'file')~=0

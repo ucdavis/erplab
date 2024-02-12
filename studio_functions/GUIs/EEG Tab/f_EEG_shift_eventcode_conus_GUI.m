@@ -563,7 +563,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
                 if ~isempty(fileName_full)
                     checkfileindex = checkfilexists(fileName_full);
                 else
-                    checkfileindex=0;
+                    checkfileindex=1;
                 end
                 if ~isempty(fileName_full) && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(fileName_full);
@@ -732,7 +732,7 @@ end
 
 %%----------------check if the file already exists-------------------------
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
-checkfileindex=0;
+checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
 filenamex = [pathstr, file_name,'.set'];
 if exist(filenamex, 'file')~=0
