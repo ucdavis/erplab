@@ -102,10 +102,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
             'callback',@mflag3,'String','3','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag4 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag4,'String','4','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
-        
-        
-        
-        %         Eegtab_EEG_art_det_epoch.markflgas_title2 = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.mflag5 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag5,'String','5','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def,'Value',0); % 2F
         Eegtab_EEG_art_det_epoch.mflag6 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
@@ -172,15 +168,10 @@ varargout{1} = Eegtab_box_art_det_epoch;
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
     end
 
-
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%--------------------------help-------------------------------------------
-%     function artepo_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Artifact-Detection-in-Epoched-Data/','-browser');
-%     end
 
 %%-------------------Artifact detection algorithms-------------------------
     function det_algo(Source,~)
@@ -1052,7 +1043,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
             end
         end
         
-        %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_ar');
         if isempty(Answer)
@@ -1064,7 +1054,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
             ALLEEG_advance = Answer{1};
             Save_file_label = Answer{2};
         end
-        
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
@@ -1092,7 +1081,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
                     'LowPass',  -1, 'Threshold', Volthreshold, 'Twindow',Testperiod ,'Review', 'off', 'History', 'implicit');
             end
             if isempty(LASTCOM)
-%                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -1116,7 +1104,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1
@@ -1340,7 +1327,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         else
             Eegtab_EEG_art_det_epoch.mflag= [1,0,0,0,0,0,0,0];
         end
-        
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{3} = Eegtab_EEG_art_det_epoch.mflag;
@@ -1352,7 +1338,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.mflag1.Enable = 'off';
         observe_EEGDAT.count_current_eeg=19;
     end
-
 
 %%--------------press return to execute "Apply"----------------------------
     function eeg_artdetect_presskey(hObject, eventdata)

@@ -857,12 +857,9 @@ varargout{1} = EEG_filtering_box;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG =  observe_EEGDAT.ALLEEG;
-        %         try
-        FilterMethod = '_filt';
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,FilterMethod);
+        
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_filt');
         if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})

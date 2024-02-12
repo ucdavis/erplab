@@ -534,14 +534,21 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             displayEEG,                                   ...
             ignoreBoundary});
         ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_del');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Delete Time Segments (Continuous EEG Only) > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
             
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             
             %% Run the pop_ command with the user input from the GUI
             [EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG, ...
@@ -555,7 +562,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 'History'                   , 'implicit');
             
             if isempty(LASTCOM)
-                %                 disp('User selected cancel or errors occur.');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -565,47 +571,27 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_del')),EEG.filename,EEGArray(Numofeeg));
-            if isempty(Answer)
-                %                 disp('User selected cancel.');
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
+            
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
             
-            if ~isempty(Answer)
-                EEGName = Answer{1};
-                if ~isempty(EEGName)
-                    EEG.setname = EEGName;
-                end
-                fileName_full = Answer{2};
-                if ~isempty(fileName_full)
-                    checkfileindex = checkfilexists(fileName_full);
-                end
-                if isempty(fileName_full)
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                elseif ~isempty(fileName_full) && checkfileindex
-                    [pathstr, file_name, ext] = fileparts(fileName_full);
-                    if strcmp(pathstr,'')
-                        pathstr = cd;
-                    end
-                    EEG.filename = [file_name,ext];
-                    EEG.filepath = pathstr;
-                    EEG.saved = 'yes';
-                    %%----------save the current sdata as--------------------
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                    if Numofeeg==1
-                        eegh(LASTCOM);
-                    end
-                end
-            end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
         end%%end for loop of subjects
         observe_EEGDAT.ALLEEG = ALLEEG;
         try

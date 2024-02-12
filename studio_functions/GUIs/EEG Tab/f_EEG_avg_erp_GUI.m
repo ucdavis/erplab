@@ -134,7 +134,6 @@ varargout{1} = Eegtab_box_avg_erp;
         end
         EEG_avg_erp.invalidepoch.Value = excbound;
         
-        
         try
             DQcustom_wins = def{12};
         catch
@@ -174,7 +173,6 @@ varargout{1} = Eegtab_box_avg_erp;
         
         uiextras.Empty('Parent', EEG_avg_erp.para_title2 ,'BackgroundColor',ColorB_def);
         set(EEG_avg_erp.para_title2,'Sizes',[160,-1]);
-        
         
         %%Custom Parameters
         EEG_avg_erp.para_title3 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
@@ -229,11 +227,6 @@ varargout{1} = Eegtab_box_avg_erp;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-
-%     function avg_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Computing-Averaged-ERPs/','-browser');
-%     end
-
 
 %%--------------------------------default parameters-----------------------
     function def_para(Source,~)
@@ -649,10 +642,8 @@ varargout{1} = Eegtab_box_avg_erp;
             assignin('base','ALLERPCOM',ERPCOM);
         end
         
-        Answer = f_ERP_save_multi_file(ALLEEG,EEGArray,'');
+        Answer = f_ERP_save_multi_file(ALLEEG,EEGArray,'',0);
         if isempty(Answer)
-            beep;
-%             disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -660,7 +651,6 @@ varargout{1} = Eegtab_box_avg_erp;
             Save_file_label = Answer{2};
         end
         
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG_advance(setindex);
@@ -675,7 +665,6 @@ varargout{1} = Eegtab_box_avg_erp;
                 'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
                 'History', 'implicit','Saveas','off');
             if isempty(ERPCOM)
-%                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end

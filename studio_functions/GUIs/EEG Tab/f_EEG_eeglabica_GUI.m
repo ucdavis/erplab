@@ -125,11 +125,6 @@ varargout{1} = EStudio_box_eeglab_ica;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%--------------------eeglab ica help--------------------------------------
-%     function eeglabica_help(~,~)
-%         web('https://eeglab.org/tutorials/','-browser');
-%     end
-
 %%-----------------Decompose the data by ICA-------------------------------
     function icadecomp_eeg(Source,~)
         if isempty(observe_EEGDAT.EEG)
@@ -156,8 +151,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_ica');
         if isempty(Answer)
-            beep;
-            %%disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -244,7 +237,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -266,11 +259,9 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         assignin('base','EEG',observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)));
-        
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
         observe_EEGDAT.eeg_panel_message =2;
         erpworkingmemory('eegicinspectFlag',1);
-        
     end
 
 %%-----------------Classify ICs by ICLabel---------------------------------
@@ -295,32 +286,23 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        
-        try
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Classify IC by ICLabel*',32,32,32,32,datestr(datetime('now')),'\n']);
-                fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-                
-                EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
-                if isempty(EEG)
-                    observe_EEGDAT.eeg_panel_message =4;
-                    return;
-                end
-                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-            end%%end loop for subject
-            %             observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel:Please confirm that IClabel has been included in Plugins folder of EEGLAB');
-            observe_EEGDAT.eeg_panel_message =4;%%There is erros in processing procedure
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Classify IC by ICLabel*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+            
+            EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
+            if isempty(EEG)
+                observe_EEGDAT.eeg_panel_message =4;
+                return;
+            end
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
             fprintf( ['\n',repmat('-',1,100) '\n']);
-            return;
-        end
-        
+        end%%end loop for subject
+        %             observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
+        erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 %%-------------------Remove ICs--------------------------------------------
@@ -350,8 +332,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_rmic');
         if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -359,7 +339,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             Save_file_label = Answer{2};
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -451,7 +431,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 %%----------------------------Target EEG for ICA weight transfer-----------
     function trans_weight_targeteeg(Source,~)
@@ -564,8 +543,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_trafweights');
         if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
@@ -628,7 +605,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -656,8 +632,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             Source.Enable = 'off';
             return;
         end
-        
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -680,7 +654,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -707,8 +680,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             Source.Enable = 'off';
             return;
         end
-        
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -730,7 +701,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -759,7 +729,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             Source.Enable = 'off';
             return;
         end
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -809,7 +778,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             Source.Enable = 'off';
             return;
         end
-        %         try
         EEG = observe_EEGDAT.EEG;
         typecomp = 0;    % defaults
         chanorcomp = 0;
@@ -902,8 +870,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             Source.Enable = 'off';
             return;
         end
-        
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -928,7 +894,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -956,7 +921,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1

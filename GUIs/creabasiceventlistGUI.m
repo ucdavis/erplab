@@ -124,7 +124,7 @@ if multieeg==1
     set(handles.checkbox_create_eventlist,'Enable','off','Value',0);
     set(handles.pushbutton_browse,'Enable','off');
     set(handles.edit_elname,'Enable','off');
-      set(handles.edit_elname,'String','Export to text file is unavailable when multiple EEGsets are selected');
+    set(handles.edit_elname,'String','Export to text file is unavailable when multiple EEGsets are selected');
 end
 
 %

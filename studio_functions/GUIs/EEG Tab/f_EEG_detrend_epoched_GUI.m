@@ -115,12 +115,6 @@ varargout{1} = EEG_epoch_detrend_box;
 %%*******************   Subfunctions   ************************************
 %%*************************************************************************
 
-%%---------------------------function--------------------------------------
-%     function detrend_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
-
-
 %%----------------Setting for "pre"----------------------------------------
     function pre_eeg(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -149,7 +143,6 @@ varargout{1} = EEG_epoch_detrend_box;
             CUstom_String = num2str([observe_EEGDAT.EEG.times(1),0]);
         end
         gui_eeg_epoch_dt.custom_edit.String = CUstom_String;
-        
     end
 
 
@@ -182,7 +175,6 @@ varargout{1} = EEG_epoch_detrend_box;
             CUstom_String = num2str([0 observe_EEGDAT.EEG.times(end)]);
         end
         gui_eeg_epoch_dt.custom_edit.String = CUstom_String;
-        
     end
 
 %%----------------Setting for "whole"--------------------------------------
@@ -291,7 +283,6 @@ varargout{1} = EEG_epoch_detrend_box;
             Source.String = '';
             return;
         end
-        
     end
 
 
@@ -358,64 +349,44 @@ varargout{1} = EEG_epoch_detrend_box;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG =observe_EEGDAT.ALLEEG;
-        %         try
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_ld');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Linear Detrend (Epoched EEG Only) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
-            
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             wchmsgonstr ='off'; %temporary
             [EEG, LASTCOM] = pop_eeglindetrend( EEG, detwindow, 'Warning', wchmsgonstr, 'History', 'implicit');
             if isempty(LASTCOM)
-%                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
-            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_ld')),EEG.filename,EEGArray(Numofeeg));
-            if isempty(Answer)
-%                 disp('User selected cancel');
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
-            end
-            
-            if ~isempty(Answer)
-                EEGName = Answer{1};
-                if ~isempty(EEGName)
-                    EEG.setname = EEGName;
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
                 end
-                fileName_full = Answer{2};
-                if ~isempty(fileName_full)
-                    checkfileindex = checkfilexists(fileName_full);
-                else
-                    checkfileindex=0;
-                end
-                if ~isempty(fileName_full) && checkfileindex==1
-                    [pathstr, file_name, ext] = fileparts(fileName_full);
-                    if strcmp(pathstr,'')
-                        pathstr = cd;
-                    end
-                    EEG.filename = [file_name,ext];
-                    EEG.filepath = pathstr;
-                    EEG.saved = 'yes';
-                    %%----------save the current sdata as--------------------
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                    if Numofeeg==1
-                        eegh(LASTCOM);
-                    end
-                else
-                    EEG.filename = '';
-                    EEG.saved = 'no';
-                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
             end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
@@ -460,7 +431,6 @@ varargout{1} = EEG_epoch_detrend_box;
         
         erpworkingmemory('f_EEG_proces_messg','Linear Detrend (Epoched EEG Only) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
         estudioworkingmemory('EEGTab_detrend_epoch',0);
         detwindow=erpworkingmemory('pop_eeglindetrend');
         if isempty(detwindow)
@@ -477,7 +447,6 @@ varargout{1} = EEG_epoch_detrend_box;
                 gui_eeg_epoch_dt.whole.Value=0;
                 gui_eeg_epoch_dt.custom.Value=1;
                 gui_eeg_epoch_dt.custom_edit.Enable = 'on';
-                
             else
                 if strcmpi(detwindow,'post')
                     gui_eeg_epoch_dt.pre.Value=0;
@@ -545,7 +514,7 @@ varargout{1} = EEG_epoch_detrend_box;
         if observe_EEGDAT.Reset_eeg_paras_panel~=17
             return;
         end
-%         EEG_epoch_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
+        %         EEG_epoch_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eeg_epoch_dt.reset.BackgroundColor =  [ 1 1 1];
         gui_eeg_epoch_dt.reset.ForegroundColor = [0 0 0];
         gui_eeg_epoch_dt.apply .BackgroundColor =  [1 1 1];

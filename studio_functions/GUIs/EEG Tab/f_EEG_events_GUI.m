@@ -108,12 +108,6 @@ varargout{1} = EStudio_eeg_events_box;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%-----------------------event help----------------------------------------
-%     function event_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
-
-
 %%----------Summarize the event codes for the selected EEG-----------------
     function summarize_code(Source,~)
         if isempty(observe_EEGDAT.EEG)
@@ -287,7 +281,7 @@ varargout{1} = EStudio_eeg_events_box;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            %                 [observe_EEGDAT.ALLEEG EEG CURRENTSET] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
+            
             [observe_EEGDAT.ALLEEG, EEG, ~,LASTCOM] = pop_newset(observe_EEGDAT.ALLEEG, EEG, length(observe_EEGDAT.ALLEEG), 'gui', 'off');
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -519,10 +513,8 @@ varargout{1} = EStudio_eeg_events_box;
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -914,7 +906,6 @@ varargout{1} = EStudio_eeg_events_box;
         
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -944,7 +935,6 @@ varargout{1} = EStudio_eeg_events_box;
         EStudio_eeg_events_box.Title = 'EventList';
         EStudio_eeg_events_box.ForegroundColor= [1 1 1];
         
-        
         if ~isempty(observe_EEGDAT.EEG)
             if ndims(observe_EEGDAT.EEG.data) ==3%%Epoched EEG
                 EnableFlag ='off';
@@ -971,7 +961,6 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
         observe_EEGDAT.count_current_eeg=9;
     end
-
 end
 
 

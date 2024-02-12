@@ -595,48 +595,39 @@ varargout{1} = EStudio_box_eeglab_tool;
             Save_file_label = Answer{2};
         end
         ALLEEG_advance = ALLEEG_advance(EEGArray);
-        %         try
+        
         %%Edit the channel locations
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['**Reject data using clean rawdata and ASR**\n']);
         fprintf(['Your current eegset(s):',32,num2str(EEGArray),'\n']);
         try
-            [ALLEEG_advance,LASTCOM] =pop_clean_rawdata(ALLEEG_advance);
+            [EEG,LASTCOM] =pop_clean_rawdata(ALLEEG_advance);
         catch
             erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR: Clean Rawdata tool wasnot included in EEGLAB plugin');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
         if isempty(LASTCOM)
-            %disp('User selected Cancel');
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
         end
         fprintf(LASTCOM,'\n');
-        
         eegh(LASTCOM);
-        EEG = ALLEEG_advance(EEGArray);
         checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
         if Save_file_label && checkfileindex==1
-            %             for Numofeeg = 1:numel(EEGArray)
-            %                 EEG = ALLEEG_advance(Numofeeg);
             [pathstr, file_name, ext] = fileparts(EEG.filename);
             EEG.filename = [file_name,'.set'];
             [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
             EEG = eegh(LASTCOM, EEG);
-            ALLEEG_advance(EEGArray) = EEG;
             eegh(LASTCOM);
-            %             end
         else
-            for Numofeeg = 1:numel(EEGArray)
-                ALLEEG_advance(Numofeeg).filename = '';
-                ALLEEG_advance(Numofeeg).saved = 'no';
-                ALLEEG_advance(Numofeeg).filepath = '';
-            end
+            EEG.filename = '';
+            EEG.saved = 'no';
+            EEG.filepath = '';
         end
         fprintf( ['\n',repmat('-',1,100) '\n']);
         
-        observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = ALLEEG_advance;
+        observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = EEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
@@ -783,9 +774,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             fprintf(LASTCOM,'\n');
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -864,7 +853,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -914,10 +902,8 @@ varargout{1} = EStudio_box_eeglab_tool;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -926,7 +912,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         if observe_EEGDAT.count_current_eeg ~=5
             return;
         end
-        
         if  isempty(observe_EEGDAT.EEG)
             EStduio_eegtab_eeglab_tool.about_eegdata.Enable =  'off';
             EStduio_eegtab_eeglab_tool.edit_eeginfor.Enable=  'off';
@@ -977,7 +962,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.adjust_latency.Enable=  'on';
         observe_EEGDAT.count_current_eeg=6;
     end
-
 end
 
 

@@ -197,6 +197,8 @@ if Values
         DataString{Numoferpset,2} = char(ALLEEG(EEGArray(Numoferpset)).filename);
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
+    handles.uitable1_erpset_table.ColumnEditable(1) = true;
+    handles.uitable1_erpset_table.ColumnEditable(2) = true;
 else
     set(handles.checkbox3_filename_setname,'Enable','off');
     DataString_before = handles.uitable1_erpset_table.Data;
@@ -205,6 +207,8 @@ else
     end
     set(handles.uitable1_erpset_table,'Data',DataString_before);
     set(handles.uitable1_erpset_table,'Enable','on');
+    handles.uitable1_erpset_table.ColumnEditable(1) = true;
+    handles.uitable1_erpset_table.ColumnEditable(2) = false;
 end
 if handles.checkbox2_save_label.Value
     set(handles.uitable1_erpset_table,'Enable','on');
@@ -277,23 +281,23 @@ end
 
 if handles.checkbox3_filename_setname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-
-for Numoferpset = 1:size(DataString_before,1)
-    DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
-    fileName = char(DataString_before{Numoferpset,1});
-    if isempty(fileName)
-        fileName = strcat(num2str(Numoferpset),'.set');
+    
+    for Numoferpset = 1:size(DataString_before,1)
+        DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
+        fileName = char(DataString_before{Numoferpset,1});
+        if isempty(fileName)
+            fileName = strcat(num2str(Numoferpset),'.set');
+        end
+        [pathstr, file_name, ext] = fileparts(fileName);
+        if isempty(file_name)
+            file_name = [num2str(EEGArray(Numoferpset)),'.set'];
+        else
+            file_name = [file_name,'.set'];
+        end
+        DataString{Numoferpset,2} = file_name;
     end
-    [pathstr, file_name, ext] = fileparts(fileName);
-    if isempty(file_name)
-        file_name = [num2str(EEGArray(Numoferpset)),'.set'];
-    else
-        file_name = [file_name,'.set'];
-    end
-    DataString{Numoferpset,2} = file_name;
-end
-
-set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
+    
+    set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 end
 guidata(hObject, handles);
 

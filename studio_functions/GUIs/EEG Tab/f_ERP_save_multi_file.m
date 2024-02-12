@@ -52,6 +52,7 @@ try
     ALLERP  = varargin{1};
     EEGArray = varargin{2};
     suffix = varargin{3};
+    
 catch
     suffix  = '';
     EEGLAB = [];
@@ -62,8 +63,14 @@ catch
     EEGLAB.nbchan = 0;
     ALLERP(1) = EEGLAB;
     EEGArray = 1;
+    
 end
-
+try
+    ERPIndex = varargin{4};
+catch
+    ERPIndex=1;
+end
+handles.ERPIndex = ERPIndex;
 % handles.erpnameor = erpname;
 handles.output = [];
 handles.suffix = suffix;
@@ -87,7 +94,11 @@ set(handles.uitable1_erpset_table,'RowName',cellstr(num2str(EEGArray')));
 handles.uitable1_erpset_table.ColumnEditable(1) = true;
 handles.uitable1_erpset_table.ColumnEditable(2) = false;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix);
+    if ERPIndex==1
+        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix);
+    else
+        DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix);
+    end
     DataString{Numoferpset,2} = '';
 end
 
@@ -197,6 +208,8 @@ if Values
         DataString{Numoferpset,2} = char(ALLERP(EEGArray(Numoferpset)).filename);
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
+    handles.uitable1_erpset_table.ColumnEditable(1) = true;
+    handles.uitable1_erpset_table.ColumnEditable(2) = true;
 else
     set(handles.checkbox3_filename_erpname,'Enable','off');
     DataString_before = handles.uitable1_erpset_table.Data;
@@ -205,6 +218,8 @@ else
     end
     set(handles.uitable1_erpset_table,'Data',DataString_before);
     set(handles.uitable1_erpset_table,'Enable','on');
+    handles.uitable1_erpset_table.ColumnEditable(1) = true;
+    handles.uitable1_erpset_table.ColumnEditable(2) = false;
 end
 if handles.checkbox2_save_label.Value
     set(handles.uitable1_erpset_table,'Enable','on');
@@ -277,23 +292,23 @@ end
 
 if handles.checkbox3_filename_erpname.Value==1
     DataString_before = handles.uitable1_erpset_table.Data;
-
-for Numoferpset = 1:size(DataString_before,1)
-    DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
-    fileName = char(DataString_before{Numoferpset,1});
-    if isempty(fileName)
-        fileName = strcat(num2str(Numoferpset),'.erp');
+    
+    for Numoferpset = 1:size(DataString_before,1)
+        DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
+        fileName = char(DataString_before{Numoferpset,1});
+        if isempty(fileName)
+            fileName = strcat(num2str(Numoferpset),'.erp');
+        end
+        [pathstr, file_name, ext] = fileparts(fileName);
+        if isempty(file_name)
+            file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
+        else
+            file_name = [file_name,'.erp'];
+        end
+        DataString{Numoferpset,2} = file_name;
     end
-    [pathstr, file_name, ext] = fileparts(fileName);
-    if isempty(file_name)
-        file_name = [num2str(EEGArray(Numoferpset)),'.erp'];
-    else
-        file_name = [file_name,'.erp'];
-    end
-    DataString{Numoferpset,2} = file_name;
-end
-
-set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
+    
+    set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 end
 guidata(hObject, handles);
 
@@ -349,7 +364,11 @@ if isempty(pathName)
 end
 
 for Numoferpset = 1:numel(EEGArray)
-    ALLERP(EEGArray(Numoferpset)).erpname = Data_String{Numoferpset,1};
+    if handles.ERPIndex==1
+        ALLERP(EEGArray(Numoferpset)).erpname = Data_String{Numoferpset,1};
+    else
+        ALLERP(EEGArray(Numoferpset)).setname = Data_String{Numoferpset,1};
+    end
     fileName = char(Data_String{Numoferpset,2});
     if isempty(fileName)
         fileName = Data_String{Numoferpset,1};

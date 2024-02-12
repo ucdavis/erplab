@@ -80,33 +80,21 @@ varargout{1} = EStudio_box_EEG_event2bin;
         
         %%----------------cancel and Run---------------------------------
         EStduio_eegtab_EEG_event2bin.reset_Run = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        
         EStduio_eegtab_EEG_event2bin.bdf_cancel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Cancel','callback',@BDF_eeg_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
         EStduio_eegtab_EEG_event2bin.event2bin_advanced = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Advanced','callback',@event2bin_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.KeyPressFcn=  @eeg_event2bin_presskey;
-        
         EStduio_eegtab_EEG_event2bin.bdf_Run = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Run','callback',@eeg_bdf_Run,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.bdf_Run.KeyPressFcn=  @eeg_event2bin_presskey;
-        
-        
         set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 30]);
         estudioworkingmemory('EEGTab_event2bin',0);
     end
 
-
-
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-
-%%-------------------event to bin help-------------------------------------
-%     function event2bin_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Assigning-Events-to-Bins-with-BINLISTER/','-browser');
-%     end
 
 %%-------------------------Edit the BDF file-------------------------------
     function BDF_edit(Source,~)
@@ -256,7 +244,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             packarray = menuBinListGUI(EEG, [], def);
             
             if isempty(packarray)
-%                 disp('User selected Cancel')
+                %                 disp('User selected Cancel')
                 return
             end
             
@@ -431,26 +419,22 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        
-        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_bins');
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray, '_bins');
         if isempty(Answer)
-            beep;
-%             disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
             ALLEEG_advance = Answer{1};
             Save_file_label = Answer{2};
         end
-        
         def  = erpworkingmemory('pop_binlister');
         if isempty(def)
             def = {'' '' '' 0 [] [] 0 0 0 1 0};
         end
         def{1} = bdfileName;
         erpworkingmemory('pop_binlister',def);
-        ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -523,8 +507,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.count_current_eeg=10;
             return;
         end
-        
-        
         EStduio_eegtab_EEG_event2bin.BDF_edit.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'on';
@@ -554,7 +536,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
     end
 
-
 %%--------------press return to execute "Run"----------------------------
     function eeg_event2bin_presskey(hObject, eventdata)
         keypress = eventdata.Key;
@@ -574,9 +555,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
             return;
         end
     end
-
-
-
 
 %%----check if eventlist can be found for each of the selected eegsets-----
     function eventlistFlag = check_evetlist(ALLEEG,EEGArray)

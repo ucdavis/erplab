@@ -154,7 +154,6 @@ varargout{1} = EEG_binepoch_box;
         end
         set(gui_eegtab_binepoch.blc_dt_bp_option_cust, 'Sizes',[160  135]);
         
-        
         %%Cancel and advanced
         gui_eegtab_binepoch.other_option = uiextras.HBox('Parent',gui_eegtab_binepoch.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eegtab_binepoch.other_option,'BackgroundColor',ColorB_def);
@@ -164,20 +163,13 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.apply = uicontrol('Style','pushbutton','Parent',gui_eegtab_binepoch.other_option,...
             'String','Apply','callback',@apply_blc_dt,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_eegtab_binepoch.apply.KeyPressFcn=  @eeg_binepoch_presskey;
-        
         uiextras.Empty('Parent', gui_eegtab_binepoch.other_option);
         set(gui_eegtab_binepoch.other_option, 'Sizes',[15 105  30 105 15]);
         set(gui_eegtab_binepoch.blc_dt,'Sizes',[25 15 25 25 30]);
-        
     end
 %%****************************************************************************************************************************************
 %%*******************   Subfunctions   ***************************************************************************************************
 %%****************************************************************************************************************************************
-
-%%----------------------epoch help-----------------------------------------
-%     function epoch_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Epoching-Bins/','-browser');
-%     end
 
 %%----------------input baseline period defined by user----------------------
     function timerange_edit(Source,~)
@@ -477,14 +469,12 @@ varargout{1} = EEG_binepoch_box;
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_EEG_proces_messg','Extract Bin-Based Epochs (Continuous EEG Only) > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
         gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
         gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
         EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_binepoch.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_binepoch',0);
-        
         
         %%check the time period for the epoch
         EpochRange = str2num(gui_eegtab_binepoch.timerange_edit.String);
@@ -584,7 +574,6 @@ varargout{1} = EEG_binepoch_box;
         %%save the changed parameters to memory file
         erpworkingmemory('pop_epochbin',{EpochRange,BaselineMethod});
         
-        
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
         if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
@@ -593,18 +582,14 @@ varargout{1} = EEG_binepoch_box;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
         
-        FilterMethod = '_be';
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,FilterMethod);
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_be');
         if isempty(Answer)
-            beep;
-            %             disp('User selected Cancel');
             return;
         end
         if ~isempty(Answer{1})
             ALLEEG_advance = Answer{1};
             Save_file_label = Answer{2};
         end
-        
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
@@ -858,7 +843,6 @@ varargout{1} = EEG_binepoch_box;
         estudioworkingmemory('EEGTab_binepoch',0);
         gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
         gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
-        %         EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
         gui_eegtab_binepoch.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
         gui_eegtab_binepoch.timerange_edit.String = '-200 800';

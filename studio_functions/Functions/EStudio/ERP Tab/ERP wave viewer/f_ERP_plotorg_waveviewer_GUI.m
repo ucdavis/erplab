@@ -75,7 +75,7 @@ varargout{1} = box_erpwave_viewer_plotorg;
         if strcmpi(ERPtooltype,'EStudio')
             ERPTab_plotset_pars= estudioworkingmemory('ERPTab_plotset_pars');
             try
-                overlay = ERPTab_plotset_pars{8};
+                overlay = ERPTab_plotset_pars{7};
             catch
                 overlay=0;
             end
