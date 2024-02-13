@@ -650,7 +650,7 @@ varargout{1} = Eegtab_box_avg_erp;
             ALLEEG_advance = Answer{1};
             Save_file_label = Answer{2};
         end
-        
+        ALLERP = [];
         for Numofeeg = 1:numel(EEGArray)
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG_advance(setindex);
@@ -700,15 +700,18 @@ varargout{1} = Eegtab_box_avg_erp;
                 observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
             end
             if Numofeeg==1
+                ALLERP = ERP;
                 eegh(ERPCOM);
+            else
+                ALLERP(length(ALLERP)+1) = ERP;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
             estudioworkingmemory('EEGTab_eeg2erp',1);
         end%%end for loop of subjects
+        feval('dq_trial_rejection',ALLERP,ALLEEG(EEGArray));
         
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
-        
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);

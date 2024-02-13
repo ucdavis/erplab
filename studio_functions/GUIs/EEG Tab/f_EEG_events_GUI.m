@@ -101,7 +101,20 @@ varargout{1} = EStudio_eeg_events_box;
             'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[170 -1]);
         
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30]);
+        %%---------------------Table---------------------------------------
+        EStduio_eegtab_EEG_events.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+        end
+        EStduio_eegtab_EEG_events.table_event = uitable(  ...
+            'Parent'        , EStduio_eegtab_EEG_events.table_title,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {130,130}, ...
+            'ColumnName'    , {'Types','Times'}, ...
+            'RowName'       , [],...
+            'ColumnEditable',[false, false]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 100]);
     end
 
 %%**************************************************************************%%
@@ -934,14 +947,41 @@ varargout{1} = EStudio_eeg_events_box;
         
         EStudio_eeg_events_box.Title = 'EventList';
         EStudio_eeg_events_box.ForegroundColor= [1 1 1];
-        
+        for ii = 1:100
+            dsnamesdef{ii,1} = '';
+            dsnamesdef{ii,2} = '';
+        end
         if ~isempty(observe_EEGDAT.EEG)
             if ndims(observe_EEGDAT.EEG.data) ==3%%Epoched EEG
                 EnableFlag ='off';
             else %%Continuous EEG
                 EnableFlag ='on';
             end
+            eventArray = observe_EEGDAT.EEG.event;
+            if ~isempty(eventArray)
+                if ischar(eventArray(1).type)
+                    allevents = { eventArray.type }';
+                    formateve = 'STRINGS';
+                else
+                    allevents = cellstr(num2str([eventArray.type]'));
+                    formateve = 'NUMERICS';
+                end
+                eventtypes = unique_bc2( allevents );
+                % Summary
+                sortevent = sort(allevents);
+                [tf, indx] = ismember_bc2(eventtypes, sortevent);
+                histo     = diff([0 indx'])';
+                for ii = 1:length(histo)
+                    dsnames{ii,1} = eventtypes{ii};
+                    dsnames{ii,2} = histo(ii);
+                end
+            else
+                dsnames = dsnamesdef;
+            end
+        else
+            dsnames = dsnamesdef;
         end
+        EStduio_eegtab_EEG_events.table_event.Data = dsnames;
         %%Summarize EEG event codes
         EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
         %%Shift EEG event codes

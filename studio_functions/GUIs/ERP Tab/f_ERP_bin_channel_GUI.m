@@ -288,7 +288,7 @@ varargout{1} = EStudio_box_bin_chan;
             Enableflag = 'on';
             %
             %%setting for channels
-            ChannelValue =  estudioworkingmemory('ERP_ChanArray');
+            ChanArray =  estudioworkingmemory('ERP_ChanArray');
             Chanlist = observe_ERPDAT.ERP.chanlocs;
             Chanlist_name{1} = 'All';
             for Numofchan = 1:length(Chanlist)
@@ -297,12 +297,13 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.ElecRange.String=Chanlist_name;
             ERPTab_bin_chan.ElecRange.Min = 1;
             ERPTab_bin_chan.ElecRange.Max = length(Chanlist_name)+1;
-            if isempty(ChannelValue) || any(ChannelValue(:)<=0) || any(ChannelValue(:) >length(Chanlist_name)-1) || numel(ChannelValue) == length(Chanlist_name)-1
+            if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:) >length(Chanlist_name)-1) || numel(ChanArray) == length(Chanlist_name)-1
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
+                 estudioworkingmemory('ERP_ChanArray',ChanArray);
             else
-                ERPTab_bin_chan.ElecRange.Value =ChannelValue+1;
-                ChanArray = ChannelValue;
+                ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
+                ChanArray = ChanArray;
             end
             %
             %%setting for bins
@@ -323,6 +324,7 @@ varargout{1} = EStudio_box_bin_chan;
             if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) >= BinNum
                 BinArray = [1:BinNum];
                 ERPTab_bin_chan.BinRange.Value=1;
+                estudioworkingmemory('ERP_BinArray',BinArray);
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
             end

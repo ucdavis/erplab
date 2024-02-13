@@ -29,7 +29,7 @@
 
 function currvers = eegplugin_erplab(fig, trystrs, catchstrs)
 
-erplab_default_values % script
+erplab_default_values % script erplabver
 currvers  = ['erplab' erplabver];
 
 if nargin < 3

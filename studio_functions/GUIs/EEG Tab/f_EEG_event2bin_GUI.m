@@ -78,6 +78,23 @@ varargout{1} = EStudio_box_EEG_event2bin;
             'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[60 -1 60]);
         
+        
+        
+        %%---------------------Table---------------------------------------
+        EStduio_eegtab_EEG_event2bin.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+            dsnames{ii,3} = '';
+        end
+        EStduio_eegtab_EEG_event2bin.table_event = uitable(  ...
+            'Parent'        , EStduio_eegtab_EEG_event2bin.table_title,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {100,100,100}, ...
+            'ColumnName'    , {'Bin','Description','Times'}, ...
+            'RowName'       , [],...
+            'ColumnEditable',[false, false, false]);
+        
         %%----------------cancel and Run---------------------------------
         EStduio_eegtab_EEG_event2bin.reset_Run = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_event2bin.bdf_cancel = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
@@ -88,7 +105,10 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.bdf_Run = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Run','callback',@eeg_bdf_Run,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.bdf_Run.KeyPressFcn=  @eeg_event2bin_presskey;
-        set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 30]);
+        
+        
+        
+        set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 100 30]);
         estudioworkingmemory('EEGTab_event2bin',0);
     end
 
@@ -507,6 +527,28 @@ varargout{1} = EStudio_box_EEG_event2bin;
             observe_EEGDAT.count_current_eeg=17;
             return;
         end
+        for ii = 1:100
+            dsnamesdef{ii,1} = '';
+            dsnamesdef{ii,2} = '';
+            dsnamesdef{ii,3} = '';
+        end
+        if ~isempty(observe_EEGDAT.EEG) &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+            EEG = observe_EEGDAT.EEG;
+            for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
+                try
+                    dsnames{ii,1} = ['Bin',32,num2str(ii)];
+                    dsnames{ii,2} = EEG.EVENTLIST.bdf(ii).description;
+                    dsnames{ii,3} =EEG.EVENTLIST.trialsperbin(ii);
+                catch
+                    dsnames{ii,1} = '';
+                    dsnames{ii,2} = '';
+                    dsnames{ii,3} ='';
+                end
+            end
+        else
+            dsnames = dsnamesdef;
+        end
+        EStduio_eegtab_EEG_event2bin.table_event.Data = dsnames;
         EStduio_eegtab_EEG_event2bin.BDF_edit.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.BDF_browse.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'on';
