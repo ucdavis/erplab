@@ -763,7 +763,7 @@ varargout{1} = EEG_binepoch_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=10
+        if observe_EEGDAT.count_current_eeg ~=17
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1
@@ -779,6 +779,7 @@ varargout{1} = EEG_binepoch_box;
             else
                 Enable_Label = 'on';
             end
+            EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
         end
         gui_eegtab_binepoch.timerange_edit.Enable = Enable_Label;
         gui_eegtab_binepoch.none.Enable= Enable_Label;
@@ -794,7 +795,7 @@ varargout{1} = EEG_binepoch_box;
         else
             gui_eegtab_binepoch.custom_edit.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg =11;
+        observe_EEGDAT.count_current_eeg =18;
     end
 
 %%--------------press return to execute "Apply"----------------------------

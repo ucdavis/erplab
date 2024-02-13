@@ -869,7 +869,7 @@ varargout{1} = Eegtab_box_art_det_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=12
+        if observe_EEGDAT.count_current_eeg ~=13
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -886,7 +886,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             else
                 Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=13;
+            observe_EEGDAT.count_current_eeg=14;
             return;
         end
         
@@ -927,7 +927,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if isempty(str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String))
             Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
         end
-        observe_EEGDAT.count_current_eeg=13;
+        observe_EEGDAT.count_current_eeg=14;
     end
 
 
@@ -981,7 +981,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             return;
         end
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
-        %         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];

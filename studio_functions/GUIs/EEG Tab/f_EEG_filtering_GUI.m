@@ -1326,7 +1326,7 @@ varargout{1} = EEG_filtering_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=4
+        if observe_EEGDAT.count_current_eeg ~=8
             return;
         end
         
@@ -1341,7 +1341,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.all_chan.Enable = 'off';
             gui_eegtab_filtering.Selected_chan.Enable = 'off';
             gui_eegtab_filtering.cancel.Enable = 'off';
-            observe_EEGDAT.count_current_eeg=5;
+            observe_EEGDAT.count_current_eeg=9;
             return;
         else
             gui_eegtab_filtering.all_chan.Enable = 'on';
@@ -1418,7 +1418,7 @@ varargout{1} = EEG_filtering_box;
             end
         end
         
-        observe_EEGDAT.count_current_eeg=5;
+        observe_EEGDAT.count_current_eeg=9;
     end
 
 
@@ -1486,17 +1486,20 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.lp_halfamp.Enable = 'on';
         gui_eegtab_filtering.hp_tog.Value = 0;
         gui_eegtab_filtering.lp_tog.Value = 1;
-        if observe_EEGDAT.EEG.trials>1
-            gui_eegtab_filtering.DC_remove.Enable = 'off';
-        else
-            gui_eegtab_filtering.DC_remove.Enable = 'on';
+        if ~isempty(observe_EEGDAT.EEG)
+            if observe_EEGDAT.EEG.trials>1
+                gui_eegtab_filtering.DC_remove.Enable = 'off';
+            else
+                gui_eegtab_filtering.DC_remove.Enable = 'on';
+            end
         end
         gui_eegtab_filtering.DC_remove.Value = 0;
         gui_eegtab_filtering.hp_halfamp.String = '0';
         gui_eegtab_filtering.lp_halfamp.String = '30';
         gui_eegtab_filtering.roll_off.Value=2;
-        fs = observe_EEGDAT.EEG.srate;
-        if fs <=0
+        try
+            fs = observe_EEGDAT.EEG.srate;
+        catch
             fs = 256;
         end
         typef = 0;

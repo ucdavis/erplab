@@ -954,8 +954,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.disp_IC.Enable = Enableflag;
         EStduio_gui_EEG_plotset.WinLength_edit.Enable = Enableflag;
         EStduio_gui_EEG_plotset.v_scale_edit.Enable = Enableflag;
-        %         EStduio_gui_EEG_plotset.chanlab_name.Enable = Enableflag;
-        %         EStduio_gui_EEG_plotset.chanlab_numb.Enable = Enableflag;
         EStduio_gui_EEG_plotset.rem_DC.Enable = Enableflag;
         EStduio_gui_EEG_plotset.disp_event.Enable = Enableflag;
         EStduio_gui_EEG_plotset.disp_stack.Enable = Enableflag;
@@ -1078,6 +1076,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
             if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg)) || numel(Winlength)~=1
                 EEG_plotset{3} = floor(Frames/multiplier_winleg);
             end
+        else
+            EEG_plotset{3} =5;
         end
         EStduio_gui_EEG_plotset.WinLength_edit.String = num2str(EEG_plotset{3});
         
@@ -1094,6 +1094,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EEG_plotset{6}=1;
                 EStduio_gui_EEG_plotset.rem_DC.Enable='on';
             end
+        else
+            EEG_plotset{6}=0;
         end
         EStduio_gui_EEG_plotset.rem_DC.Value=EEG_plotset{6};
         

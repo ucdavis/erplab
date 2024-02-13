@@ -35,7 +35,7 @@ EStudio_gui_erp_totl.eegsettingLayout = uiextras.VBox('Parent', EStudio_gui_erp_
 
 % + Create the settings window panels for ERP panel
 EStudio_gui_erp_totl.eegpanel{1} = f_EEG_eeg_sets_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(1) = 430;
+EStudio_gui_erp_totl.eegpanelSizes(1) = 300;
 EStudio_gui_erp_totl.eegpanel{2} = f_EEG_IC_channel_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(2) = 320;
 EStudio_gui_erp_totl.eegpanel{3} = f_EEG_Plot_setting_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);

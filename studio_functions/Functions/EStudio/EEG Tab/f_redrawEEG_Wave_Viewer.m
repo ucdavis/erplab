@@ -139,7 +139,7 @@ set(EStudio_gui_erp_totl.eeg_winsize,'Callback',@EStudiowinsize,'Enable','on');
 set(EStudio_gui_erp_totl.eeg_figurecommand,'Callback',@Show_command,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable',Enableflag);
+set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable','on');
 set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 90 100 100 170 50 5]);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     EEG = observe_EEGDAT.EEG;
@@ -844,16 +844,7 @@ function eeg_paras_reset(~,~)
 global observe_EEGDAT;
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
-if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
-    return;
-else
-    dataindex(1) = 1;
-end
-if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
-    dataindex(2) = 0;
-else
-    dataindex(2) = 1;
-end
+
 
 %%first check if the changed parameters have been applied in any panels
 [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -862,7 +853,7 @@ if ~isempty(messgStr)
 end
 
 erpworkingmemory('f_EEG_proces_messg','Reset parameters for EEG panels');
-app = feval('estudio_reset_paras',[1 0 0 0],dataindex);
+app = feval('estudio_reset_paras',[1 0 0 0]);
 waitfor(app,'Finishbutton',1);
 reset_paras = [0 0 0 0];
 try
@@ -873,7 +864,9 @@ catch
     disp('User selected Cancel');
     return;
 end
-
+if isempty(reset_paras)
+    return;
+end
 observe_EEGDAT.eeg_panel_message=1;
 if reset_paras(2)==1
     EStudio_gui_erp_totl.clear_alleeg = 1;

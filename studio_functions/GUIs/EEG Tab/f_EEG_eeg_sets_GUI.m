@@ -125,7 +125,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115]);
-        set(vBox, 'Sizes', [20 280 25 25 25]);
+        set(vBox, 'Sizes', [20 150 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
     end
 
@@ -144,9 +144,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         
         estudioworkingmemory('EEGTab_eegset',0);
         %         box_eegset_gui.TitleColor= [0.0500    0.2500    0.5000];%% the default is [0.0500    0.2500    0.5000]
-        MessageViewer= char(strcat('EEGsets > Continuous EEG'));
-        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        observe_EEGDAT.eeg_panel_message=1;
+%         MessageViewer= char(strcat('EEGsets > Continuous EEG'));
+%         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+%         observe_EEGDAT.eeg_panel_message=1;
         
         EStduio_eegtab_EEG_set.eeg_contns.Value=1;
         EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
@@ -190,7 +190,6 @@ estudioworkingmemory('Startimes',0);%%set default value
                 observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
                 observe_EEGDAT.CURRENTSET = CURRENTSET;
                 %%save to workspace
-                %         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
                 assignin('base','EEG',observe_EEGDAT.EEG);
                 assignin('base','CURRENTSET',CURRENTSET);
             end
@@ -198,7 +197,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',0);
         observe_EEGDAT.count_current_eeg =2;
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.eeg_panel_message=2;
         whichpanel = [18:22];
         EEGTab_close_open_Panels(whichpanel);
     end
@@ -212,9 +210,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         estudioworkingmemory('EEGTab_eegset',0);
-        MessageViewer= char(strcat('EEGsets > Epoched EEG'));
-        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        observe_EEGDAT.eeg_panel_message=1;
+%         MessageViewer= char(strcat('EEGsets > Epoched EEG'));
+%         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+%         observe_EEGDAT.eeg_panel_message=1;
         
         
         EStduio_eegtab_EEG_set.eeg_contns.Value=0;
@@ -263,7 +261,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',1);
         observe_EEGDAT.count_current_eeg=2;
         f_redrawEEG_Wave_Viewer();
-        observe_EEGDAT.eeg_panel_message=2;
+%         observe_EEGDAT.eeg_panel_message=2;
         
         whichpanel = [11:17];
         EEGTab_close_open_Panels(whichpanel);
@@ -504,7 +502,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.eeg_panel_message=2;
         
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
-            
             whichpanel = [18:22];
         else
             whichpanel = [11:17];

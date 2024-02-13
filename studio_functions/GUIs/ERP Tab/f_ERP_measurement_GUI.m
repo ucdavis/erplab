@@ -1222,7 +1222,6 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
         end
-        observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1340,9 +1339,6 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{2} = str2num(ERPMTops.m_t_erpset.String);
         ERPMTops.Paras{3} = str2num(ERPMTops.m_t_bin.String);
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
-        estudioworkingmemory('selectederpstudio',ERPMTops.Paras{2});
-        estudioworkingmemory('ERP_BinArray',ERPMTops.Paras{3});
-        estudioworkingmemory('ERP_ChanArray',ERPMTops.Paras{4});
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
@@ -1398,7 +1394,6 @@ varargout{1} = erp_measurement_box;
             f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
         end
         erpworkingmemory('ViewerFlag', 0);
-        observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1408,7 +1403,7 @@ varargout{1} = erp_measurement_box;
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
-         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
@@ -1580,23 +1575,26 @@ varargout{1} = erp_measurement_box;
         estudioworkingmemory('ERPTab_mesuretool',0);
         ERPMTops.m_t_type.Value=1;
         Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index) || any(Selectederp_Index> length(observe_ERPDAT.ALLERP))
-            Selectederp_Index =  length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = Selectederp_Index;
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+        if ~isempty(observe_ERPDAT.ALLERP)
+            if isempty(Selectederp_Index) || any(Selectederp_Index> length(observe_ERPDAT.ALLERP))
+                Selectederp_Index =  length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+                observe_ERPDAT.CURRENTERP = Selectederp_Index;
+                estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            end
         end
         ERPMTops.m_t_erpset.String= vect2colon(Selectederp_Index,'Sort','on');%%Dec 20 2022
-        BinArray = estudioworkingmemory('ERP_BinArray');
-        ChanArray =  estudioworkingmemory('ERP_ChanArray');
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
-        if chk(1)==1
+        try
             BinArray =  [1:observe_ERPDAT.ERP.nbin];
+        catch
+            BinArray = [];
         end
+        
         ERPMTops.m_t_bin.String = vect2colon(BinArray);
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
-        if chk(2)==1
+        try
             ChanArray =  [1:observe_ERPDAT.ERP.nchan];
+        catch
+            ChanArray = [];
         end
         ERPMTops.m_t_chan.String = vect2colon(ChanArray);
         ERPMTops.m_t_TW.String = '';

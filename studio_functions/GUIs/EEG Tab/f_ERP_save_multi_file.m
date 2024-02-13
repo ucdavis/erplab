@@ -205,7 +205,10 @@ if Values
     DataString_before = handles.uitable1_erpset_table.Data;
     for Numoferpset = 1:size(DataString_before,1)
         DataString{Numoferpset,1} = DataString_before{Numoferpset,1};
-        DataString{Numoferpset,2} = char(ALLERP(EEGArray(Numoferpset)).filename);
+        fileName = ALLERP(EEGArray(Numoferpset)).filename;
+        [pathstr, file_name, ext] = fileparts(fileName);
+        
+        DataString{Numoferpset,2} = [file_name,'.erp'];
     end
     set(handles.uitable1_erpset_table,'Data',DataString);
     handles.uitable1_erpset_table.ColumnEditable(1) = true;

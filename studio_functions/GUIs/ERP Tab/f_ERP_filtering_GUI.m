@@ -1464,17 +1464,22 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.all_bin_chan.Value = 1;
         gui_erp_filtering.Selected_bin_chan.Value = 0;
         gui_erp_filtering.roll_off.Value=2;
-        fs = observe_ERPDAT.ERP.srate;
+        try
+            fs = observe_ERPDAT.ERP.srate;
+        catch
+            fs = 256;
+        end
         if fs <=0
             fs = 256;
         end
+        
         typef = 0;
         hicutoff = 30;
         locutoff = 0;
         filterorder = 2*gui_erp_filtering.roll_off.Value;
         [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
         gui_erp_filtering.hp_halfpow.String = '---';
-        gui_erp_filtering.lp_halfpow.String = num2str(roundn(frec3dB,-2));;
+        gui_erp_filtering.lp_halfpow.String = num2str(roundn(frec3dB,-2));
         gui_erp_filtering.hp_halfamp.Enable = 'off';
         gui_erp_filtering.lp_halfamp.Enable = 'on';
         gui_erp_filtering.hp_halfamp.String = '0';

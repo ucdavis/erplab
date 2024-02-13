@@ -136,16 +136,6 @@ estudiopath= estudiopath(1:findstr(estudiopath,'estudio.m')-1);
 % add all ERPLAB subfolders
 addpath(genpath(estudiopath));
 
-
-%%-------------------------------------------------------------------------
-%%-----------add path for each folder that contained in EStudio------------
-%%-------------------------------------------------------------------------
-%%Layout Toolbox
-% myaddpath( estudiopath, 'layoutRoot.m',   [ 'GUI Layout Toolbox' filesep 'layout']);
-% myaddpath( estudiopath, 'BoxPanel.m',   [ 'GUI Layout Toolbox' filesep 'layout',filesep,'+uiextras']);
-% myaddpath( estudiopath, 'Box.m',   [ 'GUI Layout Toolbox' filesep 'layout',filesep,'+uix']);
-% myaddpath( estudiopath, 'Container.m',   [ 'GUI Layout Toolbox' filesep 'layout',filesep,'+uix',filesep,'+mixin']);
-
 %%functions
 myaddpath( estudiopath, 'EStudio_EEG_Tab.m',   [ 'Functions' filesep 'EStudio',filesep,'EEG Tab']);
 myaddpath( estudiopath, 'EStudio_ERP_Tab.m',   [ 'Functions' filesep 'EStudio',filesep,'ERP Tab']);
@@ -166,7 +156,7 @@ CURRENTSET = 0;
 assignin('base','EEG',EEG);
 assignin('base','ALLEEG', ALLEEG);
 assignin('base','CURRENTSET', CURRENTSET);
-% assignin('base','ALLCOM', []);
+
 
 observe_EEGDAT.ALLEEG = ALLEEG;
 observe_EEGDAT.CURRENTSET = CURRENTSET;
@@ -228,7 +218,6 @@ f_redrawEEG_Wave_Viewer();
 
 timeElapsed = toc;
 fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
-
 
     function EStudio_gui_erp_totl = createInterface()
         try
@@ -646,5 +635,4 @@ elseif EStudio_gui_erp_totl.context_tabs.Selection==3%% ERP Tab
 else%%EEG Tab
     f_redrawEEG_Wave_Viewer();
 end
-
 end

@@ -2185,27 +2185,42 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.timet_auto.Value=1;
         ERPTab_plotset.timet_low.Enable = 'off';
         ERPTab_plotset.timet_high.Enable = 'off';
-        ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
-        ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
+        try
+            ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
+            ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
+        catch
+            ERPTab_plotset.timet_low.String = '';
+            ERPTab_plotset.timet_high.String = '';
+        end
         ERPTab_plotset.timetick_auto.Value=1;
-        [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
-        ERPTab_plotset.timet_step.String = num2str(xstep);
+        ERPTab_plotset.ytick_auto.Value=1;
         ERPTab_plotset.yscale_auto.Value=1;
-        [def, minydef, maxydef] = default_amp_ticks(observe_ERPDAT.ERP, [1:observe_ERPDAT.ERP.nbin]);
-        minydef = floor(minydef);
-        maxydef = ceil(maxydef);
+        if ~isempty(observe_ERPDAT.ERP)
+            [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)]);
+            ERPTab_plotset.timet_step.String = num2str(xstep);
+            [def, minydef, maxydef] = default_amp_ticks(observe_ERPDAT.ERP, [1:observe_ERPDAT.ERP.nbin]);
+            minydef = floor(minydef);
+            maxydef = ceil(maxydef);
+            ERPTab_plotset.yscale_low.String = num2str(minydef);
+            ERPTab_plotset.yscale_high.String = num2str(maxydef);
+            defyticks = default_amp_ticks_viewer([minydef,maxydef]);
+            defyticks = str2num(defyticks);
+            if ~isempty(defyticks) && numel(defyticks)>=2
+                ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
+            else
+                ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
+            end
+        else
+            xstep = [];
+            ERPTab_plotset.timet_step.String = '';
+            ERPTab_plotset.yscale_low.String = '';
+            ERPTab_plotset.yscale_high.String = '';
+            ERPTab_plotset.yscale_step.String  = '';
+            minydef = [];
+            maxydef = [];
+        end
         ERPTab_plotset.yscale_low.Enable = 'off';
         ERPTab_plotset.yscale_high.Enable = 'off';
-        ERPTab_plotset.yscale_low.String = num2str(minydef);
-        ERPTab_plotset.yscale_high.String = num2str(maxydef);
-        ERPTab_plotset.ytick_auto.Value=1;
-        defyticks = default_amp_ticks_viewer([minydef,maxydef]);
-        defyticks = str2num(defyticks);
-        if ~isempty(defyticks) && numel(defyticks)>=2
-            ERPTab_plotset.yscale_step.String = num2str(min(diff(defyticks)));
-        else
-            ERPTab_plotset.yscale_step.String = num2str(floor((Yscales_high-Yscales_low)/2));
-        end
         ERPTab_plotset.yscale_step.Enable = 'off';
         ERPTab_plotset.positive_up.Value =1;
         ERPTab_plotset.negative_up.Value = 0;
@@ -2223,27 +2238,40 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.gridlayout_import.Enable ='off';
         ERPTab_plotset.rowNum_set.Enable ='off';
         ERPTab_plotset.columns.Enable ='off';
-        ERPTab_plotset_pars{1} = [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)];
+        try
+            ERPTab_plotset_pars{1} = [observe_ERPDAT.ERP.times(1),observe_ERPDAT.ERP.times(end)];
+        catch
+            ERPTab_plotset_pars{1} = [];
+        end
         ERPTab_plotset_pars{2} = xstep;
         ERPTab_plotset_pars{3} = [minydef,maxydef];
         ERPTab_plotset_pars{4} = str2num(ERPTab_plotset.yscale_step.String);
         ERPTab_plotset_pars{6} =ERPTab_plotset.positive_up.Value;
         ERPTab_plotset_pars{7} =0;
-        ChanArray = [1:observe_ERPDAT.ERP.nchan];
+        try
+            ChanArray = [1:observe_ERPDAT.ERP.nchan];
+        catch
+            ChanArray = 1;
+        end
         rowNum = ceil(sqrt(numel(ChanArray)));
         ERPTab_plotset.rowNum_set.Value=rowNum;
         ERPTab_plotset.columns.Value =ceil(numel(ChanArray)/rowNum);
         gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
-        [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
-        count = 0;
-        for ii = 1:ERPTab_plotset.rowNum_set.Value
-            for jj = 1:ERPTab_plotset.columns.Value
-                count = count+1;
-                if count>numel(ChanArray)
-                    break;
+        if ~isempty(observe_ERPDAT.ERP)
+            [~, labelsdef, ~, ~, ~] = readlocs(observe_ERPDAT.ERP.chanlocs);
+            count = 0;
+            for ii = 1:ERPTab_plotset.rowNum_set.Value
+                for jj = 1:ERPTab_plotset.columns.Value
+                    count = count+1;
+                    if count>numel(ChanArray)
+                        break;
+                    end
+                    gridlayputarraydef{ii,jj} = labelsdef{count};
                 end
-                gridlayputarraydef{ii,jj} = labelsdef{count};
             end
+        else
+            gridlayputarraydef = [];
+            labelsdef = [];
         end
         ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         ERPTab_plotset_pars{5} =ERPTab_plotset.columns.Value;

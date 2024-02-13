@@ -132,7 +132,7 @@ EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Sty
 EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Create Static/Exportable Plot',...
     'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
-    'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
+    'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 
 uiextras.Empty('Parent', commandfig_panel); % 1A
 set(commandfig_panel, 'Sizes', [70 50 70 -1 160 -1 90 100 100 170 50  5]);
@@ -743,19 +743,11 @@ function erptab_reset(~,~)
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 global observe_EEGDAT;
-if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
-    return;
-else
-    dataindex(2) = 1;
-end
-if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.ALLEEG)
-    dataindex(1) = 1;
-else
-    dataindex(1) = 0;
-end
+
+
 MessageViewer= char(strcat('Reset parameters for ERP panels '));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-app = feval('estudio_reset_paras',[0 0 1 0],dataindex);
+app = feval('estudio_reset_paras',[0 0 1 0]);
 waitfor(app,'Finishbutton',1);
 reset_paras = [0 0 0 0];
 try
@@ -766,7 +758,9 @@ catch
     disp('User selected Cancel');
     return;
 end
-
+if isempty(reset_paras)
+    return;
+end
 %%---------------------------EEG Tab---------------------------------------
 if reset_paras(2)==1
     EStudio_gui_erp_totl.clear_alleeg = 1;

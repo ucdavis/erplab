@@ -780,7 +780,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         erpworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-
+        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
@@ -1120,7 +1120,7 @@ varargout{1} = box_interpolate_chan_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=17
+        if observe_EEGDAT.count_current_eeg ~=9
             return;
         end
         if  isempty(observe_EEGDAT.EEG)
@@ -1138,7 +1138,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_run.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.cancel.Enable='off';
-            observe_EEGDAT.count_current_eeg=18;
+            observe_EEGDAT.count_current_eeg=10;
             return;
         end
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.Enable ='on';
@@ -1166,7 +1166,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value = 0;
             Eegtab_EEG_interpolate_chan_epoch.Parameters{6} =  Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value ;
         end
-        observe_EEGDAT.count_current_eeg=18;
+        observe_EEGDAT.count_current_eeg=10;
     end
 
 %%-----------------------------cancel--------------------------------------
@@ -1255,7 +1255,6 @@ varargout{1} = box_interpolate_chan_epoch;
             return;
         end
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
-        %         box_interpolate_chan_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_interpolate_chan_epoch.cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_interpolate_chan_epoch.cancel.ForegroundColor = [0 0 0];
         Eegtab_EEG_interpolate_chan_epoch.interpolate_run.BackgroundColor =  [1 1 1];
@@ -1269,12 +1268,14 @@ varargout{1} = box_interpolate_chan_epoch;
         Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
         Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value= 1;
         Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value=0;
-        if observe_EEGDAT.EEG.trials ==1%%Force the "interpolate marked epochs" to be grayed out.
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
-        else
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
-            Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
+        if ~isempty(observe_EEGDAT.EEG)
+            if observe_EEGDAT.EEG.trials ==1%%Force the "interpolate marked epochs" to be grayed out.
+                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
+                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='off';
+            else
+                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
+                Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
+            end
         end
         observe_EEGDAT.Reset_eeg_paras_panel=16;
     end

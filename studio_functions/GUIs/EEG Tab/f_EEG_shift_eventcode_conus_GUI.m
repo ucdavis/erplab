@@ -596,7 +596,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=14
+        if observe_EEGDAT.count_current_eeg ~=11
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
@@ -613,7 +613,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             else
                 Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=15;
+            observe_EEGDAT.count_current_eeg=12;
             return;
         end
         
@@ -653,7 +653,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
         end
-        observe_EEGDAT.count_current_eeg=15;
+        observe_EEGDAT.count_current_eeg=12;
     end
 
 
