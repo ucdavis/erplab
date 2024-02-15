@@ -378,10 +378,20 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         if (~isempty(ALLEEGIN) && CURRENTEEGIN~=0 && ~isempty(observe_EEGDAT.EEG)) || (isfield(observe_EEGDAT.EEG,'chanlocs') && ~isempty(observe_EEGDAT.EEG.chanlocs))
             %The channels and bins will be modified if the ERPset is changed
             ChannelValue =  EStduio_eegtab_EEG_IC_chan.ElecRange.Value-1;
-            Chanlist = observe_EEGDAT.EEG.chanlocs;
+            try
+                Chanlist = observe_EEGDAT.EEG.chanlocs;
+            catch
+                Chanlist = [];
+            end
             Chanlist_name{1} = 'All';
-            for Numofchan = 1:length(Chanlist)
-                Chanlist_name{Numofchan+1,1} = strcat(num2str(Numofchan),'.',32,char(Chanlist(Numofchan).labels));
+            if ~isempty(Chanlist)
+                for Numofchan = 1:length(Chanlist)
+                    Chanlist_name{Numofchan+1,1} = strcat(num2str(Numofchan),'.',32,char(Chanlist(Numofchan).labels));
+                end
+            else
+                for Numofchan = 1:size( observe_EEGDAT.EEG.data,1)
+                    Chanlist_name{Numofchan+1,1} = strcat(num2str(Numofchan),'. chan', num2str(Numofchan));
+                end
             end
             EStduio_eegtab_EEG_IC_chan.ElecRange.String=Chanlist_name;
             EStduio_eegtab_EEG_IC_chan.ElecRange.Min = 1;
@@ -508,7 +518,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         estudioworkingmemory('EEGTab_chanic',0);
         EStduio_eegtab_EEG_IC_chan.plot_apply.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_apply.ForegroundColor = [0 0 0];
-%         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];
+        %         EStudio_eeg_box_ic_chan.TitleColor= [0.0500    0.2500    0.5000];
         EStduio_eegtab_EEG_IC_chan.plot_reset.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_IC_chan.plot_reset.ForegroundColor = [0 0 0];
         observe_EEGDAT.Reset_eeg_paras_panel=3;

@@ -605,7 +605,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if observe_EEGDAT.count_current_eeg ~=6
             return;
         end
-        if  isempty(observe_EEGDAT.EEG)
+        if  isempty(observe_EEGDAT.EEG) || (~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.chanlocs))
             EStduio_eegtab_EEG_edit_chan.mode_modify.Enable ='off';
             EStduio_eegtab_EEG_edit_chan.mode_create.Enable = 'off';
             EStduio_eegtab_EEG_edit_chan.delete_chan.Enable='off';

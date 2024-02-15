@@ -112,12 +112,6 @@ varargout{1} = EStudio_box_eeglab_tool;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
-%%---------------------------------eeglab tool-----------------------------
-%     function eeglabtool_help(~,~)
-%         web('https://eeglab.org/tutorials/','-browser');
-%     end
-
 %%-----------------------About the current EEG-----------------------------
     function about_eegdata(Source,~)
         if isempty(observe_EEGDAT.EEG)
@@ -136,7 +130,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset: Only only for one selected dataset');
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset: Only for one selected dataset');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
             return;
@@ -192,8 +186,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         Editsetsuffix = '_eeginfo';
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
-            beep;
-            %%disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -287,8 +279,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         Editsetsuffix = '_evetvalue';
         Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -380,7 +370,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        
         %%CHECK THE DATA FIRST is two or more eegsets were selected
         if numel(EEGArray)>1
             fprintf( [repmat('-',1,100) '\n']);
@@ -399,8 +388,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         Editsetsuffix = '_chanlos';
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,Editsetsuffix);
         if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
             return;
         end
         Save_file_label =0;
@@ -409,30 +396,26 @@ varargout{1} = EStudio_box_eeglab_tool;
             Save_file_label = Answer{2};
         end
         ALLEEG_advance = ALLEEG_advance(EEGArray);
-        %         try
         %%Edit the channel locations
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf(['Edit the channel locations for eegset(s):',32,num2str(EEGArray),'\n']);
         [ALLEEG_advance, chaninfo, urchans, comlast] =pop_chanedit(ALLEEG_advance);
-        
         if Save_file_label
-            for Numofeeg = 1:numel(EEGArray)
-                EEG = ALLEEG_advance(Numofeeg);
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
-                if checkfileindex==1
-                    [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                    EEG = eegh(LASTCOM, EEG);
-                end
-                ALLEEG_advance(Numofeeg) = EEG;
+            EEG = ALLEEG_advance;
+            [pathstr, file_name, ext] = fileparts(EEG.filename);
+            EEG.filename = [file_name,'.set'];
+            checkfileindex = checkfilexists([EEG.filepath,filesep, EEG.filename]);
+            if checkfileindex==1
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
             end
+            ALLEEG_advance = EEG;
+            
         else
-            for Numofeeg = 1:numel(EEGArray)
-                ALLEEG_advance(Numofeeg).filename = '';
-                ALLEEG_advance(Numofeeg).saved = 'no';
-                ALLEEG_advance(Numofeeg).filepath = '';
-            end
+            ALLEEG_advance.filename = '';
+            ALLEEG_advance.saved = 'no';
+            ALLEEG_advance.filepath = '';
+            
         end
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1:length(observe_EEGDAT.ALLEEG)+numel(EEGArray)) = ALLEEG_advance;
@@ -835,7 +818,7 @@ varargout{1} = EStudio_box_eeglab_tool;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
         end
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -880,7 +863,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);

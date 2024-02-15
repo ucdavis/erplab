@@ -580,7 +580,7 @@ varargout{1} = ERP_simulation_box;
             'String','Cancel','callback',@simulation_cancel,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_simulation.other_option);
         gui_erp_simulation.apply = uicontrol('Style','pushbutton','Parent',gui_erp_simulation.other_option,...
-            'String','Apply','callback',@simulation_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Create ERPset','callback',@simulation_apply,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_erp_simulation.other_option);
         set(gui_erp_simulation.other_option, 'Sizes',[15 105  30 105 15]);
         set(gui_erp_simulation.bsfun_box, 'Sizes',[200 20 25 25 25 25 20 25 25 25 20 25 25 25 25 25 25 25 20 25 25 25 25 25]);
@@ -2076,56 +2076,51 @@ varargout{1} = ERP_simulation_box;
         gui_erp_simulation.Paras{25} = str2num(gui_erp_simulation.white_amp.String);
         gui_erp_simulation.Paras{26} = gui_erp_simulation.pink_op.Value;
         gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
-        try
-            ALLERP = [];
-            [ERP, ERPCOM] =  pop_ERP_simulation(ALLERP,BasFuncName,'EpochStart',EpochStart,'EpochStop',EpochStop,'Srate',Srate,'BasPeakAmp',BasPeakAmp,'MeanLatencyOnset',MeanLatOnset,'SDOffset',SDOffset,...
-                'ExGauTau',ExGauTau,'SinoiseAmp',SinoiseAmp,'SinoiseFre',SinoiseFre,'WhiteAmp',WhiteAmp,'PinkAmp',PinkAmp,'NewnoiseFlag',NewnoiseFlag,'Saveas', 'off','History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            
-            Answer = f_ERP_save_single_file(strcat(ERP.erpname),ERP.filename,length(observe_ERPDAT.ALLERP)+1);
-            if isempty(Answer)
-                beep;
-                return;
-            end
-            if ~isempty(Answer)
-                ERPName = Answer{1};
-                if ~isempty(ERPName)
-                    ERP.erpname = ERPName;
-                end
-                fileName_full = Answer{2};
-                if isempty(fileName_full)
-                    ERP.filename = ERP.erpname;
-                elseif ~isempty(fileName_full)
-                    [pathstr, file_name, ext] = fileparts(fileName_full);
-                    ext = '.erp';
-                    if strcmp(pathstr,'')
-                        pathstr = cd;
-                    end
-                    ERP.filename = [file_name,ext];
-                    ERP.filepath = pathstr;
-                    %%----------save the current sdata as--------------------
-                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                end
-            end
-            assignin('base','ALLERPCOM',ALLERPCOM);
-            assignin('base','ERPCOM',ERPCOM);
-            if isempty(observe_ERPDAT.ALLERP)
-                observe_ERPDAT.ALLERP = ERP;
-            else
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
-            end
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
-            erpworkingmemory('ERP_simulation',1);
-            observe_ERPDAT.Count_currentERP = 1;
-            observe_ERPDAT.Process_messg =2;
-        catch
-            observe_ERPDAT.Process_messg =3;
-            observe_ERPDAT.Count_currentERP = 1;
+        ALLERP = [];
+        [ERP, ERPCOM] =  pop_ERP_simulation(ALLERP,BasFuncName,'EpochStart',EpochStart,'EpochStop',EpochStop,'Srate',Srate,'BasPeakAmp',BasPeakAmp,'MeanLatencyOnset',MeanLatOnset,'SDOffset',SDOffset,...
+            'ExGauTau',ExGauTau,'SinoiseAmp',SinoiseAmp,'SinoiseFre',SinoiseFre,'WhiteAmp',WhiteAmp,'PinkAmp',PinkAmp,'NewnoiseFlag',NewnoiseFlag,'Saveas', 'off','History', 'gui');
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+        
+        Answer = f_ERP_save_single_file(strcat(ERP.erpname),ERP.filename,length(observe_ERPDAT.ALLERP)+1);
+        if isempty(Answer)
+            beep;
             return;
         end
+        if ~isempty(Answer)
+            ERPName = Answer{1};
+            if ~isempty(ERPName)
+                ERP.erpname = ERPName;
+            end
+            fileName_full = Answer{2};
+            if isempty(fileName_full)
+                ERP.filename = ERP.erpname;
+            elseif ~isempty(fileName_full)
+                [pathstr, file_name, ext] = fileparts(fileName_full);
+                ext = '.erp';
+                if strcmp(pathstr,'')
+                    pathstr = cd;
+                end
+                ERP.filename = [file_name,ext];
+                ERP.filepath = pathstr;
+                %%----------save the current sdata as--------------------
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+        end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        if isempty(observe_ERPDAT.ALLERP)
+            observe_ERPDAT.ALLERP = ERP;
+        else
+            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+        end
+        observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        estudioworkingmemory('selectederpstudio',observe_ERPDAT.CURRENTERP);
+        erpworkingmemory('ERP_simulation',1);
+        observe_ERPDAT.Count_currentERP = 1;
+        observe_ERPDAT.Process_messg =2;
+        
         observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 

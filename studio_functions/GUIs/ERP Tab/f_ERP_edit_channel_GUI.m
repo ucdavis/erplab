@@ -567,7 +567,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
-        if  isempty(observe_ERPDAT.ERP) || ViewerFlag==1
+        if  isempty(observe_ERPDAT.ERP) || ViewerFlag==1 || (~isempty(observe_ERPDAT.ERP) && isempty(observe_ERPDAT.ERP.chanlocs))
             ERP_tab_edit_chan.mode_modify.Enable ='off';
             ERP_tab_edit_chan.mode_create.Enable = 'off';
             ERP_tab_edit_chan.delete_chan.Enable='off';

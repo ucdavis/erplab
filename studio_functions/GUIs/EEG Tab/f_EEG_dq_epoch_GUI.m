@@ -1,4 +1,4 @@
-%%This function is to compute Data Quality Metrics (Epoched EEG Only).
+%%This function is to compute Data Quality Metrics (Epoched EEG).
 
 
 % *** This function is part of ERPLAB Studio Toolbox ***
@@ -24,13 +24,13 @@ EEG_dq_epoch = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics (Epoched EEG Only)',...
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics (Epoched EEG Only)', ...
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics (Epoched EEG)', ...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics (Epoched EEG Only)',...
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics (Epoched EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @dq_help
 end
 
@@ -353,7 +353,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if ~isempty(messgStr) && eegpanelIndex~=16
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Data Quality Metrics (Epoched EEG Only) > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Data Quality Metrics (Epoched EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
@@ -423,7 +423,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if ~isempty(messgStr) && eegpanelIndex~=16
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Data Quality Metrics (Epoched EEG Only) > Shift events');
+        erpworkingmemory('f_EEG_proces_messg','Data Quality Metrics (Epoched EEG) > Shift events');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
@@ -552,7 +552,7 @@ varargout{1} = Eegtab_box_dq_epoch;
                 setindex =EEGArray(Numofeeg);
                 EEG = ALLEEG(setindex);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Data Quality Metrics (Epoched EEG Only) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+                fprintf(['*Data Quality Metrics (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
                 fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
                 
                 %% Run the pop_ command with the user input from the GUI

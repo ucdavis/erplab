@@ -255,7 +255,7 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','Advanced','callback',@apply_advanced,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         gui_erp_scalp_map.run = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
-            'String','Apply','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Plot','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_scalp_map.ERPscalpops,'Sizes',[20,25,25,25 55 20 30 25 20 25 30 30]);
         
         estudioworkingmemory('ERPTab_topos',0);
@@ -1230,58 +1230,54 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         ERPTab_plotscalp{7} = gui_erp_scalp_map.map_extras_view_ops.Value;
         ERPTab_plotscalp{8} =gui_erp_scalp_map.map_extras_cmap_ops.Value ;
-        ERPTab_plotscalp{9}=gui_erp_scalp_map.map_extras_cmapb_disp.Valu;
+        ERPTab_plotscalp{9}=gui_erp_scalp_map.map_extras_cmapb_disp.Value;
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
         
         
         ALLERPCOM = evalin('base','ALLERPCOM');
-        try
-            for Numofselcerp = 1:numel(Selected_erpset)
-                ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
-                if strcmpi(mtype, '3d')
-                    if isempty(ERP.splinefile) && isempty(splineinfo.path)
-                        msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.\n'...
-                            'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
-                        erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                        observe_ERPDAT.Process_messg =4;
-                        return;
-                    elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
-                        %if splineinfo.new==1
-                        headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                    elseif ~isempty(ERP.splinefile) && ~isempty(splineinfo.path)
-                        headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                        splinefile = splineinfo.path;
-                    else
-                        %disp('C')
-                        splinefile = ERP.splinefile;
-                        headplot('setup', ERP.chanlocs, splinefile);
-                    end
+        for Numofselcerp = 1:numel(Selected_erpset)
+            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
+            if strcmpi(mtype, '3d')
+                if isempty(ERP.splinefile) && isempty(splineinfo.path)
+                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.\n'...
+                        'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
+                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
+                    observe_ERPDAT.Process_messg =4;
+                    return;
+                elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
+                    %if splineinfo.new==1
+                    headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+                elseif ~isempty(ERP.splinefile) && ~isempty(splineinfo.path)
+                    headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+                    splinefile = splineinfo.path;
                 else
-                    %splinefile = '';
+                    %disp('C')
                     splinefile = ERP.splinefile;
-                    if strcmpi(mtype, '3d')
-                        headplot('setup', ERP.chanlocs, splinefile);
-                    end
-                    %disp('D')
+                    headplot('setup', ERP.chanlocs, splinefile);
                 end
-                if isempty(binArray)
-                    binArray = [1:ERP.nbin];
+            else
+                %splinefile = '';
+                splinefile = ERP.splinefile;
+                if strcmpi(mtype, '3d')
+                    headplot('setup', ERP.chanlocs, splinefile);
                 end
-                [ERP, ERPCOM] = pop_scalplot(ERP, binArray, latencyArray, 'Value', measurestr, 'Blc', baseline, 'Maplimit', maplimit, 'Colorbar', colorbari,...
-                    'Colormap', cmap,'Animated', ismoviexx, 'AdjustFirstFrame', aff, 'FPS', FPS, 'Filename', fullgifname, 'Legend', mapleg, 'Electrodes', showelecx,...
-                    'Position', posfig, 'Maptype', mtype, 'Mapstyle', smapstyle, 'Plotrad', mplotrad,'Mapview', mapview, 'Splinefile', splinefile,...
-                    'Maximize', maxim, 'Electrodes3d', elec3D,'History', 'gui');
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                pause(0.1);
+                %disp('D')
             end
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-            assignin('base','ALLERPCOM',ALLERPCOM);
-            assignin('base','ERPCOM',ERPCOM);
-            observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
-        catch
-            observe_ERPDAT.Process_messg =3; %%Marking for the procedure has been started.
-            return;
+            if isempty(binArray)
+                binArray = [1:ERP.nbin];
+            end
+            [ERP, ERPCOM] = pop_scalplot(ERP, binArray, latencyArray, 'Value', measurestr, 'Blc', baseline, 'Maplimit', maplimit, 'Colorbar', colorbari,...
+                'Colormap', cmap,'Animated', ismoviexx, 'AdjustFirstFrame', aff, 'FPS', FPS, 'Filename', fullgifname, 'Legend', mapleg, 'Electrodes', showelecx,...
+                'Position', posfig, 'Maptype', mtype, 'Mapstyle', smapstyle, 'Plotrad', mplotrad,'Mapview', mapview, 'Splinefile', splinefile,...
+                'Maximize', maxim, 'Electrodes3d', elec3D,'History', 'gui');
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            pause(0.1);
         end
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
+        
     end
 
 %%---------------------Run-------------------------------------------------
@@ -1579,14 +1575,6 @@ varargout{1} = ERP_plot_scalp_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
-    end
-
-
-
-
-%%----------------------help-----------------------------------------------
-    function scap_help(~,~)%% It seems that it can be ignored
-        web('https://github.com/lucklab/erplab/wiki/Topographic-Mapping','-browser');
     end
 
 

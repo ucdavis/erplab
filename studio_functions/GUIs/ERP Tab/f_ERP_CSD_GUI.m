@@ -49,13 +49,6 @@ varargout{1} = ERP_CSD_gui;
         %%--------------------channel and bin setting----------------------
         gui_erp_CSD.DataSelBox = uiextras.VBox('Parent', ERP_CSD_gui,'BackgroundColor',ColorB_def);
         
-        %%Display the lacations of electrodes: may use other function to
-        %%replace current one.
-        %       gui_erp_CSD.erp_h_erp = uicontrol('Style','radiobutton','Parent', gui_erp_CSD.erp_history_title,'String','ERP','callback',@ERP_H_ERP,'Value',0); % 2F
-        gui_erp_CSD.erp_history_table = uiextras.HBox('Parent', gui_erp_CSD.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_CSD.erp_h_erp    =  axes( 'Parent', gui_erp_CSD.erp_history_table, 'ActivePositionProperty', 'Position');
-        set( gui_erp_CSD.erp_h_erp,'xticklabel', [], 'yticklabel', []);
-        
         %%Parameters
         gui_erp_CSD.sif_title = uiextras.HBox('Parent', gui_erp_CSD.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_CSD.sif_text = uicontrol('Style','text','Parent', gui_erp_CSD.sif_title,...
@@ -87,58 +80,23 @@ varargout{1} = ERP_CSD_gui;
         
         %%-----------------Run---------------------------------------------
         gui_erp_CSD.run_title = uiextras.HBox('Parent', gui_erp_CSD.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_erp_CSD.run_title);
+        uiextras.Empty('Parent',  gui_erp_CSD.run_title); 
+        gui_erp_CSD.cancel= uicontrol('Style','pushbutton','Parent', gui_erp_CSD.run_title ,'Enable',Enable_label,...
+            'String','Cancel','callback',@tool_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
+         uiextras.Empty('Parent',  gui_erp_CSD.run_title); 
         gui_erp_CSD.run = uicontrol('Style','pushbutton','Parent',gui_erp_CSD.run_title,...
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_CSD.run_title);
-        set(gui_erp_CSD.run_title,'Sizes',[85 90 85]);
-        
-        gui_erp_CSD.location_title = uiextras.HBox('Parent', gui_erp_CSD.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_CSD.cancel= uicontrol('Style','pushbutton','Parent',gui_erp_CSD.location_title,'Enable',Enable_label,...
-            'String','Cancel','callback',@tool_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
-        gui_erp_CSD.location = uicontrol('Style','pushbutton','Parent',gui_erp_CSD.location_title,...
-            'String','Expand Locations','callback',@CSD_undock_loct,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Enable',Enable_label); % 2F
-        set(gui_erp_CSD.DataSelBox,'Sizes',[230,40,40,40,30,30]);
-        
+        set(gui_erp_CSD.run_title,'Sizes',[15 105  30 105 15]);
+        set(gui_erp_CSD.DataSelBox,'Sizes',[40,40,40,30]);
         estudioworkingmemory('ERPTab_csd',0);
     end
-
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-%%---------------------CSD tool link-------------------------------------
-%     function tool_link(~,~)
-%         web('https://github.com/lucklab/erplab/wiki/Current-Source-Density-(CSD)-tool','-browser');
-%     end
 
 
-    function CSD_undock_loct(~,~)
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=8
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
-        end
-        
-        csd_chan_locations;
-        gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
-        gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
-        gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
-        
-        gui_erp_CSD.run.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.run.ForegroundColor = [0 0 0];
-        ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-        gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        gui_erp_CSD.location.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.location.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_csd',0);
-    end
 %%-------------------Setting value for Spline interpolation flexibility m-constant value----------------
     function csd_sif(source,~)
         if isempty(observe_ERPDAT.ERP)
@@ -155,8 +113,6 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_CSD.cancel.ForegroundColor = [1 1 1];
-        gui_erp_CSD.location.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_erp_CSD.location.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_csd',1);
         
         mcont = str2num(source.String);
@@ -184,8 +140,6 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_CSD.cancel.ForegroundColor = [1 1 1];
-        gui_erp_CSD.location.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_erp_CSD.location.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_csd',1);
         
         mcont = str2num(source.String);
@@ -213,10 +167,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_CSD.cancel.ForegroundColor = [1 1 1];
-        gui_erp_CSD.location.BackgroundColor =  [0.5137    0.7569    0.9176];
-        gui_erp_CSD.location.ForegroundColor = [1 1 1];
         estudioworkingmemory('ERPTab_csd',1);
-        
         mcont = str2num(source.String);
         if isempty(mcont) || numel(mcont)~=1
             gui_erp_CSD.hr_num.String='10';
@@ -256,13 +207,9 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        gui_erp_CSD.location.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.location.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_csd',0);
         
-        
         %%---------------------Compute CSD for each ERPset----------------
-        
         erpworkingmemory('f_ERP_proces_messg','Convert Voltage to CSD');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ALLERPCOM = evalin('base','ALLERPCOM');
@@ -283,19 +230,11 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
         gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
         
-        
         %%Loop for the selcted ERPsets
         for  Numofselectederp = 1:numel(Selectederp_Index)
             ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
             [ERP, ERPCOM] = pop_currentsourcedensity(ERP);
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            %%display the loctions of electrodes for each selected ERPsets.
-            path_to_pic = which('CSD_elec_plot.png');
-            if numel(path_to_pic) ~= 0     % iff a path to the pic exists, show it
-                myImage = imread('CSD_elec_plot.png');
-                imshow(myImage,'Parent',gui_erp_CSD.erp_h_erp);
-            end
-            
             observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;%%Save the transformed ERPset
             if Save_file_label==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
@@ -339,8 +278,6 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        gui_erp_CSD.location.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.location.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_csd',0);
     end
 
@@ -362,7 +299,6 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.sif_num.Enable = Enable_label;
         gui_erp_CSD.scl_num.Enable = Enable_label;
         gui_erp_CSD.hr_num.Enable = Enable_label;
-        gui_erp_CSD.location.Enable = Enable_label;
         gui_erp_CSD.cancel.Enable = Enable_label;
         observe_ERPDAT.Count_currentERP=10;
     end
@@ -384,8 +320,6 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        gui_erp_CSD.location.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.location.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_csd',0);
     end
 
@@ -403,8 +337,6 @@ varargout{1} = ERP_CSD_gui;
             ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
             gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
             gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-            gui_erp_CSD.location.BackgroundColor =  [1 1 1];
-            gui_erp_CSD.location.ForegroundColor = [0 0 0];
             estudioworkingmemory('ERPTab_csd',0);
         else
             return;
@@ -421,11 +353,7 @@ varargout{1} = ERP_CSD_gui;
         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        gui_erp_CSD.location.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.location.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_csd',0);
-        %         gui_erp_CSD.erp_h_erp    =  axes( 'Parent', gui_erp_CSD.erp_history_table, 'ActivePositionProperty', 'Position');
-        set( gui_erp_CSD.erp_h_erp,'xticklabel', [], 'yticklabel', []);
         gui_erp_CSD.sif_num.String = '4';
         gui_erp_CSD.scl_num.String = '0.00001';
         gui_erp_CSD.hr_num.String = '10';

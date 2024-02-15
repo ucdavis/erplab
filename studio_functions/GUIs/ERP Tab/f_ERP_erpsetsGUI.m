@@ -125,50 +125,45 @@ varargout{1} = box_erpset_gui;
         ChanArray= estudioworkingmemory('ERP_ChanArray');
         BinArray= estudioworkingmemory('ERP_BinArray');
         
-        try
-            for Numofselecterp = 1:numel(SelectedERP)
-                New_ERP = observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp));
-                
-                New_ERP.filename = '';
-                New_ERP.erpname = char(strcat(New_ERP.erpname, '_Duplicated'));
-                if isempty(BinArray) || any(BinArray(:)>New_ERP.nbin) || any(BinArray<=0)
-                    BinArray = [1:New_ERP.nbin];
-                end
-                if isempty(ChanArray) || any(ChanArray(:)>New_ERP.nchan) || any(ChanArray(:)<=0)
-                    ChanArray  = [1:New_ERP.nchan];
-                end
-                New_ERP = f_ERP_duplicate(New_ERP,length(observe_ERPDAT.ALLERP),BinArray,ChanArray);
-                if isempty(New_ERP)
-                    beep;
-                    disp('User selected cancal!');
-                    return;
-                end
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = New_ERP;
-                ERPlistName =  getERPsets();
-                %%Reset the display in ERPset panel
-                ERPsetops.butttons_datasets.String = ERPlistName;
-                ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        for Numofselecterp = 1:numel(SelectedERP)
+            New_ERP = observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp));
+            
+            New_ERP.filename = '';
+            New_ERP.erpname = char(strcat(New_ERP.erpname, '_Duplicated'));
+            if isempty(BinArray) || any(BinArray(:)>New_ERP.nbin) || any(BinArray<=0)
+                BinArray = [1:New_ERP.nbin];
             end
-            try
-                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1:length(observe_ERPDAT.ALLERP)];
-                ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1;
-            catch
-                Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
-                ERPsetops.butttons_datasets.Value =  Selected_ERP_afd;
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+            if isempty(ChanArray) || any(ChanArray(:)>New_ERP.nchan) || any(ChanArray(:)<=0)
+                ChanArray  = [1:New_ERP.nchan];
             end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            SelectedERP =Selected_ERP_afd;
-            estudioworkingmemory('selectederpstudio',SelectedERP);
-            observe_ERPDAT.Process_messg =2;
-            observe_ERPDAT.Count_currentERP = 2;
-        catch
-            observe_ERPDAT.Process_messg =3;
-            observe_ERPDAT.Count_currentERP = 2;
-            return;
+            New_ERP = f_ERP_duplicate(New_ERP,length(observe_ERPDAT.ALLERP),BinArray,ChanArray);
+            if isempty(New_ERP)
+                beep;
+                disp('User selected cancal!');
+                return;
+            end
+            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = New_ERP;
+            ERPlistName =  getERPsets();
+            %%Reset the display in ERPset panel
+            ERPsetops.butttons_datasets.String = ERPlistName;
+            ERPsetops.butttons_datasets.Min = 1;
+            ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
         end
+        try
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1:length(observe_ERPDAT.ALLERP)];
+            ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1;
+        catch
+            Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
+            ERPsetops.butttons_datasets.Value =  Selected_ERP_afd;
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+        end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        SelectedERP =Selected_ERP_afd;
+        estudioworkingmemory('selectederpstudio',SelectedERP);
+        observe_ERPDAT.Process_messg =2;
+        observe_ERPDAT.Count_currentERP = 2;
+        
     end
 
 

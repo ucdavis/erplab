@@ -75,7 +75,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.tw_set_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Window:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.tw_set_title,'HorizontalAlignment','left');
         %%1F
-        ERPMTops.out_file_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','File&Path:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        ERPMTops.out_file_title = uicontrol('Style','text','Parent',  ERPMTops.measurement_type,'String','Output:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(ERPMTops.out_file_title,'HorizontalAlignment','left');
         
         %%-----------------------------Setting for second column---------------
@@ -237,13 +237,13 @@ varargout{1} = erp_measurement_box;
             'String','Option','callback',@erpsetop,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3C
         ERPMTops.m_t_bin_ops = uicontrol('Style','pushbutton','Parent',  ERPMTops.measurement_type,...
-            'String','Option','callback',@binSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@binSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3D
         ERPMTops.m_t_chan_ops = uicontrol('Style','pushbutton','Parent', ERPMTops.measurement_type,...
-            'String','Option','callback',@chanSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@chanSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3E
         ERPMTops.m_t_TW_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
-            'String','Option','callback',@m_t_TW_ops,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Baseline','callback',@m_t_TW_ops,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3F
         ERPMTops.m_t_file_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
             'String','Option','callback',@out_file_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -506,40 +506,6 @@ varargout{1} = erp_measurement_box;
         end
         ERPMTops.def_erpvalue{21} =Answer{11};
         ERPMTops.def_erpvalue{22} = Answer{12};
-        
-        if ERPMTops.m_t_viewer_on.Value==1
-            moption = ERPMTops.def_erpvalue{7};
-            latency = str2num(ERPMTops.m_t_TW.String);
-            if isempty(moption)
-                msgboxText =  ['ERP Measurement Tool - User must specify a type of measurement'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
-                return;
-            end
-            if ismember_bc2({moption}, {'instabl', 'areazt','areazp','areazn', 'nintegz'})
-                if length(latency)~=1
-                    msgboxText =  ['ERP Measurement Tool - ',32,moption ' only needs 1 latency value'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
-                    return;
-                end
-            else
-                if length(latency)~=2
-                    msgboxText =  ['ERP Measurement Tool - ',32,moption ' needs 2 latency values'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
-                    return;
-                else
-                    if latency(1)>=latency(2)
-                        msgboxText =  ['ERP Measurement Tool - For latency range, lower time limit must be on the left.\n'...
-                            'Additionally, lower time limit must be at least 1/samplerate seconds lesser than the higher one'];
-                        erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                        observe_ERPDAT.Process_messg =4;
-                        return;
-                    end
-                end
-            end
-        end
     end
 
 %%----------------------------ERPset custom--------------------------------
@@ -1394,6 +1360,7 @@ varargout{1} = erp_measurement_box;
             f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
         end
         erpworkingmemory('ViewerFlag', 0);
+        observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
 

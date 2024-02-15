@@ -300,7 +300,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        %             observe_EEGDAT.count_current_eeg=1;%%donot need to replot eeg
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -327,7 +326,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        
         
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_rmic');
@@ -550,7 +548,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             Save_file_label = Answer{2};
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        %         try
+        
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_advance(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);

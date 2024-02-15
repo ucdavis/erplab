@@ -1,4 +1,4 @@
-%%This function is to Shift Event Codes (Continuous EEG Only).
+%%This function is to Shift Event Codes (Continuous EEG).
 
 
 % *** This function is part of ERPLAB Studio Toolbox ***
@@ -23,13 +23,13 @@ EEG_shift_eventcode_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Shift Event Codes (Continuous EEG Only)',...
+    Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Shift Event Codes (Continuous EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Shift Event Codes (Continuous EEG Only)',...
+    Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Shift Event Codes (Continuous EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Shift Event Codes (Continuous EEG Only)',...
+    Eegtab_box_shift_eventcodes_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Shift Event Codes (Continuous EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @shift_help;
 end
 
@@ -218,7 +218,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             msgboxText =  'Event for current EEG is empty';
         end
         if ~isempty(msgboxText)
-            erpworkingmemory('f_EEG_proces_messg',['Shift Event Codes (Continuous EEG Only) > Browse event codes:',32,msgboxText]);
+            erpworkingmemory('f_EEG_proces_messg',['Shift Event Codes (Continuous EEG) > Browse event codes:',32,msgboxText]);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -285,7 +285,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         estudioworkingmemory('EEGTab_shiftcodes_conus',1);
         timeshiftnew= str2num(Source.String);
         if isempty(timeshiftnew) || numel(timeshiftnew)~=1
-            erpworkingmemory('f_EEG_proces_messg',['Shift Event Codes (Continuous EEG Only) > Time shift meust be one number']);
+            erpworkingmemory('f_EEG_proces_messg',['Shift Event Codes (Continuous EEG) > Time shift meust be one number']);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -296,7 +296,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
     function timeshift_question(~,~)
         BackERPLABcolor = [1 0.9 0.3];    % yellow
         question = ['Positive timeshift shifts right/forward in time\nNegative timeshift shifts left/backward in time'];
-        title = 'Shift Event Codes (Continuous EEG Only)';
+        title = 'Shift Event Codes (Continuous EEG)';
         oldcolor = get(0,'DefaultUicontrolBackgroundColor');
         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
         button = questdlg(sprintf(question), title,'Yes','Yes');
@@ -384,7 +384,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if ~isempty(messgStr) && eegpanelIndex~=12
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG Only) > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_shift_eventcode_conus.shiftcodes_cancel.BackgroundColor =  [1 1 1];
@@ -453,7 +453,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if ~isempty(messgStr) && eegpanelIndex~=12
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG Only) > Shift events');
+        erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Shift events');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -490,7 +490,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         end
         Eventcodes = (Eventcodes);
         if isempty(Eventcodes)
-            erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG Only) > Shift events: Please define one or more event codes');
+            erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Shift events: Please define one or more event codes');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -498,7 +498,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         %%timeshift
         timeshift  = str2num(EEG_shift_eventcode_conus.timeshift_edit.String);
         if isempty(timeshift) || numel(timeshift)~=1
-            erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG Only) > Shift events: Timeshift must be one number');
+            erpworkingmemory('f_EEG_proces_messg','Shift Event Codes (Continuous EEG) > Shift events: Timeshift must be one number');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -532,7 +532,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Shift Event Codes (Continuous EEG Only) > Shift events*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Shift Event Codes (Continuous EEG) > Shift events*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run the pop_ command with the user input from the GUI
@@ -617,7 +617,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             return;
         end
         
-        Eegtab_box_shift_eventcodes_conus.Title = 'Shift Event Codes (Continuous EEG Only)';
+        Eegtab_box_shift_eventcodes_conus.Title = 'Shift Event Codes (Continuous EEG)';
         Eegtab_box_shift_eventcodes_conus.ForegroundColor= [1 1 1];
         
         EEG_shift_eventcode_conus.event_codes_edit.Enable= 'on';
@@ -646,7 +646,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
                 all_ev = evT.type;
             end
         else
-            fprintf(['Shift Event Codes (Continuous EEG Only) > Event for current EEG is empty',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Shift Event Codes (Continuous EEG) > Event for current EEG is empty',32,32,32,32,datestr(datetime('now')),'\n']);
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_browse.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_edit.String = '';

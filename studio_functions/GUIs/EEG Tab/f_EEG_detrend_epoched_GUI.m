@@ -17,13 +17,13 @@ addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Linear Detrend (Epoched EEG Only)',...
+    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', fig, 'Title', 'Linear Detrend (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend (Epoched EEG Only)',...
+    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend (Epoched EEG Only)',...
+    EEG_epoch_detrend_box = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Linear Detrend (Epoched EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @detrend_help
 end
 
@@ -247,14 +247,14 @@ varargout{1} = EEG_epoch_detrend_box;
         
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
-            msgboxText =  ['Linear Detrend (Epoched EEG Only) - Invalid input'];
+            msgboxText =  ['Linear Detrend (Epoched EEG) - Invalid input'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             return;
         end
         if numel(lat_osci) ==1
-            msgboxText =  ['Linear Detrend (Epoched EEG Only) - Please, enter two values'];
+            msgboxText =  ['Linear Detrend (Epoched EEG) - Please, enter two values'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
@@ -262,7 +262,7 @@ varargout{1} = EEG_epoch_detrend_box;
         end
         
         if lat_osci(1)>= lat_osci(2)
-            msgboxText =  ['Linear Detrend (Epoched EEG Only) - The first value must be smaller than the second one'];
+            msgboxText =  ['Linear Detrend (Epoched EEG) - The first value must be smaller than the second one'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
@@ -270,14 +270,14 @@ varargout{1} = EEG_epoch_detrend_box;
         end
         
         if lat_osci(2) > observe_EEGDAT.EEG.times(end)
-            msgboxText =  ['Linear Detrend (Epoched EEG Only) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
+            msgboxText =  ['Linear Detrend (Epoched EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             return;
         end
         if lat_osci(1) < observe_EEGDAT.EEG.times(1)
-            msgboxText =  ['Linear Detrend (Epoched EEG Only) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
+            msgboxText =  ['Linear Detrend (Epoched EEG) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
@@ -304,7 +304,7 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.apply .BackgroundColor =  [1 1 1];
         gui_eeg_epoch_dt.apply .ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_EEG_proces_messg','Linear Detrend (Epoched EEG Only) > Apply');
+        erpworkingmemory('f_EEG_proces_messg','Linear Detrend (Epoched EEG) > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         if gui_eeg_epoch_dt.pre.Value==1
@@ -317,22 +317,22 @@ varargout{1} = EEG_epoch_detrend_box;
             detwindow =  gui_eeg_epoch_dt.custom_edit.String;
             msgboxText = '';
             if isempty(detwindow)
-                msgboxText =  ['Linear Detrend (Epoched EEG Only) > Apply - Invalid input'];
+                msgboxText =  ['Linear Detrend (Epoched EEG) > Apply - Invalid input'];
             end
             if numel(detwindow) ==1
-                msgboxText =  ['Linear Detrend (Epoched EEG Only) > Apply - Please, enter two values'];
+                msgboxText =  ['Linear Detrend (Epoched EEG) > Apply - Please, enter two values'];
             end
             
             if detwindow(1)>= detwindow(2)
-                msgboxText =  ['Linear Detrend (Epoched EEG Only) > Apply - The first value must be smaller than the second one'];
+                msgboxText =  ['Linear Detrend (Epoched EEG) > Apply - The first value must be smaller than the second one'];
             end
             
             if detwindow(2) > observe_EEGDAT.EEG.times(end)
-                msgboxText =  ['Linear Detrend (Epoched EEG Only) > Apply - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
+                msgboxText =  ['Linear Detrend (Epoched EEG) > Apply - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
                 
             end
             if detwindow(1) < observe_EEGDAT.EEG.times(1)
-                msgboxText =  ['Linear Detrend (Epoched EEG Only) > Apply - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
+                msgboxText =  ['Linear Detrend (Epoched EEG) > Apply - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
             end
             if ~isempty(msgboxText)
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
@@ -361,7 +361,7 @@ varargout{1} = EEG_epoch_detrend_box;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Linear Detrend (Epoched EEG Only) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Linear Detrend (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             wchmsgonstr ='off'; %temporary
             [EEG, LASTCOM] = pop_eeglindetrend( EEG, detwindow, 'Warning', wchmsgonstr, 'History', 'implicit');
@@ -429,7 +429,7 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.apply .BackgroundColor =  [1 1 1];
         gui_eeg_epoch_dt.apply .ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_EEG_proces_messg','Linear Detrend (Epoched EEG Only) > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Linear Detrend (Epoched EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         estudioworkingmemory('EEGTab_detrend_epoch',0);
         detwindow=erpworkingmemory('pop_eeglindetrend');

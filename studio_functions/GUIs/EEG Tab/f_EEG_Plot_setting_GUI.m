@@ -885,7 +885,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%Norm?
         EEG_plotset{9}=EStduio_gui_EEG_plotset.disp_norm.Value;
         %%channel orders
+        try
         [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+        catch
+           labels = []; 
+        end
         if  EStduio_gui_EEG_plotset.chanorder_number.Value==1
             EEG_plotset{10} = 1;
             EEG_plotset{11}= {1:length(labels),labels};

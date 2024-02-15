@@ -133,7 +133,6 @@ EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style'
     'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
 EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
     'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
-
 uiextras.Empty('Parent', commandfig_panel); % 1A
 set(commandfig_panel, 'Sizes', [70 50 70 -1 160 -1 90 100 100 170 50  5]);
 
@@ -247,6 +246,8 @@ EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
 EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
 EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
 EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.ViewAxes.BackgroundColor = [1 1 1];
+
 end
 
 %%-------------------------------------------------------------------------
@@ -704,13 +705,8 @@ else
     figurename = fullfile(erppathname,erpfilename);
 end
 
-% try
 f_preparms_erptab(observe_ERPDAT.ERP,1,History,figurename);
 observe_ERPDAT.Process_messg =2;
-% catch
-%     observe_ERPDAT.Process_messg =3;
-% end
-
 end
 
 %%--------------------Create static/eportable plot-------------------------

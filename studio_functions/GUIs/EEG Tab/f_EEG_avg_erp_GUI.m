@@ -1,4 +1,4 @@
-%%This function is to Compute Averaged ERPs (Epoched EEG Only).
+%%This function is to Compute Averaged ERPs (Epoched EEG).
 
 
 % *** This function is part of ERPLAB Studio Toolbox ***
@@ -27,13 +27,13 @@ EEG_avg_erp = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERPs (Epoched EEG Only)',...
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Averaged ERPs (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs (Epoched EEG Only)',...
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs (Epoched EEG Only)',...
+    Eegtab_box_avg_erp = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Averaged ERPs (Epoched EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @avg_help
 end
 
@@ -422,7 +422,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG Only) > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
@@ -505,7 +505,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if ~isempty(messgStr) && eegpanelIndex~=17
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG Only) > Run');
+        erpworkingmemory('f_EEG_proces_messg','Compute Averaged ERPs (Epoched EEG) > Run');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
@@ -655,7 +655,7 @@ varargout{1} = Eegtab_box_avg_erp;
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG_advance(setindex);
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Compute Averaged ERPs (Epoched EEG Only) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Compute Averaged ERPs (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run the pop_ command with the user input from the GUI

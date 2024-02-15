@@ -25,13 +25,13 @@ Eegtab_EEG_art_sumop = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Info & Tools (Epoched EEG Only)',...
+    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', fig, 'Title', 'Artifact Info & Tools (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Info & Tools (Epoched EEG Only)',...
+    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Info & Tools (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Info & Tools (Epoched EEG Only)',...
+    Eegtab_box_art_sumop = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Artifact Info & Tools (Epoched EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @sumart_help
 end
 
@@ -125,7 +125,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Clear artifact detection marks on EEG');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -167,7 +167,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Clear artifact detection marks on EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Clear artifact detection marks on EEG: cannot work on a continuous EEG');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG: cannot work on a continuous EEG');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -238,7 +238,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Syn. artifact info in EEG and EVENTLIST');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Syn. artifact info in EEG and EVENTLIST');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -282,7 +282,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Syn. artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -351,7 +351,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in one value');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -365,7 +365,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Summarize EEG artifact in one value*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in one value: cannot work on a continuous EEG');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: cannot work on a continuous EEG');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -378,7 +378,7 @@ varargout{1} = Eegtab_box_art_sumop;
             active_flags = (flagcheck>1);
             
             if isempty(active_flags)
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in one value: None of epochs was marked');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: None of epochs was marked');
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -393,7 +393,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf( [repmat('-',1,100) '\n']);
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in one value');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -409,7 +409,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a table');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -423,7 +423,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Summarize EEG artifact in a table*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a table: cannot work on a continuous EEG');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: cannot work on a continuous EEG');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -436,7 +436,7 @@ varargout{1} = Eegtab_box_art_sumop;
             active_flags = (flagcheck>1);
             
             if isempty(active_flags)
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a table: None of epochs was marked');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: None of epochs was marked');
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -455,7 +455,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf( [repmat('-',1,100) '\n']);
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a table');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
@@ -471,7 +471,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a graphic');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -485,7 +485,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a graphic: cannot work on a continuous EEG');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: cannot work on a continuous EEG');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -498,7 +498,7 @@ varargout{1} = Eegtab_box_art_sumop;
             active_flags = (flagcheck>1);
             
             if isempty(active_flags)
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a graphic: None of epochs was marked');
+                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: None of epochs was marked');
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
@@ -512,7 +512,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 eegh(LASTCOM);
             end
         end
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG Only) >  Summarize EEG artifact in a graphic');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
