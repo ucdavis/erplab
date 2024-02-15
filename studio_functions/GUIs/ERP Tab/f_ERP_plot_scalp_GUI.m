@@ -1277,7 +1277,6 @@ varargout{1} = ERP_plot_scalp_gui;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
-        
     end
 
 %%---------------------Run-------------------------------------------------

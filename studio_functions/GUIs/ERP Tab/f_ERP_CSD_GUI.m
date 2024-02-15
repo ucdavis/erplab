@@ -283,7 +283,7 @@ varargout{1} = ERP_CSD_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=9
+        if observe_ERPDAT.Count_currentERP~=16
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -300,7 +300,7 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.scl_num.Enable = Enable_label;
         gui_erp_CSD.hr_num.Enable = Enable_label;
         gui_erp_CSD.cancel.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=10;
+        observe_ERPDAT.Count_currentERP=17;
     end
 
 
@@ -345,7 +345,7 @@ varargout{1} = ERP_CSD_gui;
 
 
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=9
+        if observe_ERPDAT.Reset_erp_paras_panel~=14
             return;
         end
         gui_erp_CSD.run.BackgroundColor =  [1 1 1];
@@ -357,6 +357,6 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.sif_num.String = '4';
         gui_erp_CSD.scl_num.String = '0.00001';
         gui_erp_CSD.hr_num.String = '10';
-        observe_ERPDAT.Reset_erp_paras_panel=10;
+        observe_ERPDAT.Reset_erp_paras_panel=15;
     end
 end

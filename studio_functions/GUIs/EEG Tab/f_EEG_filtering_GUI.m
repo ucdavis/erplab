@@ -1466,7 +1466,7 @@ varargout{1} = EEG_filtering_box;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=4
+        if observe_EEGDAT.Reset_eeg_paras_panel~=7
             return;
         end
         estudioworkingmemory('EEGTab_filter',0);
@@ -1510,7 +1510,7 @@ varargout{1} = EEG_filtering_box;
         try nchan=observe_EEGDAT.EEG.nbchan;catch nchan=1;end
         defx = {0 30 2 1:nchan 1 'butter' 0 []};
         erpworkingmemory('pop_basicfilter',defx);
-        observe_EEGDAT.Reset_eeg_paras_panel=5;
+        observe_EEGDAT.Reset_eeg_paras_panel=8;
     end
 
 end

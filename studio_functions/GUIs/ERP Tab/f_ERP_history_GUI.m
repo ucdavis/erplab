@@ -9,7 +9,7 @@
 function varargout = f_ERP_history_GUI(varargin)
 global observe_ERPDAT;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
-
+addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 gui_erp_history = struct();
 %-----------------------------Name the title----------------------------------------------
 
@@ -155,7 +155,7 @@ varargout{1} = box_erp_history;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=14
+        if observe_ERPDAT.Count_currentERP~=19
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
@@ -196,6 +196,31 @@ varargout{1} = box_erp_history;
             end
             
         end
-        observe_ERPDAT.Count_currentERP=15;
+        %         observe_ERPDAT.Count_currentERP=15;
+    end
+
+
+    function Reset_erp_panel_change(~,~)
+        if observe_ERPDAT.Reset_erp_paras_panel~=17
+            return;
+        end
+        set(gui_erp_history.erp_h_all,'Value',1);
+        set(gui_erp_history.erp_h_current,'Value',0);
+        %adding the relared history in dispaly panel
+        hiscp_empty =0;
+        try
+            ERP_history =  observe_ERPDAT.ERP.history;
+        catch
+            ERP_history = [];
+        end
+        
+        if isempty(ERP_history)
+            ERP_history = char('No history exist in the current ERPset');
+        end
+        ERP_history_display = {};
+        for Numofrow = 1:size(ERP_history,1)
+            ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+        end
+        set(gui_erp_history.uitable,'Data', ERP_history_display');
     end
 end

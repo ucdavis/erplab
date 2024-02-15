@@ -273,7 +273,6 @@ varargout{1} = EStudio_box_bin_chan;
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
-        
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP) || ViewerFlag==1
             Chanlist_name = 'No erpset is available';
             ERPTab_bin_chan.ElecRange.String = Chanlist_name;

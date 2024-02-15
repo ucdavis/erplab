@@ -14,7 +14,7 @@ function varargout = f_EEG_history_GUI(varargin)
 
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-
+addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 gui_eeg_history = struct();
 
@@ -139,7 +139,6 @@ varargout{1} = box_eeg_history;
         set(gui_eeg_history.eeg_h_all,'Value',~Source_value);
         set(gui_eeg_history.eeg_h_EEG,'Value',Source_value);
         %adding the relared history in dispaly panel
-        
         try
             eeg_history = evalin('base','ALLCOM');
             eeg_history = eeg_history';
@@ -180,7 +179,6 @@ varargout{1} = box_eeg_history;
             LASTCOM = pop_saveh(eeg_history);
             
         end
-%         eegh(LASTCOM);
         fprintf(['\n',LASTCOM,'\n']);
         observe_EEGDAT.eeg_panel_message=2;
     end
@@ -241,4 +239,33 @@ varargout{1} = box_eeg_history;
         end
     end
 
+
+%%--------------Reset this panel with the default parameters---------------
+    function Reset_eeg_panel_change(~,~)
+        if observe_EEGDAT.Reset_eeg_paras_panel~=20
+            return;
+        end
+        set(gui_eeg_history.eeg_h_all,'Value',1);
+        set(gui_eeg_history.eeg_h_EEG,'Value',0);
+        
+        %adding the relared history in dispaly panel
+        hiscp_empty =0;
+        try
+            eeg_history =  observe_EEGDAT.EEG.history;
+        catch
+            eeg_history = [];
+        end
+        
+        if isempty(eeg_history)
+            eeg_history = char('No history exist in the current eegset');
+            gui_eeg_history.save_script.Enable = 'off';
+        else
+            gui_eeg_history.save_script.Enable = 'on';
+        end
+        eeg_history_display = {};
+        for Numofrow = 1:size(eeg_history,1)
+            eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+        end
+        set(gui_eeg_history.uitable,'Data', eeg_history_display');
+    end
 end

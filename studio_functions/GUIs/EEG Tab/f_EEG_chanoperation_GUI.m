@@ -768,7 +768,7 @@ varargout{1} = EEG_chan_operation_gui;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=9
+        if observe_EEGDAT.Reset_eeg_paras_panel~=6
             return;
         end
         estudioworkingmemory('EEGTab_chanop',0);
@@ -784,7 +784,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.locaInfor.Value=1;
         gui_eegtab_chan_optn.mode_modify.Value = 1;
         gui_eegtab_chan_optn.mode_create.Value = 0;
-        observe_EEGDAT.Reset_eeg_paras_panel=10;
+        observe_EEGDAT.Reset_eeg_paras_panel=7;
     end
 end
 

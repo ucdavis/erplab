@@ -651,7 +651,7 @@ varargout{1} = ERP_chan_operation_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=7
+        if observe_ERPDAT.Count_currentERP~=10
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -702,7 +702,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.ref_asst.Enable = Enable_label;
         gui_erp_chan_operation.locaInfor.Enable = Enable_label;
         gui_erp_chan_operation.cancel.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=8;
+        observe_ERPDAT.Count_currentERP=11;
     end
 
 
@@ -745,7 +745,7 @@ varargout{1} = ERP_chan_operation_gui;
     end
 
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=7
+        if observe_ERPDAT.Reset_erp_paras_panel~=8
             return;
         end
         estudioworkingmemory('ERPTab_chanop',0);
@@ -761,6 +761,6 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.locaInfor.Value=1;
         gui_erp_chan_operation.mode_modify.Value = 1;
         gui_erp_chan_operation.mode_create.Value = 0;
-        observe_ERPDAT.Reset_erp_paras_panel=8;
+        observe_ERPDAT.Reset_erp_paras_panel=9;
     end
 end

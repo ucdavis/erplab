@@ -977,7 +977,7 @@ varargout{1} = EStudio_box_eeglab_ica;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=5
+        if observe_EEGDAT.Reset_eeg_paras_panel~=4
             return;
         end
         if ~isempty(observe_EEGDAT.EEG)
@@ -986,7 +986,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.CurrentEEG_tras.String  = '';
         end
         EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
-        observe_EEGDAT.Reset_eeg_paras_panel=6;
+        observe_EEGDAT.Reset_eeg_paras_panel=5;
     end
 end
 

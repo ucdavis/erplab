@@ -838,7 +838,7 @@ varargout{1} = EEG_binepoch_box;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=8
+        if observe_EEGDAT.Reset_eeg_paras_panel~=15
             return;
         end
         estudioworkingmemory('EEGTab_binepoch',0);
@@ -855,7 +855,7 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.custom_edit.Enable = 'off';
         gui_eegtab_binepoch.custom_edit.String = '';
         erpworkingmemory('pop_epochbin',{[-200 800]  'pre'});
-        observe_EEGDAT.Reset_eeg_paras_panel=9;
+        observe_EEGDAT.Reset_eeg_paras_panel=16;
     end
 end
 

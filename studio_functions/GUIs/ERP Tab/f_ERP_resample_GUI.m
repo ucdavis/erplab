@@ -488,7 +488,7 @@ varargout{1} = box_erp_resample;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=17
+        if observe_ERPDAT.Count_currentERP~=15
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -548,8 +548,7 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.Paras{3} = gui_erp_resample.nwtimewindow_checkbox.Value;
         gui_erp_resample.Paras{4} = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         gui_erp_resample.Paras{5} = str2num(gui_erp_resample.nwtimewindow_editright.String);
-        
-        observe_ERPDAT.Count_currentERP=18;
+        observe_ERPDAT.Count_currentERP=16;
     end
 
 
@@ -593,7 +592,7 @@ varargout{1} = box_erp_resample;
 
 %%--------------reset this panel with the default parameters---------------
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=14
+        if observe_ERPDAT.Reset_erp_paras_panel~=13
             return;
         end
         estudioworkingmemory('ERPTab_resample',0);
@@ -619,7 +618,7 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.nwtimewindow_checkbox.Value=0;
         gui_erp_resample.nwtimewindow_editleft.String ='';
         gui_erp_resample.nwtimewindow_editright.String = '';
-        observe_ERPDAT.Reset_erp_paras_panel=15;
+        observe_ERPDAT.Reset_erp_paras_panel=14;
     end
 
 end

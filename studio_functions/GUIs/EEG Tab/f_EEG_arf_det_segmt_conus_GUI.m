@@ -708,7 +708,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=11
+        if observe_EEGDAT.Reset_eeg_paras_panel~=10
             return;
         end
         estudioworkingmemory('EEGTab_detect_segmt_conus',0);
@@ -722,7 +722,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.event_exp_edit.String = '';
         EEG_art_det_segmt_conus.event_exp_select.Value = 1;
         EEG_art_det_segmt_conus.boundaryevent.Value = 0;
-        observe_EEGDAT.Reset_eeg_paras_panel=12;
+        observe_EEGDAT.Reset_eeg_paras_panel=11;
     end
 end
 

@@ -18,13 +18,13 @@ gui_erp_grdavg = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Average across ERPsets ', 'Padding', 5,...
+    ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', fig, 'Title', 'Average Across ERPsets (Grand Average)  ', 'Padding', 5,...
         'BackgroundColor',ColorB_def); % Create boxpanel  tool_link
 elseif nargin == 1
-    ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average across ERPsets ',...
+    ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average Across ERPsets (Grand Average)  ',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average across ERPsets ',...
+    ERP_grdavg_box_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Average Across ERPsets (Grand Average)  ',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @tool_link
 end
 
@@ -313,7 +313,7 @@ varargout{1} = ERP_grdavg_box_gui;
         rejection_peft = str2num(source.String);
         if isempty(rejection_peft)
             gui_erp_grdavg.warn_edit.String = '';
-            msgboxText =  ['Average across ERPsets - Invalid artifact detection proportion.\n'...
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.\n'...
                 'Please, enter a number between 0 and 100.'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -321,7 +321,7 @@ varargout{1} = ERP_grdavg_box_gui;
         end
         if rejection_peft<0 || rejection_peft>100
             gui_erp_grdavg.warn_edit.String = '';
-            msgboxText =  ['Average across ERPsets - Invalid artifact detection proportion.\n'...
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.\n'...
                 'Please, enter a number between 0 and 100.'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -460,7 +460,7 @@ varargout{1} = ERP_grdavg_box_gui;
         end
         
         if numel(Selectederp_Index)<2
-            msgboxText =  ['Average across ERPsets - Two ERPsets,at least,were selected'];
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Two ERPsets,at least,were selected'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
             return;
@@ -473,7 +473,7 @@ varargout{1} = ERP_grdavg_box_gui;
             artcrite = 100;
         end
         if isempty(artcrite) || artcrite<0 || artcrite>100
-            msgboxText =  ['Average across ERPsets - Invalid artifact detection proportion.\n'...
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.\n'...
                 'Please, enter a number between 0 and 100.'];
             erpworkingmemory('f_ERP_proces_messg',msgboxText);
             observe_ERPDAT.Process_messg =4;
@@ -487,7 +487,7 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
         
         %%Send message to Message panel
-        erpworkingmemory('f_ERP_proces_messg','Average across ERPsets');
+        erpworkingmemory('f_ERP_proces_messg','Average Across ERPsets (Grand Average) ');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         Weightedg =  gui_erp_grdavg.weigavg.Value;
@@ -632,7 +632,7 @@ varargout{1} = ERP_grdavg_box_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=12
+        if observe_ERPDAT.Count_currentERP~=13
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -671,7 +671,7 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.run.Enable = Enable_label;
         gui_erp_grdavg.cancel.Enable = Enable_label;
         gui_erp_grdavg.cmpsd.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=13;
+        observe_ERPDAT.Count_currentERP=14;
     end
 
 %%-------execute "apply" before doing any change for other panels----------
@@ -714,7 +714,7 @@ varargout{1} = ERP_grdavg_box_gui;
 
 
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=12
+        if observe_ERPDAT.Reset_erp_paras_panel~=11
             return;
         end
         estudioworkingmemory('ERPTab_gravg',0);
@@ -734,7 +734,7 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.cbdatq_custom_op.Enable = 'off';
         gui_erp_grdavg.cbdatq_def.Enable = 'on';
         gui_erp_grdavg.cbdatq_custom.Enable = 'on';
-        observe_ERPDAT.Reset_erp_paras_panel=13;
+        observe_ERPDAT.Reset_erp_paras_panel=12;
     end
 
 end

@@ -21,11 +21,11 @@ end
 
 if nargin == 0
     fig = figure(); % Parent figure
-    Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'View Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'View Data Quality Metrics', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 varargout{1} = Erp_information;
@@ -103,7 +103,7 @@ drawui_erp_information(FonsizeDefault);
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=16
+        if observe_ERPDAT.Count_currentERP~=6
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
@@ -114,7 +114,7 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
             gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
             gui_erp_DQSME.DQSME_option_measure.Enable = Enableflag;
-            observe_ERPDAT.Count_currentERP=17;
+            observe_ERPDAT.Count_currentERP=7;
             return;
         else
             Enableflag = 'on';
@@ -148,7 +148,7 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
         gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
-        observe_ERPDAT.Count_currentERP=17;
+        observe_ERPDAT.Count_currentERP=7;
     end
 
 
@@ -166,7 +166,7 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.CURRENTERP = SelectedERP;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
+        erpworkingmemory('f_ERP_proces_messg','Data Quality Metrics > Show in a table');
         observe_ERPDAT.Process_messg =1;
         for Numoferp = 1:numel(SelectedERP)
             DQ_Table_GUI(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)),observe_ERPDAT.ALLERP,SelectedERP(Numoferp),1);
@@ -189,7 +189,7 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.CURRENTERP = SelectedERP;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Save to file');
+        erpworkingmemory('f_ERP_proces_messg','Data Quality Metrics > Save to file');
         observe_ERPDAT.Process_messg =1;
         
         
@@ -208,7 +208,7 @@ drawui_erp_information(FonsizeDefault);
             catch
                 msgboxText =  ['No information for data quality is found!'];
                 question = [  'No information for data quality is found!'];
-                title       = 'ERPLAB Studio: "Save to file" on "View Data Quality Metrics".';
+                title       = 'ERPLAB Studio: "Save to file" on "Data Quality Metrics".';
                 button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
             end
             
@@ -232,7 +232,7 @@ drawui_erp_information(FonsizeDefault);
             observe_ERPDAT.CURRENTERP = SelectedERP;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show measures on Command Window');
+        erpworkingmemory('f_ERP_proces_messg','Data Quality Metrics > Show measures on Command Window');
         observe_ERPDAT.Process_messg =1;
         erpset_summary(observe_ERPDAT.ALLERP(SelectedERP));
         observe_ERPDAT.Process_messg =2;

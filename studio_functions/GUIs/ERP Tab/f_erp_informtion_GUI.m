@@ -18,11 +18,11 @@ catch
 end
 if nargin == 0
     fig = figure(); % Parent figure
-    Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP Information', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    Erp_information = uiextras.BoxPanel('Parent', fig, 'Title', 'ERP & Bin Information', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Information', 'Padding', 5,'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP & Bin Information', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP Information', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    Erp_information = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERP & Bin Information', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 varargout{1} = Erp_information;
@@ -115,7 +115,7 @@ drawui_erp_information(FonsizeDefault);
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=15
+        if observe_ERPDAT.Count_currentERP~=5
             return;
         end
         
@@ -166,10 +166,8 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_information.total_rejected_percentage.Enable = Enable_label;
         gui_erp_information.total_rejected_option.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=16;
+        observe_ERPDAT.Count_currentERP=6;
     end
-
-
 
 %%----------------Rejection option----------------------------------------
     function total_reject_ops(~,~)

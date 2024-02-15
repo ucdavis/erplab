@@ -977,7 +977,7 @@ varargout{1} = Eegtab_box_art_det_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=10
+        if observe_EEGDAT.Reset_eeg_paras_panel~=11
             return;
         end
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
@@ -995,7 +995,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.voltage_edit.String = '500';
         Eegtab_EEG_art_det_conus.movewindow_edit.String = '500';
         Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
-        observe_EEGDAT.Reset_eeg_paras_panel=11;
+        observe_EEGDAT.Reset_eeg_paras_panel=12;
     end
 end
 

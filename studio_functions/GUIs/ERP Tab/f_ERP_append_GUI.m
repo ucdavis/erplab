@@ -595,7 +595,7 @@ varargout{1} = box_erp_append;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=13
+        if observe_ERPDAT.Count_currentERP~=14
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -621,7 +621,7 @@ varargout{1} = box_erp_append;
         else
             gui_erp_append.erpset_edit.Enable = 'on';
         end
-        observe_ERPDAT.Count_currentERP=14;
+        observe_ERPDAT.Count_currentERP=15;
     end
 
 
@@ -698,7 +698,7 @@ varargout{1} = box_erp_append;
 
 %%--------------reset this panel with the default parameters---------------
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=13
+        if observe_ERPDAT.Reset_erp_paras_panel~=12
             return;
         end
         estudioworkingmemory('ERPTab_append',0);
@@ -718,6 +718,6 @@ varargout{1} = box_erp_append;
         else
             gui_erp_append.erpset_edit.String=num2str(ERPArray);
         end
-        observe_ERPDAT.Reset_erp_paras_panel=14;
+        observe_ERPDAT.Reset_erp_paras_panel=13;
     end
 end

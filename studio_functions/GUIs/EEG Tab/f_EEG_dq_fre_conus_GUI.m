@@ -546,7 +546,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=14
+        if observe_EEGDAT.Reset_eeg_paras_panel~=13
             return;
         end
         estudioworkingmemory('EEGTab_dq_fre_conus',0);
@@ -564,6 +564,6 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         fqlabels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'};
         data_tab = [fqlabels' num2cell(fqband)];
         EEG_dq_fre_conus.bandtable.Data=data_tab;
-        observe_EEGDAT.Reset_eeg_paras_panel=15;
+        observe_EEGDAT.Reset_eeg_paras_panel=14;
     end
 end

@@ -502,7 +502,7 @@ varargout{1} = ERP_bin_operation_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=8
+        if observe_ERPDAT.Count_currentERP~=11
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
@@ -544,7 +544,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.eq_clear.Enable = Enable_label;
         gui_erp_bin_operation.run.Enable = Enable_label;
         gui_erp_bin_operation.cancel.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=9;
+        observe_ERPDAT.Count_currentERP=12;
     end
 
 
@@ -587,7 +587,7 @@ varargout{1} = ERP_bin_operation_gui;
     end
 
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=8
+        if observe_ERPDAT.Reset_erp_paras_panel~=9
             return;
         end
         gui_erp_bin_operation.run.BackgroundColor =  [1 1 1];
@@ -602,7 +602,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.edit_bineq.Data = dsnames;
         gui_erp_bin_operation.mode_modify.Value = 1;
         gui_erp_bin_operation.mode_create.Value = 0;
-        observe_ERPDAT.Reset_erp_paras_panel=9;
+        observe_ERPDAT.Reset_erp_paras_panel=10;
     end
 
 end

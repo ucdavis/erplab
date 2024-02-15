@@ -622,7 +622,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=7
+        if observe_EEGDAT.Reset_eeg_paras_panel~=14
             return;
         end
         estudioworkingmemory('EEGTab_event2bin',0);
@@ -634,7 +634,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.BDF_edit.String= '';
         def = {'' '' '' 0 [] [] 0 0 0 1 0};
         erpworkingmemory('pop_binlister',def);
-        observe_EEGDAT.Reset_eeg_paras_panel=8;
+        observe_EEGDAT.Reset_eeg_paras_panel=15;
     end
 end
 

@@ -616,7 +616,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=13
+        if observe_EEGDAT.Reset_eeg_paras_panel~=12
             return;
         end
         estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
@@ -659,7 +659,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
             EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
         end
-        observe_EEGDAT.Reset_eeg_paras_panel=14;
+        observe_EEGDAT.Reset_eeg_paras_panel=13;
     end
 
 end

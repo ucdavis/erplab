@@ -697,7 +697,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=12
+        if observe_EEGDAT.Reset_eeg_paras_panel~=9
             return;
         end
         estudioworkingmemory('EEGTab_shiftcodes_conus',0);
@@ -711,7 +711,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.roundnearest.Value = 0;
         EEG_shift_eventcode_conus.roundlater.Value = 0;
         EEG_shift_eventcode_conus.timeshift_edit.String = '0';
-        observe_EEGDAT.Reset_eeg_paras_panel=13;
+        observe_EEGDAT.Reset_eeg_paras_panel=10;
     end
 end
 

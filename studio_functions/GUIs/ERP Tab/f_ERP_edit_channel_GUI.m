@@ -1,4 +1,4 @@
-%%This function is to Edit Channel Info
+%%This function is to Edit Channels
 
 % *** This function is part of ERPLAB Studio Toolbox ***
 % Author: Guanghui Zhang & Steven Luck
@@ -23,11 +23,11 @@ ERP_tab_edit_chan = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_erp_box_edit_chan = uiextras.BoxPanel('Parent', fig, 'Title', 'Edit Channel Info', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_erp_box_edit_chan = uiextras.BoxPanel('Parent', fig, 'Title', 'Edit Channels', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_erp_box_edit_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Edit Channel Info', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EStudio_erp_box_edit_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Edit Channels', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_erp_box_edit_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Edit Channel Info', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_erp_box_edit_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Edit Channels', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -157,14 +157,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
         
         New_chans = str2num(Source.String);
         if isempty(New_chans) || min(New_chans(:))<=0 || max(New_chans(:))<=0
-            erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Index(es) of channels should be positive numbers');
+            erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Index(es) of channels should be positive numbers');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
         end
         chanNum = observe_ERPDAT.ERP.nchan;
         if min(New_chans(:)) > chanNum || max(New_chans(:)) >chanNum
-            erpworkingmemory('f_ERP_proces_messg',['Edit Channel Info >  Index(es) of channels should be smaller than',32,num2str(chanNum)]);
+            erpworkingmemory('f_ERP_proces_messg',['Edit Channels >  Index(es) of channels should be smaller than',32,num2str(chanNum)]);
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             Source.String = '';
             return;
@@ -229,7 +229,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
         
-        erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Delete selected chan');
+        erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Delete selected chan');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
@@ -239,7 +239,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
         if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Delete selected chan > Indexes of chans should be positive numbers');
+            erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             return;
         end
@@ -265,7 +265,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             %%check the selected chans
             if any(ChanArray(:) > ERP.nchan)
-                Erromesg = ['Edit Channel Info >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(ERP.nchan)];
+                Erromesg = ['Edit Channels >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(ERP.nchan)];
                 erpworkingmemory('f_ERP_proces_messg',Erromesg);
                 observe_ERPDAT.Process_messg =4;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -273,7 +273,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             
             if numel(ChanArray) == ERP.nchan
-                Erromesg = ['Edit Channel Info >  Delete selected chan > Please clear this ERPset in "ERPsets" panel if you want to delete all channels'];
+                Erromesg = ['Edit Channels >  Delete selected chan > Please clear this ERPset in "ERPsets" panel if you want to delete all channels'];
                 erpworkingmemory('f_ERP_proces_messg',Erromesg);
                 observe_ERPDAT.Process_messg =4;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -337,12 +337,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
         
-        erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Rename selected chan');
+        erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Rename selected chan');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
         
         if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Delete selected chan > Indexes of chans should be positive numbers');
+            erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             return;
         end
@@ -377,7 +377,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             %%check the selected chans
             if min(ChanArray(:)) > ERP.nchan || max(ChanArray(:)) > ERP.nchan
-                fprintf( ['Edit Channel Info >  Rename selected chan: Some of chan indexes exceed',32,num2str(ERP.nchan),32,', we therefore select all channels.\n']);
+                fprintf( ['Edit Channels >  Rename selected chan: Some of chan indexes exceed',32,num2str(ERP.nchan),32,', we therefore select all channels.\n']);
                 ChanArray = [1:ERP.nchan];
             end
             try
@@ -445,7 +445,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.Count_currentERP=1;
-        erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Rename selected chan');
+        erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Rename selected chan');
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -463,7 +463,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
         estudioworkingmemory('ERPTab_editchan',0);
         
-        erpworkingmemory('f_ERP_proces_messg','Edit Channel Info >  Add or edit channel locations');
+        erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Add or edit channel locations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
@@ -560,7 +560,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP ~=18
+        if observe_ERPDAT.Count_currentERP ~=7
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -575,7 +575,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             ERP_tab_edit_chan.edit_chanlocs.Enable='off';
             ERP_tab_edit_chan.select_edit_chan.Enable='off';
             ERP_tab_edit_chan.browse_chan.Enable='off';
-            observe_ERPDAT.Count_currentERP=19;
+            observe_ERPDAT.Count_currentERP=8;
             return;
         end
         ERP_tab_edit_chan.mode_modify.Enable ='on';
@@ -585,7 +585,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ERP_tab_edit_chan.edit_chanlocs.Enable='on';
         ERP_tab_edit_chan.select_edit_chan.Enable='on';
         ERP_tab_edit_chan.browse_chan.Enable='on';
-        observe_ERPDAT.Count_currentERP=19;
+        observe_ERPDAT.Count_currentERP=8;
     end
 
 %%-------------------------------------------------------------------------
@@ -607,14 +607,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=16
+        if observe_ERPDAT.Reset_erp_paras_panel~=5
             return;
         end
         estudioworkingmemory('ERPTab_editchan',0);
         ERP_tab_edit_chan.mode_modify.Value =1;
         ERP_tab_edit_chan.mode_create.Value = 0;
         ERP_tab_edit_chan.select_edit_chan.String = '';
-        observe_ERPDAT.Reset_erp_paras_panel=17;
+        observe_ERPDAT.Reset_erp_paras_panel=6;
     end
 end
 

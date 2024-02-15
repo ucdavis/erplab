@@ -663,7 +663,7 @@ varargout{1} = ERP_basecorr_detrend_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=5
+        if observe_ERPDAT.Count_currentERP~=8
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -691,7 +691,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             gui_erp_blc_dt.custom_edit.Enable = 'off';
         end
         if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP')
-            observe_ERPDAT.Count_currentERP=6;
+            observe_ERPDAT.Count_currentERP=9;
             return;
         end
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
@@ -719,7 +719,7 @@ varargout{1} = ERP_basecorr_detrend_box;
                 end
             end
         end
-        observe_ERPDAT.Count_currentERP=6;
+        observe_ERPDAT.Count_currentERP=9;
     end
 
 
@@ -764,7 +764,7 @@ varargout{1} = ERP_basecorr_detrend_box;
 
 
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=5
+        if observe_ERPDAT.Reset_erp_paras_panel~=6
             return;
         end
         estudioworkingmemory('ERPTab_baseline_detrend',0);
@@ -783,7 +783,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         gui_erp_blc_dt.custom_edit.String = '';
         gui_erp_blc_dt.all_bin_chan.Value = 1;
         gui_erp_blc_dt.Selected_bin_chan.Value = 0;
-        observe_ERPDAT.Reset_erp_paras_panel=6;
+        observe_ERPDAT.Reset_erp_paras_panel=7;
     end
 end
 %Progem end:

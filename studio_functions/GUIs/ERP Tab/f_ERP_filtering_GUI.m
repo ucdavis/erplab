@@ -1297,7 +1297,7 @@ varargout{1} = ERP_filtering_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=6
+        if observe_ERPDAT.Count_currentERP~=9
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -1316,7 +1316,7 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.Selected_bin_chan.Enable = 'off';
             gui_erp_filtering.cancel.Enable = 'off';
             gui_erp_filtering.DC_remove.Enable = 'off';
-            observe_ERPDAT.Count_currentERP=7;
+            observe_ERPDAT.Count_currentERP=10;
             return;
         else
             gui_erp_filtering.DC_remove.Enable = 'on';
@@ -1376,7 +1376,6 @@ varargout{1} = ERP_filtering_box;
                 lp_halfamp_Enable = 'off';
                 lp_halfpow_string ='0';
             end
-            
             gui_erp_filtering.apply.Enable = 'on';
             gui_erp_filtering.advanced.Enable = 'on';
             gui_erp_filtering.roll_off.Enable = 'on';
@@ -1386,10 +1385,8 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.lp_halfamp.Enable = lp_halfamp_Enable;
             gui_erp_filtering.hp_tog.Value = highpass_toggle_value;
             gui_erp_filtering.lp_tog.Value = lowpass_toggle_value;
-            
             gui_erp_filtering.hp_tog.Enable = 'on';
             gui_erp_filtering.lp_tog.Enable = 'on';
-            
             
             Selected_erpset = observe_ERPDAT.CURRENTERP;
             Check_Selected_erpset = [0 0 0 0 0 0 0];
@@ -1402,7 +1399,7 @@ varargout{1} = ERP_filtering_box;
                 gui_erp_filtering.all_bin_chan.Value = 1;
                 gui_erp_filtering.all_bin_chan.Enable = 'on';
             end
-            observe_ERPDAT.Count_currentERP=7;
+            observe_ERPDAT.Count_currentERP=10;
         end
     end
 
@@ -1450,7 +1447,7 @@ varargout{1} = ERP_filtering_box;
     end
 
     function Reset_erp_panel_change(~,~)
-        if observe_ERPDAT.Reset_erp_paras_panel~=6
+        if observe_ERPDAT.Reset_erp_paras_panel~=7
             return;
         end
         estudioworkingmemory('ERPTab_filter',0);
@@ -1486,7 +1483,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.lp_halfamp.String = '30';
         gui_erp_filtering.hp_tog.Value = 0;
         gui_erp_filtering.lp_tog.Value = 1;
-        observe_ERPDAT.Reset_erp_paras_panel=7;
+        observe_ERPDAT.Reset_erp_paras_panel=8;
     end
 end
 %Progem end:

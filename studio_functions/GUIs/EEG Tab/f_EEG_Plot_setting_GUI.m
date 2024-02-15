@@ -1084,11 +1084,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EEG_plotset{3} =5;
         end
         EStduio_gui_EEG_plotset.WinLength_edit.String = num2str(EEG_plotset{3});
-        
         %%vertical scale
         EEG_plotset{4} =50;
         EStduio_gui_EEG_plotset.v_scale_edit.String = num2str(EEG_plotset{4});
-        
         %%Remove DC
         if ~isempty(observe_EEGDAT.EEG)
             if observe_EEGDAT.EEG.trials>1
@@ -1102,15 +1100,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EEG_plotset{6}=0;
         end
         EStduio_gui_EEG_plotset.rem_DC.Value=EEG_plotset{6};
-        
         %%display event?
         EEG_plotset{7} =1;
         EStduio_gui_EEG_plotset.disp_event.Value = 1;
-        
         %%Stack?
         EEG_plotset{8}=0;
         EStduio_gui_EEG_plotset.disp_stack.Value = 0;
-        
         %%Norm?
         EEG_plotset{9}=0;
         EStduio_gui_EEG_plotset.disp_norm.Value = 0;
