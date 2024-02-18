@@ -185,7 +185,7 @@ varargout{1} = box_eeg_history;
 
 %%--------Setting current eegset/session history based on the current updated eegset------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=23
+        if observe_EEGDAT.count_current_eeg ~=24
             return;
         end
         if  isempty(observe_EEGDAT.EEG)
@@ -197,13 +197,10 @@ varargout{1} = box_eeg_history;
             set(gui_eeg_history.uitable,'Data', strsplit(eeg_history(1,:), '\n')');
             return;
         end
-        
         gui_eeg_history.save_script.Enable = 'on';
         gui_eeg_history.eeg_h_all.Enable = 'on';
         gui_eeg_history.eeg_h_EEG.Enable = 'on';
         gui_eeg_history.uitable.Enable = 'on';
-        
-        
         if gui_eeg_history.eeg_h_all.Value ==1
             try
                 eeg_history =  observe_EEGDAT.EEG.history;

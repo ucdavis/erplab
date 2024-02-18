@@ -435,8 +435,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
 
 
     function about_estudio(~,~)
-        
-        
+        abouterplabGUI;
     end
 
 

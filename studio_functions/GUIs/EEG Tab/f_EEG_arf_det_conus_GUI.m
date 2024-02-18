@@ -869,7 +869,7 @@ varargout{1} = Eegtab_box_art_det_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=13
+        if observe_EEGDAT.count_current_eeg ~=14
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -886,7 +886,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             else
                 Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=14;
+            observe_EEGDAT.count_current_eeg=15;
             return;
         end
         
@@ -903,20 +903,16 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
-            %             erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Preview: Only work for single EEG, and we threfore gray it out');
-            %             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_art_det_conus.detectar_preview.String = 'Only for single EEG';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable = 'off';
         else
             Eegtab_EEG_art_det_conus.detectar_preview.String = 'Preview';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable = 'on';
         end
-        
         chanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
         if isempty(chanArray) || min(chanArray(:)) > observe_EEGDAT.EEG.nbchan || max(chanArray(:)) > observe_EEGDAT.EEG.nbchan
             Eegtab_EEG_art_det_conus.chan_edit.String = vect2colon([1:observe_EEGDAT.EEG.nbchan]);
         end
-        
         %%set default parameters
         if isempty(str2num(Eegtab_EEG_art_det_conus.voltage_edit.String))
             Eegtab_EEG_art_det_conus.voltage_edit.String = '500';
@@ -927,7 +923,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         if isempty(str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String))
             Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
         end
-        observe_EEGDAT.count_current_eeg=14;
+        observe_EEGDAT.count_current_eeg=15;
     end
 
 

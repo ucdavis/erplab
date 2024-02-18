@@ -78,8 +78,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
             'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[60 -1 60]);
         
-        
-        
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_event2bin.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -105,8 +103,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.bdf_Run = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.reset_Run,...
             'String','Run','callback',@eeg_bdf_Run,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_event2bin.bdf_Run.KeyPressFcn=  @eeg_event2bin_presskey;
-        
-        
         
         set(EStduio_eegtab_EEG_event2bin.DataSelBox,'Sizes',[30 100 30]);
         estudioworkingmemory('EEGTab_event2bin',0);
@@ -506,11 +502,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         observe_EEGDAT.eeg_panel_message =2;
     end
 
-
-
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=16
+        if observe_EEGDAT.count_current_eeg ~=17
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1
@@ -524,7 +518,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'off';
-            observe_EEGDAT.count_current_eeg=17;
+            observe_EEGDAT.count_current_eeg=18;
             return;
         end
         for ii = 1:100
@@ -555,7 +549,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'on';
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
-        observe_EEGDAT.count_current_eeg=17;
+        observe_EEGDAT.count_current_eeg=18;
     end
 
 %%-------------------------------------------------------------------------

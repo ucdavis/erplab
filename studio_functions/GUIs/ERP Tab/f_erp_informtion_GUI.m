@@ -85,7 +85,7 @@ drawui_erp_information(FonsizeDefault);
         N_trial_total = 0;
         N_trial_rejected = 0;
         if N_trial_total ==0
-            Total_rejected_trials = strcat('0');
+            Total_rejected_trials = strcat('0%');
         else
             Total_rejected_trials = strcat('0%');
         end
@@ -105,7 +105,28 @@ drawui_erp_information(FonsizeDefault);
         uiextras.Empty('Parent', gui_erp_information.total_rejected_show);
         set(gui_erp_information.total_rejected_show,'Sizes',[150 250]);
         
-        set(gui_erp_information.DataSelBox,'Sizes',[20 20 20 20 20 30])
+        
+        %%---------------------Table---------------------------------------
+        gui_erp_information.bin_latency_title = uiextras.HBox('Parent', gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', gui_erp_information.bin_latency_title,...
+            'String','Trial information:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        
+        gui_erp_information.table_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = [];
+            dsnames{ii,2} = [];
+            dsnames{ii,3} = [];
+            dsnames{ii,4} = [];
+            dsnames{ii,5} = [];
+        end
+        gui_erp_information.table_event = uitable(  ...
+            'Parent'        , gui_erp_information.table_title,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {50,50,60,60,50}, ...
+            'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
+            'RowName'       , [],...
+            'ColumnEditable',[false, false, false, false, false]);
+        set(gui_erp_information.DataSelBox,'Sizes',[20 20 20 20 20 30 20 100])
     end
 
 
@@ -119,40 +140,58 @@ drawui_erp_information(FonsizeDefault);
             return;
         end
         
-        ERP_current_index = observe_ERPDAT.ERP;
-        if ~isempty(ERP_current_index)
-            ERP_time_resolution = strcat(32,num2str(roundn(1000/ERP_current_index.srate,-2)),32,'ms(resolution);',32,num2str(ERP_current_index.srate),32,'Hz');
+        ERP = observe_ERPDAT.ERP;
+        if ~isempty(ERP)
+            ERP_time_resolution = strcat(32,num2str(roundn(1000/ERP.srate,-2)),32,'ms(resolution);',32,num2str(ERP.srate),32,'Hz');
         else
             ERP_time_resolution = strcat(32,num2str(0),32,'ms(time resolution);',32,num2str(0),32,'Hz (rate)');
         end
         gui_erp_information.samplingrate_resolution.String = ERP_time_resolution;
         try
-            gui_erp_information.epoch_name.String=char(strcat(num2str(roundn(ERP_current_index.times(1),-2)),32,'to',32,num2str(roundn(ERP_current_index.times(end),-2)),32,...
-                'ms(',num2str(numel(ERP_current_index.times)),32,'pts)'));
+            gui_erp_information.epoch_name.String=char(strcat(num2str(roundn(ERP.times(1),-2)),32,'to',32,num2str(roundn(ERP.times(end),-2)),32,...
+                'ms(',num2str(numel(ERP.times)),32,'pts)'));
         catch
             gui_erp_information.epoch_name.String=char(strcat('0 to 0 ms(0 pts)'));
         end
         try
-            gui_erp_information.numofchan.String=num2str(ERP_current_index.nchan);
+            gui_erp_information.numofchan.String=num2str(ERP.nchan);
         catch
             gui_erp_information.numofchan.String=num2str(0);
         end
         try
-            gui_erp_information.numofbin.String=num2str(ERP_current_index.nbin);
+            gui_erp_information.numofbin.String=num2str(ERP.nbin);
         catch
             gui_erp_information.numofbin.String=num2str(0);
         end
-        if ~isempty(ERP_current_index)
-            N_trials = ERP_current_index.ntrials;
+        if ~isempty(ERP)
+            N_trials = ERP.ntrials;
             N_trial_total = sum(N_trials.accepted(:))+sum(N_trials.rejected(:))+sum(N_trials.invalid(:));
             N_trial_rejected = sum(N_trials.rejected(:));
             if N_trial_total ==0
-                Total_rejected_trials = strcat('0');
+                Total_rejected_trials = strcat('0 (0)');
             else
-                Total_rejected_trials = strcat(num2str(roundn(N_trial_rejected/N_trial_total,-3)*100),'%');
+                Total_rejected_trials = strcat([num2str(N_trial_rejected),32,'(',num2str(roundn(N_trial_rejected/N_trial_total,-3)*100),'%)']);
             end
             gui_erp_information.total_rejected_percentage.String = Total_rejected_trials;
             Enable_label = 'on';
+            try
+                for ii = 1:numel(ERP.ntrials.accepted)
+                    dsnames{ii,1} = ii;
+                    dsnames{ii,2} = ERP.ntrials.accepted(ii)+ ERP.ntrials.rejected(ii)+ERP.ntrials.invalid(ii);
+                    dsnames{ii,3} = ERP.ntrials.accepted(ii);
+                    dsnames{ii,4} = ERP.ntrials.rejected(ii);
+                    dsnames{ii,5} = ERP.ntrials.invalid(ii);
+                end
+            catch
+                for ii = 1:100
+                    dsnames{ii,1} = [];
+                    dsnames{ii,2} = [];
+                    dsnames{ii,3} = [];
+                    dsnames{ii,4} = [];
+                    dsnames{ii,5} = [];
+                end
+            end
+            gui_erp_information.table_event.Data = dsnames;
         else
             gui_erp_information.total_rejected_percentage.String = '0';
             Enable_label = 'off';

@@ -472,7 +472,7 @@ varargout{1} = EEG_epoch_detrend_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=20
+        if observe_EEGDAT.count_current_eeg ~=21
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials==1
@@ -506,7 +506,7 @@ varargout{1} = EEG_epoch_detrend_box;
                 gui_eeg_epoch_dt.custom_edit.Enable = 'off';
             end
         end
-        observe_EEGDAT.count_current_eeg=21;
+        observe_EEGDAT.count_current_eeg=22;
     end
 
 %%--------------Reset this panel with the default parameters---------------

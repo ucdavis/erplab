@@ -897,7 +897,7 @@ varargout{1} = EStudio_box_eeglab_ica;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=5
+        if observe_EEGDAT.count_current_eeg ~=6
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
@@ -913,7 +913,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
-            observe_EEGDAT.count_current_eeg=6;
+            observe_EEGDAT.count_current_eeg=7;
             return;
         end
         
@@ -935,7 +935,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
-            observe_EEGDAT.count_current_eeg=6;
+            observe_EEGDAT.count_current_eeg=7;
             return;
         end
         
@@ -972,7 +972,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(2, 'Warning: ICLabel default plugin missing (probably due to downloading zip file from Github). Install manually.\n');
             EStduio_eegtab_eeglab_ica.classifyics_iclabel.Enable= 'off';
         end
-        observe_EEGDAT.count_current_eeg=6;
+        observe_EEGDAT.count_current_eeg=7;
     end
 
 %%--------------Reset this panel with the default parameters---------------

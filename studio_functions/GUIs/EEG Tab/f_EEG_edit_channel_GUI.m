@@ -602,7 +602,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=6
+        if observe_EEGDAT.count_current_eeg ~=7
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || (~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.chanlocs))
@@ -613,7 +613,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             EStduio_eegtab_EEG_edit_chan.edit_chanlocs.Enable='off';
             EStduio_eegtab_EEG_edit_chan.select_edit_chan.Enable='off';
             EStduio_eegtab_EEG_edit_chan.browse_chan.Enable='off';
-            observe_EEGDAT.count_current_eeg=7;
+            observe_EEGDAT.count_current_eeg=8;
             return;
         end
         EStduio_eegtab_EEG_edit_chan.mode_modify.Enable ='on';
@@ -623,7 +623,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         EStduio_eegtab_EEG_edit_chan.edit_chanlocs.Enable='on';
         EStduio_eegtab_EEG_edit_chan.select_edit_chan.Enable='on';
         EStduio_eegtab_EEG_edit_chan.browse_chan.Enable='on';
-        observe_EEGDAT.count_current_eeg=7;
+        observe_EEGDAT.count_current_eeg=8;
     end
 
 %%-------------------------------------------------------------------------

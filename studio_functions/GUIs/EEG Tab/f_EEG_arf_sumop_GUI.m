@@ -136,7 +136,7 @@ varargout{1} = Eegtab_box_art_sumop;
         inputoption = resetrejGUI; % open GUI
         
         if isempty(inputoption)
-%             disp('User selected Cancel')
+            %             disp('User selected Cancel')
             return
         end
         arjm  = inputoption{1};
@@ -265,7 +265,7 @@ varargout{1} = Eegtab_box_art_sumop;
             dircom = 'none';
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_synctrej');
+        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_synctrej');
         if isempty(Answer)
             beep;
             %disp('User selected Cancel');
@@ -289,7 +289,7 @@ varargout{1} = Eegtab_box_art_sumop;
             end
             [EEG, LASTCOM] = pop_syncroartifacts(EEG, 'Direction', dircom, 'History', 'implicit');
             if isempty(LASTCOM)
-%                 disp('User selected cancel');
+                %                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -299,7 +299,7 @@ varargout{1} = Eegtab_box_art_sumop;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-           checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
@@ -519,7 +519,7 @@ varargout{1} = Eegtab_box_art_sumop;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=19
+        if observe_EEGDAT.count_current_eeg ~=20
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -534,7 +534,7 @@ varargout{1} = Eegtab_box_art_sumop;
             else
                 Eegtab_box_art_sumop.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=20;
+            observe_EEGDAT.count_current_eeg=21;
             return;
         end
         
@@ -545,7 +545,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_onevalue.Enable = 'on';
         Eegtab_EEG_art_sumop.art_table.Enable = 'on';
         Eegtab_EEG_art_sumop.art_graphic.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=20;
+        observe_EEGDAT.count_current_eeg=21;
     end
 end
 

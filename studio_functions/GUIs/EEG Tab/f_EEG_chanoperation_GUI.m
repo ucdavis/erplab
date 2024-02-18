@@ -663,7 +663,7 @@ varargout{1} = EEG_chan_operation_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=7
+        if observe_EEGDAT.count_current_eeg ~=8
             return;
         end
         if isempty(observe_EEGDAT.EEG)
@@ -715,7 +715,7 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.ref_asst.Enable = Enable_label;
         gui_eegtab_chan_optn.locaInfor.Enable = Enable_label;
         gui_eegtab_chan_optn.cancel.Enable = Enable_label;
-        observe_EEGDAT.count_current_eeg =8;
+        observe_EEGDAT.count_current_eeg =9;
     end
 
 

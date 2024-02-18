@@ -1155,7 +1155,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=18
+        if observe_EEGDAT.count_current_eeg ~=19
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -1181,7 +1181,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             else
                 Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=19;
+            observe_EEGDAT.count_current_eeg=20;
             return;
         end
         
@@ -1336,7 +1336,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
         
         Eegtab_EEG_art_det_epoch.mflag1.Enable = 'off';
-        observe_EEGDAT.count_current_eeg=19;
+        observe_EEGDAT.count_current_eeg=20;
     end
 
 %%--------------press return to execute "Apply"----------------------------

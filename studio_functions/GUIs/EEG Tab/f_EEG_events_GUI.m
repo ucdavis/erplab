@@ -924,7 +924,7 @@ varargout{1} = EStudio_eeg_events_box;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=10
+        if observe_EEGDAT.count_current_eeg ~=11
             return;
         end
         if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event)
@@ -940,8 +940,7 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
-            
-            observe_EEGDAT.count_current_eeg=11;
+            observe_EEGDAT.count_current_eeg=12;
             return;
         end
         
@@ -999,7 +998,7 @@ varargout{1} = EStudio_eeg_events_box;
         end
         EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
-        observe_EEGDAT.count_current_eeg=11;
+        observe_EEGDAT.count_current_eeg=12;
     end
 end
 

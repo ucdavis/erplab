@@ -241,7 +241,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             EEG_dq_fre_conus.chans_edit.String  = vect2colon(chan_label_select);
         else
             beep;
-%             disp('User selected Cancel');
+            %             disp('User selected Cancel');
             return
         end
     end
@@ -427,7 +427,6 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         fqlabels = fqlabelsNew;
         erpworkingmemory('pop_continuousFFT',{chanArray,fqbands,fqlabels});
         
-        %         try
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -445,8 +444,6 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                 fqlabels, 'viewGUI','true','History', 'implicit');
             
             if isempty(LASTCOM)
-%                 disp('User selected cancel');
-                fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
             if Numofeeg==1
@@ -456,19 +453,13 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
         end%%end for loop of subjects
-        
         observe_EEGDAT.eeg_panel_message =2;
-        %         catch
-        %             observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-        %             fprintf( [repmat('-',1,100) '\n']);
-        %             return;
-        %         end
     end
 
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=15
+        if observe_EEGDAT.count_current_eeg ~=16
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -485,7 +476,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             else
                 Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=16;
+            observe_EEGDAT.count_current_eeg=17;
             return;
         end
         
@@ -502,7 +493,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.resetable.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_run.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_cancel.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=16;
+        observe_EEGDAT.count_current_eeg=17;
     end
 
 
@@ -550,7 +541,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             return;
         end
         estudioworkingmemory('EEGTab_dq_fre_conus',0);
-%         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
+        %         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];
         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 1 1 1];

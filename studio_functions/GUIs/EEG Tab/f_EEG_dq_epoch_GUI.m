@@ -577,7 +577,7 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=21
+        if observe_EEGDAT.count_current_eeg ~=22
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -595,7 +595,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             else
                 Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=22;
+            observe_EEGDAT.count_current_eeg=23;
             return;
         end
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
@@ -615,7 +615,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if EEG_dq_epoch.def_para.Value==1
             EEG_dq_epoch.custom_para_op.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg=22;
+        observe_EEGDAT.count_current_eeg=23;
     end
 
 

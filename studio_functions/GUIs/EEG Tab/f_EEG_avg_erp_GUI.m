@@ -521,8 +521,6 @@ varargout{1} = Eegtab_box_avg_erp;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        
-        
         incALL=EEG_avg_erp.all_marks.Value;
         excart=EEG_avg_erp.excld_marks.Value;
         onlyart=EEG_avg_erp.marked_epochs.Value;
@@ -579,7 +577,6 @@ varargout{1} = Eegtab_box_avg_erp;
         wavg = 1;
         
         answer = {EEGArray(1), artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,DQ_spec,DQ_preavg_txt,DQ_customWins};
-        
         
         artcrite  = answer{2};
         if ~iscell(artcrite)
@@ -723,7 +720,7 @@ varargout{1} = Eegtab_box_avg_erp;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=22
+        if observe_EEGDAT.count_current_eeg ~=23
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -742,7 +739,7 @@ varargout{1} = Eegtab_box_avg_erp;
             else
                 Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=23;
+            observe_EEGDAT.count_current_eeg=24;
             return;
         end
         
@@ -765,7 +762,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if EEG_avg_erp.def_para.Value==1
             EEG_avg_erp.custom_para_op.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg=23;
+        observe_EEGDAT.count_current_eeg=24;
     end
 
 

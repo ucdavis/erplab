@@ -1326,7 +1326,7 @@ varargout{1} = EEG_filtering_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=8
+        if observe_EEGDAT.count_current_eeg ~=9
             return;
         end
         
@@ -1341,7 +1341,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.all_chan.Enable = 'off';
             gui_eegtab_filtering.Selected_chan.Enable = 'off';
             gui_eegtab_filtering.cancel.Enable = 'off';
-            observe_EEGDAT.count_current_eeg=9;
+            observe_EEGDAT.count_current_eeg=10;
             return;
         else
             gui_eegtab_filtering.all_chan.Enable = 'on';
@@ -1417,8 +1417,7 @@ varargout{1} = EEG_filtering_box;
                 gui_eegtab_filtering.DC_remove.Enable = 'on';
             end
         end
-        
-        observe_EEGDAT.count_current_eeg=9;
+        observe_EEGDAT.count_current_eeg=10;
     end
 
 
