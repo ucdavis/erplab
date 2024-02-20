@@ -195,6 +195,27 @@ if isempty(Yticks) || numel(Yticks)==1
     Yticks = yscale;
 end
 
+%%-----------------------standard error-----------------------------------
+try SEMValue = ERPTab_plotset_pars{11};catch  SEMValue = [0 0 0];end
+
+try SEMFlag =SEMValue(1); catch SEMFlag=0; end
+if isempty(SEMFlag) || (SEMFlag~=0 && SEMFlag~=1)
+    SEMFlag=0;
+end
+if SEMFlag==1
+    try Standerr = SEMValue(2); catch Standerr=1; end
+    if isempty(Standerr) || numel(Standerr)~=1 || any(Standerr<0) || any(Standerr>10)
+        Standerr=1;
+    end
+    
+    try Transparency = SEMValue(3); catch Transparency=0.2; end
+    if isempty(Transparency) || numel(Transparency)~=1 || any(Transparency<0) || any(Transparency>1)
+        Transparency=0.2;
+    end
+else
+    Standerr=0;
+    Transparency=0;
+end
 
 
 try columNum =ERPTab_plotset_pars{5}; catch columNum=1; end
@@ -288,8 +309,7 @@ FonsizeDefault = f_get_default_fontsize();
 FontSizeLeg = FonsizeDefault;
 CBEFontsize = FonsizeDefault;
 LabelsName = labelsdef;
-Standerr = 0;
-Transparency = 0;
+
 Gridspace = [1 20;1 20];
 timeRange = [timeStart,timEnd];
 [timeticksdef stepX]= default_time_ticks_studio(ERP, timeRange);
@@ -327,15 +347,15 @@ qtimes = ERP.times(latsamp1(1):latsamp1(2));
 
 [xxx, latsamp, latdiffms] = closest(qtimes, 0);
 if isempty(latsamp) || any(latsamp<=0)
-   labelxrange = 0; 
+    labelxrange = 0;
 else
-labelxrange = qtimes(latsamp)-qtimes(1);
+    labelxrange = qtimes(latsamp)-qtimes(1);
 end
 CBELabels = [1 100 1];
 if labelxrange<=0
     CBELabels = [1 100 1];
 else
-   CBELabels(1) = 100*labelxrange/(timeRange(2)-timeRange(1))+1;
+    CBELabels(1) = 100*labelxrange/(timeRange(2)-timeRange(1))+1;
 end
 
 % CBELabels = [0 100 1];
@@ -384,6 +404,8 @@ else
     OutputViewerparerp{11} =Binchan_Overlay;
     OutputViewerparerp{12} = rowNum;
     OutputViewerparerp{13} = GridposArray;
+    OutputViewerparerp{14} = Standerr;
+    OutputViewerparerp{15} = Transparency;
 end
 
 

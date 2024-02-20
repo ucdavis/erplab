@@ -864,7 +864,7 @@ end
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
 checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
-filenamex = [pathstr, file_name,'.set'];
+filenamex = [pathstr,filesep, file_name,'.set'];
 if exist(filenamex, 'file')~=0
     msgboxText =  ['This EEG Data already exist.\n'...;
         'Would you like to overwrite it?'];

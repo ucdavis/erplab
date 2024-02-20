@@ -213,11 +213,7 @@ varargout{1} = ERP_filtering_box;
         uicontrol('Style','text','Parent',gui_erp_filtering.rolloff_row,'String','dB/Octave','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 3D
         
         
-        gui_erp_filtering.REMOVE_DC = uiextras.HBox('Parent', gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
-        gui_erp_filtering.DC_remove = uicontrol('Style','checkbox','Parent', gui_erp_filtering.REMOVE_DC,...
-            'String','Remove DC Offset','Value',0,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off');%,'callback',@remove_dc
-        gui_erp_filtering.DC_remove.KeyPressFcn= @erp_filter_presskey;
-        gui_erp_filtering.params{9} = gui_erp_filtering.DC_remove.Value;
+        gui_erp_filtering.params{9} = 0;
         %         uiextras.Empty('Parent',gui_erp_filtering.REMOVE_DC);
         gui_erp_filtering.filt_buttons = uiextras.HBox('Parent', gui_erp_filtering.filtering,'BackgroundColor',ColorB_def);
         %         uiextras.Empty('Parent',  gui_erp_filtering.filt_buttons);
@@ -227,7 +223,7 @@ varargout{1} = ERP_filtering_box;
             'callback',@advanced_ERP_filter,'Enable',Advance_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_filtering.apply = uicontrol('Style','pushbutton','Parent',gui_erp_filtering.filt_buttons,'String','Run',...
             'callback',@ERP_filter_apply,'Enable',Apply_ERP_filter_enable,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        set( gui_erp_filtering.filtering,'Sizes',[20 20 20 80 20 20 30]);
+        set( gui_erp_filtering.filtering,'Sizes',[20 20 20 80 20 30]);
         
         estudioworkingmemory('ERPTab_filter',0);
     end
@@ -658,7 +654,7 @@ varargout{1} = ERP_filtering_box;
             def = defx;
         end
         
-        remove_dc =  gui_erp_filtering.DC_remove.Value;
+        remove_dc =  0;
         filterorder = 2*gui_erp_filtering.roll_off.Value;
         locutoff = str2num(gui_erp_filtering.hp_halfamp.String);%%
         hicutoff = str2num(gui_erp_filtering.lp_halfamp.String);
@@ -788,7 +784,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.params{4} = str2num(gui_erp_filtering.hp_halfpow.String);
         gui_erp_filtering.params{7} = str2num(gui_erp_filtering.lp_halfpow.String);
         gui_erp_filtering.params{8} =gui_erp_filtering.roll_off.Value;
-        gui_erp_filtering.params{9} = gui_erp_filtering.DC_remove.Value;
+        gui_erp_filtering.params{9} = 0;
         
         Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,'_filt');
         if isempty(Answer)
@@ -911,7 +907,7 @@ varargout{1} = ERP_filtering_box;
             end
         end
         
-        def{7} =  gui_erp_filtering.DC_remove.Value;
+        def{7} =  0;
         def{8} = [];
         fdesign = 'butter';
         def{3} = 2*gui_erp_filtering.roll_off.Value;
@@ -1009,7 +1005,7 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.roll_off.Value =  filterorder/2;
             gui_erp_filtering.roll_off.String = {'12','24','36','48'}';
             gui_erp_filtering.roll_off.Enable = 'on';
-            gui_erp_filtering.DC_remove.Value =  remove_dc;
+%             gui_erp_filtering.DC_remove.Value =  remove_dc;
             %%High-pass filtering
             [bt, at, labelf, v, frec3dB, xdB_at_fx, orderx] = filter_tf(typef, filterorder, hicutoff,locutoff,fs);
             if locutoff > 0 && (isempty(hicutoff) || hicutoff ==0 )
@@ -1106,7 +1102,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.params{4} = str2num(gui_erp_filtering.hp_halfpow.String);
         gui_erp_filtering.params{7} = str2num(gui_erp_filtering.lp_halfpow.String);
         gui_erp_filtering.params{8} =gui_erp_filtering.roll_off.Value;
-        gui_erp_filtering.params{9} = gui_erp_filtering.DC_remove.Value;
+        gui_erp_filtering.params{9} = 0;
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_ERP_proces_messg','Filtering (Advanced)');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
@@ -1291,7 +1287,7 @@ varargout{1} = ERP_filtering_box;
         if isempty(DC_remove) || numel(DC_remove)~=1  || (DC_remove~=0 && DC_remove~=1)
             DC_remove =1; gui_erp_filtering.params{9}=1;
         end
-        gui_erp_filtering.DC_remove.Value=DC_remove;
+        
     end
 
 
@@ -1315,11 +1311,11 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.all_bin_chan.Enable = 'off';
             gui_erp_filtering.Selected_bin_chan.Enable = 'off';
             gui_erp_filtering.cancel.Enable = 'off';
-            gui_erp_filtering.DC_remove.Enable = 'off';
+%             gui_erp_filtering.DC_remove.Enable = 'off';
             observe_ERPDAT.Count_currentERP=10;
             return;
         else
-            gui_erp_filtering.DC_remove.Enable = 'on';
+%             gui_erp_filtering.DC_remove.Enable = 'on';
             gui_erp_filtering.cancel.Enable = 'on';
             gui_erp_filtering.all_bin_chan.Enable = 'on';
             gui_erp_filtering.Selected_bin_chan.Enable = 'on';

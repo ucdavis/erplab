@@ -16,7 +16,7 @@ addlistener(observe_ERPDAT,'erp_two_panels_change',@erp_two_panels_change);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
 ERPTab_plotset = struct();
-[version reldate,ColorB_def,ColorF_def,errorColorF_def,ColorBviewer_def] = geterplabstudiodef;
+[version reldate,ColorB_def,ColorF_def,errorColorF_def,~] = geterplabstudiodef;
 %-----------------------------Name the title----------------------------------------------
 if nargin == 0
     fig = figure(); % Parent figure
@@ -118,10 +118,33 @@ varargout{1} = ERP_plotset_box;
         set(ERPTab_plotset.polarity_waveform, 'Sizes',[60  -1 -1]);
         
         ERPTab_plotset.bin_chan = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
-        
         ERPTab_plotset.pagesel = uicontrol('Parent', ERPTab_plotset.bin_chan, 'Style', 'popupmenu','String',...
             {'CHANNELS with BINS overlay','BINS with CHANNELS overlay'},'callback',@pageviewchanged,'FontSize',FonsizeDefault,'Enable','off');
         ERPTab_plotset.pagesel.KeyPressFcn=  @erp_plotsetting_presskey;
+        
+        
+        %%standard error for each ERP wave
+        ERPTab_plotset.SEM_title = uiextras.HBox('Parent', ERPTab_plotset.plotop,'BackgroundColor',ColorB_def);
+        ERPTab_plotset.show_SEM = uicontrol('Style','checkbox','Parent', ERPTab_plotset.SEM_title ,'String','Show standard error',...
+            'callback',@showSEM,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Value',0,'Enable','off'); %
+        ERPTab_plotset.show_SEM.KeyPressFcn = @erp_plotsetting_presskey;
+        SMEString = {'0','1','2','3','4','5','6','7','8','9','10'};
+        ERPTab_plotset.SEM_custom = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.SEM_title ,'String',SMEString,...
+            'callback',@SEMerror,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',2); %
+        ERPTab_plotset.SEM_custom.KeyPressFcn = @erp_plotsetting_presskey;
+        set(ERPTab_plotset.SEM_title,'Sizes',[160 80]);
+        
+        ERPTab_plotset.SEMtrans_title = uiextras.HBox('Parent', ERPTab_plotset.plotop,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', ERPTab_plotset.SEMtrans_title ,'String','transoarency',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','right'); %
+        SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
+        ERPTab_plotset.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.SEMtrans_title ,'String',SMEtransString,...
+            'callback',@SEMtrans,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Value',3); %
+        ERPTab_plotset.SEMtrans_custom.KeyPressFcn = @erp_plotsetting_presskey;
+        set(ERPTab_plotset.SEMtrans_title,'Sizes',[160 80]);
+        ERPTab_plotset.SEM_custom.Enable = 'off';
+        ERPTab_plotset.SEMtrans_custom.Enable = 'off';
+        ERPTab_plotset.show_SEM.Enable = 'off';
         %%channel order
         ERPTab_plotset.chanorder_title = uiextras.HBox('Parent',ERPTab_plotset.plotop ,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',ERPTab_plotset.chanorder_title,'String','Channel Order (for plotting only):',...
@@ -186,7 +209,7 @@ varargout{1} = ERP_plotset_box;
         uiextras.Empty('Parent', ERPTab_plotset.reset_apply); % 1A
         set(ERPTab_plotset.reset_apply, 'Sizes',[10 -1  30 -1 10]);
         
-        set(ERPTab_plotset.plotop, 'Sizes', [20 20 20 20 20 20 25 25 20 20 25 20 25 25 30]);
+        set(ERPTab_plotset.plotop, 'Sizes', [20 20 20 20 20 20 25 25 20 20 20 20 25 20 25 25 30]);
         ERPTab_plotset.chanorderIndex = 1;
         ERPTab_plotset.chanorder{1,1}=[];
         ERPTab_plotset.chanorder{1,2} = '';
@@ -748,6 +771,71 @@ varargout{1} = ERP_plotset_box;
         
     end
 
+    function showSEM(Source,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+        
+        if Source.Value ==1
+            ERPTab_plotset.SEM_custom.Enable = 'on';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'on';
+        else
+            ERPTab_plotset.SEM_custom.Enable = 'off';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'off';
+        end
+    end
+
+
+    function SEMerror(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+
+    function SEMtrans(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=2;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        estudioworkingmemory('ERPTab_plotset',1);
+        ERPTab_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_apply.ForegroundColor = [1 1 1];
+        ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
+    end
+
+
 %%----------------------channel order-number-------------------------------
     function chanorder_number(~,~)
         if isempty(observe_ERPDAT.ERP)
@@ -812,15 +900,15 @@ varargout{1} = ERP_plotset_box;
                 ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             end
         catch
-            MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order: It seems that chanlocs for the current ERP is empty and please check it out'));
-            erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-            observe_ERPDAT.Process_messg=4;
             ERPTab_plotset.chanorder_number.Value=1;
             ERPTab_plotset.chanorder_front.Value=0;
             ERPTab_plotset.chanorder_custom.Value=0;
             ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
-            return;
+            msgboxText = ['It seems that chanloc for the current EEG is empty and please check it out'];
+            title = 'Estudio: Plot Settings > Simple 10/20 system order: ';
+            errorfound(sprintf(msgboxText), title);
+            return
         end
         
         %%check if the channels belong to 10/20 system
@@ -1848,6 +1936,18 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayputarray;
+        
+        if ERPTab_plotset.show_SEM.Value == 1
+            ERPTab_plotset.SEM_custom.Enable = 'on';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'on';
+            SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+            SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
+            ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
+        else
+            ERPTab_plotset_pars{11} = [0,0, 0];
+        end
+        
+        
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);%%save the changed paras to memory file
         %%channel orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
@@ -1919,6 +2019,9 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.positive_up.Enable =enbaleflag;
         ERPTab_plotset.negative_up.Enable =enbaleflag;
         ERPTab_plotset.pagesel.Enable =enbaleflag;
+        ERPTab_plotset.SEM_custom.Enable = enbaleflag;
+        ERPTab_plotset.SEMtrans_custom.Enable = enbaleflag;
+        ERPTab_plotset.show_SEM.Enable = enbaleflag;
         ERPTab_plotset.chanorder_number.Enable =enbaleflag;
         ERPTab_plotset.chanorder_front.Enable =enbaleflag;
         ERPTab_plotset.chanorder_custom.Enable =enbaleflag;
@@ -2086,13 +2189,29 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset_pars{8}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
         ERPTab_plotset_pars{9} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
         ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayputarray;
+        if isempty(observe_ERPDAT.ERP.binerror)
+            ERPTab_plotset.show_SEM.Value=0;
+            ERPTab_plotset.show_SEM.Enable = 'off';
+        else
+           ERPTab_plotset.show_SEM.Enable = 'on'; 
+        end
+        %%standard error
+        if ERPTab_plotset.show_SEM.Value == 1
+            ERPTab_plotset.SEM_custom.Enable = 'on';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'on';
+            SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+            SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
+            ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
+        else
+            ERPTab_plotset_pars{11} = [0,0,0];
+             ERPTab_plotset.SEM_custom.Enable = 'off';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'off';
+        end
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
-        
         ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
         ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
-        
         observe_ERPDAT.Count_currentERP=4;
     end
 
@@ -2101,7 +2220,6 @@ varargout{1} = ERP_plotset_box;
         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
             return;
         end
-        
         ChangeFlag =  estudioworkingmemory('ERPTab_plotset');
         if ChangeFlag~=1
             return;
@@ -2278,6 +2396,32 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset_pars{8}  = ERPTab_plotset.rowNum_set.Value;%%number of rows
         ERPTab_plotset_pars{9} = ERPTab_plotset.gridlayoutdef.Value ;%%default grid layout?
         ERPTab_plotset_pars{10} = gridlayputarraydef;
+        try show_SEM = ERPTab_plotset_pars{11};catch  show_SEM=[0,1,0.2];end;
+        try  ERPTab_plotset.show_SEM.Value =show_SEM(1); catch  ERPTab_plotset.show_SEM.Value=0; end;
+       
+        try SEM_custom = show_SEM(2); catch SEM_custom=1;  end
+        if isempty(SEM_custom) || numel(SEM_custom)~=1 || any(SEM_custom<0) || any(SEM_custom>10)
+            SEM_custom=1;
+        end
+        ERPTab_plotset.SEM_custom.Value = SEM_custom+1;
+        
+        try SEMtrans_custom = show_SEM(3); catch SEMtrans_custom = 0.2; end
+        if isempty(SEMtrans_custom) || numel(SEMtrans_custom)~=1 || any(SEMtrans_custom<0) || any(SEMtrans_custom>1)
+            SEMtrans_custom=0.2;
+        end
+        ERPTab_plotset.SEMtrans_custom.Value = SEMtrans_custom*10+1;
+        if ERPTab_plotset.show_SEM.Value == 1
+            SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+            SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
+            ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
+             ERPTab_plotset.SEM_custom.Enable = 'on';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'on';
+        else
+            ERPTab_plotset_pars{11} = [0,0,0];
+             ERPTab_plotset.SEM_custom.Enable = 'off';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'off';
+        end
+        
         ERPTab_plotset.paras{1} = ERPTab_plotset.timet_auto.Value;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;

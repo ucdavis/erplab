@@ -87,14 +87,14 @@ if ~isempty(filename)
     set(handles.edit_filename, 'String', '');
     set(handles.radiobutton_saveas, 'Value', 0);
     set(handles.filename_erpname, 'Enable', 'off');
-    set(handles.erpname_filename, 'Enable', 'off');
+%     set(handles.erpname_filename, 'Enable', 'off');
     set(handles.pushbutton_browse, 'Enable', 'off');
 else
     set(handles.edit_filename, 'String', '');
     set(handles.radiobutton_saveas, 'Value', 0);
     set(handles.edit_filename, 'Enable', 'off');
     set(handles.filename_erpname, 'Enable', 'off');
-    set(handles.erpname_filename, 'Enable', 'off');
+%     set(handles.erpname_filename, 'Enable', 'off');
     set(handles.pushbutton_browse, 'Enable', 'off');
 end
 %
@@ -156,21 +156,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in erpname_filename.
-function erpname_filename_Callback(hObject, eventdata, handles)
-
-fname   = get(handles.edit_filename, 'String');
-%
-if strcmp(fname,'')
-    msgboxText =  'You must enter a filename first!';
-    title = 'ERPLAB: f_EEG_save_single GUI empty filename';
-    errorfound(msgboxText, title);
-    return
-end
-[pathstr, fname, ext] = fileparts(fname);
-erpname = fname;
-set(handles.edit_erpname, 'String', erpname);
-
 
 % --- Executes on button press in radiobutton_saveas.
 function radiobutton_saveas_Callback(hObject, eventdata, handles)
@@ -179,12 +164,10 @@ if get(hObject, 'Value')
     set(handles.edit_filename, 'Enable', 'on');
     set(handles.filename_erpname, 'Enable', 'on');
     set(handles.pushbutton_browse, 'Enable', 'on');
-    set(handles.erpname_filename, 'Enable', 'on');
 else
     set(handles.edit_filename, 'Enable', 'off');
     set(handles.filename_erpname, 'Enable', 'off');
     set(handles.pushbutton_browse, 'Enable', 'off');
-    set(handles.erpname_filename, 'Enable', 'off');
     set(handles.edit_filename, 'String', '');
 end
 
@@ -225,8 +208,8 @@ if strcmp(fname,'') || isempty(fname)
     return
 end
 [pathstr, fname, ext] = fileparts(fname);
-erpname = fname;
-set(handles.edit_filename, 'String', erpname);
+erpname = [fname,'.set'];
+set(handles.edit_filename, 'String', fullfile(pathstr,erpname));
 
 
 

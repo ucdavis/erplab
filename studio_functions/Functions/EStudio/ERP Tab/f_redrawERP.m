@@ -187,7 +187,7 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
         f_plotaberpwave(ERP,OutputViewerparerp{1},OutputViewerparerp{2},...
             OutputViewerparerp{3},OutputViewerparerp{4},OutputViewerparerp{5},...
             OutputViewerparerp{6},OutputViewerparerp{9},OutputViewerparerp{10},OutputViewerparerp{11},...
-            OutputViewerparerp{12},OutputViewerparerp{13},...
+            OutputViewerparerp{12},OutputViewerparerp{13},OutputViewerparerp{14},OutputViewerparerp{15},...
             EStudio_gui_erp_totl.erptabwaveiwer,EStudio_gui_erp_totl.erptabwaveiwer_legend,OutputViewerparerp{7});
     else
         return;
@@ -854,7 +854,7 @@ end
 
 
 function f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,yscale,columNum,...
-    positive_up,BinchanOverlay,rowNums,GridposArray,waveview,legendview,Yticks)
+    positive_up,BinchanOverlay,rowNums,GridposArray,Standerr,Transparency,waveview,legendview,Yticks)
 
 FonsizeDefault = f_get_default_fontsize();
 %%matlab version
@@ -873,15 +873,26 @@ else
     qplotArrayStr = ERP.bindescr(BinArray);
 end
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP,1,qPLOTORG,1);
-
 if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     bindata = ERPdatadef(ChanArray,:,BinArray,1);
+    bindataerror= ERPerrordatadef(ChanArray,:,BinArray,1);
     plotArray = ChanArray;
 elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     bindata = ERPdatadef(ChanArray,:,BinArray,1);
     bindata = permute(bindata,[3 2 1 4]);
+    bindataerror= ERPerrordatadef(ChanArray,:,BinArray,1);
+    bindataerror = permute(bindataerror,[3 2 1 4]);
     plotArray = BinArray;
 end
+if isempty(Standerr) || numel(Standerr)~=1 || any(Standerr<0) || any(Standerr>10)
+    Standerr=1;
+end
+
+if isempty(Transparency) || numel(Transparency)~=1 || any(Transparency<0)|| any(Transparency>1)
+    Transparency=0.2;
+end
+
+
 if isempty(timeRangedef)
     timeRangedef = ERP.times;
 end
@@ -1034,19 +1045,34 @@ for Numofrows = 1:rowNums
                 [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
                 PosIndexsALL = [Numofrows,columNum];
                 if isxaxislabel==2
-                    [~,XtimerangetrasfALL,~,~,~] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexsALL,StepXP);
+                    [~,XtimerangetrasfALL,~,~,~] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexsALL,StepXP);
                 else
-                    [~,XtimerangetrasfALL,~] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexsALL,StepX,fs);
+                    [~,XtimerangetrasfALL,~] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexsALL,StepX,fs);
                 end
+                aerror = isnan(squeeze(bindataerror(plotdatalabel,:,Numofoverlay,1)));
+                [Xerror,yerro] = find(aerror==0);
                 PosIndexs = [Numofrows,Numofcolumns];
+                if ~isempty(yerro) && Standerr>=1 &&Transparency>0 %SEM
+                    [Xtimerange, bindataerrtrs] = f_adjustbindtabasedtimedefd(squeeze(bindataerror(plotdatalabel,:,Numofoverlay,1)), timeRangedef,qtimeRange,fs);
+                    if isxaxislabel==2
+                        [bindatatrs1,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepXP);
+                    else
+                        [bindatatrs1,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepX,fs);
+                    end
+                    yt1 = bindatatrs1 - bindataerrtrs.*Standerr;
+                    yt2 = bindatatrs1 + bindataerrtrs.*Standerr;
+                    fill(waveview,[Xtimerangetrasf fliplr(Xtimerangetrasf)],[yt2 fliplr(yt1)], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
+                end
                 if isxaxislabel==2
-                    [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepXP);
+                    [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepXP);
                 else
-                    [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepX,fs);
+                    [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepX,fs);
                 end
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
+                
             end
+            
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust y axis------------------------%%

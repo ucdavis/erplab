@@ -22,7 +22,7 @@ function varargout = f_ERP_meas_format_path(varargin)
 
 % Edit the above text to modify the response to help f_ERP_meas_format_path
 
-% Last Modified by GUIDE v2.5 07-Aug-2022 18:19:42
+% Last Modified by GUIDE v2.5 19-Feb-2024 15:16:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,10 +51,15 @@ function f_ERP_meas_format_path_OpeningFcn(hObject, eventdata, handles, varargin
 try
     foutputstr  = varargin{1}; %% 1. long; 0 wide
     pathName= varargin{2};
-    
+    inclate = varargin{3};
+    send2ws = varargin{4};
+    binlabop =varargin{5};
 catch
     foutputstr  = 1; %% 1. long; 0 wide
     pathName= cd;
+    inclate = 0;
+    send2ws = 0;
+    binlabop = 0;
 end
 
 handles.output = [];
@@ -80,6 +85,23 @@ else
     set(handles.radiobutton5_long, 'Value', 1);
 end
 set(handles.edit_filename, 'String', pathName);
+if inclate==1
+   set(handles.checkbox_latency, 'Value', 1); 
+else
+  set(handles.checkbox_latency, 'Value', 0);   
+end
+if send2ws==1
+   set(handles.checkbox_wks, 'Value', 1); 
+else
+  set(handles.checkbox_wks, 'Value', 0);   
+end
+
+if binlabop==1
+     set(handles.checkbox_binlabel, 'Value', 0);   
+else
+    set(handles.checkbox_binlabel, 'Value', 0);    
+end
+
 %
 % % Color GUI
 % %
@@ -241,9 +263,7 @@ end
 
 
 Wide_fromat = (get(handles.radiobutton_wide, 'Value'));
-
 Long_fromat = (get(handles.radiobutton5_long, 'Value'));
-
 
 if Wide_fromat
     FileFormat = 1;
@@ -251,7 +271,14 @@ elseif Long_fromat
     FileFormat = 0;
 end
 
-handles.output = {FileFormat, Filename};
+inclate=handles.checkbox_latency.Value; 
+
+send2ws=handles.checkbox_wks.Value; 
+
+binlabop=handles.checkbox_binlabel.Value;   
+ 
+   
+handles.output = {FileFormat, Filename,inclate,send2ws,binlabop};
 % Update handles structure
 guidata(hObject, handles);
 
@@ -273,3 +300,30 @@ else
     % The GUI is no longer waiting, just close it
     delete(handles.gui_chassis);
 end
+
+
+% --- Executes on button press in checkbox_latency.
+function checkbox_latency_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_latency (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_latency
+
+
+% --- Executes on button press in checkbox_wks.
+function checkbox_wks_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_wks (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_wks
+
+
+% --- Executes on button press in checkbox_binlabel.
+function checkbox_binlabel_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_binlabel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_binlabel

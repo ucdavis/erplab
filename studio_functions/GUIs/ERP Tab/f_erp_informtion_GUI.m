@@ -142,16 +142,16 @@ drawui_erp_information(FonsizeDefault);
         
         ERP = observe_ERPDAT.ERP;
         if ~isempty(ERP)
-            ERP_time_resolution = strcat(32,num2str(roundn(1000/ERP.srate,-2)),32,'ms(resolution);',32,num2str(ERP.srate),32,'Hz');
+            ERP_time_resolution = strcat(32,num2str(roundn(1000/ERP.srate,-2)),32,'ms (resolution);',32,num2str(ERP.srate),32,'Hz');
         else
-            ERP_time_resolution = strcat(32,num2str(0),32,'ms(time resolution);',32,num2str(0),32,'Hz (rate)');
+            ERP_time_resolution = strcat(32,num2str(0),32,'ms (time resolution);',32,num2str(0),32,'Hz (rate)');
         end
         gui_erp_information.samplingrate_resolution.String = ERP_time_resolution;
         try
             gui_erp_information.epoch_name.String=char(strcat(num2str(roundn(ERP.times(1),-2)),32,'to',32,num2str(roundn(ERP.times(end),-2)),32,...
                 'ms(',num2str(numel(ERP.times)),32,'pts)'));
         catch
-            gui_erp_information.epoch_name.String=char(strcat('0 to 0 ms(0 pts)'));
+            gui_erp_information.epoch_name.String=char(strcat('0 to 0 ms (0 pts)'));
         end
         try
             gui_erp_information.numofchan.String=num2str(ERP.nchan);

@@ -1109,8 +1109,7 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-                %                 qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_'); % trick for dealing with '_'. JLC
-                %                 set(hplot(Numofoverlay),'DisplayName', qLegendName{Numofoverlay});
+               
             end
             
             if numel(OffSetY)==1 && OffSetY==0

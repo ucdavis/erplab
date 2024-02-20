@@ -63,7 +63,7 @@ try
     def = varargin{1};
     handles.def = def;
 catch
-    def = {'fpeaklat', 3, 0, 1, 3, 0, 0.5, 0, 0, 1, 1, 1};
+    def = {'fpeaklat', 3, 1, 3, 0, 0.5, 0, 0, 1, 1, 1};
     handles.def = def;
 end
 
@@ -237,7 +237,7 @@ srate = handles.srate;
 
 % Send to workspace
 %
-send2ws = get(handles.checkbox_send2ws, 'Value'); % 0:no; 1:yes
+send2ws =0;% get(handles.checkbox_send2ws, 'Value'); % 0:no; 1:yes
 owfp    = handles.owfp;  % over write file permission
 appendfile = 0;
 
@@ -490,8 +490,8 @@ end
 
 
 dig    = get(handles.popupmenu_precision, 'Value');
-binlabop  = get(handles.checkbox_binlabel,'Value'); % bin label option for table
-inclate   = get(handles.checkbox_include_used_latencies, 'Value');
+binlabop  =0; %get(handles.checkbox_binlabel,'Value'); % bin label option for table
+inclate   = 0;%get(handles.checkbox_include_used_latencies, 'Value');
 intfactor = get(handles.popupmenu_interpofactor, 'Value');
 
 peakonset = get(handles.popupmenu_rise, 'Value');  % axs - get onset from menu value
@@ -818,14 +818,14 @@ def = handles.def;
 if ~isempty(def)
     op         = def{1};  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
     dig        = def{2};  %Resolution
-    binlabop   = def{3}; % 0: bin# as bin label for table, 1 bin label
+%     binlabop   = def{3}; % 0: bin# as bin label for table, 1 bin label
     polpeak    = def{4}; % local peak polarity
     sampeak    = def{5}; % number of samples (one-side) for local peak detection criteria
     locpeakrep = def{6}; % 1 abs peak , 0 Nan
     frac       = def{7};
     fracmearep = def{8}; % def{19}; NaN
-    send2ws    = def{9}; % 1 send to ws, 0 dont do
-    inclate    = def{10};
+    send2ws    = 0;%def{9}; % 1 send to ws, 0 dont do
+    inclate    = 0;%def{10};
     intfactor  = def{11};
     if isempty(sampeak)
         sampeak = 3;
@@ -836,14 +836,14 @@ else
     %%def = {'fareaplat', 3, 0, 1, 3, 0, 0.5, NaN, 0, 0, 1, 1};
     op         = 'meanbl';  % option: type of measurement ---> instabl, meanbl, peakampbl, peaklatbl, area, areaz, or errorbl.
     dig        = 3;  %Resolution
-    binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
+%     binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
     polpeak    = 1; % local peak polarity
     sampeak    = 3; % number of samples (one-side) for local peak detection criteria
     locpeakrep = 0; % 1 abs peak , 0 Nan
     frac       = 0.5;
     fracmearep = 0; % def{19}; NaN
     send2ws    = 0; % 1 send to ws, 0 dont do
-    inclate    = 1;
+    inclate    = 0;
     intfactor  = 1;
 end
 if isempty(frac)
@@ -887,10 +887,10 @@ end
 %
 % 1 = one measurement per line; 0 = one erpset per line
 %
-set(handles.checkbox_include_used_latencies, 'Value', inclate);
+% set(handles.checkbox_include_used_latencies, 'Value', inclate);
 
-set(handles.checkbox_send2ws, 'Value', send2ws);
-set(handles.checkbox_binlabel, 'Value', binlabop); %0: use bin number as binlabel; 1:use bin descr as binlabel
+% set(handles.checkbox_send2ws, 'Value', send2ws);
+% set(handles.checkbox_binlabel, 'Value', binlabop); %0: use bin number as binlabel; 1:use bin descr as binlabel
 
 % interpolation
 set(handles.popupmenu_interpofactor, 'Value', intfactor);
@@ -1006,7 +1006,7 @@ switch indxmea
 end
 
 set(handles.popupmenu_precision, 'Value', dig)
-set(handles.checkbox_send2ws, 'Value', send2ws);
+% set(handles.checkbox_send2ws, 'Value', send2ws);
 
 srate = handles.srate;
 try
@@ -1033,9 +1033,6 @@ guidata(hObject, handles);
 
 %--------------------------------------------------------------------------
 function gui_chassis_CreateFcn(hObject, eventdata, handles)
-
-%--------------------------------------------------------------------------
-function checkbox_send2ws_Callback(hObject, eventdata, handles)
 
 
 
@@ -1178,35 +1175,3 @@ function text_fraca_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to text_fa1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes during object creation, after setting all properties.
-function checkbox_include_used_latencies_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to checkbox_include_used_latencies (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-
-% --- Executes during object deletion, before destroying properties.
-function checkbox_include_used_latencies_DeleteFcn(hObject, eventdata, handles)
-% hObject    handle to checkbox_include_used_latencies (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in checkbox_include_used_latencies.
-function checkbox_include_used_latencies_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_include_used_latencies (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_include_used_latencies
-
-
-% --- Executes on button press in checkbox_binlabel.
-function checkbox_binlabel_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_binlabel (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of checkbox_binlabel

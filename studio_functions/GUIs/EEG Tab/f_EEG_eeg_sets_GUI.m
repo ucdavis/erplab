@@ -143,7 +143,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         estudioworkingmemory('EEGTab_eegset',0);
-
+        
         EStduio_eegtab_EEG_set.eeg_contns.Value=1;
         EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
         
@@ -206,9 +206,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         estudioworkingmemory('EEGTab_eegset',0);
-%         MessageViewer= char(strcat('EEGsets > Epoched EEG'));
-%         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-%         observe_EEGDAT.eeg_panel_message=1;
+        %         MessageViewer= char(strcat('EEGsets > Epoched EEG'));
+        %         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        %         observe_EEGDAT.eeg_panel_message=1;
         
         
         EStduio_eegtab_EEG_set.eeg_contns.Value=0;
@@ -257,7 +257,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',1);
         observe_EEGDAT.count_current_eeg=2;
         f_redrawEEG_Wave_Viewer();
-%         observe_EEGDAT.eeg_panel_message=2;
+        %         observe_EEGDAT.eeg_panel_message=2;
         
         whichpanel = [12:18];
         EEGTab_close_open_Panels(whichpanel);
@@ -644,10 +644,8 @@ estudioworkingmemory('Startimes',0);%%set default value
                 OLDSET = length(observe_EEGDAT.ALLEEG);
             end
             
-            Answer = f_EEG_save_single_file(char(strcat(EEG.setname,'_append')),EEG.filename,OLDSET);
+            Answer = f_EEG_save_single_file('Merged_datasets',EEG.filename,OLDSET);
             if isempty(Answer)
-                disp('User selected cancel.');
-                fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
             
@@ -668,7 +666,6 @@ estudioworkingmemory('Startimes',0);%%set default value
                     EEG.filename = [file_name,ext];
                     EEG.filepath = pathstr;
                     EEG.saved = 'yes';
-                    %%----------save the current sdata as--------------------
                     [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                     EEG = eegh(LASTCOM, EEG);
                     eegh(LASTCOM);
@@ -802,10 +799,10 @@ estudioworkingmemory('Startimes',0);%%set default value
             pathName =  [cd,filesep];
         end
         
-        Selected_eegset= EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if isempty(Selected_eegset)
-            Selected_eegset =observe_EEGDAT.CURRENTSET;
-            if isempty(Selected_eegset)
+        EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
+        if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
+            EEGArray =observe_EEGDAT.CURRENTSET;
+            if isempty(EEGArray)
                 msgboxText =  'No EEGset was selected!!!';
                 title = 'EStudio: EEGsets';
                 errorfound(msgboxText, title);
@@ -813,39 +810,44 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
         end
         
-        try
-            for Numoferpset = 1:length(Selected_eegset)
-                if Selected_eegset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
-                    beep;
-                    disp(['Index of selected ERP is lager than the length of ALLEEG!!!']);
-                    return;
+        for Numofeeg = 1:length(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Save EEG dataset*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+            
+            
+            FileName = EEG.filename;
+            if isempty(FileName)
+                FileName =EEG.setname;
+                [pathstr, namedef, ext] = fileparts(FileName);
+                [FileName, pathName, indxs] = uiputfile({'*.set'}, ...
+                    ['Save "',EEG.setname,'" as'],...
+                    fullfile(pathName,namedef));
+                if isequal(FileName,0)
+                    disp('User selected Cancel');
+                    fprintf( ['\n',repmat('-',1,100) '\n']);
+                    return
                 end
-                EEG = observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset));
-                FileName = EEG.filename;
-                
                 if isempty(FileName)
                     FileName =EEG.setname;
                 end
-                [pathx, filename, ext] = fileparts(FileName);
-                filename = [filename '.set'];
-                checkfileindex = checkfilexists([pathName,filename]);
-                if checkfileindex==1
-                    [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
-                    observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
-                    eegh(LASTCOM);
-                    disp(['Saved to',32,pathName,filename]);
-                else
-                    disp(['User selected Cancel for saving',32,filename]);
-                end
             end
-            observe_EEGDAT.eeg_panel_message =2;
-        catch
-            beep;
-            observe_EEGDAT.eeg_panel_message =3;
-            disp(['EEGsets > Save: Cannot save the selected EEGsets.']);
-            return;
-            
+            [pathx, filename, ext] = fileparts(FileName);
+            filename = [filename '.set'];
+            checkfileindex = checkfilexists([pathName,filename]);
+            if checkfileindex==1
+                [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
+                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
+                eegh(LASTCOM);
+                disp(['Saved to',32,pathName,filename]);
+                fprintf(['\n',LASTCOM,'\n']);
+            else
+                disp(['User selected Cancel for saving',32,filename]);
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
         end
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 
@@ -866,10 +868,10 @@ estudioworkingmemory('Startimes',0);%%set default value
             pathName =  [cd,filesep];
         end
         
-        Selected_eegset= EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if isempty(Selected_eegset)
-            Selected_eegset =observe_EEGDAT.CURRENTSET;
-            if isempty(Selected_eegset)
+        EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
+        if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
+            EEGArray =observe_EEGDAT.CURRENTSET;
+            if isempty(EEGArray)
                 msgboxText =  'No EEGset was selected!!!';
                 title = 'EStudio: EEGsets';
                 errorfound(msgboxText, title);
@@ -877,20 +879,19 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
         end
         
-        for Numoferpset = 1:length(Selected_eegset)
-            if Selected_eegset(Numoferpset) > length(observe_EEGDAT.ALLEEG)
-                beep;
-                disp('Index of selected ERP is lager than the length of ALLEEG!!!');
-                return;
-            end
-            
-            EEG = observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset));
+        for Numofeeg = 1:length(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Save EEG dataset as *',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+
             [pathstr, namedef, ext] = fileparts(char(EEG.filename));
             [erpfilename, erppathname, indxs] = uiputfile({'*.set'}, ...
                 ['Save "',EEG.setname,'" as'],...
                 fullfile(pathName,namedef));
             if isequal(erpfilename,0)
                 disp('User selected Cancel')
+                fprintf( ['\n',repmat('-',1,100) '\n']);
                 return
             end
             if isempty(erpfilename)
@@ -902,11 +903,13 @@ estudioworkingmemory('Startimes',0);%%set default value
             if checkfileindex==1
                 [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',erppathname);
                 eegh(LASTCOM);
-                observe_EEGDAT.ALLEEG(Selected_eegset(Numoferpset)) = eegh(LASTCOM, EEG);
+                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
                 disp(['Saved to',32,erppathname,filename]);
+                fprintf(['\n',LASTCOM,'\n']);
             else
                 disp(['User selected Cancel for saving',32,filename]);
             end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
         end
         
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -950,7 +953,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         
         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
         observe_EEGDAT.eeg_panel_message =1;
-        Selected_eegsetlabel = sort(source.Value);
+        EEGArraylabel = sort(source.Value);
         [~,~,EEGtypeFlag] =  getDatasets();
         EEGArraydef =  estudioworkingmemory('EEGArray');
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1 %%continuous EEG
@@ -960,7 +963,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         [xpos, ypos] =  find(EEGtypeFlag==EEGtypeFlag1);
-        Diffnum = setdiff(Selected_eegsetlabel,ypos);
+        Diffnum = setdiff(EEGArraylabel,ypos);
         if ~isempty(Diffnum)
             if isempty(EEGArraydef)
                 EStduio_eegtab_EEG_set.butttons_datasets.Value =ypos(end);
@@ -979,8 +982,8 @@ estudioworkingmemory('Startimes',0);%%set default value
                 end
             end
         else%%included in the continuous EEG
-            estudioworkingmemory('EEGArray',Selected_eegsetlabel);
-            CURRENTSET = Selected_eegsetlabel(1);
+            estudioworkingmemory('EEGArray',EEGArraylabel);
+            CURRENTSET = EEGArraylabel(1);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(CURRENTSET);
         observe_EEGDAT.CURRENTSET = CURRENTSET;
@@ -1166,7 +1169,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if observe_EEGDAT.Reset_eeg_paras_panel~=1
             return;
         end
-      observe_EEGDAT.Reset_eeg_paras_panel=2;  
+        observe_EEGDAT.Reset_eeg_paras_panel=2;
     end
 
 end
@@ -1196,7 +1199,7 @@ end
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
 checkfileindex=1;
 [pathstr, file_name, ext] = fileparts(filenamex);
-filenamex = [pathstr, file_name,'.set'];
+filenamex = [pathstr,filesep, file_name,'.set'];
 if exist(filenamex, 'file')~=0
     msgboxText =  ['This EEG Data already exist.\n'...;
         'Would you like to overwrite it?'];

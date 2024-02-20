@@ -21,6 +21,11 @@ if nargin>1
     return;
 end
 
+% if ishandle(  EStudio_gui_erp_totl.eegViewAxes )
+%     delete(  EStudio_gui_erp_totl.eegViewAxes );
+% end
+
+
 figbgdColor = [1 1 1];%%need to set
 
 if isempty(observe_EEGDAT.EEG)

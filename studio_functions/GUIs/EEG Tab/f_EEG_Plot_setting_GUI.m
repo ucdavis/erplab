@@ -371,17 +371,22 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
                 EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
                 EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+                msgboxText = ['please do "chan locations" first in EEGLAB Tool panel.'];
+                title = 'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
+                errorfound(sprintf(msgboxText), title);
+                return
+                
             end
         catch
-            MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 system order: It seems that chanlocs for the current EEG is empty and please check it out'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-            return;
+            msgboxText = ['It seems that chanloc for the current EEG is empty and please check it out'];
+            title = 'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
+            errorfound(sprintf(msgboxText), title);
+            return
         end
         
         %%check if the channels belong to 10/20 system
@@ -607,7 +612,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
             msgboxText = ['It seems that some of the defined chan orders are invalid or replicated, please check the file'];
             title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
-            
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -620,7 +624,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
             msgboxText = ['The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
             title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
-            
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -630,8 +633,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         if any(chan_check==0)
-            
-            msgboxText = ['The channel labels are not the same to those for the current EEG (see command window)'];
+            msgboxText = ['The channel labels are not the same to those for the current EEG'];
             title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
             errorfound(sprintf(msgboxText), title);
             [xpos,ypos] =find(chan_check==0);
@@ -886,9 +888,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EEG_plotset{9}=EStduio_gui_EEG_plotset.disp_norm.Value;
         %%channel orders
         try
-        [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+            [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
         catch
-           labels = []; 
+            labels = [];
         end
         if  EStduio_gui_EEG_plotset.chanorder_number.Value==1
             EEG_plotset{10} = 1;

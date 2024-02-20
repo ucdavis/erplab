@@ -142,13 +142,11 @@ varargout{1} = erp_measurement_box;
             def_erpvalue{18} = 'long';
         end
         
-        
         if def_erpvalue{20} == 0%%include used latency values for measurements like mean, peak, area...
             def_erpvalue{20} = 'no';
         else
             def_erpvalue{20} = 'yes';
         end
-        
         ERPMTops.def_erpvalue = def_erpvalue;
         
         try
@@ -457,12 +455,12 @@ varargout{1} = erp_measurement_box;
         end
         
         ERPMTops.def_erpvalue{9} =Answer{2};
-        binlabop = Answer{3};%%Binlabel
-        if binlabop
-            ERPMTops.def_erpvalue{11} = 'on';
-        else
-            ERPMTops.def_erpvalue{11} = 'off';
-        end
+        %         binlabop = Answer{3};%%Binlabel
+        %         if binlabop
+        %             ERPMTops.def_erpvalue{11} = 'on';
+        %         else
+        %             ERPMTops.def_erpvalue{11} = 'off';
+        %         end
         
         polpeak= Answer{4};%%polarity
         if polpeak==0
@@ -492,18 +490,18 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{16} = 'absolute';
             end
         end
-        send2ws = Answer{9};
-        if send2ws
-            ERPMTops.def_erpvalue{17} = 'on';
-        else
-            ERPMTops.def_erpvalue{17} = 'off';
-        end
-        inclate = Answer{10};
-        if inclate
-            ERPMTops.def_erpvalue{20} = 'on' ;
-        else
-            ERPMTops.def_erpvalue{20} = 'off' ;
-        end
+        %         send2ws = Answer{9};
+        %         if send2ws
+        %             ERPMTops.def_erpvalue{17} = 'on';
+        %         else
+        %             ERPMTops.def_erpvalue{17} = 'off';
+        %         end
+        %         inclate = Answer{10};
+        %         if inclate
+        %             ERPMTops.def_erpvalue{20} = 'on' ;
+        %         else
+        %             ERPMTops.def_erpvalue{20} = 'off' ;
+        %         end
         ERPMTops.def_erpvalue{21} =Answer{11};
         ERPMTops.def_erpvalue{22} = Answer{12};
     end
@@ -606,7 +604,9 @@ varargout{1} = erp_measurement_box;
         titlename = 'Select ERPset(s):';
         ERPset_select = browsechanbinGUI(listname, indxlistb, titlename);
         if ~isempty(ERPset_select)
-            ERPMTops.m_t_erpset.String = vect2colon(ERPset_select,'Sort','on');
+            ERPset = vect2colon(ERPset_select,'Sort','on');
+            ERPset = erase(ERPset,{'[',']'});
+            ERPMTops.m_t_erpset.String = ERPset;
         else
             beep;
             disp('User selected cancel');
@@ -647,7 +647,9 @@ varargout{1} = erp_measurement_box;
         %----------------judge the number of latency/latencies--------
         bin_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(bin_label_select)
-            ERPMTops.m_t_bin.String=vect2colon(bin_label_select,'Sort', 'on');
+            binset = vect2colon(bin_label_select,'Sort', 'on');
+            binset = erase(binset,{'[',']'});
+            ERPMTops.m_t_bin.String=binset;
         else
             beep
             disp('User selected Cancel');
@@ -727,7 +729,9 @@ varargout{1} = erp_measurement_box;
         titlename = 'Select Channel(s):';
         chan_label_select = browsechanbinGUI(listb, chanArray, titlename);
         if ~isempty(chan_label_select)
-            ERPMTops.m_t_chan.String=vect2colon(chan_label_select,'Sort', 'on');
+            chanset = vect2colon(chan_label_select,'Sort', 'on');
+            chanset = erase(chanset,{'[',']'});
+            ERPMTops.m_t_chan.String=chanset;
         else
             disp('User selected Cancel');
             return
@@ -931,7 +935,43 @@ varargout{1} = erp_measurement_box;
         if isempty(fname)
             fname = 'save_erpvalues';
         end
-        Answer = f_ERP_meas_format_path(FileFormat,fullfile(pathName_folder_default,fname));
+        
+        
+        try
+            Binlabel = ERPMTops.def_erpvalue{11};
+        catch
+            Binlabel = 'off';
+        end
+        if strcmpi(Binlabel,'off')
+            binlabop   = 0; % 0: bin# as bin label for table, 1 bin label
+        else
+            binlabop   = 1;
+        end
+        
+        try
+            SendtoWorkspace = ERPMTops.def_erpvalue{17};
+        catch
+            SendtoWorkspace = 'off';
+        end
+        if strcmpi(SendtoWorkspace,'off')
+            send2ws    = 0; % 1 send to ws, 0 dont do
+        else
+            send2ws    = 1;
+        end
+        
+        try
+            IncludeLat =  ERPMTops.def_erpvalue{20} ;
+        catch
+            IncludeLat = 'off';
+        end
+        if strcmpi(IncludeLat,'on')
+            inclate    = 1;
+        else
+            inclate    = 0;
+        end
+        
+        
+        Answer = f_ERP_meas_format_path(FileFormat,fullfile(pathName_folder_default,fname),inclate,send2ws,binlabop);
         if isempty(Answer)
             disp('User selected Cancel');
             return;
@@ -943,6 +983,27 @@ varargout{1} = erp_measurement_box;
         end
         ERPMTops.def_erpvalue{18} = foutputstr;
         ERPMTops.m_t_file.String = Answer{2};
+        
+        binlabop = Answer{5};%%Binlabel
+        if binlabop
+            ERPMTops.def_erpvalue{11} = 'on';
+        else
+            ERPMTops.def_erpvalue{11} = 'off';
+        end
+        
+        send2ws = Answer{4};
+        if send2ws
+            ERPMTops.def_erpvalue{17} = 'on';
+        else
+            ERPMTops.def_erpvalue{17} = 'off';
+        end
+        inclate = Answer{3};
+        if inclate
+            ERPMTops.def_erpvalue{20} = 'on' ;
+        else
+            ERPMTops.def_erpvalue{20} = 'off' ;
+        end
+        
     end
 
 
@@ -1191,7 +1252,6 @@ varargout{1} = erp_measurement_box;
         observe_ERPDAT.Process_messg =2;
     end
 
-
 %%---------------------Apply measurement-----------------------------------
     function erp_m_t_view(Source,~)
         if isempty(observe_ERPDAT.ERP)
@@ -1380,26 +1440,31 @@ varargout{1} = erp_measurement_box;
         end
         
         if  ~isempty(observe_ERPDAT.ERP) && ~isempty(observe_ERPDAT.ALLERP)
-            Selectederp_Index= estudioworkingmemory('selectederpstudio');
-            if isempty(Selectederp_Index) || any(Selectederp_Index> length(observe_ERPDAT.ALLERP))
-                Selectederp_Index =  length(observe_ERPDAT.ALLERP);
+            ERPArray= estudioworkingmemory('selectederpstudio');
+            if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
+                ERPArray =  length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-                observe_ERPDAT.CURRENTERP = Selectederp_Index;
-                estudioworkingmemory('selectederpstudio',Selectederp_Index);
+                observe_ERPDAT.CURRENTERP = ERPArray;
+                estudioworkingmemory('selectederpstudio',ERPArray);
             end
-            ERPMTops.m_t_erpset.String= vect2colon(Selectederp_Index,'Sort','on');%%Dec 20 2022
+            ERPMTops.m_t_erpset.String= vect2colon(ERPArray,'Sort','on');%%Dec 20 2022
             BinArray = estudioworkingmemory('ERP_BinArray');
             ChanArray =  estudioworkingmemory('ERP_ChanArray');
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
             if chk(1)==1
                 BinArray =  [1:observe_ERPDAT.ERP.nbin];
             end
-            ERPMTops.m_t_bin.String = vect2colon(BinArray);
+            BinArray = vect2colon(BinArray,'Sort', 'on');
+            BinArray = erase(BinArray,{'[',']'});
+            ERPMTops.m_t_bin.String =BinArray;
+            
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
             if chk(2)==1
                 ChanArray =  [1:observe_ERPDAT.ERP.nchan];
             end
-            ERPMTops.m_t_chan.String = vect2colon(ChanArray);
+            ChanArray = vect2colon(ChanArray,'Sort', 'on');
+            ChanArray = erase(ChanArray,{'[',']'});
+            ERPMTops.m_t_chan.String = ChanArray;
         end
         ERPMTops.m_t_type.Enable = Enable_label;
         ERPMTops.m_t_type_ops.Enable = Enable_label;
@@ -1456,7 +1521,9 @@ varargout{1} = erp_measurement_box;
             estudioworkingmemory('selectederpstudio',m_t_erpset);
             ERPMTops.Paras{2} = m_t_erpset;
         end
-        ERPMTops.m_t_erpset.String= vect2colon(m_t_erpset);
+        m_t_erpset = vect2colon(m_t_erpset,'Sort', 'on');
+        m_t_erpset = erase(m_t_erpset,{'[',']'});
+        ERPMTops.m_t_erpset.String= m_t_erpset;
         %%binarray
         BinArray= ERPMTops.Paras{3};
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
@@ -1464,7 +1531,9 @@ varargout{1} = erp_measurement_box;
             BinArray =  [1:observe_ERPDAT.ERP.nbin];
             ERPMTops.Paras{3} = BinArray;
         end
-        ERPMTops.m_t_bin.String = vect2colon(BinArray);
+        BinArray = vect2colon(BinArray,'Sort', 'on');
+        BinArray = erase(BinArray,{'[',']'});
+        ERPMTops.m_t_bin.String = BinArray;
         %%chanarray
         ChanArray=ERPMTops.Paras{4};
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
@@ -1472,7 +1541,9 @@ varargout{1} = erp_measurement_box;
             ChanArray =  [1:observe_ERPDAT.ERP.nchan];
             ERPMTops.Paras{4}= ChanArray;
         end
-        ERPMTops.m_t_chan.String = vect2colon(ChanArray);
+        ChanArray = vect2colon(ChanArray,'Sort', 'on');
+        ChanArray = erase(ChanArray,{'[',']'});
+        ERPMTops.m_t_chan.String = ChanArray;
         %%latency
         latency = ERPMTops.Paras{5};
         if isempty(latency) || any(latency<observe_ERPDAT.ERP.times(1)) || any(latency>observe_ERPDAT.ERP.times(end))
@@ -1541,29 +1612,34 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_mesuretool',0);
         ERPMTops.m_t_type.Value=1;
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if ~isempty(observe_ERPDAT.ALLERP)
-            if isempty(Selectederp_Index) || any(Selectederp_Index> length(observe_ERPDAT.ALLERP))
-                Selectederp_Index =  length(observe_ERPDAT.ALLERP);
+            if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
+                ERPArray =  length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-                observe_ERPDAT.CURRENTERP = Selectederp_Index;
-                estudioworkingmemory('selectederpstudio',Selectederp_Index);
+                observe_ERPDAT.CURRENTERP = ERPArray;
+                estudioworkingmemory('selectederpstudio',ERPArray);
             end
         end
-        ERPMTops.m_t_erpset.String= vect2colon(Selectederp_Index,'Sort','on');%%Dec 20 2022
+        ERPArray = vect2colon(ERPArray,'Sort', 'on');
+        ERPArray = erase(ERPArray,{'[',']'});
+        ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
         try
             BinArray =  [1:observe_ERPDAT.ERP.nbin];
         catch
             BinArray = [];
         end
-        
-        ERPMTops.m_t_bin.String = vect2colon(BinArray);
+        BinArray = vect2colon(BinArray,'Sort', 'on');
+        BinArray = erase(BinArray,{'[',']'});
+        ERPMTops.m_t_bin.String = BinArray;
         try
             ChanArray =  [1:observe_ERPDAT.ERP.nchan];
         catch
             ChanArray = [];
         end
-        ERPMTops.m_t_chan.String = vect2colon(ChanArray);
+        ChanArray = vect2colon(ChanArray,'Sort', 'on');
+        ChanArray = erase(ChanArray,{'[',']'});
+        ERPMTops.m_t_chan.String = ChanArray;
         ERPMTops.m_t_TW.String = '';
         ERPMTops.m_t_file.String = '';
         observe_ERPDAT.Reset_erp_paras_panel=11;
