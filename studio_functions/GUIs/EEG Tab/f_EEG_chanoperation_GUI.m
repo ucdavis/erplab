@@ -611,7 +611,6 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.Paras{1} = gui_eegtab_chan_optn.edit_bineq.Data;
         gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
         gui_eegtab_chan_optn.Paras{3} =gui_eegtab_chan_optn.mode_modify.Value;
-        %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
         for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
             EEG = ALLEEG_out(EEGArray(Numofeeg));
@@ -651,8 +650,8 @@ varargout{1} = EEG_chan_operation_gui;
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            estudioworkingmemory('EEGArray',Selected_EEG_afd);
         end
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);

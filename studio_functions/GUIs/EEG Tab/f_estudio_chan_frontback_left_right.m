@@ -121,7 +121,7 @@ end
 function [Simplabels,simplabelIndex,SamAll] = Simplelabels(labels)
 labelsrm = ['['];
 for ii=1:1000
-labelsrm = char([labelsrm,',',num2str(ii)]);
+    labelsrm = char([labelsrm,',',num2str(ii)]);
 end
 labelsrm = char([labelsrm,',z,Z]']);
 

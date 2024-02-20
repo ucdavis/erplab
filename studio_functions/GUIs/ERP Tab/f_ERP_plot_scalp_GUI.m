@@ -987,7 +987,6 @@ varargout{1} = ERP_plot_scalp_gui;
         Selectederp_Index= estudioworkingmemory('selectederpstudio');
         if isempty(Selectederp_Index)
             Selectederp_Index = observe_ERPDAT.CURRENTERP;
-            
             if isempty(Selectederp_Index)
                 msgboxText =  ['Plot Scalp Maps - No ERPset was selected'];
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
@@ -1103,7 +1102,6 @@ varargout{1} = ERP_plot_scalp_gui;
         else
             maplimit     = 'maxmin';
         end
-        
         
         ismoviex     = agif.value;
         FPS          = agif.fps;

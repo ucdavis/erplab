@@ -92,11 +92,10 @@ varargout{1} = box_eeg_history;
         
         %%save the scripts
         gui_eeg_history.save_history_title = uiextras.HBox('Parent', gui_eeg_history.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_eeg_history.save_history_title,'BackgroundColor',ColorB_def);
         gui_eeg_history.save_script = uicontrol('Style','pushbutton','Parent',gui_eeg_history.save_history_title,...
             'String','Save history script','callback',@savescript,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', gui_eeg_history.save_history_title,'BackgroundColor',ColorB_def);
-        set(gui_eeg_history.save_history_title,'Sizes',[-1 120 -1]);
+        gui_eeg_history.show_cmd = uicontrol('Style','pushbutton','Parent',gui_eeg_history.save_history_title,...
+            'String','Show in cmd window','callback',@show_cmd,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( gui_eeg_history.DataSelBox,'Sizes',[35 -1 30]);
     end
 
@@ -193,7 +192,8 @@ varargout{1} = box_eeg_history;
             gui_eeg_history.eeg_h_all.Enable = 'off';
             gui_eeg_history.eeg_h_EEG.Enable = 'off';
             gui_eeg_history.uitable.Enable = 'off';
-            eeg_history = char('No history was found for the current eegset');
+            gui_eeg_history.show_cmd.Enable = 'off';
+            eeg_history = char('No command history was found for the current eegset');
             set(gui_eeg_history.uitable,'Data', strsplit(eeg_history(1,:), '\n')');
             return;
         end
@@ -201,6 +201,7 @@ varargout{1} = box_eeg_history;
         gui_eeg_history.eeg_h_all.Enable = 'on';
         gui_eeg_history.eeg_h_EEG.Enable = 'on';
         gui_eeg_history.uitable.Enable = 'on';
+        gui_eeg_history.show_cmd.Enable = 'on';
         if gui_eeg_history.eeg_h_all.Value ==1
             try
                 eeg_history =  observe_EEGDAT.EEG.history;
@@ -208,7 +209,7 @@ varargout{1} = box_eeg_history;
                 eeg_history = [];
             end
             if isempty(eeg_history)
-                eeg_history = char('No history exist in the current eegset');
+                eeg_history = char('No command history was found for the current eegset');
                 gui_eeg_history.save_script.Enable = 'off';
             end
             eeg_history_display = {};
@@ -218,7 +219,6 @@ varargout{1} = box_eeg_history;
             set(gui_eeg_history.uitable,'Data', eeg_history_display');
             set(gui_eeg_history.DataSelBox,'Heights',[40 -1]);
         else%% ALLeegCOM for current session
-            
             try
                 eeg_history = evalin('base','ALLCOM');
                 eeg_history = eeg_history';
@@ -234,6 +234,59 @@ varargout{1} = box_eeg_history;
                 gui_eeg_history.save_script.Enable = 'off';
             end
         end
+    end
+
+%%-------------show history to command window------------------------------
+    function show_cmd(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
+        %%for current history
+        MessageViewer='History > Show in cmd window';
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        observe_EEGDAT.eeg_panel_message=1;
+        
+        if gui_eeg_history.eeg_h_all.Value ==1
+            try
+                eeg_history =  observe_EEGDAT.EEG.history;
+            catch
+                eeg_history = [];
+            end
+            if isempty(eeg_history)
+                disp(['No command history for',32,observe_EEGDAT.EEG.setname]);
+                observe_EEGDAT.eeg_panel_message=2;
+                return;
+            end
+            eeg_history_display = {};
+            for Numofrow = 1:size(eeg_history,1)
+                eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            fprintf(['**Command history**',32,datestr(datetime('now')),'\n']);
+            fprintf(['EEG name:',32,observe_EEGDAT.EEG.setname,'\n\n']);
+            for ii = 1:length(eeg_history_display)
+                disp([eeg_history_display{ii}]);
+            end
+            fprintf( [repmat('-',1,100) '\n\n']);
+        else
+            try
+                eeg_history = evalin('base','ALLCOM');
+            catch
+                eeg_history = [];
+            end
+            if isempty(eeg_history)
+                disp(['No command history for current session']);
+                observe_EEGDAT.eeg_panel_message=2;
+                return;
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            fprintf(['**Command history for current session**',32,datestr(datetime('now')),'\n\n']);
+            for ii = 1:length(eeg_history)
+                disp([eeg_history{ii}]);
+            end
+            fprintf( [repmat('-',1,100) '\n\n']);
+        end
+        observe_EEGDAT.eeg_panel_message=2;
     end
 
 

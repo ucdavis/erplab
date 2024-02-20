@@ -648,8 +648,8 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_run.Enable= 'on';
         
         EEG_art_det_segmt_conus.detectsegmt_preview.String = 'Preview';
-        chanArray = str2num(EEG_art_det_segmt_conus.time_threshold_edit.String);
-        if isempty(chanArray) || min(chanArray(:)) > observe_EEGDAT.EEG.nbchan || max(chanArray(:)) > observe_EEGDAT.EEG.nbchan
+        time_threshold_edit = str2num(EEG_art_det_segmt_conus.time_threshold_edit.String);
+        if isempty(time_threshold_edit) 
             EEG_art_det_segmt_conus.time_threshold_edit.String = '7000';
         end
         %%set default parameters

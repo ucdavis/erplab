@@ -72,11 +72,10 @@ varargout{1} = box_erp_history;
             'RowName'       , []);
         %%save the scripts
         gui_erp_history.save_history_title = uiextras.HBox('Parent', gui_erp_history.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_erp_history.save_history_title,'BackgroundColor',ColorB_def);
         gui_erp_history.save_script = uicontrol('Style','pushbutton','Parent',gui_erp_history.save_history_title,...
             'String','Save history script','callback',@savescript,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', gui_erp_history.save_history_title,'BackgroundColor',ColorB_def);
-        set(gui_erp_history.save_history_title,'Sizes',[-1 120 -1]);
+        gui_erp_history.show_cmd = uicontrol('Style','pushbutton','Parent',gui_erp_history.save_history_title,...
+            'String','Show in cmd window','callback',@show_cmd,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         set(gui_erp_history.DataSelBox,'Sizes',[40 -1 30]);
     end
 
@@ -155,7 +154,7 @@ varargout{1} = box_erp_history;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=19
+        if observe_ERPDAT.Count_currentERP~=18
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
@@ -167,6 +166,7 @@ varargout{1} = box_erp_history;
         gui_erp_history.uitable.Enable = Enableflag;
         gui_erp_history.erp_h_all.Enable = Enableflag;
         gui_erp_history.erp_h_current.Enable = Enableflag;
+        gui_erp_history.show_cmd.Enable = Enableflag;
         if gui_erp_history.erp_h_all.Value ==1
             try
                 ERP_history =  observe_ERPDAT.ERP.history;
@@ -194,10 +194,61 @@ varargout{1} = box_erp_history;
                 ERP_history = {'No command history was found in the current section'};
                 set(gui_erp_history.uitable,'Data',ERP_history);
             end
-            
         end
-        %         observe_ERPDAT.Count_currentERP=15;
     end
+
+%%-------------show history to command window------------------------------
+    function show_cmd(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            return;
+        end
+        MessageViewer= char(strcat('History > Show in cmd window'));
+        erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+        observe_ERPDAT.Process_messg=1;
+        if gui_erp_history.erp_h_all.Value ==1
+            try
+                ERP_history =  observe_ERPDAT.ERP.history;
+            catch
+                ERP_history = [];
+            end
+            if isempty(ERP_history)
+                disp(['No command history for',32,observe_ERPDAT.ERP.erpname]);
+                observe_ERPDAT.Process_messg=2;
+                return;
+            end
+            ERP_history_display = {};
+            for Numofrow = 1:size(ERP_history,1)
+                ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            fprintf(['**Command history**',32,datestr(datetime('now')),'\n']);
+            fprintf(['ERP name:',32,observe_ERPDAT.ERP.erpname,'\n\n']);
+            for ii = 1:length(ERP_history_display)
+                disp([ERP_history_display{ii}]);
+            end
+            fprintf( [repmat('-',1,100) '\n\n']);
+        else
+            try
+                ERP_history = evalin('base','ALLERPCOM');
+            catch
+                ERP_history = '';
+            end
+            if isempty(ERP_history)
+                disp(['No command history for current session']);
+                observe_ERPDAT.Process_messg=2;
+                return;
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            fprintf(['**Command history for current session**',32,datestr(datetime('now')),'\n\n']);
+            for ii = 1:length(ERP_history)
+                disp([ERP_history{ii}]);
+            end
+            fprintf( [repmat('-',1,100) '\n\n']);
+        end
+        observe_ERPDAT.Process_messg=2;
+    end
+
+
 
 
     function Reset_erp_panel_change(~,~)

@@ -128,10 +128,7 @@ varargout{1} = Eegtab_box_avg_erp;
             'callback',@invalidepoch,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',ColorB_def); % 2F
         EEG_avg_erp.invalidepoch.String = '<html>Exclude epochs with either "boundary"<br />or invalid events (highly recommended)</html>';
         EEG_avg_erp.invalidepoch.KeyPressFcn=  @eeg_avg_erp_presskey;
-        excbound = def{5};
-        if isempty(excbound) ||  numel(excbound)~=1 || (excbound~=0 && excbound~=1)
-            excbound=1;
-        end
+        excbound=1;
         EEG_avg_erp.invalidepoch.Value = excbound;
         
         try

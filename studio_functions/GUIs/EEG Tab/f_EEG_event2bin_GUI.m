@@ -61,7 +61,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         %%display original data?
         EStduio_eegtab_EEG_event2bin.BDF_title = uiextras.HBox('Parent', EStduio_eegtab_EEG_event2bin.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
-            'String','BDF File','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Bin Descriptor File','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_event2bin.BDF_edit = uicontrol('Style', 'edit','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
             'String','','callback',@BDF_edit,'FontSize',FonsizeDefault,'Enable',EnableFlag);
         EStduio_eegtab_EEG_event2bin.BDF_edit.KeyPressFcn=  @eeg_event2bin_presskey;
@@ -76,7 +76,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.BDF_edit.String = bdfileName;
         EStduio_eegtab_EEG_event2bin.BDF_browse = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_event2bin.BDF_title,...
             'String','Browse','callback',@BDF_browse,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[60 -1 60]);
+        set( EStduio_eegtab_EEG_event2bin.BDF_title, 'Sizes',[100 -1 60]);
         
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_event2bin.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_event2bin.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -89,7 +89,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             'Parent'        , EStduio_eegtab_EEG_event2bin.table_title,...
             'Data'          , dsnames, ...
             'ColumnWidth'   , {100,100,100}, ...
-            'ColumnName'    , {'Bin','Description','Times'}, ...
+            'ColumnName'    , {'Bin','Description','#Occurrences'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false, false]);
         
@@ -112,7 +112,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%-------------------------Edit the BDF file-------------------------------
+%%-------------------------Edit the Bin Descriptor File-------------------------------
     function BDF_edit(Source,~)
         if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
@@ -140,7 +140,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         estudioworkingmemory('EEGTab_event2bin',1);
     end
 
-%%--------------------------------Browse the BDF file----------------------
+%%--------------------------------Browse the Bin Descriptor File----------------------
     function BDF_browse(Source,~)
         if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
