@@ -229,10 +229,10 @@ varargout{1} = erp_measurement_box;
         %%-----------Setting for third column--------------------------------
         %%3A
         ERPMTops.m_t_type_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
-            'String','Option','callback',@Mesurement_type_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@Mesurement_type_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3B
         ERPMTops.m_t_erpset_ops = uicontrol('Style','pushbutton','Parent',  ERPMTops.measurement_type,...
-            'String','Option','callback',@erpsetop,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Browse','callback',@erpsetop,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3C
         ERPMTops.m_t_bin_ops = uicontrol('Style','pushbutton','Parent',  ERPMTops.measurement_type,...
             'String','Browse','callback',@binSelect_label,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
@@ -244,7 +244,7 @@ varargout{1} = erp_measurement_box;
             'String','Baseline','callback',@m_t_TW_ops,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         %%3F
         ERPMTops.m_t_file_ops = uicontrol('Style', 'pushbutton','Parent',ERPMTops.measurement_type,...
-            'String','Option','callback',@out_file_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String','Options','callback',@out_file_option,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(ERPMTops.measurement_type, 'ColumnSizes',[65 135 65],'RowSizes',[25 25 25 25 25 25]);
         
         %%---------------------------Select ERPsets and Run options-----------
@@ -449,8 +449,6 @@ varargout{1} = erp_measurement_box;
         Answer = geterpvaluesparasGUI2(def,ERP);
         
         if isempty(Answer)
-            beep;
-            disp('User selected cancel');
             return;
         end
         
@@ -1558,24 +1556,24 @@ varargout{1} = erp_measurement_box;
 
 
 %%-------execute "apply" before doing any change for other panels----------
-    function erp_two_panels_change(~,~)
-        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
-        if ChangeFlag~=1
-            return;
-        end
-        erp_m_t_view();
-        ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
-        ERPMTops.m_t_value.ForegroundColor = [0 0 0];
-        erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-        ERPMTops.cancel.BackgroundColor =  [1 1 1];
-        ERPMTops.cancel.ForegroundColor = [0 0 0];
-        ERPMTops.apply.BackgroundColor =  [1 1 1];
-        ERPMTops.apply.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_mesuretool',0);
-    end
+%     function erp_two_panels_change(~,~)
+%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         erp_m_t_view();
+%         ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
+%         ERPMTops.m_t_value.ForegroundColor = [0 0 0];
+%         erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+%         ERPMTops.cancel.BackgroundColor =  [1 1 1];
+%         ERPMTops.cancel.ForegroundColor = [0 0 0];
+%         ERPMTops.apply.BackgroundColor =  [1 1 1];
+%         ERPMTops.apply.ForegroundColor = [0 0 0];
+%         estudioworkingmemory('ERPTab_mesuretool',0);
+%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function erp_mt_presskey(~,eventdata)

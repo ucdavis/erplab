@@ -135,7 +135,7 @@ varargout{1} = ERP_plotset_box;
         set(ERPTab_plotset.SEM_title,'Sizes',[160 80]);
         
         ERPTab_plotset.SEMtrans_title = uiextras.HBox('Parent', ERPTab_plotset.plotop,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent', ERPTab_plotset.SEMtrans_title ,'String','transoarency',...
+        uicontrol('Style','text','Parent', ERPTab_plotset.SEMtrans_title ,'String','transparency',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'HorizontalAlignment','right'); %
         SMEtransString = {'0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1'};
         ERPTab_plotset.SEMtrans_custom = uicontrol('Style','popupmenu','Parent', ERPTab_plotset.SEMtrans_title ,'String',SMEtransString,...
@@ -1762,7 +1762,43 @@ varargout{1} = ERP_plotset_box;
         
         try gridlayputarray= ERPTab_plotset_pars{10};catch gridlayputarray= gridlayputarraydef ;ERPTab_plotset_pars{10}=gridlayputarraydef; end
         ERPTab_plotset.gridlayputarray=gridlayputarray;
-        ERPTab_plotset_pars{11} = ERPTab_plotset.gridlayputarray;
+        ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayputarray;
+        
+        %%-------SEM----------
+        try SMEFlag = ERPTab_plotset_pars{11};catch SMEFlag = [0 1 0.2];end
+        try show_SEM = SMEFlag(1);catch show_SEM=0; end
+        if isempty(show_SEM) || numel(show_SEM)~=1 ||(show_SEM~=0&& show_SEM~=1)
+            show_SEM=0;
+        end
+        ERPTab_plotset.show_SEM.Value = show_SEM;
+        if  ERPTab_plotset.show_SEM.Value == 1
+            ERPTab_plotset.SEM_custom.Enable = 'on';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'on';
+        else
+            ERPTab_plotset.SEM_custom.Enable = 'off';
+            ERPTab_plotset.SEMtrans_custom.Enable = 'off';
+        end
+        
+        try SEM_custom = SMEFlag(2);catch SEM_custom = SMEFlag(2); end
+        if isempty(SEM_custom)|| numel(SEM_custom)~=1 || any(SEM_custom<0) || any(SEM_custom>10)
+            SEM_custom=1;
+        end
+        ERPTab_plotset.SEM_custom.Value = SEM_custom+1;
+        
+        try SEMtrans_custom = SMEFlag(3);catch SEMtrans_custom = SMEFlag(3); end
+        if isempty(SEMtrans_custom)|| numel(SEMtrans_custom)~=1 || any(SEMtrans_custom<0) || any(SEMtrans_custom>1)
+            SEMtrans_custom=0.2;
+        end
+        ERPTab_plotset.SEMtrans_custom.Value = SEMtrans_custom*10+1;
+        if ERPTab_plotset.show_SEM.Value == 1
+            SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+            SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
+            ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
+        else
+            ERPTab_plotset_pars{11} = [0,ERPTab_plotset.SEM_custom.Value-1,(ERPTab_plotset.SEMtrans_custom.Value-1)/10];
+        end
+        
+        
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         observe_ERPDAT.Process_messg =2;
     end
@@ -1936,7 +1972,8 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
         ERPTab_plotset_pars{10} = ERPTab_plotset.gridlayputarray;
-        
+        SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+        SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
         if ERPTab_plotset.show_SEM.Value == 1
             ERPTab_plotset.SEM_custom.Enable = 'on';
             ERPTab_plotset.SEMtrans_custom.Enable = 'on';
@@ -1944,7 +1981,7 @@ varargout{1} = ERP_plotset_box;
             SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
             ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
         else
-            ERPTab_plotset_pars{11} = [0,0, 0];
+            ERPTab_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
         end
         
         
@@ -2193,9 +2230,11 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.show_SEM.Value=0;
             ERPTab_plotset.show_SEM.Enable = 'off';
         else
-           ERPTab_plotset.show_SEM.Enable = 'on'; 
+            ERPTab_plotset.show_SEM.Enable = 'on';
         end
         %%standard error
+        SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+        SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
         if ERPTab_plotset.show_SEM.Value == 1
             ERPTab_plotset.SEM_custom.Enable = 'on';
             ERPTab_plotset.SEMtrans_custom.Enable = 'on';
@@ -2203,8 +2242,8 @@ varargout{1} = ERP_plotset_box;
             SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
             ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
         else
-            ERPTab_plotset_pars{11} = [0,0,0];
-             ERPTab_plotset.SEM_custom.Enable = 'off';
+            ERPTab_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
+            ERPTab_plotset.SEM_custom.Enable = 'off';
             ERPTab_plotset.SEMtrans_custom.Enable = 'off';
         end
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
@@ -2398,7 +2437,7 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset_pars{10} = gridlayputarraydef;
         try show_SEM = ERPTab_plotset_pars{11};catch  show_SEM=[0,1,0.2];end;
         try  ERPTab_plotset.show_SEM.Value =show_SEM(1); catch  ERPTab_plotset.show_SEM.Value=0; end;
-       
+        
         try SEM_custom = show_SEM(2); catch SEM_custom=1;  end
         if isempty(SEM_custom) || numel(SEM_custom)~=1 || any(SEM_custom<0) || any(SEM_custom>10)
             SEM_custom=1;
@@ -2410,15 +2449,17 @@ varargout{1} = ERP_plotset_box;
             SEMtrans_custom=0.2;
         end
         ERPTab_plotset.SEMtrans_custom.Value = SEMtrans_custom*10+1;
+        SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
+        SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
         if ERPTab_plotset.show_SEM.Value == 1
             SEM_custom = ERPTab_plotset.SEM_custom.Value-1;
             SEMtrans_custom = (ERPTab_plotset.SEMtrans_custom.Value-1)/10;
             ERPTab_plotset_pars{11} = [1,SEM_custom,SEMtrans_custom];
-             ERPTab_plotset.SEM_custom.Enable = 'on';
+            ERPTab_plotset.SEM_custom.Enable = 'on';
             ERPTab_plotset.SEMtrans_custom.Enable = 'on';
         else
-            ERPTab_plotset_pars{11} = [0,0,0];
-             ERPTab_plotset.SEM_custom.Enable = 'off';
+            ERPTab_plotset_pars{11} = [0,SEM_custom,SEMtrans_custom];
+            ERPTab_plotset.SEM_custom.Enable = 'off';
             ERPTab_plotset.SEMtrans_custom.Enable = 'off';
         end
         

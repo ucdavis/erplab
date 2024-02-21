@@ -61,13 +61,13 @@ if ~isnumeric(figbgdColor) || isempty(figbgdColor) || numel(figbgdColor)~=3 || m
 end
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    zoomSpace = 0;
+    zoomSpace = 100;
 else
-    if zoomSpace<0
-        zoomSpace =0;
+    if zoomSpace<100
+        zoomSpace =100;
     end
 end
-if zoomSpace ==0
+if zoomSpace ==100
     gui_erp_waviewer.ScrollVerticalOffsets=0;
     gui_erp_waviewer.ScrollHorizontalOffsets=0;
 end
@@ -147,7 +147,6 @@ gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'S
 
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 5]);
-
 
 gui_erp_waviewer.xaxis_panel = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
 gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
@@ -231,6 +230,7 @@ if splot_n*pb_height<(gui_erp_waviewer.plotgrid.Position(4)-gui_erp_waviewer.plo
 else
     pb_height = 0.9*pb_height;
 end
+zoomSpace = zoomSpace-100;
 if zoomSpace <=0
     gui_erp_waviewer.ViewAxes.Heights = 0.95*gui_erp_waviewer.ViewAxes.Position(4);
 else
@@ -514,12 +514,12 @@ if ~isempty(messgStr)
 end
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('zoomSpace',0)
+    estudioworkingmemory('zoomSpace',100)
 else
-    if zoomSpace<0
-        zoomSpace = 0;
+    if zoomSpace<100
+        zoomSpace = 100;
     end
-    zoomSpace =zoomSpace+10;
+    zoomSpace =zoomSpace+50;
     estudioworkingmemory('zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
@@ -583,7 +583,7 @@ end
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
 erpworkingmemory('ERPViewer_proces_messg',MessageViewer);
-if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
+if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     estudioworkingmemory('zoomSpace',zoomspaceEdit);
     try
         viewer_ERPDAT.Process_messg =1;
@@ -605,13 +605,12 @@ else
         viewer_ERPDAT.Process_messg =3;
         return;
     end
-    if zoomspaceEdit<0
-        fprintf(2,['\n Zoom Editor:The input must be a positive number','.\n']);
+    if zoomspaceEdit<100
+        fprintf(2,['\n Zoom Editor:The input must not be smaller than 100','.\n']);
         viewer_ERPDAT.Process_messg =3;
         return;
     end
 end
-
 end
 
 %%----------------Zoom out-------------------------------------------------
@@ -625,11 +624,11 @@ end
 
 zoomSpace = estudioworkingmemory('zoomSpace');
 if isempty(zoomSpace)
-    estudioworkingmemory('zoomSpace',0)
+    estudioworkingmemory('zoomSpace',100)
 else
-    zoomSpace =zoomSpace-10;
-    if zoomSpace <0
-        zoomSpace =0;
+    zoomSpace =zoomSpace-50;
+    if zoomSpace <100
+        zoomSpace =100;
     end
     estudioworkingmemory('zoomSpace',zoomSpace) ;
 end
@@ -682,7 +681,7 @@ else
     pause(0.5);
     gui_erp_waviewer.Process_messg.ForegroundColor = [1 0.65 0];
 end
-if viewer_ERPDAT.Process_messg ==1 || viewer_ERPDAT.Process_messg==2 || viewer_ERPDAT.Process_messg==3
+if viewer_ERPDAT.Process_messg ==1 || viewer_ERPDAT.Process_messg==2 %|| viewer_ERPDAT.Process_messg==3
     pause(0.01);
     gui_erp_waviewer.Process_messg.String = '';
     gui_erp_waviewer.Process_messg.BackgroundColor = ColorBviewer_def;%[0.95 0.95 0.95];

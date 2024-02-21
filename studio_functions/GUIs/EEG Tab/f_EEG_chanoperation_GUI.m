@@ -723,22 +723,22 @@ varargout{1} = EEG_chan_operation_gui;
 %%Automatically saving the changed parameters for the current panel if the
 %%user change parameters for the other panels.
 %%-------------------------------------------------------------------------
-    function eeg_two_panels_change(~,~)
-        if observe_EEGDAT.eeg_two_panels==0
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_chanop');
-        if ChangeFlag~=1
-            return;
-        end
-        chanop_eeg_apply();
-        estudioworkingmemory('EEGTab_chanop',0);
-        gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
-        gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
-        EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
-        gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
-        gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
-    end
+%     function eeg_two_panels_change(~,~)
+%         if observe_EEGDAT.eeg_two_panels==0
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_chanop');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         chanop_eeg_apply();
+%         estudioworkingmemory('EEGTab_chanop',0);
+%         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
+%         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [0 0 0];
+%         EEG_chan_operation_gui.TitleColor= [0.0500    0.2500    0.5000];
+%         gui_eegtab_chan_optn.cancel.BackgroundColor =  [1 1 1];
+%         gui_eegtab_chan_optn.cancel.ForegroundColor = [0 0 0];
+%     end
 
 
 %%--------------press return to execute "Apply"----------------------------

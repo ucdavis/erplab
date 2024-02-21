@@ -234,10 +234,11 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         ChanArray =  estudioworkingmemory('EEG_ChanArray');
         ChaNum = length(EStduio_eegtab_EEG_IC_chan.ElecRange.String)-1;
-        if isempty(ChanArray) ||  any(ChanArray(:)> ChaNum) || any(ChanArray(:)<=0)
+        if isempty(ChanArray) ||  any(ChanArray(:)> ChaNum) || any(ChanArray(:)<=0) || numel(ChanArray)== ChaNum
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value = 1;
             ChanArray = [1:ChaNum];
         else
+            
             EStduio_eegtab_EEG_IC_chan.ElecRange.Value = ChanArray+1;
         end
         estudioworkingmemory('EEG_ChanArray',ChanArray);
@@ -249,6 +250,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
                 EStduio_eegtab_EEG_IC_chan.ICRange.Value=1;
                 ICArray = [1:ICNum];
             else
+                
                 EStduio_eegtab_EEG_IC_chan.ICRange.Value = ICArray+1;
             end
         else

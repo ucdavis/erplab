@@ -140,12 +140,14 @@ set(EStudio_gui_erp_totl.eeg_zoom_edit,'Callback',@zoomedit,'Enable',Enableflag)
 set(EStudio_gui_erp_totl.eeg_zoom_out_small,'Callback',@zoomout_small,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.eeg_winsize,'Callback',@EStudiowinsize,'Enable','on');
-set(EStudio_gui_erp_totl.eeg_figurecommand,'Callback',@Show_command,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.eeg_figuresaveas,'Callback',@figure_saveas,'Enable',Enableflag);
-set(EStudio_gui_erp_totl.eeg_figureout,'Callback',@figure_out,'Enable',Enableflag);
+if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
+set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
+else
+  set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Window Size'});  
+end
+
 set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable','on');
-set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 90 100 100 170 50 5]);
+set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 150 50 5]);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     EEG = observe_EEGDAT.EEG;
     OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
@@ -177,6 +179,21 @@ end % redrawDemo
 %%-------------------------------------------------------------------------
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
+
+function popmemu_eeg(Source,~)
+
+Value = Source.Value;
+if Value==1
+   EStudiowinsize();
+elseif Value==2
+    Show_command();
+elseif Value==3
+    figure_saveas();
+elseif  Value==4
+  figure_out();  
+end
+end
+
 
 %%--------------------Setting for EStudio window size----------------------
 function EStudiowinsize(~,~)
@@ -1542,7 +1559,7 @@ end
 if StackFlag==1
     AmpScale=0;
 end
-DEFAULT_GRID_SPACING =1;
+DEFAULT_GRID_SPACING =Winlength/5;
 
 % -------------------------------------------------------------------------
 % -----------------draw EEG wave if any------------------------------------

@@ -306,22 +306,22 @@ varargout{1} = ERP_CSD_gui;
 
 
 %%-------execute "apply" before doing any change for other panels----------
-    function erp_two_panels_change(~,~)
-        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('ERPTab_csd');
-        if ChangeFlag~=1
-            return;
-        end
-        apply_run();
-        gui_erp_CSD.run.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.run.ForegroundColor = [0 0 0];
-        ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-        gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
-        gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
-        estudioworkingmemory('ERPTab_csd',0);
-    end
+%     function erp_two_panels_change(~,~)
+%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('ERPTab_csd');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         apply_run();
+%         gui_erp_CSD.run.BackgroundColor =  [1 1 1];
+%         gui_erp_CSD.run.ForegroundColor = [0 0 0];
+%         ERP_CSD_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+%         gui_erp_CSD.cancel.BackgroundColor =  [1 1 1];
+%         gui_erp_CSD.cancel.ForegroundColor = [0 0 0];
+%         estudioworkingmemory('ERPTab_csd',0);
+%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function erp_csd_presskey(~,eventdata)

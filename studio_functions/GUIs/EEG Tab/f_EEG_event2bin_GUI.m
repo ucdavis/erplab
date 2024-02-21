@@ -556,22 +556,22 @@ varargout{1} = EStudio_box_EEG_event2bin;
 %%Automatically saving the changed parameters for the current panel if the
 %%user change parameters for the other panels.
 %%-------------------------------------------------------------------------
-    function eeg_two_panels_change(~,~)
-        if observe_EEGDAT.eeg_two_panels==0
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_event2bin');
-        if ChangeFlag~=1
-            return;
-        end
-        eeg_bdf_Run();
-        estudioworkingmemory('EEGTab_event2bin',0);
-        EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
-        EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
-        EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
-        EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
-        EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
-    end
+%     function eeg_two_panels_change(~,~)
+%         if observe_EEGDAT.eeg_two_panels==0
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_event2bin');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         eeg_bdf_Run();
+%         estudioworkingmemory('EEGTab_event2bin',0);
+%         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
+%         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
+%         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
+%         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
+%         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
+%     end
 
 %%--------------press return to execute "Run"----------------------------
     function eeg_event2bin_presskey(hObject, eventdata)

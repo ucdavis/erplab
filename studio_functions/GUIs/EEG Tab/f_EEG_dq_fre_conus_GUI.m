@@ -518,22 +518,22 @@ varargout{1} = Eegtab_box_dq_fre_conus;
     end
 
 %%-------------------Auomatically execute "apply"--------------------------
-    function eeg_two_panels_change(~,~)
-        if  isempty(observe_EEGDAT.EEG)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_dq_fre_conus');
-        if ChangeFlag~=1
-            return;
-        end
-        dq_fre_run();
-        estudioworkingmemory('EEGTab_dq_fre_conus',0);
-        Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
-        EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
-        EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];
-        EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 1 1 1];
-        EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
-    end
+%     function eeg_two_panels_change(~,~)
+%         if  isempty(observe_EEGDAT.EEG)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_dq_fre_conus');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         dq_fre_run();
+%         estudioworkingmemory('EEGTab_dq_fre_conus',0);
+%         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
+%         EEG_dq_fre_conus.dq_fre_cancel.BackgroundColor =  [1 1 1];
+%         EEG_dq_fre_conus.dq_fre_cancel.ForegroundColor = [0 0 0];
+%         EEG_dq_fre_conus.dq_fre_run.BackgroundColor =  [ 1 1 1];
+%         EEG_dq_fre_conus.dq_fre_run.ForegroundColor = [0 0 0];
+%     end
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)

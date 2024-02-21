@@ -951,24 +951,24 @@ varargout{1} = Eegtab_box_art_det_conus;
     end
 
 %%-------------------Auomatically execute "apply"--------------------------
-    function eeg_two_panels_change(~,~)
-        if  isempty(observe_EEGDAT.EEG)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_detect_arts_conus');
-        if ChangeFlag~=1
-            return;
-        end
-        detectar_run();
-        estudioworkingmemory('EEGTab_detect_arts_conus',0);
-        Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
-        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
-        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
-    end
+%     function eeg_two_panels_change(~,~)
+%         if  isempty(observe_EEGDAT.EEG)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_detect_arts_conus');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         detectar_run();
+%         estudioworkingmemory('EEGTab_detect_arts_conus',0);
+%         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
+%         Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
+%         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
+%         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
+%         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
+%         Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [1 1 1];
+%         Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+%     end
 
 
 %%--------------Reset this panel with the default parameters---------------

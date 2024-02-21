@@ -14,9 +14,6 @@ end
 %
 %
 % end
-
-
-
 %
 % CHECK EEGLAB Version
 %
@@ -101,8 +98,5 @@ assignin('base','ERPCOM',erpcom);%Send the history to Matlab workspace
 % get history from script. ERP
 
 displayEquiComERP(erpcom);
-
-
-
 
 return

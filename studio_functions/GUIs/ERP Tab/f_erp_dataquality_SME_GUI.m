@@ -100,7 +100,6 @@ drawui_erp_information(FonsizeDefault);
 %-----------------------------Subfunction----------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
         if observe_ERPDAT.Count_currentERP~=6
@@ -191,7 +190,6 @@ drawui_erp_information(FonsizeDefault);
         end
         erpworkingmemory('f_ERP_proces_messg','Data Quality Metrics > Save to file');
         observe_ERPDAT.Process_messg =1;
-        
         
         for Numoferp = 1:numel(SelectedERP)
             ERP =observe_ERPDAT.ALLERP(SelectedERP(Numoferp));

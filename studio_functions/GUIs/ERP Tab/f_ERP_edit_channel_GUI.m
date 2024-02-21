@@ -592,17 +592,17 @@ varargout{1} = EStudio_erp_box_edit_chan;
 %%Automatically saving the changed parameters for the current panel if the
 %%user change parameters for the other panels.
 %%-------------------------------------------------------------------------
-    function ERP_two_panels_change(~,~)
-        if observe_ERPDAT.erp_two_panels==0
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('ERPTab_editchan');
-        if ChangeFlag~=1
-            return;
-        end
-        estudioworkingmemory('ERPTab_editchan',0);
-        EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-    end
+%     function ERP_two_panels_change(~,~)
+%         if observe_ERPDAT.erp_two_panels==0
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('ERPTab_editchan');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         estudioworkingmemory('ERPTab_editchan',0);
+%         EStudio_erp_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
+%     end
 
 
 %%--------------Reset this panel with the default parameters---------------

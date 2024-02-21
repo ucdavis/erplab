@@ -408,7 +408,6 @@ else
     OutputViewerparerp{15} = Transparency;
 end
 
-
     function colors = get_colors(ncolors)
         % Each color gets 1 point divided into up to 2 of 3 groups (RGB).
         degree_step = 6/ncolors;

@@ -570,22 +570,22 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 
 
 %%-------------------Auomatically execute "apply"--------------------------
-    function eeg_two_panels_change(~,~)
-        if  isempty(observe_EEGDAT.EEG)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_rmresposmistak_conus');
-        if ChangeFlag~=1
-            return;
-        end
-        rmresp_mistake_run();
-        estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
-        Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
-        EEG_rmresp_mistak_conus.rmresp_mistake_cancel.BackgroundColor =  [1 1 1];
-        EEG_rmresp_mistak_conus.rmresp_mistake_cancel.ForegroundColor = [0 0 0];
-        EEG_rmresp_mistak_conus.rmresp_mistake_run.BackgroundColor =  [ 1 1 1];
-        EEG_rmresp_mistak_conus.rmresp_mistake_run.ForegroundColor = [0 0 0];
-    end
+%     function eeg_two_panels_change(~,~)
+%         if  isempty(observe_EEGDAT.EEG)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_rmresposmistak_conus');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         rmresp_mistake_run();
+%         estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
+%         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
+%         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.BackgroundColor =  [1 1 1];
+%         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.ForegroundColor = [0 0 0];
+%         EEG_rmresp_mistak_conus.rmresp_mistake_run.BackgroundColor =  [ 1 1 1];
+%         EEG_rmresp_mistak_conus.rmresp_mistake_run.ForegroundColor = [0 0 0];
+%     end
 
 
 %%--------------------------------check event codes------------------------

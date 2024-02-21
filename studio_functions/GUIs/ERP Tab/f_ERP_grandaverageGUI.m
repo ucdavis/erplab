@@ -129,11 +129,6 @@ varargout{1} = ERP_grdavg_box_gui;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%---------------------grand average tool link-----------------------------
-%     function tool_link(~,~)
-%         web('https://github.com/lucklab/erplab/wiki/Averaging-Across-ERPSETS-_-Creating-Grand-Averages','-browser');
-%     end
-
 %%---------------checkbox for weighted average-----------------------------
     function checkbox_weigavg(source,~)
         if isempty(observe_ERPDAT.ERP)
@@ -501,8 +496,6 @@ varargout{1} = ERP_grdavg_box_gui;
             Answer = f_ERP_save_single_file(strcat('grand'),'',length(observe_ERPDAT.ALLERP)+1);
         end
         if isempty(Answer)
-            beep;
-            disp('User selectd cancal');
             return;
         end
         erpName_new = '';
@@ -675,22 +668,22 @@ varargout{1} = ERP_grdavg_box_gui;
     end
 
 %%-------execute "apply" before doing any change for other panels----------
-    function erp_two_panels_change(~,~)
-        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
-        if ChangeFlag~=1
-            return;
-        end
-        apply_run();
-        estudioworkingmemory('ERPTab_gravg',0);
-        gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
-        gui_erp_grdavg.run.ForegroundColor = [0 0 0];
-        ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-        gui_erp_grdavg.cancel.BackgroundColor =  [1 1 1];
-        gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
-    end
+%     function erp_two_panels_change(~,~)
+%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         apply_run();
+%         estudioworkingmemory('ERPTab_gravg',0);
+%         gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
+%         gui_erp_grdavg.run.ForegroundColor = [0 0 0];
+%         ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+%         gui_erp_grdavg.cancel.BackgroundColor =  [1 1 1];
+%         gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
+%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function erp_graverage_presskey(~,eventdata)

@@ -252,7 +252,7 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','Cancel','callback',@scap_cancel,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         gui_erp_scalp_map.advanced = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
-            'String','Advanced','callback',@apply_advanced,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Options','callback',@apply_advanced,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         gui_erp_scalp_map.run = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
             'String','Plot','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
@@ -1785,24 +1785,24 @@ varargout{1} = ERP_plot_scalp_gui;
 
 
 %%-------execute "apply" before doing any cnages for other panels----------
-    function erp_two_panels_change(~,~)
-        if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('ERPTab_topos');
-        if ChangeFlag~=1
-            return;
-        end
-        apply_run();
-        estudioworkingmemory('ERPTab_topos',0);
-        gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
-        gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
-        ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-        gui_erp_scalp_map.cancel.BackgroundColor =  [1 1 1];
-        gui_erp_scalp_map.cancel.ForegroundColor = [0 0 0];
-        gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
-        gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
-    end
+%     function erp_two_panels_change(~,~)
+%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('ERPTab_topos');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         apply_run();
+%         estudioworkingmemory('ERPTab_topos',0);
+%         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
+%         gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
+%         ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
+%         gui_erp_scalp_map.cancel.BackgroundColor =  [1 1 1];
+%         gui_erp_scalp_map.cancel.ForegroundColor = [0 0 0];
+%         gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
+%         gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
+%     end
 
 
 %%--------------press return to execute "Apply"----------------------------

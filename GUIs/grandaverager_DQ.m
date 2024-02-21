@@ -370,8 +370,9 @@ uiresume(handles.GAvDQ); % exit
 else
     % DQ mismatch
     beep
-    errordlg('Not all requested measures are present in all ERPsets to be averaged. Please check requested measures and ERPsets.')
-    pause(0.1)
+%     errordlg('Not all requested measures are present in all ERPsets to be averaged. Please check requested measures and ERPsets.')
+    errordlg('ERPLAB cannot average the data quality measures across ERPsets unless all ERPsets have the same data quality measures. The data quality measures are not identical across the selected ERPsets, so this grand average cannot be computed. You can either make sure that all selected ERPsets have the same data quality measures, or you can disable the computation of data quality measures in the grand average.')
+    pause(0.1);%%GH Feb 20 2024
 end
 
 

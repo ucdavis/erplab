@@ -48,13 +48,13 @@ if ishandle( EStudio_gui_erp_totl.ViewAxes )
 end
 zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
-    zoomSpace = 0;
+    zoomSpace = 100;
 else
-    if zoomSpace<0
-        zoomSpace =0;
+    if zoomSpace<100
+        zoomSpace =100;
     end
 end
-if zoomSpace ==0
+if zoomSpace ==100
     EStudio_gui_erp_totl.ScrollVerticalOffsets=0;
     EStudio_gui_erp_totl.ScrollHorizontalOffsets=0;
 end
@@ -120,21 +120,19 @@ EStudio_gui_erp_totl.zoom_edit = uicontrol('Parent',commandfig_panel,'Style','ed
 EStudio_gui_erp_totl.zoom_out = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Zoom Out',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout,'Enable',Enableflag);
 uiextras.Empty('Parent', commandfig_panel); % 1A
-EStudio_gui_erp_totl.advanced_viewer = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Advanced Waveform Viewer',...
-    'Callback',@Advanced_viewer,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
-uiextras.Empty('Parent', commandfig_panel); % 1A
-EStudio_gui_erp_totl.erp_winsize = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Window Size',...
-    'Callback',@EStudiowinsize, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
-EStudio_gui_erp_totl.erp_figurecommand = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Show Command',...
-    'Callback',@Show_command, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
-EStudio_gui_erp_totl.erp_figuresaveas = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Save Figure as',...
-    'Callback',@figure_saveas, 'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
-EStudio_gui_erp_totl.erp_figureout = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Create Static/Exportable Plot',...
-    'Callback', @figure_out,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',Enableflag);
+
+if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
+    EStudio_gui_erp_totl.erp_popmenu =  uicontrol('Parent',commandfig_panel,'Style','popupmenu','Callback',@popmemu_erp,'Enable','on','BackgroundColor',ColorB_def,...
+        'Enable','on','String',{'Window Size','Advanced Waveform Viewer','Show Command','Save Figure as','Create Static/Exportable Plot'});
+else
+    EStudio_gui_erp_totl.erp_popmenu =  uicontrol('Parent',commandfig_panel,'Style','popupmenu','Callback',@popmemu_erp,...
+        'Enable','on','String',{'Window Size'},'Enable','on','BackgroundColor',ColorB_def);
+end
+
 EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
     'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 uiextras.Empty('Parent', commandfig_panel); % 1A
-set(commandfig_panel, 'Sizes', [70 50 70 -1 160 -1 90 100 100 170 50  5]);
+set(commandfig_panel, 'Sizes', [70 50 70 -1 150 50 5]);
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -203,14 +201,13 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
     EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
     EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
-    
     EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
-    
     if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fill
         pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     else
         pb_height = 0.9*pb_height;
     end
+    zoomSpace = zoomSpace-100;
     if zoomSpace <=0
         EStudio_gui_erp_totl.ViewAxes.Heights = 0.95*EStudio_gui_erp_totl.ViewAxes.Position(4);
     else
@@ -223,7 +220,6 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     else
         EStudio_gui_erp_totl.ViewAxes.Widths = widthViewer*(1+zoomSpace/100);
     end
-    EStudio_gui_erp_totl.plotgrid.Units = 'normalized';
     
     %%Keep the same positions for Vertical and Horizontal scrolling bars asbefore
     if zoomSpace~=0 && zoomSpace>0
@@ -254,6 +250,22 @@ end
 %%-----------------------------Subfunctions--------------------------------
 %%-------------------------------------------------------------------------
 
+function popmemu_erp(Source,~)
+Value = Source.Value;
+if Value==1
+    EStudiowinsize();
+elseif Value==2
+    Advanced_viewer();
+elseif Value==3
+    Show_command();
+elseif Value==4
+    figure_saveas();
+elseif Value==5
+    figure_out();
+end
+end
+
+
 
 %%----------------Zoom in-------------------------------------------------
 function zoomin(~,~)
@@ -267,10 +279,10 @@ zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
     estudioworkingmemory('ERPTab_zoomSpace',0);
 else
-    if zoomSpace<0
-        zoomSpace = 0;
+    if zoomSpace<100
+        zoomSpace = 100;
     end
-    zoomSpace =zoomSpace+10;
+    zoomSpace =zoomSpace+50;
     estudioworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
 end
 MessageViewer= char(strcat('Zoom In'));
@@ -296,7 +308,7 @@ end
 zoomspaceEdit = str2num(Source.String);
 MessageViewer= char(strcat('Zoom Editor'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=0
+if ~isempty(zoomspaceEdit) && numel(zoomspaceEdit)==1 && zoomspaceEdit>=100
     estudioworkingmemory('ERPTab_zoomSpace',zoomspaceEdit);
     try
         observe_ERPDAT.Process_messg =1;
@@ -318,8 +330,8 @@ else
         observe_ERPDAT.Process_messg =4;
         return;
     end
-    if zoomspaceEdit<0
-        erpworkingmemory('f_ERP_proces_messg',[' Zoom Editor:The input must be a positive number.']);
+    if zoomspaceEdit<100
+        erpworkingmemory('f_ERP_proces_messg',[' Zoom Editor:The input must not be smaller than 100.']);
         observe_ERPDAT.Process_messg =4;
         return;
     end
@@ -341,9 +353,9 @@ zoomSpace = estudioworkingmemory('ERPTab_zoomSpace');
 if isempty(zoomSpace)
     estudioworkingmemory('ERPTab_zoomSpace',0)
 else
-    zoomSpace =zoomSpace-10;
-    if zoomSpace <0
-        zoomSpace =0;
+    zoomSpace =zoomSpace-50;
+    if zoomSpace <100
+        zoomSpace =100;
     end
     estudioworkingmemory('ERPTab_zoomSpace',zoomSpace) ;
 end
@@ -353,9 +365,6 @@ observe_ERPDAT.Process_messg =1;
 f_redrawERP();
 observe_ERPDAT.Process_messg =2;
 end
-
-
-
 
 
 

@@ -703,7 +703,6 @@ varargout{1} = Eegtab_box_avg_erp;
             estudioworkingmemory('EEGTab_eeg2erp',1);
         end%%end for loop of subjects
         feval('dq_trial_rejection',ALLERP,ALLEEG(EEGArray));
-        
         observe_EEGDAT.eeg_panel_message =2;
         EStudio_gui_erp_totl.context_tabs.SelectedChild = 2;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
@@ -784,22 +783,22 @@ varargout{1} = Eegtab_box_avg_erp;
     end
 
 %%-------------------Auomatically execute "apply"--------------------------
-    function eeg_two_panels_change(~,~)
-        if  isempty(observe_EEGDAT.EEG)
-            return;
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_avg_erp');
-        if ChangeFlag~=1
-            return;
-        end
-        avg_run();
-        estudioworkingmemory('EEGTab_avg_erp',0);
-        Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
-        EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
-        EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
-        EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
-        EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
-    end
+%     function eeg_two_panels_change(~,~)
+%         if  isempty(observe_EEGDAT.EEG)
+%             return;
+%         end
+%         ChangeFlag =  estudioworkingmemory('EEGTab_avg_erp');
+%         if ChangeFlag~=1
+%             return;
+%         end
+%         avg_run();
+%         estudioworkingmemory('EEGTab_avg_erp',0);
+%         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
+%         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
+%         EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
+%         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
+%         EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
+%     end
 
 
 %%--------------Reset this panel with the default parameters---------------

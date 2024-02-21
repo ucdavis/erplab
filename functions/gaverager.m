@@ -165,6 +165,9 @@ for j=1:nfile
         callwarning(sprintf('%d) ', j),'');
         fprintf(' ERPset # %d "%s" has %.1f %% of mean artifact detection.\n', j, ERPT.erpname, ERPT.pexcluded);
         fprintf(' ERP #%g is being included anyway...\n', j);
+      
+        warndlg(['WARNING: ERPset #',32,num2str(j),32,'"',ERPT.erpname,'" has',32,num2str(roundn(ERPT.pexcluded,-1)),'%  of trials rejected because of artifacts.',],...
+            'ERPLAB: pop_gaverager()');%%GH Feb 20 2024 
     else
         fprintf(' %d) Including %s...\n', j, ERPT.erpname);
     end

@@ -13,7 +13,7 @@ function varargout = f_EEG_events_GUI(varargin)
 global observe_EEGDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 % addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
+% addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 %---------------------------Initialize parameters------------------------------------
 
 EStduio_eegtab_EEG_events = struct();
@@ -110,7 +110,7 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.table_event = uitable(  ...
             'Parent'        , EStduio_eegtab_EEG_events.table_title,...
             'Data'          , dsnames, ...
-            'ColumnWidth'   , {130,130}, ...
+            'ColumnWidth'   , {100,100}, ...
             'ColumnName'    , {'Types','#Occurrences'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false]);
@@ -239,8 +239,12 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(inputstrMat) && ~strcmp(inputstrMat,'')
             disp('User selected Cancel')
             return
+        elseif strcmp(inputstrMat,'advanced')
+            %
+            %                 [EEG, com ] = pop_editeventlist(ALLEEG_advance(EEGArray(1)));
             
         end
+        
         elname   = inputstrMat{1};
         boundarystrcode    = inputstrMat{2};
         newboundarynumcode = inputstrMat{3};

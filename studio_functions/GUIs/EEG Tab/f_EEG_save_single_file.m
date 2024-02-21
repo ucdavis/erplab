@@ -209,6 +209,8 @@ if strcmp(fname,'') || isempty(fname)
 end
 [pathstr, fname, ext] = fileparts(fname);
 erpname = [fname,'.set'];
+filenames = handles.edit_filename.String;
+[pathstr, ~, ~] = fileparts(filenames);
 set(handles.edit_filename, 'String', fullfile(pathstr,erpname));
 
 
