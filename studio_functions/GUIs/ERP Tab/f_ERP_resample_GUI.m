@@ -417,33 +417,21 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.Paras{4} = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         gui_erp_resample.Paras{5} = str2num(gui_erp_resample.nwtimewindow_editright.String);
         
-        Selected_erpset =  estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
-            Selected_erpset =  length(observe_ERPDAT.ALLERP);
+        ERPArray =  estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = Selected_erpset;
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
-        end
-        
-        Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,'_resample');
-        if isempty(Answer)
-            beep;
-            disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLERP_advance = Answer{1};
-            Save_file_label = Answer{2};
+            observe_ERPDAT.CURRENTERP = ERPArray;
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         erpworkingmemory('f_ERP_proces_messg','Resample ERPsets');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        
         ALLERPCOM = evalin('base','ALLERPCOM');
-        
-        for Numoferp = 1:numel(Selected_erpset)
-            
-            ERP = ALLERP_advance(Selected_erpset(Numoferp));
+        ALLERP = observe_ERPDAT.ALLERP;
+        ALLERP_out = [];
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(ERPArray(Numoferp));
             if gui_erp_resample.nwsrate_checkbox.Value==0
                 Freq2resamp =  ERP.srate;
             end
@@ -461,19 +449,39 @@ varargout{1} = box_erp_resample;
                 else
                     ALLERPCOM{length(ALLERPCOM)+1}= ERPCOM;
                 end
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1) = ERP;
             end
-            if Save_file_label
-                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            end
-            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
         end
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         
+        Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_resample');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLERP_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP_out(Numoferp);
+            if Save_file_label
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            else
+                ERP.filename = '';
+                ERP.saved = 'no';
+                ERP.filepath = '';
+            end
+            ALLERP(length(ALLERP)+1) = ERP;
+        end
+        observe_ERPDAT.ALLERP = ALLERP;
+        
         try
-            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selected_erpset)+1:length(observe_ERPDAT.ALLERP)];
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selected_erpset)+1;
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;
         catch
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);

@@ -187,11 +187,6 @@ varargout{1} = box_interpolate_chan_epoch;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%-----------------------------help----------------------------------------
-%     function intpchan_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
-
 
 %%---------------------Modify Existing dataset-----------------------------
     function mode_modify(Source,~)
@@ -837,18 +832,7 @@ varargout{1} = box_interpolate_chan_epoch;
         
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Save_file_label=0;
-        if CreateeegFlag==1
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_interp');
-            if isempty(Answer)
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -871,7 +855,6 @@ varargout{1} = box_interpolate_chan_epoch;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;
             end
-            
             [EEG,LASTCOM] = pop_erplabInterpolateElectrodes( EEG , 'displayEEG',  0, 'ignoreChannels', ChanArrayig,...
                 'interpolationMethod', interpolationMethod, 'replaceChannels',ChanArray,'history', 'implicit');
             fprintf([LASTCOM,'\n']);
@@ -879,9 +862,26 @@ varargout{1} = box_interpolate_chan_epoch;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            if CreateeegFlag==0
-                ALLEEG(EEGArray(Numofeeg)) = EEG;
-            else
+            [ALLEEG_out,~, ~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+        end
+        Save_file_label=0;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_interp');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
+        if CreateeegFlag==0
+            ALLEEG(EEGArray) = ALLEEG_out;
+        else
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_out(Numofeeg);
                 checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -901,8 +901,8 @@ varargout{1} = box_interpolate_chan_epoch;
                     eegh(LASTCOM);
                 end
             end
-            fprintf( [repmat('-',1,100) '\n']);
         end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         if CreateeegFlag==1
             try
@@ -912,12 +912,13 @@ varargout{1} = box_interpolate_chan_epoch;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            
             estudioworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -979,7 +980,6 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         
         CreateeegFlag = Eegtab_EEG_interpolate_chan_epoch.mode_create.Value; %%create new eeg dataset
-        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
@@ -991,18 +991,7 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         %%loop for the selected EEGsets
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Save_file_label=0;
-        if CreateeegFlag==1
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_ar');
-            if isempty(Answer)
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -1060,7 +1049,6 @@ varargout{1} = box_interpolate_chan_epoch;
                     'ChanToInterp', replaceChannelInd, 'ChansToIgnore', ignoreChannels, ...
                     'InterpAnyChan', many_electrodes, 'Threshold',threshold_perc,...
                     'Review', viewstr, 'History', 'implicit');
-                
                 if isempty(LASTCOM)
                     erpworkingmemory('f_EEG_proces_messg','Interpolate Channels >  Run: Please check you data or you selected cancel');
                     observe_EEGDAT.eeg_panel_message =4;
@@ -1069,14 +1057,29 @@ varargout{1} = box_interpolate_chan_epoch;
                 EEG = eegh(LASTCOM, EEG);
                 fprintf(['\n',LASTCOM,'\n']);
             end
-            
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
-            if CreateeegFlag==0
-                ALLEEG(EEGArray(Numofeeg)) = EEG;
-            else
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end
+        Save_file_label=0;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_ar');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
+        if CreateeegFlag==0
+            ALLEEG(EEGArray) = ALLEEG_out;
+        else
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_out(Numofeeg);
                 checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -1096,8 +1099,8 @@ varargout{1} = box_interpolate_chan_epoch;
                     eegh(LASTCOM);
                 end
             end
-            fprintf( ['\n',repmat('-',1,100) '\n']);
         end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         if CreateeegFlag==1
             try
@@ -1107,12 +1110,13 @@ varargout{1} = box_interpolate_chan_epoch;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            
             estudioworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end

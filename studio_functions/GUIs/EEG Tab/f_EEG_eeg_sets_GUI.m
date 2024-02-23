@@ -858,16 +858,12 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
-        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Save As');
         observe_EEGDAT.eeg_panel_message =1;
-        
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  [cd,filesep];
         end
-        
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
             EEGArray =observe_EEGDAT.CURRENTSET;
@@ -884,13 +880,16 @@ estudioworkingmemory('Startimes',0);%%set default value
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Save EEG dataset as *',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-
-            [pathstr, namedef, ext] = fileparts(char(EEG.filename));
+            if ~isempty(EEG.filename)
+             filename=  EEG.filename; 
+            else
+             filename = [EEG.setname,'.set'];   
+            end
+            [pathstr, namedef, ext] = fileparts(filename);
             [erpfilename, erppathname, indxs] = uiputfile({'*.set'}, ...
                 ['Save "',EEG.setname,'" as'],...
                 fullfile(pathName,namedef));
             if isequal(erpfilename,0)
-                disp('User selected Cancel')
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return
             end
@@ -914,7 +913,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 

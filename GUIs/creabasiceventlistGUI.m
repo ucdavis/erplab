@@ -125,6 +125,9 @@ if multieeg==1
     set(handles.pushbutton_browse,'Enable','off');
     set(handles.edit_elname,'Enable','off');
     set(handles.edit_elname,'String','Export to text file is unavailable when multiple EEGsets are selected');
+      set(handles.pushbutton_advanced,'String','<html>Unavailable for <br />multi-EEGsets</html>')
+else
+   set(handles.pushbutton_advanced,'String','Advanced') ;
 end
 
 %

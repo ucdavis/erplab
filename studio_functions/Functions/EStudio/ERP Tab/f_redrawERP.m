@@ -134,6 +134,7 @@ EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pu
 uiextras.Empty('Parent', commandfig_panel); % 1A
 set(commandfig_panel, 'Sizes', [70 50 70 -1 150 50 5]);
 
+
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 EStudio_gui_erp_totl.Process_messg = uicontrol('Parent',xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);

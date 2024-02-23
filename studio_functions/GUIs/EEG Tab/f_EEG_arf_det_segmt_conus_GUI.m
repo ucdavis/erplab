@@ -510,7 +510,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         end
         
         ignoreUseEventcodes = str2num(EEG_art_det_segmt_conus.event_exp_edit.String);
-        
         ignoreUseTypeValue = EEG_art_det_segmt_conus.event_exp_select.Value;
         if ignoreUseTypeValue==1
             ignoreUseType = 'ignore';
@@ -534,22 +533,12 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             displayEEG,                                   ...
             ignoreBoundary});
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_del');
-        if isempty(Answer)
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Delete Time Segments (Continuous EEG) > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
-            
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             %% Run the pop_ command with the user input from the GUI
             [EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG, ...
                 'timeThresholdMS'           , timeThresholdMS,              ...
@@ -560,18 +549,32 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 'displayEEG'                , displayEEG,                   ...
                 'ignoreBoundary'            , ignoreBoundary,               ...
                 'History'                   , 'implicit');
-            
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_del');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG =    ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -586,13 +589,9 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end%%end for loop of subjects
+        end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
@@ -649,7 +648,7 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         
         EEG_art_det_segmt_conus.detectsegmt_preview.String = 'Preview';
         time_threshold_edit = str2num(EEG_art_det_segmt_conus.time_threshold_edit.String);
-        if isempty(time_threshold_edit) 
+        if isempty(time_threshold_edit)
             EEG_art_det_segmt_conus.time_threshold_edit.String = '7000';
         end
         %%set default parameters

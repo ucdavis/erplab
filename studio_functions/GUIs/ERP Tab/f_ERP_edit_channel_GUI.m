@@ -210,8 +210,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if ~isempty(chan_label_select)
             ERP_tab_edit_chan.select_edit_chan.String  = vect2colon(chan_label_select);
         else
-            beep;
-            %disp('User selected Cancel');
             return
         end
     end
@@ -245,18 +243,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
         ALLERP = observe_ERPDAT.ALLERP;
-        if CreateERPFlag==1
-            Answer = f_ERP_save_multi_file(ALLERP,ERPArray,'_delchan');
-            if isempty(Answer)
-                beep;
-                %disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLERP = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        end
+        ALLERP_out = [];
         ALLERPCOM = evalin('base','ALLERPCOM');
         for NumofERP = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(NumofERP));
@@ -284,10 +271,31 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, {Formula_str}, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            
-            if CreateERPFlag==0
-                observe_ERPDAT.ALLERP(ERPArray(NumofERP)) = ERP;
+            if isempty(ALLERP_out)
+                ALLERP_out(1)  = ERP;
             else
+                ALLERP_out(length(ALLERP_out)+1)  = ERP;
+            end
+            fprintf( [repmat('-',1,100) '\n']);
+        end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        if CreateERPFlag==1
+            Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_delchan');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLERP_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
+        if CreateERPFlag==0
+            ALLERP(ERPArray) = ALLERP_out;
+        else
+            for Numoferp  = 1: numel(ERPArray)
+                ERP=  ALLERP_out(ERP);
                 checkfileindex = checkfilexists([ERP.filepath,filesep,ERP.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
@@ -299,12 +307,10 @@ varargout{1} = EStudio_erp_box_edit_chan;
                     ERP.saved = 'no';
                     ERP.filepath = '';
                 end
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+                ALLERP(length(ALLERP)+1) = ERP;
             end
-            fprintf( [repmat('-',1,100) '\n']);
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.ALLERP = ALLERP;
         if CreateERPFlag==1
             try
                 Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
@@ -353,21 +359,8 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
-        %         try
         ALLERP = observe_ERPDAT.ALLERP;
-        Save_file_label=0;
-        if CreateERPFlag==1
-            Answer = f_ERP_save_multi_file(ALLERP,ERPArray,'_rnchan');
-            if isempty(Answer)
-                beep;
-                %disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLERP = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        end
+        ALLERP_out = [];
         ALLERPCOM = evalin('base','ALLERPCOM');
         for NumofERP = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(NumofERP));
@@ -384,8 +377,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 [eloc, Chanlabelsold, theta, radius, indices] = readlocs( ERP.chanlocs);
                 Chanlabelsold = Chanlabelsold(ChanArray);
             catch
-                beep
-                disp('Please check ERP.chanlocs');
                 fprintf( [repmat('-',1,100) '\n']);
                 observe_ERPDAT.Process_messg =3;
                 return;
@@ -395,7 +386,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
             if isempty(def)
                 def = Chanlabelsold;
             end
-            
             titleName= ['Dataset',32,num2str(CURRENTSET),': ERPLAB Change Channel Name'];
             Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
             
@@ -409,10 +399,34 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             [ERP, ERPCOM] = pop_rename2chan(ALLERP,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            
-            if CreateERPFlag==0
-                observe_ERPDAT.ALLERP(ERPArray(NumofERP)) = ERP;
+            if isempty(ALLERP_out)
+                ALLERP_out(1)  = ERP;
             else
+                ALLERP_out(length(ALLERP_out)+1)  = ERP;
+            end
+            fprintf( [repmat('-',1,100) '\n']);
+        end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        
+        Save_file_label=0;
+        if CreateERPFlag==0
+            ALLERP(ERPArray) = ALLERP_out;
+        else
+            Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_rnchan');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLERP_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        if CreateERPFlag==0
+            ALLERP(ERPArray) = ERP;
+        else
+            for Numoferp = 1:numel(ERPArray)
+                ERP = ALLERP_out(Numoferp);
                 checkfileindex = checkfilexists([ERP.filepath,filesep,ERP.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
@@ -424,12 +438,11 @@ varargout{1} = EStudio_erp_box_edit_chan;
                     ERP.saved = 'no';
                     ERP.filepath = '';
                 end
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+                ALLERP(length(ALLERP)+1) = ERP;
             end
-            fprintf( [repmat('-',1,100) '\n']);
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.ALLERP = ALLERP;
+        
         if CreateERPFlag==1
             try
                 Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
@@ -472,56 +485,57 @@ varargout{1} = EStudio_erp_box_edit_chan;
         end
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
         %%loop for the selected ERPsets
-        Save_file_label=0;
         ALLERP = observe_ERPDAT.ALLERP;
-        if CreateERPFlag==1
-            Answer = f_ERP_save_multi_file(ALLERP,ERPArray,'_editchan');
-            if isempty(Answer)
-                beep;
-                %disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLERP = Answer{1};
-                Save_file_label = Answer{2};
-            end
+        ChanArray = [1:observe_ERPDAT.ERP.nchan];
+        titleName= ['Add or edit channel locations'];
+        app = feval('f_editchan_gui',observe_ERPDAT.ERP,titleName);
+        waitfor(app,'Finishbutton',1);
+        try
+            ERPoutput = app.output; %NO you don't want to output ERP with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            return;
         end
-        ALLERPCOM = evalin('base','ALLERPCOM');
         
+        if isempty(ERPoutput)
+            return;
+        end
+        Chanlocs = ERPoutput.chanlocs;
+        ALLERPCOM = evalin('base','ALLERPCOM');
+        ALLERP_out = [];
         for NumofERP = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(NumofERP));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Add or edit all  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current ERPset(No.',num2str(ERPArray(NumofERP)),'):',32,ERP.erpname,'\n\n']);
-            ChanArray = [1:ERP.nchan];
-            titleName= ['Dataset',32,num2str(ERPArray(NumofERP)),': Add or edit channel locations'];
-            
-            app = feval('f_editchan_gui',ERP,titleName);
-            waitfor(app,'Finishbutton',1);
-            try
-                ERPoutput = app.output; %NO you don't want to output ERP with edited channel locations, you want to output the parameters to run decoding
-                app.delete; %delete app from view
-                pause(0.1); %wait for app to leave
-            catch
-                %disp('User selected Cancel');
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                break;
-            end
-            
-            if isempty(ERPoutput)
-                %disp('User selected Cancel');
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                break;
-            end
-            Chanlocs = ERPoutput.chanlocs;
-            
             [ERP, ERPCOM] = pop_editdatachanlocs(ALLERP,ERPArray(NumofERP),...
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            
-            if CreateERPFlag==0
-                observe_ERPDAT.ALLERP(ERPArray(NumofERP)) = ERP;
+            if isempty(ALLERP_out)
+                ALLERP_out(1)  = ERP;
             else
+                ALLERP_out(length(ALLERP_out)+1)  = ERP;
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end
+        
+        Save_file_label=0;
+        if CreateERPFlag==1
+            Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_editchan');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLERP_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        if CreateERPFlag==0
+            ALLERP(ERPArray) = ALLERP_out;
+        else
+            for Numoferp = 1:numel(ERPArray)
+                ERP=  ALLERP_out(Numoferp);
                 checkfileindex = checkfilexists([ERP.filepath,filesep,ERP.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
@@ -533,10 +547,10 @@ varargout{1} = EStudio_erp_box_edit_chan;
                     ERP.saved = 'no';
                     ERP.filepath = '';
                 end
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+                ALLERP(length(ALLERP)+1) = ERP;
             end
-            fprintf( ['\n',repmat('-',1,100) '\n']);
         end
+        observe_ERPDAT.ALLERP = ALLERP;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         if CreateERPFlag==1
@@ -623,7 +637,7 @@ end
 function checkfileindex = checkfilexists(filenamex)%%Jan 10 2024
 checkfileindex=0;
 [pathstr, file_name, ext] = fileparts(filenamex);
-filenamex = [pathstr, file_name,'.set'];
+filenamex = [pathstr, file_name,'.erp'];
 if exist(filenamex, 'file')~=0
     msgboxText =  ['This ERP Data already exist.\n'...;
         'Would you like to overwrite it?'];

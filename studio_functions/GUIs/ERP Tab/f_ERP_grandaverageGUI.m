@@ -604,7 +604,6 @@ varargout{1} = ERP_grdavg_box_gui;
             ERP.filename = fileName_new;
             ERP.filepath = pathName_new;
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-            %                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);

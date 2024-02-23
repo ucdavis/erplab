@@ -438,19 +438,9 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         %%--------------Loop start for removeing baseline for the selected ERPsets------------
         if gui_erp_blc_dt.dt.Value ==1
-            Suffix_str = char(strcat('detrend'));
+            Suffix_str = char(strcat('_detrend'));
         else
-            Suffix_str = char(strcat('baselinecorr'));
-        end
-        Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selected_erpset,Suffix_str);
-        if isempty(Answer)
-            beep;
-            disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLERP_advance = Answer{1};
-            Save_file_label = Answer{2};
+            Suffix_str = char(strcat('_baselinecorr'));
         end
         
         %%%%-------------------Loop fpor baseline correction---------------
@@ -479,11 +469,12 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         gui_erp_blc_dt.ERPTab_baseline_detrend{3} = gui_erp_blc_dt.all_bin_chan.Value;
         
-        
+        ALLERP = observe_ERPDAT.ALLERP;
         BinArray = [];
         ChanArray = [];
+        ALLERP_out = [];
         for Numoferp = 1:numel(Selected_erpset)
-            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferp));
+            ERP = ALLERP(Selected_erpset(Numoferp));
             if (Check_Selected_erpset(1)==1 || Check_Selected_erpset(2)==2) && gui_erp_blc_dt.Selected_bin_chan.Value ==1
                 if Check_Selected_erpset(1) ==1
                     msgboxText =  ['Number of bins across the selected ERPsets is different!'];
@@ -532,24 +523,41 @@ varargout{1} = ERP_basecorr_detrend_box;
                 [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
             end
             
-            %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
+            %%Only the selected bin and chan were selected to remove baseline and detrending and others are remiained.
             if ~isempty(BinArray)
-                ERP_before_bl = ALLERP_advance(Selected_erpset(Numoferp));
+                ERP_before_bl = ALLERP(Selected_erpset(Numoferp));
                 ERP_before_bl.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
                 ERP_before_bl.history = ERP.history;
                 ERP = ERP_before_bl;
             end
-            
-            if Save_file_label
+            if isempty(ALLERP_out)
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1) = ERP;
+            end
+        end%%Loop end for the selected ERset
+        Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(Selected_erpset),Suffix_str);
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLERP_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numoferp = 1:numel(Selected_erpset)
+            ERP = ALLERP_out(Numoferp);
+            if Save_file_label==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            else
+                ERP.saved = 'no';
+                ERP.filepath = '';
+                ERP.filename = '';
             end
-            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
-        end%%Loop end for the selected ERset
-        
+            ALLERP(length(ALLERP)+1) = ERP;
+        end
         erpworkingmemory('f_ERP_BLS_Detrend',{BaselineMethod,0,1});
-        %%
-        %             [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        observe_ERPDAT.ALLERP = ALLERP;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         try

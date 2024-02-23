@@ -97,12 +97,9 @@ varargout{1} = ERP_bin_operation_gui;
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_bin_operation.run_title);
         set(gui_erp_bin_operation.run_title, 'Sizes',[15 105  30 105 15]);
-        
         gui_erp_bin_operation.note_title = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        
         uicontrol('Style','text','Parent',gui_erp_bin_operation.note_title,...
             'String','Note: Operates on all bins and channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        
         set(gui_erp_bin_operation.DataSelBox,'Sizes',[130,30,35,35,30 30]);
         estudioworkingmemory('ERPTab_binop',0);
     end
@@ -112,11 +109,6 @@ varargout{1} = ERP_bin_operation_gui;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-
-% %%------------------help---------------------------------------------
-%     function binop_help(~,~)%% It seems that it can be ignored
-%         web('https://github.com/lucklab/erplab/wiki/ERP-Bin-Operations','-browser');
-%     end
 
 
 %%-------------------Equation editor---------------------------------------
@@ -367,12 +359,12 @@ varargout{1} = ERP_bin_operation_gui;
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)
-            Selectederp_Index = length(observe_ERPDAT.ALLERP);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = Selectederp_Index;
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            observe_ERPDAT.CURRENTERP = ERPArray;
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         Eq_Data =  gui_erp_bin_operation.edit_bineq.Data;
         
@@ -412,61 +404,57 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.Paras{2} = gui_erp_bin_operation.mode_modify.Value;
         
         %%%Create a new ERPset for the bin-operated ERPsets
-        Save_file_label = [];
+        erpworkingmemory('f_ERP_proces_messg','Bin Operations');
+        observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
+        ALLERPCOM = evalin('base','ALLERPCOM');
+        ALLERP =  observe_ERPDAT.ALLERP;
+        ALLERP_out = [];
+        for Numofselectederp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
+            ERP = ALLERP(ERPArray(Numofselectederp));
+            [ERP ERPCOM]= pop_binoperator( ERP, Formula_str, 'Warning', 'on', 'ErrorMsg', 'command', 'Saveas', 'off', 'History', 'gui');
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if isempty(ALLERP_out)
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1) = ERP;
+            end
+        end
+        Save_file_label = 0;
         if gui_erp_bin_operation.mode_create.Value
-            Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_binop');
+            Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_binop');
             if isempty(Answer)
-                beep;
-                disp('User selected Cancel');
                 return;
             end
             if ~isempty(Answer{1})
                 ALLERP_out = Answer{1};
                 Save_file_label = Answer{2};
             end
-            
-        elseif   gui_erp_bin_operation.mode_modify.Value
-            ALLERP_out = observe_ERPDAT.ALLERP;
         end
         
-        if isempty(Save_file_label)
-            Save_file_label =0;
-        end
-        
-        erpworkingmemory('f_ERP_proces_messg','Bin Operations');
-        observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numofselectederp = 1:numel(Selectederp_Index)%%Bin Operations for each selected ERPset
-            ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
-            [ERP ERPCOM]= pop_binoperator( ERP, Formula_str, 'Warning', 'on', 'ErrorMsg', 'command', 'Saveas', 'off', 'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            
-            if gui_erp_bin_operation.mode_modify.Value%% If select "Modify Existing ERPset (recursive updating)"
-                ERP.erpname = strcat(ERP.erpname,'_binop');
-                observe_ERPDAT.ALLERP(Selectederp_Index(Numofselectederp)) = ERP;
-                observe_ERPDAT.ERP= observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            elseif gui_erp_bin_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
-                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
+        if gui_erp_bin_operation.mode_modify.Value%% If select "Modify Existing ERPset (recursive updating)"
+            ALLERP(ERPArray) = ALLERP_out;
+        elseif gui_erp_bin_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
+            for Numoferp = 1:numel(ERPArray)
                 if Save_file_label==1
-                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Selectederp_Index(Numofselectederp)).erpname,...
-                        'filename', ALLERP_out(Selectederp_Index(Numofselectederp)).filename, 'filepath',ALLERP_out(Selectederp_Index(Numofselectederp)).filepath);
+                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Numoferp).erpname,...
+                        'filename', ALLERP_out(ERPArray(Numofselectederp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
                 end
+                ALLERP(length(ALLERP)+1) = ERP;
             end
         end
-        
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        observe_ERPDAT.ALLERP = ALLERP;
         if gui_erp_bin_operation.mode_create.Value%%Save the labels of the selected ERPsets
             try
-                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1:length(observe_ERPDAT.ALLERP)];
-                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1;
+                Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
+                observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;
             catch
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         erpworkingmemory('f_ERP_bin_opt',1);

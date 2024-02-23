@@ -196,12 +196,6 @@ varargout{1} = Eegtab_box_dq_epoch;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%------------------------------help---------------------------------------
-%     function dq_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/ERPLAB-Data-Quality-Metrics/','-browser');
-%     end
-
-
 %%--------------------------------default parameters-----------------------
     function def_para(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -435,11 +429,10 @@ varargout{1} = Eegtab_box_dq_epoch;
         estudioworkingmemory('EEGTab_dq_epoch',0);
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        
         
         incALL=EEG_dq_epoch.all_marks.Value;
         excart=EEG_dq_epoch.excld_marks.Value;
@@ -664,7 +657,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             return;
         end
         estudioworkingmemory('EEGTab_dq_epoch',0);
-%         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
+        %         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
         EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];

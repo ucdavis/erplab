@@ -14,7 +14,7 @@ global observe_EEGDAT;
 global EStudio_gui_erp_totl;%%Global variable
 addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
-% addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
+
 
 if nargin>1
     help f_redrawEEG_Wave_Viewer;
@@ -24,7 +24,6 @@ end
 % if ishandle(  EStudio_gui_erp_totl.eegViewAxes )
 %     delete(  EStudio_gui_erp_totl.eegViewAxes );
 % end
-
 
 figbgdColor = [1 1 1];%%need to set
 
@@ -97,6 +96,7 @@ else
     Enableflag = 'off';
 end
 
+
 EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
 EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
 EStudio_gui_erp_totl.eegpageinfo_minus.Callback=@page_minus;
@@ -141,9 +141,10 @@ set(EStudio_gui_erp_totl.eeg_zoom_out_small,'Callback',@zoomout_small,'Enable',E
 set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'Enable',Enableflag);
 set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
-set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
+    set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',...
+        {'Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
 else
-  set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Window Size'});  
+    set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Window Size'});
 end
 
 set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable','on');
@@ -152,6 +153,7 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     EEG = observe_EEGDAT.EEG;
     OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
 end
+
 
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     % %%Plot the eeg waves
@@ -184,13 +186,13 @@ function popmemu_eeg(Source,~)
 
 Value = Source.Value;
 if Value==1
-   EStudiowinsize();
+    EStudiowinsize();
 elseif Value==2
     Show_command();
 elseif Value==3
     figure_saveas();
 elseif  Value==4
-  figure_out();  
+    figure_out();
 end
 end
 
@@ -1034,6 +1036,7 @@ if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
         button      = questdlg(sprintf(question,''), title,'No','Yes','Yes');
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
         if isempty(button) ||   strcmpi(button,'No')
+            erpworkingmemory('eegicinspectFlag',0);
             return;
         end
         %%close the figures for inspect/label ICs or artifact detection for

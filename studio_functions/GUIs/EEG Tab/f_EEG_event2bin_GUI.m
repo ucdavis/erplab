@@ -219,7 +219,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins (BINLISTER) > Advanced');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        
         estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
@@ -236,7 +235,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             
             def  = erpworkingmemory('pop_binlister');
             if isempty(def)
@@ -436,23 +434,16 @@ varargout{1} = EStudio_box_EEG_event2bin;
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray, '_bins');
-        if isempty(Answer)
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
+        
         def  = erpworkingmemory('pop_binlister');
         if isempty(def)
             def = {'' '' '' 0 [] [] 0 0 0 1 0};
         end
         def{1} = bdfileName;
         erpworkingmemory('pop_binlister',def);
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
@@ -469,6 +460,23 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 eegh(LASTCOM);
             end
             
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n\n']);
+        end
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_bins');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -481,9 +489,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 EEG.filepath = '';
             end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
         try

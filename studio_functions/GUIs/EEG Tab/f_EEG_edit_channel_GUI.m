@@ -209,13 +209,10 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             end
         end
         titlename = 'Select Channel(s):';
-        
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
             EStduio_eegtab_EEG_edit_chan.select_edit_chan.String  = vect2colon(chan_label_select);
         else
-            beep;
-            %disp('User selected Cancel');
             return
         end
     end
@@ -238,7 +235,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Delete selected chan');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
             EEGArray = observe_EEGDAT.CURRENTSET;
@@ -252,26 +248,12 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
         
-        %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
-        if CreateeegFlag==1
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_delchan');
-            if isempty(Answer)
-                beep;
-                %disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             %%check the selected chans
             if min(ChanArray(:)) > EEG.nbchan || max(ChanArray(:)) > EEG.nbchan
                 Erromesg = ['Edit Channels >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(EEG.nbchan)];
@@ -290,16 +272,31 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             end
             
             [eloc, chanlabels, theta, radius, indices] = readlocs( EEG.chanlocs );
-            
             [EEG, LASTCOM] = pop_select( EEG, 'rmchannel',{chanlabels{ChanArray}});
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            if CreateeegFlag==0
-                ALLEEG(EEGArray(Numofeeg)) = EEG;
-            else
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+        end
+        
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_delchan');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        if CreateeegFlag==0
+            ALLEEG(EEGArray) = ALLEEG_out;
+        else
+            for Numofeeg= 1:numel(EEGArray)
+                EEG = ALLEEG_out(Numofeeg);
                 checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -316,8 +313,8 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 end
                 [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             end
-            fprintf( [repmat('-',1,100) '\n']);
         end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         if CreateeegFlag==1
             try
@@ -327,12 +324,12 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
             estudioworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -367,63 +364,43 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
-        %         try
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Save_file_label=0;
-        if CreateeegFlag==1
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_rnchan');
-            if isempty(Answer)
-                beep;
-                %disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG = Answer{1};
-                Save_file_label = Answer{2};
-            end
+        ALLEEG_out = [];
+        %%check the selected chans
+        if any(ChanArray(:) > observe_EEGDAT.EEG.nbchan)
+            fprintf( ['Edit Channels >  Rename selected chan: Some of chan indexes exceed',32,num2str(observe_EEGDAT.EEG.nbchan),32,', we therefore select all channels.\n']);
+            ChanArray = [1:observe_EEGDAT.EEG.nbchan];
         end
+        try
+            [eloc, Chanlabelsold, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+            Chanlabelsold = Chanlabelsold(ChanArray);
+        catch
+            fprintf( [repmat('-',1,100) '\n']);
+            observe_EEGDAT.eeg_panel_message =3;
+            return;
+        end
+        def =  erpworkingmemory('pop_rename2chan');
+        if isempty(def)
+            def = Chanlabelsold;
+        end
+        
+        titleName= ['ERPLAB Studio Change Channel Name'];
+        Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
+        if isempty(Chanlabelsnew)
+            observe_EEGDAT.eeg_panel_message =2;
+            return
+        end
+        erpworkingmemory('pop_rename2chan',Chanlabelsnew);
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Rename selected chan*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
-            %%check the selected chans
-            if min(ChanArray(:)) > EEG.nbchan || max(ChanArray(:)) > EEG.nbchan
-                fprintf( ['Edit Channels >  Rename selected chan: Some of chan indexes exceed',32,num2str(EEG.nbchan),32,', we therefore select all channels.\n']);
-                ChanArray = [1:EEG.nbchan];
-            end
-            try
-                [eloc, Chanlabelsold, theta, radius, indices] = readlocs( EEG.chanlocs);
-                Chanlabelsold = Chanlabelsold(ChanArray);
-            catch
-                beep
-                disp('Please check EEG.chanlocs');
-                fprintf( [repmat('-',1,100) '\n']);
-                observe_EEGDAT.eeg_panel_message =3;
-                return;
-            end
             CURRENTSET = EEGArray(Numofeeg);
-            def =  erpworkingmemory('pop_rename2chan');
-            if isempty(def)
-                def = Chanlabelsold;
-            end
-            
-            titleName= ['Dataset',32,num2str(CURRENTSET),': ERPLAB Change Channel Name'];
-            Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
-            
-            if isempty(Chanlabelsnew)
-                %disp('User selected Cancel');
-                fprintf( [repmat('-',1,100) '\n']);
-                observe_EEGDAT.eeg_panel_message =2;
-                return
-            end
-            erpworkingmemory('pop_rename2chan',Chanlabelsnew);
             
             [EEG, LASTCOM] = pop_rename2chan(ALLEEG,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'implicit');
             if isempty(LASTCOM)
-                disp('Please check the inputs');
                 fprintf( [repmat('-',1,100) '\n']);
                 observe_EEGDAT.eeg_panel_message =4;
                 return
@@ -431,12 +408,29 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
-            if CreateeegFlag==0
-                ALLEEG(EEGArray(Numofeeg)) = EEG;
-            else
+            fprintf( [repmat('-',1,100) '\n']);
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+        end
+        
+        Save_file_label=0;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rnchan');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
+        if CreateeegFlag==0
+            ALLEEG(EEGArray) = ALLEEG_out;
+        else
+            for Numofeeg= 1:numel(EEGArray)
+                EEG = ALLEEG_out(Numofeeg);
                 checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -452,10 +446,9 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                     EEG.filepath = '';
                 end
                 [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-                
             end
-            fprintf( [repmat('-',1,100) '\n']);
         end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         if CreateeegFlag==1
             try
@@ -465,12 +458,12 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
             estudioworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -498,52 +491,34 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
         %%loop for the selected EEGsets
-        Save_file_label=0;
         ALLEEG = observe_EEGDAT.ALLEEG;
-        if CreateeegFlag==1
-            Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_editchan');
-            if isempty(Answer)
-                beep;
-                %disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG = Answer{1};
-                Save_file_label = Answer{2};
-            end
+        titleName= ['EStudio: Add or edit channel locations'];
+        app = feval('f_editchan_gui',observe_EEGDAT.EEG,titleName);
+        waitfor(app,'Finishbutton',1);
+        try
+            EEGoutput = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.5); %wait for app to leave
+        catch
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            return;
         end
         
-        
+        if isempty(EEGoutput)
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            return;
+        end
+        Chanlocs = EEGoutput.chanlocs;
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Add or edit all  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             ChanArray = [1:EEG.nbchan];
-            titleName= ['Dataset',32,num2str(EEGArray(Numofeeg)),': Add or edit channel locations'];
-            
-            app = feval('f_editchan_gui',EEG,titleName);
-            waitfor(app,'Finishbutton',1);
-            try
-                EEGoutput = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-                app.delete; %delete app from view
-                pause(0.5); %wait for app to leave
-            catch
-                %disp('User selected Cancel');
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                break;
-            end
-            
-            if isempty(EEGoutput)
-                %disp('User selected Cancel');
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                break;
-            end
-            Chanlocs = EEGoutput.chanlocs;
             
             [EEG, LASTCOM] = pop_editdatachanlocs(ALLEEG,EEGArray(Numofeeg),...
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'implicit');
-            
             if isempty(LASTCOM)
                 erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Add or edit channel locations: Please check you data or you selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
@@ -554,10 +529,26 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
-            if CreateeegFlag==0
-                ALLEEG(EEGArray(Numofeeg)) = EEG;
-            else
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end
+        
+        Save_file_label=0;
+        if CreateeegFlag==1
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_editchan');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        if CreateeegFlag==0
+            ALLEEG(EEGArray) = ALLEEG_out;
+        else
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_out(Numofeeg);
                 checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -572,13 +563,11 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                     EEG.saved = 'no';
                     EEG.filepath = '';
                 end
-                
                 [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
             end
-            fprintf( ['\n',repmat('-',1,100) '\n']);
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
         if CreateeegFlag==1
@@ -589,12 +578,12 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
             estudioworkingmemory('EEGArray',Selected_EEG_afd);
             assignin('base','EEG',observe_EEGDAT.EEG);
             assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
             assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -630,17 +619,17 @@ varargout{1} = EStudio_eeg_box_edit_chan;
 %%Automatically saving the changed parameters for the current panel if the
 %%user change parameters for the other panels.
 %%-------------------------------------------------------------------------
-%     function eeg_two_panels_change(~,~)
-%         if observe_EEGDAT.eeg_two_panels==0
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_editchan');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         estudioworkingmemory('EEGTab_editchan',0);
-%         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-%     end
+    function eeg_two_panels_change(~,~)
+        %         if observe_EEGDAT.eeg_two_panels==0
+        %             return;
+        %         end
+        %         ChangeFlag =  estudioworkingmemory('EEGTab_editchan');
+        %         if ChangeFlag~=1
+        %             return;
+        %         end
+        %         estudioworkingmemory('EEGTab_editchan',0);
+        %         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
+    end
 
 
 %%--------------Reset this panel with the default parameters---------------

@@ -136,10 +136,6 @@ varargout{1} = EEG_chan_operation_gui;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-% %%------------------Edit bin---------------------------------------------
-%     function chanop_help(~,~)%% It seems that it can be ignored
-%         web('https://github.com/lucklab/erplab/wiki/EEG-and-ERP-Channel-Operations','-browser');
-%     end
 
 
 %%-------------------Equation editor---------------------------------------
@@ -585,24 +581,6 @@ varargout{1} = EEG_chan_operation_gui;
         end
         
         %%%Create a new ERPset for the bin-operated ERPsets
-        Save_file_label = [];
-        if gui_eegtab_chan_optn.mode_create.Value
-            Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,'_chop');
-            if isempty(Answer)
-                beep;
-                %%disp('User selected Cancel');
-                return;
-            end
-            if ~isempty(Answer{1})
-                ALLEEG_out = Answer{1};
-                Save_file_label = Answer{2};
-            end
-        elseif   gui_eegtab_chan_optn.mode_modify.Value
-            ALLEEG_out = observe_EEGDAT.ALLEEG;
-        end
-        if isempty(Save_file_label)
-            Save_file_label =0;
-        end
         if gui_eegtab_chan_optn.locaInfor.Value==1
             keeplocs ='on';
         else
@@ -612,19 +590,34 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
         gui_eegtab_chan_optn.Paras{3} =gui_eegtab_chan_optn.mode_modify.Value;
         ALLEEG = observe_EEGDAT.ALLEEG;
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)%%Bin Operations for each selected ERPset
-            EEG = ALLEEG_out(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             [EEG, LASTCOM] = pop_eegchanoperator(EEG, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepChLoc',keeplocs, 'History', 'gui');
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
-                EEG.setname = strcat(EEG.setname,'_chop');
-                ALLEEG(EEGArray(Numofeeg)) = EEG;
-                %                     observe_EEGDAT.EEG= observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-            elseif gui_eegtab_chan_optn.mode_create.Value %% If select "Create New EEGset (independent transformations)"
-                [ALLEEG EEG,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            [ALLEEG_out EEG,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+        end
+        
+        Save_file_label = [];
+        if gui_eegtab_chan_optn.mode_create.Value
+            Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_chop');
+            if isempty(Answer)
+                return;
+            end
+            if ~isempty(Answer{1})
+                ALLEEG_out = Answer{1};
+                Save_file_label = Answer{2};
+            end
+        end
+        
+        if gui_eegtab_chan_optn.mode_modify.Value%% If select "Modify Existing EEGset (recursive updating)"
+            ALLEEG(EEGArray)=ALLEEG_out;
+        elseif gui_eegtab_chan_optn.mode_create.Value==1 %% If select "Create New EEGset (independent transformations)"
+            for Numofeeg = 1:numel(EEGArray)
+                EEG = ALLEEG_out(Numofeeg);
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
@@ -637,9 +630,15 @@ varargout{1} = EEG_chan_operation_gui;
                     if Numofeeg==1
                         eegh(LASTCOM);
                     end
+                else
+                    EEG.filename = '';
+                    EEG.saved = 'no';
+                    EEG.filepath = '';
                 end
+                [ALLEEG EEG,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             end
         end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         if gui_eegtab_chan_optn.mode_create.Value%%Save the labels of the selected ERPsets
             try
@@ -649,9 +648,9 @@ varargout{1} = EEG_chan_operation_gui;
                 Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
                 observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
             end
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
             estudioworkingmemory('EEGArray',Selected_EEG_afd);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);

@@ -80,10 +80,10 @@ varargout{1} = ERP_CSD_gui;
         
         %%-----------------Run---------------------------------------------
         gui_erp_CSD.run_title = uiextras.HBox('Parent', gui_erp_CSD.DataSelBox,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent',  gui_erp_CSD.run_title); 
+        uiextras.Empty('Parent',  gui_erp_CSD.run_title);
         gui_erp_CSD.cancel= uicontrol('Style','pushbutton','Parent', gui_erp_CSD.run_title ,'Enable',Enable_label,...
             'String','Cancel','callback',@tool_cancel,'FontSize',FontSize_defualt,'BackgroundColor',[1 1 1],'Max',10); % 2F
-         uiextras.Empty('Parent',  gui_erp_CSD.run_title); 
+        uiextras.Empty('Parent',  gui_erp_CSD.run_title);
         gui_erp_CSD.run = uicontrol('Style','pushbutton','Parent',gui_erp_CSD.run_title,...
             'String','Run','callback',@apply_run,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         uiextras.Empty('Parent',  gui_erp_CSD.run_title);
@@ -195,12 +195,12 @@ varargout{1} = ERP_CSD_gui;
         csd_param(3) = str2double(gui_erp_CSD.hr_num.String);
         csd_param(4) = 1;
         erpworkingmemory('csd_param',csd_param);
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)
-            Selectederp_Index = length(observe_ERPDAT.ALLERP);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = Selectederp_Index;
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            observe_ERPDAT.CURRENTERP = ERPArray;
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         gui_erp_CSD.run.BackgroundColor =  [1 1 1];
         gui_erp_CSD.run.ForegroundColor = [0 0 0];
@@ -214,11 +214,36 @@ varargout{1} = ERP_CSD_gui;
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ALLERPCOM = evalin('base','ALLERPCOM');
         %   Set names of slected ERPsets
+        
+        gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
+        gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
+        gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
+        ALLERP = observe_ERPDAT.ALLERP;
+        ALLERP_out = [];
+        %%Loop for the selcted ERPsets
+        for  Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(ERPArray(Numoferp));
+            [ERP, ERPCOM] = pop_currentsourcedensity(ERP);
+            if Numoferp==1
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                if isempty(ALLERPCOM)
+                    ALLERPCOM = ERPCOM;
+                else
+                    ALLERPCOM{length(ALLERPCOM)+1}= ERPCOM;
+                end
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1) = ERP;
+            end
+        end%%Loop for ERPsets end
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        
+        
         Save_file_label = 0;
-        Answer = f_ERP_save_multi_file(observe_ERPDAT.ALLERP,Selectederp_Index,'_CSD');
+        Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_CSD');
         if isempty(Answer)
-            beep;
-            disp('User selected Cancel');
             return;
         end
         
@@ -226,28 +251,23 @@ varargout{1} = ERP_CSD_gui;
             ALLERP_out = Answer{1};
             Save_file_label = Answer{2};
         end
-        gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
-        gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
-        gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
-        
-        %%Loop for the selcted ERPsets
-        for  Numofselectederp = 1:numel(Selectederp_Index)
-            ERP = ALLERP_out(Selectederp_Index(Numofselectederp));
-            [ERP, ERPCOM] = pop_currentsourcedensity(ERP);
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;%%Save the transformed ERPset
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP_out(Numoferp);
             if Save_file_label==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            else
+                ERP.filename = '';
+                ERP.saved = 'no';
+                ERP.filepath = '';
             end
-        end%%Loop for ERPsets end
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
+            ALLERP(length(ALLERP)+1) = ERP;
+        end
+        observe_ERPDAT.ALLERP = ALLERP;
         erpworkingmemory('f_ERP_bin_opt',1);
         try
-            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1:length(observe_ERPDAT.ALLERP)];
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(Selectederp_Index)+1;
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;
         catch
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
@@ -287,7 +307,7 @@ varargout{1} = ERP_CSD_gui;
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
-         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || ViewerFlag==1

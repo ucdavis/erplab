@@ -939,7 +939,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
@@ -1044,19 +1044,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         end
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_ar');
-        if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Artifact Detection (Epoched EEG) > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Artifact detection algorithm:',32,Det_algostr{AlgFlag},'\n']);
@@ -1090,6 +1080,23 @@ varargout{1} = Eegtab_box_art_det_epoch;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
+            
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_ar');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -1105,11 +1112,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 EEG.filepath = '';
             end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end%%end for loop of subjects
+        end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];

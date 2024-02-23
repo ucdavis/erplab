@@ -576,23 +576,14 @@ varargout{1} = EEG_binepoch_box;
         
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_be');
-        if isempty(Answer)
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['**Your current EEGset(No.',num2str(EEGArray(Numofeeg)),')**\n',32,EEG.setname,'\n']);
             %%epoch EEG data
@@ -607,6 +598,23 @@ varargout{1} = EEG_binepoch_box;
             end
             erpworkingmemory('Change2epocheeg',1);%%force the option to be Epoched EEG in "EEGsets" panel
             
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf( [repmat('-',1,100) '\n']);
+        end
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_be');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg =   1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -622,10 +630,6 @@ varargout{1} = EEG_binepoch_box;
                 EEG.filepath = '';
             end
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf( [repmat('-',1,100) '\n']);
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
         try

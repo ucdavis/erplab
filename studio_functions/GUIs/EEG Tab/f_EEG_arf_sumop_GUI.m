@@ -108,11 +108,6 @@ varargout{1} = Eegtab_box_art_sumop;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%---------------------------help------------------------------------------
-%     function sumart_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
-
 %%----------------clear artifact detection marks---------------------------
     function clear_art_det(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -129,14 +124,11 @@ varargout{1} = Eegtab_box_art_sumop;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        %         try
         inputoption = resetrejGUI; % open GUI
-        
         if isempty(inputoption)
-            %             disp('User selected Cancel')
             return
         end
         arjm  = inputoption{1};
@@ -150,19 +142,9 @@ varargout{1} = Eegtab_box_art_sumop;
         
         [arflag usflag] = dec2flag(bflag);
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_resetrej');
-        if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Clear artifact detection marks on EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
@@ -185,6 +167,22 @@ varargout{1} = Eegtab_box_art_sumop;
                 eegh(LASTCOM);
             end
             
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_resetrej');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg =  1:numel(EEGArray)
+            EEG =  ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -199,13 +197,9 @@ varargout{1} = Eegtab_box_art_sumop;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end%%end for loop of subjects
+        end
+        
         observe_EEGDAT.ALLEEG =ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
@@ -242,7 +236,7 @@ varargout{1} = Eegtab_box_art_sumop;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG) ) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         %         try
@@ -265,19 +259,9 @@ varargout{1} = Eegtab_box_art_sumop;
             dircom = 'none';
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_synctrej');
-        if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Syn. artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
@@ -299,6 +283,22 @@ varargout{1} = Eegtab_box_art_sumop;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_synctrej');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg =  1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -313,13 +313,8 @@ varargout{1} = Eegtab_box_art_sumop;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end%%end for loop of subjects
+        end
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
@@ -333,7 +328,6 @@ varargout{1} = Eegtab_box_art_sumop;
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -355,7 +349,7 @@ varargout{1} = Eegtab_box_art_sumop;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
@@ -413,7 +407,7 @@ varargout{1} = Eegtab_box_art_sumop;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
@@ -434,14 +428,12 @@ varargout{1} = Eegtab_box_art_sumop;
             %check currently activated flags
             flagcheck = sum(histoflags);
             active_flags = (flagcheck>1);
-            
             if isempty(active_flags)
                 erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: None of epochs was marked');
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            
             [EEG, tprej, acce, rej, histoflags,LASTCOM ] = pop_summary_AR_eeg_detection(EEG);
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
@@ -475,7 +467,7 @@ varargout{1} = Eegtab_box_art_sumop;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         

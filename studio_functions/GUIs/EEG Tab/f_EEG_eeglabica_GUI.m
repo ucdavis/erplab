@@ -149,53 +149,49 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         Save_file_label = 0;
-        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_ica');
+        
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        EEG = ALLEEG(EEGArray);
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
+        %%Run ICA
+        [EEG, LASTCOM]  =pop_runica( EEG);
+        if isempty(LASTCOM)
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Decompose data: Please check you data or you selected cancel');
+            observe_EEGDAT.eeg_panel_message =4;
+            return;
+        end
+        EEG = eegh(LASTCOM, EEG);
+        eegh(LASTCOM);
+        
+        fprintf(['\n',LASTCOM,'\n']);
+        Answer = f_EEG_save_multi_file(EEG,1, '_ica');
         if isempty(Answer)
             return;
         end
         if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
+            EEG = Answer{1};
             Save_file_label = Answer{2};
         end
-        ALLEEG = observe_EEGDAT.ALLEEG;
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
-            %%Run ICA
-            [EEG, LASTCOM]  =pop_runica( EEG);
-            if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Decompose data: Please check you data or you selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
-                return;
-            end
+        
+        checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+        if Save_file_label==1 && checkfileindex==1
+            [pathstr, file_name, ext] = fileparts(EEG.filename);
+            EEG.filename = [file_name,'.set'];
+            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
             EEG = eegh(LASTCOM, EEG);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf(['\n',LASTCOM,'\n']);
-            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
-            if Save_file_label && checkfileindex==1
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            else
-                EEG.filename = '';
-                EEG.saved = 'no';
-                EEG.filepath = '';
-            end
-            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf(['\n ICA was done for eeg dataset (No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
-            fprintf( ['\n',repmat('-',1,100) '\n']);
+            eegh(LASTCOM);
+        else
+            EEG.filename = '';
+            EEG.saved = 'no';
+            EEG.filepath = '';
         end
+        [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        eegh(LASTCOM);
+        
+        fprintf(['\n ICA was done for eeg dataset (No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
@@ -211,7 +207,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
     end
 
 
@@ -243,7 +238,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Inspect/label ICs*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-            
             [~,LASTCOM] =  pop_selectcomps(EEG);%
             if isempty(LASTCOM)
                 erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
@@ -327,92 +321,87 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         
+        
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        
+        EEG = ALLEEG(EEGArray);
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf( ['**Remove ICs**\n']);
+        fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
+        
+        if ~isempty(EEG.reject.gcompreject)
+            components = find(EEG.reject.gcompreject == 1);
+            components = components(:)';
+            %promptstr    = { ['Components to subtract from data' 10 '(default: pre-labeled components to reject):'] };
+        else
+            components = [];
+        end
+        uilist    = { { 'style' 'text' 'string' 'Note: for group level analysis, remove components in STUDY' } ...
+            { 'style' 'text' 'string' 'List of component(s) to remove from data' } ...
+            { 'style' 'edit' 'string' int2str(components) } ...
+            { 'style' 'text' 'string' 'Or list of component(s) to retain' } ...
+            { 'style' 'edit' 'string' '' } ...
+            };
+        geom = { 1 [2 0.7] [2 0.7] };
+        result       = inputgui( 'uilist', uilist, 'geometry', geom, 'helpcom', 'pophelp(''pop_subcomp'')', ...
+            'title', ['eegset',32,num2str(EEGArray),':Remove IC -- pop_subcomp()']);
+        if length(result) == 0
+            %disp('User selected Cancel');
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            return;
+        end
+        components   = eval( [ '[' result{1} ']' ] );
+        if ~isempty(result{2})
+            componentsOld = components;
+            components   = eval( [ '[' result{2} ']' ] );
+            if isequal(components, componentsOld)
+                components = [];
+            end
+            keepcomp = 1; %components  = setdiff_bc([1:size(EEG.icaweights,1)], components);
+        else
+            keepcomp = 0;
+        end
+        plotag = 0;
+        [EEG, LASTCOM] = pop_subcomp( EEG, components, plotag, keepcomp);
+        if isempty(LASTCOM)
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+            observe_EEGDAT.eeg_panel_message =4;
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            return;
+        end
+        EEG = eegh(LASTCOM, EEG);
+        eegh(LASTCOM);
+        
+        fprintf(['\n',LASTCOM,'\n']);
         Save_file_label = 0;
-        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_rmic');
+        Answer = f_EEG_save_multi_file(EEG,1, '_rmic');
         if isempty(Answer)
             return;
         end
         if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
+            EEG = Answer{1};
             Save_file_label = Answer{2};
         end
-        ALLEEG = observe_EEGDAT.ALLEEG;
         
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf( ['**Remove ICs**\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
-            if ~isempty(EEG.reject.gcompreject)
-                components = find(EEG.reject.gcompreject == 1);
-                components = components(:)';
-                %promptstr    = { ['Components to subtract from data' 10 '(default: pre-labeled components to reject):'] };
-            else
-                components = [];
-            end
-            uilist    = { { 'style' 'text' 'string' 'Note: for group level analysis, remove components in STUDY' } ...
-                { 'style' 'text' 'string' 'List of component(s) to remove from data' } ...
-                { 'style' 'edit' 'string' int2str(components) } ...
-                { 'style' 'text' 'string' 'Or list of component(s) to retain' } ...
-                { 'style' 'edit' 'string' '' } ...
-                };
-            geom = { 1 [2 0.7] [2 0.7] };
-            result       = inputgui( 'uilist', uilist, 'geometry', geom, 'helpcom', 'pophelp(''pop_subcomp'')', ...
-                'title', ['eegset',32,num2str(EEGArray(Numofeeg)),':Remove IC -- pop_subcomp()']);
-            if length(result) == 0
-                %disp('User selected Cancel');
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                return;
-            end
-            components   = eval( [ '[' result{1} ']' ] );
-            if ~isempty(result{2})
-                componentsOld = components;
-                components   = eval( [ '[' result{2} ']' ] );
-                if isequal(components, componentsOld)
-                    components = [];
-                end
-                keepcomp = 1; %components  = setdiff_bc([1:size(EEG.icaweights,1)], components);
-            else
-                keepcomp = 0;
-            end
-            plotag = 0;
-            [EEG, LASTCOM] = pop_subcomp( EEG, components, plotag, keepcomp);
-            if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                return;
-            end
+        checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+        if Save_file_label && checkfileindex==1
+            [pathstr, file_name, ext] = fileparts(EEG.filename);
+            EEG.filename = [file_name,'.set'];
+            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
             EEG = eegh(LASTCOM, EEG);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf(['\n',LASTCOM,'\n']);
-            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
-            if Save_file_label && checkfileindex==1
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            else
-                EEG.filename = '';
-                EEG.saved = 'no';
-                EEG.filepath = '';
-            end
-            if keepcomp==1
-                components  = setdiff_bc([1:size(EEG.icaweights,1)], components);
-            end
-            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf(['\n ICs [',32,num2str(components),32, '] have been removed from eeg dataset (No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
-            fprintf( ['\n',repmat('-',1,100) '\n']);
+            eegh(LASTCOM);
+        else
+            EEG.filename = '';
+            EEG.saved = 'no';
+            EEG.filepath = '';
         end
+        if keepcomp==1
+            components  = setdiff_bc([1:size(EEG.icaweights,1)], components);
+        end
+        [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        eegh(LASTCOM);
+        fprintf(['\n ICs [',32,num2str(components),32, '] have been removed from eeg dataset (No.',num2str(EEGArray),'):',32,EEG.setname,'\n']);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
@@ -526,68 +515,63 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
             return;
         end
-        if isempty(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind)
-            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights> Transfer: Please run ICA for the target EEG first']);
+        if isempty(observe_EEGDAT.EEG.icachansind)
+            erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights > Transfer: Please run ICA for the current EEG']);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             return;
         end
-        if any(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind> observe_EEGDAT.EEG.nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
+        
+        if any(observe_EEGDAT.EEG.icachansind> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
             erpworkingmemory('f_EEG_proces_messg',['EEGLAB ICA > Transfer ICA weights > Transfer: The channels donot match with the current EEG']);
             observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             return;
         end
+        
+        
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        EEG = ALLEEG(EEGArray);
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf( ['**Transfer ICA weights > Transfer**\n']);
+        fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
+        [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(TartgetEEG),').icaweights'],...
+            'icasphere', ['ALLEEG(',num2str(TartgetEEG),').icasphere'], 'icachansind', ['ALLEEG(',num2str(TartgetEEG),').icachansind']);
+        if isempty(LASTCOM)
+            erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
+            observe_EEGDAT.eeg_panel_message =4;
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+            return;
+        end
+        EEG = eegh(LASTCOM, EEG);
+        eegh(LASTCOM);
+        fprintf(['\n',LASTCOM,'\n']);
         Save_file_label = 0;
-        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray, '_trafweights');
+        Answer = f_EEG_save_multi_file(EEG,1, '_trafweights');
         if isempty(Answer)
             return;
         end
         if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
+            EEG = Answer{1};
             Save_file_label = Answer{2};
         end
-        ALLEEG = observe_EEGDAT.ALLEEG;
-        
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf( ['**Transfer ICA weights > Transfer**\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(TartgetEEG),').icaweights'],...
-                'icasphere', ['ALLEEG(',num2str(TartgetEEG),').icasphere'], 'icachansind', ['ALLEEG(',num2str(TartgetEEG),').icachansind']);
-            if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
-                observe_EEGDAT.eeg_panel_message =4;
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                return;
-            end
+        checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+        if Save_file_label && checkfileindex==1
+            [pathstr, file_name, ext] = fileparts(EEG.filename);
+            EEG.filename = [file_name,'.set'];
+            [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
             EEG = eegh(LASTCOM, EEG);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
             fprintf(['\n',LASTCOM,'\n']);
-            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
-            if Save_file_label && checkfileindex==1
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            else
-                EEG.filename = '';
-                EEG.saved = 'no';
-                EEG.filepath = '';
-            end
-            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf( ['\n',repmat('-',1,100) '\n']);
+            eegh(LASTCOM);
+        else
+            EEG.filename = '';
+            EEG.saved = 'no';
+            EEG.filepath = '';
         end
-        
+        [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        eegh(LASTCOM);
+        fprintf(['\n',LASTCOM,'\n']);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
@@ -604,8 +588,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
-
-
 
 %%---------------------IC maps 2D------------------------------------------
     function maps_2d(Source,~)
@@ -916,7 +898,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.count_current_eeg=7;
             return;
         end
-        
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray <1)

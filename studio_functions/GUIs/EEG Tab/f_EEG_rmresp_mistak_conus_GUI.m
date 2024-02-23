@@ -383,15 +383,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_rmerr');
-        if isempty(Answer)
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -444,6 +436,25 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             end
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
+            
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            
+        end%%end for loop of subjects
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rmerr');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg =  1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -458,14 +469,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            
             [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            
-        end%%end for loop of subjects
+        end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];

@@ -553,8 +553,6 @@ varargout{1} = box_erpset_gui;
         [ind,tf] = listdlg('ListString',{'ERPSS Text','Universal Text'},'SelectionMode','single','PromptString','Please select a type to export to...','Name','Export ERP to','OKString','Ok');
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
         if isempty(ind)
-            beep;
-            disp(['User selected cancel']);
             return;
         end
         
@@ -814,7 +812,6 @@ varargout{1} = box_erpset_gui;
         if isempty(pathName)
             pathName =  cd;
         end
-        
         Selected_erpset= estudioworkingmemory('selectederpstudio');
         if isempty(Selected_erpset)
             Selected_erpset = length(observe_ERPDAT.ALLERP);
@@ -837,9 +834,8 @@ varargout{1} = box_erpset_gui;
                 end
                 ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
                 FileName = ERP.filename;
-                
                 if isempty(FileName)
-                    FileName =ERP.erpname;
+                    FileName = ERP.erpname;
                 end
                 [pathx, filename, ext] = fileparts(FileName);
                 filename = [filename '.erp'];
@@ -868,7 +864,6 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Save As');
         observe_ERPDAT.Process_messg =1;
         
@@ -877,10 +872,10 @@ varargout{1} = box_erpset_gui;
             pathName =  cd;
         end
         
-        Selected_erpset= estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
-            Selected_erpset = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
@@ -888,21 +883,23 @@ varargout{1} = box_erpset_gui;
             ALLERPCOM = [];
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
-        for Numoferpset = 1:length(Selected_erpset)
-            if Selected_erpset(Numoferpset) > length(observe_ERPDAT.ALLERP)
-                beep;
+        for Numoferpset = 1:length(ERPArray)
+            if ERPArray(Numoferpset) > length(observe_ERPDAT.ALLERP)
                 disp('Index of selected ERP is lager than the length of ALLERP!!!');
                 return;
             end
-            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
-            [pathstr, namedef, ext] = fileparts(char(ERP.filename));
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
+            if ~isempty(ERP.filename)
+                filename = ERP.filename;
+            else
+                filename = [ERP.erpname,'.erp'];
+            end
+            [pathstr, namedef, ext] = fileparts(filename);
             [erpfilename, erppathname, indxs] = uiputfile({'*.erp','ERP (*.erp)';...
                 '*.mat','ERP (*.erp)'}, ...
                 ['Save "',ERP.erpname,'" as'],...
                 fullfile(pathName,namedef));
-            
             if isequal(erpfilename,0)
-                disp('User selected Cancel')
                 return
             end
             [pathx, filename, ext] = fileparts(erpfilename);
@@ -916,9 +913,9 @@ varargout{1} = box_erpset_gui;
                 ext = '.erp';
             end
             erpFilename = char(strcat(erpfilename,ext));
-            [observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
+            [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
                 'filepath',erppathname);
-            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
+            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM, ERPCOM);
         end
         observe_ERPDAT.Process_messg =2;
     end

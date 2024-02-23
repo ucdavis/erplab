@@ -286,7 +286,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         
         EStudio_gui_erp_totl.set_windowsize = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Window Size','separator','off','CallBack',@window_size);
         EStudio_gui_erp_totl.set_reset = uimenu( EStudio_gui_erp_totl.Setting, 'Label','Reset','separator','off','CallBack',@rest_estudio);
-        
         EStudio_gui_erp_totl.help_title = uimenu( EStudio_gui_erp_totl.Window, 'Label', 'Help');
         EStudio_gui_erp_totl.estudio_about = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'About ERPLAB Studio','separator','off','CallBack',@about_estudio);
         EStudio_gui_erp_totl.eegpanel_help = uimenu( EStudio_gui_erp_totl.help_title , 'Label', 'EEG Panel Help','separator','off','CallBack',@eegpanel_help);
@@ -319,9 +318,8 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.eeg_plot_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);
         EStudio_gui_erp_totl.eegViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.eeg_plot_title,'BackgroundColor',figbgdColor);
         
-        
         EStudio_gui_erp_totl.eeg_plot_button_title = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
-        uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
         EStudio_gui_erp_totl.eeg_zoom_in_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','|<',...
             'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
         EStudio_gui_erp_totl.eeg_zoom_in_fivesmall = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','-5X',...
@@ -336,13 +334,13 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
         EStudio_gui_erp_totl.eeg_zoom_out_large = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','>|',...
             'FontSize',FonsizeDefault+1,'BackgroundColor',[1 1 1],'Enable','off');
-        uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
         EStudio_gui_erp_totl.popmemu_eeg = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','popupmenu','String','Window Size',...
             'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',ColorB_def);
-        
         EStudio_gui_erp_totl.eeg_reset = uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','pushbutton','String','Reset',...
             'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
-        uicontrol('Parent',EStudio_gui_erp_totl.eeg_plot_button_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', EStudio_gui_erp_totl.eeg_plot_button_title);
+        set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 150 50 5]);
         EStudio_gui_erp_totl.eegxaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.eegplotgrid,'BackgroundColor',ColorB_def);%%%Message
         EStudio_gui_erp_totl.eegProcess_messg = uicontrol('Parent',EStudio_gui_erp_totl.eegxaxis_panel,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         Startimes = 0;
@@ -362,7 +360,7 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.eegpageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
         set(EStudio_gui_erp_totl.eegpageinfo_box, 'Sizes', [-1 70 50 70] );
         EStudio_gui_erp_totl.eeg_zoom_edit.String=num2str(Startimes);
-        set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 100 50 5]);
+        
         EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','off',...
             'FontWeight','normal', 'XTick', [], 'YTick', [], 'Color','none','xcolor','none','ycolor','none');
         EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
@@ -420,7 +418,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
         EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
     end % createInterface
-
 
 
 %%%---------------------window size----------------------------------------
