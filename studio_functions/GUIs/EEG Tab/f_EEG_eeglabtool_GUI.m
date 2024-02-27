@@ -94,7 +94,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.plotchan_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_eeglab_tool.plotchan_title1,...
             'String','Plot channel function:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
         EStduio_eegtab_eeglab_tool.plotchan_title2 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_tool.eeg_spcetra_map = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.plotchan_title2,...
             'String','Spectra & maps','callback',@eeg_spcetra_map,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
@@ -105,7 +104,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             'String','Time-frequency','callback',@eeg_tfr,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_eeglab_tool.DataSelBox,'Sizes',[30 30 30 30 20 30])
     end
-
 
 
 %%**************************************************************************%%

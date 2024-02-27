@@ -119,9 +119,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             'Callback', @cleardata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         buttons4 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_EEG_set.savebutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
-            'String', 'Save', 'Callback', @savechecked,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', 'Save', 'Callback', @eegset_save,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.saveasbutton = uicontrol('Parent', buttons4, 'Style', 'pushbutton',...
-            'String', 'Save As...', 'Callback', @savecheckedas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+            'String', 'Save As...', 'Callback', @eegset_saveas,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.curr_folder = uicontrol('Parent', buttons4, 'Style', 'pushbutton', 'String', 'Current Folder', ...
             'Callback', @curr_folder,'Enable','on','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         set(buttons4,'Sizes',[70 70 115]);
@@ -143,18 +143,16 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         estudioworkingmemory('EEGTab_eegset',0);
-        
         EStduio_eegtab_EEG_set.eeg_contns.Value=1;
         EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
-        
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
-        if isempty(EEGtypeFlag);
+        if isempty(EEGtypeFlag)
             EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
             return;
         end
         EEGArray = EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if min(EEGArray(:)) > length(EEGlistName) || max(EEGArray(:)) > length(EEGlistName)
+        if any(EEGArray(:) > length(EEGlistName)) || any(EEGArray(:) <1)
             EEGArray = length(EEGlistName);
             estudioworkingmemory('EEGArray',EEGArray);%%May replot the waves wiht addtionl codes Aug. 8 2023
         end
@@ -164,7 +162,6 @@ estudioworkingmemory('Startimes',0);%%set default value
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
             EStduio_eegtab_EEG_set.butttons_datasets.Value = EEGArray;
-            %             return;
         end
         %%Only epoched EEG
         if EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1
@@ -206,10 +203,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         estudioworkingmemory('EEGTab_eegset',0);
-        %         MessageViewer= char(strcat('EEGsets > Epoched EEG'));
-        %         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-        %         observe_EEGDAT.eeg_panel_message=1;
-        
         
         EStduio_eegtab_EEG_set.eeg_contns.Value=0;
         EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
@@ -257,7 +250,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',1);
         observe_EEGDAT.count_current_eeg=2;
         f_redrawEEG_Wave_Viewer();
-        %         observe_EEGDAT.eeg_panel_message=2;
         
         whichpanel = [12:18];
         EEGTab_close_open_Panels(whichpanel);
@@ -304,8 +296,6 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
             New_EEG = f_EEG_duplicate_GUI(New_EEG,length(observe_EEGDAT.ALLEEG),ChanArray);
             if isempty(New_EEG)
-                beep;
-                disp('User selected cancal!');
                 return;
             end
             
@@ -339,8 +329,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
-        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Rename');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -360,8 +348,6 @@ estudioworkingmemory('Startimes',0);%%set default value
                 erpName = char(observe_EEGDAT.ALLEEG(1,ndsns).setname);
                 new = f_EEG_rename_gui(erpName,SelectedEEG(Numofselecterp));
                 if isempty(new)
-                    beep;
-                    disp(['User selected cancel']);
                     return;
                 end
                 observe_EEGDAT.ALLEEG(1,ndsns).setname = cell2mat(new);
@@ -374,6 +360,7 @@ estudioworkingmemory('Startimes',0);%%set default value
                 observe_EEGDAT.eeg_panel_message =3;
             end
         end
+        observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -441,7 +428,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             return;
         end
         
-        [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
+        [~,EEGConts_epoch_Flag,~] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
@@ -456,21 +443,23 @@ estudioworkingmemory('Startimes',0);%%set default value
             EStduio_eegtab_EEG_set.eeg_contns.Value=0;
             EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         end
-        EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-        CURRENTSET = length(ALLEEG);
         %%contains both continuous and epoched EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
-            for ii = 1:length(ALLEEG)
-                if  EStduio_eegtab_EEG_set.eeg_contns.Value==1%%continuous EEG
-                    [~, ypos] =  find(EEGtypeFlag==1);
-                else
-                    [~, ypos] =  find(EEGtypeFlag==0);
-                end
-            end
-            CURRENTSET = ypos(end);
         end
+        CURRENTSET = length(ALLEEG);
+        EEG = ALLEEG(CURRENTSET);
+        if EEG.trials==1
+            EStduio_eegtab_EEG_set.eeg_contns.Value=1;
+            EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
+        else
+            EStduio_eegtab_EEG_set.eeg_contns.Value=0;
+            EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
+        end
+        [EEGlistName,~,~] =  getDatasets(ALLEEG);
+        EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
         EStduio_eegtab_EEG_set.butttons_datasets.Max = length(observe_EEGDAT.ALLEEG)+1;
@@ -520,10 +509,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         ALLEEG = observe_EEGDAT.ALLEEG;
         
         [filename, filepath] = uigetfile({'*.set','EEG (*.set)'}, ...
-            'Load ERP', ...
+            'Load EEG', ...
             'MultiSelect', 'on');
         if isequal(filename,0)
-            disp('User selected Cancel');
             return;
         end
         
@@ -538,7 +526,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
         
         eegh(LASTCOM);
-        [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
+        [~,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
@@ -553,20 +541,33 @@ estudioworkingmemory('Startimes',0);%%set default value
             EStduio_eegtab_EEG_set.eeg_contns.Value=0;
             EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         end
-        EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-        CURRENTSET = length(ALLEEG);
-        
-        %%contains the both continuous and epoched EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
-            if  EStduio_eegtab_EEG_set.eeg_contns.Value==1%%continuous EEG
-                [~, ypos] =  find(EEGtypeFlag==1);
-            else
-                [~, ypos] =  find(EEGtypeFlag==0);
-            end
-            CURRENTSET = ypos(end);
         end
+        
+        CURRENTSET = length(ALLEEG);
+        EEG = ALLEEG(CURRENTSET);
+        if EEG.trials==1
+            EStduio_eegtab_EEG_set.eeg_contns.Value=1;
+            EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
+        else
+            EStduio_eegtab_EEG_set.eeg_contns.Value=0;
+            EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
+        end
+        [EEGlistName,~,~] =  getDatasets(ALLEEG);
+        EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+        %%contains the both continuous and epoched EEG
+        %         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
+        %             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
+        %             EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
+        %             if  EStduio_eegtab_EEG_set.eeg_contns.Value==1%%continuous EEG
+        %                 [~, ypos] =  find(EEGtypeFlag==1);
+        %             else
+        %                 [~, ypos] =  find(EEGtypeFlag==0);
+        %             end
+        %             CURRENTSET = ypos(end);
+        %         end
         observe_EEGDAT.ALLEEG = ALLEEG;
         EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
         EStduio_eegtab_EEG_set.butttons_datasets.Max = length(observe_EEGDAT.ALLEEG)+1;
@@ -784,7 +785,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 
 %-------------------------- Save selected EEGsets-------------------------------------------
-    function savechecked(source,~)
+    function eegset_save(source,~)
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -794,7 +795,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         erpworkingmemory('f_EEG_proces_messg','EEGsets > Save');
         observe_EEGDAT.eeg_panel_message =1;
         pathName =  estudioworkingmemory('EEG_save_folder');%% the forlder to save the data.
-        pathName =  [pathName,filesep];
         if isempty(pathName)
             pathName =  [cd,filesep];
         end
@@ -825,7 +825,6 @@ estudioworkingmemory('Startimes',0);%%set default value
                     ['Save "',EEG.setname,'" as'],...
                     fullfile(pathName,namedef));
                 if isequal(FileName,0)
-                    disp('User selected Cancel');
                     fprintf( ['\n',repmat('-',1,100) '\n']);
                     return
                 end
@@ -852,7 +851,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 
 %------------------------- Save as-----------------------------------------
-    function savecheckedas(~,~)
+    function eegset_saveas(~,~)
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -881,9 +880,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             fprintf(['*Save EEG dataset as *',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             if ~isempty(EEG.filename)
-             filename=  EEG.filename; 
+                filename=  EEG.filename;
             else
-             filename = [EEG.setname,'.set'];   
+                filename = [EEG.setname,'.set'];
             end
             [pathstr, namedef, ext] = fileparts(filename);
             [erpfilename, erppathname, indxs] = uiputfile({'*.set'}, ...

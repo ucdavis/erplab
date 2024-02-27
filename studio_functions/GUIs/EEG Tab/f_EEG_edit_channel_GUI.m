@@ -353,7 +353,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         ChanArray =  str2num(EStduio_eegtab_EEG_edit_chan.select_edit_chan.String);
         
         if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers');
+            erpworkingmemory('f_EEG_proces_messg','Edit Channels >  Rename selected chan > Indexes of chans should be positive numbers');
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end

@@ -56,7 +56,7 @@ varargout{1} = ERP_chan_operation_gui;
         end
         Enable_label = 'off';
         %%--------------------channel and bin setting----------------------
-        gui_erp_chan_operation.DataSelBox = uiextras.VBox('Parent', ERP_chan_operation_gui);
+        gui_erp_chan_operation.DataSelBox = uiextras.VBox('Parent', ERP_chan_operation_gui,'BackgroundColor',ColorB_def);
         for ii = 1:100
             dsnames{ii,1} = '';
         end
@@ -73,11 +73,13 @@ varargout{1} = ERP_chan_operation_gui;
         
         gui_erp_chan_operation.equation_selection = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_load = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        gui_erp_chan_operation.eq_save = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
+            'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_chan_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.equation_selection,...
-            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         
         gui_erp_chan_operation.asst_locaInfo = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_chan_operation.ref_asst = uicontrol('Style','pushbutton','Parent',gui_erp_chan_operation.asst_locaInfo,...
@@ -119,10 +121,7 @@ varargout{1} = ERP_chan_operation_gui;
         uiextras.Empty('Parent',  gui_erp_chan_operation.run_title,'BackgroundColor',ColorB_def);
         set(gui_erp_chan_operation.run_title,'Sizes',[15 105  30 105 15]);
         
-        gui_erp_chan_operation.note_title = uiextras.HBox('Parent', gui_erp_chan_operation.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_erp_chan_operation.note_title,...
-            'String','Note: Operates on all bins and channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30 30]);
+        set(gui_erp_chan_operation.DataSelBox,'Sizes',[130,30,35,35,35,30]);
         
         estudioworkingmemory('ERPTab_chanop',0);
     end
@@ -260,6 +259,49 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.edit_bineq.Data = formcell{1,1};
         set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
+
+    function eq_save(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        Eq_Data =  gui_erp_chan_operation.edit_bineq.Data;
+        Formula_str = {};
+        count = 0;
+        for ii = 1:length(Eq_Data)
+            if ~isempty(Eq_Data{ii})
+                count = count +1;
+                Formula_str{count} = Eq_Data{ii};
+            end
+        end
+        msgboxText =  ['Channel Operations >Save'];
+        erpworkingmemory('f_ERP_proces_messg',msgboxText);
+        observe_ERPDAT.Process_messg =1;
+        if isempty(Formula_str)
+            msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
+            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
+        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', '');
+        if isequal(filename,0)
+            return
+        else
+            [px, fname, ext] = fileparts(filename);
+            ext   = '.txt';
+            fname = [ fname ext];
+            fullname = fullfile(filepath, fname);
+            fid_list   = fopen( fullname , 'w');
+            for i=1:length(Formula_str)
+                fprintf(fid_list,'%s\n', Formula_str{i});
+            end
+            
+            fclose(fid_list);
+            disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
+        end
+        observe_ERPDAT.Process_messg =2;
+    end
+
 
 %%-------------------Equation Clear---------------------------------------
     function eq_clear(~,~)
@@ -688,6 +730,7 @@ varargout{1} = ERP_chan_operation_gui;
         gui_erp_chan_operation.mode_create.Enable=Enable_label;
         gui_erp_chan_operation.eq_editor.Enable = Enable_label;
         gui_erp_chan_operation.eq_load.Enable = Enable_label;
+        gui_erp_chan_operation.eq_save.Enable = Enable_label;
         gui_erp_chan_operation.eq_clear.Enable = Enable_label;
         gui_erp_chan_operation.run.Enable = Enable_label;
         gui_erp_chan_operation.ref_asst.Enable = Enable_label;

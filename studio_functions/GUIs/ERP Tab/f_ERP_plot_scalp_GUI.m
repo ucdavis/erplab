@@ -79,7 +79,7 @@ varargout{1} = ERP_plot_scalp_gui;
         
         gui_erp_scalp_map.measurement_title1 = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.measurement_exp = uicontrol('Style', 'text','Parent', gui_erp_scalp_map.measurement_title1,...
-            'String','(Latency e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         
         
@@ -313,9 +313,9 @@ varargout{1} = ERP_plot_scalp_gui;
         Value = Source.Value;
         switch Value
             case {1,3}
-                gui_erp_scalp_map.measurement_exp.String='(Latency setting: e.g. 300 or 100:50:350)';
+                gui_erp_scalp_map.measurement_exp.String='(one or more: e.g. 300 or 100:50:350)';
             case {2,4,5}
-                gui_erp_scalp_map.measurement_exp.String='(Latency setting: e.g., 300 400 ; 400 500)';
+                gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
         end
     end
 

@@ -132,21 +132,23 @@ gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
-gui_erp_waviewer.show_command = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
+% gui_erp_waviewer.show_command = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
+%     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
 
+gui_erp_waviewer.show_popup = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','popupmenu','String',{'Show Command','Save Figure as','Create Static /Exportable Plot'},...
+    'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Callback',@show_popup);
 
-gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
-
-gui_erp_waviewer.figureout = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
-    'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_out);
+% gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
+%     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
+%
+% gui_erp_waviewer.figureout = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
+%     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_out);
 
 gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Reset',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
 
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
-set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 100 100 170 70 5]);
+set(gui_erp_waviewer.zoomin_out_title, 'Sizes', [10 70 50 70 -1 150 70 5]);
 
 gui_erp_waviewer.xaxis_panel = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
 gui_erp_waviewer.Process_messg = uicontrol('Parent',gui_erp_waviewer.xaxis_panel,'Style','text','String','','FontSize',FonsizeDefault+2,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
@@ -291,7 +293,17 @@ end
 end % redrawDemo
 
 
-
+function show_popup(Source,~)
+global viewer_ERPDAT;
+value = Source.Value;
+if value==1
+    Show_command();
+elseif value==2
+    figure_saveas();
+elseif value==3
+    figure_out();
+end
+end
 
 %%-------------------------------Page Editor-------------------------------
 function page_edit(Source,~)

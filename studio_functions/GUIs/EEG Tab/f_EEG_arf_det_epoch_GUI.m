@@ -164,7 +164,16 @@ varargout{1} = Eegtab_box_art_det_epoch;
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.detar_run_title);
         set(Eegtab_EEG_art_det_epoch.detar_run_title,'Sizes',[10,-1,30,-1,10]);
         
-        set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 25 25 35 35 35 30 30]);
+        
+        Eegtab_EEG_art_det_epoch.show_sumy_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.show_sumy_title);
+        Eegtab_EEG_art_det_epoch.show_sumy_ar = uicontrol('Style', 'checkbox','Parent',Eegtab_EEG_art_det_epoch.show_sumy_title,'Value',1,...
+            'String','Show summary window','callback',@show_sumy_ar,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.show_sumy_title);
+        set(Eegtab_EEG_art_det_epoch.show_sumy_title,'Sizes',[-1 180 -1]);
+        
+        Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
+        set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 25 25 35 35 35 30 30 20]);
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
     end
 
@@ -907,6 +916,12 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 Eegtab_EEG_art_det_epoch.movewindow_edit.String = num2str(floor((observe_EEGDAT.EEG.times(end)-observe_EEGDAT.EEG.times(1))/2));
             end
         end
+        try show_sumy_ar = Eegtab_EEG_art_det_epoch.Paras{8}; catch show_sumy_ar=1; end
+        if isempty(show_sumy_ar) || numel(show_sumy_ar)~=1 || (show_sumy_ar~=1 && show_sumy_ar~=0)
+            show_sumy_ar=1;
+        end
+        Eegtab_EEG_art_det_epoch.show_sumy_ar.Value = show_sumy_ar;
+        
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
         %         Eegtab_EEG_art_det_epoch.Paras{3} = Eegtab_EEG_art_det_epoch.mflag;
@@ -914,9 +929,28 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{5} = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+        Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
+
+%%----------------------show summary window--------------------------------
+    function show_sumy_ar(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=9
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_epoch.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_epoch.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_epoch.detectar_cancel.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_epoch.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_epoch.detectar_run.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_epoch',1);
+    end
 
 %%-----------------------Run------------------------------------------
     function detectar_run(Source,~)
@@ -1116,14 +1150,14 @@ varargout{1} = Eegtab_box_art_det_epoch;
         
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
-            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            EEGArray =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
         catch
-            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            EEGArray = length(observe_EEGDAT.ALLEEG);
             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
         end
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        estudioworkingmemory('EEGArray',EEGArray);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
@@ -1152,6 +1186,12 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{5} = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+        Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
+        
+        %%----------------------display summary of artifacts---------------
+        if Eegtab_EEG_art_det_epoch.show_sumy_ar.Value==1
+            feval('EEG_Summary_AR_GUI',observe_EEGDAT.ALLEEG(EEGArray),1);
+        end
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -1180,6 +1220,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'off';
             Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'off';
+            Eegtab_EEG_art_det_epoch.show_sumy_ar.Enable= 'off';
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
                 Eegtab_box_art_det_epoch.TitleColor= [0.7500    0.7500    0.75000];
             else
@@ -1207,6 +1248,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.windowstep_text.Enable= 'on';
         Eegtab_EEG_art_det_epoch.detectar_cancel.Enable= 'on';
         Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'on';
+        Eegtab_EEG_art_det_epoch.show_sumy_ar.Enable= 'on';
         
         EEGArray= estudioworkingmemory('EEGArray');
         if numel(EEGArray)~=1
@@ -1338,7 +1380,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{5} = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
-        
+        Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         Eegtab_EEG_art_det_epoch.mflag1.Enable = 'off';
         observe_EEGDAT.count_current_eeg=20;
     end
@@ -1424,6 +1466,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             end
             Eegtab_EEG_art_det_epoch.chan_edit.String=vect2colon([1:observe_EEGDAT.EEG.nbchan]);
         end
+        Eegtab_EEG_art_det_epoch.show_sumy_ar.Value=1;
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{3} = Eegtab_EEG_art_det_epoch.mflag;
@@ -1431,6 +1474,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{5} = str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
+        Eegtab_EEG_art_det_epoch.Paras{8}  = 1;
         observe_EEGDAT.Reset_eeg_paras_panel=17;
     end
 end

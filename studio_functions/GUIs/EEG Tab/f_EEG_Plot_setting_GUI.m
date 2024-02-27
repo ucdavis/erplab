@@ -483,14 +483,15 @@ varargout{1} = EStudio_box_EEG_plot_set;
             catch
             end
         end
-        
-        pathstr = pwd;
+         pathstr =  estudioworkingmemory('EEG_save_folder');
+          if isempty(pathstr)
+            pathstr =cd;
+          end
         namedef ='Channel_order_eeg';
         [erpfilename, erppathname, indxs] = uiputfile({'*.tsv'}, ...
             ['Export EEG channel order (for plotting only)'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
-            disp('User selected Cancel')
             return
         end
         

@@ -63,7 +63,7 @@ varargout{1} = EEG_chan_operation_gui;
             Enable_label = 'on';
         end
         %%--------------------channel and bin setting----------------------
-        gui_eegtab_chan_optn.DataSelBox = uiextras.VBox('Parent', EEG_chan_operation_gui);
+        gui_eegtab_chan_optn.DataSelBox = uiextras.VBox('Parent', EEG_chan_operation_gui,'BackgroundColor',ColorB_def);
         for ii = 1:100
             dsnames{ii,1} = '';
         end
@@ -79,17 +79,21 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.edit_bineq.KeyPressFcn=  @eeg_chanop_presskey;
         gui_eegtab_chan_optn.equation_selection = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.eq_editor = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_load = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        gui_eegtab_chan_optn.eq_save = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
+            'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.eq_clear = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.equation_selection,...
-            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        
+        
         
         gui_eegtab_chan_optn.asst_locaInfo = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
         gui_eegtab_chan_optn.ref_asst = uicontrol('Style','pushbutton','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
             'String','Reference Asst','callback',@ref_asst,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_eegtab_chan_optn.locaInfor = uicontrol('Style','checkbox','Parent',gui_eegtab_chan_optn.asst_locaInfo,...
-            'String','Load Eq.','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
+            'String','','callback',@loca_infor,'FontSize',FontSize_defualt,'Value',1,'Enable',Enable_label,'BackgroundColor',ColorB_def); % 2F
         gui_eegtab_chan_optn.locaInfor.String =  '<html>Try to Preserve<br />Location Information</html>';
         gui_eegtab_chan_optn.Paras{2} = gui_eegtab_chan_optn.locaInfor.Value;
         set(gui_eegtab_chan_optn.asst_locaInfo,'Sizes',[105 180]);
@@ -123,20 +127,12 @@ varargout{1} = EEG_chan_operation_gui;
         uiextras.Empty('Parent',  gui_eegtab_chan_optn.run_title,'BackgroundColor',ColorB_def);
         set(gui_eegtab_chan_optn.run_title,'Sizes',[15 105  30 105 15]);
         
-        gui_eegtab_chan_optn.note_title = uiextras.HBox('Parent', gui_eegtab_chan_optn.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style','text','Parent',gui_eegtab_chan_optn.note_title,...
-            'String','Note: Operates on channels','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
-        
-        set(gui_eegtab_chan_optn.DataSelBox,'Sizes',[130,30,35,35,35,30 30]);
+        set(gui_eegtab_chan_optn.DataSelBox,'Sizes',[130,30,35,35,35,30]);
     end
-
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-
-
 
 %%-------------------Equation editor---------------------------------------
     function eq_advanced(Source_editor,~)
@@ -270,6 +266,50 @@ varargout{1} = EEG_chan_operation_gui;
         set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
 
+
+%%------------------------------Save eq.-----------------------------------
+    function eq_save(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            return;
+        end
+        
+        Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
+        Formula_str = {};
+        count = 0;
+        for ii = 1:length(Eq_Data)
+            if ~isempty(Eq_Data{ii})
+                count = count +1;
+                Formula_str{count} = Eq_Data{ii};
+            end
+        end
+        msgboxText =  ['Channel Operations >Save'];
+        erpworkingmemory('f_EEG_proces_messg',msgboxText);
+        observe_EEGDAT.eeg_panel_message =1;
+        if isempty(Formula_str)
+            msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            observe_EEGDAT.eeg_panel_message =4;
+            return;
+        end
+        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', '');
+        if isequal(filename,0)
+            return
+        else
+            [px, fname, ext] = fileparts(filename);
+            ext   = '.txt';
+            fname = [ fname ext];
+            fullname = fullfile(filepath, fname);
+            fid_list   = fopen( fullname , 'w');
+            for i=1:length(Formula_str)
+                fprintf(fid_list,'%s\n', Formula_str{i});
+            end
+            
+            fclose(fid_list);
+            disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
+        end
+        observe_EEGDAT.eeg_panel_message =2;
+    end
+
 %%-------------------Equation Clear---------------------------------------
     function eq_clear(~,~)
         for ii = 1:1000
@@ -379,8 +419,6 @@ varargout{1} = EEG_chan_operation_gui;
         gui_eegtab_chan_optn.locaInfor.Value = Value;
     end
 
-
-
 %%------------------Modify Existing ERPset---------------------------------------
     function mode_modify(Source_editor,~)
         if isempty(observe_EEGDAT.EEG)
@@ -404,7 +442,7 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  erpworkingmemory('pop_eegchanoperator');
-            FormulaArrayIn_default = def{1};
+            try FormulaArrayIn_default = def{1};catch FormulaArrayIn_default = '';end
             if ~isempty(FormulaArrayIn_default)
                 [val, formulaArray]= f_chan_testsyntaxtype(FormulaArrayIn_default, 'recu');
                 def{1} = formulaArray;
@@ -430,7 +468,7 @@ varargout{1} = EEG_chan_operation_gui;
     end
 
 %%------------------Create New ERPset---------------------------------------
-    function mode_create(Source_create,~)
+    function mode_create(~,~)
         if isempty(observe_EEGDAT.EEG)
             return;
         end
@@ -452,7 +490,11 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(FormulaArrayIn)
             val = 0;
             def =  erpworkingmemory('pop_eegchanoperator');
-            FormulaArrayIn_default = def{1};
+            try
+                FormulaArrayIn_default = def{1};
+            catch
+                FormulaArrayIn_default = '';
+            end
             if ~isempty(FormulaArrayIn_default)
                 [val, formulaArray]= f_chan_testsyntaxtype(FormulaArrayIn_default, 'norecu');
                 def{1} = formulaArray;
@@ -479,9 +521,7 @@ varargout{1} = EEG_chan_operation_gui;
             def{1} = formulaArray;
             erpworkingmemory('pop_eegchanoperator',def);
         end
-        
     end
-
 
 %%-----------------------cancel--------------------------------------------
     function chanop_cancel(~,~)
@@ -535,7 +575,7 @@ varargout{1} = EEG_chan_operation_gui;
             pathName_def =cd;
         end
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
@@ -638,7 +678,6 @@ varargout{1} = EEG_chan_operation_gui;
                 [ALLEEG EEG,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
             end
         end
-        
         observe_EEGDAT.ALLEEG = ALLEEG;
         if gui_eegtab_chan_optn.mode_create.Value%%Save the labels of the selected ERPsets
             try
@@ -706,6 +745,7 @@ varargout{1} = EEG_chan_operation_gui;
         end
         gui_eegtab_chan_optn.mode_modify.Enable=Enable_label;
         gui_eegtab_chan_optn.mode_create.Enable=Enable_label;
+        gui_eegtab_chan_optn.eq_save.Enable = Enable_label;
         gui_eegtab_chan_optn.eq_editor.Enable = Enable_label;
         gui_eegtab_chan_optn.eq_load.Enable = Enable_label;
         gui_eegtab_chan_optn.eq_clear.Enable = Enable_label;

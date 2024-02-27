@@ -88,7 +88,7 @@ drawui_EEG_info(FonsizeDefault);
         
         %%------------totla rejected----------
         gui_EEG_info.total_rejected_show = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_EEG_info.total_rejected_show,'String','Artifact rejection details',...
+        gui_EEG_info.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_EEG_info.total_rejected_show,'String','Artifact & aSME Summary',...
             'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_EEG_info.total_rejected_option.Enable = 'off';
         uiextras.Empty('Parent', gui_EEG_info.total_rejected_show);
@@ -222,18 +222,28 @@ drawui_EEG_info(FonsizeDefault);
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
+        ALLERP = [];
         try
             for NumofEEG = 1:numel(EEGArray)
+                ERP    = buildERPstruct([]);
                 EEG  = observe_EEGDAT.ALLEEG(EEGArray(NumofEEG));
                 [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
                 ERP.erpname = EEG.setname;
                 ERP.ntrials.accepted = countbinOK;
                 ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
                 ERP.ntrials.invalid = countbinINV;
-                [ERP, acce, rej, histoflags, EEGcom] = pop_summary_AR_erp_detection(ERP);
+                %                 [ERP, acce, rej, histoflags, EEGcom] = pop_summary_AR_erp_detection(ERP);
+                if NumofEEG ==1
+                    ALLERP = ERP;
+                else
+                    ALLERP(length(ALLERP)+1)   = ERP;
+                end
             end
         catch
             return;
+        end
+        if ~isempty(ALLERP)
+            feval('dq_trial_rejection',ALLERP,[],1);
         end
     end
 

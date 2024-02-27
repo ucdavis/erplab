@@ -101,6 +101,14 @@ varargout{1} = EStudio_eeg_events_box;
             'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[170 -1]);
         
+           %%Summarize EEG event codes
+        EStduio_eegtab_EEG_events.vieweventlist_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.vieweventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.vieweventlist_title,...
+            'String','View EventList','callback',@vieweventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.vieweventlist_title);
+        set( EStduio_eegtab_EEG_events.vieweventlist_title,'Sizes',[170 -1]);
+        
+        
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_events.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -114,7 +122,7 @@ varargout{1} = EStudio_eeg_events_box;
             'ColumnName'    , {'Types','#Occurrences'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false]);
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 100]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 30 100]);
     end
 
 %%**************************************************************************%%
@@ -435,6 +443,31 @@ varargout{1} = EStudio_eeg_events_box;
     end
 
 
+%%-------------------View eventlist----------------------------------------
+    function vieweventlist(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+         EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        
+         erpworkingmemory('f_EEG_proces_messg','EventList >  View EventList');
+        observe_EEGDAT.eeg_panel_message =1;
+      
+        feval('EEG_evenlist_gui',observe_EEGDAT.ALLEEG(EEGArray));
+        
+        observe_EEGDAT.eeg_panel_message =2;
+    end
+
 
 %%--------------------import EEG eventlist to text file--------------------
     function imp_eventlist(Source,~)
@@ -549,10 +582,10 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        if observe_EEGDAT.EEG.trials>1
-            Source.Enable= 'off';
-            return;
-        end
+%         if observe_EEGDAT.EEG.trials>1
+%             Source.Enable= 'off';
+%             return;
+%         end
         erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -950,6 +983,7 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.vieweventlist.Enable=EnableFlag;
             observe_EEGDAT.count_current_eeg=12;
             return;
         end
@@ -982,7 +1016,7 @@ varargout{1} = EStudio_eeg_events_box;
                 histo     = diff([0 indx'])';
                 for ii = 1:length(histo)
                     dsnames{ii,1} = eventtypes{ii};
-                    dsnames{ii,2} = histo(ii);
+                    dsnames{ii,2} = num2str(histo(ii));
                 end
             else
                 dsnames = dsnamesdef;
@@ -1008,6 +1042,11 @@ varargout{1} = EStudio_eeg_events_box;
         end
         EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
+        if isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+            EStduio_eegtab_EEG_events.vieweventlist.Enable='on';
+        else
+            EStduio_eegtab_EEG_events.vieweventlist.Enable='off';
+        end
         observe_EEGDAT.count_current_eeg=12;
     end
 end

@@ -272,7 +272,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, {Formula_str}, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             if isempty(ALLERP_out)
-                ALLERP_out(1)  = ERP;
+                ALLERP_out  = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1)  = ERP;
             end
@@ -295,7 +295,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             ALLERP(ERPArray) = ALLERP_out;
         else
             for Numoferp  = 1: numel(ERPArray)
-                ERP=  ALLERP_out(ERP);
+                ERP=  ALLERP_out(Numoferp);
                 checkfileindex = checkfilexists([ERP.filepath,filesep,ERP.filename]);
                 if Save_file_label && checkfileindex==1
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
@@ -400,7 +400,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             [ERP, ERPCOM] = pop_rename2chan(ALLERP,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             if isempty(ALLERP_out)
-                ALLERP_out(1)  = ERP;
+                ALLERP_out  = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1)  = ERP;
             end
@@ -513,7 +513,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             if isempty(ALLERP_out)
-                ALLERP_out(1)  = ERP;
+                ALLERP_out  = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1)  = ERP;
             end
