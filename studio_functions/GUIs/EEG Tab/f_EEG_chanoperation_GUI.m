@@ -273,6 +273,11 @@ varargout{1} = EEG_chan_operation_gui;
             return;
         end
         
+        pathName =  estudioworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =  [cd,filesep];
+        end
+        
         Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
         Formula_str = {};
         count = 0;
@@ -291,7 +296,7 @@ varargout{1} = EEG_chan_operation_gui;
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', '');
+        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as',pathName);
         if isequal(filename,0)
             return
         else
@@ -533,7 +538,7 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Channel Operations > Apply');
+        erpworkingmemory('f_EEG_proces_messg','Channel Operations > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         estudioworkingmemory('EEGTab_chanop',0);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [1 1 1];
@@ -549,6 +554,7 @@ varargout{1} = EEG_chan_operation_gui;
         mode_modify = gui_eegtab_chan_optn.Paras{3};
         gui_eegtab_chan_optn.mode_modify.Value=mode_modify;
         gui_eegtab_chan_optn.mode_create.Value=~mode_modify;
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 %%---------------------Run-------------------------------------------------

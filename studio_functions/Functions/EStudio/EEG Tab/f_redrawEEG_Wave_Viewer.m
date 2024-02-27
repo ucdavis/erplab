@@ -162,7 +162,7 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
             OutputViewereegpar{3},OutputViewereegpar{4},OutputViewereegpar{5},...
             OutputViewereegpar{6},OutputViewereegpar{7},OutputViewereegpar{8},...
             OutputViewereegpar{9},OutputViewereegpar{10},OutputViewereegpar{11},...
-            OutputViewereegpar{12},EStudio_gui_erp_totl);
+            OutputViewereegpar{12},OutputViewereegpar{13},EStudio_gui_erp_totl);
     else
         return;
     end
@@ -1015,53 +1015,53 @@ erpworkingmemory('f_EEG_proces_messg_pre',{Processed_Method,observe_EEGDAT.eeg_p
 
 %%Update the current EEGset after Inspect/label IC and update artifact marks
 eegicinspectFlag = erpworkingmemory('eegicinspectFlag');
-if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
-    EEGArray =  estudioworkingmemory('EEGArray');
-    if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
-        EEGArray = observe_EEGDAT.CURRENTSET;
-    end
-    if numel(EEGArray) ==1
-        %%set a reminder that can give the users second chance to update
-        %%current EEGset
-        if  eegicinspectFlag==1
-            question = ['We strongly recommend your to label ICs before any further analyses. Otherwise, there may be some bugs.\n\n',...
-                'Have you Labelled ICs? \n\n',...
-                'Please select "No" if you didnot. \n\n'];
-            title       = 'EStudio: Label ICs';
-        end
-        
-        BackERPLABcolor = [1 0.9 0.3];
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-        button      = questdlg(sprintf(question,''), title,'No','Yes','Yes');
-        set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
-        if isempty(button) ||   strcmpi(button,'No')
-            erpworkingmemory('eegicinspectFlag',0);
-            return;
-        end
-        %%close the figures for inspect/label ICs or artifact detection for
-        %%epoched eeg (preview)
-        try
-            for Numofig = 1:1000
-                fig = gcf;
-                if strcmpi(fig.Tag,'EEGPLOT') || strcmpi(fig.Tag(1:7),'selcomp')
-                    close(fig.Name);
-                else
-                    break;
-                end
-            end
-        catch
-        end
-        try
-            observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
-            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
-            erpworkingmemory('eegicinspectFlag',0);
-            observe_EEGDAT.count_current_eeg=1;
-        catch
-            erpworkingmemory('eegicinspectFlag',0);
-        end
-    end
-end
+% if ~isempty(eegicinspectFlag)  && (eegicinspectFlag==1 || eegicinspectFlag==2)
+%     EEGArray =  estudioworkingmemory('EEGArray');
+%     if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+%         EEGArray = observe_EEGDAT.CURRENTSET;
+%     end
+%     if numel(EEGArray) ==1
+%         %%set a reminder that can give the users second chance to update
+%         %%current EEGset
+%         if  eegicinspectFlag==1
+%             question = ['We strongly recommend your to label ICs before any further analyses. Otherwise, there may be some bugs.\n\n',...
+%                 'Have you Labelled ICs? \n\n',...
+%                 'Please select "No" if you didnot. \n\n'];
+%             title       = 'EStudio: Label ICs';
+%         end
+%         
+%         BackERPLABcolor = [1 0.9 0.3];
+%         oldcolor = get(0,'DefaultUicontrolBackgroundColor');
+%         set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
+%         button      = questdlg(sprintf(question,''), title,'No','Yes','Yes');
+%         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
+%         if isempty(button) ||   strcmpi(button,'No')
+%             erpworkingmemory('eegicinspectFlag',0);
+%             return;
+%         end
+%         %%close the figures for inspect/label ICs or artifact detection for
+%         %%epoched eeg (preview)
+%         try
+%             for Numofig = 1:1000
+%                 fig = gcf;
+%                 if strcmpi(fig.Tag,'EEGPLOT') || strcmpi(fig.Tag(1:7),'selcomp')
+%                     close(fig.Name);
+%                 else
+%                     break;
+%                 end
+%             end
+%         catch
+%         end
+%         try
+%             observe_EEGDAT.ALLEEG(EEGArray) = evalin('base','EEG');
+%             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray);
+%             erpworkingmemory('eegicinspectFlag',0);
+%             observe_EEGDAT.count_current_eeg=1;
+%         catch
+%             erpworkingmemory('eegicinspectFlag',0);
+%         end
+%     end
+% end
 if eegicinspectFlag~=0
     return;
 end
@@ -1104,7 +1104,7 @@ end
 %%-------------------------------Plot eeg waves--------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [EStudio_gui_erp_totl,errmeg] = f_plotviewereegwave(EEG,ChanArray,ICArray,EEGdispFlag,ICdispFlag,Winlength,...
-    AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,EStudio_gui_erp_totl)
+    AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,AmpIC,EStudio_gui_erp_totl)
 
 
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
@@ -1180,7 +1180,7 @@ end
 if nargin<7
     AmpScale = 50;
 end
-if isempty(AmpScale) || numel(AmpScale)~=1 || AmpScale==0
+if isempty(AmpScale) || numel(AmpScale)~=1 || AmpScale<=0
     AmpScale = 50;
 end
 OldAmpScale = AmpScale;
@@ -1236,6 +1236,17 @@ if nargin < 13
         Startimes=0;
     end
 end
+
+%%VERTICAL SCALE for ICs
+if nargin<14
+    AmpIC = 10;
+end
+
+if isempty(AmpIC) || numel(AmpIC)~=1 || AmpIC<=0
+    AmpIC = 10;
+end
+OldAmpIC = AmpIC;
+
 
 [ChanNum,Allsamples,tmpnb] = size(EEG.data);
 Allsamples = Allsamples*tmpnb;
@@ -1395,7 +1406,7 @@ Colorgbwave = [];
 if ~isempty(data)
     ColorNamergb = [1 0 0;0 0 1;0.9290 0.6940 0.1250;0 0 0;0 1 0;0 1 1];
     Colorgb_chan = [];
-    if ~isempty(ChanArray)
+    if ~isempty(dataeeg)
         chanNum = numel(ChanArray);
         if chanNum<=6
             Colorgb_chan = ColorNamergb(1:chanNum,:);
@@ -1460,6 +1471,9 @@ end
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
 ylims = [0 (PlotNum+1)*AmpScale];
+
+
+
 if EventOnset==1 && ~isempty(data) && PlotNum~=0
     MAXEVENTSTRING = 75;
     if MAXEVENTSTRING<0
@@ -1713,7 +1727,6 @@ if ndims(EEG.data)==3
                 plot(myeegviewer, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.75);%%
             end
-            %             drawnow;
         end
         
         %------------------------Xticks------------------------------------

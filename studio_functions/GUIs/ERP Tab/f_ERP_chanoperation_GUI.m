@@ -260,6 +260,7 @@ varargout{1} = ERP_chan_operation_gui;
         set(gui_erp_chan_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
 
+%%--------------------------Save equations to -----------------------------
     function eq_save(~,~)
         if isempty(observe_ERPDAT.ERP)
             observe_ERPDAT.Count_currentERP=1;
@@ -283,7 +284,12 @@ varargout{1} = ERP_chan_operation_gui;
             observe_ERPDAT.Process_messg =4;
             return;
         end
-        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', '');
+        pathName =  erpworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =cd;
+        end
+        
+        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
         if isequal(filename,0)
             return
         else
@@ -295,7 +301,6 @@ varargout{1} = ERP_chan_operation_gui;
             for i=1:length(Formula_str)
                 fprintf(fid_list,'%s\n', Formula_str{i});
             end
-            
             fclose(fid_list);
             disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
         end

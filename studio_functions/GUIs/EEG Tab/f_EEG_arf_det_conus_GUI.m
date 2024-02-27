@@ -694,7 +694,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             'firstdet', 'on', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
             'winms',  WindowLength,'review','on','History','implicit' );
         if isempty(LASTCOM)
-            %             disp('User selected cancel or errors occur.');
         else
             fprintf([LASTCOM,'\n']);
         end
@@ -807,16 +806,15 @@ varargout{1} = Eegtab_box_art_det_conus;
             fprintf(['*Reject Artifactual Time Segments (Continuous EEG) > Finalize*',32,32,32,32,datestr(datetime('now')),'\n']);
             
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            if max(ChanArray(:)) > EEG.nbchan
+            if any(ChanArray(:) > EEG.nbchan)
                 ChanArray = [1:EEG.nbchan];
                 fprintf(['We used all chans for the EEGset because the defined ones were invalid']);
             end
             [EEG,LASTCOM]= pop_continuousartdet( EEG , 'ampth',  Volthreshold, 'chanArray',  ChanArray, 'colorseg', colorseg,...
-                'firstdet', 'on', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
-                'winms',  WindowLength,'review','off','History','implicit' );
+                'firstdet', 'off', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
+                'winms',  WindowLength,'review','off','History','script' );
             
             if isempty(LASTCOM)
-                disp('User selected cancel or errors occur.');
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end

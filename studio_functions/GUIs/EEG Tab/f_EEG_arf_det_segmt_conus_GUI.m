@@ -198,11 +198,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%------------------------segement detection help--------------------------
-%     function segment_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
-
 
 %%----------------------edit chans-----------------------------------------
     function time_threshold_edit(Source,~)

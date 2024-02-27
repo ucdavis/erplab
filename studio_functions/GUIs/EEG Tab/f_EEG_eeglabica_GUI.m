@@ -165,7 +165,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         eegh(LASTCOM);
         
         fprintf(['\n',LASTCOM,'\n']);
-        Answer = f_EEG_save_multi_file(EEG,1, '_ica');
+        Answer = f_EEG_save_multi_file(EEG,1, '');
         if isempty(Answer)
             return;
         end
@@ -320,7 +320,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
-        
         
         ALLEEG = observe_EEGDAT.ALLEEG;
         

@@ -125,14 +125,24 @@ else
     end
     
     
-    %%Vertical scale?
+    %%Vertical scale for original data?
     try
         AmpScale = EEG_plotset{4};
     catch
         AmpScale = 50;
     end
-    if isempty(AmpScale) || numel(AmpScale)~=1 || AmpScale==0
+    if isempty(AmpScale) || numel(AmpScale)~=1 || AmpScale<=0
         AmpScale = 50;
+    end
+    
+    %%Vertical scale for IC data?
+    try
+        AmpScale_ic = EEG_plotset{5};
+    catch
+        AmpScale_ic = 10;
+    end
+    if isempty(AmpScale_ic) || numel(AmpScale_ic)~=1 || AmpScale_ic<=0
+        AmpScale_ic = 10;
     end
     
     %%Channel labels? (1 is name, 0 is number)
@@ -221,7 +231,7 @@ end
 
 if matlabfig==1
     if EEGdisp==0
-       ChanArray = []; 
+        ChanArray = [];
     end
     [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
@@ -239,6 +249,7 @@ else
     OutputViewerpareeg{10} =StackFlag;
     OutputViewerpareeg{11} =NormFlag;
     OutputViewerpareeg{12} =Startimes;
+    OutputViewerpareeg{13} = AmpScale_ic;
 end
 
 end

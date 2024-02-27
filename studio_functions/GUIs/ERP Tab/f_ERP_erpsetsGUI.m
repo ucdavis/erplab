@@ -933,7 +933,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName =  erpworkingmemory('ERP_save_folder');
+        pathName =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =cd;
         end

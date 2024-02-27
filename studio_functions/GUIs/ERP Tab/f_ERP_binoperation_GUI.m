@@ -62,11 +62,14 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.edit_bineq.KeyPressFcn = @erp_binop_presskey;
         gui_erp_bin_operation.equation_selection = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.eq_editor = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Eq. Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Advanced','callback',@eq_advanced,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_load = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Load Eq.','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Load EQ','callback',@eq_load,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        gui_erp_bin_operation.eq_save = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
+            'String','Save EQ','callback',@eq_save,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         gui_erp_bin_operation.eq_clear = uicontrol('Style','pushbutton','Parent',gui_erp_bin_operation.equation_selection,...
-            'String','Clear Eq.','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+            'String','Clear','callback',@eq_clear,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
+        
         %%%----------------Mode-----------------------------------
         gui_erp_bin_operation.mode_1 = uiextras.HBox('Parent', gui_erp_bin_operation.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_bin_operation.mode_modify_title = uicontrol('Style','text','Parent',gui_erp_bin_operation.mode_1 ,...
@@ -143,7 +146,6 @@ varargout{1} = ERP_bin_operation_gui;
         ERP = observe_ERPDAT.ERP;
         answer = binoperGUI(ERP, def);
         if isempty(answer)
-            disp('User selected Cancel')
             return
         end
         
@@ -225,6 +227,56 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.edit_bineq.Data = formcell{1,1};
         set(gui_erp_bin_operation.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
     end
+
+%%-----------------------------Save equation-------------------------------
+    function eq_save(~,~)
+        if isempty(observe_ERPDAT.ERP)
+            observe_ERPDAT.Count_currentERP=1;
+            return;
+        end
+        
+        Eq_Data =  gui_erp_bin_operation.edit_bineq.Data;
+        Formula_str = {};
+        count = 0;
+        for ii = 1:length(Eq_Data)
+            if ~isempty(Eq_Data{ii})
+                count = count +1;
+                Formula_str{count} = Eq_Data{ii};
+            end
+        end
+        msgboxText =  ['Bin Operations >Save'];
+        erpworkingmemory('f_ERP_proces_messg',msgboxText);
+        observe_ERPDAT.Process_messg =1;
+        if isempty(Formula_str)
+            msgboxText =  ['Bin Operations >Save - You have not yet written a formula'];
+            erpworkingmemory('f_ERP_proces_messg',msgboxText);
+            observe_ERPDAT.Process_messg =4;
+            return;
+        end
+        pathName =  erpworkingmemory('EEG_save_folder');
+        if isempty(pathName)
+            pathName =cd;
+        end
+        
+        [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as', pathName);
+        if isequal(filename,0)
+            return
+        else
+            [px, fname, ext] = fileparts(filename);
+            ext   = '.txt';
+            fname = [ fname ext];
+            fullname = fullfile(filepath, fname);
+            fid_list   = fopen( fullname , 'w');
+            for i=1:length(Formula_str)
+                fprintf(fid_list,'%s\n', Formula_str{i});
+            end
+            fclose(fid_list);
+            disp(['Saving equation list at <a href="matlab: open(''' fullname ''')">' fullname '</a>'])
+        end
+        observe_ERPDAT.Process_messg =2;
+    end
+
+
 
 %%-------------------Equation Clear---------------------------------------
     function eq_clear(~,~)
@@ -529,6 +581,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.mode_create.Enable=Enable_label;
         gui_erp_bin_operation.eq_editor.Enable = Enable_label;
         gui_erp_bin_operation.eq_load.Enable = Enable_label;
+        gui_erp_bin_operation.eq_save.Enable = Enable_label;
         gui_erp_bin_operation.eq_clear.Enable = Enable_label;
         gui_erp_bin_operation.run.Enable = Enable_label;
         gui_erp_bin_operation.cancel.Enable = Enable_label;
