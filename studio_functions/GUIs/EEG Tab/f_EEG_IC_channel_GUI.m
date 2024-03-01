@@ -168,8 +168,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         EStduio_eegtab_EEG_IC_chan.plot_reset.ForegroundColor = [1 1 1];
         new_chans = src.Value;
         if isempty(new_chans)
-            beep;
-            disp(['No channel was selected']);
             return;
         end
         [~,y_chan_index_select] = find(new_chans==1);
@@ -197,8 +195,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         
         IC_label_select = src.Value;
         if isempty(IC_label_select)
-            beep;
-            disp(['No IC was selected']);
             return;
         end
         [~,y_bin_index_select] = find(IC_label_select==1);
@@ -268,10 +264,6 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=1
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-        end
-        ChangeFlag =  estudioworkingmemory('EEGTab_chanic');
-        if ChangeFlag~=1
-            return;
         end
         MessageViewer= char(strcat('Channel and IC Selection > Apply'));
         erpworkingmemory('f_EEG_proces_messg',MessageViewer);
@@ -351,21 +343,18 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
             return;
         end
-        if max(binArray)> length(binString)-1
+        
+        if any(binArray>length(binString)-1)
             EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
-            %             observe_EEGDAT.ERP_bin = [1:length(binString)-1];
+            %                 observe_EEGDAT.ERP_bin = [1:length(binString)-1];
         else
-            if max(binArray)>length(binString)-1
+            if numel(binArray) == length(binString)-1
                 EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
-                %                 observe_EEGDAT.ERP_bin = [1:length(binString)-1];
             else
-                if numel(binArray) == length(binString)-1
-                    EStduio_eegtab_EEG_IC_chan.ICRange.Value =1;
-                else
-                    EStduio_eegtab_EEG_IC_chan.ICRange.Value = binArray+1;
-                end
+                EStduio_eegtab_EEG_IC_chan.ICRange.Value = binArray+1;
             end
         end
+        
     end
 
 

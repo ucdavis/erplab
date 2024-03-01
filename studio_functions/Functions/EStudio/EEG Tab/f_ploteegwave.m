@@ -898,6 +898,4 @@ if ~isempty(extfig)
         print(fig_gui,'-dpdf',figFileName);
     end
 end
-
-
 return;

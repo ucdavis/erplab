@@ -548,7 +548,7 @@ varargout{1} = ERP_bin_operation_gui;
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
             Enable_label = 'off';
             for ii = 1:100
-                if ii==1
+                if ii==101
                     dsnames{ii,1} = '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
                 else
                     dsnames{ii,1} = '';
@@ -561,7 +561,8 @@ varargout{1} = ERP_bin_operation_gui;
             binopDataor =  gui_erp_bin_operation.edit_bineq.Data;
             for ii = 1:100
                 binopDataorcell = char(binopDataor{ii,1});
-                if isempty(binopDataorcell)
+                aa = '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
+                if isempty(binopDataorcell) || strcmpi(binopDataorcell,aa)
                     dsnames{ii,1} = '';
                 else
                     dsnames{ii,1} = binopDataorcell;

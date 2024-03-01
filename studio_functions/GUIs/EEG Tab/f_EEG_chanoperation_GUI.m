@@ -173,7 +173,6 @@ varargout{1} = EEG_chan_operation_gui;
         EEG = observe_EEGDAT.EEG;
         answer = chanoperGUI(EEG, def);
         if isempty(answer)
-            disp('User selected Cancel')
             return
         end
         chanopGUI = erpworkingmemory('chanopGUI');
@@ -236,7 +235,6 @@ varargout{1} = EEG_chan_operation_gui;
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
-            disp('User selected Cancel')
             return
         else
             fullname = fullfile(filepath, filename);
@@ -248,9 +246,11 @@ varargout{1} = EEG_chan_operation_gui;
             formcell    = textscan(fid_formula, '%s','delimiter', '\r');
             formulas    = char(formcell{:});
         catch
-            msgboxText =  ['Channel Operations - Please, check your file:\n '...
-                fullname '\n'];
+            msgboxText =  ['Channel Operations - Please, check your file: '...
+                fullname];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -258,6 +258,8 @@ varargout{1} = EEG_chan_operation_gui;
             msgboxText =  ['Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -293,6 +295,8 @@ varargout{1} = EEG_chan_operation_gui;
         if isempty(Formula_str)
             msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -592,6 +596,8 @@ varargout{1} = EEG_chan_operation_gui;
                 msgboxText =  ['Channel Operations - No EEGset was selected'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -609,6 +615,8 @@ varargout{1} = EEG_chan_operation_gui;
             msgboxText =  ['Channel Operations - You have not yet written a formula'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -620,9 +628,11 @@ varargout{1} = EEG_chan_operation_gui;
         end
         [option, recall, goeson] = checkformulas(cellstr(Formula_str), ['pop_eegchanoperator'], editormode);
         if goeson==0
-            msgboxText =  ['Channel Operations - See Command Window'];
+            msgboxText =  ['Channel Operations - error might be found and please see Command Window'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -739,7 +749,8 @@ varargout{1} = EEG_chan_operation_gui;
                 chanopDataor =  gui_eegtab_chan_optn.edit_bineq.Data;
                 for ii = 1:100
                     chanopDataorcell = char(chanopDataor{ii,1});
-                    if isempty(chanopDataorcell)
+                    aa  = '<html><font color="red">The number of channels should be the same for the selected EEGsets!';
+                    if isempty(chanopDataorcell) || strcmpi(chanopDataorcell,aa)
                         dsnames{ii,1} = '';
                     else
                         dsnames{ii,1} = chanopDataorcell;

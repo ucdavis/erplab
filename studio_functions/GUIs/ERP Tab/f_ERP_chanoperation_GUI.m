@@ -719,7 +719,8 @@ varargout{1} = ERP_chan_operation_gui;
             chanopDataor =  gui_erp_chan_operation.edit_bineq.Data;
             for ii = 1:100
                 chanopDataorcell = char(chanopDataor{ii,1});
-                if isempty(chanopDataorcell)
+                aa= '<html><font color="red">The number of bins and channles should be the same for the selected ERPset!';
+                if isempty(chanopDataorcell) || strcmpi(aa,chanopDataorcell)
                     dsnames{ii,1} = '';
                 else
                     dsnames{ii,1} = chanopDataorcell;

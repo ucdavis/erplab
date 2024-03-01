@@ -198,7 +198,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
 %%----------------------edit chans-----------------------------------------
     function time_threshold_edit(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -224,7 +223,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
             return;
         end
     end
-
 
 %%-----------------------------volatge-------------------------------------
     function buffer_before_edit(Source,~)
@@ -252,7 +250,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         end
     end
 
-
 %%------------------------moving window------------------------------------
     function buffer_after_edit(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -268,16 +265,17 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         EEG_art_det_segmt_conus.detectsegmt_preview.ForegroundColor = [1 1 1];
         EEG_art_det_segmt_conus.detectsegmt_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EEG_art_det_segmt_conus.detectsegmt_run.ForegroundColor = [1 1 1];
-        
         estudioworkingmemory('EEGTab_detect_segmt_conus',1);
         afterEventcodeBufferMS= str2num(Source.String);
         if isempty(afterEventcodeBufferMS) || numel(afterEventcodeBufferMS) ~=1
-            erpworkingmemory('f_EEG_proces_messg',['Delete Time Segments (Continuous EEG) > Buffer after eventcode should have one number']);
+            msgboxText = ['Delete Time Segments (Continuous EEG) > Buffer after eventcode should have one number'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '3000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        
     end
 
 
@@ -299,8 +297,6 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         estudioworkingmemory('EEGTab_detect_segmt_conus',1);
         evntcodes = Source.String;
         evntcodes = colonrange2num(evntcodes);
-        
-        % Strip any non-numeric token and replace w/ whitespace (' ')
         editString               = regexprep(evntcodes, '[\D]', ' ');
         Source.String = editString;
     end
@@ -369,26 +365,35 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         estudioworkingmemory('EEGTab_detect_segmt_conus',0);
         
         timeThresholdMS = str2double(EEG_art_det_segmt_conus.time_threshold_edit.String);
-        if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  min(timeThresholdMS(:))<=0 || max(timeThresholdMS(:))<=0
-            erpworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Preview: The value of "Time Thresholds" should be a positive number');
+        if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  any(timeThresholdMS(:)<=0)
+            msgboxText = ['Delete Time Segments (Continuous EEG) > Preview: The value of "Time Thresholds" should be a positive value'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             EEG_art_det_segmt_conus.time_threshold_edit.String= '7000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         beforeEventcodeBufferMS = str2double(EEG_art_det_segmt_conus.buffer_before_edit.String);
         if isempty(beforeEventcodeBufferMS) || numel(beforeEventcodeBufferMS)~=1
-            erpworkingmemory('f_EEG_proces_messg',['Delete Time Segments (Continuous EEG) > Preview: Buffer before eventcode should have one number']);
+            msgboxText = ['Delete Time Segments (Continuous EEG) > Preview: Buffer before eventcode should have one number'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             EEG_art_det_segmt_conus.buffer_before_edit.String = '3000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         afterEventcodeBufferMS = str2double(EEG_art_det_segmt_conus.buffer_after_edit.String);
         if isempty(afterEventcodeBufferMS) || numel(afterEventcodeBufferMS) ~=1
-            erpworkingmemory('f_EEG_proces_messg',['Delete Time Segments (Continuous EEG) > Buffer after eventcode should have one number']);
+            msgboxText = ['Delete Time Segments (Continuous EEG) > Buffer after eventcode should have one number'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             EEG_art_det_segmt_conus.buffer_after_edit.String = '3000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -481,26 +486,35 @@ varargout{1} = Eegtab_box_art_det_segmt_conus;
         end
         
         timeThresholdMS = str2double(EEG_art_det_segmt_conus.time_threshold_edit.String);
-        if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  min(timeThresholdMS(:))<=0 || max(timeThresholdMS(:))<=0
-            erpworkingmemory('f_EEG_proces_messg','Delete Time Segments (Continuous EEG) > Finalize: The value of "Time Thresholds" should be a positive number');
+        if isempty(timeThresholdMS) || numel(timeThresholdMS)~=1||  any(timeThresholdMS(:)<=0)
+            msgboxText = ['Delete Time Segments (Continuous EEG) > Finalize: The value of "Time Thresholds" should be a positive value'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             EEG_art_det_segmt_conus.time_threshold_edit.String= '7000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         beforeEventcodeBufferMS = str2double(EEG_art_det_segmt_conus.buffer_before_edit.String);
         if isempty(beforeEventcodeBufferMS) || numel(beforeEventcodeBufferMS)~=1
-            erpworkingmemory('f_EEG_proces_messg',['Delete Time Segments (Continuous EEG) > Finalize: Buffer before eventcode should have one number']);
+            msgboxText = ['Delete Time Segments (Continuous EEG) > Finalize: Buffer before eventcode should be a single value'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             EEG_art_det_segmt_conus.buffer_before_edit.String = '3000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         afterEventcodeBufferMS = str2double(EEG_art_det_segmt_conus.buffer_after_edit.String);
         if isempty(afterEventcodeBufferMS) || numel(afterEventcodeBufferMS) ~=1
-            erpworkingmemory('f_EEG_proces_messg',['Delete Time Segments (Continuous EEG) >Finalize: Buffer after eventcode should have one number']);
+            msgboxText = ['Delete Time Segments (Continuous EEG) >Finalize: Buffer after eventcode should be a single value'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             EEG_art_det_segmt_conus.buffer_after_edit.String = '3000';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         

@@ -274,16 +274,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             observe_EEGDAT.CURRENTSET = SelectedERP;
             observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(end);
             EStduio_eegtab_EEG_set.butttons_datasets.Value=SelectedERP;
-            if isempty(SelectedERP)
-                msgboxText =  'No ERPset was selected!!!';
-                title = 'EStudio: EEGsets';
-                errorfound(msgboxText, title);
-                return;
-            end
         end
         ChanArray=estudioworkingmemory('EEG_ChanArray');
         
-        %         try
         for Numofselecterp = 1:numel(SelectedERP)
             New_EEG = observe_EEGDAT.ALLEEG(SelectedERP(Numofselecterp));
             
@@ -343,22 +336,19 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
         end
         for Numofselecterp = 1:length(SelectedEEG)
-            try
-                ndsns = SelectedEEG(Numofselecterp);
-                erpName = char(observe_EEGDAT.ALLEEG(1,ndsns).setname);
-                new = f_EEG_rename_gui(erpName,SelectedEEG(Numofselecterp));
-                if isempty(new)
-                    return;
-                end
-                observe_EEGDAT.ALLEEG(1,ndsns).setname = cell2mat(new);
-                EEGlistName =  getDatasets();
-                EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-                EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
-                EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
-                assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            catch
-                observe_EEGDAT.eeg_panel_message =3;
+            ndsns = SelectedEEG(Numofselecterp);
+            erpName = char(observe_EEGDAT.ALLEEG(1,ndsns).setname);
+            new = f_EEG_rename_gui(erpName,SelectedEEG(Numofselecterp));
+            if isempty(new)
+                return;
             end
+            observe_EEGDAT.ALLEEG(1,ndsns).setname = cell2mat(new);
+            EEGlistName =  getDatasets();
+            EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+            EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
+            EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
+            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+            
         end
         observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
@@ -376,21 +366,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.eeg_panel_message =1;
         
         SelectedEEG= EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if isempty(SelectedEEG)
-            SelectedEEG =observe_EEGDAT.CURRENTSET;
-            if isempty(SelectedEEG)
-                msgboxText =  'No EEGset was selected!!!';
-                title = 'EStudio: EEGsets';
-                errorfound(msgboxText, title);
-                return;
-            end
-        end
-        if isempty(SelectedEEG)
-            msgboxText =  'No EEGset was selected!!!';
-            title = 'EStudio: EEGsets';
-            errorfound(msgboxText, title);
-            return;
-        end
+        
         new = f_EEG_suffix_gui('Suffix');
         if ~isempty(new)
             for Numofselecterp = SelectedEEG
@@ -402,8 +378,6 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
             observe_EEGDAT.eeg_panel_message =2;
         else
-            beep;
-            disp('User selected Cancel');
             return;
         end
     end
@@ -558,16 +532,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         [EEGlistName,~,~] =  getDatasets(ALLEEG);
         EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
         %%contains the both continuous and epoched EEG
-        %         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
-        %             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
-        %             EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
-        %             if  EStduio_eegtab_EEG_set.eeg_contns.Value==1%%continuous EEG
-        %                 [~, ypos] =  find(EEGtypeFlag==1);
-        %             else
-        %                 [~, ypos] =  find(EEGtypeFlag==0);
-        %             end
-        %             CURRENTSET = ypos(end);
-        %         end
         observe_EEGDAT.ALLEEG = ALLEEG;
         EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
         EStduio_eegtab_EEG_set.butttons_datasets.Max = length(observe_EEGDAT.ALLEEG)+1;
@@ -802,12 +766,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
             EEGArray =observe_EEGDAT.CURRENTSET;
-            if isempty(EEGArray)
-                msgboxText =  'No EEGset was selected!!!';
-                title = 'EStudio: EEGsets';
-                errorfound(msgboxText, title);
-                return;
-            end
         end
         
         for Numofeeg = 1:length(EEGArray)
@@ -866,12 +824,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         if isempty(EEGArray) || any(EEGArray>length(observe_EEGDAT.ALLEEG))
             EEGArray =observe_EEGDAT.CURRENTSET;
-            if isempty(EEGArray)
-                msgboxText =  'No EEGset was selected!!!';
-                title = 'EStudio: EEGsets';
-                errorfound(msgboxText, title);
-                return;
-            end
         end
         
         for Numofeeg = 1:length(EEGArray)
@@ -946,7 +898,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         
         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
         observe_EEGDAT.eeg_panel_message =1;

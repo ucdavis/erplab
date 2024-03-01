@@ -298,11 +298,6 @@ varargout{1} = EEG_filtering_box;
 %%*******************   Subfunctions   ************************************
 %%*************************************************************************
 
-%%----------------------filter help----------------------------------------
-%     function filter_help(~,~)
-%         web('https://github.com/lucklab/erplab/wiki/Filtering','-browser');
-%     end
-
 %%----------------------all bin and all chan-------------------------------
     function All_chan(~,~)
         %%first checking if the changes on the other panels have been applied
@@ -315,7 +310,6 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
-        
         gui_eegtab_filtering.all_chan.Value = 1;
         gui_eegtab_filtering.Selected_chan.Value = 0;
         estudioworkingmemory('EEGTab_filter',1);
@@ -328,19 +322,15 @@ varargout{1} = EEG_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
-        
         gui_eegtab_filtering.all_chan.Value = 0;
         gui_eegtab_filtering.Selected_chan.Value = 1;
         estudioworkingmemory('EEGTab_filter',1);
     end
-
-
 
 %%--------------------------------High-pass filtering toggle------------------
     function  highpass_toggle(source,~)
@@ -350,7 +340,6 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.hp_halfpow.Enable ='off';
             return;
         end
-        
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
@@ -362,8 +351,6 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
-        
-        
         try
             fs = observe_EEGDAT.EEG.srate;
         catch
@@ -418,7 +405,6 @@ varargout{1} = EEG_filtering_box;
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.cancel.ForegroundColor = [1 1 1];
-        
         try
             fs = observe_EEGDAT.EEG.srate;
         catch
@@ -468,7 +454,6 @@ varargout{1} = EEG_filtering_box;
         if ~isempty(messgStr) && eegpanelIndex~=3
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         gui_eegtab_filtering.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_filtering.apply.ForegroundColor = [1 1 1];
         EEG_filtering_box.TitleColor= [0.5137    0.7569    0.9176];
@@ -494,18 +479,24 @@ varargout{1} = EEG_filtering_box;
             MessageViewer =  ['Filtering - Invalid input for high-pass filter cutoff'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(MessageViewer,titlNamerro);
             return;
         end
         if valueh>=fs/2
             MessageViewer =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
             erpworkingmemory('f_EEG_proces_messg',MessageViewer);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(MessageViewer,titlNamerro);
             return;
         end
         if valueh<0.001
             msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -557,12 +548,16 @@ varargout{1} = EEG_filtering_box;
             msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if valuel>=fs/2
             msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -570,6 +565,8 @@ varargout{1} = EEG_filtering_box;
             msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %if the valueh is between 0.1 and fs/2 Hz
@@ -613,12 +610,16 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if valuel>=fs/2
                 msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
@@ -627,6 +628,8 @@ varargout{1} = EEG_filtering_box;
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
                     observe_EEGDAT.eeg_panel_message =4;
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -637,14 +640,16 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if valueh>=fs/2
-                beep;
                 msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if gui_eegtab_filtering.lp_tog.Value ==0
@@ -652,6 +657,8 @@ varargout{1} = EEG_filtering_box;
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
                     observe_EEGDAT.eeg_panel_message =4;
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -662,12 +669,16 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - The lowest bandpass cuttoff is the highest bandpass cuttoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if valueh==0 && valuel==0
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -705,14 +716,12 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_filter',0);
-        
         try
             nchan = observe_EEGDAT.EEG.nbchan;
             fs = observe_EEGDAT.EEG.srate;
         catch
             return;
         end
-        
         defx = {0 30 2 1:nchan 1 'butter' 0 []};
         def  = erpworkingmemory('pop_basicfilter');
         if isempty(def)
@@ -723,7 +732,6 @@ varargout{1} = EEG_filtering_box;
         else
             def{5} =   0;
         end
-        
         remove_dc =  gui_eegtab_filtering.DC_remove.Value;
         def{7} = remove_dc;
         
@@ -776,12 +784,16 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if locutoff>=fs/2
                 msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
@@ -790,6 +802,8 @@ varargout{1} = EEG_filtering_box;
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
                     observe_EEGDAT.eeg_panel_message =4;
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -800,6 +814,8 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -831,14 +847,16 @@ varargout{1} = EEG_filtering_box;
             ftype = 'simplenotch';
             cutoff = [locutoff hicutoff];
         elseif ~strcmpi(fdesign, 'notch') && locutoff==0 && hicutoff==0 % Butter (IIR) and FIR
-            msgboxText =  'I beg your pardon?';
-            title = 'EStudio: f_eeg_filtering_gui() !';
-            errorfound(msgboxText, title);
+            msgboxText =  'Filtering - I beg your pardon?';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         else
             msgboxText =  ['Filtering - Invalid type of filter'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%save changed parameters to the memory file
@@ -850,39 +868,21 @@ varargout{1} = EEG_filtering_box;
         
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         ALLEEG =  observe_EEGDAT.ALLEEG;
-        
-        Answer = f_EEG_save_multi_file(ALLEEG,EEGArray,'_filt');
-        if isempty(Answer)
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            if EEGArray(Numofeeg)> length(ALLEEG)
-                msgboxText =  ['Filtering - No corresponding EEG exists in ALLEEG'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
-                break;
-            end
-            
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             if gui_eegtab_filtering.all_chan.Value == 1
                 chanArray = [1:EEG.nbchan];
             else
-                if isempty(chanArray) ||  min(chanArray(:)) > EEG.nbchan || max(chanArray(:)) > EEG.nbchan || min(chanArray(:)) <=0
+                if isempty(chanArray) ||  any(chanArray(:) > EEG.nbchan) || any(chanArray(:) <=0)
                     chanArray = [1:EEG.nbchan];
                 end
             end
-            
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
             [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'History', 'gui');
@@ -890,6 +890,19 @@ varargout{1} = EEG_filtering_box;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
+            [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+        end
+        
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_filt');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -904,9 +917,8 @@ varargout{1} = EEG_filtering_box;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         end
-        
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
@@ -944,7 +956,6 @@ varargout{1} = EEG_filtering_box;
         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_filter',0);
-        
         try
             nchan = observe_EEGDAT.EEG.nbchan;
             fs = observe_EEGDAT.EEG.srate;
@@ -993,8 +1004,6 @@ varargout{1} = EEG_filtering_box;
         %%call the GUI for advance option
         answer = basicfilterGUI2(observe_EEGDAT.EEG, def);
         if isempty(answer)
-            beep;
-            disp('User selected Cancel')
             return;
         end
         
@@ -1092,14 +1101,18 @@ varargout{1} = EEG_filtering_box;
             ftype = 'PMnotch';
             cutoff = hicutoff;
         elseif ~strcmpi(fdesign, 'notch') && locutoff==0 && hicutoff==0 % Butter (IIR) and FIR
-            msgboxText =  'I beg your pardon?';
+            msgboxText =  'Filtering - I beg your pardon?';
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         else
             msgboxText =  ['Filtering - Invalid type of filter'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -1108,6 +1121,8 @@ varargout{1} = EEG_filtering_box;
                 msgboxText =  ['Filtering -The length of the data must be more than three times the filter order'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -1117,26 +1132,9 @@ varargout{1} = EEG_filtering_box;
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        FilterMethod = '_filt';
-        Answer = f_EEG_save_multi_file(observe_EEGDAT.ALLEEG,EEGArray,FilterMethod);
-        if isempty(Answer)
-            beep;
-            %disp('User selected Cancel');
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_advance = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        
+        ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
-            if EEGArray(Numofeeg)> length(ALLEEG)
-                msgboxText =  ['Filtering - No corresponding ERP exists in ALLEERP'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
-                break;
-            end
-            EEG = ALLEEG_advance(EEGArray(Numofeeg));
+            EEG = ALLEEG(EEGArray(Numofeeg));
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
             [EEG, LASTCOM] = pop_basicfilter(EEG, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'History', 'gui','Boundary', Boundaryflag);
@@ -1144,7 +1142,19 @@ varargout{1} = EEG_filtering_box;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
+            [ALLEEG_out, ~, ~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+        end
+        
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_filt');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
             if Save_file_label && checkfileindex==1
                 [pathstr, file_name, ext] = fileparts(EEG.filename);
@@ -1160,8 +1170,9 @@ varargout{1} = EEG_filtering_box;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-            [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            [ALLEEG, ~, ~] = pop_newset(ALLEEG, EEG, length(ALLEEG_out), 'gui', 'off');
         end
+        
         observe_EEGDAT.ALLEEG = ALLEEG;
         try
             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];

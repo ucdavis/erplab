@@ -128,9 +128,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset: Only for one selected dataset');
+            msgboxText = 'EEGLAB Tools > About this dataset: Only works for one selected dataset';
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -144,8 +147,11 @@ varargout{1} = EStudio_box_eeglab_tool;
                     eegh(LASTCOM);
                 end
             else
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > EEG.comments is empty for',32,EEG.setname);
+                msgboxText = ['EEGLAB Tools > EEG.comments is empty for',32,EEG.setname];
+                erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
         end
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
@@ -173,9 +179,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Edit Dataset Info: Only for one selected dataset');
+            msgboxText = ['EEGLAB Tools > Edit Dataset Info: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -257,9 +266,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Event value: Only only for one selected dataset');
+            msgboxText = ['EEGLAB Tools > Event value: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -343,9 +355,12 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan locations: Only works on one selected dataset');
+            msgboxText = ['EEGLAB Tools > Chan locations: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -429,9 +444,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate: Only works on one selected dataset');
+            msgboxText = ['EEGLAB Tools > Sampling rate: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -442,8 +460,6 @@ varargout{1} = EStudio_box_eeglab_tool;
         %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
         [EEG, LASTCOM] = pop_resample( EEG);
         if isempty(LASTCOM)
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate:User selected cancel');
-            observe_EEGDAT.count_current_eeg=4;
             fprintf( ['\n',repmat('-',1,100) '\n']);
             return;
         end
@@ -513,9 +529,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR: Only works on one selected dataset');
+            msgboxText = ['EEGLAB Tools > Reject data using clean rawdata and ASR: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -527,7 +546,10 @@ varargout{1} = EStudio_box_eeglab_tool;
         try
             [EEG,LASTCOM] =pop_clean_rawdata(ALLEEG(EEGArray));
         catch
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Reject data using clean rawdata and ASR: Clean Rawdata tool wasnot included in EEGLAB plugin');
+            msgboxText = ['EEGLAB Tools > Reject data using clean rawdata and ASR: Clean Rawdata tool was not included in EEGLAB plugin'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             return;
         end
@@ -610,9 +632,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Spectra and maps: Only works on one selected dataset');
+            msgboxText = ['EEGLAB Tools > Spectra and maps: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -732,9 +757,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties: Only works on one selected dataset');
+            msgboxText = ['EEGLAB Tools > Chan properties: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -762,11 +790,17 @@ varargout{1} = EStudio_box_eeglab_tool;
             chanorcomp   = eeg_decodechan(EEG.chanlocs, result{1} );
         catch
             fprintf(2, ['\nEEGLAB Tools > Chan properties: Channel index out of range, we therefore set it to 1\n']);
+            titlNamerro = 'Warning for EEG Tab';
+            msgboxText =   ['EEGLAB Tools > Chan properties: Channel index out of range, we therefore set it to 1'];
+            estudio_warning(msgboxText,titlNamerro);
             chanorcomp = 1;
         end
         spec_opt     = eval( [ '{' result{2} '}' ] );
         if isempty(chanorcomp)
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties:Please define Channel index(ices)');
+            msgboxText = ['EEGLAB Tools > Chan properties:Please define Channel index(ices)'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             return;
@@ -810,9 +844,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency: Only works on one selected dataset');
+            msgboxText = ['EEGLAB Tools > Time-frequency: Only works for one selected dataset'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.Enable = 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -823,7 +860,6 @@ varargout{1} = EStudio_box_eeglab_tool;
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
             LASTCOM =  pop_newtimef(EEG,1);
             if isempty(LASTCOM)
-                erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =1;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;

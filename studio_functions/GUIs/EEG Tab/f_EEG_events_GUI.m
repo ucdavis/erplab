@@ -134,6 +134,8 @@ varargout{1} = EStudio_eeg_events_box;
             msgboxText = ['EventList >  Summarize event code:EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -146,7 +148,7 @@ varargout{1} = EStudio_eeg_events_box;
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||   any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         for Numofeeg = 1:numel(EEGArray)
@@ -156,10 +158,14 @@ varargout{1} = EStudio_eeg_events_box;
                 msgboxText = ['EventList >  Summarize event code:EEG.event is empty for',32,EEG.setname];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
             elseif isempty([EEG(1).event.type])
                 CheckFlag = 0;
                 msgboxText = ['EventList >  Summarize event code:EEG.event.type is empty for',32,EEG.setname];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =4;
             else
                 CheckFlag=1;
@@ -199,6 +205,8 @@ varargout{1} = EStudio_eeg_events_box;
             Source.Enable= 'off';
             msgboxText = ['EventList >  Create Eventlist: EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -354,7 +362,10 @@ varargout{1} = EStudio_eeg_events_box;
         observe_EEGDAT.eeg_panel_message =1;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
-            erpworkingmemory('f_EEG_proces_messg','EventList >  Export RTs: No EVETLIST, please create one first');
+            msgboxText = ['EventList >  Export RTs: No EVETLIST, please create one first'];
+            erpworkingmemory('f_EEG_proces_messg',msgboxText);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -453,12 +464,9 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
-        
         erpworkingmemory('f_EEG_proces_messg','EventList >  View EventList');
         observe_EEGDAT.eeg_panel_message =1;
-        
         feval('EEG_evenlist_gui',observe_EEGDAT.ALLEEG(EEGArray));
-        
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -475,13 +483,11 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         if observe_EEGDAT.EEG.trials>1
-            beep;
-            msgboxText =  '\n Import:pop_importeegeventlist() has been tested for continuous data only.\n';
-            fprintf(2,[msgboxText]);
-            Source.Enable= 'off';
+            msgboxText =  'Eventlist>Import:pop_importeegeventlist() has been tested for continuous data only';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        
         erpworkingmemory('f_EEG_proces_messg','EventList >  Import');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -576,10 +582,6 @@ varargout{1} = EStudio_eeg_events_box;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        %         if observe_EEGDAT.EEG.trials>1
-        %             Source.Enable= 'off';
-        %             return;
-        %         end
         erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =1;
         
@@ -587,6 +589,8 @@ varargout{1} = EStudio_eeg_events_box;
             msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -641,6 +645,8 @@ varargout{1} = EStudio_eeg_events_box;
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG;
             else
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf(2,['Cannot export eventlist for:',32,EEG.setname,'\n']);
                 fprintf( [repmat('-',1,100) '\n']);
@@ -674,7 +680,7 @@ varargout{1} = EStudio_eeg_events_box;
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
         end
         
@@ -700,8 +706,11 @@ varargout{1} = EStudio_eeg_events_box;
             specfieldstr = 'data';
             valueatfield = 'off';
         else
+            msgboxText = ['EventList >  Shuffle events/bins/samples: invalid field'];
             erpworkingmemory('f_EEG_proces_messg','EventList >  Shuffle events/bins/samples: invalid field');
             observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -711,6 +720,8 @@ varargout{1} = EStudio_eeg_events_box;
                 msgboxText =  'EventList >  Shuffle events/bins/samples:Invalid value for "codes to shuffle"';
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -755,6 +766,8 @@ varargout{1} = EStudio_eeg_events_box;
             else
                 msgboxText =  ['EventList >  Shuffle events/bins/samples:', msgboxText];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n\n']);
                 break;
@@ -830,6 +843,8 @@ varargout{1} = EStudio_eeg_events_box;
             msgboxText = ['EventList >  Transfer event to EEG.event: EEG.event is empty for the current EEG'];
             erpworkingmemory('f_EEG_proces_messg',msgboxText);
             Source.Enable= 'off';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             observe_EEGDAT.eeg_panel_message =4;
             return;
         end
@@ -902,6 +917,8 @@ varargout{1} = EStudio_eeg_events_box;
                     msgboxText =  ['EventList >  Transfer event to EEG.event:', msgboxText];
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
                     observe_EEGDAT.eeg_panel_message =4;
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     fprintf( ['\n',repmat('-',1,100) '\n\n']);
                     break;
                 end

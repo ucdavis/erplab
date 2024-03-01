@@ -232,7 +232,7 @@ drawui_EEG_info(FonsizeDefault);
                 ERP.ntrials.accepted = countbinOK;
                 ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
                 ERP.ntrials.invalid = countbinINV;
-                %                 [ERP, acce, rej, histoflags, EEGcom] = pop_summary_AR_erp_detection(ERP);
+                
                 if NumofEEG ==1
                     ALLERP = ERP;
                 else

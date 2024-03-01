@@ -838,9 +838,7 @@ pathstr = pwd;
     'Save as',[fullfile(pathstr,namedef)]);
 
 if isequal(figurename,0)
-    beep;
-    observe_EEGDAT.eeg_panel_message=3;
-    disp('User selected Cancel')
+    %     observe_EEGDAT.eeg_panel_message=3;
     return
 end
 
@@ -853,13 +851,10 @@ else
     figurename = fullfile(erppathname,figurename);
 end
 
-try
-    observe_EEGDAT.eeg_panel_message=1;
-    OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,History,figurename);
-    observe_EEGDAT.eeg_panel_message=2;
-catch
-    observe_EEGDAT.eeg_panel_message=3;
-end
+observe_EEGDAT.eeg_panel_message=1;
+OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,1,History,figurename);
+observe_EEGDAT.eeg_panel_message=2;
+
 end
 
 
@@ -1853,7 +1848,7 @@ end
 %%----------------------------plot y scale---------------------------------
 if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
     ytick_bottom = myeegviewer.TickLength(1)*diff(myeegviewer.XLim);
-%     xtick_bottom = myeegviewer.TickLength(1)*diff(myeegviewer.YLim);
+    %     xtick_bottom = myeegviewer.TickLength(1)*diff(myeegviewer.YLim);
     leftintv = leftintv+ytick_bottom*2.5;
     rightintv = leftintv;
     if ICdispFlag~=0
