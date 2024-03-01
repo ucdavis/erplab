@@ -5,7 +5,7 @@
 
 %%FORMAT:
 % [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
-%         'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
+%         'Ampchan',Ampchan,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
 %         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History', 'gui');
 
 
@@ -18,7 +18,7 @@
 %Winlength           -the length of time-wondow to display the wave e.g.,
 %                     5s for continuous EEG; For epoched EEG, it is the
 %                     number of epochs, e.g., 5 epochs
-%AmpScale            -Verticl amplitude scales e.g., 50
+%Ampchan            -Verticl amplitude scales for chans e.g., 50
 %ChanLabel           -display channel names or numbers. 1 is name and 0 is
 %                     number
 %Submean             -remove DC? 1 (yes) or 0 (no)
@@ -71,7 +71,7 @@ if nargin==1
     Winlength=5;
     
     %%vertical voltage
-    AmpScale = 50;
+    Ampchan = 50;
     
     %%channel name (1) or number (0)
     ChanLabel = 1;
@@ -117,7 +117,7 @@ if nargin==1
     figSize = [];
     
     [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
-        'AmpScale',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
+        'Ampchan',Ampchan,'Ampic',Ampic,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History', 'gui');
     pause(0.1);
     return;
@@ -136,7 +136,8 @@ p.addRequired('EEG');
 p.addParamValue('ChanArray',[],@isnumeric);
 p.addParamValue('ICArray',[], @isnumeric);
 p.addParamValue('Winlength',[], @isnumeric);
-p.addParamValue('AmpScale',[], @isnumeric);
+p.addParamValue('Ampchan',[], @isnumeric);
+p.addParamValue('Ampic',[], @isnumeric);
 p.addParamValue('ChanLabel',[], @isnumeric);
 p.addParamValue('Submean',[], @isnumeric);
 p.addParamValue('EventOnset',[], @isnumeric);
@@ -208,13 +209,23 @@ if isempty(qWinlength) || numel(qWinlength)~=1 || min(qWinlength(:))<=0
     qWinlength=5;
 end
 
-%%vertical amplitude scale
-qAmpScale = p_Results.AmpScale;
-if ~isempty(qAmpScale) && numel(qAmpScale)~=1
-    qAmpScale = qAmpScale(1);
+%%vertical amplitude scale for chans
+qAmpchan = p_Results.Ampchan;
+if ~isempty(qAmpchan) && numel(qAmpchan)~=1
+    qAmpchan = qAmpchan(1);
 end
-if isempty(qAmpScale)|| qAmpScale==0
-    qAmpScale = 50;
+if isempty(qAmpchan)|| qAmpchan<=0
+    qAmpchan = 50;
+end
+
+
+%%vertical amplitude scale for ics
+qAmpic = p_Results.Ampic;
+if ~isempty(qAmpic) && numel(qAmpic)~=1
+    qAmpic = qAmpic(1);
+end
+if isempty(qAmpic)|| qAmpic<=0
+    qAmpic = 10;
 end
 
 
@@ -304,8 +315,8 @@ end
 % insert the function that is to plot the EEG
 if ~isempty(qfigureName) && shist~=4
     f_ploteegwave(EEG,qchanArray,qICArray,qWinlength,...
-        qAmpScale,qChanLabel,qSubmean,qEventOnset,qStackFlag,qNormFlag,qStartimes,...
-        qfigSize,qfigureName) ;
+        qAmpchan,qChanLabel,qSubmean,qEventOnset,qStackFlag,qNormFlag,qStartimes,...
+        qAmpic,qfigSize,qfigureName) ;
     
 end
 

@@ -153,12 +153,12 @@ ALLERP = handles.ALLERP;
 EEGArray = handles.EEGArray;
 suffix_edit = handles.edit_suffix_name.String;
 
-if isempty(suffix_edit)
-    msgboxText =  'You must enter a suffix at least!';
-    title = 'EStudio: f_ERP_save_multi_file() error';
-    errorfound(msgboxText, title);
-    return
-end
+% if isempty(suffix_edit)
+%     msgboxText =  'You must enter a suffix at least!';
+%     title = 'EStudio: f_ERP_save_multi_file() error';
+%     errorfound(msgboxText, title);
+%     return
+% end
 
 
 DataString_before = handles.uitable1_erpset_table.Data;

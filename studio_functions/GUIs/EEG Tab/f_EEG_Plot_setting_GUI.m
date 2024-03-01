@@ -51,7 +51,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         %%display original data?
         EStduio_gui_EEG_plotset.datatype_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_plotset.disp_orgdata = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title, 'Style', 'checkbox', 'String', 'Display original',...
+        EStduio_gui_EEG_plotset.disp_orgdata = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title, 'Style', 'checkbox', 'String', 'Display chans',...
             'Callback', @disp_orgdata,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off','Value',1);
         EStduio_gui_EEG_plotset.disp_orgdata.KeyPressFcn = @eeg_plotset_presskey;
         
@@ -958,8 +958,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EEG_plotset{10} = 3;
             if isempty(EStduio_gui_EEG_plotset.chanorder{1,1})
                 EEG_plotset{11}= {1:length(labels),labels};
-                MessageViewer= char(strcat('Plot Setting > Apply:There were no custom-defined chan orders and we therefore used the default orders'));
-                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+                MessageViewer= char(strcat('There were no custom-defined chan orders and we therefore used the default orders.'));
+                titlNamerro = 'Warning for EEG Tab - Plot Setting > Apply';
+                estudio_warning(MessageViewer,titlNamerro);
                 observe_EEGDAT.eeg_panel_message=4;
                 EStduio_gui_EEG_plotset.chanorder_number.Value=1;
                 EStduio_gui_EEG_plotset.chanorder_front.Value=0;

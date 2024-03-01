@@ -82,7 +82,6 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         
-        
         %%%------------BIN TO PLOT---------------------
         gui_erp_scalp_map.bin_latency_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.bin_latency_title,...
@@ -310,7 +309,7 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.cancel.ForegroundColor = [1 1 1];
         gui_erp_scalp_map.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_scalp_map.advanced.ForegroundColor = [1 1 1];
-        Value = Source.Value;
+        Value = gui_erp_scalp_map.measurement.Value;
         switch Value
             case {1,3}
                 gui_erp_scalp_map.measurement_exp.String='(one or more: e.g. 300 or 100:50:350)';
@@ -1787,6 +1786,14 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         gui_erp_scalp_map.measurement.Value=MeasValue;
         ERPTab_plotscalp{10} = MeasValue;
+        Value = gui_erp_scalp_map.measurement.Value;
+        switch Value
+            case {1,3}
+                gui_erp_scalp_map.measurement_exp.String='(one or more: e.g. 300 or 100:50:350)';
+            case {2,4,5}
+                gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
+        end
+        
         
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
     end

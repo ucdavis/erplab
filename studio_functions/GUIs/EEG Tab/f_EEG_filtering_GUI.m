@@ -744,27 +744,27 @@ varargout{1} = EEG_filtering_box;
         
         if gui_eegtab_filtering.lp_tog.Value ==1
             if length(hicutoff)~=1 || isempty(hicutoff)
-                beep;
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if hicutoff>=fs/2
-                beep;
                 msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message =4;
                 return;
             end
             if gui_eegtab_filtering.hp_tog.Value ==0
                 if hicutoff<0.001
-                    beep;
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
-                    fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_EEG_proces_messg',msgboxText);
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     observe_EEGDAT.eeg_panel_message =4;
                     return;
                 end

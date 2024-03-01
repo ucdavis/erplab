@@ -12,7 +12,7 @@
 
 function errmeg = f_ploteegwave(EEG,ChanArray,ICArray,Winlength,...
     AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,...
-    FigOutpos,FigureName)
+    AmpIC,FigOutpos,FigureName)
 
 errmeg = [];
 
@@ -421,7 +421,47 @@ end
 % -------------------------------------------------------------------------
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
-ylims = [0 (PlotNum+1)*AmpScale];
+if chaNum==0 && ICNum==0
+    Ampscold = 0*[1:PlotNum]';
+    if StackFlag==1
+        Ampsc = 0*[1:PlotNum]';
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = 0;
+    ylims = [0 (PlotNum+1)*AmpScale];
+elseif ICNum==0 && chaNum~=0
+    Ampscold = AmpScale*[1:PlotNum]';
+    if  StackFlag==1
+        Ampsc = (Ampscold(end)/2)*ones(1,PlotNum)';
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = AmpScale;
+    ylims = [0 (PlotNum+1)*AmpScale];
+elseif ICNum~=0 && chaNum==0
+    Ampscold = AmpIC*[1:PlotNum]';
+    if  StackFlag==1
+        Ampsc = (Ampscold(end)/2)*ones(1,PlotNum)';
+    else
+        Ampsc = Ampscold;
+    end
+    ylims = [0 (PlotNum+1)*AmpIC];
+    AmpScaleold = AmpIC;
+elseif ICNum~=0 && chaNum~=0
+    Ampscold1 = AmpIC*[1:ICNum]';
+    Ampscold2 = Ampscold1(end)+AmpScale*[1:chaNum]';
+    Ampscold = [Ampscold1;Ampscold2];
+    if  StackFlag==1
+        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+Ampscold2(1)-AmpIC)/2)*ones(chaNum,1)];
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = AmpScale;
+    ylims = [0 Ampscold(end)+AmpScaleold];
+end
+
+
 if EventOnset==1 && ~isempty(data)
     MAXEVENTSTRING = 75;
     if MAXEVENTSTRING<0
@@ -534,16 +574,13 @@ leftintv = [];
 tmpcolor = [ 0 0 0.4 ];
 if ndims(EEG.data)==2
     if ~isempty(data) && PlotNum~=0
-        %         plot(hbig, bsxfun(@plus, data(end:-1:1,lowlim:highlim), AmpScale*[1:PlotNum]'-meandata(end:-1:1)')' + (PlotNum+1)*(OldAmpScale-AmpScale)/2 +0*(OldAmpScale-AmpScale), ...
-        %             'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
-        %
-        Ampsc = AmpScale*[1:PlotNum]';
+        
         for ii = size(data,1):-1:1
             try
-                plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' , ...
                     'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.5);%%
             catch
-                plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(hbig, (data(ii,lowlim:highlim)+ Ampsc(size(data,1)-ii+1)-meandata(ii))', ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
             end
         end
@@ -658,10 +695,10 @@ if ndims(EEG.data)==3
                                     dataChan = nan(1,size(dataplot,2));
                                     dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
                                     try
-                                        plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))', ...
                                             'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
                                     catch
-                                        plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                                        plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))', ...
                                             'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
                                     end
                                 end
@@ -675,10 +712,10 @@ if ndims(EEG.data)==3
         Ampsc = AmpScale*[1:PlotNum]';
         for ii = size(dataplot,1):-1:1
             try
-                plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))', ...
                     'color', Colorgbwave(ii,:), 'clipping','on','LineWidth',0.5);%%
             catch
-                plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))' + (PlotNum+1)*(OldAmpScale-AmpScale)/2, ...
+                plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))', ...
                     'color', tmpcolor, 'clipping','on','LineWidth',0.5);%%
             end
         end
@@ -768,21 +805,31 @@ end
 %%
 %%-----------------plot y scale------------------
 if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
+    
     ytick_bottom = hbig.TickLength(1)*diff(hbig.XLim);
-    xtick_bottom = hbig.TickLength(1)*diff(hbig.YLim);
     leftintv = leftintv+ytick_bottom*2.5;
     rightintv = leftintv;
-    line(hbig,[leftintv,rightintv],[0 AmpScale],'color','k','LineWidth',1, 'clipping','off');
-    line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
-    line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpScale AmpScale],'color','k','LineWidth',1, 'clipping','off');
-    text(hbig,leftintv,1.5*xtick_bottom+AmpScale, [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+    if ICdispFlag~=0
+        line(hbig,[leftintv,rightintv],[0 AmpIC],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpIC AmpIC],'color','k','LineWidth',1, 'clipping','off');
+        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpIC), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpIC), ['ICs'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+    end
+    if EEGdispFlag~=0
+        line(hbig,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-AmpScale ylims(end)-AmpScale],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
+        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+    end
     
     
     %%ytick ticklabels
-    if isempty(OldAmpScale) || OldAmpScale==0
-        OldAmpScale=50;
+    if chaNum==0
+        ChanArray = [];
     end
-    set(hbig, 'ylim',[0 (PlotNum+1)*OldAmpScale],'YTick',[0:OldAmpScale:PlotNum*OldAmpScale]);
+    set(hbig, 'ylim',[0 Ampscold(end)+AmpScaleold],'YTick',[0 Ampscold']);
     [YLabels,chaName,ICName] = f_eeg_read_chan_IC_names(EEG.chanlocs,ChanArray,ICArray,ChanLabel);
     YLabels = flipud(char(YLabels,''));
     set(hbig,'YTickLabel',cellstr(YLabels),...

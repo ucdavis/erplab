@@ -830,7 +830,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 eegh(LASTCOM);
             end
         end%%end for loop of subjects
-        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rmar');
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'');
         if isempty(Answer)
             return;
         end
