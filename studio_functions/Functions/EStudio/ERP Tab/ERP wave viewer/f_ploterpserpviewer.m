@@ -874,9 +874,9 @@ if isyaxislabel==1 %% y axis GAP
             yscaleall = 2*max(abs(qYScales));
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
-%         if yscaleall < y_scale_def(2)-y_scale_def(1)
-%             yscaleall = y_scale_def(2)-y_scale_def(1);
-%         end
+        %         if yscaleall < y_scale_def(2)-y_scale_def(1)
+        %             yscaleall = y_scale_def(2)-y_scale_def(1);
+        %         end
         
         for Numofrows = 1:Numrows
             OffSetY(Numofrows) = yscaleall*(Numrows-Numofrows)*(Ypert/100+1);
@@ -898,9 +898,9 @@ else%% y axis Overlay
             qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
         end
         
-%         if yscaleall < y_scale_def(2)-y_scale_def(1)
-%             yscaleall = y_scale_def(2)-y_scale_def(1);
-%         end
+        %         if yscaleall < y_scale_def(2)-y_scale_def(1)
+        %             yscaleall = y_scale_def(2)-y_scale_def(1);
+        %         end
         
         if Numrows ==1
             OffSetY = 0;
@@ -1109,7 +1109,7 @@ for Numofrows = 1:Numrows
                 end
                 hplot(Numofoverlay) = plot(hbig,Xtimerangetrasf, bindatatrs,'LineWidth',qLineWidthspec(Numofoverlay),...
                     'Color', qLineColorspec(Numofoverlay,:), 'LineStyle',qLineStylespec{Numofoverlay},'Marker',qLineMarkerspec{Numofoverlay});
-               
+                
             end
             
             if numel(OffSetY)==1 && OffSetY==0
@@ -1127,7 +1127,7 @@ for Numofrows = 1:Numrows
                     ylimleftedge = -abs(ceil(y_scale_def(end)));
                     ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
                 end
-                set(hbig,'ylim',[ylimleftedge,ylimrightedge]);
+                set(hbig,'ylim',[ylimleftedge,1.05*ylimrightedge]);
             end
             
             
@@ -1141,7 +1141,6 @@ for Numofrows = 1:Numrows
                 props.YTick =  fliplr (-1*qYticks)+OffSetY(Numofrows);
             end
             props.YTickLabel = cell(numel(props.YTick),1);
-            
             
             for Numofytick = 1:numel(props.YTick)
                 props.YTickLabel(Numofytick) = {num2str(props.YTick(Numofytick))};

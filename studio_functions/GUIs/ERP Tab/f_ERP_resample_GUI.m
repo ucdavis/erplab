@@ -132,11 +132,6 @@ varargout{1} = box_erp_resample;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-%%-------------------------resample help------------------------------------
-%     function resample_help(~,~)
-%         %         web('https://github.com/lucklab/erplab/wiki/resampleing-ERPSETS','-browser');
-%     end
-
 
 %%-------------------checkbox for new sampling rate------------------------
     function nwsrate_checkbox(Source,~)
@@ -189,8 +184,9 @@ varargout{1} = box_erp_resample;
         
         Newsrate = str2num(gui_erp_resample.nwsrate_edit.String);
         if isempty(Newsrate) || numel(Newsrate)~=1 ||any(Newsrate<=0)
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: New sampling rate must be a positive value');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: New sampling rate must be a positive value';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
         end
     end
@@ -250,20 +246,23 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.resample_cancel.ForegroundColor = [1 1 1];
         NewStart = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         if isempty(NewStart) || numel(NewStart)~=1
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: the left edge for the new time window must be a single value');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: the left edge for the new time window must be a single value';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if NewStart>= observe_ERPDAT.ERP.times(end)
-            erpworkingmemory('f_ERP_proces_messg',['Resample ERPsets: the left edge for the new time window should be smaller than',32,num2str(observe_ERPDAT.ERP.times(end)),'ms']);
-            observe_ERPDAT.Process_messg =4;
+            msgboxText=['Resample ERPsets: the left edge for the new time window should be smaller than',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if NewStart< observe_ERPDAT.ERP.times(1)
-            erpworkingmemory('f_ERP_proces_messg',['Resample ERPsets: we will set 0 for the additional time range because the left edge for the new time window is smaller than',32,num2str(observe_ERPDAT.ERP.times(1)),'ms']);
-            observe_ERPDAT.Process_messg =4;
+            msgboxText=['Resample ERPsets: we will set 0 for the additional time range because the left edge for the new time window is smaller than',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 
@@ -287,20 +286,23 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.resample_cancel.ForegroundColor = [1 1 1];
         Newend = str2num(gui_erp_resample.nwtimewindow_editright.String);
         if isempty(Newend) || numel(Newend)~=1
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: the right edge for the new time window must be a single value');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: the right edge for the new time window must be a single value';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if Newend<= observe_ERPDAT.ERP.times(1)
-            erpworkingmemory('f_ERP_proces_messg',['Resample ERPsets: the right edge for the new time window should be larger than',32,num2str(observe_ERPDAT.ERP.times(1)),'ms']);
-            observe_ERPDAT.Process_messg =4;
+            msgboxText=['Resample ERPsets: the right edge for the new time window should be larger than',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if Newend< observe_ERPDAT.ERP.times(end)
-            erpworkingmemory('f_ERP_proces_messg',['Resample ERPsets: we will set 0 for the additional time range because the right edge for the new time window is larger than',32,num2str(observe_ERPDAT.ERP.times(end)),'ms']);
-            observe_ERPDAT.Process_messg =4;
+            msgboxText=['Resample ERPsets: we will set 0 for the additional time range because the right edge for the new time window is larger than',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 
@@ -368,8 +370,9 @@ varargout{1} = box_erp_resample;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         if gui_erp_resample.nwsrate_checkbox.Value==0 && gui_erp_resample.nwtimewindow_checkbox.Value==0
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: Please select "New sampling rate" or "New TW"');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: Please select "New sampling rate" or "New epoch"';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%Send message to Message panel
@@ -379,30 +382,35 @@ varargout{1} = box_erp_resample;
         %%--------------------check new sampling rate----------------------
         Freq2resamp = str2num(gui_erp_resample.nwsrate_edit.String);
         if isempty(Freq2resamp) || numel(Freq2resamp)~=1 ||any(Freq2resamp<=0)
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: New sampling rate must be a positive value');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: New sampling rate must be a positive value';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         
         
         %%----------------------------check new time window----------------
         NewStart = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         if isempty(NewStart) || numel(NewStart)~=1
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: the left edge for the new time window must be a single value');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: the left edge for the new time window must be a single value';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         if NewStart>= observe_ERPDAT.ERP.times(end)
-            erpworkingmemory('f_ERP_proces_messg',['Resample ERPsets: the left edge for the new time window should be smaller than',32,num2str(observe_ERPDAT.times(end)),'ms']);
-            observe_ERPDAT.Process_messg =4;
+            msgboxText=['Resample ERPsets: the left edge for the new time window should be smaller than',32,num2str(observe_ERPDAT.times(end)),'ms'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         
         Newend = str2num(gui_erp_resample.nwtimewindow_editright.String);
         if isempty(Newend) || numel(Newend)~=1
-            erpworkingmemory('f_ERP_proces_messg','Resample ERPsets: the right edge for the new time window must be a single value');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Resample ERPsets: the right edge for the new time window must be a single value';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         if Newend<= observe_ERPDAT.ERP.times(1)
-            erpworkingmemory('f_ERP_proces_messg',['Resample ERPsets: the right edge for the new time window should be larger than',32,num2str(observe_ERPDAT.times(1)),'ms']);
-            observe_ERPDAT.Process_messg =4;
+            msgboxText=['Resample ERPsets: the right edge for the new time window should be larger than',32,num2str(observe_ERPDAT.times(1)),'ms'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         
         estudioworkingmemory('ERPTab_resample',0);

@@ -677,14 +677,14 @@ varargout{1} = ERP_simulation_box;
         estudioworkingmemory('ERPTab_stimulation',1);
         ERPArray = str2num(Str.String);
         if  ~isempty(observe_ERPDAT.ALLERP)
-            if ~isempty(ERPArray) && min(ERPArray)>0
+            if ~isempty(ERPArray) && any(ERPArray>0)
                 if numel(ERPArray) ~=1
                     ERPArray = ERPArray(1);
                 end
                 if ERPArray> length(observe_ERPDAT.ALLERP)
                     msgboxText =  'Create Artificial ERP Waveform -Real ERP: Input should be smaller than the length of ALLERP';
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     Str.String = '';
                     return;
                 end
@@ -711,8 +711,8 @@ varargout{1} = ERP_simulation_box;
                 end
             else
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Index of ERPset should be a positive numeric';
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 Str.String = '';
                 return;
             end
@@ -727,8 +727,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.binedit.Enable = EnableFlag;
             gui_erp_simulation.binpopup.Enable = EnableFlag;
             msgboxText =  'Create Artificial ERP Waveform -Real ERP: ALLERPset is empty and cannot match simulation with it';
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '';
             return;
         end
@@ -801,8 +801,8 @@ varargout{1} = ERP_simulation_box;
                     end
                 else%%the user did not select one ERPset
                     msgboxText =  'Create Artificial ERP Waveform -Real ERP: User selected cancel';
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
                 
@@ -830,8 +830,8 @@ varargout{1} = ERP_simulation_box;
         if ~isempty(observe_ERPDAT.ALLERP)
             if isempty(channelArray)
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Please input one positive numeric for "Channel"';
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 Str.String = '1';
                 return;
             end
@@ -840,8 +840,8 @@ varargout{1} = ERP_simulation_box;
             end
             if channelArray<=0
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Please input one positive numeric for "Channel"';
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 Str.String = '1';
                 return;
             end
@@ -857,8 +857,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.binedit.Enable = EnableFlag;
             gui_erp_simulation.binpopup.Enable = EnableFlag;
             msgboxText =  'Create Artificial ERP Waveform -Real ERP: ALLERPset is empty and cannot match simulation with it';
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '1';
             return;
         end
@@ -920,8 +920,8 @@ varargout{1} = ERP_simulation_box;
                     gui_erp_simulation.channeledit.String = num2str(channelArray);
                 else
                     msgboxText =  'Create Artificial ERP Waveform-Real ERP: User selected cancel';
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -950,8 +950,8 @@ varargout{1} = ERP_simulation_box;
         if  ~isempty(observe_ERPDAT.ALLERP)
             if isempty(binArray)
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Please input one positive numeric for "Bin"';
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if numel(binArray)~=1
@@ -959,8 +959,8 @@ varargout{1} = ERP_simulation_box;
             end
             if binArray<=0
                 msgboxText =  'Create Artificial ERP Waveform -Real ERP: Please input one positive numeric for "Bin"';
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 Str.String = '1';
                 return;
             end
@@ -976,8 +976,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.binedit.Enable = EnableFlag;
             gui_erp_simulation.binpopup.Enable = EnableFlag;
             msgboxText =  'Create Artificial ERP Waveform -Real ERP: ALLERPset is empty and cannot match simulation with it';
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '1';
             return;
         end
@@ -1039,9 +1039,6 @@ varargout{1} = ERP_simulation_box;
                     end
                     gui_erp_simulation.binedit.String = num2str(binArray);
                 else
-                    msgboxText =  'Create Artificial ERP Waveform-Real ERP: User selected cancel';
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
                     return;
                 end
             end
@@ -1056,8 +1053,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.binedit.Enable = EnableFlag;
             gui_erp_simulation.binpopup.Enable = EnableFlag;
             msgboxText =  'Create Artificial ERP Waveform -Real ERP: ALLERPset is empty and cannot match simulation with it';
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '1';
             return;
         end
@@ -1082,8 +1079,8 @@ varargout{1} = ERP_simulation_box;
         epochStop = str2num( gui_erp_simulation.epoch_stop.String);
         if epochStart>=epochStop
             msgboxText =  ['Create Artificial ERP Waveform - The value for epoch start should be smaller than epoch stop'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '';
             return;
         end
@@ -1107,8 +1104,8 @@ varargout{1} = ERP_simulation_box;
         epochStop = str2num( gui_erp_simulation.epoch_stop.String);
         if epochStart>=epochStop
             msgboxText =  ['Create Artificial ERP Waveform - The value for epoch start should be smaller than epoch stop'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         plot_erp_simulation();
@@ -1152,8 +1149,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.srateperiodedit.String = num2str(1000/srate);
         else
             msgboxText =  ['Create Artificial ERP Waveform>sampling rate- the input should be a positive numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_simulation.srateperiodedit.String = '';
             return;
         end
@@ -1197,8 +1194,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.srateedit.String = num2str(1000/srateperiod);
         else
             msgboxText =  ['Create Artificial ERP Waveform>sampling period- the input should be a positive numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_simulation.srateedit.String = '';
             return;
         end
@@ -1248,8 +1245,8 @@ varargout{1} = ERP_simulation_box;
         PeakAmp = str2num(Str.String);
         if isempty(PeakAmp) || numel(PeakAmp)~=1
             msgboxText =  ['Create Artificial ERP Waveform> peak amplitude for Ex-Gaussian should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1271,8 +1268,8 @@ varargout{1} = ERP_simulation_box;
         Mean = str2num(Str.String);
         if isempty(Mean) || numel(Mean)~=1
             msgboxText =  ['Create Artificial ERP Waveform> Gaussian mean for Ex-Gaussian should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1294,8 +1291,8 @@ varargout{1} = ERP_simulation_box;
         SD = str2num(Str.String);
         if isempty(SD) || numel(SD)~=1
             msgboxText =  ['Create Artificial ERP Waveform> SD for Ex-Gaussian should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1318,8 +1315,8 @@ varargout{1} = ERP_simulation_box;
         Tau = str2num(Str.String);
         if isempty(Tau) || numel(Tau)~=1
             msgboxText =  ['Create Artificial ERP Waveform> Exponential tau for Ex-Gaussian should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1369,8 +1366,8 @@ varargout{1} = ERP_simulation_box;
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Impulse- peak amplitude should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1392,8 +1389,8 @@ varargout{1} = ERP_simulation_box;
         peakLat = str2num(Str.String);
         if isempty(peakLat)
             msgboxText =  ['Create Artificial ERP Waveform>Impulse- Latency should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1443,8 +1440,8 @@ varargout{1} = ERP_simulation_box;
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Square- peak amplitude should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1466,16 +1463,16 @@ varargout{1} = ERP_simulation_box;
         onsetlat = str2num(Str.String);
         if isempty(onsetlat)
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Onset latency should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
         offsetLat = str2num(gui_erp_simulation.square_offset.String);
         if onsetlat>offsetLat
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Onset latency should be smaller than',32,num2str(offsetLat)];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1497,16 +1494,16 @@ varargout{1} = ERP_simulation_box;
         offsetlat = str2num(Str.String);
         if isempty(offsetlat)
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Offset latency should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
         onsetlat = str2num(gui_erp_simulation.square_onset.String);
         if offsetlat<onsetlat
             msgboxText =  ['Create Artificial ERP Waveform>Boxcar- Offset latency should be larger than',32,num2str(onsetlat)];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1583,8 +1580,8 @@ varargout{1} = ERP_simulation_box;
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Sinusoidal noise- peak amplitude should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1606,8 +1603,8 @@ varargout{1} = ERP_simulation_box;
         Fresin = str2num(Str.String);
         if isempty(Fresin) || Fresin<=0
             msgboxText =  ['Create Artificial ERP Waveform>Sinusoidal noise- frequency should be a positive numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '';
             return;
         end
@@ -1650,8 +1647,8 @@ varargout{1} = ERP_simulation_box;
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>White noise- peak amplitude should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1694,8 +1691,8 @@ varargout{1} = ERP_simulation_box;
         peakAmp = str2num(Str.String);
         if isempty(peakAmp)
             msgboxText =  ['Create Artificial ERP Waveform>Pink noise- peak amplitude should be a numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Str.String = '0';
             return;
         end
@@ -1863,15 +1860,15 @@ varargout{1} = ERP_simulation_box;
             Srate = str2num(gui_erp_simulation.srateedit.String);
             if isempty(Srate) || numel(Srate)~=1
                 msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for sampling rate'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateedit.String = '';
                 return;
             end
             if Srate<=0
                 msgboxText =  ['Create Artificial ERP Waveform>Sampling rate must be a positive numeric'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateedit.String = '';
                 return;
             end
@@ -1879,8 +1876,8 @@ varargout{1} = ERP_simulation_box;
             Speriod =  str2num(gui_erp_simulation.srateperiodedit.String);
             if isempty(Speriod) || numel(Speriod)~=1
                 msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for sampling period'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateperiodedit.String = '';
                 return;
             end
@@ -1895,26 +1892,26 @@ varargout{1} = ERP_simulation_box;
         end
         if isempty(EpochStart) || numel(EpochStart)~=1
             msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for epoch start'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if isempty(EpochStop) || numel(EpochStop)~=1
             msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for epoch stop'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if EpochStop<=EpochStart
             msgboxText =  ['Create Artificial ERP Waveform> Start time of epoch must be smaller than stop time of epoch'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if 1000/Srate>= (EpochStop-EpochStart)
             msgboxText =  ['Create Artificial ERP Waveform> Please sampling period must be much smaller than ',32,num2str(EpochStop-EpochStart)];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%---------------------------Simulated signal------------------------------
@@ -1926,29 +1923,29 @@ varargout{1} = ERP_simulation_box;
             BasPeakAmp =   str2num(gui_erp_simulation.exgua_peakamp.String);
             if isempty(BasPeakAmp) || numel(BasPeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             MeanLatOnset = str2num(gui_erp_simulation.exgua_mean.String);
             if isempty(MeanLatOnset) || numel(MeanLatOnset)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Gaussian mean" of Ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             ExGauTau =  str2num(gui_erp_simulation.exgua_tau.String);
             if isempty(ExGauTau) || numel(ExGauTau)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Tau" of Ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             SDOffset = str2num(gui_erp_simulation.exgua_sd.String);
             if isempty(SDOffset) || numel(SDOffset)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "SD" of Ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         elseif  gui_erp_simulation.impulse_op.Value ==1
@@ -1956,15 +1953,15 @@ varargout{1} = ERP_simulation_box;
             BasPeakAmp =   str2num(gui_erp_simulation.impulse_peakamp.String);
             if isempty(BasPeakAmp) || numel(BasPeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of impulse function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             MeanLatOnset = str2num(gui_erp_simulation.impulse_latency.String);
             if isempty(MeanLatOnset) || numel(MeanLatOnset)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "latency" of impulse function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         elseif gui_erp_simulation.square_op.Value ==1
@@ -1972,28 +1969,28 @@ varargout{1} = ERP_simulation_box;
             BasPeakAmp =   str2num(gui_erp_simulation.square_peakamp.String);
             if isempty(BasPeakAmp) || numel(BasPeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             MeanLatOnset = str2num(gui_erp_simulation.square_onset.String);
             if isempty(MeanLatOnset) || numel(MeanLatOnset)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "onset" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             SDOffset = str2num(gui_erp_simulation.square_offset.String);
             if isempty(SDOffset) || numel(SDOffset)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "offset" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if SDOffset< MeanLatOnset
                 msgboxText =  ['Create Artificial ERP Waveform> Please "offset" should be larger than "onset" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -2002,15 +1999,15 @@ varargout{1} = ERP_simulation_box;
             SinoiseAmp =   str2num(gui_erp_simulation.sin_amp.String);
             if isempty(SinoiseAmp) || numel(SinoiseAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "amplitude" of sinusoidal noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             SinoiseFre =  str2num(gui_erp_simulation.sin_fre.String);
             if isempty(SinoiseFre) || numel(SinoiseFre)~=1 || SinoiseFre<=0
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one positive numeric for "frequency" of sinusoidal noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         else
@@ -2021,8 +2018,8 @@ varargout{1} = ERP_simulation_box;
             WhiteAmp =   str2num(gui_erp_simulation.white_amp.String);
             if isempty(WhiteAmp) || numel(WhiteAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform>  Please define one numeric for "amplitude" of white noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         else
@@ -2033,8 +2030,8 @@ varargout{1} = ERP_simulation_box;
             PinkAmp =   str2num(gui_erp_simulation.pink_amp.String);
             if isempty(PinkAmp) || numel(PinkAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "amplitude" of pink noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         else
@@ -2187,15 +2184,15 @@ varargout{1} = ERP_simulation_box;
             srate = str2num(gui_erp_simulation.srateedit.String);
             if isempty(srate) || numel(srate)~=1
                 msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for sampling rate'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateedit.String = '';
                 return;
             end
             if srate<=0
                 msgboxText =  ['Create Artificial ERP Waveform>Sampling rate must be a positive numeric'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateedit.String = '';
                 return;
             end
@@ -2203,15 +2200,15 @@ varargout{1} = ERP_simulation_box;
             Speriod =  str2num(gui_erp_simulation.srateperiodedit.String);
             if isempty(Speriod) || numel(Speriod)~=1
                 msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for sampling period'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateperiodedit.String = '';
                 return;
             end
             if Speriod<=0
                 msgboxText =  ['Create Artificial ERP Waveform>Sampling period must be positive numeric'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 gui_erp_simulation.srateperiodedit.String = '';
                 return;
             end
@@ -2219,27 +2216,27 @@ varargout{1} = ERP_simulation_box;
         end
         if isempty(EpochStart) || numel(EpochStart)~=1
             msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for epoch start'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if isempty(EpochStop) || numel(EpochStop)~=1
             msgboxText =  ['Create Artificial ERP Waveform>Please define one numeric for epoch stop'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if EpochStop<=EpochStart
             msgboxText =  ['Create Artificial ERP Waveform> Start time of epoch must be smaller than stop time of epoch'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if 1000/srate>= (EpochStop-EpochStart)
             msgboxText =  ['Create Artificial ERP Waveform> Please sampling period must be much smaller than ',32,num2str(EpochStop-EpochStart)];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -2309,8 +2306,8 @@ varargout{1} = ERP_simulation_box;
         [x2,y2]  = find(roundn(Times,-3)==roundn(EpochStop,-3));
         if isempty(y1) || isempty(y2)
             msgboxText = 'Create Artificial ERP Waveform> The exact time periods you have specified cannot be exactly created with the specified sampling rate. We will round to the nearest possible time values when the ERPset is created.';
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         Desiredsignal = zeros(1,numel(Times));
         Desirednosizesin = zeros(1,numel(Times));
@@ -2323,31 +2320,31 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.exgua_peakamp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             Meanamp = str2num(gui_erp_simulation.exgua_mean.String);
             if isempty(Meanamp) || numel(Meanamp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Gaussian mean" of Ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
             Tau =  str2num(gui_erp_simulation.exgua_tau.String);
             if isempty(Tau) || numel(Tau)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "Tau" of Ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
             SD = str2num(gui_erp_simulation.exgua_sd.String);
             if isempty(SD) || numel(SD)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "SD" of Ex-Gaussian function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             SD = SD/100;
@@ -2378,15 +2375,15 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.impulse_peakamp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of impulse function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             Latency = str2num(gui_erp_simulation.impulse_latency.String);
             if isempty(Latency) || numel(Latency)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "latency" of impulse function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if Latency<Times(1)
@@ -2402,28 +2399,28 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.square_peakamp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "peak amplitude" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             onsetLat = str2num(gui_erp_simulation.square_onset.String);
             if isempty(onsetLat) || numel(onsetLat)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "onset" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             offsetLat = str2num(gui_erp_simulation.square_offset.String);
             if isempty(offsetLat) || numel(offsetLat)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "offset" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if offsetLat< onsetLat
                 msgboxText =  ['Create Artificial ERP Waveform> Please "offset" should be larger than "onset" of Boxcar function'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             [xxx, latsamp, latdiffms] = closest(Times, [onsetLat,offsetLat]);
@@ -2456,16 +2453,16 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.sin_amp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "amplitude" of sinusoidal noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             FreHz =  str2num(gui_erp_simulation.sin_fre.String);
             
             if isempty(FreHz) || numel(FreHz)~=1 || FreHz<=0
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one positive numeric for "frequency" of sinusoidal noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             X =  Times/1000;
@@ -2476,8 +2473,8 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.white_amp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform>  Please define one numeric for "amplitude" of white noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             try
@@ -2493,8 +2490,8 @@ varargout{1} = ERP_simulation_box;
             PeakAmp =   str2num(gui_erp_simulation.pink_amp.String);
             if isempty(PeakAmp) || numel(PeakAmp)~=1
                 msgboxText =  ['Create Artificial ERP Waveform> Please define one numeric for "amplitude" of pink noise'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             try

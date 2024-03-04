@@ -82,11 +82,7 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         
-        %%%------------BIN TO PLOT---------------------
-        gui_erp_scalp_map.bin_latency_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', gui_erp_scalp_map.bin_latency_title,...
-            'String','Bin & Latency:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
+      
         gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...
             'String','Bin(s)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
@@ -211,7 +207,6 @@ varargout{1} = ERP_plot_scalp_gui;
             gui_erp_scalp_map.custom_option.Value=0;
         end
         
-        
         %%----------------------------------Map Extras------------------------------
         gui_erp_scalp_map.map_extras_title = uiextras.HBox('Parent',  gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_scalp_map.map_extras_title,...
@@ -279,13 +274,11 @@ varargout{1} = ERP_plot_scalp_gui;
         
         gui_erp_scalp_map.run = uicontrol('Style','pushbutton','Parent',gui_erp_scalp_map.run_title,...
             'String','Plot','callback',@apply_run,'FontSize',FonsizeDefault,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
-        set(gui_erp_scalp_map.ERPscalpops,'Sizes',[25 20 20,25,25,25 55 20 30 25 20 25 30 30]);
+        set(gui_erp_scalp_map.ERPscalpops,'Sizes',[25 20 25,25,25 55 20 30 25 20 25 30 30]);
         
         estudioworkingmemory('ERPTab_topos',0);
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
     end
-
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
@@ -342,8 +335,8 @@ varargout{1} = ERP_plot_scalp_gui;
         BinArray =  str2num(Source.String);
         if isempty(BinArray) || any(BinArray(:)>observe_ERPDAT.ERP.nbin) || any(BinArray(:)<=0)
             msgboxText =  ['Plot Scalp Maps>Bins-Indexes of bins should be between 1 and',32,num2str(observe_ERPDAT.ERP.nbin)];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_scalp_map.bin_plot_edit.String = '';
             return;
         end
@@ -383,18 +376,19 @@ varargout{1} = ERP_plot_scalp_gui;
         if ~isempty(listb)
             bin_label_select = browsechanbinGUI(listb, indxlistb, titlename);
             if ~isempty(bin_label_select)
-                gui_erp_scalp_map.bin_plot_edit.String=vect2colon(bin_label_select,'Sort', 'on');
+                binset = vect2colon(bin_label_select,'Sort', 'on');
+                binset = erase(binset,{'[',']'});
+                gui_erp_scalp_map.bin_plot_edit.String=binset;
             else
-                disp('User selected Cancel');
                 return
             end
         else
             msgboxText =  ['Plot Scalp Maps>Bins>Browse-No bin information was found',];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end%Program end: Judge the number of latency/latencies
-        observe_ERPDAT.Count_currentERP = 1;
+        %         observe_ERPDAT.Count_currentERP = 1;
     end
 
 %%----------------------Define time window (two latencies)-----------------
@@ -440,18 +434,18 @@ varargout{1} = ERP_plot_scalp_gui;
         end
         indxh   = find(latencyArray>ERP_times(end),1);
         if ~isempty(indxh)
-            msgboxText =  ['Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(ERP_times(end)) ' msec!'];
-            title_msg  = 'Estudio: Plot Scalp Maps>latency() error:';
-            errorfound(msgboxText, title_msg);
+            msgboxText =  ['Plot Scalp Maps> Latency of ' num2str(latencyArray(indxh)) ' is larger than ERP.xmax = ' num2str(ERP_times(end)) ' msec!'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_scalp_map.latency_plot_edit.String = '';
             return
         end
         
         indxl  = find(latencyArray<ERP_times(1),1);
         if ~isempty(indxl)
-            msgboxText =  ['Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(ERP_times(1)) ' msec!'];
-            title_msg  = 'Estudio: Plot Scalp Maps>latency() error:';
-            errorfound(msgboxText, title_msg);
+            msgboxText =  ['Plot Scalp Maps> Latency of ' num2str(latencyArray(indxl)) ' is smaller than ERP.xmin = ' num2str(ERP_times(1)) ' msec!'];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_scalp_map.latency_plot_edit.String = '';
             return
         end
@@ -459,20 +453,20 @@ varargout{1} = ERP_plot_scalp_gui;
         switch meamenu
             case {2, 4, 5} % mean, meanlapla, rms
                 if size(latencyArray,2)<2
-                    msgboxText =  ['You must specify 2 latencies, at least, for getting %s-values.\n\n'...
+                    msgboxText =  ['Plot Scalp Maps>latency> You must specify 2 latencies, at least, for getting %s-values.'...
                         'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
                         'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
-                    title = 'Estudio: Plot Scalp Maps>latency() error:';
-                    errorfound(sprintf(msgboxText, measurement), title);
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
+                    
                     gui_erp_scalp_map.latency_plot_edit.String = '';
                     return
                 end
             case {1,3} % insta, instalapla
                 if size(latencyArray,1)>1
-                    msgboxText =  'For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
-                    title = 'Estudio: Plot Scalp Maps>latency() error:';
-                    errorfound(sprintf(msgboxText, measurement), title);
-                    gui_erp_scalp_map.latency_plot_edit.String = '';
+                    msgboxText =  'Plot Scalp Maps>latency>For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
         end
@@ -627,16 +621,15 @@ varargout{1} = ERP_plot_scalp_gui;
             %% open splinefilegui
             splineinfo = splinefileGUI({splnfile},ERP);
             if isempty(splineinfo)
-                disp('User selected Cancel');
                 observe_ERPDAT.Count_currentERP = observe_ERPDAT.Count_currentERP+1;
-                observe_ERPDAT.Process_messg =3;%%
+                observe_ERPDAT.Process_messg =2;%%
                 return
             end
             splinefile = splineinfo.path;
             if isempty(splinefile)
                 msgboxText =  'Plot Scalp Maps: You must specify a name for the spline file';
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return
             end
             Save_file_label =0;
@@ -660,10 +653,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 
                 Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_scalspline'),ERP.filename,Selectederp_Index(Numofselectederp));
                 if isempty(Answer)
-                    beep;
-                    disp('User selectd cancal');
-                    %                     observe_ERPDAT.Count_currentERP = 1;
-                    observe_ERPDAT.Process_messg =4;%%
+                    observe_ERPDAT.Process_messg =2;%%
                     return;
                 end
                 
@@ -825,15 +815,12 @@ varargout{1} = ERP_plot_scalp_gui;
         barscale = str2num(Source.String);
         if isempty(barscale) || numel(barscale)~=2
             msgboxText =  ['Plot Scalp Maps > Color bar scale: it should be two values'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
     end
-
-
-
 
 %%---------------location selection----------------------------------------
     function map_extras_view_ops(Source,~)
@@ -982,8 +969,8 @@ varargout{1} = ERP_plot_scalp_gui;
         latencyArray = str2num(gui_erp_scalp_map.latency_plot_edit.String);
         if isempty(latencyArray)
             msgboxText =  ['Plot Scalp Maps - No latency was defined'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -1007,16 +994,16 @@ varargout{1} = ERP_plot_scalp_gui;
         latencyArray   = str2num(gui_erp_scalp_map.latency_plot_edit.String);
         if isempty(latencyArray)
             msgboxText =  ['Plot Scalp Maps - No latency was defined',];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         indxh   = find(latencyArray>ERP_times(end),1);
         if ~isempty(indxh)
             msgboxText =  ['Plot Scalp Maps - Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(ERP_times(end)) ' msec!'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_scalp_map.latency_plot_edit.String = '';
             return
         end
@@ -1024,26 +1011,26 @@ varargout{1} = ERP_plot_scalp_gui;
         indxl  = find(latencyArray<ERP_times(1),1);
         if ~isempty(indxl)
             msgboxText =  ['Plot Scalp Maps - Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(ERP_times(1)) ' msec!'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return
         end
         
         switch meamenu
             case {2, 4, 5} % mean, meanlapla, rms
                 if size(latencyArray,2)<2
-                    msgboxText =  ['Plot Scalp Maps - You must specify 2 latencies, at least, for getting %s-values.\n\n'...
+                    msgboxText =  ['Plot Scalp Maps - You must specify 2 latencies, at least, for getting values.'...
                         'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
                         'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
             case {1,3} % insta, instalapla
                 if size(latencyArray,1)>1
-                    msgboxText =  'Plot Scalp Maps - For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    msgboxText =  'Plot Scalp Maps - For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
         end
@@ -1090,8 +1077,8 @@ varargout{1} = ERP_plot_scalp_gui;
             Selectederp_Index = observe_ERPDAT.CURRENTERP;
             if isempty(Selectederp_Index)
                 msgboxText =  ['Plot Scalp Maps - No ERPset was selected'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -1122,8 +1109,8 @@ varargout{1} = ERP_plot_scalp_gui;
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
         if chk(1)
             msgboxText =  ['Plot Scalp Maps -',msgboxText];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -1137,8 +1124,8 @@ varargout{1} = ERP_plot_scalp_gui;
             cusca  = str2num(gui_erp_scalp_map.bar_scale_custom_option_edit.String);
             if isempty(cusca)
                 msgboxText =  ['Plot Scalp Maps - No value was defined for "Color Bar Scale"'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             else
                 ncusca = length(cusca);
@@ -1147,14 +1134,14 @@ varargout{1} = ERP_plot_scalp_gui;
                         maplimit = cusca;
                     else%%
                         msgboxText =  ['Plot Scalp Maps - the first value should be smaller than the second one for "Color Bar Scale"'];
-                        erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                        observe_ERPDAT.Process_messg =4;
+                        titlNamerro = 'Warning for ERP Tab';
+                        estudio_warning(msgboxText,titlNamerro);
                         return;
                     end
                 else%%one value
                     msgboxText =  ['Plot Scalp Maps - "Color Bar Scale" needs 2 values.'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -1297,10 +1284,10 @@ varargout{1} = ERP_plot_scalp_gui;
             ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
             if strcmpi(mtype, '3d')
                 if isempty(ERP.splinefile) && isempty(splineinfo.path)
-                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.\n'...
+                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.'...
                         'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
                     %if splineinfo.new==1
@@ -1391,8 +1378,8 @@ varargout{1} = ERP_plot_scalp_gui;
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
         if chk(1)
             msgboxText =  ['Plot Scalp Maps -',msgboxText];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -1416,16 +1403,16 @@ varargout{1} = ERP_plot_scalp_gui;
         latencyArray   = str2num(gui_erp_scalp_map.latency_plot_edit.String);
         if isempty(latencyArray)
             msgboxText =  ['Plot Scalp Maps - No latency was defined',];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         indxh   = find(latencyArray>ERP_times(end),1);
         if ~isempty(indxh)
             msgboxText =  ['Plot Scalp Maps - Latency of ' num2str(latencyArray(indxh)) ' is greater than ERP.xmax = ' num2str(ERP_times(end)) ' msec!'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_erp_scalp_map.latency_plot_edit.String = '';
             return
         end
@@ -1433,26 +1420,26 @@ varargout{1} = ERP_plot_scalp_gui;
         indxl  = find(latencyArray<ERP_times(1),1);
         if ~isempty(indxl)
             msgboxText =  ['Plot Scalp Maps - Latency of ' num2str(latencyArray(indxl)) ' is lesser than ERP.xmin = ' num2str(ERP_times(1)) ' msec!'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return
         end
         
         switch meamenu
             case {2, 4, 5} % mean, meanlapla, rms
                 if size(latencyArray,2)<2
-                    msgboxText =  ['Plot Scalp Maps - You must specify 2 latencies, at least, for getting %s-values.\n\n'...
+                    msgboxText =  ['Plot Scalp Maps - You must specify 2 latencies, at least, for getting values.'...
                         'For specifying two or more mean value maps, please use semicolon (;) to separate each latency range.'...
                         'For instance, to plot mean value maps for 0 to 100 ms AND 400 to 500 ms just write 0 100;400 500'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
             case {1,3} % insta, instalapla
                 if size(latencyArray,1)>1
-                    msgboxText =  'Plot Scalp Maps - For %s you must specify as many latencies as maps you''d like to plot.\nYou cannot use semicolon-separated values.\n';
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    msgboxText =  'Plot Scalp Maps - For you must specify as many latencies as maps you would like to plot.You cannot use semicolon-separated values.';
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
         end
@@ -1466,8 +1453,8 @@ varargout{1} = ERP_plot_scalp_gui;
             cusca  = str2num(gui_erp_scalp_map.bar_scale_custom_option_edit.String);
             if isempty(cusca)
                 msgboxText =  ['Plot Scalp Maps - No value was defined for "Color Bar Scale"'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             else
                 ncusca = length(cusca);
@@ -1476,14 +1463,14 @@ varargout{1} = ERP_plot_scalp_gui;
                         maplimit = cusca;
                     else%%
                         msgboxText =  ['Plot Scalp Maps - the first value should be smaller than the second one for "Color Bar Scale"'];
-                        erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                        observe_ERPDAT.Process_messg =4;
+                        titlNamerro = 'Warning for ERP Tab';
+                        estudio_warning(msgboxText,titlNamerro);
                         return;
                     end
                 else%%one value
                     msgboxText =  ['Plot Scalp Maps - "Color Bar Scale" needs 2 values'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -1627,10 +1614,10 @@ varargout{1} = ERP_plot_scalp_gui;
             ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
             if strcmpi(mtype, '3d')
                 if isempty(ERP.splinefile) && isempty(splineinfo.path)
-                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.\n'...
+                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.'...
                         'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
                     %if splineinfo.new==1
@@ -1695,7 +1682,7 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.bin_plot_edit.String = num2str(binArray);
         
         try Latency = ERPTab_plotscalp{2}; catch Latency = [];ERPTab_plotscalp{2} = [];end
-        if isempty(Latency)|| any(Latency<observe_ERPDAT.ERP.times(1)) || any(Latency>observe_ERPDAT.ERP.times(end))
+        if isempty(Latency)|| any(Latency(:)<observe_ERPDAT.ERP.times(1)) || any(Latency(:)>observe_ERPDAT.ERP.times(end))
             Latency = [];
             ERPTab_plotscalp{2} = Latency;
         end
@@ -1793,8 +1780,6 @@ varargout{1} = ERP_plot_scalp_gui;
             case {2,4,5}
                 gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
         end
-        
-        
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
     end
 
@@ -1843,7 +1828,7 @@ varargout{1} = ERP_plot_scalp_gui;
             return;
         end
         Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)
+        if isempty(Selectederp_Index) || any(Selectederp_Index>length(observe_ERPDAT.ALLERP))
             Selectederp_Index = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTSET = Selectederp_Index;
@@ -1857,11 +1842,13 @@ varargout{1} = ERP_plot_scalp_gui;
             estudioworkingmemory('ERP_BinArray',BinArray);
             observe_ERPDAT.Count_currentERP =2;
         end
-        gui_erp_scalp_map.bin_plot_edit.String =vect2colon(BinArray);
+        binset = vect2colon(BinArray,'Sort', 'on');
+        binset = erase(binset,{'[',']'});
+        gui_erp_scalp_map.bin_plot_edit.String =binset;
         
         %%check latency
         latency= str2num(gui_erp_scalp_map.latency_plot_edit.String);
-        if numel(latency)~=2 || any(latency>observe_ERPDAT.ERP.times(end)) ||  any(latency<observe_ERPDAT.ERP.times(1))
+        if numel(latency)~=2 || any(latency(:)>observe_ERPDAT.ERP.times(end)) ||  any(latency(:)<observe_ERPDAT.ERP.times(1))
             gui_erp_scalp_map.latency_plot_edit.String = '';
         end
         
@@ -1895,7 +1882,6 @@ varargout{1} = ERP_plot_scalp_gui;
             gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
             gui_erp_scalp_map.map_type_2d_type_outside.Enable = 'on';
         end
-        
         observe_ERPDAT.Count_currentERP =5;
     end
 
@@ -1958,7 +1944,9 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
         gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
         try binArray = [1:observe_ERPDAT.ERP.nbin]; catch binArray = [];end
-        gui_erp_scalp_map.bin_plot_edit.String = num2str(binArray);
+        binset = vect2colon(binArray,'Sort', 'on');
+        binset = erase(binset,{'[',']'});
+        gui_erp_scalp_map.bin_plot_edit.String =binset;
         gui_erp_scalp_map.latency_plot_edit.String = '';
         gui_erp_scalp_map.max_min.Value = 1;
         gui_erp_scalp_map.custom_option.Value = 0;

@@ -259,7 +259,9 @@ else
         handles.pushbutton_binlarge.Enable = 'on';
     end
 end
-handles.edit_bin.String = num2str(BinArraynew);
+BinArray = vect2colon(BinArraynew,'Sort', 'on');
+BinArray = erase(BinArray,{'[',']'});
+handles.edit_bin.String = BinArray;
 handles.BinArray = BinArraynew;
 guidata(hObject, handles);
 handles= plot_wave_viewer(hObject,handles);
@@ -303,7 +305,9 @@ else
     end
 end
 handles.BinArray = BinArraynew;
-handles.edit_bin.String = num2str(BinArraynew);
+BinArraynew = vect2colon(BinArraynew,'Sort', 'on');
+BinArraynew = erase(BinArraynew,{'[',']'});
+handles.edit_bin.String = BinArraynew;
 guidata(hObject, handles);
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -322,7 +326,9 @@ end
 
 BinArray = str2num(handles.edit_bin.String);
 if isempty(BinArray) || any(BinArray<=0) || any(BinArray>ERP.nbin)
-    handles.edit_bin.String = vect2colon(handles.BinArray,'Sort', 'on');
+    BinArray1 = vect2colon(handles.BinArray,'Sort', 'on');
+    BinArray1 = erase(BinArray1,{'[',']'});
+    handles.edit_bin.String =BinArray1;
     handles.text_warningmessage.String  = ['Input(s) for bin must be between 1 and ',32,num2str(ERP.nbin)];
     return;
 end
@@ -371,7 +377,9 @@ if isempty(ALLERP) || isempty(ERP)
     return;
 end
 if binbox==1
-    handles.edit_bin.String = vect2colon(1:ERP.nbin,'Sort', 'on');
+    BinArray = vect2colon(1:ERP.nbin,'Sort', 'on');
+    BinArray = erase(BinArray,{'[',']'});
+    handles.edit_bin.String = BinArray;
     handles.BinArray = 1:ERP.nbin;
     handles.pushbutton_binsmall.Enable = 'off';
     handles.pushbutton_binlarge.Enable = 'off';
@@ -419,7 +427,9 @@ else
     end
 end
 handles.ChanArray = ChanArrayNew;
-handles.edit_chans.String =  vect2colon(ChanArrayNew,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArrayNew,'Sort', 'on');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String =  ChanArray11;
 guidata(hObject, handles);
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -461,7 +471,9 @@ else
     end
 end
 handles.ChanArray = ChanArrayNew;
-handles.edit_chans.String =  vect2colon(ChanArrayNew,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArrayNew,'Sort', 'on');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String =  ChanArray11;
 guidata(hObject, handles);
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -481,11 +493,16 @@ end
 ChanArray = str2num(handles.edit_chans.String);
 if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>ERP.nchan)
     handles.text_warningmessage.String  = ['Inputs for channels must be between 1 and',32,num2str(ERP.nchan)];
-    handles.edit_chans.String = vect2colon(handles.ChanArray,'Sort', 'on');
+    
+    ChanArray11 = vect2colon(handles.ChanArray,'Sort', 'on');
+    ChanArray11 = erase(ChanArray11,{'[',']'});
+    handles.edit_chans.String = ChanArray11;
     return;
 end
 handles.ChanArray = ChanArray;
-handles.edit_chans.String = vect2colon(handles.ChanArray,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String = ChanArray11;
 if numel(ChanArray)~=1
     handles.pushbutton8_chansmall.Enable = 'off';
     handles.pushbutton_chanlarge.Enable = 'off';
@@ -531,7 +548,9 @@ if isempty(ALLERP) || isempty(ERP)
 end
 chanbox = handles.checkbox_chan.Value;
 if chanbox==1
-    handles.edit_chans.String = vect2colon(1:ERP.nchan,'Sort', 'on');
+    ChanArray11 = vect2colon(1:ERP.nchan,'Sort', 'on');
+    ChanArray11 = erase(ChanArray11,{'[',']'});
+    handles.edit_chans.String = ChanArray11;
     handles.ChanArray = 1:ERP.nchan;
     handles.pushbutton8_chansmall.Enable = 'off';
     handles.pushbutton_chanlarge.Enable = 'off';
@@ -734,7 +753,9 @@ else
         handles.pushbutton_chanlarge.Enable = 'on';
     end
 end
-handles.edit_chans.String =  vect2colon(ChanArray,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String =  ChanArray11;
 
 %%bin
 nbin = ERP.nbin;
@@ -758,7 +779,9 @@ else
         handles.pushbutton_binlarge.Enable = 'on';
     end
 end
-handles.edit_bin.String = vect2colon(BinArray,'Sort', 'on');
+BinArray1 = vect2colon(BinArray,'Sort', 'on');
+BinArray1 = erase(BinArray1,{'[',']'});
+handles.edit_bin.String = BinArray1;
 
 %%-----------------------create the panel----------------------------------
 FonsizeDefault = f_get_default_fontsize();
@@ -1082,7 +1105,9 @@ else
         handles.pushbutton_chanlarge.Enable = 'on';
     end
 end
-handles.edit_chans.String =  vect2colon(ChanArray,'Sort', 'on');
+ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String =  ChanArray11;
 
 %%bin
 nbin = ERP.nbin;
@@ -1106,7 +1131,9 @@ else
         handles.pushbutton_binlarge.Enable = 'on';
     end
 end
-handles.edit_bin.String = vect2colon(BinArray,'Sort', 'on');
+BinArray11 = vect2colon(BinArray,'Sort', 'on');
+BinArray11 = erase(BinArray11,{'[',']'});
+handles.edit_bin.String = BinArray11;
 
 %%-----------------------create the panel----------------------------------
 FonsizeDefault = f_get_default_fontsize();
@@ -1457,9 +1484,7 @@ for Numofrows = 1:rowNums
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
             end
-            
-            
-            
+           
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust y axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1658,7 +1683,7 @@ if ~isempty(hplot)
     end
     p  = get(legendview,'position');
     h_legend = legend(legendview,hplot,qLegendName);
-    set(h_legend,'NumColumns',NumColumns,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
+    set(h_legend,'NumColumns',1,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
 end
 % guidata(hObject, handles);
 

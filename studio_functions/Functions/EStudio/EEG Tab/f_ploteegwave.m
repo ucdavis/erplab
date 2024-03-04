@@ -349,8 +349,58 @@ if EEGdispFlag==1 && ~isempty(dataeeg)
     end
 end
 
-data = [dataeeg;dataica];
-meandata = [meandata,meandataica];
+PlotNum = chaNum+ICNum;
+if chaNum==0 && ICNum==0
+    Ampscold = 0*[1:PlotNum]';
+    if StackFlag==1
+        Ampsc = 0*[1:PlotNum]';
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = 0;
+    ylims = [0 (PlotNum+1)*AmpScale];
+    data = [dataeeg;(AmpScale/AmpIC)*dataica];
+    meandata = [meandata,meandataica];
+elseif ICNum==0 && chaNum~=0
+    Ampscold = AmpScale*[1:PlotNum]';
+    if  StackFlag==1
+        Ampsc = ((Ampscold(end)+AmpScale)/2)*ones(1,PlotNum)';
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = AmpScale;
+    ylims = [0 (PlotNum+1)*AmpScale];
+    data = [dataeeg;dataica];
+    meandata = [meandata,meandataica];
+    
+elseif ICNum~=0 && chaNum==0
+    Ampscold = AmpIC*[1:PlotNum]';
+    if  StackFlag==1
+        Ampsc = ((Ampscold(end)+AmpIC)/2)*ones(1,PlotNum)';
+    else
+        Ampsc = Ampscold;
+    end
+    ylims = [0 (PlotNum+1)*AmpIC];
+    AmpScaleold = AmpIC;
+    
+    data = [dataeeg;dataica];
+    meandata = [meandata,meandataica];
+    
+elseif ICNum~=0 && chaNum~=0
+    Ampscold1 = AmpIC*[1:ICNum]';
+    Ampscold2 = Ampscold1(end)+AmpScale*[1:chaNum]';
+    Ampscold = [Ampscold1;Ampscold2];
+    if  StackFlag==1
+        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+AmpScale+Ampscold2(1)-AmpIC)/2)*ones(chaNum,1)];
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = AmpScale;
+    ylims = [0 Ampscold(end)+AmpScaleold];
+    data = [dataeeg;(AmpScale/AmpIC)*dataica];
+    meandata = [meandata,meandataica];
+end
+
 
 Colorgbwave = [];
 %%set the wave color for each channel
@@ -421,45 +471,7 @@ end
 % -------------------------------------------------------------------------
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
-if chaNum==0 && ICNum==0
-    Ampscold = 0*[1:PlotNum]';
-    if StackFlag==1
-        Ampsc = 0*[1:PlotNum]';
-    else
-        Ampsc = Ampscold;
-    end
-    AmpScaleold = 0;
-    ylims = [0 (PlotNum+1)*AmpScale];
-elseif ICNum==0 && chaNum~=0
-    Ampscold = AmpScale*[1:PlotNum]';
-    if  StackFlag==1
-        Ampsc = (Ampscold(end)/2)*ones(1,PlotNum)';
-    else
-        Ampsc = Ampscold;
-    end
-    AmpScaleold = AmpScale;
-    ylims = [0 (PlotNum+1)*AmpScale];
-elseif ICNum~=0 && chaNum==0
-    Ampscold = AmpIC*[1:PlotNum]';
-    if  StackFlag==1
-        Ampsc = (Ampscold(end)/2)*ones(1,PlotNum)';
-    else
-        Ampsc = Ampscold;
-    end
-    ylims = [0 (PlotNum+1)*AmpIC];
-    AmpScaleold = AmpIC;
-elseif ICNum~=0 && chaNum~=0
-    Ampscold1 = AmpIC*[1:ICNum]';
-    Ampscold2 = Ampscold1(end)+AmpScale*[1:chaNum]';
-    Ampscold = [Ampscold1;Ampscold2];
-    if  StackFlag==1
-        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+Ampscold2(1)-AmpIC)/2)*ones(chaNum,1)];
-    else
-        Ampsc = Ampscold;
-    end
-    AmpScaleold = AmpScale;
-    ylims = [0 Ampscold(end)+AmpScaleold];
-end
+
 
 
 if EventOnset==1 && ~isempty(data)

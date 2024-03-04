@@ -132,9 +132,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         
         BDFileName = EStduio_eegtab_EEG_event2bin.BDF_edit.String;
         if ~ischar(BDFileName) || isempty(BDFileName)
-            MessageViewer =  ['Assign Events to Bins (BINLISTER) - bdfile should be a string.'];
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message =4;
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - bdfile should be a string.'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
         end
         estudioworkingmemory('EEGTab_event2bin',1);
@@ -157,7 +157,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStudio_box_EEG_event2bin.TitleColor= [0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [1 1 1];
-        
         try
             pre_patha = EStduio_eegtab_EEG_event2bin.BDF_edit.String;
             [pre_pathb, nameq, extq] = fileparts(pre_patha);
@@ -172,7 +171,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.BDF_edit.String = fullfile(bdfpathname, bdfilename);
         estudioworkingmemory('EEGTab_event2bin',1);
     end
-
 
 %%---------------------------Cancel----------------------------------------
     function BDF_eeg_cancel(~,~)
@@ -200,7 +198,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         else
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'on';
         end
-        
         estudioworkingmemory('EEGTab_event2bin',0);
         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
@@ -226,10 +223,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
-            EEGArray = observe_EEGDAT.CURRENTSET;
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
-        
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
@@ -250,8 +246,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
             %%check if the specified file exists
             if ~isfile(bdfileName)
                 bdfileName ='';
-                erpworkingmemory('f_EEG_proces_messg','Assign Events to Bins (BINLISTER) > Advanced:Such bdfile doesnot exist');
-                observe_EEGDAT.eeg_panel_message =4;
+                msgboxText = ['Assign Events to Bins (BINLISTER) > Advanced:Such bdfile doesnot exist'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
             def{1} = bdfileName;
             
@@ -282,20 +279,20 @@ varargout{1} = EStudio_box_EEG_event2bin;
                         if isempty(EEG.EVENTLIST(indexEL).eventinfo)
                             msgboxText = ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST.eventinfo structure is empty!\n'...
                                 'Use Create EVENTLIST before BINLISTER'];
-                            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                            observe_EEGDAT.eeg_panel_message =4;
+                            titlNamerro = 'Warning for EEG Tab';
+                            estudio_warning(msgboxText,titlNamerro);
                             return
                         end
                     else
                         msgboxText =  ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST.eventinfo structure was not found, please Create EVENTLIST before BINLISTER'];
-                        erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                        observe_EEGDAT.eeg_panel_message =4;
+                        titlNamerro = 'Warning for EEG Tab';
+                        estudio_warning(msgboxText,titlNamerro);
                         return
                     end
                 else
                     msgboxText =  ['Assign Events to Bins (BINLISTER) > Advanced: EVENTLIST structure was not found, Please Create EVENTLIST before BINLISTER'];
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4;
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
                 logfilename = 'no';
@@ -319,9 +316,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
             end
             switch option2do
                 case 0
-                    msgboxText = 'Assign Events to Bins (BINLISTER) > Advanced: Where should I send the update EVENTLIST???\n Pick an option.';
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4;
+                    msgboxText = 'Assign Events to Bins (BINLISTER) > Advanced: Where should I send the update EVENTLIST??? Pick an option.';
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 case 1
                     stroption2do = 'Text';
@@ -381,11 +378,8 @@ varargout{1} = EStudio_box_EEG_event2bin;
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
         observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
-        
-        
     end
 
 %%---------------------------Run-----------------------------------------
@@ -407,18 +401,18 @@ varargout{1} = EStudio_box_EEG_event2bin;
         bdfileName =  EStduio_eegtab_EEG_event2bin.BDF_edit.String;
         %%check is the file name is a string
         if isempty(bdfileName) || ~ischar(bdfileName)
-            MessageViewer =  ['Assign Events to Bins (BINLISTER) - bdfile should be a string'];
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message =4;
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - bdfile should be a string'];
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%check if the specified file exists
         if ~isfile(bdfileName)
-            MessageViewer =  ['Assign Events to Bins (BINLISTER) - Cannot find the specified bdfile'];
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message =4;
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - Cannot find the specified bdfile'];
             EStduio_eegtab_EEG_event2bin.BDF_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -428,9 +422,9 @@ varargout{1} = EStudio_box_EEG_event2bin;
         end
         eventlistFlag = check_evetlist(observe_EEGDAT.ALLEEG,EEGArray);
         if eventlistFlag==1
-            MessageViewer =  ['Assign Events to Bins (BINLISTER) - No Eventlist or it is empty for some eegsets'];
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message =4;
+            msgboxText =  ['Assign Events to Bins (BINLISTER) - No Eventlist or it is empty for some eegsets'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -450,7 +444,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             %% Run pop_ command again with the inputs from the GUI
             [EEG, LASTCOM]   = pop_binlister( EEG , 'BDF',bdfileName, 'IndexEL',  1, 'SendEL2', 'EEG', 'UpdateEEG', 'on', 'Voutput', 'EEG', 'History', 'gui' );
             if isempty(LASTCOM)
-                disp('Please check your data or you selected cancel')
+                disp('Process failed. Please check your data or you selected cancel')
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end

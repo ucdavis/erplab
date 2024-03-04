@@ -683,7 +683,6 @@ varargout{1} = box_erpset_gui;
                 'Load ERP', ...
                 'MultiSelect', 'on');
             if isequal(filename,0)
-                disp('User selected Cancel');
                 return;
             end
             
@@ -813,7 +812,7 @@ varargout{1} = box_erpset_gui;
             pathName =  cd;
         end
         Selected_erpset= estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
+        if isempty(Selected_erpset) || any(Selected_erpset>length(observe_ERPDAT.ALLERP))
             Selected_erpset = length(observe_ERPDAT.ALLERP);
             estudioworkingmemory('selectederpstudio',Selected_erpset);
         end
@@ -827,11 +826,6 @@ varargout{1} = box_erpset_gui;
         
         try
             for Numoferpset = 1:length(Selected_erpset)
-                if Selected_erpset(Numoferpset) > length(observe_ERPDAT.ALLERP)
-                    beep;
-                    disp(['Index of selected ERP is lager than the length of ALLERP!!!']);
-                    return;
-                end
                 ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
                 FileName = ERP.filename;
                 if isempty(FileName)

@@ -129,10 +129,6 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-%%--------------------------help-------------------------------------------
-%     function freqd_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
 
 %%----------------------check changed cell(s)------------------------------
     function checkcellchanged(Source,~)
@@ -185,15 +181,17 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
-            erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG) >  Index(es) of chans should be positive number(s)');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Spectral Data Quality (Continuous EEG) >  Index(es) of chans should be positive number(s)'];
             Source.String= vect2colon([1:ChaNum]);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(ChanArray(:)> ChaNum)
-            erpworkingmemory('f_EEG_proces_messg',['Spectral Data Quality (Continuous EEG) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)]);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Spectral Data Quality (Continuous EEG) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)];
             Source.String= vect2colon([1:ChaNum]);
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
     end
@@ -295,9 +293,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         curr_rows = size(EEG_dq_fre_conus.bandtable.Data,1);
         row_del = EEG_dq_fre_conus.sel_row;
         if curr_rows <= 1
-            beep
-            erpworkingmemory('f_EEG_proces_messg','Spectral Data Quality (Continuous EEG) > Remove selected rows: Already at 1 rows');
-            observe_EEGDAT.eeg_panel_message =4;
+            msgboxText = ['Spectral Data Quality (Continuous EEG) > Remove selected rows: Already at 1 rows'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
         else
             new_rows = curr_rows - 1;
             new_Tout = EEG_dq_fre_conus.bandtable.Data;
@@ -414,8 +412,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         chanArray =  str2num(EEG_dq_fre_conus.chans_edit.String);
         bnchan = observe_EEGDAT.EEG.nbchan;
         if isempty(chanArray) || any(chanArray(:)<=0) || any(chanArray(:)>bnchan)
-            erpworkingmemory('f_EEG_proces_messg',['Spectral Data Quality (Continuous EEG) > Run: Index(es) of the chans must be between 1 and ',32,num2str(bnchan)]);
-            observe_EEGDAT.eeg_panel_message =4;
+            msgboxText = ['Spectral Data Quality (Continuous EEG) > Run: Index(es) of the chans must be between 1 and ',32,num2str(bnchan)];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         

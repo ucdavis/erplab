@@ -142,9 +142,9 @@ set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'E
 set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',...
-        {'Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
+        {'Plotting Options','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
 else
-    set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Window Size'});
+    set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Plotting Options','Window Size'});
 end
 
 set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable','on');
@@ -174,8 +174,9 @@ if isempty(observe_EEGDAT.EEG)
 else
 end
 EStudio_gui_erp_totl.eegplotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
-EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 30; % set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(3) = 5;
 EStudio_gui_erp_totl.eegplotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.eegplotgrid.Heights(5) = 30; % set the second element (x axis) to 30px high
 end % redrawDemo
 
 %%-------------------------------------------------------------------------
@@ -185,15 +186,16 @@ end % redrawDemo
 function popmemu_eeg(Source,~)
 
 Value = Source.Value;
-if Value==1
+if Value==2
     EStudiowinsize();
-elseif Value==2
-    Show_command();
 elseif Value==3
+    Show_command();
+elseif Value==4
     figure_saveas();
-elseif  Value==4
+elseif  Value==5
     figure_out();
 end
+Source.Value=1;
 end
 
 
@@ -1392,8 +1394,58 @@ if EEGdispFlag==1 && ~isempty(dataeeg)
     end
 end
 
-data = [dataeeg;dataica];
-meandata = [meandata,meandataica];
+
+PlotNum = chaNum+ICNum;
+if chaNum==0 && ICNum==0
+    Ampscold = 0*[1:PlotNum]';
+    if StackFlag==1
+        Ampsc = 0*[1:PlotNum]';
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = 0;
+    ylims = [0 (PlotNum+1)*AmpScale];
+    data = [dataeeg;(AmpScale/AmpIC)*dataica];
+    meandata = [meandata,meandataica];
+elseif ICNum==0 && chaNum~=0
+    Ampscold = AmpScale*[1:PlotNum]';
+    if  StackFlag==1
+        Ampsc = ((Ampscold(end)+AmpScale)/2)*ones(1,PlotNum)';
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = AmpScale;
+    ylims = [0 (PlotNum+1)*AmpScale];
+    data = [dataeeg;dataica];
+    meandata = [meandata,meandataica];
+    
+elseif ICNum~=0 && chaNum==0
+    Ampscold = AmpIC*[1:PlotNum]';
+    if  StackFlag==1
+        Ampsc = ((Ampscold(end)+AmpIC)/2)*ones(1,PlotNum)';
+    else
+        Ampsc = Ampscold;
+    end
+    ylims = [0 (PlotNum+1)*AmpIC];
+    AmpScaleold = AmpIC;
+    
+    data = [dataeeg;dataica];
+    meandata = [meandata,meandataica];
+    
+elseif ICNum~=0 && chaNum~=0
+    Ampscold1 = AmpIC*[1:ICNum]';
+    Ampscold2 = Ampscold1(end)+AmpScale*[1:chaNum]';
+    Ampscold = [Ampscold1;Ampscold2];
+    if  StackFlag==1
+        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+AmpScale+Ampscold2(1)-AmpIC)/2)*ones(chaNum,1)];
+    else
+        Ampsc = Ampscold;
+    end
+    AmpScaleold = AmpScale;
+    ylims = [0 Ampscold(end)+AmpScaleold];
+    data = [dataeeg;(AmpScale/AmpIC)*dataica];
+    meandata = [meandata,meandataica];
+end
 
 
 Colorgbwave = [];
@@ -1466,45 +1518,7 @@ end
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
 % ylims = [0 (PlotNum+1)*AmpScale];
-if chaNum==0 && ICNum==0
-    Ampscold = 0*[1:PlotNum]';
-    if StackFlag==1
-        Ampsc = 0*[1:PlotNum]';
-    else
-        Ampsc = Ampscold;
-    end
-    AmpScaleold = 0;
-    ylims = [0 (PlotNum+1)*AmpScale];
-elseif ICNum==0 && chaNum~=0
-    Ampscold = AmpScale*[1:PlotNum]';
-    if  StackFlag==1
-        Ampsc = (Ampscold(end)/2)*ones(1,PlotNum)';
-    else
-        Ampsc = Ampscold;
-    end
-    AmpScaleold = AmpScale;
-    ylims = [0 (PlotNum+1)*AmpScale];
-elseif ICNum~=0 && chaNum==0
-    Ampscold = AmpIC*[1:PlotNum]';
-    if  StackFlag==1
-        Ampsc = (Ampscold(end)/2)*ones(1,PlotNum)';
-    else
-        Ampsc = Ampscold;
-    end
-    ylims = [0 (PlotNum+1)*AmpIC];
-    AmpScaleold = AmpIC;
-elseif ICNum~=0 && chaNum~=0
-    Ampscold1 = AmpIC*[1:ICNum]';
-    Ampscold2 = Ampscold1(end)+AmpScale*[1:chaNum]';
-    Ampscold = [Ampscold1;Ampscold2];
-    if  StackFlag==1
-        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+Ampscold2(1)-AmpIC)/2)*ones(chaNum,1)];
-    else
-        Ampsc = Ampscold;
-    end
-    AmpScaleold = AmpScale;
-    ylims = [0 Ampscold(end)+AmpScaleold];
-end
+
 
 
 if EventOnset==1 && ~isempty(data) && PlotNum~=0

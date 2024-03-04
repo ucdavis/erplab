@@ -165,7 +165,6 @@ varargout{1} = ERP_chan_operation_gui;
         ERP = observe_ERPDAT.ERP;
         answer = chanoperGUI(ERP, def);
         if isempty(answer)
-            disp('User selected Cancel')
             return
         end
         chanopGUI = erpworkingmemory('chanopGUI');
@@ -231,28 +230,20 @@ varargout{1} = ERP_chan_operation_gui;
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
-            disp('User selected Cancel')
             return
         else
             fullname = fullfile(filepath, filename);
             disp(['f_ERP_chanoperation_GUI(): For formulas-file, user selected ', fullname])
         end
         fid_formula = fopen( fullname );
-        try
-            formcell    = textscan(fid_formula, '%s','delimiter', '\r');
-            formulas    = char(formcell{:});
-        catch
-            msgboxText =  ['Channel Operations - Please, check your file:\n '...
-                fullname '\n'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
-            return;
-        end
+        formcell    = textscan(fid_formula, '%s','delimiter', '\r');
+        formulas    = char(formcell{:});
+        
         if size(formulas,2)>256
             msgboxText =  ['Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         fclose(fid_formula);
@@ -280,8 +271,8 @@ varargout{1} = ERP_chan_operation_gui;
         observe_ERPDAT.Process_messg =1;
         if isempty(Formula_str)
             msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         pathName =  erpworkingmemory('EEG_save_folder');
@@ -382,7 +373,6 @@ varargout{1} = ERP_chan_operation_gui;
                 [expspliter parts] = regexp(formulalist, '=','match','split');
                 formulalist{t} = sprintf('%s = %s', strtrim(regexprep(parts{t}{1}, '[^n]*ch','nch','ignorecase')), strtrim(parts{t}{2}));
             end
-            %             formulalist = char(formulalist);
         end
         
         if isempty(formulas)
@@ -596,8 +586,8 @@ varargout{1} = ERP_chan_operation_gui;
         end
         if isempty(Formula_str)
             msgboxText =  ['Channel Operations - You have not yet written a formula'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         estudioworkingmemory('ERPTab_chanop',0);

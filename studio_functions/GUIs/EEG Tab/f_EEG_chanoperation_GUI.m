@@ -146,7 +146,6 @@ varargout{1} = EEG_chan_operation_gui;
         if ~isempty(messgStr) && eegpanelIndex~=4
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('EEGTab_chanop',1);
         gui_eegtab_chan_optn.chanop_apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_chan_optn.chanop_apply.ForegroundColor = [1 1 1];
@@ -248,19 +247,15 @@ varargout{1} = EEG_chan_operation_gui;
         catch
             msgboxText =  ['Channel Operations - Please, check your file: '...
                 fullname];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         if size(formulas,2)>256
             msgboxText =  ['Channel Operations - Formulas length exceed 256 characters,'...
                 'Be sure to press [Enter] after you have entered each formula.'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         fclose(fid_formula);
@@ -294,10 +289,8 @@ varargout{1} = EEG_chan_operation_gui;
         observe_EEGDAT.eeg_panel_message =1;
         if isempty(Formula_str)
             msgboxText =  ['Channel Operations >Save - You have not yet written a formula'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         [filename, filepath, filterindex] = uiputfile({'*.txt';'*.*'},'Save formulas-file as',pathName);
@@ -590,17 +583,6 @@ varargout{1} = EEG_chan_operation_gui;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         
-        if isempty(EEGArray)
-            EEGArray = observe_EEGDAT.CURRENTSET;
-            if isempty(EEGArray)
-                msgboxText =  ['Channel Operations - No EEGset was selected'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            end
-        end
         Eq_Data =  gui_eegtab_chan_optn.edit_bineq.Data;
         Formula_str = {};
         count = 0;

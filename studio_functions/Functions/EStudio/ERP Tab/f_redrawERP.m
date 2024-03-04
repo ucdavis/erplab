@@ -109,6 +109,9 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_le
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
 
+EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
+uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
+
 %%save figure, command....
 commandfig_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 
@@ -123,10 +126,10 @@ uiextras.Empty('Parent', commandfig_panel); % 1A
 
 if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erp_popmenu =  uicontrol('Parent',commandfig_panel,'Style','popupmenu','Callback',@popmemu_erp,'Enable','on','BackgroundColor',ColorB_def,...
-        'Enable','on','String',{'Window Size','Advanced Waveform Viewer','Show Command','Save Figure as','Create Static/Exportable Plot'});
+        'Enable','on','String',{'Plotting Options','Window Size','Advanced Waveform Viewer','Show Command','Save Figure as','Create Static/Exportable Plot'});
 else
     EStudio_gui_erp_totl.erp_popmenu =  uicontrol('Parent',commandfig_panel,'Style','popupmenu','Callback',@popmemu_erp,...
-        'Enable','on','String',{'Window Size'},'Enable','on','BackgroundColor',ColorB_def);
+        'Enable','on','String',{'Plotting Options','Window Size'},'Enable','on','BackgroundColor',ColorB_def);
 end
 
 EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
@@ -167,6 +170,13 @@ EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 set(EStudio_gui_erp_totl.pageinfo_text,'BackgroundColor',ColorB_def);
+EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
+EStudio_gui_erp_totl.plotgrid.Heights(4) = 5;
+EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
+EStudio_gui_erp_totl.plotgrid.Heights(6) = 30;% set the second element (x axis) to 30px high
+EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
+
 if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
@@ -198,11 +208,6 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     if isempty(splot_n) || any(splot_n<=0)
         splot_n = size(OutputViewerparerp{13},1);
     end
-    EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
-    EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
-    EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
-    EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
     if splot_n*pb_height<(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1))&&Fill
         pb_height = 0.9*(EStudio_gui_erp_totl.plotgrid.Position(4)-EStudio_gui_erp_totl.plotgrid.Heights(1)-EStudio_gui_erp_totl.plotgrid.Heights(2))/splot_n;
     else
@@ -239,12 +244,6 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     end
     
 end
-EStudio_gui_erp_totl.plotgrid.Heights(1) = 30;
-EStudio_gui_erp_totl.plotgrid.Heights(2) = 70;% set the first element (pageinfo) to 30px high
-EStudio_gui_erp_totl.plotgrid.Heights(4) = 30;
-EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;% set the second element (x axis) to 30px high
-EStudio_gui_erp_totl.ViewAxes.BackgroundColor = [1 1 1];
-
 end
 
 %%-------------------------------------------------------------------------
@@ -253,17 +252,18 @@ end
 
 function popmemu_erp(Source,~)
 Value = Source.Value;
-if Value==1
+if Value==2
     EStudiowinsize();
-elseif Value==2
-    Advanced_viewer();
 elseif Value==3
-    Show_command();
+    Advanced_viewer();
 elseif Value==4
-    figure_saveas();
+    Show_command();
 elseif Value==5
+    figure_saveas();
+elseif Value==6
     figure_out();
 end
+Source.Value=1;
 end
 
 
@@ -908,7 +908,7 @@ if isempty(timeRangedef)
 end
 fs= ERP.srate;
 qYScales = yscale;
-Ypert =20;
+Ypert =15;
 %%get y axis\
 ERP1 = ERP;
 ERP1.bindata = ERP.bindata(ChanArray,:,:);
@@ -940,7 +940,7 @@ end
 
 
 %%gap between columns
-Xpert = 20;
+Xpert = 10;
 try
     StepX = (ERP.times(end)-ERP.times(1))*(Xpert/100);
 catch
@@ -1055,9 +1055,9 @@ for Numofrows = 1:rowNums
                 [Xtimerange, bindatatrs] = f_adjustbindtabasedtimedefd(squeeze(data4plot(:,Numofoverlay)), timeRangedef,qtimeRange,fs);
                 PosIndexsALL = [Numofrows,columNum];
                 if isxaxislabel==2
-                    [~,XtimerangetrasfALL,~,~,~] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexsALL,StepXP);
+                    [~,XtimerangetrasfALL,~,~,~] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexsALL,StepXP);
                 else
-                    [~,XtimerangetrasfALL,~] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexsALL,StepX,fs);
+                    [~,XtimerangetrasfALL,~] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexsALL,StepX,fs);
                 end
                 aerror = isnan(squeeze(bindataerror(plotdatalabel,:,Numofoverlay,1)));
                 [Xerror,yerro] = find(aerror==0);
@@ -1065,18 +1065,18 @@ for Numofrows = 1:rowNums
                 if ~isempty(yerro) && Standerr>=1 &&Transparency>0 %SEM
                     [Xtimerange, bindataerrtrs] = f_adjustbindtabasedtimedefd(squeeze(bindataerror(plotdatalabel,:,Numofoverlay,1)), timeRangedef,qtimeRange,fs);
                     if isxaxislabel==2
-                        [bindatatrs1,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepXP);
+                        [bindatatrs1,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepXP);
                     else
-                        [bindatatrs1,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepX,fs);
+                        [bindatatrs1,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepX,fs);
                     end
                     yt1 = bindatatrs1 - bindataerrtrs.*Standerr;
                     yt2 = bindatatrs1 + bindataerrtrs.*Standerr;
                     fill(waveview,[Xtimerangetrasf fliplr(Xtimerangetrasf)],[yt2 fliplr(yt1)], qLineColorspec(Numofoverlay,:), 'FaceAlpha', Transparency, 'EdgeColor', 'none');
                 end
                 if isxaxislabel==2
-                    [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepXP);
+                    [bindatatrs,Xtimerangetrasf,qXtickstransf,TimeAdjustOut,XtimerangeadjustALL] = f_adjustdata_xyrange_xyticks_overlay(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepXP);
                 else
-                    [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,Numofcolumns,PosIndexs,StepX,fs);
+                    [bindatatrs,Xtimerangetrasf,qXtickstransf] = f_adjustdata_xyrange_xyticks(bindatatrs,Xtimerange,qXticks,OffSetY,columNum,PosIndexs,StepX,fs);
                 end
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
@@ -1238,7 +1238,6 @@ for Numofrows = 1:rowNums
             end
             %%-----------------minor X---------------
             set(waveview,'xlim',[Xtimerange(1),Xtimerangetrasf(end)]);
-            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%------------------channel/bin/erpset label-----------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1265,13 +1264,28 @@ for Numofrows = 1:rowNums
                 set(waveview,'xlim',[Xtimerange(1)-(Xtimerange(end)-Xtimerange(1))/10,XtimerangetrasfALL(end)+(Xtimerange(end)-Xtimerange(1))/10]);
             end
         catch
+            
         end
     end%% end of columns
-    ylim([1.1*(min(OffSetY(:))+qYScales(1)),1.1*(max(OffSetY(:))+1.1*qYScales(end))]);
-    if qPolarityWave==-1
-        ylimleftedge = min([1.1*(min(OffSetY(:))+qYScales(1)),-abs(y_scale_def(2))]);
-        ylim([ylimleftedge,1.1*(max(OffSetY(:))+1.1*qYScales(end))]);
+    
+    if numel(OffSetY)==1 && OffSetY==0
+        if ~qPolarityWave
+            YscalesNew =  sort(y_scale_def*(-1));
+        else
+            YscalesNew =  y_scale_def;
+        end
+        set(waveview,'ylim',1.05*YscalesNew);
+    else
+        if qPolarityWave
+            ylimleftedge = floor(y_scale_def(1));
+            ylimrightedge = ceil(y_scale_def(end))+OffSetY(1);
+        else
+            ylimleftedge = -abs(ceil(y_scale_def(end)));
+            ylimrightedge = ceil(abs(y_scale_def(1)))+OffSetY(1);
+        end
+        set(waveview,'ylim',[ylimleftedge,1.05*ylimrightedge]);
     end
+    
 end%% end of rows
 set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 if ~isempty(hplot)

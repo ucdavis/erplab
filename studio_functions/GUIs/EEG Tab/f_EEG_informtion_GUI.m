@@ -17,11 +17,11 @@ catch
 end
 if nargin == 0
     fig = figure(); % Parent figure
-    EEG_info = uiextras.BoxPanel('Parent', fig, 'Title', 'EEGset Information', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EEG_info = uiextras.BoxPanel('Parent', fig, 'Title', 'EEG & Bin Information', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGset Information', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG & Bin Information', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEGset Information', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EEG_info = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'EEG & Bin Information', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 varargout{1} = EEG_info;
@@ -49,7 +49,7 @@ drawui_EEG_info(FonsizeDefault);
         gui_EEG_info.samplingrate = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
         gui_EEG_info.samplingrate = uicontrol('Style','text','Parent', gui_EEG_info.samplingrate,'String','Sampling:','FontSize',FonsizeDefault);
         
-        EEG_time_resolution = strcat('Sampling:',32,num2str(0),32,'ms (time resolution);',32,num2str(''),32,'0Hz (rate)');
+        EEG_time_resolution = strcat('Sampling:');
         set(gui_EEG_info.samplingrate,'HorizontalAlignment','left','BackgroundColor',ColorB_def,'String',EEG_time_resolution);
         
         %%----------------------------Number of Channels---------------------
@@ -59,8 +59,18 @@ drawui_EEG_info(FonsizeDefault);
         
         %%----------------------------Setting epoch---------------------
         gui_EEG_info.epoch = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.epoch_name = uicontrol('Style','text','Parent', gui_EEG_info.epoch,'String','Time: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_EEG_info.epoch_name = uicontrol('Style','text','Parent', gui_EEG_info.epoch,'String','Time range: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.epoch_name,'HorizontalAlignment','left');
+        
+        %%----------------------------Setting chanlocation---------------------
+        gui_EEG_info.chanlocs_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_EEG_info.chanlocs = uicontrol('Style','text','Parent', gui_EEG_info.chanlocs_title,'String','Channel locations: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(gui_EEG_info.chanlocs,'HorizontalAlignment','left');
+        
+        %%----------------------------Setting ICA weights---------------------
+        gui_EEG_info.icweights_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_EEG_info.icweights = uicontrol('Style','text','Parent', gui_EEG_info.icweights_title ,'String','ICA weights: ','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(gui_EEG_info.icweights,'HorizontalAlignment','left');
         
         
         %%----------------------------Number of bins---------------------
@@ -88,7 +98,7 @@ drawui_EEG_info(FonsizeDefault);
         
         %%------------totla rejected----------
         gui_EEG_info.total_rejected_show = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_EEG_info.total_rejected_show,'String','Artifact & aSME Summary',...
+        gui_EEG_info.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_EEG_info.total_rejected_show,'String','Artifact Summary',...
             'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_EEG_info.total_rejected_option.Enable = 'off';
         uiextras.Empty('Parent', gui_EEG_info.total_rejected_show);
@@ -98,7 +108,7 @@ drawui_EEG_info(FonsizeDefault);
         %%---------------------Table---------------------------------------
         gui_EEG_info.bin_latency_title = uiextras.HBox('Parent', gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_EEG_info.bin_latency_title,...
-            'String','Trial information:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Trials per Bin:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_EEG_info.table_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -111,11 +121,11 @@ drawui_EEG_info(FonsizeDefault);
         gui_EEG_info.table_event = uitable(  ...
             'Parent'        , gui_EEG_info.table_title,...
             'Data'          , dsnames, ...
-            'ColumnWidth'   , {40,50,60,60,50}, ...
+            'ColumnWidth'   , {30,40,60,60,50}, ...
             'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false, false, false, false]);
-        set(gui_EEG_info.DataSelBox,'Sizes',[20 20 20 20 20 30 30 20 100])
+        set(gui_EEG_info.DataSelBox,'Sizes',[20 20 20 20 20 20 20 30 30 20 100])
     end
 
 
@@ -128,17 +138,16 @@ drawui_EEG_info(FonsizeDefault);
         if observe_EEGDAT.count_current_eeg~=4
             return;
         end
-        
         EEG = observe_EEGDAT.EEG;
         if ~isempty(EEG)
-            EEG_time_resolution = strcat(32,num2str(roundn(1000/EEG.srate,-2)),32,'ms(resolution);',32,num2str(EEG.srate),32,'Hz');
+            EEG_time_resolution = strcat(num2str(EEG.srate),32,'Hz',32,'(',num2str(roundn(1000/EEG.srate,-2)),32,'ms /sample)');
         else
-            EEG_time_resolution = strcat(32,num2str(0),32,'ms(time resolution);',32,num2str(0),32,'Hz (rate)');
+            EEG_time_resolution = strcat('');
         end
-        gui_EEG_info.samplingrate.String = ['Sampling:',EEG_time_resolution];
+        gui_EEG_info.samplingrate.String = ['Sampling: ',EEG_time_resolution];
         %%channel
         try
-            gui_EEG_info.numofchan.String=['Number of channels:',32,num2str(EEG.nbchan)];
+            gui_EEG_info.numofchan.String=['Number of channels: ',32,num2str(EEG.nbchan)];
         catch
             gui_EEG_info.numofchan.String=['Number of channels: 0'];
         end
@@ -146,19 +155,49 @@ drawui_EEG_info(FonsizeDefault);
         %%------------------------time------------------------
         try
             if EEG.trials==1
-                gui_EEG_info.epoch_name.String=['Time:',32,num2str(EEG.xmin),32,'to',32,num2str(EEG.xmax),'s'];
+                gui_EEG_info.epoch_name.String=['Time range: ',32,num2str(EEG.xmin),32,'to',32,num2str(EEG.xmax),'s'];
             else
-                gui_EEG_info.epoch_name.String=['Epoch:',32,num2str(EEG.times(1)),32,'to',32,num2str(EEG.times(end)),'ms'];
+                gui_EEG_info.epoch_name.String=['Epoch: ',32,num2str(EEG.times(1)),32,'to',32,num2str(EEG.times(end)),32,'ms',32,'(',num2str(EEG.pnts),32,'pnts)'];
             end
         catch
-            gui_EEG_info.epoch_name.String='Time:';
+            gui_EEG_info.epoch_name.String='Time range: ';
+        end
+        %%channel locations?
+        try
+            count = 0;
+            if ~isempty(EEG.chanlocs)
+                for Numofchan = 1:EEG.nbchan
+                    if ~isempty(EEG.chanlocs(Numofchan).X)
+                        count =1;
+                    end
+                end
+            end
+            if count==1
+                gui_EEG_info.chanlocs.String = 'Channel locations: set';
+            else
+                gui_EEG_info.chanlocs.String = 'Channel locations: not set';
+            end
+        catch
+            gui_EEG_info.chanlocs.String = 'Channel locations: not set';
         end
         
         try
-            gui_EEG_info.numofbin.String=['Number of bins:',32,num2str(numel(EEG.EVENTLIST.trialsperbin))];
+            if ~isempty(EEG)
+                if ~isempty(EEG.icachansind) && ~isempty(EEG.icaweights) && ~isempty(EEG.icasphere) && ~isempty(EEG.icawinv)
+                    gui_EEG_info.icweights.String = 'ICA Weights: present';
+                else
+                    gui_EEG_info.icweights.String = 'ICA Weights: absent';
+                end
+            end
+        catch
+            gui_EEG_info.icweights.String = 'ICA Weights: ';
+        end
+        
+        try
+            gui_EEG_info.numofbin.String=['Number of bins: ',32,num2str(numel(EEG.EVENTLIST.trialsperbin))];
             gui_EEG_info.numofbin.Enable = 'on';
         catch
-            gui_EEG_info.numofbin.String='Number of bins:';
+            gui_EEG_info.numofbin.String='Number of bins: ';
             gui_EEG_info.numofbin.Enable = 'off';
         end
         %%Numof rejection
@@ -218,7 +257,7 @@ drawui_EEG_info(FonsizeDefault);
         end
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
@@ -243,7 +282,7 @@ drawui_EEG_info(FonsizeDefault);
             return;
         end
         if ~isempty(ALLERP)
-            feval('dq_trial_rejection',ALLERP,[],1);
+            feval('EEG_trial_rejection_sumr',ALLERP,[],1);
         end
     end
 

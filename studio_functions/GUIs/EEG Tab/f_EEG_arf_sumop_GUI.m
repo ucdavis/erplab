@@ -149,8 +149,9 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Clear artifact detection marks on EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG: cannot work on a continuous EEG');
-                observe_EEGDAT.eeg_panel_message =4;
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Clear artifact detection marks on EEG: cannot work on a continuous EEG';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -238,6 +239,7 @@ varargout{1} = Eegtab_box_art_sumop;
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG) ) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;
+            estudioworkingmemory('EEGArray',EEGArray);
         end
         %         try
         direction = synchroartifactsGUI;
@@ -266,8 +268,9 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Syn. artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG');
-                observe_EEGDAT.eeg_panel_message =4;
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -350,7 +353,7 @@ varargout{1} = Eegtab_box_art_sumop;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;
+            EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
         
         for Numofeeg = 1:numel(EEGArray)
@@ -359,8 +362,9 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Summarize EEG artifact in one value*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: cannot work on a continuous EEG');
-                observe_EEGDAT.eeg_panel_message =4;
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: cannot work on a continuous EEG';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -372,8 +376,9 @@ varargout{1} = Eegtab_box_art_sumop;
             active_flags = (flagcheck>1);
             
             if isempty(active_flags)
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: None of epochs was marked');
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: None of epochs was marked';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -408,7 +413,7 @@ varargout{1} = Eegtab_box_art_sumop;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         for Numofeeg = 1:numel(EEGArray)
@@ -417,8 +422,9 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Summarize EEG artifact in a table*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: cannot work on a continuous EEG');
-                observe_EEGDAT.eeg_panel_message =4;
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: cannot work on a continuous EEG';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -429,8 +435,9 @@ varargout{1} = Eegtab_box_art_sumop;
             flagcheck = sum(histoflags);
             active_flags = (flagcheck>1);
             if isempty(active_flags)
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: None of epochs was marked');
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: None of epochs was marked';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -468,7 +475,7 @@ varargout{1} = Eegtab_box_art_sumop;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         for Numofeeg = 1:numel(EEGArray)
@@ -477,8 +484,9 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf(['*Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: cannot work on a continuous EEG');
-                observe_EEGDAT.eeg_panel_message =4;
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: cannot work on a continuous EEG';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -490,8 +498,9 @@ varargout{1} = Eegtab_box_art_sumop;
             active_flags = (flagcheck>1);
             
             if isempty(active_flags)
-                erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: None of epochs was marked');
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                erroMessage = 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: None of epochs was marked';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end

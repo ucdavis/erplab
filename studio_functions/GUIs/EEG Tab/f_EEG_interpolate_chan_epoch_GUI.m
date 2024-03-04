@@ -246,8 +246,6 @@ varargout{1} = box_interpolate_chan_epoch;
         Newchan = round(str2num(Source.String));
         if isempty(Newchan) || any(Newchan(:) <=0)
             msgboxText = ['Interpolate Channels > Indexes of interpolated chans should be positive values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -257,8 +255,6 @@ varargout{1} = box_interpolate_chan_epoch;
         ChanNum = observe_EEGDAT.EEG.nbchan;
         if any(Newchan(:) > ChanNum)
             msgboxText =['Interpolate Channels > Any indexes of interpolated chans should be between 1 and ',32,num2str(ChanNum)];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -268,8 +264,6 @@ varargout{1} = box_interpolate_chan_epoch;
         overlap_elec = intersect(Newchan,ChanignoreArray);
         if ~isempty(overlap_elec)
             msgboxText = ['Interpolate Channels: There is overlap between the interpolated chans and the ignore chans'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -413,8 +407,6 @@ varargout{1} = box_interpolate_chan_epoch;
         ChanArrayNew = str2num(Source.String);
         if isempty(ChanArrayNew) || any(ChanArrayNew(:)<=0)
             msgboxText = ['Interpolate Channels: Any index(es) of the ignored channels should be positive value'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -423,8 +415,6 @@ varargout{1} = box_interpolate_chan_epoch;
         
         if any(ChanArrayNew(:) > observe_EEGDAT.EEG.nbchan)
             msgboxText = ['Interpolate Channels: Any index(es) of the ignored channels should be below ',32,num2str(observe_EEGDAT.EEG.nbchan)];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -433,8 +423,6 @@ varargout{1} = box_interpolate_chan_epoch;
         overlap_elec = intersect(ChanArray, ChanArrayNew);
         if ~isempty(overlap_elec)
             msgboxText = ['Interpolate Channels: There is overlap in the replace electrodes and the ignore electrodes'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -493,8 +481,6 @@ varargout{1} = box_interpolate_chan_epoch;
         overlap_elec = intersect(ChanArray, ChanArrayNew);
         if ~isempty(overlap_elec)
             msgboxText = ['Interpolate Channels > There is overlap in the replace electrodes and the ignore electrodes'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -637,8 +623,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if isempty(replaceFlag)
                 msgboxText = ['Interpolate Channels >  Advanced options for interpolate marked epochs: None of epochs was marked'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -647,8 +631,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if ~isempty(find(replaceFlag<1 | replaceFlag>16, 1))
                 msgboxText  ='Interpolate Channels >  Run: flag cannot be greater than 16 nor lesser than 1';
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -783,8 +765,6 @@ varargout{1} = box_interpolate_chan_epoch;
         ChanArray =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
             msgboxText = ['Interpolate Channels >  Run: The index(es) of the interpolated chans should be positive numbers'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -800,8 +780,6 @@ varargout{1} = box_interpolate_chan_epoch;
             overlap_elec = intersect(ChanArray, ChanArrayig);
             if ~isempty(overlap_elec)
                 msgboxText = ['Interpolate Channels >  Run: There is overlap in the replace electrodes and the ignore electrodes'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -810,8 +788,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if  any(ChanArrayig(:)<=0)
                 msgboxText = ['Interpolate Channels > Run: Index(es) of the ignored channels should be positive values'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -820,8 +796,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if any(ChanArrayig(:) > observe_EEGDAT.EEG.nbchan)
                 msgboxText = ['Interpolate Channels >  Run: Index(es) of the ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -830,8 +804,6 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         if numel(ChanArrayig) + numel(ChanArray) ==observe_EEGDAT.EEG.nbchan
             msgboxText = ['Interpolate Channels >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -849,8 +821,6 @@ varargout{1} = box_interpolate_chan_epoch;
             %%check the selected chans
             if any(ChanArray(:) > EEG.nbchan)
                 msgboxText = ['Interpolate Channels >  Run: Selected channel should be between 1 and ',32, num2str(EEG.nbchan)];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -859,8 +829,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if numel(ChanArray) == EEG.nbchan
                 msgboxText = ['Interpolate Channels >  Run: We strongly recommend you donot need to interpolate all channels'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -949,8 +917,6 @@ varargout{1} = box_interpolate_chan_epoch;
         replaceChannelIndes =  str2num(Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String);
         if isempty(replaceChannelIndes) || min(replaceChannelIndes(:))<=0
             msgboxText = ['Interpolate Channels >  Run: Index(es) of interpolated chans should be positive numbers'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -965,8 +931,6 @@ varargout{1} = box_interpolate_chan_epoch;
             overlap_elec = intersect(replaceChannelIndes, ignoreChannels);
             if ~isempty(overlap_elec)
                 msgboxText = ['Interpolate Channels >  Run: There is overlap in the replace electrodes and the ignore electrodes'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -975,8 +939,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if  any(ignoreChannels(:)<=0)
                 msgboxText = ['Interpolate Channels > Run: Index(es) of the ignored channels should be positive values'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -985,8 +947,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if any(ignoreChannels(:) > observe_EEGDAT.EEG.nbchan)
                 msgboxText = ['Interpolate Channels >  Run: Index(es) of the ignored channels should be smaller than',32,num2str(observe_EEGDAT.EEG.nbchan)];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 Eegtab_EEG_interpolate_chan_epoch.ignore_chan_edit.String = '';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1007,8 +967,6 @@ varargout{1} = box_interpolate_chan_epoch;
         end
         if numel(ignoreChannels) + numel(replaceChannelIndes) ==observe_EEGDAT.EEG.nbchan
             msgboxText = ['Interpolate Channels >  Run: Too many channels will be interpolated or ignored, please left enough channels that are to interpolate others'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -1035,8 +993,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if any(ignoreChannels(:) > EEG.nbchan)
                 msgboxText = ['Interpolate Channels >  Run: Ignored chans should be smaller than',32,num2str( EEG.nbchan)];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1051,8 +1007,6 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if isempty(active_flags)
                 msgboxText = ['Interpolate Channels >  Run: None of epochs was marked'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -1062,8 +1016,6 @@ varargout{1} = box_interpolate_chan_epoch;
             viewstr = 'off';
             if ~isempty(find(active_flags<1 | active_flags>16, 1))
                 msgboxText  ='Interpolate Channels >  Run: flag cannot be greater than 16 nor lesser than 1';
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);

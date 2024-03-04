@@ -104,7 +104,6 @@ varargout{1} = ERP_plotset_box;
         uicontrol('Style','text','Parent', ERPTab_plotset.yscaleticks,'String','uv','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(ERPTab_plotset.yscaleticks, 'Sizes', [50 100 80 20]);
         
-        
         ERPTab_plotset.polarity_waveform = uiextras.HBox('Parent',ERPTab_plotset.plotop,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent', ERPTab_plotset.polarity_waveform,'String','Polarity:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1F
         
@@ -247,7 +246,6 @@ varargout{1} = ERP_plotset_box;
         ERP_plotset_box.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
-        
         if src.Value == 1
             ERPTab_plotset.timet_low.Enable = 'off';
             ERPTab_plotset.timet_high.Enable = 'off';
@@ -282,16 +280,16 @@ varargout{1} = ERP_plotset_box;
         if isempty(xtixlk_min)|| numel(xtixlk_min)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(1));
             msgboxText =  ['Plot Settings> Time Axis- Input of low edge must be a single numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if any(xtixlk_max<=xtixlk_min)
             src.String = num2str(observe_ERPDAT.ERP.times(1));
             msgboxText =  ['Plot Settings> Time Axis- Low edge must be  smaller than',32,num2str(xtixlk_max(1))];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -321,17 +319,16 @@ varargout{1} = ERP_plotset_box;
         
         if isempty(xtixlk_max) || numel(xtixlk_max)~=1
             src.String = num2str(observe_ERPDAT.ERP.times(end));
-            beep;
             msgboxText =  ['Plot Settings> Amplitude Axis- Input of ticks edge must be a single numeric'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(xtixlk_max < xtixlk_min)
             src.String =  num2str(observe_ERPDAT.ERP.times(end));
             msgboxText =  ['Plot Settings> Time Axis- high edge must be higher than',32,num2str(xtixlk_min),'ms'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
     end
@@ -361,16 +358,16 @@ varargout{1} = ERP_plotset_box;
                 timeStart = observe_ERPDAT.ERP.times(1);
                 ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
                 msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: left edge of time range must be a single number and smaller than ',32,num2str(observe_ERPDAT.ERP.times(end)),'ms'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
             timEnd = str2num(ERPTab_plotset.timet_high.String);
             if isempty(timEnd) || numel(timEnd)~=1 || timEnd<observe_ERPDAT.ERP.times(1) %%|| timEnd> observe_ERPDAT.ERP.times(end)
                 timEnd = observe_ERPDAT.ERP.times(end);
                 ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
                 msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: right edge of time range must be a single number and larger than ',32,num2str(observe_ERPDAT.ERP.times(1)),'ms'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
             if timeStart>timEnd
                 ERPTab_plotset.timet_low.String = num2str(observe_ERPDAT.ERP.times(1));
@@ -379,8 +376,8 @@ varargout{1} = ERP_plotset_box;
                 timEnd = observe_ERPDAT.ERP.times(end);
                 ERPTab_plotset.timet_high.String = num2str(observe_ERPDAT.ERP.times(end));
                 msgboxText =  ['Plot Settings> Time Axis- Time ticks>Auto: left edge of time range must be smaller than right one'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
             [def xstep]= default_time_ticks_studio(observe_ERPDAT.ERP, [timeStart,timEnd]);
             ERPTab_plotset.timet_step.String = num2str(xstep);
@@ -422,8 +419,8 @@ varargout{1} = ERP_plotset_box;
         if isempty(tick_step) || numel(tick_step)~=1 || any(tick_step<=0)
             src.String = num2str(xtickstepdef);
             msgboxText =  ['Plot Settings> Time Axis - The input of Step for time ticks must be a single positive value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -495,7 +492,7 @@ varargout{1} = ERP_plotset_box;
         BinArray= estudioworkingmemory('ERP_BinArray');
         BinNum = observe_ERPDAT.ERP.nbin;
         if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum)
-            BinArray = [1:BinNum];
+            BinArray = [1:BinNum];estudioworkingmemory('ERP_BinArray',BinArray);
         end
         ChanArray=estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
@@ -514,16 +511,17 @@ varargout{1} = ERP_plotset_box;
         if isempty(Yscales_low) || numel(Yscales_low)~=1
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             Yscales_low= minydef;
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Plot Settings> Amplitude Axis: You did set left edge of amplitude scale to be a single number and we used the default one ';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         if any(Yscales_high<=Yscales_low)
             ERPTab_plotset.yscale_low.String = num2str(minydef);
             ERPTab_plotset.yscale_high.String = num2str(maxydef);
-            erpworkingmemory('f_ERP_proces_messg','Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ');
-            observe_ERPDAT.Process_messg =4;
+            msgboxText='Plot Settings> Amplitude Axis: Left edge of amplitude scale should be smaller than the right one and we used the default ones ';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
-        
     end
 
 
@@ -890,7 +888,7 @@ varargout{1} = ERP_plotset_box;
         try
             chanlocs = observe_ERPDAT.ERP.chanlocs;
             if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
+                MessageViewer= char(strcat('Plot Settings > Simple 10/20 system order: please do "chanlocs locations" first in EEGLAB Tool panel.'));
                 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
                 observe_ERPDAT.Process_messg=4;
                 ERPTab_plotset.chanorder_number.Value=1;
@@ -2251,6 +2249,37 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.paras{2} = ERPTab_plotset.timetick_auto.Value;
         ERPTab_plotset.paras{3} = ERPTab_plotset.yscale_auto.Value;
         ERPTab_plotset.paras{4} = ERPTab_plotset.ytick_auto.Value;
+        
+        %%
+        if ~isempty(observe_ERPDAT.ERP)
+            ERPArray =  estudioworkingmemory('selectederpstudio');
+            if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
+                ERPArray =  length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+                observe_ERPDAT.CURRENTERP = ERPArray;
+                estudioworkingmemory('selectederpstudio',ERPArray);
+            end
+            SetFlags =  check_chanlocs(observe_ERPDAT.ALLERP(ERPArray));
+            if any(SetFlags(:)==0)
+                if  ERPTab_plotset.chanorder_number.Value == 0
+                    ERPTab_plotset.chanorder_number.Value=1;
+                    ERPTab_plotset.chanorder_front.Value=0;
+                    ERPTab_plotset.chanorder_custom.Value=0;
+                    ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+                    ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+                    try
+                        [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+                    catch
+                        labels = [];
+                    end
+                    ERPTab_plotset.chanorderIndex=1;
+                    ERPTab_plotset.chanorder{1,1} = 1:length(labels);
+                    ERPTab_plotset.chanorder{1,2} = labels;
+                end
+            end
+        end
+        %%
+        
         observe_ERPDAT.Count_currentERP=4;
     end
 
@@ -2388,7 +2417,6 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorder_custom.Value=0;
         ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
         ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
-        
         ERPTab_plotset.gridlayoutdef.Value = 1;
         ERPTab_plotset.gridlayout_custom.Value = 0;
         ERPTab_plotset.gridlayout_export.Enable ='off';
@@ -2522,4 +2550,41 @@ for jj = 1:length(Simplabels)
     end
 end
 end
+
+
+
+
+%%-----------------check if the channel location is empty------------------
+function SetFlags =  check_chanlocs(ALLERP)
+SetFlags = zeros(length(ALLERP),1);
+
+for Numofset = 1:length(ALLERP)
+    ERP = ALLERP(Numofset);
+    try
+        if ~isempty(ERP.chanlocs)
+            for Numofchan = 1:ERP.nbchan
+                if ~isempty(ERP.chanlocs(Numofchan).X)
+                    SetFlags(Numofset)=1;
+                end
+            end
+        end
+        %%10-10 system?
+        [eloc, labels, theta, radius, indices] = readlocs(ERP.chanlocs);
+        [Simplabels,simplabelIndex,SamAll] =  Simplelabels(labels);
+        count = 0;
+        for ii = 1:length(Simplabels)
+            [xpos,ypos]= find(simplabelIndex==ii);
+            if ~isempty(ypos)  && numel(ypos)>= floor(length(ERP.chanlocs)/2)
+                count = count+1;
+                if count==1
+                    SetFlags(Numofset)=0;
+                    break;
+                end
+            end
+        end
+    catch
+    end
+end
+end
+
 

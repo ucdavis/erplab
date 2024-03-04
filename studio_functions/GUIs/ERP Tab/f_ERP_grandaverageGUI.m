@@ -308,18 +308,18 @@ varargout{1} = ERP_grdavg_box_gui;
         rejection_peft = str2num(source.String);
         if isempty(rejection_peft)
             gui_erp_grdavg.warn_edit.String = '';
-            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.\n'...
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.',32,...
                 'Please, enter a number between 0 and 100.'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if rejection_peft<0 || rejection_peft>100
             gui_erp_grdavg.warn_edit.String = '';
-            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.\n'...
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.',32,...
                 'Please, enter a number between 0 and 100.'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
     end
@@ -456,8 +456,8 @@ varargout{1} = ERP_grdavg_box_gui;
         
         if numel(Selectederp_Index)<2
             msgboxText =  ['Average Across ERPsets (Grand Average)  - Two ERPsets,at least,were selected'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         optioni    = 0; %1 means from a filelist, 0 means from erpsets menu
@@ -468,10 +468,10 @@ varargout{1} = ERP_grdavg_box_gui;
             artcrite = 100;
         end
         if isempty(artcrite) || artcrite<0 || artcrite>100
-            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.\n'...
+            msgboxText =  ['Average Across ERPsets (Grand Average)  - Invalid artifact detection proportion.',32,...
                 'Please, enter a number between 0 and 100.'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         estudioworkingmemory('ERPTab_gravg',0);

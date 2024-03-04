@@ -72,13 +72,7 @@ varargout{1} = ERP_filtering_box;
         remove_dc   = def{7};
         
         typef = 0;
-        if strcmpi(fdesign,'butter') % 0 means Butterworth
-            if filterorder> 8
-                filterorder =2;
-            end
-        else
-            filterorder = 2;
-        end
+        filterorder=2;
         
         if locutoff >= fs/2 || locutoff<=0
             locutoff  = floor(fs/2)-1;
@@ -227,8 +221,6 @@ varargout{1} = ERP_filtering_box;
         
         estudioworkingmemory('ERPTab_filter',0);
     end
-
-
 
 %%****************************************************************************************************************************************
 %%*******************   Subfunctions   ***************************************************************************************************
@@ -425,22 +417,22 @@ varargout{1} = ERP_filtering_box;
         valueh = str2num(Source.String);
         if length(valueh)~=1
             msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if valueh>=fs/2
             msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if valueh<0.001
             msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -487,27 +479,23 @@ varargout{1} = ERP_filtering_box;
         end
         valuel = str2num(Source.String);
         if length(valuel)~=1 || isempty(valuel)
-            beep;
             msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if valuel>=fs/2
-            beep;
             msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-            fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if valuel<0.001
             msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -559,22 +547,22 @@ varargout{1} = ERP_filtering_box;
             
             if length(valuel)~=1 || isempty(valuel)
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if valuel>=fs/2
                 msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
             if gui_erp_filtering.hp_tog.Value ==0
                 if valuel<0.001
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -584,23 +572,23 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1
             if length(valueh)~=1
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
             if valueh>=fs/2
                 msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             
             if gui_erp_filtering.lp_tog.Value ==0
                 if valueh<0.001
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -609,14 +597,14 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1 && gui_erp_filtering.lp_tog.Value ==1
             if valueh >0 && valueh >0 && valueh >=valuel
                 msgboxText =  ['Filtering - The lowest bandpass cuttoff is the highest bandpass cuttoff'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if valueh==0 && valuel==0
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -663,21 +651,21 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.lp_tog.Value ==1
             if length(hicutoff)~=1 || isempty(hicutoff)
                 msgboxText =  ['Filtering - Invalid input for low-pass filter cutoff'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if hicutoff>=fs/2
                 msgboxText =  ['Filtering - The low-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if gui_erp_filtering.hp_tog.Value ==0
                 if hicutoff<0.001
                     msgboxText =  ['Filtering - We strongly recommend the low-pass filter cutoff is larger than 0.001Hz'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -686,21 +674,21 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1
             if length(locutoff)~=1
                 msgboxText =  ['Filtering - Invalid input for high-pass filter cutoff'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if locutoff>=fs/2
                 msgboxText =  ['Filtering - The high-pass filter cutoff should be smaller than',32,num2str(fs/2),'Hz'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if gui_erp_filtering.lp_tog.Value ==0
                 if locutoff<0.001
                     msgboxText =  ['Filtering - We strongly recommend the high-pass filter cutoff is larger than 0.001Hz'];
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
+                    titlNamerro = 'Warning for ERP Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return;
                 end
             end
@@ -708,8 +696,8 @@ varargout{1} = ERP_filtering_box;
         if gui_erp_filtering.hp_tog.Value ==1 && gui_erp_filtering.lp_tog.Value ==1
             if locutoff==0 && hicutoff==0
                 msgboxText =  ['Filtering - Either Lowest bandpass cuttoff or  the highest bandpass cuttoff or both is larger than 0.01Hz'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -742,8 +730,8 @@ varargout{1} = ERP_filtering_box;
             return;
         else
             msgboxText =  ['Filtering - Invalid type of filter'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -1081,14 +1069,14 @@ varargout{1} = ERP_filtering_box;
             cutoff = hicutoff;
             
         elseif ~strcmpi(fdesign, 'notch') && locutoff==0 && hicutoff==0 % Butter (IIR) and FIR
-            msgboxText =  'I beg your pardon?';
-            title = 'EStudio: f_ERP_filtering_GUI() !';
-            errorfound(msgboxText, title);
+            msgboxText =  'Filtering - I beg your pardon?';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         else
             msgboxText =  ['Filtering - Invalid type of filter'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -1096,8 +1084,8 @@ varargout{1} = ERP_filtering_box;
         if strcmpi(fdesign, 'notch') && locutoff==hicutoff
             if 3*filterorder>=length(observe_ERPDAT.ERP.times)
                 msgboxText =  ['Filtering -The length of the data must be more than three times the filter order'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -1470,7 +1458,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_filtering.advanced.ForegroundColor = [0 0 0];
         gui_erp_filtering.all_bin_chan.Value = 1;
         gui_erp_filtering.Selected_bin_chan.Value = 0;
-        gui_erp_filtering.roll_off.Value=2;
+        gui_erp_filtering.roll_off.Value=1;
         try
             fs = observe_ERPDAT.ERP.srate;
         catch

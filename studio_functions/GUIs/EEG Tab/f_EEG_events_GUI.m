@@ -102,7 +102,9 @@ varargout{1} = EStudio_eeg_events_box;
             'String','Export RTs','callback',@exp_rt,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[170 -1]);
         
-        
+        EStduio_eegtab_EEG_events.sumevent_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.sumevent_title,'FontWeight','bold',...
+            'String','Event Code Summary:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_events.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -113,10 +115,10 @@ varargout{1} = EStudio_eeg_events_box;
             'Parent'        , EStduio_eegtab_EEG_events.table_title,...
             'Data'          , dsnames, ...
             'ColumnWidth'   , {100,100}, ...
-            'ColumnName'    , {'Types','#Occurrences'}, ...
+            'ColumnName'    , {'Event Code','#Occurrences'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false]);
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 100]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 20 100]);
     end
 
 %%**************************************************************************%%
@@ -132,8 +134,6 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
             msgboxText = ['EventList >  Summarize event code:EEG.event is empty for the current EEG'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -156,17 +156,13 @@ varargout{1} = EStudio_eeg_events_box;
             if isempty(EEG.event)
                 CheckFlag = 0;
                 msgboxText = ['EventList >  Summarize event code:EEG.event is empty for',32,EEG.setname];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
             elseif isempty([EEG(1).event.type])
                 CheckFlag = 0;
                 msgboxText = ['EventList >  Summarize event code:EEG.event.type is empty for',32,EEG.setname];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
-                observe_EEGDAT.eeg_panel_message =4;
             else
                 CheckFlag=1;
             end
@@ -204,10 +200,8 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
             msgboxText = ['EventList >  Create Eventlist: EEG.event is empty for the current EEG'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -363,10 +357,8 @@ varargout{1} = EStudio_eeg_events_box;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST')
             msgboxText = ['EventList >  Export RTs: No EVETLIST, please create one first'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -587,8 +579,6 @@ varargout{1} = EStudio_eeg_events_box;
         
         if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
             msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -644,10 +634,8 @@ varargout{1} = EStudio_eeg_events_box;
                 end
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG;
             else
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
-                observe_EEGDAT.eeg_panel_message =4;
                 fprintf(2,['Cannot export eventlist for:',32,EEG.setname,'\n']);
                 fprintf( [repmat('-',1,100) '\n']);
             end
@@ -707,8 +695,6 @@ varargout{1} = EStudio_eeg_events_box;
             valueatfield = 'off';
         else
             msgboxText = ['EventList >  Shuffle events/bins/samples: invalid field'];
-            erpworkingmemory('f_EEG_proces_messg','EventList >  Shuffle events/bins/samples: invalid field');
-            observe_EEGDAT.eeg_panel_message =4;
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -718,8 +704,6 @@ varargout{1} = EStudio_eeg_events_box;
             valueatfield = str2num(valueatfield);
             if isempty(valueatfield)
                 msgboxText =  'EventList >  Shuffle events/bins/samples:Invalid value for "codes to shuffle"';
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
@@ -765,10 +749,8 @@ varargout{1} = EStudio_eeg_events_box;
                 end
             else
                 msgboxText =  ['EventList >  Shuffle events/bins/samples:', msgboxText];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
-                observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n\n']);
                 break;
             end
@@ -841,11 +823,9 @@ varargout{1} = EStudio_eeg_events_box;
         if isempty(observe_EEGDAT.EEG.event)
             Source.Enable= 'off';
             msgboxText = ['EventList >  Transfer event to EEG.event: EEG.event is empty for the current EEG'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
             Source.Enable= 'off';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            observe_EEGDAT.eeg_panel_message =4;
             return;
         end
         
@@ -915,8 +895,6 @@ varargout{1} = EStudio_eeg_events_box;
                     end
                 else
                     msgboxText =  ['EventList >  Transfer event to EEG.event:', msgboxText];
-                    erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                    observe_EEGDAT.eeg_panel_message =4;
                     titlNamerro = 'Warning for EEG Tab';
                     estudio_warning(msgboxText,titlNamerro);
                     fprintf( ['\n',repmat('-',1,100) '\n\n']);

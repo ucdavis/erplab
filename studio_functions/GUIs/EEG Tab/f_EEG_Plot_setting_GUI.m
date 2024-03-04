@@ -183,7 +183,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
     end
 
-
 %%------------------------Display original data: off-----------------------
     function disp_IC(Source,~)
         %%first checking if the changes on the other panels have been applied
@@ -198,7 +197,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
     end
-
 
 %%--------------------Time range-------------------------------------------
     function WinLength_edit(Source,~)
@@ -225,16 +223,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
             if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg))
                 Winlength = floor(Frames/multiplier_winleg);
-                MessageViewer= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
-                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-                observe_EEGDAT.eeg_panel_message=4;
+                msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
         else
             if isempty(Winlength)|| Winlength<=0 || numel(Winlength)~=1
                 Winlength = 5;
-                MessageViewer= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
-                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-                observe_EEGDAT.eeg_panel_message=4;
+                msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
             end
         end
         Source.String = num2str(Winlength);
@@ -258,9 +256,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         if isempty(vscale_Value) || numel(vscale_Value)~=1 || any(vscale_Value<=0)
             Source.String = '50';
-            MessageViewer= char(strcat('Plot Setting > Vertical scale for original data:The input is invalid which should be a positive value and we therfore use the default one'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText= char(strcat('Plot Setting > Vertical scale for original data:The input is invalid which should be a positive value and we therfore use the default one'));
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 
@@ -282,9 +280,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         vscale_Value = str2num(Source.String);
         if isempty(vscale_Value) || numel(vscale_Value)~=1 || any(vscale_Value<=0)
             Source.String = '10';
-            MessageViewer= char(strcat('Plot Setting > Vertical scale for ICs:The input is invalid which should be a positive value and we therfore use the default one'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText= char(strcat('Plot Setting > Vertical scale for ICs:The input is invalid which should be a positive value and we therfore use the default one'));
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 
@@ -398,19 +396,19 @@ varargout{1} = EStudio_box_EEG_plot_set;
         try
             chanlocs = observe_EEGDAT.EEG.chanlocs;
             if isempty(chanlocs(1).X) &&  isempty(chanlocs(1).Y)
-                MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
-                erpworkingmemory('f_EEG_proces_messg',MessageViewer);
+                msgboxText= char(strcat('Plot Setting > Channel order>Simple 10/20 system order:please do "chan locations" first in EEGLAB Tool panel.'));
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 observe_EEGDAT.eeg_panel_message=4;
                 EStduio_gui_EEG_plotset.chanorder_number.Value=1;
                 EStduio_gui_EEG_plotset.chanorder_front.Value=0;
                 EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
                 EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
                 EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-                msgboxText = ['please do "chan locations" first in EEGLAB Tool panel.'];
-                title = 'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
-                errorfound(sprintf(msgboxText), title);
+                msgboxText = ['Plot Setting > Channel order>Simple 10/20 system order: please do "chan locations" first in EEGLAB Tool panel.'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return
-                
             end
         catch
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
@@ -418,9 +416,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
-            msgboxText = ['It seems that chanloc for the current EEG is empty and please check it out'];
-            title = 'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
-            errorfound(sprintf(msgboxText), title);
+            msgboxText = ['Plot Setting > Channel order>Simple 10/20 system order: It seems that chanloc for the current EEG is empty and please check it out'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return
         end
         
@@ -433,9 +431,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             if ~isempty(ypos)  && numel(ypos)>= floor(length(observe_EEGDAT.EEG.chanlocs)/2)
                 count = count+1;
                 if count==1
-                    msgboxText= char(strcat('We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
-                    title      =  'Estudio: Plot Setting > Channel order>Simple 10/20 system order:';
-                    errorfound(msgboxText, title);
+                    msgboxText= char(strcat('Plot Setting > Channel order>Simple 10/20 system order: We cannot use the "Simple 10/20 system order" with your data because your channel labels do not appear to be standard 10/20 names.'));
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     EStduio_gui_EEG_plotset.chanorder_number.Value=1;
                     EStduio_gui_EEG_plotset.chanorder_front.Value=0;
                     EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -467,9 +465,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'on';
         
         if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Simple 10/20 order: It seems that chanlocs for the current EEG is empty and please check it out'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText= char(strcat('Plot Setting > Channel order>Simple 10/20 order: It seems that chanlocs for the current EEG is empty and please check it out'));
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -489,9 +487,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Export: It seems that chanlocs for the current EEG is empty and please check it out'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText= char(strcat('Plot Setting > Channel order>Custom>Export: It seems that chanlocs for the current EEG is empty and please check it out'));
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -567,9 +565,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         
         if ~isfield(observe_EEGDAT.EEG,'chanlocs') || isempty(observe_EEGDAT.EEG.chanlocs)
-            MessageViewer= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that chanlocs for the current EEG is empty and please check it out'));
-            erpworkingmemory('f_EEG_proces_messg',MessageViewer);
-            observe_EEGDAT.eeg_panel_message=4;
+            msgboxText= char(strcat('Plot Setting > Channel order>Custom>Import: It seems that chanlocs for the current EEG is empty and please check it out'));
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -590,9 +588,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
         if ~strcmpi(ext,'.tsv') && ~strcmpi(ext,'.txt')
-            msgboxText = ['Either ",tsv" or ".txt" is allowed'];
-            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-            errorfound(sprintf(msgboxText), title);
+            msgboxText = ['Estudio: Plot Settings > Channel Order > Custom > Import: Either ",tsv" or ".txt" is allowed'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return
         end
         erpFilename = char(strcat(erppathname,erpfilename,ext));
@@ -612,9 +610,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             if isnumeric(DataInput{ii,1})
                 chanorders(ii) = DataInput{ii,1};
                 if chanorders(ii)>length(labels)
-                    msgboxText = ['The defined channel order should be not more than',32,num2str(length(labels)),32,'for row',32,num2str(ii)];
-                    title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-                    errorfound(sprintf(msgboxText), title);
+                    msgboxText = ['Plot Settings > Channel Order > Custom > Import: The defined channel order should be not more than',32,num2str(length(labels)),32,'for row',32,num2str(ii)];
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
                 chanlabes{ii} = labels{chanorders(ii)};
@@ -622,32 +620,32 @@ varargout{1} = EStudio_box_EEG_plot_set;
             elseif ischar(DataInput{ii,1})
                 newStr = split(DataInput{ii,1},["."]);
                 if length(newStr)~=2 || ~isnumeric(str2num(newStr{1,1})) || ~ischar(newStr{2,1})
-                    msgboxText = ['The defined channel format for row',32,num2str(ii),32, 'should be:\n Row  Channel\n  1    1. FP1\n ...   ...\n'];
-                    title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-                    errorfound(sprintf(msgboxText), title);
+                    msgboxText = ['Plot Settings > Channel Order > Custom > Import: The defined channel format for row',32,num2str(ii),32, 'should be:\n Row  Channel\n  1    1. FP1\n ...   ...\n'];
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
                 chanorders(ii) = str2num(newStr{1,1});
                 chan_check(ii) = f_chanlabel_check(newStr{2,1},labels);
                 if chan_check(ii)==0
-                    msgboxText = ['The defined channel format for row',32,num2str(ii),32,'can not match any of channel labels'];
-                    title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-                    errorfound(sprintf(msgboxText), title);
+                    msgboxText = ['Plot Settings > Channel Order > Custom > Import: The defined channel format for row',32,num2str(ii),32,'can not match any of channel labels'];
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
                     return
                 end
                 chanlabes{ii} = labels{chan_check(ii)};
             else
-                msgboxText = ['The defined channel format should be either numberic or char for row',32,num2str(ii)];
-                title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-                errorfound(sprintf(msgboxText), title);
+                msgboxText = ['Plot Settings > Channel Order > Custom > Import: The defined channel format should be either numberic or char for row',32,num2str(ii)];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return
             end
         end
         chanorders1 = unique(chanorders);
         if any(chanorders(:)>length(labels)) || any(chanorders(:)<=0)
-            msgboxText = ['It seems that some of the defined chan orders are invalid or replicated, please check the file'];
-            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-            errorfound(sprintf(msgboxText), title);
+            msgboxText = ['Plot Settings > Channel Order > Custom > Import: It seems that some of the defined chan orders are invalid or replicated, please check the file'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -657,9 +655,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         if numel(chanorders1)~= observe_EEGDAT.EEG.nbchan
-            msgboxText = ['The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
-            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-            errorfound(sprintf(msgboxText), title);
+            msgboxText = ['Plot Settings > Channel Order > Custom > Import: The number of the defined chan orders must be',32,num2str(observe_EEGDAT.EEG.nbchan)];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -669,9 +667,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
         end
         
         if any(chan_check==0)
-            msgboxText = ['The channel labels are not the same to those for the current EEG'];
-            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-            errorfound(sprintf(msgboxText), title);
+            msgboxText = ['Plot Settings > Channel Order > Custom > Import: The channel labels are not the same to those for the current EEG'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             [xpos,ypos] =find(chan_check==0);
             if ~isempty(ypos)
                 labelsmatch = '';
@@ -708,10 +706,9 @@ varargout{1} = EStudio_box_EEG_plot_set;
             chan_check = unique(chan_check);
         end
         if numel(chan_check)~=observe_EEGDAT.EEG.nbchan
-            msgboxText = ['There are some replicated channel labels'];
-            title = 'Estudio: Plot Settings > Channel Order > Custom > Import:';
-            errorfound(sprintf(msgboxText), title);
-            
+            msgboxText = ['Plot Settings > Channel Order > Custom > Import: There are some replicated channel labels'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             EStduio_gui_EEG_plotset.chanorder_number.Value=1;
             EStduio_gui_EEG_plotset.chanorder_front.Value=0;
             EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -961,7 +958,6 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 MessageViewer= char(strcat('There were no custom-defined chan orders and we therefore used the default orders.'));
                 titlNamerro = 'Warning for EEG Tab - Plot Setting > Apply';
                 estudio_warning(MessageViewer,titlNamerro);
-                observe_EEGDAT.eeg_panel_message=4;
                 EStduio_gui_EEG_plotset.chanorder_number.Value=1;
                 EStduio_gui_EEG_plotset.chanorder_front.Value=0;
                 EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
@@ -1048,6 +1044,36 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EStduio_gui_EEG_plotset.rem_DC.Enable = 'on';
             end
         end
+        %%
+        if ~isempty(observe_EEGDAT.EEG)
+            EEGArray= estudioworkingmemory('EEGArray');
+            if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
+                EEGArray = observe_EEGDAT.CURRENTSET;
+                estudioworkingmemory('EEGArray',EEGArray);
+            end
+            SetFlags =  check_chanlocs(observe_EEGDAT.ALLEEG(EEGArray));
+            if any(SetFlags(:)==0)
+                if  EStduio_gui_EEG_plotset.chanorder_number.Value==0
+                    EStduio_gui_EEG_plotset.chanorder_number.Value=1;
+                    EStduio_gui_EEG_plotset.chanorder_front.Value=0;
+                    EStduio_gui_EEG_plotset.chanorder_custom.Value=0;
+                    EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = 'off';
+                    EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = 'off';
+                    try
+                        [eloc, labels, theta, radius, indices] = readlocs(observe_EEGDAT.EEG.chanlocs);
+                    catch
+                        labels = [];
+                    end
+                    EEG_plotset=  estudioworkingmemory('EEG_plotset');
+                    EEG_plotset{10} = 1;
+                    EEG_plotset{11}= {1:length(labels),labels};
+                    EStduio_gui_EEG_plotset.chanorder{1,1} = 1:length(labels);
+                    EStduio_gui_EEG_plotset.chanorder{1,2} = labels;
+                    estudioworkingmemory('EEG_plotset',EEG_plotset);
+                end
+            end
+        end
+        %%
         observe_EEGDAT.count_current_eeg=4;
     end
 
@@ -1217,6 +1243,40 @@ for jj = 1:length(Simplabels)
             count = count+1;
             simplabelIndex(kk) =   jj;
         end
+    end
+end
+end
+
+
+%%-----------------check if the channel location is empty------------------
+function SetFlags =  check_chanlocs(ALLEEG)
+SetFlags = zeros(length(ALLEEG),1);
+
+for Numofset = 1:length(ALLEEG)
+    EEG = ALLEEG(Numofset);
+    try
+        if ~isempty(EEG.chanlocs)
+            for Numofchan = 1:EEG.nbchan
+                if ~isempty(EEG.chanlocs(Numofchan).X)
+                    SetFlags(Numofset)=1;
+                end
+            end
+        end
+        %%10-10 system?
+        [eloc, labels, theta, radius, indices] = readlocs(EEG.chanlocs);
+        [Simplabels,simplabelIndex,SamAll] =  Simplelabels(labels);
+        count = 0;
+        for ii = 1:length(Simplabels)
+            [xpos,ypos]= find(simplabelIndex==ii);
+            if ~isempty(ypos)  && numel(ypos)>= floor(length(EEG.chanlocs)/2)
+                count = count+1;
+                if count==1
+                    SetFlags(Numofset)=0;
+                    break;
+                end
+            end
+        end
+    catch
     end
 end
 end

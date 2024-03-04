@@ -73,7 +73,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
         %         ERP_tab_edit_chan.mode_create.String =  '<html>Create new dataset<br />(independent transformations)</html>';
         set(ERP_tab_edit_chan.mode_2,'Sizes',[55 -1]);
         
-        
         %%Select channels that will be deleted and renamed
         ERP_tab_edit_chan.select_chan_title = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',ERP_tab_edit_chan.select_chan_title,...
@@ -83,7 +82,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ERP_tab_edit_chan.browse_chan = uicontrol('Style','pushbutton','Parent',ERP_tab_edit_chan.select_chan_title,...
             'String','Browse','callback',@browse_chan,'FontSize',FontSize_defualt,'Enable',Enable_label,'BackgroundColor',[1 1 1]); % 2F
         set(ERP_tab_edit_chan.select_chan_title,'sizes',[40 -1 60])
-        
         
         %%Delete selected channels && Rename selected channels
         ERP_tab_edit_chan.delete_rename = uiextras.HBox('Parent', ERP_tab_edit_chan.DataSelBox,'BackgroundColor',ColorB_def);
@@ -116,7 +114,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if ~isempty(messgStr) && ERPpanelIndex~=15
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
         ERP_tab_edit_chan.mode_modify.Value =1;
@@ -134,7 +131,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
         if ~isempty(messgStr) && ERPpanelIndex~=15
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
         ERP_tab_edit_chan.mode_modify.Value =0;
@@ -154,18 +150,19 @@ varargout{1} = EStudio_erp_box_edit_chan;
         
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
-        
         New_chans = str2num(Source.String);
-        if isempty(New_chans) || min(New_chans(:))<=0 || max(New_chans(:))<=0
-            erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Index(es) of channels should be positive numbers');
-            observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
+        if isempty(New_chans) || any(New_chans(:)<=0)
+            msgboxText='Edit Channels >  Index(es) of channels should be positive numbers';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         chanNum = observe_ERPDAT.ERP.nchan;
-        if min(New_chans(:)) > chanNum || max(New_chans(:)) >chanNum
-            erpworkingmemory('f_ERP_proces_messg',['Edit Channels >  Index(es) of channels should be smaller than',32,num2str(chanNum)]);
-            observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
+        if any(New_chans(:) > chanNum)
+            msgboxText=['Edit Channels >  Index(es) of channels should be smaller than',32,num2str(chanNum)];
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
@@ -185,7 +182,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
         
         EStudio_erp_box_edit_chan.TitleColor= [0.5137    0.7569    0.9176];
         estudioworkingmemory('ERPTab_editchan',1);
-        
         
         ERP = observe_ERPDAT.ERP;
         for Numofchan = 1:ERP.nchan
@@ -232,13 +228,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP))  ||  any(ERPArray <1)
-            ERPArray = observe_ERPDAT.CURRENTERP;
+            ERPArray = observe_ERPDAT.CURRENTERP;estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
-        if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers');
-            observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
+        if isempty(ChanArray) || any(ChanArray(:)<=0)
+            msgboxText='Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
@@ -252,17 +249,17 @@ varargout{1} = EStudio_erp_box_edit_chan;
             
             %%check the selected chans
             if any(ChanArray(:) > ERP.nchan)
-                Erromesg = ['Edit Channels >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(ERP.nchan)];
-                erpworkingmemory('f_ERP_proces_messg',Erromesg);
-                observe_ERPDAT.Process_messg =4;
+                msgboxText = ['Edit Channels >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(ERP.nchan)];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end
             
             if numel(ChanArray) == ERP.nchan
-                Erromesg = ['Edit Channels >  Delete selected chan > Please clear this ERPset in "ERPsets" panel if you want to delete all channels'];
-                erpworkingmemory('f_ERP_proces_messg',Erromesg);
-                observe_ERPDAT.Process_messg =4;
+                msgboxText = ['Edit Channels >  Delete selected chan > Please clear this ERPset in "ERPsets" panel if you want to delete all channels'];
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
                 return;
             end
@@ -347,15 +344,16 @@ varargout{1} = EStudio_erp_box_edit_chan;
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ChanArray =  str2num(ERP_tab_edit_chan.select_edit_chan.String);
         
-        if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_ERP_proces_messg','Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers');
-            observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
+        if isempty(ChanArray) || any(ChanArray(:)<=0)
+            msgboxText='Edit Channels >  Delete selected chan > Indexes of chans should be positive numbers';
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
-        if isempty(ERPArray) ||  min(ERPArray(:)) > length(observe_ERPDAT.ALLERP) ||  max(ERPArray(:)) > length(observe_ERPDAT.ALLERP) ||  min(ERPArray(:)) <1
-            ERPArray = observe_ERPDAT.CURRENTERP;
+        if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
+            ERPArray = observe_ERPDAT.CURRENTERP; estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
@@ -369,7 +367,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             fprintf(['Your current ERPset(No.',num2str(ERPArray(NumofERP)),'):',32,ERP.erpname,'\n\n']);
             
             %%check the selected chans
-            if min(ChanArray(:)) > ERP.nchan || max(ChanArray(:)) > ERP.nchan
+            if any(ChanArray(:) > ERP.nchan)
                 fprintf( ['Edit Channels >  Rename selected chan: Some of chan indexes exceed',32,num2str(ERP.nchan),32,', we therefore select all channels.\n']);
                 ChanArray = [1:ERP.nchan];
             end
@@ -390,7 +388,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
             Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
             
             if isempty(Chanlabelsnew)
-                %disp('User selected Cancel');
                 fprintf( [repmat('-',1,100) '\n']);
                 observe_ERPDAT.Process_messg =2;
                 return

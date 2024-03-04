@@ -13,6 +13,7 @@
 
 function varargout = f_EEG_eeg_sets_GUI(varargin)
 global observe_EEGDAT;
+global EStudio_gui_erp_totl;
 % global observe_ERPDAT;
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
@@ -127,6 +128,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         set(buttons4,'Sizes',[70 70 115]);
         set(vBox, 'Sizes', [20 150 25 25 25]);
         estudioworkingmemory('EEGTab_eegset',0);
+        EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -192,6 +194,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         f_redrawEEG_Wave_Viewer();
         whichpanel = [19:23];
         EEGTab_close_open_Panels(whichpanel);
+        EStudio_gui_erp_totl.EEG_transf = 1;
     end
 
 %%--------------------------epoched EEG--------------------------------------
@@ -203,7 +206,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         
         estudioworkingmemory('EEGTab_eegset',0);
-        
         EStduio_eegtab_EEG_set.eeg_contns.Value=0;
         EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         [EEGlistName,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets();
@@ -250,9 +252,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',1);
         observe_EEGDAT.count_current_eeg=2;
         f_redrawEEG_Wave_Viewer();
-        
         whichpanel = [12:18];
         EEGTab_close_open_Panels(whichpanel);
+        EStudio_gui_erp_totl.EEG_transf = 1;
     end
 
 
@@ -282,7 +284,6 @@ estudioworkingmemory('Startimes',0);%%set default value
             
             New_EEG.filename = '';
             New_EEG.setname = char(strcat(New_EEG.setname, '_Duplicated'));
-            
             if isempty(ChanArray) || any(ChanArray(:)>New_EEG.nbchan) || any(ChanArray(:)<=0)
                 ChanArray = [1:New_EEG.nbchan];
                 estudioworkingmemory('EEG_ChanArray',ChanArray);
@@ -397,7 +398,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         %-----------Setting for import-------------------------------------
         ALLEEG =   f_EEG_import_GUI(observe_EEGDAT.ALLEEG);
         if isempty(ALLEEG)
-            disp('User selected cancel');
             observe_EEGDAT.eeg_panel_message =2;
             return;
         end
@@ -407,15 +407,11 @@ estudioworkingmemory('Startimes',0);%%set default value
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
-            EStduio_eegtab_EEG_set.eeg_contns.Value=1;
-            EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
         end
         %%Only epoched EEG
         if EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1
             EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
-            EStduio_eegtab_EEG_set.eeg_contns.Value=0;
-            EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         end
         %%contains both continuous and epoched EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
@@ -425,9 +421,15 @@ estudioworkingmemory('Startimes',0);%%set default value
         CURRENTSET = length(ALLEEG);
         EEG = ALLEEG(CURRENTSET);
         if EEG.trials==1
+            if EStduio_eegtab_EEG_set.eeg_contns.Value==0
+                EStudio_gui_erp_totl.EEG_transf=1;
+            end
             EStduio_eegtab_EEG_set.eeg_contns.Value=1;
             EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
         else
+            if EStduio_eegtab_EEG_set.eeg_contns.Value==1
+                EStudio_gui_erp_totl.EEG_transf=1;
+            end
             EStduio_eegtab_EEG_set.eeg_contns.Value=0;
             EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         end
@@ -505,15 +507,11 @@ estudioworkingmemory('Startimes',0);%%set default value
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
-            EStduio_eegtab_EEG_set.eeg_contns.Value=1;
-            EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
         end
         %%Only epoched EEG
         if EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1
             EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
             EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
-            EStduio_eegtab_EEG_set.eeg_contns.Value=0;
-            EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         end
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==1
             EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
@@ -523,9 +521,15 @@ estudioworkingmemory('Startimes',0);%%set default value
         CURRENTSET = length(ALLEEG);
         EEG = ALLEEG(CURRENTSET);
         if EEG.trials==1
+            if EStduio_eegtab_EEG_set.eeg_contns.Value==0
+                EStudio_gui_erp_totl.EEG_transf=1;
+            end
             EStduio_eegtab_EEG_set.eeg_contns.Value=1;
             EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
         else
+            if EStduio_eegtab_EEG_set.eeg_contns.Value==1
+                EStudio_gui_erp_totl.EEG_transf=1;
+            end
             EStduio_eegtab_EEG_set.eeg_contns.Value=0;
             EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
         end
@@ -588,15 +592,12 @@ estudioworkingmemory('Startimes',0);%%set default value
         res = inputgui( 'uilist', uilist, 'geometry', { [3 1] [3 1] }, 'helpcom', 'pophelp(''pop_mergeset'')');
         
         if isempty(res)
-            disp('User selected Cancel');
             return;
         end
         INEEG2  = eval( [ '[' res{1} ']' ] );
         keepall = res{2};
         [EEG,LASTCOM]= pop_mergeset( observe_EEGDAT.ALLEEG,INEEG2,keepall);
         if isempty(LASTCOM)
-            beep;
-            disp('User selected Cancel');
             return;
         end
         
@@ -691,6 +692,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
                 EStduio_eegtab_EEG_set.eeg_contns.Enable='on';
                 EStduio_eegtab_EEG_set.eeg_epoch.Enable='off';
+                if EStduio_eegtab_EEG_set.eeg_contns.Value==0
+                    EStudio_gui_erp_totl.EEG_transf=1;
+                end
                 EStduio_eegtab_EEG_set.eeg_contns.Value=1;
                 EStduio_eegtab_EEG_set.eeg_epoch.Value = 0;
             end
@@ -698,6 +702,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             if EEGConts_epoch_Flag(1)==0 && EEGConts_epoch_Flag(2)==1
                 EStduio_eegtab_EEG_set.eeg_contns.Enable='off';
                 EStduio_eegtab_EEG_set.eeg_epoch.Enable='on';
+                if EStduio_eegtab_EEG_set.eeg_contns.Value==1
+                    EStudio_gui_erp_totl.EEG_transf=1;
+                end
                 EStduio_eegtab_EEG_set.eeg_contns.Value=0;
                 EStduio_eegtab_EEG_set.eeg_epoch.Value = 1;
             end

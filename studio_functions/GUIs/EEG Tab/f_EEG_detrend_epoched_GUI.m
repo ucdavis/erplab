@@ -162,13 +162,11 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.reset.ForegroundColor = [1 1 1];
         gui_eeg_epoch_dt.apply .BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_epoch_dt.apply .ForegroundColor = [1 1 1];
-        
         gui_eeg_epoch_dt.pre.Value=0;
         gui_eeg_epoch_dt.post.Value=1;
         gui_eeg_epoch_dt.whole.Value=0;
         gui_eeg_epoch_dt.custom.Value=0;
         gui_eeg_epoch_dt.custom_edit.Enable = 'off';
-        
         if observe_EEGDAT.EEG.times(end)<=0
             CUstom_String = '';
         else
@@ -193,7 +191,6 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.reset.ForegroundColor = [1 1 1];
         gui_eeg_epoch_dt.apply .BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_epoch_dt.apply .ForegroundColor = [1 1 1];
-        
         gui_eeg_epoch_dt.pre.Value=0;
         gui_eeg_epoch_dt.post.Value=0;
         gui_eeg_epoch_dt.whole.Value=1;
@@ -219,7 +216,6 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.reset.ForegroundColor = [1 1 1];
         gui_eeg_epoch_dt.apply .BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_eeg_epoch_dt.apply .ForegroundColor = [1 1 1];
-        
         
         gui_eeg_epoch_dt.pre.Value=0;
         gui_eeg_epoch_dt.post.Value=0;
@@ -248,38 +244,38 @@ varargout{1} = EEG_epoch_detrend_box;
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
             msgboxText =  ['Linear Detrend (Epoched EEG) - Invalid input'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if numel(lat_osci) ==1
             msgboxText =  ['Linear Detrend (Epoched EEG) - Please, enter two values'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         
         if lat_osci(1)>= lat_osci(2)
             msgboxText =  ['Linear Detrend (Epoched EEG) - The first value must be smaller than the second one'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         
         if lat_osci(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Linear Detrend (Epoched EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end))];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         if lat_osci(1) < observe_EEGDAT.EEG.times(1)
             msgboxText =  ['Linear Detrend (Epoched EEG) - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
@@ -335,8 +331,8 @@ varargout{1} = EEG_epoch_detrend_box;
                 msgboxText =  ['Linear Detrend (Epoched EEG) > Apply - First value must be larger than',32,num2str(observe_EEGDAT.EEG.times(1))];
             end
             if ~isempty(msgboxText)
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end
@@ -344,7 +340,7 @@ varargout{1} = EEG_epoch_detrend_box;
         erpworkingmemory('pop_eeglindetrend', detwindow);
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end

@@ -113,7 +113,6 @@ varargout{1} = ERP_bin_operation_gui;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
 %%-------------------Equation editor---------------------------------------
     function eq_advanced(Source_editor,~)
         if isempty(observe_ERPDAT.ERP)
@@ -198,7 +197,6 @@ varargout{1} = ERP_bin_operation_gui;
         
         [filename, filepath] = uigetfile({'*.txt';'*.*'},'Select a formulas-file');
         if isequal(filename,0)
-            disp('User selected Cancel')
             return
         else
             fullname = fullfile(filepath, filename);
@@ -206,21 +204,14 @@ varargout{1} = ERP_bin_operation_gui;
         end
         
         fid_formula = fopen( fullname );
-        try
-            formcell    = textscan(fid_formula, '%s','delimiter', '\r');
-            formulas    = char(formcell{:});
-        catch
-            msgboxText =  ['Bin Operations - Please, check your file:\n '...
-                fullname '\n'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
-            return;
-        end
+        formcell    = textscan(fid_formula, '%s','delimiter', '\r');
+        formulas    = char(formcell{:});
+        
         if size(formulas,2)>256
-            msgboxText =  ['Bin Operations - Formulas length exceed 256 characters.\n'...
+            msgboxText =  ['Bin Operations - Formulas length exceed 256 characters.'...
                 'Be sure to press [Enter] after you have entered each formula.'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         fclose(fid_formula);
@@ -249,8 +240,8 @@ varargout{1} = ERP_bin_operation_gui;
         observe_ERPDAT.Process_messg =1;
         if isempty(Formula_str)
             msgboxText =  ['Bin Operations >Save - You have not yet written a formula'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         pathName =  erpworkingmemory('EEG_save_folder');
@@ -430,8 +421,8 @@ varargout{1} = ERP_bin_operation_gui;
         end
         if isempty(Formula_str)
             msgboxText =  ['Bin Operations - You have not yet written a formula'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         

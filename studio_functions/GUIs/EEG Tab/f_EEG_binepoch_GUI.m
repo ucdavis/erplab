@@ -189,35 +189,31 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_binepoch',1);
-        
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Invalid input for "Time range"'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if numel(lat_osci) ~=2
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Wrong time range for the epoch. Please, enter two values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
         if lat_osci(1)>= lat_osci(2)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - The first value must be smaller than the second one for time range'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
         if lat_osci(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             gui_eegtab_binepoch.timerange_edit.String = '';
             return;
         end
@@ -240,7 +236,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_binepoch',1);
-        
         gui_eegtab_binepoch.none.Value =1;
         gui_eegtab_binepoch.pre.Value=0;
         gui_eegtab_binepoch.post.Value=0;
@@ -294,7 +289,6 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_binepoch',1);
-        
         gui_eegtab_binepoch.none.Value =0;
         gui_eegtab_binepoch.pre.Value=0;
         gui_eegtab_binepoch.post.Value=1;
@@ -341,7 +335,6 @@ varargout{1} = EEG_binepoch_box;
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         %%change color for cancel and apply
         gui_eegtab_binepoch.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_eegtab_binepoch.apply.ForegroundColor = [1 1 1];
@@ -379,79 +372,73 @@ varargout{1} = EEG_binepoch_box;
         %%check the time period for the epoch
         EpochRange = str2num(gui_eegtab_binepoch.timerange_edit.String);
         if isempty(EpochRange)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Invalid input for "Time range"'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if numel(EpochRange) ~=2
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Wrong time range for the epoch. Please, enter two values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if EpochRange(1)>= EpochRange(2)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - The first value must be smaller than the second one for time range'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if EpochRange(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         Baselineperiod = str2num(Source.String);
         %%check the defined baseline period
         if isempty(Baselineperiod)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Invalid input for "baseline period"'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if numel(Baselineperiod) ~=2
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Wrong baseline period for the epoch. Please, enter two values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if Baselineperiod(1)>= Baselineperiod(2)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - The first value must be smaller than the second one for "baseline period"'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if Baselineperiod(2) > EpochRange(2)
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - Second value must be smaller than',32,num2str(EpochRange(2)),32,"baseline period"];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if Baselineperiod(1) < EpochRange(1)
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) - First value must be larger than',32,num2str(EpochRange(1)),32,"baseline period"];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.custom_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
     end
@@ -479,36 +466,33 @@ varargout{1} = EEG_binepoch_box;
         %%check the time period for the epoch
         EpochRange = str2num(gui_eegtab_binepoch.timerange_edit.String);
         if isempty(EpochRange)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - Invalid input for "Time range"'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if numel(EpochRange) ~=2
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) >  Apply - Wrong time range for the epoch. Please, enter two values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if EpochRange(1)>= EpochRange(2)
-            beep;
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - The first value must be smaller than the second one for time range'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
         if EpochRange(2) > observe_EEGDAT.EEG.times(end)
             msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - Second value must be smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),32,'for time range'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4;
             gui_eegtab_binepoch.timerange_edit.String = '';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -517,41 +501,38 @@ varargout{1} = EEG_binepoch_box;
             Baselineperiod = str2num(gui_eegtab_binepoch.custom_edit.String);
             %%check the defined baseline period
             if isempty(Baselineperiod)
-                beep;
                 msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - Invalid input for "baseline period"'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if numel(Baselineperiod) ~=2
-                beep;
                 msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - Wrong baseline period for the epoch. Please, enter two values'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if Baselineperiod(1)>= Baselineperiod(2)
-                beep;
                 msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - The first value must be smaller than the second one for "baseline period"'];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if Baselineperiod(2) > EpochRange(2)
                 msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) > Apply - Second value must be smaller than',32,num2str(EpochRange(2)),32,"baseline period"];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if Baselineperiod(1) < EpochRange(1)
                 msgboxText =  ['Extract Bin-Based Epochs (Continuous EEG) Apply - First value must be larger than',32,num2str(EpochRange(1)),32,"baseline period"];
-                erpworkingmemory('f_EEG_proces_messg',msgboxText);
-                observe_EEGDAT.eeg_panel_message =4;
                 gui_eegtab_binepoch.custom_edit.String = '';
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end

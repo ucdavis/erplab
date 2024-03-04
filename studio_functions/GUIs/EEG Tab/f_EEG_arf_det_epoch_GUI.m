@@ -92,7 +92,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_epoch.markflgas_title,'FontWeight','bold',...
             'String','Mark Flag (flag 1 is reserved):','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         
-        
         Eegtab_EEG_art_det_epoch.markflgas_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.mflag1 = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_epoch.markflgas_title1,...
             'callback',@mflag1,'String','1','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','off','BackgroundColor',ColorB_def,'Value',1); % 2F
@@ -309,16 +308,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
         estudioworkingmemory('EEGTab_detect_arts_epoch',1);
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
-        if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
-            erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) >  Index(es) of chans should be positive number(s)');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-            Source.String= vect2colon([1:ChaNum]);
-            return;
-        end
         
-        if min(ChanArray(:))> ChaNum || max(ChanArray(:)) > ChaNum
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)]);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+        if isempty(ChanArray) || any(ChanArray(:)<=0 ) || any(ChanArray(:)> ChaNum)
+            msgboxText=['Artifact Detection (Epoched EEG) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String= vect2colon([1:ChaNum]);
             return;
         end
@@ -367,8 +361,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         if ~isempty(chan_label_select)
             Eegtab_EEG_art_det_epoch.chan_edit.String  = vect2colon(chan_label_select);
         else
-            beep;
-            %disp('User selected Cancel');
             return
         end
     end
@@ -626,14 +618,16 @@ varargout{1} = Eegtab_box_art_det_epoch;
         TimeRangedef = [observe_EEGDAT.EEG.times(1),observe_EEGDAT.EEG.times(end)];
         TimeRange = str2num(Source.String);
         if isempty(TimeRange) || numel(TimeRange)~=2
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) >  Test period should be two numbers']);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Artifact Detection (Epoched EEG) >  Test period should be two numbers'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String= num2str(TimeRangedef);
             return;
         end
         if TimeRange(1)<TimeRangedef(1) || TimeRange(2)>TimeRangedef(2) || TimeRange(2)<TimeRangedef(1) || TimeRange(1)>TimeRangedef(2)
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) >  Test period should be between',32,num2str(TimeRangedef(1)),32,'and',32,num2str(TimeRangedef(2))]);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText= ['Artifact Detection (Epoched EEG) >  Test period should be between',32,num2str(TimeRangedef(1)),32,'and',32,num2str(TimeRangedef(2))];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String= num2str(TimeRangedef);
             return;
         end
@@ -683,8 +677,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
             end
         end
         if ~isempty(errorMessage)
-            erpworkingmemory('f_EEG_proces_messg',errorMessage);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(errorMessage,titlNamerro);
             return;
         end
     end
@@ -726,8 +720,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
             Source.String = '200';
         end
         if ~isempty(errorMessage)
-            erpworkingmemory('f_EEG_proces_messg',errorMessage);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(errorMessage,titlNamerro);
             return;
         end
     end
@@ -768,8 +762,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
             end
         end
         if ~isempty(errorMessage)
-            erpworkingmemory('f_EEG_proces_messg',errorMessage);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(errorMessage,titlNamerro);
             return;
         end
     end
@@ -788,15 +782,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        %%--------Selected EEGsets-----------
-        EEGArray= estudioworkingmemory('EEGArray');
-        if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > Cancel: Only work for single EEG');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-            Source.String = 'Only for single EEG';
-            Source.Enable = 'off';
-            return;
-        end
+        
         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.detectar_cancel.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_epoch.detectar_cancel.ForegroundColor = [0 0 0];
@@ -988,9 +974,10 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%chans
         ChanArray = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
         nbchan = observe_EEGDAT.EEG.nbchan;
-        if isempty(ChanArray) || min(ChanArray(:)) <=0 || max(ChanArray(:)) <=0 || min(ChanArray(:)) > nbchan || max(ChanArray(:)) > nbchan
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) > Run: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)]);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+        if isempty(ChanArray) || any(ChanArray(:) <=0) ||  any(ChanArray(:) > nbchan)
+            errorMessage = ['Artifact Detection (Epoched EEG) > Run: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(errorMessage,titlNamerro);
             return;
         end
         %%flags for marking artifacts
@@ -1000,14 +987,16 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%test time period
         Testperiod = str2num(Eegtab_EEG_art_det_epoch.periods_edit.String);
         if isempty(Testperiod) || numel(Testperiod)~=2
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) > Run: Time perid should have two numbers']);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            errorMessage=['Artifact Detection (Epoched EEG) > Run: Time perid should have two numbers'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(errorMessage,titlNamerro);
             return;
         end
         
         if Testperiod(1) < epochStart || Testperiod(2) > epochEnd || Testperiod(1) > epochEnd || Testperiod(2) < epochStart
-            erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) > Run: Time perid should should be between',32,num2str(epochStart),32,'and',32,numstr(epochEnd)]);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            errorMessage=['Artifact Detection (Epoched EEG) > Run: Time perid should should be between',32,num2str(epochStart),32,'and',32,numstr(epochEnd)];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(errorMessage,titlNamerro);
             return;
         end
         Det_algostr = {'Simple voltage threshold','Moving window peak-to-peak threshold',...
@@ -1017,8 +1006,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Volthreshold = sort(str2num(Eegtab_EEG_art_det_epoch.voltage_edit.String));
         if AlgFlag==1
             if isempty(Volthreshold) ||  numel(Volthreshold)~=2
-                erpworkingmemory('f_EEG_proces_messg',['Artifact Detection (Epoched EEG) > Run: Voltage limits should have two numbers for "simple voltage threshold"']);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                errorMessage=['Artifact Detection (Epoched EEG) > Run: Voltage limits should have two numbers for "simple voltage threshold"'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(errorMessage,titlNamerro);
                 return;
             end
         else
@@ -1033,8 +1023,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 end
             end
             if ~isempty(erroMessage)
-                erpworkingmemory('f_EEG_proces_messg',erroMessage);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 return;
             end
         end
@@ -1044,24 +1034,24 @@ varargout{1} = Eegtab_box_art_det_epoch;
         WindowLength = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         erroMessage= '';
         if AlgFlag==5
-            if isempty(WindowLength)|| min(WindowLength(:))<=0
+            if isempty(WindowLength)|| any(WindowLength(:)<=0)
                 erroMessage=['Artifact Detection (Epoched EEG) > Run: Duration should be a positive number for "Blocking & flat line"'];
             end
-            if max(WindowLength(:)) > epochEnd-epochStart
+            if any(WindowLength(:) > epochEnd-epochStart)
                 erroMessage=['Artifact Detection (Epoched EEG) > Run: Duration cannot be greater than epoch size for "Blocking & flat line"'];
             end
         elseif AlgFlag==2 || AlgFlag==3
             erroMessage= '';
-            if isempty(WindowLength)|| min(WindowLength(:))<2
+            if isempty(WindowLength)|| any(WindowLength(:)<2)
                 erroMessage=['Artifact Detection (Epoched EEG) > Run: Moving window should be greater than 2 for "',Det_algostr{AlgFlag},'"'];
             end
-            if max(WindowLength(:)) > epochEnd-epochStart
+            if any(WindowLength(:) > epochEnd-epochStart)
                 erroMessage=['Artifact Detection (Epoched EEG) > Run: Moving window should be greater than 2 for "',Det_algostr{AlgFlag},'"'];
             end
         end
         if ~isempty(erroMessage)
-            erpworkingmemory('f_EEG_proces_messg',erroMessage);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(erroMessage,titlNamerro);
             return;
         end
         
@@ -1071,8 +1061,8 @@ varargout{1} = Eegtab_box_art_det_epoch;
         if AlgFlag==2 || AlgFlag==3
             if isempty(stepnts) ||  stepnts<1
                 erroMessage= ['Artifact Detection (Epoched EEG) > Run: The minimun window step value should be equal to the sampling period (1/fs msec) for "',Det_algostr{AlgFlag},'"'];
-                erpworkingmemory('f_EEG_proces_messg',erroMessage);
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(erroMessage,titlNamerro);
                 return;
             end
         end
@@ -1250,19 +1240,10 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.detectar_run.Enable= 'on';
         Eegtab_EEG_art_det_epoch.show_sumy_ar.Enable= 'on';
         
-        EEGArray= estudioworkingmemory('EEGArray');
-        if numel(EEGArray)~=1
-            erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > Cancel: Only work for single EEG, and we threfore gray it out');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
-            Eegtab_EEG_art_det_epoch.detectar_cancel.String = 'Only for single EEG';
-            Eegtab_EEG_art_det_epoch.detectar_cancel.Enable = 'off';
-        else
-            Eegtab_EEG_art_det_epoch.detectar_cancel.String = 'Cancel';
-            Eegtab_EEG_art_det_epoch.detectar_cancel.Enable = 'on';
-        end
-        
+        Eegtab_EEG_art_det_epoch.detectar_cancel.String = 'Cancel';
+        Eegtab_EEG_art_det_epoch.detectar_cancel.Enable = 'on';
         chanArray = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);
-        if isempty(chanArray) || min(chanArray(:)) > observe_EEGDAT.EEG.nbchan || max(chanArray(:)) > observe_EEGDAT.EEG.nbchan
+        if isempty(chanArray) || any(chanArray(:) > observe_EEGDAT.EEG.nbchan) || any(chanArray(:)<1)
             Eegtab_EEG_art_det_epoch.chan_edit.String = vect2colon([1:observe_EEGDAT.EEG.nbchan]);
         end
         

@@ -168,7 +168,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
 %%----------------------edit chans-----------------------------------------
     function event_codes_edit(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -186,8 +185,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.shiftcodes_run.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_shiftcodes_conus',1);
     end
-
-
 
 %%--------------------------Browse event codes-----------------------------
     function event_codes_browse(Source,~)
@@ -214,8 +211,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         end
         if ~isempty(msgboxText)
             msgboxText =  ['Shift Event Codes (Continuous EEG) > Browse event codes:',32,msgboxText];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -230,7 +225,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             Eventcodeold = regexp(Eventcodeold,'(?<=\d)\s(?=\d)|,\s*','split'); %remove commas if exist
             Eventcodeold = Eventcodeold(~cellfun('isempty',Eventcodeold));
         end
-        
         
         try
             [C,IA] = ismember_bc2(Eventcodeold,eventtypes);
@@ -282,8 +276,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         timeshiftnew= str2num(Source.String);
         if isempty(timeshiftnew) || numel(timeshiftnew)~=1
             msgboxText = ['Shift Event Codes (Continuous EEG) > Time shift meust be one number'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -489,8 +481,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         Eventcodes = (Eventcodes);
         if isempty(Eventcodes)
             msgboxText = ['Shift Event Codes (Continuous EEG) > Shift events: Please define one or more event codes'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -500,8 +490,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         timeshift  = str2num(EEG_shift_eventcode_conus.timeshift_edit.String);
         if isempty(timeshift) || numel(timeshift)~=1
             msgboxText = ['Shift Event Codes (Continuous EEG) > Shift events: Timeshift must be one number'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;

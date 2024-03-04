@@ -295,32 +295,32 @@ varargout{1} = ERP_basecorr_detrend_box;
         lat_osci = str2num(Source.String);
         if isempty(lat_osci)
             msgboxText =  ['Baseline Correction & Linear Detrend - Invalid input for "baseline range"'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if numel(lat_osci) ==1
             msgboxText =  ['Baseline Correction & Linear Detrend - Wrong baseline range. Please, enter two values'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if lat_osci(1)>= lat_osci(2)
             msgboxText =  ['Baseline Correction & Linear Detrend - The first value must be smaller than the second one'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if lat_osci(2) > observe_ERPDAT.ERP.times(end)
             msgboxText =  ['Baseline Correction & Linear Detrend - Second value must be smaller than',32,num2str(observe_ERPDAT.ERP.times(end))];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if lat_osci(1) < observe_ERPDAT.ERP.times(1)
             msgboxText =  ['Baseline Correction & Linear Detrend - First value must be larger than',32,num2str(observe_ERPDAT.ERP.times(1))];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -402,32 +402,32 @@ varargout{1} = ERP_basecorr_detrend_box;
         if gui_erp_blc_dt.custom.Value ==1
             if isempty(BaselineMethod)
                 msgboxText =  ['Baseline Correction & Linear Detrend - Invalid input for baseline range; Please Cancel two values'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if numel(BaselineMethod) ==1
                 msgboxText =  ['Baseline Correction & Linear Detrend - Wrong baseline range. Please, enter two values'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if BaselineMethod(1)>= BaselineMethod(2)
                 msgboxText =  ['Baseline Correction & Linear Detrend - The first value must be smaller than the second one'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if roundn(BaselineMethod(2),-3) > roundn(observe_ERPDAT.ERP.times(end),-3)
                 msgboxText =  ['Baseline Correction & Linear Detrend - Second value must be smaller than',32,num2str(observe_ERPDAT.ERP.times(end))];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             if roundn(BaselineMethod(1),-3) < roundn(observe_ERPDAT.ERP.times(1),-3)
                 msgboxText =  ['Baseline Correction & Linear Detrend - First value must be larger than',32,num2str(observe_ERPDAT.ERP.times(1))];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
         end

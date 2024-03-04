@@ -105,8 +105,8 @@ varargout{1} = box_erp_append;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=12
+        [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',1);
@@ -133,8 +133,8 @@ varargout{1} = box_erp_append;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=12
+        [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',1);
@@ -159,8 +159,8 @@ varargout{1} = box_erp_append;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=12
+        [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',1);
@@ -174,24 +174,25 @@ varargout{1} = box_erp_append;
         
         ERPArray = ceil(str2num(Source.String));
         if  numel(ERPArray)<2
-            messgStr = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
+            msgboxText = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
-            observe_ERPDAT.Process_messg=4;
+            
             return;
         end
         if any(ERPArray <1)
-            messgStr = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
         
         if any(ERPArray > length(observe_ERPDAT.ALLERP))
-            messgStr = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
@@ -204,8 +205,8 @@ varargout{1} = box_erp_append;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=12
+        [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_append',0);
@@ -249,8 +250,8 @@ varargout{1} = box_erp_append;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=12
+        [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
@@ -260,28 +261,28 @@ varargout{1} = box_erp_append;
         
         ERPArray = str2num(gui_erp_append.erpset_edit.String);
         if isempty(ERPArray) || numel(ERPArray)<2
-            messgStr = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(ERPArray <=0)
-            messgStr = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(ERPArray > length(observe_ERPDAT.ALLERP))
-            messgStr = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%check number of samples/channels, and data type
-        messgStr  = check_ERPset(ERPArray);
-        if ~isempty(messgStr)
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+        msgboxText  = check_ERPset(ERPArray);
+        if ~isempty(msgboxText)
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return
         end
         
@@ -365,18 +366,18 @@ varargout{1} = box_erp_append;
         ALLERPCOM = evalin('base','ALLERPCOM');
         
         if optioni==0
-            messgStr  = check_ERPset(erpset);
-            if ~isempty(messgStr)
-                erpworkingmemory('f_ERP_proces_messg',messgStr);
-                observe_ERPDAT.Process_messg=4;
+            msgboxText  = check_ERPset(erpset);
+            if ~isempty(msgboxText)
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return
             end
             %%check prefixes
             
             if ~isempty(prefixliststr) && numel(erpset) ~= length(prefixliststr)
-                messgStr = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
-                erpworkingmemory('f_ERP_proces_messg',messgStr);
-                observe_ERPDAT.Process_messg=4;
+                msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
+                titlNamerro = 'Warning for ERP Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return
             end
         end
@@ -391,8 +392,8 @@ varargout{1} = box_erp_append;
                 formcell = textscan(fid_list, '%[^\n]','CommentStyle','#', 'whitespace', '');
                 lista    = formcell{:};
                 if  numel(lista) ~= length(prefixliststr)
-                    messgStr = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
-                    erpworkingmemory('f_ERP_proces_messg',messgStr);
+                    msgboxText = strcat('Append ERPsets > prefixes must to be as large as ERPset indx');
+                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
                     observe_ERPDAT.Process_messg=4;
                     return
                 end
@@ -481,8 +482,8 @@ varargout{1} = box_erp_append;
             return;
         end
         %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=12
+        [msgboxText,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(msgboxText) && eegpanelIndex~=12
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
@@ -492,29 +493,28 @@ varargout{1} = box_erp_append;
         %%-------check the inputed ERPsetArray-----------------------------
         ERPArray = str2num(gui_erp_append.erpset_edit.String);
         if isempty(ERPArray) || numel(ERPArray)<2
-            messgStr = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > You have to specify 2 ERPsets, at least.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(ERPArray <=0)
-            messgStr = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than 0.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         if any(ERPArray > length(observe_ERPDAT.ALLERP))
-            messgStr = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            beep;
-            observe_ERPDAT.Process_messg=4;
+            msgboxText = strcat('Append ERPsets > Index of inputs should not be larger than',32,num2str(length(observe_ERPDAT.ALLERP)),'.');
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         %%check number of samples/channels, and data type
-        messgStr  = check_ERPset(ERPArray);
-        if ~isempty(messgStr)
-            erpworkingmemory('f_ERP_proces_messg',messgStr);
-            observe_ERPDAT.Process_messg=4;
+        msgboxText  = check_ERPset(ERPArray);
+        if ~isempty(msgboxText)
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return
         end
         estudioworkingmemory('ERPTab_append',0);

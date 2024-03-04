@@ -103,8 +103,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         estudioworkingmemory('EEGTab_editchan',0);
     end
 
-
-
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
@@ -158,8 +156,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         New_chans = str2num(Source.String);
         if isempty(New_chans) || any(New_chans(:)<=0)
             msgboxText = ['Edit Channels >  Index(es) of channels should be positive values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -168,8 +164,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         chanNum = observe_EEGDAT.EEG.nbchan;
         if any(New_chans(:) > chanNum)
             msgboxText = ['Edit Channels >  Index(es) of channels should be smaller than',32,num2str(chanNum)];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -239,14 +233,12 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         ChanArray =  str2num(EStduio_eegtab_EEG_edit_chan.select_edit_chan.String);
         if isempty(ChanArray) || any(ChanArray(:)<=0)
             msgboxText = ['Edit Channels >  Delete selected chan > Indexes of chans should be positive values'];
-            erpworkingmemory('f_EEG_proces_messg',msgboxText);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -262,8 +254,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             %%check the selected chans
             if any(ChanArray(:) > EEG.nbchan)
                 Erromesg = ['Edit Channels >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(EEG.nbchan)];
-                erpworkingmemory('f_EEG_proces_messg',Erromesg);
-                observe_EEGDAT.eeg_panel_message =4;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(Erromesg,titlNamerro);
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -272,8 +262,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             
             if numel(ChanArray) == EEG.nbchan
                 Erromesg = ['Edit Channels >  Delete selected chan > Please clear this EEGset in "EEGsets" panel if you want to delete all channels'];
-                erpworkingmemory('f_EEG_proces_messg',Erromesg);
-                observe_EEGDAT.eeg_panel_message =4;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(Erromesg,titlNamerro);
                 fprintf( ['\n',repmat('-',1,100) '\n']);
@@ -363,16 +351,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         
         if isempty(ChanArray) || any(ChanArray(:)<=0)
             Erromesg = ['Edit Channels >  Rename selected chan > Indexes of chans should be positive values'];
-            erpworkingmemory('f_EEG_proces_messg',Erromesg);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(Erromesg,titlNamerro);
             return;
         end
         
         EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) ||  min(EEGArray(:)) <1
-            EEGArray = observe_EEGDAT.CURRENTSET;
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
@@ -499,7 +485,7 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:)> length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;
+            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
         CreateeegFlag = EStduio_eegtab_EEG_edit_chan.mode_create.Value; %%create new eeg dataset
         %%loop for the selected EEGsets

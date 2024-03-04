@@ -82,6 +82,7 @@ varargout{1} = EStudio_box_bin_chan;
         set(ERPTab_bin_chan.DataSelBox,'Sizes',[250 30]);
         
         estudioworkingmemory('ERPTab_chanbin',0);
+        ERPTab_bin_chan.ERPFlag = 0;
     end
 
 %%**************************************************************************%%
@@ -110,8 +111,6 @@ varargout{1} = EStudio_box_bin_chan;
         
         new_chans = src.Value;
         if isempty(new_chans)
-            beep;
-            disp(['No channel was selected']);
             return;
         end
         [~,y_chan_index_select] = find(new_chans==1);
@@ -144,8 +143,6 @@ varargout{1} = EStudio_box_bin_chan;
         
         bin_select = ERPTab_bin_chan.BinRange.Value;
         if isempty(bin_select)
-            beep;
-            disp(['No bin was selected']);
             return;
         end
         [~,y_bin_index_select] = find(bin_select==1);
@@ -255,12 +252,10 @@ varargout{1} = EStudio_box_bin_chan;
         end
         estudioworkingmemory('ERP_BinArray',BinArray);
         observe_ERPDAT.Count_currentERP=3;
-        
         f_redrawERP();
         erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Two_GUI =2;
-        
     end
 
 
@@ -299,7 +294,7 @@ varargout{1} = EStudio_box_bin_chan;
             if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:) >length(Chanlist_name)-1) || numel(ChanArray) == length(Chanlist_name)-1
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
-                 estudioworkingmemory('ERP_ChanArray',ChanArray);
+                estudioworkingmemory('ERP_ChanArray',ChanArray);
             else
                 ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
                 ChanArray = ChanArray;
@@ -320,6 +315,12 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.BinRange.Max = length(binlist_name) + 1;
             BinArray= estudioworkingmemory('ERP_BinArray');
             BinNum = observe_ERPDAT.ERP.nbin;
+            if ERPTab_bin_chan.ERPFlag ==1
+                if ERPTab_bin_chan.BinRange.Value==1
+                    BinArray = 1:BinNum; estudioworkingmemory('ERP_BinArray',BinArray);
+                end
+            end
+            
             if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) >= BinNum
                 BinArray = [1:BinNum];
                 ERPTab_bin_chan.BinRange.Value=1;
@@ -327,6 +328,7 @@ varargout{1} = EStudio_box_bin_chan;
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
             end
+            ERPTab_bin_chan.ERPFlag = 1;
         end
         
         ERPTab_bin_chan.ElecRange.Enable = Enableflag;

@@ -47,39 +47,32 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.DataSelBox = uiextras.VBox('Parent', Erp_information, 'Spacing',1,'BackgroundColor',ColorB_def);
         
         %%----------------------------Setting sampling rate---------------------
-        gui_erp_information.samplingrate = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.samplingrate_title = uicontrol('Style','text','Parent', gui_erp_information.samplingrate,'String','Sampling:','FontSize',FonsizeDefault);
-        
-        ERP_time_resolution = strcat(32,num2str(0),32,'ms (time resolution);',32,num2str(''),32,'Hz (rate)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(gui_erp_information.samplingrate_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        
-        gui_erp_information.samplingrate_resolution = uicontrol('Style','text','Parent', gui_erp_information.samplingrate,'String',ERP_time_resolution,'FontSize',FonsizeDefault);
+        gui_erp_information.samplingrate_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
+        ERP_time_resolution = strcat('Sampling: ');
+        gui_erp_information.samplingrate_resolution = uicontrol('Style','text','Parent', gui_erp_information.samplingrate_title,'String',ERP_time_resolution,'FontSize',FonsizeDefault);
         set(gui_erp_information.samplingrate_resolution,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_information.samplingrate ,'Sizes',[70 430]);
         
         %%----------------------------Setting epoch---------------------
         gui_erp_information.epoch = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.epoch_title = uicontrol('Style','text','Parent', gui_erp_information.epoch,'String','Epoch:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(gui_erp_information.epoch_title,'HorizontalAlignment','left');
-        gui_erp_information.epoch_name = uicontrol('Style','text','Parent', gui_erp_information.epoch,'String',[32,'',32,'to',32,'',32,'ms (','0',32,'pts)'],'FontSize',FonsizeDefault);
+        gui_erp_information.epoch_name = uicontrol('Style','text','Parent', gui_erp_information.epoch,'String',['Epoch:'],'FontSize',FonsizeDefault);
         set(gui_erp_information.epoch_name,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_information.epoch ,'Sizes',[50 450]);
+        
+        %%----------------------------channel locations---------------------
+        gui_erp_information.chanlocs_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
+        gui_erp_information.chanlocs  = uicontrol('Style','text','Parent', gui_erp_information.chanlocs_title,'String','Channel locations:',...
+            'FontSize',FonsizeDefault,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
+        
         %%----------------------------Number of Channels---------------------
         gui_erp_information.chan_num = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.numofchan_title = uicontrol('Style','text','Parent', gui_erp_information.chan_num,'String','Number of channels:','FontSize',FonsizeDefault);
-        set(gui_erp_information.numofchan_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        gui_erp_information.numofchan  = uicontrol('Style','text','Parent', gui_erp_information.chan_num,'String','','FontSize',FonsizeDefault);
+        gui_erp_information.numofchan  = uicontrol('Style','text','Parent', gui_erp_information.chan_num,'String','Number of channels:','FontSize',FonsizeDefault);
         set(gui_erp_information.numofchan,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_information.chan_num ,'Sizes',[125 375]);
-        %         set(gui_erp_information.filename_gui,'Sizes',[100 -1]);
+        
         %%----------------------------Number of bins---------------------
         gui_erp_information.bin_num = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.bin_num_title = uicontrol('Style','text','Parent', gui_erp_information.bin_num,'String','Number of bins:','FontSize',FonsizeDefault);
-        set(gui_erp_information.bin_num_title,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        gui_erp_information.numofbin  = uicontrol('Style','text','Parent', gui_erp_information.bin_num,'String','','FontSize',FonsizeDefault);
-        %         set(gui_erp_information.filename_gui,'Sizes',[100 -1]);
+        gui_erp_information.numofbin  = uicontrol('Style','text','Parent', gui_erp_information.bin_num,'String','Number of bins:','FontSize',FonsizeDefault);
         set(gui_erp_information.numofbin,'HorizontalAlignment','left','BackgroundColor',ColorB_def);
-        set(gui_erp_information.bin_num ,'Sizes',[110 390]);
+        
+        
         %%----------------------------Total accepted---------------------
         N_trials = 0;
         N_trial_total = 0;
@@ -90,20 +83,18 @@ drawui_erp_information(FonsizeDefault);
             Total_rejected_trials = strcat('0%');
         end
         gui_erp_information.total_rejected = uiextras.HBox('Parent',gui_erp_information.DataSelBox);
-        gui_erp_information.total_rejected_title = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String','Total rejected trials:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        set(gui_erp_information.total_rejected_title,'HorizontalAlignment','left');
-        
-        gui_erp_information.total_rejected_percentage  = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String',Total_rejected_trials,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_information.total_rejected_percentage  = uicontrol('Style','text','Parent', gui_erp_information.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_erp_information.total_rejected_percentage,'HorizontalAlignment','left');
-        set(gui_erp_information.total_rejected,'Sizes',[125 375]);
+        
         
         %%------------totla rejected----------
         gui_erp_information.total_rejected_show = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_information.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Artifact rejection details',...
+        gui_erp_information.total_rejected_option2  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Artifact rejection details',...
             'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        gui_erp_information.total_rejected_option2.Enable = 'off';
+        gui_erp_information.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_erp_information.total_rejected_show,'String','Classic artifact summary',...
+            'callback',@total_reject_clasc,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         gui_erp_information.total_rejected_option.Enable = 'off';
-        uiextras.Empty('Parent', gui_erp_information.total_rejected_show);
-        set(gui_erp_information.total_rejected_show,'Sizes',[150 250]);
         
         
         %%---------------------Table---------------------------------------
@@ -122,11 +113,11 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.table_event = uitable(  ...
             'Parent'        , gui_erp_information.table_title,...
             'Data'          , dsnames, ...
-            'ColumnWidth'   , {50,50,60,60,50}, ...
+            'ColumnWidth'   , {30,40,60,60,50}, ...
             'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false, false, false, false]);
-        set(gui_erp_information.DataSelBox,'Sizes',[20 20 20 20 20 30 20 100])
+        set(gui_erp_information.DataSelBox,'Sizes',[20 20 20 20 20 20 30 20 100])
     end
 
 
@@ -142,38 +133,66 @@ drawui_erp_information(FonsizeDefault);
         
         ERP = observe_ERPDAT.ERP;
         if ~isempty(ERP)
-            ERP_time_resolution = strcat(32,num2str(roundn(1000/ERP.srate,-2)),32,'ms (resolution);',32,num2str(ERP.srate),32,'Hz');
+            ERP_time_resolution = strcat('Sampling:',32,num2str(ERP.srate),32,'Hz',32,'(',num2str(roundn(1000/ERP.srate,-2)),32,'ms/sample)');
         else
-            ERP_time_resolution = strcat(32,num2str(0),32,'ms (time resolution);',32,num2str(0),32,'Hz (rate)');
+            ERP_time_resolution = strcat('Sampling: ');
         end
-        gui_erp_information.samplingrate_resolution.String = ERP_time_resolution;
+        gui_erp_information.samplingrate_resolution.String = [ERP_time_resolution];
         try
-            gui_erp_information.epoch_name.String=char(strcat(num2str(roundn(ERP.times(1),-2)),32,'to',32,num2str(roundn(ERP.times(end),-2)),32,...
-                'ms(',num2str(numel(ERP.times)),32,'pts)'));
+            gui_erp_information.epoch_name.String=strcat('Epoch:',32,num2str(roundn(ERP.times(1),-2)),32,'to',32,num2str(roundn(ERP.times(end),-2)),32,...
+                'ms (',num2str(numel(ERP.times)),32,'pnts)');
         catch
-            gui_erp_information.epoch_name.String=char(strcat('0 to 0 ms (0 pts)'));
+            gui_erp_information.epoch_name.String=['Epoch:'];
+        end
+        
+        %%channel locations?
+        try
+            count = 0;
+            if ~isempty(ERP.chanlocs)
+                for Numofchan = 1:ERP.nchan
+                    if ~isempty(ERP.chanlocs(Numofchan).X)
+                        count =1;
+                    end
+                end
+            end
+            if count==1
+                gui_erp_information.chanlocs.String = 'Channel locations: set';
+            else
+                gui_erp_information.chanlocs.String = 'Channel locations: not set';
+            end
+        catch
+            gui_erp_information.chanlocs.String = 'Channel locations: not set';
+        end
+ 
+          
+        try
+            gui_erp_information.numofchan.String=['Number of channels:',32,num2str(ERP.nchan)];
+        catch
+            gui_erp_information.numofchan.String=['Number of channels:',32,];
         end
         try
-            gui_erp_information.numofchan.String=num2str(ERP.nchan);
+            gui_erp_information.numofbin.String=['Number of bins:',32,num2str(ERP.nbin)];
         catch
-            gui_erp_information.numofchan.String=num2str(0);
-        end
-        try
-            gui_erp_information.numofbin.String=num2str(ERP.nbin);
-        catch
-            gui_erp_information.numofbin.String=num2str(0);
+            gui_erp_information.numofbin.String=['Number of bins:',32,num2str(0)];
         end
         if ~isempty(ERP)
             N_trials = ERP.ntrials;
             N_trial_total = sum(N_trials.accepted(:))+sum(N_trials.rejected(:))+sum(N_trials.invalid(:));
             N_trial_rejected = sum(N_trials.rejected(:));
             if N_trial_total ==0
-                Total_rejected_trials = strcat('0 (0)');
+                Total_rejected_trials = strcat('Total rejected trials: 0 (0)');
             else
-                Total_rejected_trials = strcat([num2str(N_trial_rejected),32,'(',num2str(roundn(N_trial_rejected/N_trial_total,-3)*100),'%)']);
+                Total_rejected_trials = strcat('Total rejected trials:',32,[num2str(N_trial_rejected),32,'(',num2str(roundn(N_trial_rejected/N_trial_total,-3)*100),'%)']);
             end
             gui_erp_information.total_rejected_percentage.String = Total_rejected_trials;
             Enable_label = 'on';
+            for ii = 1:100
+                dsnamesdef{ii,1} = [];
+                dsnamesdef{ii,2} = [];
+                dsnamesdef{ii,3} = [];
+                dsnamesdef{ii,4} = [];
+                dsnamesdef{ii,5} = [];
+            end
             try
                 for ii = 1:numel(ERP.ntrials.accepted)
                     dsnames{ii,1} = ii;
@@ -183,19 +202,14 @@ drawui_erp_information(FonsizeDefault);
                     dsnames{ii,5} = ERP.ntrials.invalid(ii);
                 end
             catch
-                for ii = 1:100
-                    dsnames{ii,1} = [];
-                    dsnames{ii,2} = [];
-                    dsnames{ii,3} = [];
-                    dsnames{ii,4} = [];
-                    dsnames{ii,5} = [];
-                end
+                dsnames = dsnamesdef;
             end
-            gui_erp_information.table_event.Data = dsnames;
         else
-            gui_erp_information.total_rejected_percentage.String = '0';
+            gui_erp_information.total_rejected_percentage.String = 'Total rejected trials: 0';
             Enable_label = 'off';
+            dsnames = dsnamesdef;
         end
+        gui_erp_information.table_event.Data = dsnames;
         ViewerFlag=erpworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
@@ -205,24 +219,41 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_information.total_rejected_percentage.Enable = Enable_label;
         gui_erp_information.total_rejected_option.Enable = Enable_label;
+        gui_erp_information.total_rejected_option2.Enable = Enable_label;
         observe_ERPDAT.Count_currentERP=6;
     end
 
-%%----------------Rejection option----------------------------------------
+%%-------------------------------artifact summary--------------------------
     function total_reject_ops(~,~)
         if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             return;
         end
-        SelectedERP= estudioworkingmemory('selectederpstudio');
-        if isempty(SelectedERP) || any(SelectedERP>length(observe_ERPDAT.ALLERP))
-            SelectedERP = length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.CURRENTERP = SelectedERP;
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.CURRENTERP = ERPArray;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            estudioworkingmemory('selectederpstudio',SelectedERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
+        end
+        feval('dq_trial_rejection',observe_ERPDAT.ALLERP(ERPArray),[],0);
+    end
+
+
+%%----------------Rejection option classic---------------------------------
+    function total_reject_clasc(~,~)
+        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
+            return;
+        end
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.CURRENTERP = ERPArray;
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try
-            for Numoferp = 1:numel(SelectedERP)
-                ERP  = observe_ERPDAT.ALLERP(SelectedERP(Numoferp));
+            for Numoferp = 1:numel(ERPArray)
+                ERP  = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
                 [ERP, acce, rej, histoflags, erpcom] = pop_summary_AR_erp_detection(ERP);
             end
         catch

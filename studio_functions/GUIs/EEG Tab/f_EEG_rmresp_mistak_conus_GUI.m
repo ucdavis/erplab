@@ -108,11 +108,6 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 %%--------------------------Sub function---------------------------------%%
 %%***********************************************************************%%
 
-%%---------------------------Help------------------------------------------
-%     function rmresp_help(~,~)
-%         web('https://github.com/ucdavis/erplab/wiki/Manual/','-browser');
-%     end
-
 %%----------------------edit chans-----------------------------------------
     function Stimulus_edit(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -155,9 +150,10 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         stim_codes = (stim_codes);
         if isempty(stim_codes)
-            erpworkingmemory('f_EEG_proces_messg',['Remove Response Errors (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid']);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid'];
             Source.String ='';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -170,9 +166,10 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         
         if IA2==0
-            erpworkingmemory('f_EEG_proces_messg',['Remove Response Errors (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid']);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid'];
             Source.String ='';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
         else
             %             Source.String =stim_codes;
         end
@@ -223,9 +220,10 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         repsd_codes = (repsd_codes);
         if isempty(repsd_codes)
-            erpworkingmemory('f_EEG_proces_messg',['Remove Response Errors (Continuous EEG) > Some of inputs for "Response" event types are invalid']);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Some of inputs for "Response" event types are invalid'];
             Source.String ='';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
         
         all_ev_unique= EEG_rmresp_mistak_conus.all_ev_unique;
@@ -236,8 +234,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         if IA2==0
             erpworkingmemory('f_EEG_proces_messg',['Remove Response Errors (Continuous EEG) > Some of inputs for "Response" event types are invalid']);
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
             Source.String ='';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
         else
             %             Source.String =repsd_codes;
         end
@@ -291,7 +290,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || min(EEGArray(:)) > length(observe_EEGDAT.ALLEEG) || max(EEGArray(:)) > length(observe_EEGDAT.ALLEEG)
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
@@ -323,8 +322,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         
         
         if isempty(stim_codes)
-            erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -335,8 +335,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             IA1 = 0;
         end
         if IA1==0
-            erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
@@ -367,8 +368,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         resp_codes = (resp_codes);
         
         if isempty(resp_codes)
-            erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         try
@@ -378,8 +380,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         
         if IA2==0
-            erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid');
-            observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -409,8 +412,11 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
                 IA1 = 0;
             end
             if IA1==0
-                erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid');
+                msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
+                erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -421,9 +427,10 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             end
             
             if IA2==0
-                erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid');
-                observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
+                msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid'];
                 fprintf( [repmat('-',1,100) '\n']);
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
                 return;
             end
             

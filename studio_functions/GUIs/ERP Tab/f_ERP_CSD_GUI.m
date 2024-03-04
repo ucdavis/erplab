@@ -96,7 +96,6 @@ varargout{1} = ERP_CSD_gui;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
 %%-------------------Setting value for Spline interpolation flexibility m-constant value----------------
     function csd_sif(source,~)
         if isempty(observe_ERPDAT.ERP)
@@ -119,8 +118,8 @@ varargout{1} = ERP_CSD_gui;
         if isempty(mcont) || numel(mcont)~=1
             gui_erp_CSD.sif_num.String='4';
             msgboxText =  ['Convert voltage to CSD - Please ensure that the input was a single value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 
@@ -146,8 +145,8 @@ varargout{1} = ERP_CSD_gui;
         if isempty(mcont) || numel(mcont)~=1
             gui_erp_CSD.scl_num.String='0.0001';
             msgboxText =  ['Convert voltage to CSD - Please ensure that the input was a single value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 
@@ -172,8 +171,8 @@ varargout{1} = ERP_CSD_gui;
         if isempty(mcont) || numel(mcont)~=1
             gui_erp_CSD.hr_num.String='10';
             msgboxText =  ['Convert voltage to CSD - Please ensure that the input was a single value'];
-            erpworkingmemory('f_ERP_proces_messg',msgboxText);
-            observe_ERPDAT.Process_messg =4;
+            titlNamerro = 'Warning for ERP Tab';
+            estudio_warning(msgboxText,titlNamerro);
         end
     end
 

@@ -64,10 +64,8 @@ for jj = 1:length(simplabelIndexNew_uq)
             count = count+1;
             [x_ychanposcell,y_ychanposcell] = sort(ychanpos(ypos),'descend');
             Ixpos(ypos) = Ixpos(ypos(y_ychanposcell));
-            
-            labelscell = labelsvalid(validechan(Ixpos(ypos)));
+            labelscell = labelsvalid(Ixpos(ypos));
             validechanNew = [validechanNew validechan(Ixpos(ypos))];
-            
         end
     end
 end

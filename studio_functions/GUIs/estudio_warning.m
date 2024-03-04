@@ -31,11 +31,12 @@ mh = msgbox(Messagestr, ['Estudio:',32,titleName]);     %create msgbox
 mh.Resize = 'on';
 th = findall(mh, 'Type', 'Text');                   %get handle to text within msgbox
 th.FontSize = FonsizeDefault;
+set(mh,'color',ColorB_def);
 deltaWidth = sum(th.Extent([1,3]))-mh.Position(3) + th.Extent(1);
 deltaHeight = sum(th.Extent([2,4]))-mh.Position(4) + 10;
 mh.Position([3,4]) = mh.Position([3,4]) + [deltaWidth, deltaHeight];
 
-set(mh,'color',ColorB_def);
+
 delete(findobj(mh,'string','OK'));
 delete(findobj(mh,'style','frame'));
 end

@@ -310,7 +310,7 @@ FontSizeLeg = FonsizeDefault;
 CBEFontsize = FonsizeDefault;
 LabelsName = labelsdef;
 
-Gridspace = [1 20;1 20];
+Gridspace = [1 15;1 10];
 timeRange = [timeStart,timEnd];
 [timeticksdef stepX]= default_time_ticks_studio(ERP, timeRange);
 timeticksdef = str2num(char(timeticksdef));
