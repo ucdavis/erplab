@@ -108,7 +108,7 @@ drawui_EEG_info(FonsizeDefault);
         %%---------------------Table---------------------------------------
         gui_EEG_info.bin_latency_title = uiextras.HBox('Parent', gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_EEG_info.bin_latency_title,...
-            'String','Trials per Bin:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Trials per Bin for current EEGset:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_EEG_info.table_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100

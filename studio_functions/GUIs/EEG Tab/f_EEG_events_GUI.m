@@ -104,7 +104,7 @@ varargout{1} = EStudio_eeg_events_box;
         
         EStduio_eegtab_EEG_events.sumevent_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.sumevent_title,'FontWeight','bold',...
-            'String','Event Code Summary:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Event Code Summary for current EEGset:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_events.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100

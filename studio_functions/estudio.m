@@ -214,7 +214,9 @@ erpworkingmemory('eegicinspectFlag',0);%%Update the current EEG after Inspect/la
 estudioworkingmemory('ERPTab_zoomSpace',0);%%zoom in/out for erp tab
 EStudio_gui_erp_totl = struct();
 EStudio_gui_erp_totl = createInterface();
-
+EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
+ 
+ 
 f_redrawERP();
 f_redrawEEG_Wave_Viewer();
 timeElapsed = toc;

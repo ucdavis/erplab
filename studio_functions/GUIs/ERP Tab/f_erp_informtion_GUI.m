@@ -100,7 +100,7 @@ drawui_erp_information(FonsizeDefault);
         %%---------------------Table---------------------------------------
         gui_erp_information.bin_latency_title = uiextras.HBox('Parent', gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style', 'text','Parent', gui_erp_information.bin_latency_title,...
-            'String','Trial information:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+            'String','Trial information for current erpset:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_information.table_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100

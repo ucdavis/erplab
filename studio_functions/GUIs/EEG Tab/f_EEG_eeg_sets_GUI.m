@@ -254,7 +254,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         f_redrawEEG_Wave_Viewer();
         whichpanel = [12:18];
         EEGTab_close_open_Panels(whichpanel);
-        EStudio_gui_erp_totl.EEG_transf = 1;
+        EStudio_gui_erp_totl.EEG_transf= 1;
     end
 
 

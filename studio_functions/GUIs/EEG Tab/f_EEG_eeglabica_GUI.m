@@ -458,22 +458,22 @@ varargout{1} = EStudio_box_eeglab_ica;
             return;
         end
         if any(TartgetEEG== observe_EEGDAT.CURRENTSET)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The current EEG cannot be used as target one'];
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The current EEG cannot be used as target one because the selected set is the same to the target set'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
-        if isempty(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind)
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Please run ICA for the target EEG first'];
+        if isempty(observe_EEGDAT.ALLEEG(EEGArray).icachansind)
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: Please run ICA for the current EEG first'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             Source.String = '';
             return;
         end
-        if any(observe_EEGDAT.ALLEEG(TartgetEEG).icachansind> observe_EEGDAT.EEG.nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The channels donot match with the current EEG'];
+        if any(observe_EEGDAT.ALLEEG(EEGArray).icachansind> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights: The channels for target set donot match with the current EEG'];
             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -528,15 +528,15 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         if isempty(observe_EEGDAT.EEG.icachansind)
             msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: Please run ICA for the current EEG'];
-            Source.String = '';
+%             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
         
-        if any(observe_EEGDAT.EEG.icachansind> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
-            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The channels donot match with the current EEG'];
-            Source.String = '';
+        if any(observe_EEGDAT.EEG.icachansind(:)> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
+            msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The channels for target set donot match with the current EEG'];
+%             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -544,12 +544,12 @@ varargout{1} = EStudio_box_eeglab_ica;
         
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        EEG = ALLEEG(EEGArray);
+        EEG = ALLEEG(TartgetEEG);
         fprintf( ['\n\n',repmat('-',1,100) '\n']);
         fprintf( ['**Transfer ICA weights > Transfer**\n']);
-        fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
-        [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(TartgetEEG),').icaweights'],...
-            'icasphere', ['ALLEEG(',num2str(TartgetEEG),').icasphere'], 'icachansind', ['ALLEEG(',num2str(TartgetEEG),').icachansind']);
+        fprintf(['Your current EEGset(No.',num2str(TartgetEEG),'):',32,EEG.setname,'\n\n']);
+        [EEG,LASTCOM]= pop_editset(EEG, 'icaweights', ['ALLEEG(',num2str(EEGArray),').icaweights'],...
+            'icasphere', ['ALLEEG(',num2str(EEGArray),').icasphere'], 'icachansind', ['ALLEEG(',num2str(EEGArray),').icachansind']);
         if isempty(LASTCOM)
             erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Remove ICs:User selected cancel');
             observe_EEGDAT.eeg_panel_message =4;
