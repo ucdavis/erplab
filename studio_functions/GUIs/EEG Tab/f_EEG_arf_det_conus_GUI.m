@@ -87,7 +87,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%moving window full width
         Eegtab_EEG_art_det_conus.movewindow_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.movewindow_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.movewindow_title,...
-            'String','Move window width [ms] (e.g., 500)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Moving window width [ms]','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.movewindow_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.movewindow_title,...
             'callback',@movewindow_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_conus.movewindow_edit.KeyPressFcn=  @eeg_artdetect_presskey;
@@ -96,7 +96,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         %%Window steps
         Eegtab_EEG_art_det_conus.windowstep_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_conus.windowstep_text = uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.windowstep_title,...
-            'String','Window step [ms] (e.g., 250)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+            'String','Window step [ms]','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
         Eegtab_EEG_art_det_conus.windowstep_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.windowstep_title,...
             'callback',@windowstep_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable',EnableFlag,'BackgroundColor',[1 1 1]); % 2F
         Eegtab_EEG_art_det_conus.windowstep_edit.KeyPressFcn=  @eeg_artdetect_presskey;

@@ -93,10 +93,6 @@ varargout{1} = box_erp_append;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-%%-------------------------Append help------------------------------------
-%     function append_help(~,~)
-%         web('https://github.com/lucklab/erplab/wiki/Appending-ERPSETS','-browser');
-%     end
 
 %%-------------------------same_to_erpset----------------------------------
     function same_to_erpset(~,~)
@@ -579,6 +575,10 @@ varargout{1} = box_erp_append;
             ERP_save.filepath = pathName_new;
             [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+        else
+            ERP.filename = '';
+            ERP.filepath = '';
+            ERP.saved = 'no';
         end
         observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);

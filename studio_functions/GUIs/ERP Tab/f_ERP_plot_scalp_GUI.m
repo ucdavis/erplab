@@ -82,7 +82,7 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','(min max pairs e.g., 300 400 ; 400 500)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         
-      
+        
         gui_erp_scalp_map.bin_plot_title = uiextras.HBox('Parent', gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.bin_plot = uicontrol('Style','text','Parent',gui_erp_scalp_map.bin_plot_title,...
             'String','Bin(s)','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 2F
@@ -310,7 +310,6 @@ varargout{1} = ERP_plot_scalp_gui;
                 gui_erp_scalp_map.measurement_exp.String='(min max pairs: e.g., 300 400 ; 400 500)';
         end
     end
-
 
 
 %%-------------------Input bin number--------------------------------------
@@ -582,20 +581,20 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_scalp_map.advanced.ForegroundColor = [1 1 1];
         
-        pathName_def =  erpworkingmemory('ERP_save_folder');
+        pathName_def =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)%%Check indexs of the selected ERPsets
-            Selectederp_Index = length(observe_ERPDAT.ALLERP);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)%%Check indexs of the selected ERPsets
+            ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         else
-            [chk, msgboxText] = f_ERP_chckerpindex(observe_ERPDAT.ALLERP, Selectederp_Index);
+            [chk, msgboxText] = f_ERP_chckerpindex(observe_ERPDAT.ALLERP, ERPArray);
             if chk==1
-                Selectederp_Index = observe_ERPDAT.CURRENTERP;
+                ERPArray = observe_ERPDAT.CURRENTERP;
             end
         end
         
@@ -605,8 +604,8 @@ varargout{1} = ERP_plot_scalp_gui;
         erpworkingmemory('f_ERP_proces_messg','Plot Scalp Maps > 3D > Spline');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
         ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numofselectederp = 1:length(Selectederp_Index)
-            ERP = observe_ERPDAT.ALLERP(Selectederp_Index(Numofselectederp));
+        for Numofselectederp = 1:length(ERPArray)
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numofselectederp));
             ERP.filepath = pathName_def;
             try
                 splnfile =  ERP.splinefile;
@@ -651,7 +650,7 @@ varargout{1} = ERP_plot_scalp_gui;
                     end
                 end
                 
-                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_scalspline'),ERP.filename,Selectederp_Index(Numofselectederp));
+                Answer = f_ERP_save_single_file(strcat(ERP.erpname,'_scalspline'),ERP.filename,ERPArray(Numofselectederp));
                 if isempty(Answer)
                     observe_ERPDAT.Process_messg =2;%%
                     return;
@@ -685,7 +684,7 @@ varargout{1} = ERP_plot_scalp_gui;
                 observe_ERPDAT.ERP = ERP;
             else
                 ERP.splinefile = splinefile;
-                observe_ERPDAT.ALLERP(Selectederp_Index(Numofselectederp)) = ERP;
+                observe_ERPDAT.ALLERP(ERPArray(Numofselectederp)) = ERP;
                 observe_ERPDAT.ERP = ERP;
             end
             
@@ -955,16 +954,15 @@ varargout{1} = ERP_plot_scalp_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         estudioworkingmemory('ERPTab_topos',1);
-        gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
-        gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
-        ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-        gui_erp_scalp_map.cancel.BackgroundColor =  [1 1 1];
-        gui_erp_scalp_map.cancel.ForegroundColor = [0 0 0];
-        gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
-        gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
+        gui_erp_scalp_map.run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        gui_erp_scalp_map.run.ForegroundColor = [1 1 1];
+        ERP_plot_scalp_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        gui_erp_scalp_map.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_scalp_map.cancel.ForegroundColor = [1 1 1];
+        gui_erp_scalp_map.advanced.BackgroundColor =  [0.5137    0.7569    0.9176];
+        gui_erp_scalp_map.advanced.ForegroundColor = [1 1 1];
         is2Dmap  = gui_erp_scalp_map.map_type_2d.Value;
         
-        pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap};
         
         latencyArray = str2num(gui_erp_scalp_map.latency_plot_edit.String);
         if isempty(latencyArray)
@@ -1035,11 +1033,34 @@ varargout{1} = ERP_plot_scalp_gui;
                 end
         end
         
-        pagif_legend = {0,[],'',latencyArray};
+        try
+            pscalp_plegend =  estudioworkingmemory('pscalp_plegend');
+            pscale_legend{1} = pscalp_plegend.binnum ;
+            pscale_legend{2} = pscalp_plegend.bindesc;
+            pscale_legend{3} = pscalp_plegend.type;
+            pscale_legend{4}= pscalp_plegend.latency ;
+            pscale_legend{5} = pscalp_plegend.electrodes ;
+            pscale_legend{6}= pscalp_plegend.elestyle;
+            pscale_legend{7}= pscalp_plegend.elec3D;
+            pscale_legend{8}= pscalp_plegend.maximize;
+            pscale_legend{9}= is2Dmap;
+        catch
+            pscale_legend = {1,1,1,1,0,'on','off',0,is2Dmap};
+        end
+        
+        try
+            pscalp_agif =  estudioworkingmemory('pscalp_agif');
+            pagif_legend{1}= pscalp_agif.value ;
+            pagif_legend{2}= pscalp_agif.fps ;
+            pagif_legend{3}=pscalp_agif.fname;
+            pagif_legend{4}=latencyArray;
+        catch
+            pagif_legend = {0,[],'',latencyArray};
+        end
+        
+        
         Answer = f_scalplotadvanceGUI(pscale_legend,pagif_legend);
         if isempty(Answer)
-            beep;
-            disp('User selected cancel.');
             return;
         end
         %%{binnum, bindesc, type, latency, electrodes, elestyle, elec3D, ismaxim, 2Dvalue}
@@ -1063,265 +1084,266 @@ varargout{1} = ERP_plot_scalp_gui;
         %%Save parameters
         estudioworkingmemory('pscalp_plegend', pscalp_plegend);
         estudioworkingmemory('pscalp_agif', pscalp_agif);
-        %%-------------------Plotting scalp mapping-----------------------
-        %%Send message to Message panel
-        erpworkingmemory('f_ERP_proces_messg','Plot Scalp Maps');
-        observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        
-        pathName_def =  erpworkingmemory('ERP_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)
-            Selectederp_Index = observe_ERPDAT.CURRENTERP;
-            if isempty(Selectederp_Index)
-                msgboxText =  ['Plot Scalp Maps - No ERPset was selected'];
-                titlNamerro = 'Warning for ERP Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            end
-        end
-        
-        plegend = estudioworkingmemory('pscalp_plegend');
-        if isempty(plegend)
-            plegend.binnum = 1;
-            plegend.bindesc = 1;
-            plegend.type = 1;
-            plegend.latency = 1;
-            plegend.electrodes = 0;
-            plegend.elestyle = 'on';
-            plegend.elec3D = 'off';
-            plegend.colorbar = gui_erp_scalp_map.map_extras_cmapb_disp.Value;
-            plegend.colormap = gui_erp_scalp_map.map_extras_cmap_ops.Value;
-            plegend.maximize = 0;
-            estudioworkingmemory('pscalp_plegend',plegend);
-        end
-        agif  = estudioworkingmemory('pscalp_agif');
-        if isempty(agif)
-            agif.value =0;
-            agif.fps =[];
-            agif.fname ='';
-            estudioworkingmemory('pscalp_agif',agif);
-        end
-        
-        binArray     = str2num(gui_erp_scalp_map.bin_plot_edit.String);
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
-        if chk(1)
-            msgboxText =  ['Plot Scalp Maps -',msgboxText];
-            titlNamerro = 'Warning for ERP Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            return;
-        end
         
         
-        baseline     = 'none';
-        if gui_erp_scalp_map.max_min.Value
-            maplimit     = 'maxmin';
-        elseif gui_erp_scalp_map.abs_max.Value
-            maplimit     = 'absmax';
-        elseif gui_erp_scalp_map.custom_option.Value
-            cusca  = str2num(gui_erp_scalp_map.bar_scale_custom_option_edit.String);
-            if isempty(cusca)
-                msgboxText =  ['Plot Scalp Maps - No value was defined for "Color Bar Scale"'];
-                titlNamerro = 'Warning for ERP Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            else
-                ncusca = length(cusca);
-                if ncusca == 2
-                    if cusca(1)<cusca(2)
-                        maplimit = cusca;
-                    else%%
-                        msgboxText =  ['Plot Scalp Maps - the first value should be smaller than the second one for "Color Bar Scale"'];
-                        titlNamerro = 'Warning for ERP Tab';
-                        estudio_warning(msgboxText,titlNamerro);
-                        return;
-                    end
-                else%%one value
-                    msgboxText =  ['Plot Scalp Maps - "Color Bar Scale" needs 2 values.'];
-                    titlNamerro = 'Warning for ERP Tab';
-                    estudio_warning(msgboxText,titlNamerro);
-                    return;
-                end
-            end
-        else
-            maplimit     = 'maxmin';
-        end
-        
-        ismoviex     = agif.value;
-        FPS          = agif.fps;
-        fullgifname  = agif.fname;
-        posfig       = [];%%xx
-        if gui_erp_scalp_map.map_type_2d.Value
-            mtype        = '2D';   % map type: 2D
-        elseif gui_erp_scalp_map.map_type_3d.Value
-            mtype        = '3D';   % map type: 3D
-        end
-        smapstylestr = {'map','contour','both','fill','blank'};
-        smapstyle    = smapstylestr{gui_erp_scalp_map.map_type_2d_type.Value};   % map style: 'fill' 'both'
-        mapoutside   = gui_erp_scalp_map.map_type_2d_type_outside.Value;
-        
-        viewselec = gui_erp_scalp_map.map_extras_view_ops.Value;
-        if gui_erp_scalp_map.map_type_2d.Value  % 2D
-            
-            switch viewselec
-                case 1
-                    mapview = '+X';
-                case 2
-                    mapview = '-X';
-                case 3
-                    mapview = '+Y';
-                case 4
-                    mapview = '-Y';
-                otherwise
-                    mapview = '+X';
-            end
-        elseif gui_erp_scalp_map.map_type_3d.Value % 3D
-            morimenu = {'front', 'back', 'right', 'left', 'top',...
-                'frontleft', 'frontright', 'backleft', 'backright',...
-                'custom'};
-            try
-                if viewselec<10
-                    mapview  = morimenu{viewselec};
-                elseif viewselec==10
-                    mapview = str2num(gui_erp_scalp_map.map_extras_view_location.String);
-                end
-            catch
-                return;
-            end
-        end
-        splineinfo.path   = '';
-        %%plegend
-        binleg       = plegend.binnum;         % show bin number at legend
-        bindesc      = plegend.bindesc;        % show bin description at legend
-        vtype        = plegend.type ;          % show type of measurement at legend
-        vlatency     = plegend.latency;        % show latency(ies) at legend
-        showelec     = plegend.electrodes;     % show electrodes on scalp
-        elestyle     = plegend.elestyle  ;     %
-        elec3D       = plegend.elec3D;
-        clrbar       = gui_erp_scalp_map.map_extras_cmapb_disp.Value;       % show color bar
-        ismaxim      = plegend.maximize;       % show color bar
-        clrmap       = gui_erp_scalp_map.map_extras_cmap_ops.Value;       % show color bar
-        if clrbar==1
-            colorbari = 'on';
-        else
-            colorbari = 'off';
-        end
-        if mapoutside==1   % 'plotrad',mplotrad,
-            mplotrad = [];
-        else
-            mplotrad = 0.55;
-        end
-        %'jet|hsv|hot|cool|gray'
-        cMap_par={'jet','hsv','hot','cool','gray','viridis'};
-        try
-            cmap = cMap_par{clrmap};
-        catch
-            cmap = 'jet';
-        end
-        if ismoviex==0
-            ismoviexx = 'off';
-            aff     = 'off'; % adjust first frame (aff)
-        else
-            if ismoviex==1
-                aff = 'off'; % adjust first frame (aff)
-            else
-                aff = 'on';
-            end
-            ismoviexx = 'on';
-        end
-        if binleg==1
-            binlegx = 'on';
-        else
-            binlegx = 'off';
-        end
-        if showelec==1
-            showelecx = elestyle;
-        else
-            showelecx = 'off';
-        end
-        if ismaxim==1
-            maxim = 'on';
-        else
-            maxim = 'off';
-        end
-        
-        % legend
-        logstring = ['bn'*binleg '-'*binleg 'bd'*bindesc '-'*bindesc 'me'*vtype '-'*vtype 'la'*vlatency];
-        logstring = nonzeros(logstring)';
-        mapleg    = strtrim(char(logstring));
-        
-        Selected_erpset =  estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
-            Selected_erpset =  length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTSET = Selected_erpset;
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
-        end
-        
-        ERPTab_plotscalp{1}=str2num(gui_erp_scalp_map.bin_plot_edit.String);
-        ERPTab_plotscalp{2}=str2num(gui_erp_scalp_map.latency_plot_edit.String);
-        ERPTab_plotscalp{3}=gui_erp_scalp_map.map_type_2d.Value;
-        ERPTab_plotscalp{4} = gui_erp_scalp_map.map_type_2d_type.Value;
-        ERPTab_plotscalp{5}=gui_erp_scalp_map.map_type_2d_type_outside.Value;
-        if gui_erp_scalp_map.max_min.Value==1
-            ERPTab_plotscalp{6}=1;
-        elseif gui_erp_scalp_map.abs_max.Value==1
-            ERPTab_plotscalp{6}=0;
-        elseif gui_erp_scalp_map.custom_option.Value==1
-            ERPTab_plotscalp{6}=  str2num(gui_erp_scalp_map.bar_scale_custom_option_edit.String);
-        end
-        ERPTab_plotscalp{7} = gui_erp_scalp_map.map_extras_view_ops.Value;
-        ERPTab_plotscalp{8} =gui_erp_scalp_map.map_extras_cmap_ops.Value ;
-        ERPTab_plotscalp{9}=gui_erp_scalp_map.map_extras_cmapb_disp.Value;
-        ERPTab_plotscalp{10}=gui_erp_scalp_map.measurement.Value;
-        estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
-        
-        
-        ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numofselcerp = 1:numel(Selected_erpset)
-            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
-            if strcmpi(mtype, '3d')
-                if isempty(ERP.splinefile) && isempty(splineinfo.path)
-                    msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.'...
-                        'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
-                    titlNamerro = 'Warning for ERP Tab';
-                    estudio_warning(msgboxText,titlNamerro);
-                    return;
-                elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
-                    %if splineinfo.new==1
-                    headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                elseif ~isempty(ERP.splinefile) && ~isempty(splineinfo.path)
-                    headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
-                    splinefile = splineinfo.path;
-                else
-                    %disp('C')
-                    splinefile = ERP.splinefile;
-                    headplot('setup', ERP.chanlocs, splinefile);
-                end
-            else
-                %splinefile = '';
-                splinefile = ERP.splinefile;
-                if strcmpi(mtype, '3d')
-                    headplot('setup', ERP.chanlocs, splinefile);
-                end
-                %disp('D')
-            end
-            if isempty(binArray)
-                binArray = [1:ERP.nbin];
-            end
-            [ERP, ERPCOM] = pop_scalplot(ERP, binArray, latencyArray, 'Value', measurement, 'Blc', baseline, 'Maplimit', maplimit, 'Colorbar', colorbari,...
-                'Colormap', cmap,'Animated', ismoviexx, 'AdjustFirstFrame', aff, 'FPS', FPS, 'Filename', fullgifname, 'Legend', mapleg, 'Electrodes', showelecx,...
-                'Position', posfig, 'Maptype', mtype, 'Mapstyle', smapstyle, 'Plotrad', mplotrad,'Mapview', mapview, 'Splinefile', splinefile,...
-                'Maximize', maxim, 'Electrodes3d', elec3D,'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            pause(0.1);
-        end
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
-        observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
+        %         %%-------------------Plotting scalp mapping-----------------------
+        %         %%Send message to Message panel
+        %         erpworkingmemory('f_ERP_proces_messg','Plot Scalp Maps');
+        %         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
+        %
+        %         pathName_def =  erpworkingmemory('EEG_save_folder');
+        %         if isempty(pathName_def)
+        %             pathName_def =cd;
+        %         end
+        %         ERPArray= estudioworkingmemory('selectederpstudio');
+        %         if isempty(ERPArray)
+        %             ERPArray = observe_ERPDAT.CURRENTERP;
+        %             if isempty(ERPArray)
+        %                 msgboxText =  ['Plot Scalp Maps - No ERPset was selected'];
+        %                 titlNamerro = 'Warning for ERP Tab';
+        %                 estudio_warning(msgboxText,titlNamerro);
+        %                 return;
+        %             end
+        %         end
+        %
+        %         plegend = estudioworkingmemory('pscalp_plegend');
+        %         if isempty(plegend)
+        %             plegend.binnum = 1;
+        %             plegend.bindesc = 1;
+        %             plegend.type = 1;
+        %             plegend.latency = 1;
+        %             plegend.electrodes = 0;
+        %             plegend.elestyle = 'on';
+        %             plegend.elec3D = 'off';
+        %             plegend.colorbar = gui_erp_scalp_map.map_extras_cmapb_disp.Value;
+        %             plegend.colormap = gui_erp_scalp_map.map_extras_cmap_ops.Value;
+        %             plegend.maximize = 0;
+        %             estudioworkingmemory('pscalp_plegend',plegend);
+        %         end
+        %         agif  = estudioworkingmemory('pscalp_agif');
+        %         if isempty(agif)
+        %             agif.value =0;
+        %             agif.fps =[];
+        %             agif.fname ='';
+        %             estudioworkingmemory('pscalp_agif',agif);
+        %         end
+        %
+        %         binArray     = str2num(gui_erp_scalp_map.bin_plot_edit.String);
+        %         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
+        %         if chk(1)
+        %             msgboxText =  ['Plot Scalp Maps -',msgboxText];
+        %             titlNamerro = 'Warning for ERP Tab';
+        %             estudio_warning(msgboxText,titlNamerro);
+        %             return;
+        %         end
+        %
+        %         baseline     = 'none';
+        %         if gui_erp_scalp_map.max_min.Value
+        %             maplimit     = 'maxmin';
+        %         elseif gui_erp_scalp_map.abs_max.Value
+        %             maplimit     = 'absmax';
+        %         elseif gui_erp_scalp_map.custom_option.Value
+        %             cusca  = str2num(gui_erp_scalp_map.bar_scale_custom_option_edit.String);
+        %             if isempty(cusca)
+        %                 msgboxText =  ['Plot Scalp Maps - No value was defined for "Color Bar Scale"'];
+        %                 titlNamerro = 'Warning for ERP Tab';
+        %                 estudio_warning(msgboxText,titlNamerro);
+        %                 return;
+        %             else
+        %                 ncusca = length(cusca);
+        %                 if ncusca == 2
+        %                     if cusca(1)<cusca(2)
+        %                         maplimit = cusca;
+        %                     else%%
+        %                         msgboxText =  ['Plot Scalp Maps - the first value should be smaller than the second one for "Color Bar Scale"'];
+        %                         titlNamerro = 'Warning for ERP Tab';
+        %                         estudio_warning(msgboxText,titlNamerro);
+        %                         return;
+        %                     end
+        %                 else%%one value
+        %                     msgboxText =  ['Plot Scalp Maps - "Color Bar Scale" needs 2 values.'];
+        %                     titlNamerro = 'Warning for ERP Tab';
+        %                     estudio_warning(msgboxText,titlNamerro);
+        %                     return;
+        %                 end
+        %             end
+        %         else
+        %             maplimit     = 'maxmin';
+        %         end
+        %
+        %         ismoviex     = agif.value;
+        %         FPS          = agif.fps;
+        %         fullgifname  = agif.fname;
+        %         posfig       = [];%%xx
+        %         if gui_erp_scalp_map.map_type_2d.Value
+        %             mtype        = '2D';   % map type: 2D
+        %         elseif gui_erp_scalp_map.map_type_3d.Value
+        %             mtype        = '3D';   % map type: 3D
+        %         end
+        %         smapstylestr = {'map','contour','both','fill','blank'};
+        %         smapstyle    = smapstylestr{gui_erp_scalp_map.map_type_2d_type.Value};   % map style: 'fill' 'both'
+        %         mapoutside   = gui_erp_scalp_map.map_type_2d_type_outside.Value;
+        %
+        %         viewselec = gui_erp_scalp_map.map_extras_view_ops.Value;
+        %         if gui_erp_scalp_map.map_type_2d.Value  % 2D
+        %
+        %             switch viewselec
+        %                 case 1
+        %                     mapview = '+X';
+        %                 case 2
+        %                     mapview = '-X';
+        %                 case 3
+        %                     mapview = '+Y';
+        %                 case 4
+        %                     mapview = '-Y';
+        %                 otherwise
+        %                     mapview = '+X';
+        %             end
+        %         elseif gui_erp_scalp_map.map_type_3d.Value % 3D
+        %             morimenu = {'front', 'back', 'right', 'left', 'top',...
+        %                 'frontleft', 'frontright', 'backleft', 'backright',...
+        %                 'custom'};
+        %             try
+        %                 if viewselec<10
+        %                     mapview  = morimenu{viewselec};
+        %                 elseif viewselec==10
+        %                     mapview = str2num(gui_erp_scalp_map.map_extras_view_location.String);
+        %                 end
+        %             catch
+        %                 return;
+        %             end
+        %         end
+        %         splineinfo.path   = '';
+        %         %%plegend
+        %         binleg       = plegend.binnum;         % show bin number at legend
+        %         bindesc      = plegend.bindesc;        % show bin description at legend
+        %         vtype        = plegend.type ;          % show type of measurement at legend
+        %         vlatency     = plegend.latency;        % show latency(ies) at legend
+        %         showelec     = plegend.electrodes;     % show electrodes on scalp
+        %         elestyle     = plegend.elestyle  ;     %
+        %         elec3D       = plegend.elec3D;
+        %         clrbar       = gui_erp_scalp_map.map_extras_cmapb_disp.Value;       % show color bar
+        %         ismaxim      = plegend.maximize;       % show color bar
+        %         clrmap       = gui_erp_scalp_map.map_extras_cmap_ops.Value;       % show color bar
+        %         if clrbar==1
+        %             colorbari = 'on';
+        %         else
+        %             colorbari = 'off';
+        %         end
+        %         if mapoutside==1   % 'plotrad',mplotrad,
+        %             mplotrad = [];
+        %         else
+        %             mplotrad = 0.55;
+        %         end
+        %         %'jet|hsv|hot|cool|gray'
+        %         cMap_par={'jet','hsv','hot','cool','gray','viridis'};
+        %         try
+        %             cmap = cMap_par{clrmap};
+        %         catch
+        %             cmap = 'jet';
+        %         end
+        %         if ismoviex==0
+        %             ismoviexx = 'off';
+        %             aff     = 'off'; % adjust first frame (aff)
+        %         else
+        %             if ismoviex==1
+        %                 aff = 'off'; % adjust first frame (aff)
+        %             else
+        %                 aff = 'on';
+        %             end
+        %             ismoviexx = 'on';
+        %         end
+        %         if binleg==1
+        %             binlegx = 'on';
+        %         else
+        %             binlegx = 'off';
+        %         end
+        %         if showelec==1
+        %             showelecx = elestyle;
+        %         else
+        %             showelecx = 'off';
+        %         end
+        %         if ismaxim==1
+        %             maxim = 'on';
+        %         else
+        %             maxim = 'off';
+        %         end
+        %
+        %         % legend
+        %         logstring = ['bn'*binleg '-'*binleg 'bd'*bindesc '-'*bindesc 'me'*vtype '-'*vtype 'la'*vlatency];
+        %         logstring = nonzeros(logstring)';
+        %         mapleg    = strtrim(char(logstring));
+        %
+        %         Selected_erpset =  estudioworkingmemory('selectederpstudio');
+        %         if isempty(Selected_erpset)
+        %             Selected_erpset =  length(observe_ERPDAT.ALLERP);
+        %             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+        %             observe_ERPDAT.CURRENTSET = Selected_erpset;
+        %             estudioworkingmemory('selectederpstudio',Selected_erpset);
+        %         end
+        %
+        %         ERPTab_plotscalp{1}=str2num(gui_erp_scalp_map.bin_plot_edit.String);
+        %         ERPTab_plotscalp{2}=str2num(gui_erp_scalp_map.latency_plot_edit.String);
+        %         ERPTab_plotscalp{3}=gui_erp_scalp_map.map_type_2d.Value;
+        %         ERPTab_plotscalp{4} = gui_erp_scalp_map.map_type_2d_type.Value;
+        %         ERPTab_plotscalp{5}=gui_erp_scalp_map.map_type_2d_type_outside.Value;
+        %         if gui_erp_scalp_map.max_min.Value==1
+        %             ERPTab_plotscalp{6}=1;
+        %         elseif gui_erp_scalp_map.abs_max.Value==1
+        %             ERPTab_plotscalp{6}=0;
+        %         elseif gui_erp_scalp_map.custom_option.Value==1
+        %             ERPTab_plotscalp{6}=  str2num(gui_erp_scalp_map.bar_scale_custom_option_edit.String);
+        %         end
+        %         ERPTab_plotscalp{7} = gui_erp_scalp_map.map_extras_view_ops.Value;
+        %         ERPTab_plotscalp{8} =gui_erp_scalp_map.map_extras_cmap_ops.Value ;
+        %         ERPTab_plotscalp{9}=gui_erp_scalp_map.map_extras_cmapb_disp.Value;
+        %         ERPTab_plotscalp{10}=gui_erp_scalp_map.measurement.Value;
+        %         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
+        %
+        %
+        %         ALLERPCOM = evalin('base','ALLERPCOM');
+        %         for Numofselcerp = 1:numel(Selected_erpset)
+        %             ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
+        %             if strcmpi(mtype, '3d')
+        %                 if isempty(ERP.splinefile) && isempty(splineinfo.path)
+        %                     msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.'...
+        %                         'At the Scal plot GUI, use "spline file" button, under the Map type menu, to find/create one.'];
+        %                     titlNamerro = 'Warning for ERP Tab';
+        %                     estudio_warning(msgboxText,titlNamerro);
+        %                     return;
+        %                 elseif isempty(ERP.splinefile) && ~isempty(splineinfo.path)
+        %                     %if splineinfo.new==1
+        %                     headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+        %                 elseif ~isempty(ERP.splinefile) && ~isempty(splineinfo.path)
+        %                     headplot('setup', ERP.chanlocs, splineinfo.path); %Builds the new spline file.
+        %                     splinefile = splineinfo.path;
+        %                 else
+        %                     %disp('C')
+        %                     splinefile = ERP.splinefile;
+        %                     headplot('setup', ERP.chanlocs, splinefile);
+        %                 end
+        %             else
+        %                 %splinefile = '';
+        %                 splinefile = ERP.splinefile;
+        %                 if strcmpi(mtype, '3d')
+        %                     headplot('setup', ERP.chanlocs, splinefile);
+        %                 end
+        %                 %disp('D')
+        %             end
+        %             if isempty(binArray)
+        %                 binArray = [1:ERP.nbin];
+        %             end
+        %             [ERP, ERPCOM] = pop_scalplot(ERP, binArray, latencyArray, 'Value', measurement, 'Blc', baseline, 'Maplimit', maplimit, 'Colorbar', colorbari,...
+        %                 'Colormap', cmap,'Animated', ismoviexx, 'AdjustFirstFrame', aff, 'FPS', FPS, 'Filename', fullgifname, 'Legend', mapleg, 'Electrodes', showelecx,...
+        %                 'Position', posfig, 'Maptype', mtype, 'Mapstyle', smapstyle, 'Plotrad', mplotrad,'Mapview', mapview, 'Splinefile', splinefile,...
+        %                 'Maximize', maxim, 'Electrodes3d', elec3D,'History', 'gui');
+        %             [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+        %             pause(0.1);
+        %         end
+        %         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        %         assignin('base','ALLERPCOM',ALLERPCOM);
+        %         assignin('base','ERPCOM',ERPCOM);
+        %         observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
     end
 
 %%---------------------Run-------------------------------------------------
@@ -1347,32 +1369,36 @@ varargout{1} = ERP_plot_scalp_gui;
         %%Send message to Message panel
         erpworkingmemory('f_ERP_proces_messg','Plot Scalp Maps');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        pathName_def =  erpworkingmemory('ERP_save_folder');
-        if isempty(pathName_def)
-            pathName_def =cd;
-        end
         
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index)
-            Selectederp_Index = length(observe_ERPDAT.ALLERP);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP=length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        plegend.binnum = 1;
-        plegend.bindesc = 1;
-        plegend.type = 1;
-        plegend.latency = 1;
-        plegend.electrodes = 0;
-        plegend.elestyle = 'on';
-        plegend.elec3D = 'off';
-        plegend.colorbar = gui_erp_scalp_map.map_extras_cmapb_disp.Value;
-        plegend.colormap = gui_erp_scalp_map.map_extras_cmap_ops.Value;
-        plegend.maximize = 0;
         
-        agif.value =0;
-        agif.fps =[];
-        agif.fname ='';
+        plegend = estudioworkingmemory('pscalp_plegend');
+        if isempty(plegend)
+            plegend.binnum = 1;
+            plegend.bindesc = 1;
+            plegend.type = 1;
+            plegend.latency = 1;
+            plegend.electrodes = 0;
+            plegend.elestyle = 'on';
+            plegend.elec3D = 'off';
+            plegend.colorbar = gui_erp_scalp_map.map_extras_cmapb_disp.Value;
+            plegend.colormap = gui_erp_scalp_map.map_extras_cmap_ops.Value;
+            plegend.maximize = 0;
+            estudioworkingmemory('pscalp_plegend',plegend);
+        end
+        agif  = estudioworkingmemory('pscalp_agif');
+        if isempty(agif)
+            agif.value =0;
+            agif.fps =[];
+            agif.fname ='';
+            estudioworkingmemory('pscalp_agif',agif);
+        end
         
         binArray     = str2num(gui_erp_scalp_map.bin_plot_edit.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
@@ -1827,12 +1853,12 @@ varargout{1} = ERP_plot_scalp_gui;
             observe_ERPDAT.Count_currentERP =5;
             return;
         end
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index) || any(Selectederp_Index>length(observe_ERPDAT.ALLERP))
-            Selectederp_Index = length(observe_ERPDAT.ALLERP);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTSET = Selectederp_Index;
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            observe_ERPDAT.CURRENTSET = ERPArray;
+            estudioworkingmemory('selectederpstudio',ERPArray);
             observe_ERPDAT.Count_currentERP =1;
         end
         
@@ -1966,6 +1992,10 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.map_extras_cmapb_disp.Value =0;
         gui_erp_scalp_map.map_extras_cmap_ops.Value =1;
         gui_erp_scalp_map.measurement.Value=2;
+        pscale_legend = {1,1,1,1,0,'on','off',0,1};
+        estudioworkingmemory('pscalp_plegend',pscale_legend);
+        pagif_legend = {0,[],'',[]};
+        estudioworkingmemory('pscalp_agif',pagif_legend);
         observe_ERPDAT.Reset_erp_paras_panel=5;
     end
 end

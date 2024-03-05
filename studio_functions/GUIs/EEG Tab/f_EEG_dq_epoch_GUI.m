@@ -124,7 +124,6 @@ varargout{1} = Eegtab_box_dq_epoch;
         uiextras.Empty('Parent', EEG_dq_epoch.para_title3 ,'BackgroundColor',ColorB_def);
         set(EEG_dq_epoch.para_title3,'Sizes',[150,60 -1]);
         
-        
         try
             artcrite = def{2};
         catch
@@ -190,7 +189,6 @@ varargout{1} = Eegtab_box_dq_epoch;
         set(EEG_dq_epoch.DataSelBox,'Sizes',[20 25 25 20 25 30 30 30]);
         estudioworkingmemory('EEGTab_dq_epoch',0);
     end
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
@@ -540,7 +538,6 @@ varargout{1} = Eegtab_box_dq_epoch;
         end
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        try
             for Numofeeg = 1:numel(EEGArray)
                 setindex =EEGArray(Numofeeg);
                 EEG = ALLEEG(setindex);
@@ -559,12 +556,8 @@ varargout{1} = Eegtab_box_dq_epoch;
                 
                 fprintf( ['\n',repmat('-',1,100) '\n']);
             end%%end for loop of subjects
+            
             observe_EEGDAT.eeg_panel_message =2;
-        catch
-            observe_EEGDAT.eeg_panel_message =3;%%There is errros in processing procedure
-            fprintf( [repmat('-',1,100) '\n']);
-            return;
-        end
     end
 
 

@@ -341,12 +341,21 @@ varargout{1} = ERP_grdavg_box_gui;
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_grdavg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_grdavg.cancel.ForegroundColor = [1 1 1];
-        GAv_combo_defaults.measures = [1, 2, 3]; % Use first 3 DQ measures
-        GAv_combo_defaults.methods = [2, 2, 2]; % Use the 2nd combo method, Root-Mean Square, for each
-        GAv_combo_defaults.measure_names = {'Baseline Measure - SD';'Point-wise SEM'; 'aSME'};
-        GAv_combo_defaults.method_names = {'Pool ERPSETs, GrandAvg mean','Pool ERPSETs, GrandAvg RMS'};
-        GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
-        custom_spec  = grandaverager_DQ(GAv_combo_defaults);
+%         GAv_combo_defaults.measures = [1, 2, 3]; % Use first 3 DQ measures
+%         GAv_combo_defaults.methods = [2, 2, 2]; % Use the 2nd combo method, Root-Mean Square, for each
+%         GAv_combo_defaults.measure_names = {'Baseline Measure - SD';'Point-wise SEM'; 'aSME'};
+%         GAv_combo_defaults.method_names = {'Pool ERPSETs, GrandAvg mean','Pool ERPSETs, GrandAvg RMS'};
+%         GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
+%         
+          ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+            estudioworkingmemory('selectederpstudio',ERPArray);
+        end
+        
+        custom_spec  = grandaverager_DQ(observe_ERPDAT.ALLERP(ERPArray));
         estudioworkingmemory('grandavg_custom_DQ',custom_spec);
     end
 
@@ -446,22 +455,22 @@ varargout{1} = ERP_grdavg_box_gui;
         if isempty(pathName_def)
             pathName_def =cd;
         end
-        Selectederp_Index= estudioworkingmemory('selectederpstudio');
-        if isempty(Selectederp_Index) || any(Selectederp_Index>length(observe_ERPDAT.ALLERP))
-            Selectederp_Index = length(observe_ERPDAT.ALLERP);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            estudioworkingmemory('selectederpstudio',Selectederp_Index);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
-        if numel(Selectederp_Index)<2
+        if numel(ERPArray)<2
             msgboxText =  ['Average Across ERPsets (Grand Average)  - Two ERPsets,at least,were selected'];
             titlNamerro = 'Warning for ERP Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
         optioni    = 0; %1 means from a filelist, 0 means from erpsets menu
-        erpset     = Selectederp_Index;
+        erpset     = ERPArray;
         if gui_erp_grdavg.warn.Value
             artcrite = str2num(gui_erp_grdavg.warn_edit.String);
         else

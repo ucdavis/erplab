@@ -648,10 +648,15 @@ varargout{1} = ERP_chan_operation_gui;
             ALLERP(ERPArray) = ALLERP_out;
         elseif gui_erp_chan_operation.mode_create.Value %% If select "Create New ERPset (independent transformations)"
             for Numoferp = 1:numel(ERPArray)
+                ERP = ALLERP_out(Numoferp);
                 if Save_file_label==1
                     [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Numoferp).erpname,...
                         'filename', ALLERP_out(ERPArray(Numofselectederp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
                     [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                else
+                    ERP.filename = '';
+                    ERP.filepath = '';
+                    ERP.saved = 'no';
                 end
                 ALLERP(length(ALLERP)+1) = ERP;
             end

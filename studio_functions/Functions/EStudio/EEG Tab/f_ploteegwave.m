@@ -387,25 +387,27 @@ elseif ICNum~=0 && chaNum==0
     meandata = [meandata,meandataica];
     
 elseif ICNum~=0 && chaNum~=0
-    Ampscold1 = AmpIC*[1:ICNum]';
-    Ampscold2 = Ampscold1(end)+AmpScale*[1:chaNum]';
+    AmpICNew = (AmpScale*chaNum+AmpScale/2)/ICNum;
+    
+    Ampscold1 = AmpICNew*[1:ICNum]';
+    Ampscold2 = Ampscold1(end)+AmpScale/2+AmpScale*[1:chaNum]';
     Ampscold = [Ampscold1;Ampscold2];
     if  StackFlag==1
-        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+AmpScale+Ampscold2(1)-AmpIC)/2)*ones(chaNum,1)];
+        Ampsc = [(Ampscold1(end)/2)*ones(ICNum,1);((Ampscold2(end)+AmpScale+Ampscold2(1)+AmpIC)/2)*ones(chaNum,1)];
     else
         Ampsc = Ampscold;
     end
     AmpScaleold = AmpScale;
     ylims = [0 Ampscold(end)+AmpScaleold];
-    data = [dataeeg;(AmpScale/AmpIC)*dataica];
-    meandata = [meandata,meandataica];
+    data = [dataeeg;(AmpICNew/AmpIC)*dataica];
+    meandata = [meandata,(AmpICNew/AmpIC)*meandataica];
 end
 
 
 Colorgbwave = [];
 %%set the wave color for each channel
 if ~isempty(data)
-    ColorNamergb = [1 0 0;0 0 1;0.9290 0.6940 0.1250;0 0 0;0 1 0;0 1 1];
+    ColorNamergb = roundn([255 0 7;186 85 255;255 192 0;0 238 237;0 78 255;0 197 0]/255,-3);
     Colorgb_chan = [];
     if ~isempty(ChanArray)
         chanNum = numel(ChanArray);
@@ -425,20 +427,20 @@ if ~isempty(data)
     
     %%colors for ICs
     %     Coloricrgb = roundn([211,211,211;169,169,16;128,128,128]/255,-3);three levels for gray
-    Coloricrgb = roundn([227 202 224;161 125 180;116 90 213]/255,-3);
+    Coloricrgb = roundn([180 0 0;139 0 219;228 88 44;15 175 175;0 0 0;9 158 74]/255,-3);
     Colorgb_IC = [];
     if ~isempty(ICArray)
         ICNum = numel(ICArray);
-        if ICNum<4
+        if ICNum<7
             Colorgb_IC = Coloricrgb(1:ICNum,:);
         else
-            jj = floor(ICNum/3);
+            jj = floor(ICNum/6);
             for ii = 1:jj
                 Colorgb_IC = [Colorgb_IC; Coloricrgb];
             end
             
-            if jj*3~=ICNum
-                Colorgb_IC = [Colorgb_IC; Coloricrgb(1:ICNum-jj*3,:)];
+            if jj*6~=ICNum
+                Colorgb_IC = [Colorgb_IC; Coloricrgb(1:ICNum-jj*6,:)];
             end
             
         end

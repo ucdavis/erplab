@@ -34,8 +34,7 @@ else
     box_erpset_gui = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'ERPsets', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
-sel_path = cd;
-estudioworkingmemory('ERP_save_folder',sel_path);
+
 try
     FonsizeDefault = varargin{2};
 catch
@@ -138,8 +137,6 @@ varargout{1} = box_erpset_gui;
             end
             New_ERP = f_ERP_duplicate(New_ERP,length(observe_ERPDAT.ALLERP),BinArray,ChanArray);
             if isempty(New_ERP)
-                beep;
-                disp('User selected cancal!');
                 return;
             end
             observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = New_ERP;
@@ -189,21 +186,15 @@ varargout{1} = box_erpset_gui;
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
         for Numofselecterp = 1:length(SelectedERP)
-            try
-                erpName = char(observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname);
-                new = f_ERP_rename_gui(erpName,SelectedERP(Numofselecterp));
+            erpName = char(observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname);
+            new = f_ERP_rename_gui(erpName,SelectedERP(Numofselecterp));
+            if ~isempty(new)
                 observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname = cell2mat(new);
                 ERPlistName =  getERPsets();
                 ERPsetops.butttons_datasets.String = ERPlistName;
                 ERPsetops.butttons_datasets.Min = 1;
                 ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
                 observe_ERPDAT.Process_messg =2;
-            catch
-                ERPlistName =  getERPsets();
-                ERPsetops.butttons_datasets.String = ERPlistName;
-                ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
-                observe_ERPDAT.Process_messg =3;
             end
         end
     end
@@ -236,8 +227,6 @@ varargout{1} = box_erpset_gui;
             end
             observe_ERPDAT.Process_messg =2;
         else
-            beep;
-            disp('User selected cancel');
             observe_ERPDAT.Process_messg =4;
             return;
         end
@@ -270,10 +259,7 @@ varargout{1} = box_erpset_gui;
             'PromptString','Please select a type to import from...','Name','Import','OKString','Select');
         
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
-        
         if isempty(ind)
-            beep;
-            disp(['User selected cancel']);
             return;
         end
         ALLERPCOM = evalin('base','ALLERPCOM');
@@ -319,8 +305,6 @@ varargout{1} = box_erpset_gui;
                     ALLERP = f_erp_remv_Calibrate(ALLERP, Selected_erpset);
                     Answer = f_ERP_save_multi_file(ALLERP,Selected_erpset,'_erpss');
                     if isempty(Answer)
-                        beep;
-                        disp('User selected Cancel');
                         return;
                     end
                     Save_file_label = 0;
@@ -478,7 +462,6 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         catch
             observe_ERPDAT.Process_messg =3;
-            disp(['User selected cancel']);
             return;
         end
         
@@ -560,9 +543,7 @@ varargout{1} = box_erpset_gui;
         for Numoferpset = 1:length(Selected_erpset)
             
             if Selected_erpset(Numoferpset) > length(observe_ERPDAT.ALLERP)
-                beep;
                 msgboxText =  ['ERPsets>Export: Index of selected ERP is lager than the length of ALLERP'];
-                fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                 erpworkingmemory('f_ERP_proces_messg',msgboxText);
                 observe_ERPDAT.Process_messg =4;
                 return;
@@ -588,7 +569,6 @@ varargout{1} = box_erpset_gui;
                     assignin('base','ERPCOM',ERPCOM);
                     observe_ERPDAT.Process_messg =2;
                 catch
-                    beep;
                     msgboxText =  ['ERPsets>Export: cannot be saved as ERPs'];
                     fprintf(2,['\n Warning: ',msgboxText,'.\n']);
                     erpworkingmemory('f_ERP_proces_messg',msgboxText);
@@ -611,8 +591,6 @@ varargout{1} = box_erpset_gui;
                     def_x{6} = ERP.filename;
                     answer_export = f_export2textGUI(ERP,def_x,BinArray,ChanArray);
                     if isempty(answer_export)
-                        beep;
-                        disp('User selected cancel');
                         return;
                     end
                     estudioworkingmemory('f_export2textGUI',answer_export);
@@ -677,27 +655,25 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Load');
         observe_ERPDAT.Process_messg =1;
         ALLERPCOM = evalin('base','ALLERPCOM');
-        try
-            [filename, filepath] = uigetfile({'*.erp','ERP (*.erp)';...
-                '*.mat','ERP (*.mat)'}, ...
-                'Load ERP', ...
-                'MultiSelect', 'on');
-            if isequal(filename,0)
-                return;
-            end
-            
-            if numel(findobj('tag', 'erpsets')) > 0
-                [ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
-                    'History', 'gui');
-            else
-                [ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
-                    'History', 'gui'); %If eeglab is not open, don't update
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            end
-            assignin('base','ALLERP',observe_ERPDAT.ALLERP);
-        catch
+        
+        [filename, filepath] = uigetfile({'*.erp','ERP (*.erp)';...
+            '*.mat','ERP (*.mat)'}, ...
+            'Load ERP', ...
+            'MultiSelect', 'on');
+        if isequal(filename,0)
             return;
         end
+        
+        if numel(findobj('tag', 'erpsets')) > 0
+            [ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
+                'History', 'gui');
+        else
+            [ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
+                'History', 'gui'); %If eeglab is not open, don't update
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+        end
+        assignin('base','ALLERP',observe_ERPDAT.ALLERP);
+        
         
         [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
         assignin('base','ALLERPCOM',ALLERPCOM);
@@ -861,7 +837,7 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Save As');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  estudioworkingmemory('ERP_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
@@ -939,7 +915,7 @@ varargout{1} = box_erpset_gui;
         end
         userpath(sel_path1);
         cd(sel_path1);
-        erpworkingmemory('ERP_save_folder',sel_path1);
+        erpworkingmemory('EEG_save_folder',sel_path1);
     end
 
 

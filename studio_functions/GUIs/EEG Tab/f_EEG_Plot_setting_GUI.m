@@ -12,6 +12,7 @@
 function varargout = f_EEG_Plot_setting_GUI(varargin)
 
 global observe_EEGDAT;
+global EStudio_gui_erp_totl;
 addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
@@ -1014,6 +1015,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.Enable = Enableflag;
         EStduio_gui_EEG_plotset.plot_apply.Enable = Enableflag;
         EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = Enableflag;
+        EEG_plotset=  estudioworkingmemory('EEG_plotset');
         if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.EEG.icachansind)
             EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
             EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
@@ -1023,9 +1025,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'off';
         end
         if EStduio_gui_EEG_plotset.disp_IC.Value==0
-            EEG_plotset=  estudioworkingmemory('EEG_plotset');
             EEG_plotset{2}=0;
-            estudioworkingmemory('EEG_plotset',EEG_plotset);
         end
         if strcmp(Enableflag,'on')
             if EStduio_gui_EEG_plotset.chanorder_custom.Value ==1
@@ -1042,6 +1042,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EStduio_gui_EEG_plotset.rem_DC.Value=0;
             else
                 EStduio_gui_EEG_plotset.rem_DC.Enable = 'on';
+                if    EStudio_gui_erp_totl.EEG_transf ==1%%indicate if the users transfer Continous (or epoched) EEG to epoched (or cont.)
+                    EStduio_gui_EEG_plotset.rem_DC.Value=1;
+                    EEG_plotset{6}=1;
+                end
             end
         end
         %%
@@ -1064,16 +1068,15 @@ varargout{1} = EStudio_box_EEG_plot_set;
                     catch
                         labels = [];
                     end
-                    EEG_plotset=  estudioworkingmemory('EEG_plotset');
                     EEG_plotset{10} = 1;
                     EEG_plotset{11}= {1:length(labels),labels};
                     EStduio_gui_EEG_plotset.chanorder{1,1} = 1:length(labels);
                     EStduio_gui_EEG_plotset.chanorder{1,2} = labels;
-                    estudioworkingmemory('EEG_plotset',EEG_plotset);
                 end
             end
         end
         %%
+        estudioworkingmemory('EEG_plotset',EEG_plotset);
         observe_EEGDAT.count_current_eeg=4;
     end
 

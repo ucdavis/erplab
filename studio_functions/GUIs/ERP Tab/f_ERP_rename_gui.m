@@ -57,7 +57,7 @@ catch
 end
 
 handles.erpnameor = erpname;
-handles.output = [];
+handles.output = '';
 erpmenu  = findobj('tag', 'erpsets');
 
 if ~isempty(erpmenu)
@@ -73,11 +73,11 @@ set(handles.edit_erpname, 'String', erpname);
 
 if isempty(currenterp)
     set(handles.current_erp_label,'String', ['No active erpset was found'],...
-                'FontWeight','Bold', 'FontSize', 16);
+        'FontWeight','Bold', 'FontSize', 16);
 else
     ERPNAME = char(strcat('ERPset # ', num2str(currenterp),': (',erpname,')'));
     set(handles.current_erp_label,'String',ERPNAME ,...
-                'FontWeight','Bold', 'FontSize', 16)
+        'FontWeight','Bold', 'FontSize', 16)
 end
 %
 % % Color GUI
@@ -108,10 +108,14 @@ function varargout = f_ERP_rename_gui_OutputFcn(hObject, eventdata, handles)
 % catch
 %     disp('ERPset menu was not found...')
 % end
-varargout{1} = handles.output;
-delete(handles.gui_chassis);
-pause(0.1)
-
+try
+    varargout{1} = handles.output;
+    
+    delete(handles.gui_chassis);
+    pause(0.1)
+catch
+    varargout{1} ='';
+end
 
 
 
@@ -138,8 +142,8 @@ end
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-beep;
-disp('User selected Cancel')
+% beep;
+% disp('User selected Cancel')
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);

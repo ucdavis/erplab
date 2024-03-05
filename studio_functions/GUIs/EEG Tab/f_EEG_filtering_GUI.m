@@ -83,7 +83,7 @@ varargout{1} = EEG_filtering_box;
         remove_dc   = def{7};
         
         typef = 0;
-    
+        
         filterorder = 2;
         if locutoff >= fs/2 || locutoff<=0
             locutoff  = floor(fs/2)-1;

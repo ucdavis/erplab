@@ -121,6 +121,10 @@ gui_erp_waviewer.plot_wav_legend = uiextras.HBox( 'Parent', gui_erp_waviewer.plo
 uicontrol('Parent',gui_erp_waviewer.plot_wav_legend,'Style','text','String','','FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.ViewAxes = uix.ScrollingPanel( 'Parent', gui_erp_waviewer.plot_wav_legend,'BackgroundColor',figbgdColor);
 
+gui_erp_waviewer.blank_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
+uicontrol('Parent',gui_erp_waviewer.blank_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
+
+
 gui_erp_waviewer.zoomin_out_title = uiextras.HBox( 'Parent', gui_erp_waviewer.plotgrid,'BackgroundColor',ColorBviewer_def);%%%Message
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 gui_erp_waviewer.zoom_in = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Zoom In',...
@@ -132,17 +136,8 @@ gui_erp_waviewer.zoom_out = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@zoomout);
 uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','text','String','','FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def);
 
-% gui_erp_waviewer.show_command = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Show Command',...
-%     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Show_command);
-
-gui_erp_waviewer.show_popup = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','popupmenu','String',{'Show Command','Save Figure as','Create Static /Exportable Plot'},...
+gui_erp_waviewer.show_popup = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','popupmenu','String',{'Plot options','Show Command','Save Figure as','Create Static /Exportable Plot'},...
     'FontSize',FonsizeDefault,'BackgroundColor',ColorBviewer_def,'Callback',@show_popup);
-
-% gui_erp_waviewer.figuresaveas = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Save Figure as',...
-%     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_saveas);
-%
-% gui_erp_waviewer.figureout = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Create Static /Exportable Plot',...
-%     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@figure_out);
 
 gui_erp_waviewer.Reset = uicontrol('Parent',gui_erp_waviewer.zoomin_out_title,'Style','pushbutton','String','Reset',...
     'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Callback',@Panel_Reset);
@@ -205,8 +200,9 @@ OutputViewerpar = f_preparms_erpwaviewer('');
 
 gui_erp_waviewer.plotgrid.Heights(1) = 30; % set the first element (pageinfo) to 30px high
 gui_erp_waviewer.plotgrid.Heights(2) = 50; % set the first element (pageinfo) to 30px high
-gui_erp_waviewer.plotgrid.Heights(4) = 30; % set the second element (x axis) to 30px high
+gui_erp_waviewer.plotgrid.Heights(4) = 5;
 gui_erp_waviewer.plotgrid.Heights(5) = 30; % set the second element (x axis) to 30px high
+gui_erp_waviewer.plotgrid.Heights(6) = 30; % set the second element (x axis) to 30px high
 gui_erp_waviewer.plotgrid.Units = 'pixels';
 if isempty(OutputViewerpar)
     disp('Please restart EStudio Wave Viewer');
@@ -296,13 +292,14 @@ end % redrawDemo
 function show_popup(Source,~)
 global viewer_ERPDAT;
 value = Source.Value;
-if value==1
+if value==2
     Show_command();
-elseif value==2
-    figure_saveas();
 elseif value==3
+    figure_saveas();
+elseif value==4
     figure_out();
 end
+Source.Value=1;
 end
 
 %%-------------------------------Page Editor-------------------------------

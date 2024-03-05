@@ -246,7 +246,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
             ERP = ALLERP(ERPArray(NumofERP));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current ERPset(No.',num2str(ERPArray(NumofERP)),'):',32,ERP.erpname,'\n\n']);
-            
             %%check the selected chans
             if any(ChanArray(:) > ERP.nchan)
                 msgboxText = ['Edit Channels >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(ERP.nchan)];

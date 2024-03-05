@@ -213,8 +213,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         end
     end
 
-
-
 %%---------------------Delete selected chan--------------------------------
     function delete_chan(Source,~)
         if isempty(observe_EEGDAT.EEG)
