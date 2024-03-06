@@ -135,7 +135,7 @@ drawui_EEG_info(FonsizeDefault);
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg~=4
+        if observe_EEGDAT.count_current_eeg~=7
             return;
         end
         EEG = observe_EEGDAT.EEG;
@@ -247,7 +247,7 @@ drawui_EEG_info(FonsizeDefault);
 %         gui_EEG_info.table_event.Data = dsnames;
         gui_EEG_info.total_rejected_percentage.Enable = Enable_label;
         gui_EEG_info.total_rejected_option.Enable = Enable_label;
-        observe_EEGDAT.count_current_eeg=5;
+        observe_EEGDAT.count_current_eeg=8;
     end
 
 %%----------------Rejection option----------------------------------------

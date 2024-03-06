@@ -53,7 +53,7 @@ question = 'In order to see your summary, What would you like to do?';
 title    = 'Artifact detection summary';
 oldcolor = get(0,'DefaultUicontrolBackgroundColor');
 set(0,'DefaultUicontrolBackgroundColor',BackERPLABcolor)
-button = questdlg(question, title,'Save in a .txt file','Save in a .xls file', 'Cancel','Show at Command Window');
+button = questdlg(question, title,'Save in a .txt file','Save in a .xls file', 'Cancel','Cancel');
 set(0,'DefaultUicontrolBackgroundColor',oldcolor);
 
 if strcmpi(button,'Save in a .txt file')

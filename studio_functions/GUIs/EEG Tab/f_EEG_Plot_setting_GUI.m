@@ -182,6 +182,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+        if EStduio_gui_EEG_plotset.disp_orgdata.Value==0
+            EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'off';
+        else
+            EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'on';
+        end
     end
 
 %%------------------------Display original data: off-----------------------
@@ -197,6 +202,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+        if EStduio_gui_EEG_plotset.disp_IC.Value==1
+            EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
+        else
+            EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'off';
+        end
     end
 
 %%--------------------Time range-------------------------------------------
@@ -854,6 +864,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder{1,2} = '';
         end
         
+        if EStduio_gui_EEG_plotset.disp_orgdata.Value==0
+            EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'off';
+        else
+            EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'on';
+        end
+        if EStduio_gui_EEG_plotset.disp_IC.Value==1
+            EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
+        else
+            EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'off';
+        end
         
         estudioworkingmemory('EEG_plotset',EEG_plotset);
         estudioworkingmemory('EEGTab_plotset',0);
@@ -1074,6 +1094,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
                     EStduio_gui_EEG_plotset.chanorder{1,2} = labels;
                 end
             end
+            if EStduio_gui_EEG_plotset.disp_orgdata.Value==0
+                EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'off';
+            else
+                EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'on';
+            end
+            if EStduio_gui_EEG_plotset.disp_IC.Value==1
+                EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
+            else
+                EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'off';
+            end
         end
         %%
         estudioworkingmemory('EEG_plotset',EEG_plotset);
@@ -1159,6 +1189,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
             if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg)) || numel(Winlength)~=1
                 EEG_plotset{3} = floor(Frames/multiplier_winleg);
+            end
+            if EStduio_gui_EEG_plotset.disp_orgdata.Value==0
+                EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'off';
+            else
+                EStduio_gui_EEG_plotset.v_scale_edit.Enable = 'on';
+            end
+            if EStduio_gui_EEG_plotset.disp_IC.Value==1
+                EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
+            else
+                EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'off';
             end
         else
             EEG_plotset{3} =5;

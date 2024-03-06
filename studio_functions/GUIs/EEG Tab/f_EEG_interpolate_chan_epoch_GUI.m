@@ -1111,7 +1111,7 @@ varargout{1} = box_interpolate_chan_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=10
+        if observe_EEGDAT.count_current_eeg ~=5
             return;
         end
         if  isempty(observe_EEGDAT.EEG)
@@ -1129,7 +1129,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_run.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op_advanced.Enable='off';
             Eegtab_EEG_interpolate_chan_epoch.cancel.Enable='off';
-            observe_EEGDAT.count_current_eeg=11;
+            observe_EEGDAT.count_current_eeg=6;
             return;
         end
         Eegtab_EEG_interpolate_chan_epoch.mode_modify.Enable ='on';
@@ -1157,7 +1157,7 @@ varargout{1} = box_interpolate_chan_epoch;
             Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Value = 0;
             Eegtab_EEG_interpolate_chan_epoch.Parameters{6} =  Eegtab_EEG_interpolate_chan_epoch.interpolate_op_all_epoch.Value ;
         end
-        observe_EEGDAT.count_current_eeg=11;
+        observe_EEGDAT.count_current_eeg=6;
     end
 
 %%-----------------------------cancel--------------------------------------

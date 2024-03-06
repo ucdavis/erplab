@@ -458,7 +458,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=16
+        if observe_EEGDAT.count_current_eeg ~=18
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -475,7 +475,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             else
                 Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=17;
+            observe_EEGDAT.count_current_eeg=19;
             return;
         end
         
@@ -492,7 +492,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.resetable.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_run.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_cancel.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=17;
+        observe_EEGDAT.count_current_eeg=19;
     end
 
 

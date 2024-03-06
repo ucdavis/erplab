@@ -503,13 +503,13 @@ EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundCol
 MessageViewer= char(strcat('Plot previous page (<)'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 observe_ERPDAT.Process_messg =1;
-try
+% try
     observe_ERPDAT.Count_currentERP = 1;
-    observe_ERPDAT.Process_messg =2;
-catch
-    observe_ERPDAT.Process_messg =3;
-end
-observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+%     observe_ERPDAT.Process_messg =2;
+% catch
+%     observe_ERPDAT.Process_messg =3;
+% end
+% observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 
 
@@ -571,15 +571,15 @@ EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 
-MessageViewer= char(strcat('Page Editor'));
-erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-observe_ERPDAT.Process_messg =1;
-try
+% MessageViewer= char(strcat('Page Editor'));
+% erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+% observe_ERPDAT.Process_messg =1;
+% try
     observe_ERPDAT.Count_currentERP = 1;
     observe_ERPDAT.Process_messg =2;
-catch
-    observe_ERPDAT.Process_messg =3;
-end
+% catch
+%     observe_ERPDAT.Process_messg =3;
+% end
 end
 
 
@@ -650,15 +650,15 @@ EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
 EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundColor;
 
-MessageViewer= char(strcat('Plot next page (>)'));
-erpworkingmemory('f_ERP_proces_messg',MessageViewer);
-observe_ERPDAT.Process_messg =1;
-try
+% MessageViewer= char(strcat('Plot next page (>)'));
+% erpworkingmemory('f_ERP_proces_messg',MessageViewer);
+% observe_ERPDAT.Process_messg =1;
+% try
     observe_ERPDAT.Count_currentERP = 1;
-    observe_ERPDAT.Process_messg =2;
-catch
-    observe_ERPDAT.Process_messg =3;
-end
+%     observe_ERPDAT.Process_messg =2;
+% catch
+%     observe_ERPDAT.Process_messg =3;
+% end
 % observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
 end
 

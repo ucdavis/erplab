@@ -748,7 +748,7 @@ varargout{1} = EEG_binepoch_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=18
+        if observe_EEGDAT.count_current_eeg ~=13
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1
@@ -780,7 +780,7 @@ varargout{1} = EEG_binepoch_box;
         else
             gui_eegtab_binepoch.custom_edit.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg =19;
+        observe_EEGDAT.count_current_eeg =14;
     end
 
 %%--------------press return to execute "Apply"----------------------------

@@ -327,30 +327,27 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.eeg_panel_message =1;
         
         SelectedEEG= EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        if isempty(SelectedEEG)
-            SelectedEEG =observe_EEGDAT.CURRENTSET;
-            if isempty(SelectedEEG)
-                msgboxText =  'No EEGset was selected!!!';
-                title = 'EStudio: EEGsets';
-                errorfound(msgboxText, title);
-                return;
-            end
+        
+        app = feval('EEG_Tab_rename_gui',observe_EEGDAT.ALLEEG(SelectedEEG),SelectedEEG);
+        waitfor(app,'Finishbutton',1);
+        try
+            ALLEEG = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            return;
         end
-        for Numofselecterp = 1:length(SelectedEEG)
-            ndsns = SelectedEEG(Numofselecterp);
-            erpName = char(observe_EEGDAT.ALLEEG(1,ndsns).setname);
-            new = f_EEG_rename_gui(erpName,SelectedEEG(Numofselecterp));
-            if isempty(new)
-                return;
-            end
-            observe_EEGDAT.ALLEEG(1,ndsns).setname = cell2mat(new);
-            EEGlistName =  getDatasets();
-            EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-            EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
-            EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
-            assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-            
+        if isempty(ALLEEG)
+            return;
         end
+        
+        observe_EEGDAT.ALLEEG(SelectedEEG) = ALLEEG;
+        EEGlistName =  getDatasets();
+        EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+        EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
+        EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
         observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
     end
