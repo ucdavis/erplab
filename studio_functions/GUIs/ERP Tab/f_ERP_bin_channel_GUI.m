@@ -1,4 +1,4 @@
-%%This function is used to get the 'Bin and Channel Selection' Panel and record the change of th selected channels and selected bins
+%%This function is used to get the 'Bin & Channel Selection' Panel and record the change of th selected channels and selected bins
 
 % *** This function is part of ERPLAB Studio Toolbox ***
 % Author: Guanghui Zhang
@@ -22,11 +22,11 @@ ERPTab_bin_chan = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    EStudio_box_bin_chan = uiextras.BoxPanel('Parent', fig, 'Title', 'Bin and Channel Selection', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
+    EStudio_box_bin_chan = uiextras.BoxPanel('Parent', fig, 'Title', 'Bin & Channel Selection', 'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    EStudio_box_bin_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin and Channel Selection', 'Padding', 5,'BackgroundColor',ColorB_def);
+    EStudio_box_bin_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin & Channel Selection', 'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    EStudio_box_bin_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin and Channel Selection', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
+    EStudio_box_bin_chan = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Bin & Channel Selection', 'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);
 end
 
 %-----------------------------Draw the panel-------------------------------------
@@ -165,7 +165,7 @@ varargout{1} = EStudio_box_bin_chan;
         if ~isempty(messgStr) && eegpanelIndex~=1
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Cancel');
+        erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Cancel');
         observe_ERPDAT.Process_messg =1;
         
         estudioworkingmemory('ERPTab_chanbin',0);
@@ -198,7 +198,7 @@ varargout{1} = EStudio_box_bin_chan;
             ERPTab_bin_chan.BinRange.Value = BinArray+1;
         end
         estudioworkingmemory('ERP_BinArray',BinArray);
-        erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Cancel');
+        erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Cancel');
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -221,7 +221,7 @@ varargout{1} = EStudio_box_bin_chan;
         ERPTab_bin_chan.plot_reset.BackgroundColor =  [1 1 1];
         ERPTab_bin_chan.plot_reset.ForegroundColor = [0 0 0];
         
-        erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
+        erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Apply');
         observe_ERPDAT.Process_messg =1;
         %
         %%selected channels
@@ -253,7 +253,7 @@ varargout{1} = EStudio_box_bin_chan;
         estudioworkingmemory('ERP_BinArray',BinArray);
         observe_ERPDAT.Count_currentERP=3;
         f_redrawERP();
-        erpworkingmemory('f_ERP_proces_messg','Bin and Channel Selection > Apply');
+        erpworkingmemory('f_ERP_proces_messg','Bin & Channel Selection > Apply');
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Two_GUI =2;
     end

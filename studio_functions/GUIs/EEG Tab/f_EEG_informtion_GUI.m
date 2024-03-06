@@ -106,26 +106,26 @@ drawui_EEG_info(FonsizeDefault);
         
         
         %%---------------------Table---------------------------------------
-        gui_EEG_info.bin_latency_title = uiextras.HBox('Parent', gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', gui_EEG_info.bin_latency_title,...
-            'String','Trials per Bin for current EEGset:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        
-        gui_EEG_info.table_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        for ii = 1:100
-            dsnames{ii,1} = [];
-            dsnames{ii,2} = [];
-            dsnames{ii,3} = [];
-            dsnames{ii,4} = [];
-            dsnames{ii,5} = [];
-        end
-        gui_EEG_info.table_event = uitable(  ...
-            'Parent'        , gui_EEG_info.table_title,...
-            'Data'          , dsnames, ...
-            'ColumnWidth'   , {30,40,60,60,50}, ...
-            'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
-            'RowName'       , [],...
-            'ColumnEditable',[false, false, false, false, false]);
-        set(gui_EEG_info.DataSelBox,'Sizes',[20 20 20 20 20 20 20 30 30 20 100])
+%         gui_EEG_info.bin_latency_title = uiextras.HBox('Parent', gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
+%         uicontrol('Style', 'text','Parent', gui_EEG_info.bin_latency_title,...
+%             'String','Trials per Bin for current EEGset:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+%         
+%         gui_EEG_info.table_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+%         for ii = 1:100
+%             dsnames{ii,1} = [];
+%             dsnames{ii,2} = [];
+%             dsnames{ii,3} = [];
+%             dsnames{ii,4} = [];
+%             dsnames{ii,5} = [];
+%         end
+%         gui_EEG_info.table_event = uitable(  ...
+%             'Parent'        , gui_EEG_info.table_title,...
+%             'Data'          , dsnames, ...
+%             'ColumnWidth'   , {30,40,60,60,50}, ...
+%             'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
+%             'RowName'       , [],...
+%             'ColumnEditable',[false, false, false, false, false]);
+        set(gui_EEG_info.DataSelBox,'Sizes',[20 20 20 20 20 20 20 30 30]);% 20 100
     end
 
 
@@ -226,17 +226,17 @@ drawui_EEG_info(FonsizeDefault);
             end
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,Total_rejected_trials];
             Enable_label = 'on';
-            try
-                for ii = 1:numel(ERP.ntrials.accepted)
-                    dsnames{ii,1} = ii;
-                    dsnames{ii,2} = ERP.ntrials.accepted(ii)+ ERP.ntrials.rejected(ii)+ERP.ntrials.invalid(ii);
-                    dsnames{ii,3} = ERP.ntrials.accepted(ii);
-                    dsnames{ii,4} = ERP.ntrials.rejected(ii);
-                    dsnames{ii,5} = ERP.ntrials.invalid(ii);
-                end
-            catch
-                dsnames = dsnamesdef;
-            end
+%             try
+%                 for ii = 1:numel(ERP.ntrials.accepted)
+%                     dsnames{ii,1} = ii;
+%                     dsnames{ii,2} = ERP.ntrials.accepted(ii)+ ERP.ntrials.rejected(ii)+ERP.ntrials.invalid(ii);
+%                     dsnames{ii,3} = ERP.ntrials.accepted(ii);
+%                     dsnames{ii,4} = ERP.ntrials.rejected(ii);
+%                     dsnames{ii,5} = ERP.ntrials.invalid(ii);
+%                 end
+%             catch
+%                 dsnames = dsnamesdef;
+%             end
         else
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,'0 (0%)'];
             gui_EEG_info.numofepoch.Enable = 'off';
@@ -244,7 +244,7 @@ drawui_EEG_info(FonsizeDefault);
             dsnames = dsnamesdef;
             gui_EEG_info.numofepoch.String = ['Number of epochs:'];
         end
-        gui_EEG_info.table_event.Data = dsnames;
+%         gui_EEG_info.table_event.Data = dsnames;
         gui_EEG_info.total_rejected_percentage.Enable = Enable_label;
         gui_EEG_info.total_rejected_option.Enable = Enable_label;
         observe_EEGDAT.count_current_eeg=5;

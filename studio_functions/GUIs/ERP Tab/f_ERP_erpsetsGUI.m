@@ -159,8 +159,7 @@ varargout{1} = box_erpset_gui;
         SelectedERP =Selected_ERP_afd;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         observe_ERPDAT.Process_messg =2;
-        observe_ERPDAT.Count_currentERP = 2;
-        
+        observe_ERPDAT.Count_currentERP = 1;
     end
 
 
@@ -181,22 +180,31 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Process_messg =1;
         
         SelectedERP= ERPsetops.butttons_datasets.Value;
-        if isempty(SelectedERP)
+        if isempty(SelectedERP) || any(SelectedERP>length(observe_ERPDAT.ALLERP))
             SelectedERP = length(observe_ERPDAT.ALLERP);
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        for Numofselecterp = 1:length(SelectedERP)
-            erpName = char(observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname);
-            new = f_ERP_rename_gui(erpName,SelectedERP(Numofselecterp));
-            if ~isempty(new)
-                observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname = cell2mat(new);
-                ERPlistName =  getERPsets();
-                ERPsetops.butttons_datasets.String = ERPlistName;
-                ERPsetops.butttons_datasets.Min = 1;
-                ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
-                observe_ERPDAT.Process_messg =2;
-            end
+        
+        app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(SelectedERP),SelectedERP);
+        waitfor(app,'Finishbutton',1);
+        try
+            ALLERP = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            return;
         end
+        if isempty(ALLERP)
+            return;
+        end
+        
+        observe_ERPDAT.ALLERP(SelectedERP) = ALLERP;
+        ERPlistName =  getERPsets();
+        ERPsetops.butttons_datasets.String = ERPlistName;
+        ERPsetops.butttons_datasets.Min = 1;
+        ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        observe_ERPDAT.Process_messg =2;
+        observe_ERPDAT.Count_currentERP = 1;
     end
 
 %%--------------------------------Add Suffix---------------------------------
@@ -234,6 +242,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Min = 1;
         ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        observe_ERPDAT.Count_currentERP=1;
     end
 
 

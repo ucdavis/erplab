@@ -385,7 +385,7 @@ elseif ICNum~=0 && chaNum==0
     
     data = [dataeeg;dataica];
     meandata = [meandata,meandataica];
-    
+    AmpICNew = AmpIC;
 elseif ICNum~=0 && chaNum~=0
     AmpICNew = (AmpScale*chaNum+AmpScale/2)/ICNum;
     
@@ -688,7 +688,6 @@ if ndims(EEG.data)==3
         
         %%-----------plot background color for trias with artifact---------
         %%highlight waves with labels
-        Ampsc = AmpScale*[1:PlotNum]';
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
         try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
@@ -698,7 +697,7 @@ if ndims(EEG.data)==3
                 if jj<= numel(trialsMakrs) && ~isempty(xpos)
                     if trialsMakrs(jj)==1
                         patch(hbig,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
-                            [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                            [0,0,Ampscold(end)+AmpScale,Ampscold(end)+AmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
                         %%highlight the wave if the channels that were
                         %%marked as artifacts
                         if chaNum~=0
@@ -723,7 +722,6 @@ if ndims(EEG.data)==3
             end
         end
         
-        Ampsc = AmpScale*[1:PlotNum]';
         for ii = size(dataplot,1):-1:1
             try
                 plot(hbig, (dataplot(ii,:)+ Ampsc(size(dataplot,1)-ii+1)-meandata(ii))', ...
@@ -819,16 +817,15 @@ end
 %%
 %%-----------------plot y scale------------------
 if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
-    
     ytick_bottom = hbig.TickLength(1)*diff(hbig.XLim);
     leftintv = leftintv+ytick_bottom*2.5;
     rightintv = leftintv;
     if ICdispFlag~=0
-        line(hbig,[leftintv,rightintv],[0 AmpIC],'color','k','LineWidth',1, 'clipping','off');
+        line(hbig,[leftintv,rightintv],[0 AmpICNew],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
-        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpIC AmpIC],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpIC), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
-        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpIC), ['ICs'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+        line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew AmpICNew],'color','k','LineWidth',1, 'clipping','off');
+        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew), ['ICs'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
     end
     if EEGdispFlag~=0
         line(hbig,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');

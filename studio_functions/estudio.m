@@ -508,13 +508,11 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         end
         
         waitfor(app,'Finishbutton',1);
-        reset_paras = [0 0 0 0];
         try
-            reset_paras = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            reset_paras = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
-            disp('User selected Cancel');
             return;
         end
         if isempty(reset_paras)

@@ -1,4 +1,4 @@
-%%This function is to Remove Response Errors (Continuous EEG).
+%%This function is to Delete Spurious Additional Responses (Continuous EEG).
 
 
 % *** This function is part of ERPLAB Studio Toolbox ***
@@ -23,13 +23,13 @@ EEG_rmresp_mistak_conus = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Remove Response Errors (Continuous EEG)',...
+    Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', fig, 'Title', 'Delete Spurious Additional Responses (Continuous EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Remove Response Errors (Continuous EEG)',...
+    Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Spurious Additional Responses (Continuous EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Remove Response Errors (Continuous EEG)',...
+    Eegtab_box_rmresp_mistak_conus = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Delete Spurious Additional Responses (Continuous EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @rmresp_help
 end
 
@@ -59,14 +59,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         else
             EnableFlag = 'on';
         end
-        
-        EEG_rmresp_mistak_conus.stimulusall_title = uiextras.HBox('Parent', EEG_rmresp_mistak_conus.DataSelBox,'BackgroundColor',ColorB_def);
-        EEG_rmresp_mistak_conus.stimulusall = uitable(  ...
-            'Parent'        , EEG_rmresp_mistak_conus.stimulusall_title,...
-            'Data'          , '', ...
-            'ColumnName'    , '', ...
-            'RowName'       , []);
-        set(EEG_rmresp_mistak_conus.stimulusall,'ColumnEditable',false(1,1000),'FontSize',FontSize_defualt,'Enable',EnableFlag);
+       
         %%"Stimulus" event types
         EEG_rmresp_mistak_conus.chan_title = uiextras.HBox('Parent', EEG_rmresp_mistak_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_rmresp_mistak_conus.chan_title,'HorizontalAlignment','left',...
@@ -99,7 +92,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         uiextras.Empty('Parent',  EEG_rmresp_mistak_conus.detar_run_title,'BackgroundColor',ColorB_def);
         set(EEG_rmresp_mistak_conus.detar_run_title,'Sizes',[15 105  30 105 15]);
         
-        set(EEG_rmresp_mistak_conus.DataSelBox,'Sizes',[70 30 30 30]);
+        set(EEG_rmresp_mistak_conus.DataSelBox,'Sizes',[30 30 30]);
         estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
     end
 
@@ -150,7 +143,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         stim_codes = (stim_codes);
         if isempty(stim_codes)
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid'];
             Source.String ='';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -166,7 +159,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         
         if IA2==0
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Some of inputs for "Stimulus" event types are invalid'];
             Source.String ='';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -220,7 +213,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         repsd_codes = (repsd_codes);
         if isempty(repsd_codes)
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Some of inputs for "Response" event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Some of inputs for "Response" event types are invalid'];
             Source.String ='';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -233,7 +226,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             IA2 = 0;
         end
         if IA2==0
-            erpworkingmemory('f_EEG_proces_messg',['Remove Response Errors (Continuous EEG) > Some of inputs for "Response" event types are invalid']);
+            erpworkingmemory('f_EEG_proces_messg',['Delete Spurious Additional Responses (Continuous EEG) > Some of inputs for "Response" event types are invalid']);
             Source.String ='';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
@@ -253,7 +246,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         if ~isempty(messgStr) && eegpanelIndex~=13
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Delete Spurious Additional Responses (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.BackgroundColor =  [1 1 1];
@@ -278,7 +271,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         if ~isempty(messgStr) && eegpanelIndex~=13
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Remove Response Errors (Continuous EEG) > Apply');
+        erpworkingmemory('f_EEG_proces_messg','Delete Spurious Additional Responses (Continuous EEG) > Apply');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -322,7 +315,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         
         
         if isempty(stim_codes)
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -335,7 +328,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             IA1 = 0;
         end
         if IA1==0
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -368,7 +361,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         resp_codes = (resp_codes);
         
         if isempty(resp_codes)
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Apply: Some of Response event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -380,7 +373,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         
         if IA2==0
-            msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid'];
+            msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Apply: Some of Response event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -390,7 +383,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Remove Response Errors (Continuous EEG) > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Delete Spurious Additional Responses (Continuous EEG) > Run*',32,32,32,32,datestr(datetime('now')),'\n']);
             
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if ischar(EEG.event(1).type)
@@ -412,7 +405,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
                 IA1 = 0;
             end
             if IA1==0
-                msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
+                msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Apply: Some of Stimulus event types are invalid'];
                 erpworkingmemory('f_EEG_proces_messg',msgboxText);
                 observe_EEGDAT.eeg_panel_message =4; %%Marking for the procedure has been started.
                 titlNamerro = 'Warning for EEG Tab';
@@ -427,7 +420,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             end
             
             if IA2==0
-                msgboxText = ['Remove Response Errors (Continuous EEG) > Apply: Some of Response event types are invalid'];
+                msgboxText = ['Delete Spurious Additional Responses (Continuous EEG) > Apply: Some of Response event types are invalid'];
                 fprintf( [repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
@@ -503,7 +496,6 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
-            EEG_rmresp_mistak_conus.stimulusall.Enable= 'off';
             EEG_rmresp_mistak_conus.Stimulus_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.response_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.rmresp_mistake_run.Enable= 'off';
@@ -523,9 +515,8 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         EEG_rmresp_mistak_conus.rmresp_mistake_run.Enable= 'on';
         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.Enable= 'on';
         EEG_rmresp_mistak_conus.rmresp_mistake_cancel.String = 'Cancel';
-        EEG_rmresp_mistak_conus.stimulusall.Enable= 'on';
         EEG = observe_EEGDAT.EEG;
-        Eegtab_box_rmresp_mistak_conus.Title = 'Remove Response Errors (Continuous EEG)';
+        Eegtab_box_rmresp_mistak_conus.Title = 'Delete Spurious Additional Responses (Continuous EEG)';
         Eegtab_box_rmresp_mistak_conus.ForegroundColor= [1 1 1];
         % Check numeric or string type
         try
@@ -550,12 +541,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             all_ev_unique(isnan(all_ev_unique)) = [];
         catch
         end
-        for ii = 1:length(all_ev_unique)
-            ColumnNameStr{ii} = ['Ev.',32,num2str(ii)];
-        end
-        EEG_rmresp_mistak_conus.stimulusall.Data = all_ev_unique';
-        EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
-        EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
+        
         EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
         observe_EEGDAT.count_current_eeg=16;
     end

@@ -1429,6 +1429,7 @@ elseif ICNum~=0 && chaNum==0
     AmpScaleold = AmpIC;
     data = [dataeeg;dataica];
     meandata = [meandata,meandataica];
+    AmpICNew = AmpIC;
 elseif ICNum~=0 && chaNum~=0
     AmpICNew = (AmpScale*chaNum+AmpScale/2)/ICNum;
     Ampscold1 = AmpICNew*[1:ICNum]';
@@ -1737,7 +1738,7 @@ if ndims(EEG.data)==3
                 if jj<= numel(trialsMakrs) && ~isempty(xpos)
                     if trialsMakrs(jj)==1
                         patch(myeegviewer,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
-                            [0,0,(PlotNum+1)*OldAmpScale,(PlotNum+1)*OldAmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                            [0,0,Ampscold(end)+AmpScale,Ampscold(end)+AmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
                         %%highlight the wave if the channels exist
                         if  chaNum~=0
                             ChanArray = reshape(ChanArray,1,numel(ChanArray));
@@ -1864,11 +1865,11 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
     leftintv = leftintv+ytick_bottom*2.5;
     rightintv = leftintv;
     if ICdispFlag~=0
-        line(myeegviewer,[leftintv,rightintv],[0 AmpIC],'color','k','LineWidth',1, 'clipping','off');
+        line(myeegviewer,[leftintv,rightintv],[0 AmpICNew],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
-        line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpIC AmpIC],'color','k','LineWidth',1, 'clipping','off');
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpIC), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpIC), ['ICs'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
+        line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew AmpICNew],'color','k','LineWidth',1, 'clipping','off');
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew), ['ICs'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
     end
     if EEGdispFlag~=0
         line(myeegviewer,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
