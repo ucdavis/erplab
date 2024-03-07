@@ -99,8 +99,8 @@ drawui_erp_information(FonsizeDefault);
         
         %%---------------------Table---------------------------------------
         gui_erp_information.bin_latency_title = uiextras.HBox('Parent', gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', gui_erp_information.bin_latency_title,...
-            'String','Trial information for current erpset:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        gui_erp_information.trialinfor= uicontrol('Style', 'text','Parent', gui_erp_information.bin_latency_title,...
+            'String','Trial information','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_information.table_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -163,8 +163,8 @@ drawui_erp_information(FonsizeDefault);
         catch
             gui_erp_information.chanlocs.String = 'Channel locations: not set';
         end
- 
-          
+        
+        
         try
             gui_erp_information.numofchan.String=['Number of channels:',32,num2str(ERP.nchan)];
         catch
@@ -176,6 +176,7 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_information.numofbin.String=['Number of bins:',32,num2str(0)];
         end
         if ~isempty(ERP)
+            gui_erp_information.trialinfor.String = ['Trial information for ERP:',32,num2str(observe_ERPDAT.CURRENTERP)];
             N_trials = ERP.ntrials;
             N_trial_total = sum(N_trials.accepted(:))+sum(N_trials.rejected(:))+sum(N_trials.invalid(:));
             N_trial_rejected = sum(N_trials.rejected(:));
@@ -208,6 +209,7 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_information.total_rejected_percentage.String = 'Total rejected trials: 0';
             Enable_label = 'off';
             dsnames = dsnamesdef;
+            gui_erp_information.trialinfor.String = ['Trial information'];
         end
         gui_erp_information.table_event.Data = dsnames;
         ViewerFlag=erpworkingmemory('ViewerFlag');

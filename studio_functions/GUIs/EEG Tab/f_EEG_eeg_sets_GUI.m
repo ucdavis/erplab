@@ -89,7 +89,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         EEGArray = estudioworkingmemory('EEGArray');
         EStduio_eegtab_EEG_set.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-            length(dsnames)+1,'String', dsnames,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
+            length(dsnames)+1,'String', dsnames,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         if isempty(EEGArray) || min(EEGArray(:))>length(dsnames) || max(EEGArray(:))>length(dsnames)
             EEGArray=1;
             estudioworkingmemory('EEGArray',EEGArray);
@@ -191,7 +191,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         estudioworkingmemory('Startimes',0);
         observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
         whichpanel = [19:23];
         EEGTab_close_open_Panels(whichpanel);
         EStudio_gui_erp_totl.EEG_transf = 1;
@@ -251,7 +253,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         estudioworkingmemory('Startimes',1);
         observe_EEGDAT.count_current_eeg=2;
-        f_redrawEEG_Wave_Viewer();
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
         whichpanel = [12:18];
         EEGTab_close_open_Panels(whichpanel);
         EStudio_gui_erp_totl.EEG_transf= 1;
@@ -312,6 +316,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
         observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -347,8 +354,10 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
         EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        
-        observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
+        observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -359,12 +368,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Add Suffix');
         observe_EEGDAT.eeg_panel_message =1;
-        
         SelectedEEG= EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        
         new = f_EEG_suffix_gui('Suffix');
         if ~isempty(new)
             for Numofselecterp = SelectedEEG
@@ -373,6 +379,9 @@ estudioworkingmemory('Startimes',0);%%set default value
                 EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
                 EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
                 EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
+            end
+            if EStudio_gui_erp_totl.EEG_autoplot==1
+                f_redrawEEG_Wave_Viewer();
             end
             observe_EEGDAT.eeg_panel_message =2;
         else
@@ -456,7 +465,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
         observe_EEGDAT.eeg_panel_message=2;
         
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
@@ -556,7 +567,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         EStduio_eegtab_EEG_set.butttons_datasets.Enable = Edit_label;
         EStduio_eegtab_EEG_set.appendbutton.Enable= Edit_label;
         observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
         observe_EEGDAT.eeg_panel_message=2;
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
             whichpanel = [19:23];
@@ -650,7 +663,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             estudioworkingmemory('EEGArray',EEGArray);
             
             observe_EEGDAT.count_current_eeg =2;
-            f_redrawEEG_Wave_Viewer();
+            if EStudio_gui_erp_totl.EEG_autoplot==1
+                f_redrawEEG_Wave_Viewer();
+            end
             observe_EEGDAT.eeg_panel_message=2;
         end
     end
@@ -746,7 +761,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         EEGArray= EStduio_eegtab_EEG_set.butttons_datasets.Value;
         estudioworkingmemory('EEGArray',EEGArray);
         observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
         erpworkingmemory('f_EEG_proces_messg','EEGsets > Clear EEG');
         observe_EEGDAT.eeg_panel_message=2;
     end
@@ -903,8 +920,8 @@ estudioworkingmemory('Startimes',0);%%set default value
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
-        observe_EEGDAT.eeg_panel_message =1;
+%         erpworkingmemory('f_EEG_proces_messg','EEGsets-select EEGset(s)');
+%         observe_EEGDAT.eeg_panel_message =1;
         EEGArraylabel = sort(source.Value);
         [~,~,EEGtypeFlag] =  getDatasets();
         EEGArraydef =  estudioworkingmemory('EEGArray');
@@ -943,9 +960,11 @@ estudioworkingmemory('Startimes',0);%%set default value
         estudioworkingmemory('Startimes',0);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',CURRENTSET);
-        observe_EEGDAT.eeg_panel_message =2;
+%         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg =2;
-        f_redrawEEG_Wave_Viewer();
+        if EStudio_gui_erp_totl.EEG_autoplot==1
+            f_redrawEEG_Wave_Viewer();
+        end
     end
 
 

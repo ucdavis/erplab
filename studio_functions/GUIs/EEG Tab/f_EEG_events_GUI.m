@@ -103,8 +103,8 @@ varargout{1} = EStudio_eeg_events_box;
         set(EStduio_eegtab_EEG_events.shuffle_title,'Sizes',[170 -1]);
         
         EStduio_eegtab_EEG_events.sumevent_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.sumevent_title,'FontWeight','bold',...
-            'String','Event Code Summary for current EEGset:','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        EStduio_eegtab_EEG_events.sumevent_name = uicontrol('Style', 'text','Parent', EStduio_eegtab_EEG_events.sumevent_title,'FontWeight','bold',...
+            'String','Event Code Summary','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         %%---------------------Table---------------------------------------
         EStduio_eegtab_EEG_events.table_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         for ii = 1:100
@@ -1026,8 +1026,10 @@ varargout{1} = EStudio_eeg_events_box;
         %%export evetnlist to text file
         if ~isempty(observe_EEGDAT.EEG)
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='on';
+            EStduio_eegtab_EEG_events.sumevent_name.String = ['Event Code Summary for EEGset:',32,num2str(observe_EEGDAT.CURRENTSET)];
         else
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
+              EStduio_eegtab_EEG_events.sumevent_name.String = ['Event Code Summary'];
         end
         EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;

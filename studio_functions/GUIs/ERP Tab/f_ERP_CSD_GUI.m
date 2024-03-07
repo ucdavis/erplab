@@ -55,7 +55,7 @@ varargout{1} = ERP_CSD_gui;
             'String','Spline interpolation flexibility m-constant value (4 is recommended)','FontSize',FontSize_defualt,'Max',10,'BackgroundColor',ColorB_def); % 2F
         
         gui_erp_CSD.sif_num = uicontrol('Style','edit','Parent', gui_erp_CSD.sif_title,...
-            'String','4','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_sif); % 2F
+            'String','4','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_sif,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_CSD.sif_title,'Sizes',[210,50]);
         gui_erp_CSD.sif_num.KeyPressFcn = @erp_csd_presskey;
         gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
@@ -64,7 +64,7 @@ varargout{1} = ERP_CSD_gui;
             'String','Smoothing constant lambda (0.00001 is recommended)','FontSize',FontSize_defualt,'Max',10,'BackgroundColor',ColorB_def); % 2F
         
         gui_erp_CSD.scl_num = uicontrol('Style','edit','Parent', gui_erp_CSD.scl_title,...
-            'String','0.00001','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_scl); % 2F
+            'String','0.00001','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_scl,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_CSD.scl_title,'Sizes',[210,50]);
         gui_erp_CSD.scl_num.KeyPressFcn = @erp_csd_presskey;
         gui_erp_CSD.Para{2} = str2num(gui_erp_CSD.scl_num.String);
@@ -73,7 +73,7 @@ varargout{1} = ERP_CSD_gui;
             'String','Head radius CSD rescaling values (10cm is recommended)','FontSize',FontSize_defualt,'Max',10,'BackgroundColor',ColorB_def); % 2F
         
         gui_erp_CSD.hr_num = uicontrol('Style','edit','Parent', gui_erp_CSD.hr_title,...
-            'String','10','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_hr); % 2F
+            'String','10','FontSize',FontSize_defualt,'Enable',Enable_label,'callback',@csd_hr,'BackgroundColor',[1 1 1]); % 2F
         set(gui_erp_CSD.hr_title,'Sizes',[210,50]);
         gui_erp_CSD.hr_num.KeyPressFcn = @erp_csd_presskey;
         gui_erp_CSD.Para{3} = str2num(gui_erp_CSD.hr_num.String);
@@ -222,7 +222,7 @@ varargout{1} = ERP_CSD_gui;
         %%Loop for the selcted ERPsets
         for  Numoferp = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(Numoferp));
-            [ERP, ERPCOM] = pop_currentsourcedensity(ERP);
+            [ERP, ERPCOM] = pop_currentsourcedensity(ERP,'EStudio');
             if Numoferp==1
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
                 if isempty(ALLERPCOM)
@@ -245,7 +245,6 @@ varargout{1} = ERP_CSD_gui;
         if isempty(Answer)
             return;
         end
-        
         if ~isempty(Answer{1})
             ALLERP_out = Answer{1};
             Save_file_label = Answer{2};

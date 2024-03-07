@@ -9,7 +9,7 @@
 % pop_geterpvalues(filename, latency, binArray, chanArray, parameters);
 %
 %
-% INPUTS   :
+% INPUTS:
 %
 % ALLERP        - structure array of ERP structures (ERPsets)
 %                 To read the ERPset from a list in a text file,

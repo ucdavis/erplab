@@ -49,6 +49,11 @@ if isfield(EEG,'bindata')
 else
     isERP = 0;
 end
+try
+ERPtooltype = varargin{1};
+catch
+  ERPtooltype = 'erplab';  
+end
 
 % check input dataset
 try
@@ -126,7 +131,6 @@ MapMontage(M)
 %%%changed by Guanghui August 10 2022
 csd_param = erpworkingmemory('csd_param');
 
-ERPtooltype = erpgettoolversion('tooltype');
 if strcmpi(ERPtooltype,'EStudio')
     csd_param(4) = 0;
     erpworkingmemory('csd_param',csd_param);

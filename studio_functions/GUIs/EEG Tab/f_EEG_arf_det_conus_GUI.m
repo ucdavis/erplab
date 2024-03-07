@@ -102,17 +102,99 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.windowstep_edit.KeyPressFcn=  @eeg_artdetect_presskey;
         set(Eegtab_EEG_art_det_conus.windowstep_title,'Sizes',[120,-1]);
         
+        %%optional
+        Eegtab_EEG_art_det_conus.option_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.option_title ,'FontWeight','bold',...
+            'String','Optional:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        %%prefilter
+        Eegtab_EEG_art_det_conus.filter_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.filter_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.filter_title,'Value',0,'Enable','off',...
+            'callback',@filter_checkbox,'String','Pre-filtering (only for identifying artifacts)','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+        Eegtab_EEG_art_det_conus.filter_title2 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', Eegtab_EEG_art_det_conus.filter_title2,...
+            'String','Fre. cutoff (Hz): Low','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+        Eegtab_EEG_art_det_conus.lowfre_edit = uicontrol('Style','edit','Parent', Eegtab_EEG_art_det_conus.filter_title2,'Enable','off',...
+            'callback',@lowfre_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',[1 1 1]); % 2F
+        uicontrol('Style','text','Parent', Eegtab_EEG_art_det_conus.filter_title2,...
+            'String',', High','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.highfre_edit = uicontrol('Style','edit','Parent', Eegtab_EEG_art_det_conus.filter_title2,'Enable','off',...
+            'callback',@highfre_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',[1 1 1]); % 2F
+        set(Eegtab_EEG_art_det_conus.filter_title2,'Sizes',[120,60,40,60]);
+        %%include or exclude
+        Eegtab_EEG_art_det_conus.filter_title3 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.filter_title3);
+        Eegtab_EEG_art_det_conus.include_fre = uicontrol('Style','radiobutton','Parent', Eegtab_EEG_art_det_conus.filter_title3,'Value',1,'Enable','off',...
+            'callback',@include_fre,'String','Include this band','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+        Eegtab_EEG_art_det_conus.exclude_fre = uicontrol('Style','radiobutton','Parent', Eegtab_EEG_art_det_conus.filter_title3,'Value',0,'Enable','off',...
+            'callback',@exclude_fre,'String','Exclude this band','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'BackgroundColor',ColorB_def); % 2F
+        set( Eegtab_EEG_art_det_conus.filter_title3 ,'Sizes',[20,-1,-1]);
+        
+        %%join artifactual segments separated by less than
+        Eegtab_EEG_art_det_conus.joinarseg_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.joinarseg_checkbox = uicontrol('Style','checkbox','Parent',Eegtab_EEG_art_det_conus.joinarseg_title,'Value',0,'Enable','off',...
+            'callback',@joinarseg_checkbox,'String','Join artifactual segments separated by less than','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        
+        Eegtab_EEG_art_det_conus.joinarseg_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.joinarseg_title1 );
+        Eegtab_EEG_art_det_conus.joinarseg_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.joinarseg_title1,'Enable','off',...
+            'callback',@joinarseg_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+        uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.joinarseg_title1 ,...
+            'String','ms','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+        set( Eegtab_EEG_art_det_conus.joinarseg_title1,'Sizes',[20,-1,40]);
+        
+        %%Unmark artifactual segments shorter than
+        Eegtab_EEG_art_det_conus.unmarkarseg_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.unmarkarseg_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.unmarkarseg_title,'Value',0,'Enable','off' ,...
+            'callback',@unmarkarseg_checkbox,'String','Unmark artifactual segments shorter than','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        
+        Eegtab_EEG_art_det_conus.unmarkarseg_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.unmarkarseg_title1 );
+        Eegtab_EEG_art_det_conus.unmarkarseg_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.unmarkarseg_title1,'Enable','off' ,...
+            'callback',@unmarkarseg_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+        uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.unmarkarseg_title1 ,...
+            'String','ms','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+        set(Eegtab_EEG_art_det_conus.unmarkarseg_title1,'Sizes',[20,-1,40]);
+        
+        
+        %%Add extra time to negining and end of regions
+        Eegtab_EEG_art_det_conus.addtime_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.addtime_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.addtime_title,'Value',0,'Enable','off' ,...
+            'callback',@addtime_checkbox,'String','Add extra time to start and end of regions','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+        
+        Eegtab_EEG_art_det_conus.addtime_title1 = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_det_conus.addtime_title1 );
+        Eegtab_EEG_art_det_conus.addtime_edit = uicontrol('Style','edit','Parent',Eegtab_EEG_art_det_conus.addtime_title1,'Enable','off',...
+            'callback',@addtime_edit,'String','','FontSize',FontSize_defualt,'BackgroundColor',[1 1 1]); % 2F
+        uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.addtime_title1 ,...
+            'String','ms','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def);
+        set(Eegtab_EEG_art_det_conus.addtime_title1,'Sizes',[20,-1,40]);
+        
         
         %%-----------------------Cancel and Run----------------------------
         Eegtab_EEG_art_det_conus.detar_run_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_art_det_conus.detectar_advanced = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
-            'String','Advanced','callback',@detectar_advanced,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        Eegtab_EEG_art_det_conus.detectar_cancel = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
+            'String','Cancel','callback',@detectar_cancel,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_conus.detectar_preview = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Preview','callback',@detectar_preview,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_conus.detectar_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Finalize','callback',@detectar_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 35 35 35 30]);
+        set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 35 35 35 20 20 30 20 20 30 20 30 20 30 30]);
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
+        
+        
+        %%set the default parameters
+        prompt     = {'Threshold (1 or 2 values)', 'Moving Windows Width (ms)',...
+            'Window Step (ms)','Channel(s)', 'Frequency cutoffs (Hz)', 'lowest freq', 'highest freq'};
+        dlg_title  =  'Input threshold';
+        def        = {500 500 250 [] [] [] [] 0 0 0 0};
+        
+        colorseg   = [1.0000    0.9765    0.5294]; % default
+        memoryCARTGUI.prompt = prompt;
+        memoryCARTGUI.dlg_title = dlg_title;
+        memoryCARTGUI.def=def;
+        memoryCARTGUI.defx=[];
+        memoryCARTGUI.colorseg=colorseg;
+        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
     end
 
 
@@ -136,24 +218,28 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         ChaNum = observe_EEGDAT.EEG.nbchan;
         ChanArray = str2num(Source.String);
-        if isempty(ChanArray) || min(ChanArray(:))<=0 || max(ChanArray(:))<=0
+        if isempty(ChanArray) || any(ChanArray(:)<=0)
             msgboxText = 'Reject Artifactual Time Segments (Continuous EEG) >  Index(es) of chans should be positive number(s)';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String= vect2colon([1:ChaNum]);
+            ChanArray = vect2colon(ChanArray,'Sort','on');
+            ChanArray = erase(ChanArray,{'[',']'});
+            Source.String= ChanArray;
             return;
         end
         
-        if min(ChanArray(:))> ChaNum || max(ChanArray(:)) > ChaNum
+        if any(ChanArray(:)> ChaNum)
             msgboxText=['Reject Artifactual Time Segments (Continuous EEG) >  Index(es) of chans should be between 1 and ',32,num2str(ChaNum)];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String= vect2colon([1:ChaNum]);
+            ChanArray = vect2colon(ChanArray,'Sort','on');
+            ChanArray = erase(ChanArray,{'[',']'});
+            Source.String= ChanArray;
             return;
         end
     end
@@ -174,8 +260,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         
         %%-------Browse and select chans that will be interpolated---------
@@ -201,12 +287,13 @@ varargout{1} = Eegtab_box_art_det_conus;
         
         chan_label_select = browsechanbinGUI(listb, indxlistb, titlename);
         if ~isempty(chan_label_select)
-            Eegtab_EEG_art_det_conus.chan_edit.String  = vect2colon(chan_label_select);
+            chan_label_select = vect2colon(chan_label_select,'Sort','on');
+            chan_label_select = erase(chan_label_select,{'[',']'});
+            Eegtab_EEG_art_det_conus.chan_edit.String  = chan_label_select;
         else
             return
         end
     end
-
 
 %%-----------------------------volatge-------------------------------------
     function voltage_edit(Source,~)
@@ -223,8 +310,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         Voltagevalue= str2num(Source.String);
         if isempty(Voltagevalue) || (numel(Voltagevalue)~=1 && numel(Voltagevalue)~=2)
@@ -262,8 +349,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         windowlength= str2num(Source.String);
         if isempty(windowlength) || numel(windowlength) ~=1 ||  any(windowlength(:)<=0)
@@ -299,8 +386,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
         estudioworkingmemory('EEGTab_detect_arts_conus',1);
         windowstep= str2num(Source.String);
         if isempty(windowstep) || numel(windowstep) ~=1 ||  any(windowstep(:)<=0)
@@ -321,9 +408,318 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
     end
 
+%%----------------------prefilter checkbox--------------------------------
+    function filter_checkbox(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        
+        if Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+            enableflag = 'on';
+        else
+            enableflag = 'off';
+        end
+        Eegtab_EEG_art_det_conus.lowfre_edit.Enable = enableflag;
+        Eegtab_EEG_art_det_conus.highfre_edit.Enable = enableflag;
+        Eegtab_EEG_art_det_conus.include_fre.Enable = enableflag;
+        Eegtab_EEG_art_det_conus.exclude_fre.Enable = enableflag;
+    end
+
+%%--------------------------------lowest filter----------------------------
+    function lowfre_edit(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        
+        lowfre_edit = str2num(Eegtab_EEG_art_det_conus.lowfre_edit.String);
+        if isempty(lowfre_edit) || numel(lowfre_edit)~=1 || any(lowfre_edit(:)<0)
+            Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The lowest frequency should be a positive value'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        
+        highfre_edit = str2num(Eegtab_EEG_art_det_conus.highfre_edit.String);
+        
+        if any(lowfre_edit(:)>=highfre_edit(:))
+            Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The lowest frequency should be smaller than the highest one'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        
+        if any(lowfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
+            Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The lowest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+    end
+
+%%---------------------------Highest frequency-----------------------------
+    function highfre_edit(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        
+        highfre_edit = str2num(Eegtab_EEG_art_det_conus.highfre_edit.String);
+        
+        lowfre_edit = str2num(Eegtab_EEG_art_det_conus.lowfre_edit.String);
+        if isempty(highfre_edit) || numel(highfre_edit)~=1 || any(highfre_edit(:)<0)
+            Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The highest frequency should be a positive value'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        if any(lowfre_edit(:)>=highfre_edit(:))
+            Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The highest frequency should be larger than the lowest one'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        if any(highfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
+            Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: The highest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+    end
+
+%%------------------------include this frequency band----------------------
+    function include_fre(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        Eegtab_EEG_art_det_conus.include_fre.Value=1;
+        Eegtab_EEG_art_det_conus.exclude_fre.Value=0;
+    end
+
+%%-----------------exclude this frequency----------------------------------
+    function exclude_fre(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        Eegtab_EEG_art_det_conus.include_fre.Value=0;
+        Eegtab_EEG_art_det_conus.exclude_fre.Value=1;
+    end
+
+%%-------------Join artifactual segments separated by less than------------
+    function joinarseg_checkbox(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value ==1
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable = 'on';
+        else
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable = 'off';
+        end
+    end
+
+%%------------------edit join-------------------
+    function joinarseg_edit(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        joinarseg_edit = str2num(Eegtab_EEG_art_det_conus.joinarseg_edit.String);
+        if isempty(joinarseg_edit) || numel(joinarseg_edit)~=1 || any(joinarseg_edit(:)<=0)
+            Eegtab_EEG_art_det_conus.joinarseg_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: Invalid input for segements separation and it should be a positive value'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+    end
+
+%%----------------unmark artifactual segments shorter than-----------------
+    function unmarkarseg_checkbox(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        if  Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable = 'on';
+        else
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable = 'off';
+        end
+    end
+%%----------------edit for unmark artifactual segments shorter than--------
+    function unmarkarseg_edit(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        unmarkarseg_edit = str2num(Eegtab_EEG_art_det_conus.unmarkarseg_edit.String);
+        if isempty(unmarkarseg_edit) || numel(unmarkarseg_edit)~=1 || any(unmarkarseg_edit(:)<=0)
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: Invalid input for unmark artifactual segments and it should be a positive value'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+    end
+
+%%-----------------------------add extra time------------------------------
+    function addtime_checkbox(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'on';
+        else
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'off';
+        end
+    end
+
+%%------------edit for adding extra time-----------------------------------
+    function addtime_edit(~,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        addtime_edit = str2num( Eegtab_EEG_art_det_conus.addtime_edit.String);
+        if isempty(addtime_edit) || numel(addtime_edit)~=1 || any(addtime_edit(:)<=0)
+            Eegtab_EEG_art_det_conus.addtime_edit.String = '';
+            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Optional: Invalid input for "add extra time" and it should be a positive value'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+    end
 
 %%--------------------------advanced options-------------------------------
-    function detectar_advanced(Source,~)
+    function detectar_cancel(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
             Source.Enable= 'off';
             return;
@@ -331,8 +727,9 @@ varargout{1} = Eegtab_box_art_det_conus;
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
         if ~isempty(messgStr) && eegpanelIndex~=10
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+            return;
         end
-        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Advanced');
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -340,253 +737,115 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
-        %%--------Selected EEGsets-----------
-        EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
-            EEGArray = observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',EEGArray);
-        end
-        
-        %%chans
-        ChanArray = str2num(Eegtab_EEG_art_det_conus.chan_edit.String);
-        nbchan = observe_EEGDAT.EEG.nbchan;
-        if isempty(ChanArray) || any(ChanArray(:)<=0) ||  any(ChanArray(:) > nbchan)
-            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Advanced: Chans are empty or index(es) are not between 1 and',32,num2str(nbchan)];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            return;
-        end
-        
-        %%----------if simple voltage threshold------------
-        Volthreshold = sort(str2num(Eegtab_EEG_art_det_conus.voltage_edit.String));
-        if isempty(Volthreshold) || (numel(Volthreshold)~=1 && numel(Volthreshold)~=2)
-            msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Advanced: Voltage threshold must have one or two values'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            return;
-        end
-        
-        if numel(Volthreshold)==2
-            if Volthreshold(2) >= Volthreshold(1)
-                msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Advanced: When 2 thresholds are specified, the first one must be lesser than the second one'];
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
-            end
-        end
-        
-        %
-        %%Moving window full width
-        WindowLength = str2num(Eegtab_EEG_art_det_conus.movewindow_edit.String);
-        if isempty(WindowLength) || numel(WindowLength) ~=1 ||  any(WindowLength(:)<=0)
-            msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Advanced: Move window width must be a positive number'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            Source.String = '500';
-            return;
-        end
-        
-        windowStep = str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String);
-        if  any(windowStep(:)>=WindowLength)
-            msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Advanced: Step width cannot be larger than the window width'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
-            return;
-        end
-        
-        if isempty(windowStep) || numel(windowStep) ~=1 ||  any(windowStep(:)<=0)
-            msgboxText= ['Reject Artifactual Time Segments (Continuous EEG) > Advanced: Window step width must be a positive number'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
-            return;
-        end
-        %%WindowStep
-        if  any(windowStep(:)>=WindowLength)
-            msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Advanced: Step width must be smaller than the window width'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
-            return;
-        end
-        EEG = observe_EEGDAT.EEG;
         memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
-        if isempty(memoryCARTGUI)
-            memoryCARTGUI.prompt     = {'Threshold (1 or 2 values)', 'Moving Windows Width (ms)',...
-                'Window Step (ms)','Channel(s)', 'Frequency cutoffs (Hz)', 'lowest freq', 'highest freq'};
-            memoryCARTGUI.dlg_title  =  'Input threshold';
-            memoryCARTGUI.def        = {500 500 250 [1:EEG.nbchan] [] [] [] 0 0 0 0};
-            memoryCARTGUI.defx       = memoryCARTGUI.def  ;
-            memoryCARTGUI.colorseg   = [1.0000    0.9765    0.5294]; % default
-            memoryCARTGUI.def{1}   = Volthreshold;
-            memoryCARTGUI.def{2}   =WindowLength;
-            memoryCARTGUI.def{3}   =windowStep;
-            memoryCARTGUI.def{4}   =ChanArray;
-        else
-            try
-                memoryCARTGUI.def{1}   = Volthreshold;
-                memoryCARTGUI.def{2}   =WindowLength;
-                memoryCARTGUI.def{3}   =windowStep;
-                memoryCARTGUI.def{4}   =ChanArray;
-            catch
-                memoryCARTGUI.def   = {Volthreshold WindowLength windowStep ChanArray [] [] [] 0 0 0 0};
-            end
+        
+        try  Volthreshold = memoryCARTGUI.def{1};catch Volthreshold = 500;end
+        Eegtab_EEG_art_det_conus.voltage_edit.String = num2str(Volthreshold);
+        
+        try WindowLength = memoryCARTGUI.def{2};catch  WindowLength=500;end
+        Eegtab_EEG_art_det_conus.movewindow_edit.String = num2str(WindowLength);
+        try windowStep = memoryCARTGUI.def{3};catch windowStep = 250;  end
+        Eegtab_EEG_art_det_conus.windowstep_edit.String = num2str(windowStep);
+        try ChanArray = memoryCARTGUI.def{4};catch ChanArray=  [1:observe_EEGDAT.EEG.nbchan];end
+        if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:)>observe_EEGDAT.EEG.nbchan)
+            ChanArray=  [1:observe_EEGDAT.EEG.nbchan];
         end
+        ChanArraystr = vect2colon(ChanArray,'Sort','on');
+        ChanArraystr = erase(ChanArraystr,{'[',']'});
+        Eegtab_EEG_art_det_conus.chan_edit.String = ChanArraystr;
+        
+        try includef = memoryCARTGUI.def{7};catch includef=[];end
+        
+        if isempty(includef)
+            Eegtab_EEG_art_det_conus.filter_checkbox.Value =0;
+            Eegtab_EEG_art_det_conus.lowfre_edit.Enable = 'off';
+            Eegtab_EEG_art_det_conus.highfre_edit.Enable = 'off';
+            Eegtab_EEG_art_det_conus.include_fre.Enable = 'off';
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable = 'off';
+            Eegtab_EEG_art_det_conus.include_fre.Value = 1;
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable = 'off';
+        else
+            if numel(includef)~=1 || (includef~=0 && includef~=1)
+                includef = 1;
+            end
+            Eegtab_EEG_art_det_conus.include_fre.Value = includef;
+            Eegtab_EEG_art_det_conus.exclude_fre.Value = ~includef;
+            Eegtab_EEG_art_det_conus.filter_checkbox.Value =1;
+            Eegtab_EEG_art_det_conus.lowfre_edit.Enable = 'on';
+            Eegtab_EEG_art_det_conus.highfre_edit.Enable = 'on';
+            Eegtab_EEG_art_det_conus.include_fre.Enable = 'on';
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable = 'on';
+        end
+        try   lowfre_edit= memoryCARTGUI.def{5} ; catch lowfre_edit =[]; end
+        try   highfre_edit= memoryCARTGUI.def{6} ; catch highfre_edit =[]; end
+        
+        if numel(lowfre_edit)~=1 || any(lowfre_edit<=0) || any(lowfre_edit>=highfre_edit) || any(lowfre_edit(:)>observe_EEGDAT.EEG.srate/2)
+            lowfre_edit =[];
+        end
+        Eegtab_EEG_art_det_conus.lowfre_edit.String = num2str(lowfre_edit);
+        
+        if numel(highfre_edit)~=1|| any(highfre_edit<=0) || any(lowfre_edit>=highfre_edit) || any(highfre_edit(:)>observe_EEGDAT.EEG.srate/2)
+            highfre_edit =[];
+        end
+        Eegtab_EEG_art_det_conus.highfre_edit.String = num2str(highfre_edit);
+        
+        try shortisi = memoryCARTGUI.def{9} ;catch shortisi = [];end
+        
+        if numel(shortisi)~=1 || any(shortisi(:)<=0)
+            shortisi = [];
+        end
+        if ~isempty(shortisi)
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value = 1;
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable = 'on';
+        else
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value = 0;
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable = 'off';
+        end
+        Eegtab_EEG_art_det_conus.joinarseg_edit.String = num2str(shortisi);
+        
+        try shortseg = memoryCARTGUI.def{10};catch shortseg = [];end
+        
+        if numel(shortseg)~=1 || any(shortseg(:)<=0)
+            shortseg = [];
+        end
+        if isempty(shortseg)
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value = 0;
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable = 'off';
+        else
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value = 1;
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable = 'on';
+        end
+        Eegtab_EEG_art_det_conus.unmarkarseg_edit.String = num2str(shortseg);
+        
+        try winoffset = memoryCARTGUI.def{11} ; catch winoffset = []; end
+        if numel(winoffset)~=1 || any(winoffset(:)<=0)
+            winoffset = [];
+        end
+        
+        if isempty(winoffset);
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Value = 0;
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'off';
+        else
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Value = 1;
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'on';
+        end
+        Eegtab_EEG_art_det_conus.addtime_edit.String = num2str(winoffset);
+        memoryCARTGUI.def{1} = Volthreshold;
+        memoryCARTGUI.def{2} = WindowLength;
+        memoryCARTGUI.def{3} = windowStep;
+        memoryCARTGUI.def{4} = ChanArray;
+        memoryCARTGUI.def{5} = lowfre_edit;
+        memoryCARTGUI.def{6} = highfre_edit;
+        memoryCARTGUI.def{7} = includef;
+        memoryCARTGUI.def{9} = shortisi;
+        memoryCARTGUI.def{10} = shortseg;
+        memoryCARTGUI.def{11} = winoffset;
         erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
-        
-        %
-        % Call GUI
-        %
-        
-        answer    = continuousartifactGUI(EEG.srate, EEG.nbchan, EEG.chanlocs);
-        if isempty(answer)
-            %             disp('User selected Cancel')
-            observe_EEGDAT.eeg_panel_message =2;
-            return
-        end
-        
-        ampth     = answer{1};
-        winms     = answer{2};
-        stepms    = answer{3};
-        chanArray = answer{4};
-        fcutoff   = [answer{5} answer{6}];
-        includef  = answer{7};
-        
-        if ~isempty(includef)
-            if includef==0 && fcutoff(1)~=fcutoff(2)% when it means "excluded" frequency cuttof is inverse to make a notch filter
-                fcutoff = circshift(fcutoff',1)';
-            elseif includef==1 && fcutoff(1)==0 && fcutoff(2)==0
-                fcutoff = [inf inf]; % [inf inf] to include the mean of data; fcutoff = [0 0] means exclude the mean
-            else
-                %...
-            end
-        end
-        
-        forder          = 100; % fixed order when GUI is used
-        firstdet        = answer{8};
-        if firstdet==1
-            fdet = 'on';
-        else
-            fdet = 'off';
-        end
-        shortisi        = answer{9};
-        shortseg        = answer{10};
-        winoffset       = answer{11};
-        memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
-        try
-            colorseg        = memoryCARTGUI.colorseg;
-        catch
-            colorseg = [ 0.83 0.82 0.79];
-        end
-        if isempty(colorseg) || numel(colorseg)~=3 || max(colorseg(:))>1 || min(colorseg(:))<0
-            colorseg = [ 0.83 0.82 0.79];
-        end
-        try
-            def   = memoryCARTGUI.def;
-        catch
-            def = [];
-        end
-        
-        %%update parameters for current panel
-        if ~isempty(def)
-            Volthreshold = def{1};
-            WindowLength = def{2};
-            windowStep = def{3};
-            ChanArray = def{4};
-            Eegtab_EEG_art_det_conus.chan_edit.String = vect2colon(ChanArray);
-            Eegtab_EEG_art_det_conus.voltage_edit.String = num2str(Volthreshold);
-            Eegtab_EEG_art_det_conus.movewindow_edit.String = num2str(WindowLength);
-            Eegtab_EEG_art_det_conus.windowstep_edit.String = num2str(windowStep);
-        end
-        
-        ALLEEG = observe_EEGDAT.ALLEEG;
-        ALLEEG_out = [];
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Reject Artifactual Time Segments (Continuous EEG) > Advanced*',32,32,32,32,datestr(datetime('now')),'\n']);
-            
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            if any(chanArray(:) > EEG.nbchan)
-                chanArray = [1:EEG.nbchan];
-                fprintf(['We used all chans for the EEGset because the defined ones were invalid']);
-            end
-            [EEG,LASTCOM]= pop_continuousartdet(EEG, 'chanArray'   , chanArray    ...
-                , 'ampth'       , ampth        ...
-                , 'winms'       , winms        ...
-                , 'stepms'      , stepms       ...
-                , 'firstdet'    , fdet         ...
-                , 'fcutoff'     , fcutoff      ...
-                , 'forder'      , forder       ...
-                , 'shortisi'    , shortisi     ...
-                , 'shortseg'    , shortseg     ...
-                , 'winoffset'   , winoffset    ...
-                , 'colorseg'    , colorseg     ...
-                ,'review','on','History','implicit');
-            
-            if isempty(LASTCOM)
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
-            end
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf([LASTCOM,'\n']);
-            EEG = eegh(LASTCOM, EEG);
-            
-            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end%%end for loop of subjects
-        Save_file_label = 0;
-        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rmar');
-        if isempty(Answer)
-            return;
-        end
-        if ~isempty(Answer{1})
-            ALLEEG_out = Answer{1};
-            Save_file_label = Answer{2};
-        end
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = ALLEEG_out(Numofeeg);
-            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
-            if Save_file_label && checkfileindex==1
-                [pathstr, file_name, ext] = fileparts(EEG.filename);
-                EEG.filename = [file_name,'.set'];
-                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
-                EEG = eegh(LASTCOM, EEG);
-                if Numofeeg==1
-                    eegh(LASTCOM);
-                end
-            else
-                EEG.filename = '';
-                EEG.saved = 'no';
-                EEG.filepath = '';
-            end
-            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
-        end
-        
-        observe_EEGDAT.ALLEEG = ALLEEG;
-        try
-            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
-        catch
-            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
-            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
-        end
-        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
-        estudioworkingmemory('EEGArray',Selected_EEG_afd);
-        assignin('base','EEG',observe_EEGDAT.EEG);
-        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
-        observe_EEGDAT.count_current_eeg=1;
-        observe_EEGDAT.eeg_panel_message =2;
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
+        observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
 %%%----------------------Preview------------------------------------
@@ -618,8 +877,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
         
         %%chans
@@ -656,7 +915,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText= ['Reject Artifactual Time Segments (Continuous EEG) > Preview: Move window width must be a positive number'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '500';
+            Eegtab_EEG_art_det_conus.movewindow_edit.String = '500';
             return;
         end
         
@@ -665,7 +924,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText= ['Reject Artifactual Time Segments (Continuous EEG) > Preview: Step width cannot be larger than the window width'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = '';
             return;
         end
         
@@ -673,7 +932,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Preview: Window step width must be a positive number'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = '';
             return;
         end
         %%WindowStep
@@ -681,19 +940,126 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText= ['Reject Artifactual Time Segments (Continuous EEG) > Preview: Step width must be smaller than the window width'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = '';
             return;
         end
-        memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
-        try
-            colorseg        = memoryCARTGUI.colorseg;
-        catch
-            colorseg = [ 0.83 0.82 0.79];
-        end
-        if isempty(colorseg) || numel(colorseg)~=3 || any(colorseg(:)>1) || any(colorseg(:)<0)
-            colorseg = [ 0.83 0.82 0.79];
+        
+        
+        if Eegtab_EEG_art_det_conus.filter_checkbox.Value==0
+            fcutoff = [];
+            includef =[];
+            lowfre_edit = [];
+            highfre_edit = [];
         end
         
+        if Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+            lowfre_edit = str2num(Eegtab_EEG_art_det_conus.lowfre_edit.String);
+            if isempty(lowfre_edit) || numel(lowfre_edit)~=1 || any(lowfre_edit(:)<0)
+                Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview >Optional: The lowest frequency should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            highfre_edit = str2num(Eegtab_EEG_art_det_conus.highfre_edit.String);
+            
+            if any(lowfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
+                Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The lowest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            if isempty(highfre_edit) || numel(highfre_edit)~=1 || any(highfre_edit(:)<0)
+                Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The highest frequency should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            if any(lowfre_edit(:)>=highfre_edit(:))
+                Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The highest frequency should be larger than the lowest one'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            if any(highfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
+                Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: The highest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            includef=Eegtab_EEG_art_det_conus.include_fre.Value;
+            fcutoff = [lowfre_edit,highfre_edit];
+            if includef==0 && fcutoff(1)~=fcutoff(2)% when it means "excluded" frequency cuttof is inverse to make a notch filter
+                fcutoff = circshift(fcutoff',1)';
+            elseif includef==1 && fcutoff(1)==0 && fcutoff(2)==0
+                fcutoff = [inf inf]; % [inf inf] to include the mean of data; fcutoff = [0 0] means exclude the mean
+            else
+                %                 fcutoff = [];
+            end
+        end
+        
+        %%Joint artifactual segments separated by less than
+        if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==0
+            shortisi = [];
+        end
+        if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==1
+            shortisi = str2num(Eegtab_EEG_art_det_conus.joinarseg_edit.String);
+            if isempty(shortisi) || numel(shortisi)~=1 || any(shortisi(:)<=0)
+                Eegtab_EEG_art_det_conus.joinarseg_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: Invalid input for segements separation and it should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        %%unmark
+        if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==0
+            shortseg = [];
+        end
+        if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+            shortseg = str2num(Eegtab_EEG_art_det_conus.unmarkarseg_edit.String);
+            if isempty(shortseg) || numel(shortseg)~=1 || any(shortseg(:)<=0)
+                Eegtab_EEG_art_det_conus.unmarkarseg_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: Invalid input for unmark artifactual segments and it should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        
+        %%add extra time
+        if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==0
+            winoffset=[];
+        end
+        if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+            winoffset = str2num( Eegtab_EEG_art_det_conus.addtime_edit.String);
+            if isempty(winoffset) || numel(winoffset)~=1 || any(winoffset(:)<=0)
+                Eegtab_EEG_art_det_conus.addtime_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Preview > Optional: Invalid input for "add extra time" and it should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        
+        memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
+        colorseg = [ 0.83 0.82 0.79];
+        memoryCARTGUI.def{1} = Volthreshold;
+        memoryCARTGUI.def{2} = WindowLength;
+        memoryCARTGUI.def{3} = windowStep;
+        memoryCARTGUI.def{4} = ChanArray;
+        memoryCARTGUI.def{5} = lowfre_edit;
+        memoryCARTGUI.def{6} = highfre_edit;
+        memoryCARTGUI.def{7} = includef;
+        memoryCARTGUI.def{9} = shortisi;
+        memoryCARTGUI.def{10} = shortseg;
+        memoryCARTGUI.def{11} = winoffset;
+        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        fdet = 'off';
+        forder =100;
         try
             EEG = observe_EEGDAT.ALLEEG(EEGArray);
         catch
@@ -703,9 +1069,22 @@ varargout{1} = Eegtab_box_art_det_conus;
         fprintf(['*Reject Artifactual Time Segments (Continuous EEG) > Preview*',32,32,32,32,datestr(datetime('now')),'\n']);
         fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
         
-        [EEG,LASTCOM]= pop_continuousartdet( EEG , 'ampth',  Volthreshold, 'chanArray',  ChanArray, 'colorseg', colorseg,...
-            'firstdet', 'on', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
-            'winms',  WindowLength,'review','on','History','implicit' );
+        %         [EEG,LASTCOM]= pop_continuousartdet( EEG , 'ampth',  Volthreshold, 'chanArray',  ChanArray, 'colorseg', colorseg,...
+        %             'firstdet', 'on', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
+        %             'winms',  WindowLength,'review','on','History','implicit' );
+        [EEG,LASTCOM]= pop_continuousartdet(EEG, 'chanArray'   , ChanArray    ...
+            , 'ampth'       , Volthreshold        ...
+            , 'winms'       , WindowLength        ...
+            , 'stepms'      , windowStep       ...
+            , 'firstdet'    , fdet         ...
+            , 'fcutoff'     , fcutoff      ...%%
+            , 'forder'      , forder       ...%%fixed
+            , 'shortisi'    , shortisi     ...%%join
+            , 'shortseg'    , shortseg     ...%%unmark
+            , 'winoffset'   , winoffset    ...%%add extra
+            , 'colorseg'    , colorseg     ...
+            ,'review','on','History','implicit');
+        
         if isempty(LASTCOM)
         else
             fprintf([LASTCOM,'\n']);
@@ -735,8 +1114,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');
@@ -780,7 +1159,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Finalize: Move window width must be a positive number'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '500';
+            Eegtab_EEG_art_det_conus.movewindow_edit.String = '500';
             return;
         end
         
@@ -789,7 +1168,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Finalize: Step width cannot be larger than the window width'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = '';
             return;
         end
         
@@ -797,7 +1176,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Finalize: Window step width must be a positive number'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = '';
             return;
         end
         %%WindowStep
@@ -805,19 +1184,128 @@ varargout{1} = Eegtab_box_art_det_conus;
             msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > Finalize: Step width must be smaller than the window width'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
+            Eegtab_EEG_art_det_conus.windowstep_edit.String = '';
             return;
         end
         
+        if Eegtab_EEG_art_det_conus.filter_checkbox.Value==0
+            fcutoff = [];
+            lowfre_edit = [];
+            highfre_edit = [];
+            includef = [];
+        end
+        
+        if Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+            lowfre_edit = str2num(Eegtab_EEG_art_det_conus.lowfre_edit.String);
+            if isempty(lowfre_edit) || numel(lowfre_edit)~=1 || any(lowfre_edit(:)<0)
+                Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize >Optional: The lowest frequency should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            highfre_edit = str2num(Eegtab_EEG_art_det_conus.highfre_edit.String);
+            if any(lowfre_edit(:)>=highfre_edit(:))
+                Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize> Optional: The lowest frequency should be smaller than the highest one'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            if any(lowfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
+                Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The lowest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            if isempty(highfre_edit) || numel(highfre_edit)~=1 || any(highfre_edit(:)<0)
+                Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The highest frequency should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            if any(highfre_edit(:)>=observe_EEGDAT.EEG.srate/2)
+                Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: The highest frequency should be smaller than',32,num2str(roundn(observe_EEGDAT.EEG.srate/2,-2))];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            includef=Eegtab_EEG_art_det_conus.include_fre.Value;
+            fcutoff = [lowfre_edit,highfre_edit];
+            if includef==0 && fcutoff(1)~=fcutoff(2)% when it means "excluded" frequency cuttof is inverse to make a notch filter
+                fcutoff = circshift(fcutoff',1)';
+            elseif includef==1 && fcutoff(1)==0 && fcutoff(2)==0
+                fcutoff = [inf inf]; % [inf inf] to include the mean of data; fcutoff = [0 0] means exclude the mean
+            else
+                %                 fcutoff = [];
+            end
+        end
+        
+        %%Joint artifactual segments separated by less than
+        if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==0
+            shortisi = [];
+        end
+        if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==1
+            shortisi = str2num(Eegtab_EEG_art_det_conus.joinarseg_edit.String);
+            if isempty(shortisi) || numel(shortisi)~=1 || any(shortisi(:)<=0)
+                Eegtab_EEG_art_det_conus.joinarseg_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: Invalid input for segements separation and it should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        %%unmark
+        if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==0
+            shortseg = [];
+        end
+        if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+            shortseg = str2num(Eegtab_EEG_art_det_conus.unmarkarseg_edit.String);
+            if isempty(shortseg) || numel(shortseg)~=1 || any(shortseg(:)<=0)
+                Eegtab_EEG_art_det_conus.unmarkarseg_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: Invalid input for unmark artifactual segments and it should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        
+        %%add extra time
+        if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==0
+            winoffset=[];
+        end
+        if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+            winoffset = str2num( Eegtab_EEG_art_det_conus.addtime_edit.String);
+            if isempty(winoffset) || numel(winoffset)~=1 || any(winoffset(:)<=0)
+                Eegtab_EEG_art_det_conus.addtime_edit.String = '';
+                msgboxText = ['Reject Artifactual Time Segments (Continuous EEG) > Finalize > Optional: Invalid input for "add extra time" and it should be a positive value'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        
+        fdet = 'off';
+        forder =100;
+        
         memoryCARTGUI   = erpworkingmemory('continuousartifactGUI');
-        try
-            colorseg        = memoryCARTGUI.colorseg;
-        catch
-            colorseg = [ 0.83 0.82 0.79];
-        end
-        if isempty(colorseg) || numel(colorseg)~=3 || any(colorseg(:)>1) || any(colorseg(:)<0)
-            colorseg = [ 0.83 0.82 0.79];
-        end
+        colorseg = [ 0.83 0.82 0.79];
+        memoryCARTGUI.def{1} = Volthreshold;
+        memoryCARTGUI.def{2} = WindowLength;
+        memoryCARTGUI.def{3} = windowStep;
+        memoryCARTGUI.def{4} = ChanArray;
+        memoryCARTGUI.def{5} = lowfre_edit;
+        memoryCARTGUI.def{6} = highfre_edit;
+        memoryCARTGUI.def{7} = includef;
+        memoryCARTGUI.def{9} = shortisi;
+        memoryCARTGUI.def{10} = shortseg;
+        memoryCARTGUI.def{11} = winoffset;
+        erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        
         ALLEEG = observe_EEGDAT.ALLEEG;
         ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
@@ -830,9 +1318,20 @@ varargout{1} = Eegtab_box_art_det_conus;
                 ChanArray = [1:EEG.nbchan];
                 fprintf(['We used all chans for the EEGset because the defined ones were invalid']);
             end
-            [EEG,LASTCOM]= pop_continuousartdet( EEG , 'ampth',  Volthreshold, 'chanArray',  ChanArray, 'colorseg', colorseg,...
-                'firstdet', 'off', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
-                'winms',  WindowLength,'review','off','History','script' );
+            
+            [EEG,LASTCOM]= pop_continuousartdet(EEG, 'chanArray'   , ChanArray    ...
+                , 'ampth'       , Volthreshold        ...
+                , 'winms'       , WindowLength        ...
+                , 'stepms'      , windowStep       ...
+                , 'firstdet'    , fdet         ...
+                , 'fcutoff'     , fcutoff      ...%%
+                , 'forder'      , forder       ...%%fixed
+                , 'shortisi'    , shortisi     ...%%join
+                , 'shortseg'    , shortseg     ...%%unmark
+                , 'winoffset'   , winoffset    ...%%add extra
+                , 'colorseg'    , colorseg     ...
+                ,'review','off','History','implicit');
+            
             
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
@@ -906,9 +1405,21 @@ varargout{1} = Eegtab_box_art_det_conus;
             Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'off';
             Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'off';
             Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'off';
-            Eegtab_EEG_art_det_conus.detectar_advanced.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'off';
             Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'off';
             Eegtab_EEG_art_det_conus.detectar_run.Enable= 'off';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ~=1
                 Eegtab_box_art_det_conus.TitleColor= [0.75 0.75 0.75];
             else
@@ -925,7 +1436,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'on';
         Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'on';
         Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'on';
-        Eegtab_EEG_art_det_conus.detectar_advanced.Enable= 'on';
+        Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
         Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'on';
         Eegtab_EEG_art_det_conus.detectar_run.Enable= 'on';
         
@@ -951,6 +1462,36 @@ varargout{1} = Eegtab_box_art_det_conus;
         if isempty(str2num(Eegtab_EEG_art_det_conus.windowstep_edit.String))
             Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
         end
+        
+        %%optionals
+        Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'on';
+        if Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+            enableflag = 'on';
+        else
+            enableflag = 'off';
+        end
+        Eegtab_EEG_art_det_conus.lowfre_edit.Enable= enableflag;
+        Eegtab_EEG_art_det_conus.highfre_edit.Enable= enableflag;
+        Eegtab_EEG_art_det_conus.include_fre.Enable= enableflag;
+        Eegtab_EEG_art_det_conus.exclude_fre.Enable= enableflag;
+        Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'on';
+        if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==1
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+        else
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+        end
+        Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'on';
+        if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable= 'on';
+        else
+            Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable= 'off';
+        end
+        Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'on';
+        if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'on';
+        else
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+        end
         observe_EEGDAT.count_current_eeg=16;
     end
 
@@ -971,8 +1512,8 @@ varargout{1} = Eegtab_box_art_det_conus;
             Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
             Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
             Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-            Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [ 1 1 1];
-            Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+            Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
+            Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
         else
             return;
         end
@@ -994,8 +1535,8 @@ varargout{1} = Eegtab_box_art_det_conus;
 %         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
 %         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
 %         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-%         Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [1 1 1];
-%         Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+%         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [1 1 1];
+%         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
 %     end
 
 
@@ -1009,8 +1550,8 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-        Eegtab_EEG_art_det_conus.detectar_advanced.BackgroundColor =  [1 1 1];
-        Eegtab_EEG_art_det_conus.detectar_advanced.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
         if isempty(observe_EEGDAT.EEG)
             Eegtab_EEG_art_det_conus.chan_edit.String = '';
         else
@@ -1019,6 +1560,23 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.voltage_edit.String = '500';
         Eegtab_EEG_art_det_conus.movewindow_edit.String = '500';
         Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
+        
+        Eegtab_EEG_art_det_conus.filter_checkbox.Value=0;
+        Eegtab_EEG_art_det_conus.lowfre_edit.Enable = 'off';
+        Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
+        Eegtab_EEG_art_det_conus.highfre_edit.Enable = 'off';
+        Eegtab_EEG_art_det_conus.highfre_edit.String = '';
+        Eegtab_EEG_art_det_conus.include_fre.Enable = 'off';
+        Eegtab_EEG_art_det_conus.exclude_fre.Enable = 'off';
+        Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value = 0;
+        Eegtab_EEG_art_det_conus.joinarseg_edit.Enable = 'off';
+        Eegtab_EEG_art_det_conus.joinarseg_edit.String = '';
+        Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value = 0;
+        Eegtab_EEG_art_det_conus.unmarkarseg_edit.Enable = 'off';
+        Eegtab_EEG_art_det_conus.unmarkarseg_edit.String = '';
+        Eegtab_EEG_art_det_conus.addtime_checkbox.Value = 0;
+        Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'off';
+        Eegtab_EEG_art_det_conus.addtime_edit.String = '';
         observe_EEGDAT.Reset_eeg_paras_panel=12;
     end
 end

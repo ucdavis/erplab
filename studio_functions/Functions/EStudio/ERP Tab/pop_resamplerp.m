@@ -87,6 +87,19 @@ TimeRange = unique(TimeRange);
 if isempty(TimeRange) || numel(TimeRange)~=2 || TimeRange(1)>=ERP.times(end) || TimeRange(2)<=ERP.times(1)
     TimeRange = [ERP.times(1),ERP.times(end)];
 end
+if TimeRange(1)>=0
+    msgboxText = ['The left number of the new time range should be smaller than 0'];
+    title = 'ERPLAB: pop_resamplerp() inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
+end
+
+if TimeRange(2)<=0
+    msgboxText = ['The right number of the new time range should be larger than 0'];
+    title = 'ERPLAB: pop_resamplerp() inputs';
+    errorfound(sprintf(msgboxText), title);
+    return
+end
 
 %%-------------------------adjust the left edge----------------------------
 if TimeRange(1)>= ERP.times(1)

@@ -12,6 +12,7 @@
 
 function varargout = f_ERP_erpsetsGUI(varargin)
 global observe_ERPDAT;
+global EStudio_gui_erp_totl;
 addlistener(observe_ERPDAT,'Count_currentERP_change',@Count_currentERPChanged);
 addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 
@@ -63,7 +64,7 @@ varargout{1} = box_erpset_gui;
         Edit_label = 'off';
         
         ERPsetops.butttons_datasets = uicontrol('Parent', panelsv2box, 'Style', 'listbox', 'min', 1,'max',...
-            2,'String', ERPlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label);
+            2,'String', ERPlistName,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable',Edit_label,'BackgroundColor',[1 1 1]);
         try ERPsetops.butttons_datasets.Value=1; catch end;
         set(vBox, 'Sizes', 150);
         
@@ -273,206 +274,198 @@ varargout{1} = box_erpset_gui;
         end
         ALLERPCOM = evalin('base','ALLERPCOM');
         
-        try
-            if tf%Import start
-                %%-------------------------------------------------------------------------------
-                %%-----------------------Import ERPSS text---------------------------------------
-                %%-------------------------------------------------------------------------------
-                if ind == 1
-                    %                     pop_importerpss_studio();
-                    answer = importERPSS_GUI; %(gui was modified)
+        if tf%Import start
+            %%-------------------------------------------------------------------------------
+            %%-----------------------Import ERPSS text---------------------------------------
+            %%-------------------------------------------------------------------------------
+            if ind == 1
+                %                     pop_importerpss_studio();
+                answer = importERPSS_GUI; %(gui was modified)
+                
+                if isempty(answer)
+                    return
+                end
+                
+                fname      = answer{1}; % filename (+ whole path)
+                dformat    = answer{2}; % data format
+                dtranspose = answer{3}; % transpose data  (Fixed)
+                if dformat==0
+                    dformatstr = 'explicit'; % points at columns
+                else
+                    dformatstr = 'implicit'; % points at rows
+                end
+                if dtranspose==0
+                    orienpoint = 'column';   % points at columns
+                else
+                    orienpoint = 'row';      % points at rows
+                end
+                
+                [ERP, ALLERP, ERPCOM] = pop_importerpss('Filename', fname, 'Format', dformatstr, 'Pointat', orienpoint, 'History', 'script');
+                ERP = erphistory(ERP, [], ERPCOM,1);
+                
+                try
+                    Selected_erpset = [length(ALLERP)-length(fname)+1:length(ALLERP)];
+                catch
+                    beep;
+                    disp('Fail to import the ERPsets, please try again or restart EStudio!');
+                    return
+                end
+                ALLERP = f_erp_remv_Calibrate(ALLERP, Selected_erpset);
+                Answer = f_ERP_save_multi_file(ALLERP,Selected_erpset,'_erpss');
+                if isempty(Answer)
+                    return;
+                end
+                Save_file_label = 0;
+                if ~isempty(Answer{1})
+                    ALLERP_advance = Answer{1};
+                    Save_file_label = Answer{2};
+                end
+                if Save_file_label==1
+                    for Numoferpset = 1:length(Selected_erpset)
+                        ERP = ALLERP_advance(Selected_erpset(Numoferpset));
+                        [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                        ERP = erphistory(ERP, [], ERPCOM,1);
+                    end
+                end
+                observe_ERPDAT.ALLERP=ALLERP_advance; clear ALLERP_advance;clear ALLERP
+            else
+                %%------------------------------------------------------------------------
+                %%----------------------- Import Universal text-----------------------
+                %%------------------------------------------------------------------------
+                if ind == 2
                     
-                    if isempty(answer)
+                    def  = erpworkingmemory('pop_importerp');
+                    if isempty(def)
+                        def = {'','','',0,1,0,0,1000,[-200 800]};
+                    end
+                    %
+                    % Call GUI
+                    %
+                    getlista = importerpGUI(def);
+                    
+                    if isempty(getlista)
+                        return
+                    end
+                    
+                    filename    = getlista{1};
+                    filepath    = getlista{2};
+                    ftype       = getlista{3};
+                    includetime = getlista{4};
+                    timeunit    = getlista{5};
+                    elabel      = getlista{6};
+                    transpose   = getlista{7};
+                    fs          = getlista{8};
+                    xlim        = getlista{9};
+                    
+                    erpworkingmemory('pop_importerp', {filename, filepath, ftype,includetime,timeunit,elabel,transpose,fs,xlim});
+                    
+                    filetype = {'text'};
+                    if includetime==0
+                        inctimestr = 'off';
+                    else
+                        inctimestr = 'on';
+                    end
+                    if elabel==0
+                        elabelstr = 'off';
+                    else
+                        elabelstr = 'on';
+                    end
+                    if transpose==0
+                        orienpoint = 'column'; % points at columns
+                    else
+                        orienpoint = 'row';    % points at rows
+                    end
+                    
+                    %
+                    % Somersault
+                    %
+                    [ERP, ERPCOM] = pop_importerp('Filename', filename, 'Filepath', filepath, 'Filetype', filetype, 'Time', inctimestr,...
+                        'Timeunit', timeunit, 'Elabel', elabelstr, 'Pointat', orienpoint, 'Srate', fs, 'Xlim', xlim, 'Saveas', 'off',...
+                        'History', 'gui');
+                    
+                    %                         [ERP, ERPCOM] = pop_importerp();
+                    if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+                        Selected_erpset_indx = 1;
+                    else
+                        Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
+                    end
+                    try
+                        filename = ERP.erpname;
+                    catch
+                        filename = strcat('Sub',num2str(Selected_erpset_indx),'-universal');
+                    end
+                    if isempty(filename)
+                        filename = strcat('Sub',num2str(Selected_erpset_indx),'-universal');
+                    end
+                    ERP.erpname = filename;
+                    %%------------------------------------------------------------------------
+                    %%------------------------Import Neuroscan (.avg)----------------
+                    %%------------------------------------------------------------------------
+                elseif ind == 3  %%
+                    [filename, filepath] = uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
+                    if ~iscell(filename) && ~ischar(filename) && filename==0
                         disp('User selected Cancel')
                         return
                     end
                     
-                    fname      = answer{1}; % filename (+ whole path)
-                    dformat    = answer{2}; % data format
-                    dtranspose = answer{3}; % transpose data  (Fixed)
-                    if dformat==0
-                        dformatstr = 'explicit'; % points at columns
+                    [ERP, ERPCOM]= pop_importavg(filename, filepath, 'Saveas','off','History', 'gui');
+                    
+                    [pathstr, file_name, ext] = fileparts(filename{1,1});
+                    ERP.erpname = file_name;
+                    if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
+                        Selected_erpset_indx = 1;
                     else
-                        dformatstr = 'implicit'; % points at rows
+                        Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
                     end
-                    if dtranspose==0
-                        orienpoint = 'column';   % points at columns
-                    else
-                        orienpoint = 'row';      % points at rows
-                    end
-                    
-                    [ERP, ALLERP, ERPCOM] = pop_importerpss('Filename', fname, 'Format', dformatstr, 'Pointat', orienpoint, 'History', 'script');
-                    ERP = erphistory(ERP, [], ERPCOM,1);
-                    
-                    try
-                        Selected_erpset = [length(ALLERP)-length(fname)+1:length(ALLERP)];
-                    catch
-                        beep;
-                        disp('Fail to import the ERPsets, please try again or restart EStudio!');
-                        return
-                    end
-                    ALLERP = f_erp_remv_Calibrate(ALLERP, Selected_erpset);
-                    Answer = f_ERP_save_multi_file(ALLERP,Selected_erpset,'_erpss');
-                    if isempty(Answer)
-                        return;
-                    end
-                    Save_file_label = 0;
-                    if ~isempty(Answer{1})
-                        ALLERP_advance = Answer{1};
-                        Save_file_label = Answer{2};
-                    end
-                    if Save_file_label==1
-                        for Numoferpset = 1:length(Selected_erpset)
-                            ERP = ALLERP_advance(Selected_erpset(Numoferpset));
-                            [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                            ERP = erphistory(ERP, [], ERPCOM,1);
-                        end
-                    end
-                    observe_ERPDAT.ALLERP=ALLERP_advance; clear ALLERP_advance;clear ALLERP
-                else
-                    %%------------------------------------------------------------------------
-                    %%----------------------- Import Universal text-----------------------
-                    %%------------------------------------------------------------------------
-                    if ind == 2
-                        
-                        def  = erpworkingmemory('pop_importerp');
-                        if isempty(def)
-                            def = {'','','',0,1,0,0,1000,[-200 800]};
-                        end
-                        %
-                        % Call GUI
-                        %
-                        getlista = importerpGUI(def);
-                        
-                        if isempty(getlista)
-                            disp('User selected Cancel')
-                            return
-                        end
-                        
-                        filename    = getlista{1};
-                        filepath    = getlista{2};
-                        ftype       = getlista{3};
-                        includetime = getlista{4};
-                        timeunit    = getlista{5};
-                        elabel      = getlista{6};
-                        transpose   = getlista{7};
-                        fs          = getlista{8};
-                        xlim        = getlista{9};
-                        
-                        erpworkingmemory('pop_importerp', {filename, filepath, ftype,includetime,timeunit,elabel,transpose,fs,xlim});
-                        
-                        filetype = {'text'};
-                        if includetime==0
-                            inctimestr = 'off';
-                        else
-                            inctimestr = 'on';
-                        end
-                        if elabel==0
-                            elabelstr = 'off';
-                        else
-                            elabelstr = 'on';
-                        end
-                        if transpose==0
-                            orienpoint = 'column'; % points at columns
-                        else
-                            orienpoint = 'row';    % points at rows
-                        end
-                        
-                        %
-                        % Somersault
-                        %
-                        [ERP, ERPCOM] = pop_importerp('Filename', filename, 'Filepath', filepath, 'Filetype', filetype, 'Time', inctimestr,...
-                            'Timeunit', timeunit, 'Elabel', elabelstr, 'Pointat', orienpoint, 'Srate', fs, 'Xlim', xlim, 'Saveas', 'off',...
-                            'History', 'gui');
-                        
-                        %                         [ERP, ERPCOM] = pop_importerp();
-                        if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-                            Selected_erpset_indx = 1;
-                        else
-                            Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
-                        end
-                        try
-                            filename = ERP.erpname;
-                        catch
-                            filename = strcat('Sub',num2str(Selected_erpset_indx),'-universal');
-                        end
-                        if isempty(filename)
-                            filename = strcat('Sub',num2str(Selected_erpset_indx),'-universal');
-                        end
-                        ERP.erpname = filename;
-                        %%------------------------------------------------------------------------
-                        %%------------------------Import Neuroscan (.avg)----------------
-                        %%------------------------------------------------------------------------
-                    elseif ind == 3  %%
-                        [filename, filepath] = uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
-                        if ~iscell(filename) && ~ischar(filename) && filename==0
-                            disp('User selected Cancel')
-                            return
-                        end
-                        
-                        [ERP, ERPCOM]= pop_importavg(filename, filepath, 'Saveas','off','History', 'gui');
-                        
-                        [pathstr, file_name, ext] = fileparts(filename{1,1});
-                        ERP.erpname = file_name;
-                        if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
-                            Selected_erpset_indx = 1;
-                        else
-                            Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
-                        end
-                    end
-                    ERP = erphistory(ERP, [], ERPCOM,1);
-                    
-                    Answer = f_ERP_save_single_file(ERP.erpname,ERP.filename,Selected_erpset_indx);
-                    if isempty(Answer)
-                        beep;
-                        %                         disp('User selectd cancal');
-                        return;
-                    end
-                    
-                    if ~isempty(Answer)
-                        ERPName = Answer{1};
-                        if ~isempty(ERPName)
-                            ERP.erpname = ERPName;
-                        end
-                        fileName_full = Answer{2};
-                        if isempty(fileName_full)
-                            ERP.filename = ERP.erpname;
-                        elseif ~isempty(fileName_full)
-                            
-                            [pathstr, file_name, ext] = fileparts(fileName_full);
-                            ext = '.erp';
-                            if strcmp(pathstr,'')
-                                pathstr = cd;
-                            end
-                            ERP.filename = [file_name,ext];
-                            ERP.filepath = pathstr;
-                            %%----------save the current sdata as--------------------
-                            [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                            ERP = erphistory(ERP, [], ERPCOM,1);
-                        end
-                    end
-                    observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
                 end
+                ERP = erphistory(ERP, [], ERPCOM,1);
+                
+                Answer = f_ERP_save_single_file(ERP.erpname,ERP.filename,Selected_erpset_indx);
+                if isempty(Answer)
+                    return;
+                end
+                
+                if ~isempty(Answer)
+                    ERPName = Answer{1};
+                    if ~isempty(ERPName)
+                        ERP.erpname = ERPName;
+                    end
+                    fileName_full = Answer{2};
+                    if isempty(fileName_full)
+                        ERP.filename = ERP.erpname;
+                    elseif ~isempty(fileName_full)
+                        
+                        [pathstr, file_name, ext] = fileparts(fileName_full);
+                        ext = '.erp';
+                        if strcmp(pathstr,'')
+                            pathstr = cd;
+                        end
+                        ERP.filename = [file_name,ext];
+                        ERP.filepath = pathstr;
+                        %%----------save the current sdata as--------------------
+                        [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                        ERP = erphistory(ERP, [], ERPCOM,1);
+                    end
+                end
+                observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
             end
-            
-            [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-            assignin('base','ALLERPCOM',ALLERPCOM);
-            assignin('base','ERPCOM',ERPCOM);
-            
-            ERPlistName =  getERPsets();
-            
-            if isempty(observe_ERPDAT.ALLERP)
-                Edit_label = 'off';
-            else
-                Edit_label = 'on';
-            end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.Process_messg =2;
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
-        catch
-            observe_ERPDAT.Process_messg =3;
-            return;
         end
+        
+        [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        
+        ERPlistName =  getERPsets();
+        
+        if isempty(observe_ERPDAT.ALLERP)
+            Edit_label = 'off';
+        else
+            Edit_label = 'on';
+        end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+        observe_ERPDAT.Process_messg =2;
+        observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
+        
         
         ERPsetops.butttons_datasets.Value = length(observe_ERPDAT.ALLERP);
         ERPsetops.butttons_datasets.String = ERPlistName;
@@ -563,89 +556,68 @@ varargout{1} = box_erpset_gui;
                 ChanArray = [1:ERP_export_erp.nchan];
             end
             if ind==1
-                try
-                    ERP_export_erp.filename =fullfile(pathName,ERP_export_erp.filename);
-                    Answer_erpss = f_erp2ascGUI(ERP_export_erp,BinArray,ChanArray);
-                    if isempty(Answer_erpss)
-                        return;
-                    end
-                    ERP = Answer_erpss{1};
-                    FileName = Answer_erpss{2};
-                    
-                    [observe_ERPDAT.ERP, ERPCOM] = pop_erp2asc(ERP,FileName,'History', 'gui');
-                    [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-                    assignin('base','ALLERPCOM',ALLERPCOM);
-                    assignin('base','ERPCOM',ERPCOM);
-                    observe_ERPDAT.Process_messg =2;
-                catch
-                    msgboxText =  ['ERPsets>Export: cannot be saved as ERPs'];
-                    fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-                    erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                    observe_ERPDAT.Process_messg =4;
-                    return
-                end
-            elseif ind ==2
-                try
-                    ERP_export_erp.filename =fullfile(pathName,ERP_export_erp.filename);
-                    ERP = ERP_export_erp;
-                    def  = estudioworkingmemory('f_export2textGUI');
-                    if isempty(def)
-                        def = {1,1000, 1, 1, 4, ''};
-                    end
-                    
-                    %
-                    % Call GUI
-                    %
-                    def_x = def;
-                    def_x{6} = ERP.filename;
-                    answer_export = f_export2textGUI(ERP,def_x,BinArray,ChanArray);
-                    if isempty(answer_export)
-                        return;
-                    end
-                    estudioworkingmemory('f_export2textGUI',answer_export);
-                    istime    = answer_export{1};
-                    tunit     = answer_export{2};
-                    islabeled = answer_export{3};
-                    transpa   = answer_export{4};
-                    prec      = answer_export{5};
-                    
-                    filename  = answer_export{6};
-                    ERP = answer_export{7};
-                    binArray  = [1:ERP.nbin];
-                    if istime
-                        time = 'on';
-                    else
-                        time = 'off';
-                    end
-                    if islabeled
-                        elabel = 'on';
-                    else
-                        elabel = 'off';
-                    end
-                    if transpa
-                        tra = 'on';
-                    else
-                        tra = 'off';
-                    end
-                    try
-                        [ERP, ERPCOM] = pop_export2text(ERP, filename, binArray, 'time', time, 'timeunit', tunit, 'electrodes', elabel,...
-                            'transpose', tra, 'precision', prec, 'History', 'gui');
-                        [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(ERP_export_erp, ALLERPCOM, ERPCOM);
-                        assignin('base','ALLERPCOM',ALLERPCOM);
-                        assignin('base','ERPCOM',ERPCOM);
-                        observe_ERPDAT.Process_messg =2;
-                    catch
-                        beep;
-                        msgboxText =  ['ERPsets>Export: Failed to save selected ERPsets'];
-                        fprintf(2,['\n Warning: ',msgboxText,'.\n']);
-                        erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                        observe_ERPDAT.Process_messg =4;
-                        return;
-                    end
-                catch
-                    observe_ERPDAT.Process_messg =3;
+                ERP_export_erp.filename =fullfile(pathName,ERP_export_erp.filename);
+                Answer_erpss = f_erp2ascGUI(ERP_export_erp,BinArray,ChanArray);
+                if isempty(Answer_erpss)
                     return;
                 end
+                ERP = Answer_erpss{1};
+                FileName = Answer_erpss{2};
+                
+                [observe_ERPDAT.ERP, ERPCOM] = pop_erp2asc(ERP,FileName,'History', 'gui');
+                [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+                assignin('base','ALLERPCOM',ALLERPCOM);
+                assignin('base','ERPCOM',ERPCOM);
+                observe_ERPDAT.Process_messg =2;
+            elseif ind ==2
+                ERP_export_erp.filename =fullfile(pathName,ERP_export_erp.filename);
+                ERP = ERP_export_erp;
+                def  = estudioworkingmemory('f_export2textGUI');
+                if isempty(def)
+                    def = {1,1000, 1, 1, 4, ''};
+                end
+                
+                %
+                % Call GUI
+                %
+                def_x = def;
+                def_x{6} = ERP.filename;
+                answer_export = f_export2textGUI(ERP,def_x,BinArray,ChanArray);
+                if isempty(answer_export)
+                    return;
+                end
+                estudioworkingmemory('f_export2textGUI',answer_export);
+                istime    = answer_export{1};
+                tunit     = answer_export{2};
+                islabeled = answer_export{3};
+                transpa   = answer_export{4};
+                prec      = answer_export{5};
+                
+                filename  = answer_export{6};
+                ERP = answer_export{7};
+                binArray  = [1:ERP.nbin];
+                if istime
+                    time = 'on';
+                else
+                    time = 'off';
+                end
+                if islabeled
+                    elabel = 'on';
+                else
+                    elabel = 'off';
+                end
+                if transpa
+                    tra = 'on';
+                else
+                    tra = 'off';
+                end
+                [ERP, ERPCOM] = pop_export2text(ERP, filename, binArray, 'time', time, 'timeunit', tunit, 'electrodes', elabel,...
+                    'transpose', tra, 'precision', prec, 'History', 'gui');
+                [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(ERP_export_erp, ALLERPCOM, ERPCOM);
+                assignin('base','ALLERPCOM',ALLERPCOM);
+                assignin('base','ERPCOM',ERPCOM);
+                observe_ERPDAT.Process_messg =2;
+                
             end
         end
     end
@@ -714,7 +686,9 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-        f_redrawERP();
+        if EStudio_gui_erp_totl.ERP_autoplot==1
+            f_redrawERP();
+        end
     end
 
 
@@ -773,7 +747,9 @@ varargout{1} = box_erpset_gui;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-        f_redrawERP();
+        if EStudio_gui_erp_totl.ERP_autoplot==1
+            f_redrawERP();
+        end
     end
 
 
@@ -809,25 +785,19 @@ varargout{1} = box_erpset_gui;
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
         
-        try
-            for Numoferpset = 1:length(Selected_erpset)
-                ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
-                FileName = ERP.filename;
-                if isempty(FileName)
-                    FileName = ERP.erpname;
-                end
-                [pathx, filename, ext] = fileparts(FileName);
-                filename = [filename '.erp'];
-                [observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
-                [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
+        for Numoferpset = 1:length(Selected_erpset)
+            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
+            FileName = ERP.filename;
+            if isempty(FileName)
+                FileName = ERP.erpname;
             end
-            observe_ERPDAT.Process_messg =2;
-        catch
-            beep;
-            observe_ERPDAT.Process_messg =3;
-            disp(['ERPsets>Save: Cannot save the selected ERPsets.']);
-            return;
+            [pathx, filename, ext] = fileparts(FileName);
+            filename = [filename '.erp'];
+            [observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
+            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
         end
+        observe_ERPDAT.Process_messg =2;
+        
     end
 
 
@@ -940,8 +910,8 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets-select ERPset(s)');
-        observe_ERPDAT.Process_messg =1;
+        %         erpworkingmemory('f_ERP_proces_messg','ERPsets-select ERPset(s)');
+        %         observe_ERPDAT.Process_messg =1;
         
         Selected_ERPsetlabel = source.Value;
         estudioworkingmemory('selectederpstudio',Selected_ERPsetlabel);
@@ -949,9 +919,11 @@ varargout{1} = box_erpset_gui;
         Current_ERP_selected=Selected_ERPsetlabel(1);
         observe_ERPDAT.CURRENTERP = Current_ERP_selected;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_ERP_selected);
-        observe_ERPDAT.Process_messg =2;
+        %         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
-        f_redrawERP();
+        if EStudio_gui_erp_totl.ERP_autoplot==1
+            f_redrawERP();
+        end
     end
 
 %%%--------------Up this panel--------------------------------------
@@ -1010,7 +982,9 @@ varargout{1} = box_erpset_gui;
         ERPsetops.export.Enable = Edit_label;
         observe_ERPDAT.Count_ERP = observe_ERPDAT.Count_ERP+1;
         observe_ERPDAT.Count_currentERP = 2;
-        f_redrawERP();
+        if EStudio_gui_erp_totl.ERP_autoplot==1
+            f_redrawERP();
+        end
     end
 
 %%------------------get the names of erpsets-------------------------------
@@ -1027,7 +1001,6 @@ varargout{1} = box_erpset_gui;
             ERPlistName{1} = 'No erpset is available' ;
         end
     end
-
 
     function Reset_erp_panel_change(~,~)
         if observe_ERPDAT.Reset_erp_paras_panel~=1

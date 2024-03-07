@@ -21,12 +21,6 @@ if nargin>1
     return;
 end
 
-% if ishandle(  EStudio_gui_erp_totl.eegViewAxes )
-%     delete(  EStudio_gui_erp_totl.eegViewAxes );
-% end
-
-figbgdColor = [1 1 1];%%need to set
-
 if isempty(observe_EEGDAT.EEG)
     Startimes = 0;
 else
@@ -96,12 +90,15 @@ else
     Enableflag = 'off';
 end
 
+EEG_autoplot = EStudio_gui_erp_totl.EEG_autoplot;
 
-EStudio_gui_erp_totl.eegpageinfo_str = ['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
-EStudio_gui_erp_totl.eegpageinfo_text.String=EStudio_gui_erp_totl.eegpageinfo_str;
+EStudio_gui_erp_totl.eegpageinfo_text.String=['Page',32,num2str(pagecurrentNum),'/',num2str(pageNum),':',PageStr];
 EStudio_gui_erp_totl.eegpageinfo_minus.Callback=@page_minus;
 set(EStudio_gui_erp_totl.eegpageinfo_edit,'String',num2str(pagecurrentNum),'Enable','on');
-
+if EEG_autoplot ==0
+    EStudio_gui_erp_totl.eegpageinfo_text.String='Plotting is disabled, to enable it, please go to "Plotting Options" at the bottom of the plotting area to active it.';
+    Enableflag = 'off';
+end
 EStudio_gui_erp_totl.eegpageinfo_edit.Callback=@page_edit;
 EStudio_gui_erp_totl.eegpageinfo_plus.Callback=@page_plus;
 if pageNum ==1
@@ -127,6 +124,13 @@ else
         Enable_minus_BackgroundColor = [0 1 0];
     end
 end
+
+if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG) && EEG_autoplot==0
+    Enable_minus = 'off';
+    Enable_plus = 'off';
+    EStudio_gui_erp_totl.eegpageinfo_edit.Enable = 'off';
+end
+
 EStudio_gui_erp_totl.eegpageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.eegpageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.eegpageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
@@ -142,20 +146,25 @@ set(EStudio_gui_erp_totl.eeg_zoom_out_fivelarge,'Callback',@zoomout_fivelarge,'E
 set(EStudio_gui_erp_totl.eeg_zoom_out_large,'Callback',@zoomout_large,'Enable',Enableflag);
 if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',...
-        {'Plotting Options','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
+        {'Plotting Options','Automatic Plotting','Window Size','Show Command','Save Figure as','Create Static/Exportable Plot'});
 else
-    set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Plotting Options','Window Size'});
+    set(EStudio_gui_erp_totl.popmemu_eeg,'Callback',@popmemu_eeg,'Enable','on','String',{'Plotting Options','Automatic Plotting','Window Size'});
 end
+popmemu_eeg = EStudio_gui_erp_totl.popmemu_eeg.String;
+if EEG_autoplot==1
+    popmemu_eeg{2} = 'Automatic Plotting: On';
+else
+    popmemu_eeg{2} = 'Automatic Plotting: Off';
+end
+EStudio_gui_erp_totl.popmemu_eeg.String=popmemu_eeg;
+
 
 set(EStudio_gui_erp_totl.eeg_reset,'Callback',@eeg_paras_reset,'Enable','on');
 set(EStudio_gui_erp_totl.eeg_plot_button_title, 'Sizes', [10 40 40 40 40 40 40 40 -1 150 50 5]);
-if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
+
+if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG) && EEG_autoplot==1
     EEG = observe_EEGDAT.EEG;
     OutputViewereegpar = f_preparms_eegwaviewer(EEG,0);
-end
-
-
-if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
     % %%Plot the eeg waves
     if ~isempty(OutputViewereegpar)
         EStudio_gui_erp_totl = f_plotviewereegwave(EEG,OutputViewereegpar{1},OutputViewereegpar{2},...
@@ -167,7 +176,8 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG)
         return;
     end
 end
-if isempty(observe_EEGDAT.EEG)
+
+if isempty(observe_EEGDAT.EEG) ||  EEG_autoplot==0
     EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
     hold(EStudio_gui_erp_totl.myeegviewer,'on');
     set(EStudio_gui_erp_totl.myeegviewer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
@@ -184,15 +194,37 @@ end % redrawDemo
 %%-------------------------------------------------------------------------
 
 function popmemu_eeg(Source,~)
-
+global EStudio_gui_erp_totl;
 Value = Source.Value;
 if Value==2
-    EStudiowinsize();
+    app = feval('EStudio_plot_set_waves',EStudio_gui_erp_totl.EEG_autoplot,1);
+    waitfor(app,'Finishbutton',1);
+    try
+        plotSet = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+        app.delete; %delete app from view
+        pause(0.01); %wait for app to leave
+    catch
+        return;
+    end
+    if isempty(plotSet)||numel(plotSet)~=1 || (plotSet~=0&&plotSet~=1)
+        plotSet=1;
+    end
+    popmemu_eegString = EStudio_gui_erp_totl.popmemu_eeg.String;
+    if plotSet==1
+        popmemu_eegString{2} = 'Automatic Plotting: On';
+    else
+        popmemu_eegString{2} = 'Automatic Plotting: Off';
+    end
+    EStudio_gui_erp_totl.popmemu_eeg.String=popmemu_eegString;
+    EStudio_gui_erp_totl.EEG_autoplot = plotSet;
+    f_redrawEEG_Wave_Viewer();
 elseif Value==3
-    Show_command();
+    EStudiowinsize();
 elseif Value==4
+    Show_command();
+elseif Value==5
     figure_saveas();
-elseif  Value==5
+elseif  Value==6
     figure_out();
 end
 Source.Value=1;
@@ -228,9 +260,8 @@ waitfor(app,'Finishbutton',1);
 try
     New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
     app.delete; %delete app from view
-    pause(0.1); %wait for app to leave
+    pause(0.01); %wait for app to leave
 catch
-    disp('User selected Cancel');
     return;
 end
 try New_pos1(2) = abs(New_pos1(2));catch; end;
@@ -883,12 +914,14 @@ try
     app.delete; %delete app from view
     pause(0.1); %wait for app to leave
 catch
-    disp('User selected Cancel');
     return;
 end
 if isempty(reset_paras)
     return;
 end
+EStudio_gui_erp_totl.ERP_autoplot=1;
+EStudio_gui_erp_totl.EEG_autoplot = 1;
+
 observe_EEGDAT.eeg_panel_message=1;
 if reset_paras(2)==1
     EStudio_gui_erp_totl.clear_alleeg = 1;
@@ -1471,7 +1504,7 @@ if ~isempty(data)
     
     %%colors for ICs
     %     Coloricrgb = roundn([211,211,211;169,169,16;128,128,128]/255,-3);
-    Coloricrgb = roundn([180 0 0;139 0 219;228 88 44;15 175 175;0 0 0;9 158 74]/255,-3);
+    Coloricrgb = roundn([180 0 0;127 68 127;228 88 44;15 175 175;0 0 0;9 158 74]/255,-3);
     Colorgb_IC = [];
     if ~isempty(ICArray)
         ICNum = numel(ICArray);

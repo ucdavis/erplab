@@ -427,7 +427,7 @@ if ~isempty(data)
     
     %%colors for ICs
     %     Coloricrgb = roundn([211,211,211;169,169,16;128,128,128]/255,-3);three levels for gray
-    Coloricrgb = roundn([180 0 0;139 0 219;228 88 44;15 175 175;0 0 0;9 158 74]/255,-3);
+    Coloricrgb = roundn([180 0 0;127 68 127;228 88 44;15 175 175;0 0 0;9 158 74]/255,-3);
     Colorgb_IC = [];
     if ~isempty(ICArray)
         ICNum = numel(ICArray);

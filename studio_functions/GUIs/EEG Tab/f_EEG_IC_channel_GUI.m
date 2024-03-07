@@ -92,7 +92,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
             end
         end
         EStduio_eegtab_EEG_IC_chan.ElecRange = uicontrol('Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name)+1,...
-            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable',Enable); % 2B
+            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable',Enable,'BackgroundColor',[1 1 1]); % 2B
         EStduio_eegtab_EEG_IC_chan.ElecRange.KeyPressFcn=  @eeg_ichan_presskey;
         ChanArray =  estudioworkingmemory('EEG_ChanArray');
         if isempty(ChanArray) || length(ChanArray)> ChaNum
@@ -109,7 +109,7 @@ varargout{1} = EStudio_eeg_box_ic_chan;
         uicontrol('Style','text','Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'String','ICs','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1C
         
         EStduio_eegtab_EEG_IC_chan.ICRange =  uicontrol('Parent', EStduio_eegtab_EEG_IC_chan.DataSelGrid,'Style','listbox','Min',1,'Max',length(ICNamestrs)+1,...
-            'String', ICNamestrs,'callback',@onIChanged,'FontSize',FonsizeDefault,'Enable',EnableIC); % 2C
+            'String', ICNamestrs,'callback',@onIChanged,'FontSize',FonsizeDefault,'Enable',EnableIC,'BackgroundColor',[1 1 1]); % 2C
         EStduio_eegtab_EEG_IC_chan.ICRange.KeyPressFcn=  @eeg_ichan_presskey;
         ICArray =  estudioworkingmemory('EEG_ICArray');
         if isempty(ICArray) || length(ICArray)>ICNum

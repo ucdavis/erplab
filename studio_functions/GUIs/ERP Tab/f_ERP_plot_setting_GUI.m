@@ -1433,8 +1433,8 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Process_messg =4;
             return;
         end
-        overlapindex =1;% ERPTab_plotset.pagesel.Value;
-        DataInput = table2cell(DataInput);
+        overlapindex =ERPTab_plotset.pagesel.Value;
+        DataInput = table2cell(DataInput,'delimiter');
         
         [rows,columns] = size(DataInput);
         if columns<=2
@@ -1442,7 +1442,6 @@ varargout{1} = ERP_plotset_box;
             observe_ERPDAT.Process_messg =4;
             return;
         end
-        
         DataInput = DataInput(:,2:end);
         [Griddata, checkflag ]= f_tranf_check_import_grid(DataInput,overlapindex);
         if checkflag==0

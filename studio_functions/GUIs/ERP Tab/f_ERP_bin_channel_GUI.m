@@ -53,7 +53,7 @@ varargout{1} = EStudio_box_bin_chan;
         uicontrol('Style','text','Parent', ERPTab_bin_chan.DataSelGrid,'String','Channels','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def); % 1B
         Chanlist_name = ['No erpset is available'];
         ERPTab_bin_chan.ElecRange = uicontrol('Parent', ERPTab_bin_chan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable','off'); % 2B
+            'String', Chanlist_name,'Callback',@onElecRange,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]); % 2B
         ERPTab_bin_chan.ElecRange.Value  =1;
         ERPTab_bin_chan.ElecRange.KeyPressFcn=  @erp_binchan_presskey;
         % Third column:
@@ -61,7 +61,7 @@ varargout{1} = EStudio_box_bin_chan;
         
         brange = ['No erpset is available'];
         ERPTab_bin_chan.BinRange =  uicontrol('Parent', ERPTab_bin_chan.DataSelGrid,'Style','listbox','Min',1,'Max',2,...
-            'String', brange,'callback',@onBinChanged,'FontSize',FonsizeDefault,'Enable','off','Value',1); % 2C
+            'String', brange,'callback',@onBinChanged,'FontSize',FonsizeDefault,'Enable','off','Value',1,'BackgroundColor',[1 1 1]); % 2C
         ERPTab_bin_chan.BinRange.KeyPressFcn=  @erp_binchan_presskey;
         
         set(ERPTab_bin_chan.DataSelGrid, 'ColumnSizes',[ -1.2 -2],'RowSizes',[20 -3]);

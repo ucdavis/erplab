@@ -89,6 +89,12 @@ else
     estudioworkingmemory('selectederpstudio',1);
     Enableflag = 'off';
 end
+ERP_autoplot = EStudio_gui_erp_totl.ERP_autoplot;
+if ERP_autoplot==1
+    Enableflag = 'on';
+else
+    Enableflag = 'off';
+end
 EStudio_gui_erp_totl.plotgrid = uix.VBox('Parent',EStudio_gui_erp_totl.ViewContainer,'Padding',0,'Spacing',0,'BackgroundColor',ColorB_def);
 
 %%Setting title
@@ -126,17 +132,23 @@ uiextras.Empty('Parent', commandfig_panel); % 1A
 
 if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
     EStudio_gui_erp_totl.erp_popmenu =  uicontrol('Parent',commandfig_panel,'Style','popupmenu','Callback',@popmemu_erp,'Enable','on','BackgroundColor',ColorB_def,...
-        'Enable','on','String',{'Plotting Options','Window Size','Advanced Waveform Viewer','Show Command','Save Figure as','Create Static/Exportable Plot'});
+        'Enable','on','String',{'Plotting Options','Automatic Plotting','Window Size','Advanced Waveform Viewer','Show Command','Save Figure as','Create Static/Exportable Plot'});
 else
     EStudio_gui_erp_totl.erp_popmenu =  uicontrol('Parent',commandfig_panel,'Style','popupmenu','Callback',@popmemu_erp,...
-        'Enable','on','String',{'Plotting Options','Window Size'},'Enable','on','BackgroundColor',ColorB_def);
+        'Enable','on','String',{'Plotting Options','Automatic Plotting','Window Size'},'Enable','on','BackgroundColor',ColorB_def);
 end
+popmemu_erp = EStudio_gui_erp_totl.erp_popmenu.String;
+if ERP_autoplot==1
+    popmemu_erp{2} = 'Automatic Plotting: On';
+else
+    popmemu_erp{2} = 'Automatic Plotting: Off';
+end
+EStudio_gui_erp_totl.erp_popmenu.String=popmemu_erp;
 
 EStudio_gui_erp_totl.erp_reset = uicontrol('Parent',commandfig_panel,'Style','pushbutton','String','Reset',...
     'Callback', @erptab_reset,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','on');
 uiextras.Empty('Parent', commandfig_panel); % 1A
 set(commandfig_panel, 'Sizes', [70 50 70 -1 150 50 5]);
-
 
 %%message
 xaxis_panel = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -165,6 +177,12 @@ else
         Enable_minus_BackgroundColor = [0 1 0];
     end
 end
+if ERP_autoplot==0
+    Enable_minus = 'off';
+    Enable_plus = 'off';
+    EStudio_gui_erp_totl.pageinfo_edit.Enable = 'off';
+    EStudio_gui_erp_totl.pageinfo_text.String='Plotting is disabled, to enable it, please go to "Plotting Options" at the bottom of the plotting area to active it.';
+end
 EStudio_gui_erp_totl.pageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.pageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.pageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
@@ -177,12 +195,12 @@ EStudio_gui_erp_totl.plotgrid.Heights(5) = 30;
 EStudio_gui_erp_totl.plotgrid.Heights(6) = 30;% set the second element (x axis) to 30px high
 EStudio_gui_erp_totl.plotgrid.Units = 'pixels';
 
-if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP)
+if isempty(observe_ERPDAT.ALLERP)  ||  isempty(observe_ERPDAT.ERP) || ERP_autoplot==0
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     set(EStudio_gui_erp_totl.erptabwaveiwer, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 end
 
-if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
+if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autoplot==1
     EStudio_gui_erp_totl.erptabwaveiwer = axes('Parent', EStudio_gui_erp_totl.ViewAxes,'Color','none','Box','on','FontWeight','normal');
     hold(EStudio_gui_erp_totl.erptabwaveiwer,'on');
     EStudio_gui_erp_totl.erptabwaveiwer_legend = axes('Parent', EStudio_gui_erp_totl.ViewAxes_legend,'Color','none','Box','off');
@@ -251,16 +269,41 @@ end
 %%-------------------------------------------------------------------------
 
 function popmemu_erp(Source,~)
+global EStudio_gui_erp_totl;
 Value = Source.Value;
 if Value==2
-    EStudiowinsize();
+    
+    app = feval('EStudio_plot_set_waves',EStudio_gui_erp_totl.ERP_autoplot,2);
+    waitfor(app,'Finishbutton',1);
+    try
+        plotSet = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+        app.delete; %delete app from view
+        pause(0.01); %wait for app to leave
+    catch
+        return;
+    end
+    if isempty(plotSet)||numel(plotSet)~=1 || (plotSet~=0&&plotSet~=1)
+        plotSet=1;
+    end
+    popmemu_eegString = EStudio_gui_erp_totl.erp_popmenu.String;
+    if plotSet==1
+        popmemu_eegString{2} = 'Automatic Plotting: On';
+    else
+        popmemu_eegString{2} = 'Automatic Plotting: Off';
+    end
+    EStudio_gui_erp_totl.erp_popmenu.String=popmemu_eegString;
+    EStudio_gui_erp_totl.ERP_autoplot = plotSet;
+    f_redrawERP();
+    
 elseif Value==3
-    Advanced_viewer();
+    EStudiowinsize();
 elseif Value==4
-    Show_command();
+    Advanced_viewer();
 elseif Value==5
-    figure_saveas();
+    Show_command();
 elseif Value==6
+    figure_saveas();
+elseif Value==7
     figure_out();
 end
 Source.Value=1;
@@ -504,7 +547,7 @@ MessageViewer= char(strcat('Plot previous page (<)'));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 observe_ERPDAT.Process_messg =1;
 % try
-    observe_ERPDAT.Count_currentERP = 1;
+observe_ERPDAT.Count_currentERP = 1;
 %     observe_ERPDAT.Process_messg =2;
 % catch
 %     observe_ERPDAT.Process_messg =3;
@@ -575,8 +618,8 @@ EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundCol
 % erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 % observe_ERPDAT.Process_messg =1;
 % try
-    observe_ERPDAT.Count_currentERP = 1;
-    observe_ERPDAT.Process_messg =2;
+observe_ERPDAT.Count_currentERP = 1;
+observe_ERPDAT.Process_messg =2;
 % catch
 %     observe_ERPDAT.Process_messg =3;
 % end
@@ -654,7 +697,7 @@ EStudio_gui_erp_totl.pageinfo_minus.ForegroundColor = Enable_minus_BackgroundCol
 % erpworkingmemory('f_ERP_proces_messg',MessageViewer);
 % observe_ERPDAT.Process_messg =1;
 % try
-    observe_ERPDAT.Count_currentERP = 1;
+observe_ERPDAT.Count_currentERP = 1;
 %     observe_ERPDAT.Process_messg =2;
 % catch
 %     observe_ERPDAT.Process_messg =3;
@@ -761,12 +804,13 @@ try
     app.delete; %delete app from view
     pause(0.1); %wait for app to leave
 catch
-    disp('User selected Cancel');
     return;
 end
 if isempty(reset_paras)
     return;
 end
+EStudio_gui_erp_totl.ERP_autoplot=1;
+EStudio_gui_erp_totl.EEG_autoplot = 1;
 %%---------------------------EEG Tab---------------------------------------
 if reset_paras(2)==1
     EStudio_gui_erp_totl.clear_alleeg = 1;
