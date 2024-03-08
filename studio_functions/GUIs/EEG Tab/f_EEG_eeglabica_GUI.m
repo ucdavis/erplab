@@ -899,7 +899,7 @@ varargout{1} = EStudio_box_eeglab_ica;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=11
+        if observe_EEGDAT.count_current_eeg ~=12
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
@@ -915,7 +915,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
-            observe_EEGDAT.count_current_eeg=12;
+            observe_EEGDAT.count_current_eeg=13;
             return;
         end
         
@@ -936,7 +936,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.CurrentEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.targetEEG_tras.Enable= 'off';
             EStduio_eegtab_eeglab_ica.traICAweight.Enable= 'off';
-            observe_EEGDAT.count_current_eeg=12;
+            observe_EEGDAT.count_current_eeg=13;
             return;
         end
         
@@ -973,12 +973,12 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf(2, 'Warning: ICLabel default plugin missing (probably due to downloading zip file from Github). Install manually.\n');
             EStduio_eegtab_eeglab_ica.classifyics_iclabel.Enable= 'off';
         end
-        observe_EEGDAT.count_current_eeg=12;
+        observe_EEGDAT.count_current_eeg=13;
     end
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=4
+        if observe_EEGDAT.Reset_eeg_paras_panel~=9
             return;
         end
         if ~isempty(observe_EEGDAT.EEG)
@@ -987,7 +987,7 @@ varargout{1} = EStudio_box_eeglab_ica;
             EStduio_eegtab_eeglab_ica.CurrentEEG_tras.String  = '';
         end
         EStduio_eegtab_eeglab_ica.targetEEG_tras.String = '';
-        observe_EEGDAT.Reset_eeg_paras_panel=5;
+        observe_EEGDAT.Reset_eeg_paras_panel=10;
     end
 end
 

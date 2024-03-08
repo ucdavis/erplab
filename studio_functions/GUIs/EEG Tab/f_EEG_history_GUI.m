@@ -184,7 +184,7 @@ varargout{1} = box_eeg_history;
 
 %%--------Setting current eegset/session history based on the current updated eegset------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=24
+        if observe_EEGDAT.count_current_eeg ~=25
             return;
         end
         if  isempty(observe_EEGDAT.EEG)
@@ -292,7 +292,7 @@ varargout{1} = box_eeg_history;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=20
+        if observe_EEGDAT.Reset_eeg_paras_panel~=21
             return;
         end
         set(gui_eeg_history.eeg_h_all,'Value',1);

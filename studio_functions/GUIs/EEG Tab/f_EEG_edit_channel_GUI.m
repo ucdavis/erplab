@@ -630,14 +630,14 @@ varargout{1} = EStudio_eeg_box_edit_chan;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=5
+        if observe_EEGDAT.Reset_eeg_paras_panel~=4
             return;
         end
         estudioworkingmemory('EEGTab_editchan',0);
         EStduio_eegtab_EEG_edit_chan.mode_modify.Value =1;
         EStduio_eegtab_EEG_edit_chan.mode_create.Value = 0;
         EStduio_eegtab_EEG_edit_chan.select_edit_chan.String = '';
-        observe_EEGDAT.Reset_eeg_paras_panel=6;
+        observe_EEGDAT.Reset_eeg_paras_panel=5;
     end
 end
 

@@ -492,7 +492,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=17
+        if observe_EEGDAT.count_current_eeg ~=18
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
@@ -505,7 +505,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             else
                 Eegtab_box_rmresp_mistak_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=18;
+            observe_EEGDAT.count_current_eeg=19;
             return;
         end
         
@@ -543,7 +543,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         end
         
         EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
-        observe_EEGDAT.count_current_eeg=18;
+        observe_EEGDAT.count_current_eeg=19;
     end
 
 
@@ -615,7 +615,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=12
+        if observe_EEGDAT.Reset_eeg_paras_panel~=15
             return;
         end
         estudioworkingmemory('EEGTab_rmresposmistak_conus',0);
@@ -653,12 +653,12 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             for ii = 1:length(all_ev_unique)
                 ColumnNameStr{ii} = ['Ev.',32,num2str(ii)];
             end
-            EEG_rmresp_mistak_conus.stimulusall.Data = all_ev_unique';
-            EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
-            EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
+%             EEG_rmresp_mistak_conus.stimulusall.Data = all_ev_unique';
+%             EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
+%             EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
             EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
         end
-        observe_EEGDAT.Reset_eeg_paras_panel=13;
+        observe_EEGDAT.Reset_eeg_paras_panel=16;
     end
 
 end

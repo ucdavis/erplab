@@ -1088,11 +1088,10 @@ varargout{1} = ERP_plotset_box;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;*.txt'}, ...
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;'}, ...
             ['Import ERP channel order (for plotting only)'],...
             'MultiSelect', 'off');
         if isequal(erpfilename,0) || indxs~=1
-            disp('User selected Cancel')
             return
         end
         

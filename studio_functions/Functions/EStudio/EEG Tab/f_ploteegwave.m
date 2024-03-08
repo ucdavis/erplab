@@ -535,7 +535,7 @@ if EventOnset==1 && ~isempty(data)
                 end
                 tmplat = Singlat-lowlim;%%adjust the latency if any
             else%%within one epoch
-                tmplat = Eventlatencies(event2plot(index))-lowlim-1;
+                tmplat = Eventlatencies(event2plot(index))-lowlim;%-1;
             end
             
         end

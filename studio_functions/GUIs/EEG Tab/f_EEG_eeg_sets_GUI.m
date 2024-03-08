@@ -194,7 +194,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
         end
-        whichpanel = [19:23];
+        whichpanel = [20:24];
         EEGTab_close_open_Panels(whichpanel);
         EStudio_gui_erp_totl.EEG_transf = 1;
     end
@@ -256,7 +256,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if EStudio_gui_erp_totl.EEG_autoplot==1
             f_redrawEEG_Wave_Viewer();
         end
-        whichpanel = [12:18];
+        whichpanel = [13:19];
         EEGTab_close_open_Panels(whichpanel);
         EStudio_gui_erp_totl.EEG_transf= 1;
     end
@@ -471,9 +471,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.eeg_panel_message=2;
         
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
-            whichpanel = [19:23];
+            whichpanel = [20:24];
         else
-            whichpanel = [12:18];
+            whichpanel = [13:19];
         end
         EEGTab_close_open_Panels(whichpanel);
     end
@@ -572,9 +572,9 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
         observe_EEGDAT.eeg_panel_message=2;
         if  EStduio_eegtab_EEG_set.eeg_contns.Value==1
-            whichpanel = [19:23];
+            whichpanel = [20:24];
         else
-            whichpanel = [12:18];
+            whichpanel = [13:19];
         end
         EEGTab_close_open_Panels(whichpanel);
     end

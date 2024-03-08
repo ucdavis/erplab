@@ -1242,7 +1242,7 @@ varargout{1} = box_interpolate_chan_epoch;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=8
+        if observe_EEGDAT.Reset_eeg_paras_panel~=5
             return;
         end
         estudioworkingmemory('EEGTab_interpolated_chan_epoch',0);
@@ -1268,7 +1268,7 @@ varargout{1} = box_interpolate_chan_epoch;
                 Eegtab_EEG_interpolate_chan_epoch.interpolate_marked_epoch_op.Enable='on';
             end
         end
-        observe_EEGDAT.Reset_eeg_paras_panel=9;
+        observe_EEGDAT.Reset_eeg_paras_panel=6;
     end
 
 end

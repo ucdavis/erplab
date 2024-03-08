@@ -143,4 +143,13 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     eegpanelIndex =17;
 end
 
+
+%%compute averaged ERP
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_resample');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Sampling Rate & Epoch" have not been applied');
+    eegpanelIndex =18;
+end
+
+
 return;

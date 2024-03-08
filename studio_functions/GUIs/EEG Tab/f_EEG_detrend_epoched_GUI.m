@@ -473,7 +473,7 @@ varargout{1} = EEG_epoch_detrend_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=21
+        if observe_EEGDAT.count_current_eeg ~=22
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials==1
@@ -507,12 +507,12 @@ varargout{1} = EEG_epoch_detrend_box;
                 gui_eeg_epoch_dt.custom_edit.Enable = 'off';
             end
         end
-        observe_EEGDAT.count_current_eeg=22;
+        observe_EEGDAT.count_current_eeg=23;
     end
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=17
+        if observe_EEGDAT.Reset_eeg_paras_panel~=18
             return;
         end
         %         EEG_epoch_detrend_box.TitleColor= [0.0500    0.2500    0.5000];
@@ -528,7 +528,7 @@ varargout{1} = EEG_epoch_detrend_box;
         gui_eeg_epoch_dt.custom.Value=0;
         gui_eeg_epoch_dt.custom_edit.Enable = 'off';
         gui_eeg_epoch_dt.custom_edit.String = '';
-        observe_EEGDAT.Reset_eeg_paras_panel=18;
+        observe_EEGDAT.Reset_eeg_paras_panel=19;
     end
 end
 

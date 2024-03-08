@@ -1282,7 +1282,7 @@ varargout{1} = EEG_filtering_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=9
+        if observe_EEGDAT.count_current_eeg ~=10
             return;
         end
         
@@ -1297,7 +1297,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.all_chan.Enable = 'off';
             gui_eegtab_filtering.Selected_chan.Enable = 'off';
             gui_eegtab_filtering.cancel.Enable = 'off';
-            observe_EEGDAT.count_current_eeg=10;
+            observe_EEGDAT.count_current_eeg=11;
             return;
         else
             gui_eegtab_filtering.all_chan.Enable = 'on';
@@ -1381,7 +1381,7 @@ varargout{1} = EEG_filtering_box;
             end
         end
         EStudio_gui_erp_totl.EEG_transf=0;
-        observe_EEGDAT.count_current_eeg=10;
+        observe_EEGDAT.count_current_eeg=11;
     end
 
 
@@ -1429,7 +1429,7 @@ varargout{1} = EEG_filtering_box;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=7
+        if observe_EEGDAT.Reset_eeg_paras_panel~=8
             return;
         end
         estudioworkingmemory('EEGTab_filter',0);
@@ -1481,7 +1481,7 @@ varargout{1} = EEG_filtering_box;
         try nchan=observe_EEGDAT.EEG.nbchan;catch nchan=1;end
         defx = {0, 30, 2, 1:nchan, 1 ,'butter', remove_dc, []};
         erpworkingmemory('pop_basicfilter',defx);
-        observe_EEGDAT.Reset_eeg_paras_panel=8;
+        observe_EEGDAT.Reset_eeg_paras_panel=9;
     end
 end
 

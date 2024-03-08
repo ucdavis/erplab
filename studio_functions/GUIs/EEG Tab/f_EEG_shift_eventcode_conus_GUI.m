@@ -593,7 +593,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=16
+        if observe_EEGDAT.count_current_eeg ~=17
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
@@ -610,7 +610,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             else
                 Eegtab_box_shift_eventcodes_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=17;
+            observe_EEGDAT.count_current_eeg=18;
             return;
         end
         
@@ -650,7 +650,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             EEG_shift_eventcode_conus.shiftcodes_run.Enable= 'off';
             EEG_shift_eventcode_conus.shiftcodes_cancel.Enable= 'off';
         end
-        observe_EEGDAT.count_current_eeg=17;
+        observe_EEGDAT.count_current_eeg=18;
     end
 
 
@@ -694,7 +694,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=9
+        if observe_EEGDAT.Reset_eeg_paras_panel~=14
             return;
         end
         estudioworkingmemory('EEGTab_shiftcodes_conus',0);
@@ -708,7 +708,7 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         EEG_shift_eventcode_conus.roundnearest.Value = 0;
         EEG_shift_eventcode_conus.roundlater.Value = 0;
         EEG_shift_eventcode_conus.timeshift_edit.String = '0';
-        observe_EEGDAT.Reset_eeg_paras_panel=10;
+        observe_EEGDAT.Reset_eeg_paras_panel=15;
     end
 end
 

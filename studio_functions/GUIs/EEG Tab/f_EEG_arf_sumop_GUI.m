@@ -520,7 +520,7 @@ varargout{1} = Eegtab_box_art_sumop;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=20
+        if observe_EEGDAT.count_current_eeg ~=21
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -535,7 +535,7 @@ varargout{1} = Eegtab_box_art_sumop;
             else
                 Eegtab_box_art_sumop.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=21;
+            observe_EEGDAT.count_current_eeg=22;
             return;
         end
         
@@ -546,7 +546,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_onevalue.Enable = 'on';
         Eegtab_EEG_art_sumop.art_table.Enable = 'on';
         Eegtab_EEG_art_sumop.art_graphic.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=21;
+        observe_EEGDAT.count_current_eeg=22;
     end
 end
 

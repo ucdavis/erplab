@@ -102,7 +102,7 @@ if TimeRange(2)<=0
 end
 
 %%-------------------------adjust the left edge----------------------------
-if TimeRange(1)>= ERP.times(1)
+if roundn(TimeRange(1),-2)>= roundn(ERP.times(1),-2)
     [xxx, latsamp, latdiffms] = closest(ERP.times, TimeRange(1));
     ERP.times = ERP.times(latsamp:end);
     ERP.xmin = ERP.times(1)/1000;
@@ -131,7 +131,7 @@ else
     end
 end
 %%-------------------------adjust the right edge---------------------------
-if TimeRange(2)<= ERP.times(end)
+if roundn(TimeRange(2),-2)<= roundn(ERP.times(end),-2)
     [xxx, latsamp, latdiffms] = closest(ERP.times, TimeRange(2));
     ERP.times = ERP.times(1:latsamp);
     ERP.xmax = ERP.times(end)/1000;
@@ -157,7 +157,6 @@ else
         for ii = 1:size(ERP.bindata,3)
             newdata(:,:,ii)  = [squeeze(ERP.bindata(:,:,ii)),datadd];
         end
-        
         ERP.bindata = newdata;
     end
 end
@@ -165,7 +164,7 @@ end
 count = 0;
 check_left = [];
 for ii = 1:numel(ERP.times)
-    if ERP.times(ii)< TimeRange(1) || ERP.times(ii)> TimeRange(2)
+    if roundn(ERP.times(ii),-2)< roundn(TimeRange(1),-2) || roundn(ERP.times(ii),-2)> roundn(TimeRange(2),-2)
         count = count+1;
         check_left(count) = ii;
     end
@@ -176,25 +175,26 @@ ERP.pnts = size(ERP.bindata,2);
 ERP.xmax = ERP.times(end)/1000;
 ERP.xmin = ERP.times(1)/1000;
 
+if ERP.srate~=Freq2resamp
+    EEG = eeg_emptyset();
+    EEG.nbchan = ERP.nchan;
+    EEG.pnts = ERP.pnts;
+    EEG.trials = size(ERP.bindata,3);
+    EEG.srate = ERP.srate;
+    EEG.xmin = ERP.xmin;
+    EEG.xmax = ERP.xmax;
+    EEG.data = ERP.bindata;
+    EEG.times = ERP.times;
+    %%resampling data based on eeglab routine
+    EEG = pop_resample( EEG, Freq2resamp);
+    ERP.srate= EEG.srate;
+    ERP.xmin= EEG.xmin;
+    ERP.xmax = EEG.xmax;
+    ERP.bindata = EEG.data;
+    ERP.times = EEG.times;
+    ERP.pnts= EEG.pnts;
+end
 
-EEG = eeg_emptyset();
-EEG.nbchan = ERP.nchan;
-EEG.pnts = ERP.pnts;
-EEG.trials = size(ERP.bindata,3);
-EEG.srate = ERP.srate;
-EEG.xmin = ERP.xmin;
-EEG.xmax = ERP.xmax;
-EEG.data = ERP.bindata;
-EEG.times = ERP.times;
-%%resampling data based on eeglab routine
-EEG = pop_resample( EEG, Freq2resamp);
-
-ERP.srate= EEG.srate;
-ERP.xmin= EEG.xmin;
-ERP.xmax = EEG.xmax;
-ERP.bindata = EEG.data;
-ERP.times = EEG.times;
-ERP.pnts= EEG.pnts;
 ERP.EVENTLIST.eventinfo = [];
 ERP.binerror = [];
 
@@ -268,28 +268,28 @@ erpcom = sprintf( '%s );', erpcom);
 %
 % Save ERPset from GUI
 %
-if issaveas
-    [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');
-    if issave>0
-        %                 erpcom = sprintf( '%s = pop_filterp( %s, %s, %s, %s, %s, ''%s'', %s);', inputname(1), inputname(1),...
-        %                         chanArraystr, num2str(locutoff), num2str(hicutoff),...
-        %                         num2str(filterorder), lower(fdesign), num2str(remove_dc));
-        %                 erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
-        if issave==2
-            erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
-            msgwrng = '*** Your ERPset was saved on your hard drive.***';
-            %mcolor = [0 0 1];
-        else
-            msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
-            %mcolor = [1 0.52 0.2];
-        end
-    else
-        ERP = ERPaux;
-        msgwrng = 'ERPLAB Warning: Your changes were not saved';
-        %mcolor = [1 0.22 0.2];
-    end
-    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
-end
+% if issaveas
+%     [ERP, issave, erpcom_save] = pop_savemyerp(ERP,'gui','erplab', 'History', 'off');
+%     if issave>0
+%         %                 erpcom = sprintf( '%s = pop_filterp( %s, %s, %s, %s, %s, ''%s'', %s);', inputname(1), inputname(1),...
+%         %                         chanArraystr, num2str(locutoff), num2str(hicutoff),...
+%         %                         num2str(filterorder), lower(fdesign), num2str(remove_dc));
+%         %                 erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+%         if issave==2
+%             erpcom = sprintf('%s\n%s', erpcom, erpcom_save);
+%             msgwrng = '*** Your ERPset was saved on your hard drive.***';
+%             %mcolor = [0 0 1];
+%         else
+%             msgwrng = '*** Warning: Your ERPset was only saved on the workspace.***';
+%             %mcolor = [1 0.52 0.2];
+%         end
+%     else
+%         ERP = ERPaux;
+%         msgwrng = 'ERPLAB Warning: Your changes were not saved';
+%         %mcolor = [1 0.22 0.2];
+%     end
+%     try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+% end
 % get history from script. ERP
 switch shist
     case 1 % from GUI

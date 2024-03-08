@@ -503,7 +503,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=12
+        if observe_EEGDAT.count_current_eeg ~=13
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1
@@ -517,7 +517,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
             EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'off';
-            observe_EEGDAT.count_current_eeg=13;
+            observe_EEGDAT.count_current_eeg=14;
             return;
         end
         for ii = 1:100
@@ -548,7 +548,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'on';
         EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'on';
         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
-        observe_EEGDAT.count_current_eeg=13;
+        observe_EEGDAT.count_current_eeg=14;
     end
 
 %%-------------------------------------------------------------------------
@@ -615,7 +615,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=14
+        if observe_EEGDAT.Reset_eeg_paras_panel~=10
             return;
         end
         estudioworkingmemory('EEGTab_event2bin',0);
@@ -627,7 +627,7 @@ varargout{1} = EStudio_box_EEG_event2bin;
         EStduio_eegtab_EEG_event2bin.BDF_edit.String= '';
         def = {'' '' '' 0 [] [] 0 0 0 1 0};
         erpworkingmemory('pop_binlister',def);
-        observe_EEGDAT.Reset_eeg_paras_panel=15;
+        observe_EEGDAT.Reset_eeg_paras_panel=11;
     end
 end
 

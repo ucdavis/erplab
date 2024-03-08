@@ -748,7 +748,7 @@ varargout{1} = EEG_binepoch_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=13
+        if observe_EEGDAT.count_current_eeg ~=14
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1
@@ -780,7 +780,7 @@ varargout{1} = EEG_binepoch_box;
         else
             gui_eegtab_binepoch.custom_edit.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg =14;
+        observe_EEGDAT.count_current_eeg =15;
     end
 
 %%--------------press return to execute "Apply"----------------------------
@@ -823,7 +823,7 @@ varargout{1} = EEG_binepoch_box;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=15
+        if observe_EEGDAT.Reset_eeg_paras_panel~=11
             return;
         end
         estudioworkingmemory('EEGTab_binepoch',0);
@@ -840,7 +840,7 @@ varargout{1} = EEG_binepoch_box;
         gui_eegtab_binepoch.custom_edit.Enable = 'off';
         gui_eegtab_binepoch.custom_edit.String = '';
         erpworkingmemory('pop_epochbin',{[-200 800]  'pre'});
-        observe_EEGDAT.Reset_eeg_paras_panel=16;
+        observe_EEGDAT.Reset_eeg_paras_panel=12;
     end
 end
 

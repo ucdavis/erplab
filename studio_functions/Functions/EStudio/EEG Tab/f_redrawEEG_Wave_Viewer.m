@@ -299,6 +299,17 @@ global EStudio_gui_erp_totl;%%Global variable
 if isempty(observe_EEGDAT.EEG)
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
+
 if observe_EEGDAT.EEG.trials>1 % time in second or in trials
     Startimes =1;
 else
@@ -318,6 +329,17 @@ global EStudio_gui_erp_totl;%%Global variable
 if isempty(observe_EEGDAT.EEG)
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
+
 % MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<<)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
 % observe_EEGDAT.eeg_panel_message=1;
@@ -374,6 +396,17 @@ global EStudio_gui_erp_totl;%%Global variable
 if isempty(observe_EEGDAT.EEG)
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
+
 % MessageViewer= char(strcat('Decreasing start time for the displayed EEG (<)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
 % observe_EEGDAT.eeg_panel_message=1;
@@ -430,6 +463,16 @@ if isempty(observe_EEGDAT.EEG)
     Source.String ='0';
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
 
 % MessageViewer= char(strcat('Editing start time for the displayed EEG'));
 % erpworkingmemory('f_EEG_proces_messg',MessageViewer);
@@ -505,6 +548,17 @@ end
 if isempty(observe_EEGDAT.EEG)
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
+
 [chaNum,sampleNum,trialNum]=size(observe_EEGDAT.EEG.data);
 Frames = sampleNum*trialNum;
 if observe_EEGDAT.EEG.trials>1 % time in second or in trials
@@ -578,6 +632,17 @@ end
 if isempty(observe_EEGDAT.EEG)
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
+
 [chaNum,sampleNum,trialNum]=size(observe_EEGDAT.EEG.data);
 Frames = sampleNum*trialNum;
 if observe_EEGDAT.EEG.trials>1 % time in second or in trials
@@ -641,6 +706,17 @@ global EStudio_gui_erp_totl;%%Global variable
 if isempty(observe_EEGDAT.EEG)
     return;
 end
+EStudio_gui_erp_totl.eegProcess_messg.String = '';
+try
+    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
+catch
+    ColorB_def = [0.7020 0.77 0.85];
+end
+if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
+    ColorB_def = [0.7020 0.77 0.85];
+end
+EStudio_gui_erp_totl.eegProcess_messg.BackgroundColor = ColorB_def;
+
 % MessageViewer= char(strcat('Changing the start time to be maximal (>|)'));
 EEG_plotset = estudioworkingmemory('EEG_plotset');
 % observe_EEGDAT.eeg_panel_message=1;%%this will slow down the plotting speed
@@ -1030,7 +1106,6 @@ end
 if isempty(ColorB_def) || numel(ColorB_def)~=3 || min(ColorB_def(:))<0 || max(ColorB_def(:))>1
     ColorB_def = [0.7020 0.77 0.85];
 end
-
 Processed_Method=erpworkingmemory('f_EEG_proces_messg');
 EEGMessagepre = erpworkingmemory('f_EEG_proces_messg_pre');
 if isempty(EEGMessagepre)
@@ -1613,7 +1688,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
                 end
                 tmplat = Singlat-lowlim;%%adjust the latency if any
             else%%within one epoch
-                tmplat = Eventlatencies(event2plot(index))-lowlim-1;
+                tmplat = Eventlatencies(event2plot(index))-lowlim;%-1;
             end
         end
         tmph   = plot(myeegviewer, [ tmplat tmplat ], ylims, 'color', Eventcolors{ event2plot(index) }, ...

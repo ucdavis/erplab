@@ -563,7 +563,7 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=22
+        if observe_EEGDAT.count_current_eeg ~=23
             return;
         end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
@@ -581,7 +581,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             else
                 Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=23;
+            observe_EEGDAT.count_current_eeg=24;
             return;
         end
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
@@ -601,7 +601,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if EEG_dq_epoch.def_para.Value==1
             EEG_dq_epoch.custom_para_op.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg=23;
+        observe_EEGDAT.count_current_eeg=24;
     end
 
 
@@ -646,7 +646,7 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=18
+        if observe_EEGDAT.Reset_eeg_paras_panel~=19
             return;
         end
         estudioworkingmemory('EEGTab_dq_epoch',0);
@@ -662,7 +662,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.all_marks.Value = 1;
         EEG_dq_epoch.excld_marks.Value = 0;
         EEG_dq_epoch.marked_epochs.Value = 0;
-        observe_EEGDAT.Reset_eeg_paras_panel=19;
+        observe_EEGDAT.Reset_eeg_paras_panel=20;
     end
 
 end
