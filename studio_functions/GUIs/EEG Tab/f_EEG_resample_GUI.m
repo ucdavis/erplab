@@ -410,7 +410,6 @@ varargout{1} = box_eeg_resample;
             Freq2resamp = [];
         end
         
-        
         %%----------------------------check new time window----------------
         if gui_eeg_resample.nwtimewindow_checkbox.Value==1
             NewStart = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
@@ -506,10 +505,15 @@ varargout{1} = box_eeg_resample;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-             [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off'); 
+            [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end
-
-        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_resample');
+        if EEG.trials>1
+            suffixname = 'resampeled';
+        else
+            suffixname = '';
+        end
+        
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),suffixname);
         if isempty(Answer)
             return;
         end
@@ -520,7 +524,7 @@ varargout{1} = box_eeg_resample;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG_out(Numofeeg);
             if Save_file_label
-               [pathstr, file_name, ext] = fileparts(EEG.filename);
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
                 EEG.filename = [file_name,'.set'];
                 [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
                 EEG = eegh(LASTCOM, EEG);
@@ -532,7 +536,7 @@ varargout{1} = box_eeg_resample;
                 EEG.saved = 'no';
                 EEG.filepath = '';
             end
-           [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
         

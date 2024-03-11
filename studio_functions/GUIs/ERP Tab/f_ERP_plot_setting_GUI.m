@@ -1338,7 +1338,6 @@ varargout{1} = ERP_plotset_box;
             ['Save Grid Locations as'],...
             fullfile(pathstr,namedef));
         if isequal(erpfilename,0)
-            disp('User selected Cancel')
             return
         end
         [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
@@ -1377,7 +1376,7 @@ varargout{1} = ERP_plotset_box;
             if jj==1
                 columName{1,jj} = '';
             else
-                columName{1,jj} = ['Column',32,num2str(jj-1)];
+                columName{1,jj} = ['Column',num2str(jj-1)];
             end
         end
         formatSpec = strcat(formatSpec,'\n');

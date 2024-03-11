@@ -103,7 +103,6 @@ end
 erpFilename = char(strcat(erppathname,erpfilename,ext));
 
 
-
 qERParray = p_Results.ERPArray;
 ERPArray = qERParray;
 if isempty(qERParray) || any(qERParray(:)>length(ALLERP)) || any(qERParray(:)<1)
@@ -142,18 +141,18 @@ for Numoferp = 1:numel(qERParray)
                 
             catch
                 data{1,1} = '';
-                data{1,2} =     '';
-                data{1,3} =      '';
-                data{1,4} =      '';
+                data{1,2} = '';
+                data{1,3} = '';
+                data{1,4} = '';
             end
             fprintf(fileID,formatSpec2,data{1,:});
         end
         
         if Numoferp~=length(ALLERP)
             data1{1,1} = '';
-            data1{1,2} =     '';
-            data1{1,3} =      '';
-            data1{1,4} =      '';
+            data1{1,2} = '';
+            data1{1,3} = '';
+            data1{1,4} = '';
             formatSpec3 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\n\n\n\n\n\n'];
             fprintf(fileID,formatSpec3,data{1,:});
         end
@@ -163,7 +162,7 @@ for Numoferp = 1:numel(qERParray)
     if write_spreadsheet==2
         data = [];
         binname =  '';
-        columName2 = {ERP.erpname, 'Included trials', 'Rejected trials', 'Invalid trials'};
+        columName2 = {ERP.erpname,'Included trials', 'Rejected trials', 'Invalid trials'};
         for ii = 1:length(qbinArray)
             try
                 data(ii,1) =      [ERP.ntrials.accepted(qbinArray(ii))];
@@ -181,21 +180,25 @@ for Numoferp = 1:numel(qERParray)
             end
         end
         if Numoferp==1
-            try
-                blank_cell = {''};
-                blank_T = table(blank_cell);
-                writetable(blank_T, erpFilename,'Sheet',1,'Sheet', ['Data',32,num2str(Numoferp)]);
-            catch
-                msgboxText =  ['Excel XLS write server unavailible on this computer? We suggest exporting to a Matlab *.txt file instead.'];
-                titlNamerro = 'Warning for pop_ERP_save_trial_information';
-                estudio_warning(msgboxText,titlNamerro);
-                return
-            end
+%             try
+%                 blank_cell = {''};
+%                 blank_T = table(blank_cell);
+%                 writetable(blank_T, erpFilename,'Sheet',1,'Sheet', ['Data',32,num2str(Numoferp)]);
+%             catch
+%                 msgboxText =  ['Excel XLS write server unavailible on this computer? We suggest exporting to a Matlab *.txt file instead.'];
+%                 titlNamerro = 'Warning for pop_ERP_save_trial_information';
+%                 estudio_warning(msgboxText,titlNamerro);
+%                 return
+%             end
         end
         sheet_label_T = table(columName2);
-        writetable(sheet_label_T,erpFilename,'Sheet',Numoferp,'Range','A1','WriteVariableNames',false,'Sheet', ['Data',32,num2str(Numoferp)]);
+        sheetname = char(ERP.erpname);
+        if length(sheetname)>31
+            sheetname = sheetname(1:31);
+        end
+        writetable(sheet_label_T,erpFilename,'Sheet',Numoferp,'Range','A1','WriteVariableNames',false,'Sheet',sheetname,"AutoFitWidth",false);
         xls_d = table(binname,data);
-        writetable(xls_d,erpFilename,'Sheet',Numoferp,'Range','A2','WriteVariableNames',false,'Sheet', ['Data',32,num2str(Numoferp)]);  % write data
+        writetable(xls_d,erpFilename,'Sheet',Numoferp,'Range','A2','WriteVariableNames',false,'Sheet',sheetname,"AutoFitWidth",false);  % write data
     end
 end
 
