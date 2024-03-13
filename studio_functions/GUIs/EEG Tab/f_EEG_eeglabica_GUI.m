@@ -164,7 +164,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         eegh(LASTCOM);
         
         fprintf(['\n',LASTCOM,'\n']);
-        Answer = f_EEG_save_multi_file(EEG,1, '');
+        Answer = f_EEG_save_multi_file(EEG,1, '_ica');
         if isempty(Answer)
             return;
         end

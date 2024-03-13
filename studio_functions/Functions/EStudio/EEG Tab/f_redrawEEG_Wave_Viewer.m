@@ -171,7 +171,7 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG) && EEG_autopl
             OutputViewereegpar{3},OutputViewereegpar{4},OutputViewereegpar{5},...
             OutputViewereegpar{6},OutputViewereegpar{7},OutputViewereegpar{8},...
             OutputViewereegpar{9},OutputViewereegpar{10},OutputViewereegpar{11},...
-            OutputViewereegpar{12},OutputViewereegpar{13},EStudio_gui_erp_totl);
+            OutputViewereegpar{12},OutputViewereegpar{13},OutputViewereegpar{14},EStudio_gui_erp_totl);
     else
         return;
     end
@@ -1210,7 +1210,7 @@ end
 %%-------------------------------Plot eeg waves--------------------------%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [EStudio_gui_erp_totl,errmeg] = f_plotviewereegwave(EEG,ChanArray,ICArray,EEGdispFlag,ICdispFlag,Winlength,...
-    AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,AmpIC,EStudio_gui_erp_totl)
+    AmpScale,ChanLabel,Submean,EventOnset,StackFlag,NormFlag,Startimes,AmpIC,bufftobo,EStudio_gui_erp_totl)
 
 
 EStudio_gui_erp_totl.myeegviewer = axes('Parent', EStudio_gui_erp_totl.eegViewAxes,'Color','none','Box','on','FontWeight','normal');
@@ -1345,13 +1345,21 @@ end
 
 %%VERTICAL SCALE for ICs
 if nargin<14
-    AmpIC = 10;
+    AmpIC = 20;
 end
 
 if isempty(AmpIC) || numel(AmpIC)~=1 || AmpIC<=0
-    AmpIC = 10;
+    AmpIC = 20;
 end
 OldAmpIC = AmpIC;
+
+%%buffer at top and bottom
+if nargin<15
+    bufftobo = 100;
+end
+if isempty(bufftobo) || numel(bufftobo)~=1 || any(bufftobo(:)<=0)
+    bufftobo = 100;
+end
 
 
 [ChanNum,Allsamples,tmpnb] = size(EEG.data);
@@ -1514,7 +1522,7 @@ if chaNum==0 && ICNum==0
     end
     AmpScaleold = 0;
     ylims = [0 (PlotNum+1)*AmpScale];
-    data = [dataeeg;(AmpScale/AmpIC)*dataica];
+    data = [dataeeg;dataica];
     meandata = [meandata,meandataica];
 elseif ICNum==0 && chaNum~=0
     Ampscold = AmpScale*[1:PlotNum]';
@@ -1524,7 +1532,7 @@ elseif ICNum==0 && chaNum~=0
         Ampsc = Ampscold;
     end
     AmpScaleold = AmpScale;
-    ylims = [0 (PlotNum+1)*AmpScale];
+    ylims = [AmpScale*(100-bufftobo)/100 PlotNum*AmpScale+AmpScale*bufftobo/100];
     data = [dataeeg;dataica];
     meandata = [meandata,meandataica];
 elseif ICNum~=0 && chaNum==0
@@ -1534,7 +1542,7 @@ elseif ICNum~=0 && chaNum==0
     else
         Ampsc = Ampscold;
     end
-    ylims = [0 (PlotNum+1)*AmpIC];
+    ylims = [AmpIC*(100-bufftobo)/100 PlotNum*AmpIC+AmpIC*bufftobo/100];
     AmpScaleold = AmpIC;
     data = [dataeeg;dataica];
     meandata = [meandata,meandataica];
@@ -1550,7 +1558,7 @@ elseif ICNum~=0 && chaNum~=0
         Ampsc = Ampscold;
     end
     AmpScaleold = AmpScale;
-    ylims = [0 Ampscold(end)+AmpScaleold];
+    ylims = [AmpICNew*(100-bufftobo)/100 Ampscold(end)+AmpScale*bufftobo/100];
     data = [dataeeg;(AmpICNew/AmpIC)*dataica];
     meandata = [meandata,(AmpICNew/AmpIC)*meandataica];
 end
@@ -1847,7 +1855,7 @@ if ndims(EEG.data)==3
                 if jj<= numel(trialsMakrs) && ~isempty(xpos)
                     if trialsMakrs(jj)==1
                         patch(myeegviewer,[Epochintv(jj,1),Epochintv(jj,2),Epochintv(jj,2),Epochintv(jj,1)],...
-                            [0,0,Ampscold(end)+AmpScale,Ampscold(end)+AmpScale],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
+                            [ylims(1),ylims(1),ylims(end),ylims(end)],tmpcolsbgc,'EdgeColor','none','FaceAlpha',.5);
                         %%highlight the wave if the channels exist
                         if  chaNum~=0
                             ChanArray = reshape(ChanArray,1,numel(ChanArray));
@@ -1974,11 +1982,11 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
     leftintv = leftintv+ytick_bottom*2.5;
     rightintv = leftintv;
     if ICdispFlag~=0
-        line(myeegviewer,[leftintv,rightintv],[0 AmpICNew],'color','k','LineWidth',1, 'clipping','off');
-        line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[0 0],'color','k','LineWidth',1, 'clipping','off');
-        line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew AmpICNew],'color','k','LineWidth',1, 'clipping','off');
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew), ['ICs'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
+        line(myeegviewer,[leftintv,rightintv],[ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
+        line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(1) ylims(1)],'color','k','LineWidth',1, 'clipping','off');
+        line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew+ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
     end
     if EEGdispFlag~=0
         line(myeegviewer,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
@@ -1994,7 +2002,7 @@ if ~isempty(data) && PlotNum~=0
     if chaNum==0
         ChanArray = [];
     end
-    set(myeegviewer, 'ylim',[0 Ampscold(end)+AmpScaleold],'YTick',[0 Ampscold']);
+    set(myeegviewer, 'ylim',[ylims(1) ylims(end)],'YTick',[ylims(1) Ampscold']);
     [YLabels,chaName,ICName] = f_eeg_read_chan_IC_names(EEG.chanlocs,ChanArray,ICArray,ChanLabel);
     YLabels = flipud(char(YLabels,''));
     set(myeegviewer,'YTickLabel',cellstr(YLabels),...

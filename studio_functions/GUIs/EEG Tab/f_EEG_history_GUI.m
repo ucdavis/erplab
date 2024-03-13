@@ -184,7 +184,7 @@ varargout{1} = box_eeg_history;
 
 %%--------Setting current eegset/session history based on the current updated eegset------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=25
+        if observe_EEGDAT.count_current_eeg ~=26
             return;
         end
         if  isempty(observe_EEGDAT.EEG)

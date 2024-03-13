@@ -94,7 +94,7 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
         end
         ds_length = length(ERPdatasets);
         ERPwaveview_erpsetops.butttons_datasets = uicontrol('Parent', panelshbox, 'Style', 'listbox', 'min', 1,'max',...
-            ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable','on');
+            ds_length,'String', dsnames,'Value', SelectedIndex,'Callback',@selectdata,'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',[1 1 1]);
         ERPwaveview_erpsetops.butttons_datasets.KeyPressFcn = @ERPset_keypress;
         %%Help and apply
         ERPwaveview_erpsetops.help_apply_title = uiextras.HBox('Parent', ERPwaveview_erpsetops.vBox,'BackgroundColor',ColorBviewer_def);

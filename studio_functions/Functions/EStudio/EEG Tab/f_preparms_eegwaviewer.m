@@ -93,6 +93,8 @@ if isempty(EEG_plotset)
     EventOnset = 1;
     StackFlag = 0;
     NormFlag = 0;
+    AmpScale_ic=20;
+    buffer_topo_bottom = 100;
 else
     %%diaply original data?
     try
@@ -139,10 +141,10 @@ else
     try
         AmpScale_ic = EEG_plotset{5};
     catch
-        AmpScale_ic = 10;
+        AmpScale_ic = 20;
     end
     if isempty(AmpScale_ic) || numel(AmpScale_ic)~=1 || AmpScale_ic<=0
-        AmpScale_ic = 10;
+        AmpScale_ic = 20;
     end
     
     %%Channel labels? (1 is name, 0 is number)
@@ -195,6 +197,16 @@ else
     if isempty(NormFlag) ||numel(NormFlag)~=1 || (NormFlag~=0 && NormFlag~=1)
         NormFlag = 0;
     end
+    
+    %%buffer at top and bottom
+    try
+        buffer_topo_bottom = EEG_plotset{12};
+    catch
+        buffer_topo_bottom=100;
+    end
+    if isempty(buffer_topo_bottom) || numel(buffer_topo_bottom)~=1 || any(buffer_topo_bottom(:)<=0)
+        buffer_topo_bottom=100;
+    end
 end
 
 
@@ -233,7 +245,7 @@ if matlabfig==1
     if EEGdisp==0
         ChanArray = [];
     end
-    [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
+    [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,'bufftobo',buffer_topo_bottom,...
         'Ampchan',AmpScale,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,'Ampic',AmpScale_ic,...
         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History',History);
 else
@@ -250,6 +262,7 @@ else
     OutputViewerpareeg{11} =NormFlag;
     OutputViewerpareeg{12} =Startimes;
     OutputViewerpareeg{13} = AmpScale_ic;
+    OutputViewerpareeg{14} = buffer_topo_bottom;
 end
 
 end

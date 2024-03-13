@@ -103,7 +103,7 @@ varargout{1} = Chanbin_waveviewer_box;
         end
         gui_erp_waviewer.ERPwaviewer.chan = Chan_sel;
         ERPwaveview_binchan.ElecRange = uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','min',1,'max',length(Chanlist_name),...
-            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable','on'); % 2B
+            'String', Chanlist_name,'Callback',@ViewerElecRange,'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',[1 1 1]); % 2B
         
         ERPwaveview_binchan.ElecRange.KeyPressFcn = @setbinchan_presskey;
         if  numel(Chan_sel) == numel(Chanlist)
@@ -139,7 +139,7 @@ varargout{1} = Chanbin_waveviewer_box;
             brange(Numofbin11+1) = {char(strcat(num2str(Numofbin11),'.',32,char(binStr(Numofbin11))))};
         end
         ERPwaveview_binchan.BinRange =  uicontrol('Parent', ERPwaveview_binchan.DataSelGrid,'Style','listbox','Min',1,'Max',BinNum+1,...
-            'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable','on'); % 2C
+            'String', brange,'callback',@ViewerBinRange,'FontSize',FonsizeDefault,'Enable','on','BackgroundColor',[1 1 1]); % 2C
         ERPwaveview_binchan.BinRange.KeyPressFcn = @setbinchan_presskey;
         if BinNum== numel(Bin_sel)
             ERPwaveview_binchan.BinRange.Value  =1;

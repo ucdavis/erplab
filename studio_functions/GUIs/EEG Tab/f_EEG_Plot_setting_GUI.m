@@ -70,11 +70,23 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         EStduio_gui_EEG_plotset.v_scale_ic = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title1, 'Style', 'text', 'String', 'Vertical Scale:',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-        EStduio_gui_EEG_plotset.v_scale_edit_ic = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title1 , 'Style', 'edit', 'String', '10',...
+        EStduio_gui_EEG_plotset.v_scale_edit_ic = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title1 , 'Style', 'edit', 'String', '20',...
             'Callback', @vscale_edit_ic,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
         set(EStduio_gui_EEG_plotset.datatype_title1,'Sizes',[120 80 -1]);
         
         EEG_plotset{2} = EStduio_gui_EEG_plotset.disp_IC.Value;
+        
+        EStduio_gui_EEG_plotset.datatype_title2 = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title2, 'Style', 'text', 'String', 'Buffer at top & bottom:',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        EStduio_gui_EEG_plotset.buffer_top_bom = uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title2, 'Style', 'edit', 'String', '100',...
+            'Callback', @buffer_top_bom,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable','off');
+        EStduio_gui_EEG_plotset.buffer_top_bom.KeyPressFcn = @eeg_plotset_presskey;
+        uicontrol('Parent',EStduio_gui_EEG_plotset.datatype_title2, 'Style', 'text', 'String', '%',...
+            'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
+        set(EStduio_gui_EEG_plotset.datatype_title2, 'Sizes',[130 -1 20]);
+        EEG_plotset{12} = str2num(EStduio_gui_EEG_plotset.buffer_top_bom.String);
+        
         %%-----------------General settings--------------------------------
         %%time range
         EStduio_gui_EEG_plotset.time_scales_title = uiextras.HBox('Parent', EStduio_gui_EEG_plotset.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -156,7 +168,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         uiextras.Empty('Parent', EStduio_gui_EEG_plotset.reset_apply); % 1A
         set(EStduio_gui_EEG_plotset.reset_apply, 'Sizes',[10,-1,30,-1,10]);
         
-        set(EStduio_gui_EEG_plotset.DataSelBox,'Sizes',[25 25 25 25 25 20 25 25 30]);
+        set(EStduio_gui_EEG_plotset.DataSelBox,'Sizes',[25 25 25 25 25 25 20 25 25 30]);
         estudioworkingmemory('EEG_plotset',EEG_plotset);
         
         EStduio_gui_EEG_plotset.chanorder{1,1} = [];
@@ -290,8 +302,32 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
         vscale_Value = str2num(Source.String);
         if isempty(vscale_Value) || numel(vscale_Value)~=1 || any(vscale_Value<=0)
-            Source.String = '10';
+            Source.String = '20';
             msgboxText= char(strcat('Plot Setting > Vertical scale for ICs:The input is invalid which should be a positive value and we therfore use the default one'));
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+        end
+    end
+
+
+%%--------------------------Buffer at top and bottom-----------------------
+    function buffer_top_bom(~,~)
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=2
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        estudioworkingmemory('EEGTab_plotset',1);
+        EStduio_gui_EEG_plotset.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EStduio_gui_EEG_plotset.plot_apply.ForegroundColor = [1 1 1];
+        EStudio_box_EEG_plot_set.TitleColor= [  0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
+        EStduio_gui_EEG_plotset.plotset_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
+        
+        buffer_top_bomValue = str2num(EStduio_gui_EEG_plotset.buffer_top_bom.String);
+        if isempty(buffer_top_bomValue) || numel(buffer_top_bomValue)~=1 || any(buffer_top_bomValue(:)<=0)
+            EStduio_gui_EEG_plotset.buffer_top_bom.String = '100';
+            msgboxText= char(strcat('Plot Setting > Buffer at top & bottom:The input is invalid which should be a positive value and we therfore use the default one'));
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
         end
@@ -362,8 +398,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.ForegroundColor = [1 1 1];
         if Source.Value==1
             EStduio_gui_EEG_plotset.v_scale_edit.String = '5';
+            EStduio_gui_EEG_plotset.v_scale_edit_ic.String = '5';
         else
             EStduio_gui_EEG_plotset.v_scale_edit.String = '50';
+            EStduio_gui_EEG_plotset.v_scale_edit_ic.String = '20';
         end
     end
 
@@ -799,11 +837,19 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         %%vertical scale for ICs
         try VScale_ic = EEG_plotset{5}; catch  VScale =10; end
-        if isempty(VScale_ic) || numel(VScale_ic)~=1 || VScale_ic<=0
-            VScale_ic=10;
-            EEG_plotset{5} =10;
+        if isempty(VScale_ic) || numel(VScale_ic)~=1 || any(VScale_ic(:)<=0)
+            VScale_ic=20;
+            EEG_plotset{5} =20;
         end
         EStduio_gui_EEG_plotset.v_scale_edit_ic.String = num2str(VScale_ic);
+        
+        %%Buffer at top and bottom
+        try buffer_top_bom =  EEG_plotset{12};catch buffer_top_bom =100; end
+        if isempty(buffer_top_bom) || numel(buffer_top_bom)~=1 ||any(buffer_top_bom(:)<=0)
+           buffer_top_bom=100;  EEG_plotset{12} =100;
+        end
+        EStduio_gui_EEG_plotset.buffer_top_bom.String = num2str(buffer_top_bom);
+        
         %%Remove DC
         try RMean = EEG_plotset{6}; catch  RMean =0; end
         if isempty(RMean) || numel(RMean)~=1 || (RMean~=0 && RMean~=1)
@@ -907,6 +953,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
         else
             EEG_plotset{2}= EStduio_gui_EEG_plotset.disp_IC.Value;
         end
+        
+        EEG_plotset{12} = str2num(EStduio_gui_EEG_plotset.buffer_top_bom.String);
+        
+        
         %%Displayed Window length (the defalut is 5s/trials )?
         Winlength = str2num(EStduio_gui_EEG_plotset.WinLength_edit.String);
         if isempty(Winlength) || Winlength<=0
@@ -928,18 +978,18 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EEG_plotset{3}=Winlength;
         %%vertical scale
         VScale= str2num(EStduio_gui_EEG_plotset.v_scale_edit.String);
-        if isempty(VScale) || numel(VScale)~=1 || VScale<=0
+        if isempty(VScale) || numel(VScale)~=1 || any(VScale(:)<=0)
             VScale=50;
             EStduio_gui_EEG_plotset.v_scale_edit.String = num2str(VScale);
         end
         EEG_plotset{4} =VScale;
         %%Channel labels  name/number?
         VScale_IC=  str2num(EStduio_gui_EEG_plotset.v_scale_edit_ic.String);
-        if isempty(VScale_IC) || numel(VScale_IC)~=1 || VScale_IC<=0
-            VScale_IC=10;
+        if isempty(VScale_IC) || numel(VScale_IC)~=1 || any(VScale_IC(:)<=0)
+            VScale_IC=20;
             EStduio_gui_EEG_plotset.v_scale_edit_ic.String= num2str(VScale_IC);
         end
-        EEG_plotset{5}=VScale_IC;% EStduio_gui_EEG_plotset.chanlab_name.Value;
+        EEG_plotset{5}=VScale_IC;
         
         %%Remove DC
         EEG_plotset{6}=EStduio_gui_EEG_plotset.rem_DC.Value;
@@ -1021,6 +1071,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         
         EStduio_gui_EEG_plotset.disp_orgdata.Enable = Enableflag;
         EStduio_gui_EEG_plotset.disp_IC.Enable = Enableflag;
+        EStduio_gui_EEG_plotset.buffer_top_bom.Enable = Enableflag;
         EStduio_gui_EEG_plotset.WinLength_edit.Enable = Enableflag;
         EStduio_gui_EEG_plotset.v_scale_edit.Enable = Enableflag;
         EStduio_gui_EEG_plotset.rem_DC.Enable = Enableflag;
@@ -1175,7 +1226,8 @@ varargout{1} = EStudio_box_EEG_plot_set;
         else
             EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
         end
-        
+        EStduio_gui_EEG_plotset.buffer_top_bom.String = '100';
+        EEG_plotset{12}=100;
         %%Displayed Window length (the defalut is 5s/trials )?
         EEG_plotset{3} =5;
         if ~isempty(observe_EEGDAT.EEG)
@@ -1207,7 +1259,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%vertical scale
         EEG_plotset{4} =50;
         EStduio_gui_EEG_plotset.v_scale_edit.String = num2str(EEG_plotset{4});
-        EStduio_gui_EEG_plotset.v_scale_edit_ic.String = '10';
+        EStduio_gui_EEG_plotset.v_scale_edit_ic.String = '20';
         EEG_plotset{5} = str2num(EStduio_gui_EEG_plotset.v_scale_edit_ic.String);
         %%Remove DC
         if ~isempty(observe_EEGDAT.EEG)

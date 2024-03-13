@@ -72,7 +72,8 @@ if nargin==1
     
     %%vertical voltage
     Ampchan = 50;
-    
+    Ampic = 20;%%vertical voltage for ICs
+    bufftobo = 100;%%buffer at top and bottom
     %%channel name (1) or number (0)
     ChanLabel = 1;
     
@@ -116,7 +117,7 @@ if nargin==1
     %%Figure position
     figSize = [];
     
-    [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,...
+    [EEG, eegcom] = pop_ploteegset(EEG,'ChanArray',ChanArray,'ICArray',ICArray,'Winlength',Winlength,'bufftobo',bufftobo,...
         'Ampchan',Ampchan,'Ampic',Ampic,'ChanLabel',ChanLabel,'Submean',Submean,'EventOnset',EventOnset,...
         'StackFlag',StackFlag,'NormFlag',NormFlag,'Startimes',Startimes,'figureName',figureName,'figSize',figSize,'History', 'gui');
     pause(0.1);
@@ -138,6 +139,7 @@ p.addParamValue('ICArray',[], @isnumeric);
 p.addParamValue('Winlength',[], @isnumeric);
 p.addParamValue('Ampchan',[], @isnumeric);
 p.addParamValue('Ampic',[], @isnumeric);
+p.addParamValue('bufftobo',[], @isnumeric);
 p.addParamValue('ChanLabel',[], @isnumeric);
 p.addParamValue('Submean',[], @isnumeric);
 p.addParamValue('EventOnset',[], @isnumeric);
@@ -228,6 +230,13 @@ if isempty(qAmpic)|| qAmpic<=0
     qAmpic = 10;
 end
 
+%%buffer at top and bottom
+qbufftobo = p_Results.bufftobo;
+if isempty(qbufftobo) || numel(qbufftobo)~=1 || any(qbufftobo(:)<=0)
+    qbufftobo = 100;
+end
+
+
 
 %%channel with names (1) or numbers(0)
 qChanLabel = p_Results.ChanLabel;
@@ -316,7 +325,7 @@ end
 if ~isempty(qfigureName) && shist~=4
     f_ploteegwave(EEG,qchanArray,qICArray,qWinlength,...
         qAmpchan,qChanLabel,qSubmean,qEventOnset,qStackFlag,qNormFlag,qStartimes,...
-        qAmpic,qfigSize,qfigureName) ;
+        qAmpic,qbufftobo,qfigSize,qfigureName) ;
     
 end
 

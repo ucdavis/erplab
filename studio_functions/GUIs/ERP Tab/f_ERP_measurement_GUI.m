@@ -201,28 +201,28 @@ varargout{1} = erp_measurement_box;
         
         %%2B ERPset custom
         ERPMTops.m_t_erpset = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,'String', '',...
-            'callback',@erpset_custom,'Enable',Enable_label,'FontSize',FonsizeDefault); %
+            'callback',@erpset_custom,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         ERPMTops.Paras{2} = str2num(ERPMTops.m_t_erpset.String);
         ERPMTops.m_t_erpset.KeyPressFcn = @erp_mt_presskey;
         
         %%2C
         ERPMTops.m_t_bin = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String', '','callback',@binSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault); %
+            'String', '','callback',@binSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]); %
         ERPMTops.Paras{3} = str2num(ERPMTops.m_t_bin.String);
         ERPMTops.m_t_bin.KeyPressFcn = @erp_mt_presskey;
         %%2D
         ERPMTops.m_t_chan = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String','','callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault);%vect2colon(observe_ERPDAT.ERP_chan,'Sort', 'on')
+            'String','','callback',@chanSelect_custom,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);%vect2colon(observe_ERPDAT.ERP_chan,'Sort', 'on')
         ERPMTops.Paras{4} = str2num(ERPMTops.m_t_chan.String);
         ERPMTops.m_t_chan.KeyPressFcn = @erp_mt_presskey;
         %%2E
         ERPMTops.m_t_TW = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String','','callback',@t_w_set,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','','callback',@t_w_set,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.m_t_TW.KeyPressFcn = @erp_mt_presskey;
         %%2F
         ERPMTops.m_t_file = uicontrol('Style', 'edit','Parent',ERPMTops.measurement_type,...
-            'String','','callback',@file_name_set,'Enable',Enable_label,'FontSize',FonsizeDefault);
+            'String','','callback',@file_name_set,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         ERPMTops.m_t_file.KeyPressFcn = @erp_mt_presskey;
         
