@@ -127,7 +127,7 @@ drawui_erp_information(FonsizeDefault);
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=5
+        if observe_ERPDAT.Count_currentERP~=7
             return;
         end
         
@@ -222,7 +222,7 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.total_rejected_percentage.Enable = Enable_label;
         gui_erp_information.total_rejected_option.Enable = Enable_label;
         gui_erp_information.total_rejected_option2.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=6;
+        observe_ERPDAT.Count_currentERP=8;
     end
 
 %%-------------------------------artifact summary--------------------------

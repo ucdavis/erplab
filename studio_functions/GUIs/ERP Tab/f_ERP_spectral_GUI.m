@@ -1030,7 +1030,7 @@ varargout{1} = ERP_filtering_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=18
+        if observe_ERPDAT.Count_currentERP~=17
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -1052,7 +1052,7 @@ varargout{1} = ERP_filtering_box;
         gui_erp_spectral.hamwin_on.Enable =Enable_label;
         gui_erp_spectral.hamwin_off.Enable = Enable_label;
         gui_erp_spectral.cancel.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=19;
+        observe_ERPDAT.Count_currentERP=18;
     end
 
 %%----Get the color for lines--------------------------------------

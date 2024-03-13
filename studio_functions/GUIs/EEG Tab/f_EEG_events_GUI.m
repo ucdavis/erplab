@@ -66,9 +66,9 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.create_eventlist = uicontrol('Style', 'pushbutton','Parent',   EStduio_eegtab_EEG_events.create_rt_title ,...
             'String','Create','callback',@create_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_events.imp_eventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.create_rt_title ,...
-            'String','Import','callback',@imp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Import .txt','callback',@imp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_events.exp_eventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.create_rt_title,...
-            'String','Export','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Export .txt','callback',@exp_eventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
         %%export eventlist
         EStduio_eegtab_EEG_events.imp_exp_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -76,10 +76,19 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.vieweventlist = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title,...
             'String','View ','callback',@vieweventlist,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         %         EStduio_eegtab_EEG_events.transfer_event_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-        EStduio_eegtab_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.imp_exp_title ,...
-            'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
-        set(EStduio_eegtab_EEG_events.imp_exp_title,'Sizes',[-1 200]);
+        EStduio_eegtab_EEG_events.imp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title ,...
+            'String','Import .xls','callback',@imp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        EStduio_eegtab_EEG_events.exp_eventlist_exc = uicontrol('Style', 'pushbutton','Parent', EStduio_eegtab_EEG_events.imp_exp_title,...
+            'String','Export .xls','callback',@exp_eventlist_exc,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        
+        
+        EStduio_eegtab_EEG_events.imp_exp_title1 = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        
+        EStduio_eegtab_EEG_events.transfer_event = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_EEG_events.imp_exp_title1 ,...
+            'String','Transfer event info to EEG.event','callback',@transfer_event,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent',  EStduio_eegtab_EEG_events.imp_exp_title1);
+        set(EStduio_eegtab_EEG_events.imp_exp_title1,'Sizes',[200 -1]);
         
         %%------------title for "Other Operations"-------------------------
         EStduio_eegtab_EEG_events.eventotherop_title = uiextras.HBox('Parent',EStduio_eegtab_EEG_events.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -118,7 +127,7 @@ varargout{1} = EStudio_eeg_events_box;
             'ColumnName'    , {'Event Code','#Occurrences'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false]);
-        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 20 30 30 20 100]);
+        set(EStduio_eegtab_EEG_events.DataSelBox,'Sizes',[20 30 30 30 20 30 30 20 100]);
     end
 
 %%**************************************************************************%%
@@ -463,7 +472,7 @@ varargout{1} = EStudio_eeg_events_box;
     end
 
 
-%%--------------------import EEG eventlist to text file--------------------
+%%--------------------import EEG eventlist from text file--------------------
     function imp_eventlist(Source,~)
         if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
@@ -495,7 +504,7 @@ varargout{1} = EStudio_eeg_events_box;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run pop_ command again with the inputs from the GUI
-            [filename,pathname] = uigetfile({'*.*';'*.txt'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
+            [filename,pathname] = uigetfile({'*.txt';'*.*'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
             ELfullname = fullfile(pathname, filename);
             
             if isequal(filename,0)
@@ -584,10 +593,9 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        [fname, pathname] = uiputfile({'*.*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
+        [fname, pathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
-            disp('User selected Cancel')
             return
         end
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -645,6 +653,189 @@ varargout{1} = EStudio_eeg_events_box;
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
     end
+
+
+%%--------------------import EEG eventlist from .xls file--------------------
+    function imp_eventlist_exc(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        if observe_EEGDAT.EEG.trials>1
+            msgboxText =  'Eventlist>Import .xls:pop_importeegeventlist() has been tested for continuous data only';
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Import');
+        observe_EEGDAT.eeg_panel_message =1;
+        
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        ALLEEG_out = [];
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            %% Run pop_ command again with the inputs from the GUI
+            [filename,pathname] = uigetfile({'*.xls,*.xlsx','*.*'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
+            ELfullname = fullfile(pathname, filename);
+            
+            if isequal(filename,0)
+                fprintf( ['\n',repmat('-',1,100) '\n']);
+                return
+            else
+                disp(['For read an EVENTLIST, user selected ', ELfullname])
+            end
+            
+            [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            [ALLEEG_out, ~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf( ['\n',repmat('-',1,100) '\n\n']);
+        end
+        
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray), '_impel');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [ALLEEG, EEG, ~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        end
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
+    end
+
+    function exp_eventlist_exc(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr)
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
+        observe_EEGDAT.eeg_panel_message =1;
+        
+        if ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
+            msgboxText =  ['EventList >Export eventlist: Please check the current EEG.EVENTLIST'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            return;
+        end
+        
+        [fname, pathname] = uiputfile({'*.xls,*xlsx';'*.*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
+        
+        if isequal(fname,0)
+            return
+        end
+        EEGArray =  estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
+            EEGArray = observe_EEGDAT.CURRENTSET;
+        end
+        [xpath, suffixstr, ext] = fileparts(fname);
+        
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            msgboxText = '';
+            if isfield(EEG, 'EVENTLIST')
+                if isempty(EEG.EVENTLIST)
+                    msgboxText =  ['EEG.EVENTLIST structure is empty'];
+                end
+                if isfield(EEG.EVENTLIST, 'eventinfo')
+                    if isempty(EEG.EVENTLIST.eventinfo)
+                        msgboxText =  ['EEG.EVENTLIST.eventinfo structure is empty'];
+                    end
+                else
+                    msgboxText =  ['EEG.EVENTLIST.eventinfo structure is empty'];
+                end
+            else
+                msgboxText =  ['EEG.EVENTLIST structure is empty'];
+            end
+            
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            if isempty(msgboxText)
+                filenameeg = EEG.filename;
+                [xpatheeg, filenameeg, exteeg] = fileparts(filenameeg);
+                if isempty(filenameeg)
+                    filenameeg = strcat(num2str(EEGArray(Numofeeg)),'_',suffixstr,'.xls');
+                else
+                    filenameeg = strcat(filenameeg,'_',suffixstr,'.xls');
+                end
+                filenameeg = fullfile(pathname, filenameeg);
+                
+                disp(['For EVENTLIST output user selected ', filenameeg])
+                [EEG, LASTCOM] = pop_exporteegeventlist( EEG , 'Filename', filenameeg,'History','gui');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG;
+            else
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                fprintf(2,['Cannot export eventlist for:',32,EEG.setname,'\n']);
+                fprintf( [repmat('-',1,100) '\n']);
+            end
+        end
+        
+        erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
+        observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.count_current_eeg=1;
+    end
+
 
 
 %%-----------------Shuffle events/bins/samples-----------------------------
@@ -973,6 +1164,8 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.vieweventlist.Enable=EnableFlag;
+             EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
+              EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
             observe_EEGDAT.count_current_eeg=10;
             return;
         end
@@ -1023,13 +1216,16 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.exp_rt.Enable=EnableFlag;
         %%Import and export eventlist
         EStduio_eegtab_EEG_events.imp_eventlist.Enable=EnableFlag;
+          EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
         %%export evetnlist to text file
         if ~isempty(observe_EEGDAT.EEG)
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='on';
+            EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='on';
             EStduio_eegtab_EEG_events.sumevent_name.String = ['Event Code Summary for EEGset:',32,num2str(observe_EEGDAT.CURRENTSET)];
         else
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
-              EStduio_eegtab_EEG_events.sumevent_name.String = ['Event Code Summary'];
+            EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
+            EStduio_eegtab_EEG_events.sumevent_name.String = ['Event Code Summary'];
         end
         EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;

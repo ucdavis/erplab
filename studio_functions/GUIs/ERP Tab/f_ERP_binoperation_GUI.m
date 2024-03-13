@@ -538,7 +538,7 @@ varargout{1} = ERP_bin_operation_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=11
+        if observe_ERPDAT.Count_currentERP~=9
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP)
@@ -582,7 +582,7 @@ varargout{1} = ERP_bin_operation_gui;
         gui_erp_bin_operation.eq_clear.Enable = Enable_label;
         gui_erp_bin_operation.run.Enable = Enable_label;
         gui_erp_bin_operation.cancel.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=12;
+        observe_ERPDAT.Count_currentERP=10;
     end
 
 

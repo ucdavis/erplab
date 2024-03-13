@@ -633,7 +633,7 @@ varargout{1} = ERP_grdavg_box_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=13
+        if observe_ERPDAT.Count_currentERP~=12
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -672,7 +672,7 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.run.Enable = Enable_label;
         gui_erp_grdavg.cancel.Enable = Enable_label;
         gui_erp_grdavg.cmpsd.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=14;
+        observe_ERPDAT.Count_currentERP=13;
     end
 
 %%-------execute "apply" before doing any change for other panels----------

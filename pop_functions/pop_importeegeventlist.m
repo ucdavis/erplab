@@ -54,68 +54,68 @@
 function [EEG, com] = pop_importeegeventlist(EEG, ELfullname, varargin)
 com = '';
 if nargin < 1
-        help pop_importeegeventlist
-        return
+    help pop_importeegeventlist
+    return
 end
 if isobject(EEG) % eegobj
-        whenEEGisanObject % calls a script for showing an error window
-        return
+    whenEEGisanObject % calls a script for showing an error window
+    return
 end
 if nargin==1
-        if length(EEG)>1
-                msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-                title = 'ERPLAB: multiple inputs';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG)
-                msgboxText =  'pop_importeegeventlist() error: cannot work with an empty dataset!';
-                title = 'ERPLAB: pop_importeegeventlist() error';
-                errorfound(msgboxText, title);
-                return
-        end
-        if isempty(EEG.data)
-                msgboxText =  'pop_importeegeventlist() cannot work with an empty dataset!';
-                title = 'ERPLAB: pop_importeegeventlist() error';
-                errorfound(msgboxText, title);
-                return
-        end
-        if ~isempty(EEG.epoch)
-                msgboxText =  'pop_importeegeventlist() has been tested for continuous data only.';
-                title = 'ERPLAB: pop_importeegeventlist Permission denied';
-                errorfound(msgboxText, title);
-                return
-        end
-        [filename,pathname] = uigetfile({'*.*';'*.txt'},'Select a EVENTLIST file');
-        ELfullname = fullfile(pathname, filename);
-        
-        if isequal(filename,0)
-                disp('User selected Cancel')
-                return
-        else
-                disp(['For read an EVENTLIST, user selected ', ELfullname])
-        end
-        
-        question = ['Do you want to replace your EEG.EVENTLIST field with this file?\n\n'...
-                ' (YES: replace)             (NO: sent EVENTLIST to workspace)'];
-        title    = 'ERPLAB: Confirmation';
-        button   = askquest(sprintf(question), title);
-        
-        if strcmpi(button,'yes')
-                repEL = 'on';
-        elseif strcmpi(button,'no')
-                repEL = 'off';
-        else
-                disp('User selected Cancel')
-                return
-        end
-        
-        %
-        % Somersault
-        %
-        EEG.setname = [EEG.setname '_impel']; %suggest a new name (Imported Event List)
-        [EEG, com]  = pop_importeegeventlist(EEG, ELfullname, 'ReplaceEventList', repEL, 'History', 'gui');
+    if length(EEG)>1
+        msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+        title = 'ERPLAB: multiple inputs';
+        errorfound(msgboxText, title);
         return
+    end
+    if isempty(EEG)
+        msgboxText =  'pop_importeegeventlist() error: cannot work with an empty dataset!';
+        title = 'ERPLAB: pop_importeegeventlist() error';
+        errorfound(msgboxText, title);
+        return
+    end
+    if isempty(EEG.data)
+        msgboxText =  'pop_importeegeventlist() cannot work with an empty dataset!';
+        title = 'ERPLAB: pop_importeegeventlist() error';
+        errorfound(msgboxText, title);
+        return
+    end
+    if ~isempty(EEG.epoch)
+        msgboxText =  'pop_importeegeventlist() has been tested for continuous data only.';
+        title = 'ERPLAB: pop_importeegeventlist Permission denied';
+        errorfound(msgboxText, title);
+        return
+    end
+    [filename,pathname] = uigetfile({'*.txt';'*.xls,*.xlsx';'*.*'},'Select a EVENTLIST file');
+    ELfullname = fullfile(pathname, filename);
+    
+    if isequal(filename,0)
+        disp('User selected Cancel')
+        return
+    else
+        disp(['For read an EVENTLIST, user selected ', ELfullname])
+    end
+    
+    question = ['Do you want to replace your EEG.EVENTLIST field with this file?\n\n'...
+        ' (YES: replace)             (NO: sent EVENTLIST to workspace)'];
+    title    = 'ERPLAB: Confirmation';
+    button   = askquest(sprintf(question), title);
+    
+    if strcmpi(button,'yes')
+        repEL = 'on';
+    elseif strcmpi(button,'no')
+        repEL = 'off';
+    else
+        disp('User selected Cancel')
+        return
+    end
+    
+    %
+    % Somersault
+    %
+    EEG.setname = [EEG.setname '_impel']; %suggest a new name (Imported Event List)
+    [EEG, com]  = pop_importeegeventlist(EEG, ELfullname, 'ReplaceEventList', repEL, 'History', 'gui');
+    return
 end
 
 %
@@ -134,134 +134,138 @@ p.addParamValue('History', 'script', @ischar); % history from scripting
 p.parse(EEG, ELfullname, varargin{:});
 
 if length(EEG)>1
-        msgboxText =  'Unfortunately, this function does not work with multiple datasets';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+    msgboxText =  'Unfortunately, this function does not work with multiple datasets';
+    error('prog:input', ['ERPLAB says: ' msgboxText]);
 end
 if isempty(EEG)
-        msgboxText =  'pop_importeegeventlist() error: cannot work with an empty dataset!';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+    msgboxText =  'pop_importeegeventlist() error: cannot work with an empty dataset!';
+    error('prog:input', ['ERPLAB says: ' msgboxText]);
 end
 if isempty(EEG.data)
-        msgboxText =  'pop_importeegeventlist() cannot work with an empty dataset!';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+    msgboxText =  'pop_importeegeventlist() cannot work with an empty dataset!';
+    error('prog:input', ['ERPLAB says: ' msgboxText]);
 end
 if ~isempty(EEG.epoch)
-        msgboxText =  'pop_importeegeventlist() has been tested for continuous data only.';
-        error('prog:input', ['ERPLAB says: ' msgboxText]);
+    msgboxText =  'pop_importeegeventlist() has been tested for continuous data only.';
+    error('prog:input', ['ERPLAB says: ' msgboxText]);
 end
 
 if strcmpi(p.Results.ReplaceEventList,'on')
-        repEL = 1;
+    repEL = 1;
 else
-        repEL = 0;
+    repEL = 0;
 end
 if strcmpi(p.Results.Warning, 'on')
-        rwwarn = 1;
+    rwwarn = 1;
 else
-        rwwarn = 0;
+    rwwarn = 0;
 end
 if strcmpi(p.Results.History,'implicit')
-        shist = 3; % implicit
+    shist = 3; % implicit
 elseif strcmpi(p.Results.History,'script')
-        shist = 2; % script
+    shist = 2; % script
 elseif strcmpi(p.Results.History,'gui')
-        shist = 1; % gui
+    shist = 1; % gui
 else
-        shist = 0; % off
+    shist = 0; % off
 end
 
 %
 % subroutine
 %
-[EEG, EVENTLIST] = readeventlist(EEG, ELfullname);
-[pathstr, filename, ext] = fileparts(ELfullname);
+[pathstr, filename, ext] = fileparts(ELfullname);%%GH Mar 2024
+if strcmpi(ext,'.txt')
+    [EEG, EVENTLIST] = readeventlist(EEG, ELfullname);
+else
+    [EEG, EVENTLIST] = f_readeventlist_excel(EEG, ELfullname);
+end
 
 if repEL
-        if ~isempty(EVENTLIST)
-                EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
-                EEG = pop_overwritevent(EEG, 'code');
-                EEG.EVENTLIST    = [];
-                [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, [filename '_new_' num2str((datenum(datestr(now))*1e10)) '.txt'], 0);
-                EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
-                
-                disp('EVENTLIST was added to the current EEG structure')
-        else
-                EEG.EVENTLIST    = [];
-                [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, [filename '_new_' num2str((datenum(datestr(now))*1e10)) '.txt'], 1);
-                EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
-        end
+    if ~isempty(EVENTLIST)
+        EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
+        EEG = pop_overwritevent(EEG, 'code');
+        EEG.EVENTLIST    = [];
+        [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, [filename '_new_' num2str((datenum(datestr(now))*1e10)) '.txt'], 0);
+        EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
         
-        %
-        % History
-        %
-        skipfields = {'EEG', 'ELfullname','History'};
-        fn     = fieldnames(p.Results);
-        
-        com = sprintf('%s = pop_importeegeventlist( %s, ''%s'' ', inputname(1), inputname(1), ELfullname);
-        
-        for q=1:length(fn)
-                fn2com = fn{q};
-                if ~ismember_bc2(fn2com, skipfields)
-                        fn2res = p.Results.(fn2com);
-                        if ~isempty(fn2res)
-                                if ischar(fn2res)
-                                        if ~strcmpi(fn2res,'off')
-                                                com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
-                                        end
-                                else
-                                        if iscell(fn2res)
-                                                if ischar([fn2res{:}])
-                                                        fn2resstr = sprintf('''%s'' ', fn2res{:});
-                                                else
-                                                        fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
-                                                end
-                                                fnformat = '{%s}';
-                                        else
-                                                fn2resstr = vect2colon(fn2res, 'Sort','on');
-                                                fnformat = '%s';
-                                        end
-                                        if strcmpi(fn2com,'Criterion')
-                                                if p.Results.Criterion<100
-                                                        com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
-                                                end
-                                        else
-                                                com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
-                                        end
-                                end
+        disp('EVENTLIST was added to the current EEG structure')
+    else
+        EEG.EVENTLIST    = [];
+        [EEG, EVENTLIST] = creaeventlist(EEG, EVENTLIST, [filename '_new_' num2str((datenum(datestr(now))*1e10)) '.txt'], 1);
+        EEG = pasteeventlist(EEG, EVENTLIST, 1); % joints both structs
+    end
+    
+    %
+    % History
+    %
+    skipfields = {'EEG', 'ELfullname','History'};
+    fn     = fieldnames(p.Results);
+    
+    com = sprintf('%s = pop_importeegeventlist( %s, ''%s'' ', inputname(1), inputname(1), ELfullname);
+    
+    for q=1:length(fn)
+        fn2com = fn{q};
+        if ~ismember_bc2(fn2com, skipfields)
+            fn2res = p.Results.(fn2com);
+            if ~isempty(fn2res)
+                if ischar(fn2res)
+                    if ~strcmpi(fn2res,'off')
+                        com = sprintf( '%s, ''%s'', ''%s''', com, fn2com, fn2res);
+                    end
+                else
+                    if iscell(fn2res)
+                        if ischar([fn2res{:}])
+                            fn2resstr = sprintf('''%s'' ', fn2res{:});
+                        else
+                            fn2resstr = vect2colon(cell2mat(fn2res), 'Sort','on');
                         end
+                        fnformat = '{%s}';
+                    else
+                        fn2resstr = vect2colon(fn2res, 'Sort','on');
+                        fnformat = '%s';
+                    end
+                    if strcmpi(fn2com,'Criterion')
+                        if p.Results.Criterion<100
+                            com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                        end
+                    else
+                        com = sprintf( ['%s, ''%s'', ' fnformat], com, fn2com, fn2resstr);
+                    end
                 end
+            end
         end
-        com = sprintf( '%s );', com);
-        
-        %         com = sprintf( '%s = pop_importeegeventlist( %s, ''%s'', %s );', inputname(1), inputname(1),...
-        %                 ELfullname, num2str(repEL));
-        %         % get history from script
-        %         if shist
-        %                 EEG = erphistory(EEG, [], com, 1);
-        %         else
-        %                 com = sprintf('%s %% %s', com, datestr(now));
-        %         end
+    end
+    com = sprintf( '%s );', com);
+    
+    %         com = sprintf( '%s = pop_importeegeventlist( %s, ''%s'', %s );', inputname(1), inputname(1),...
+    %                 ELfullname, num2str(repEL));
+    %         % get history from script
+    %         if shist
+    %                 EEG = erphistory(EEG, [], com, 1);
+    %         else
+    %                 com = sprintf('%s %% %s', com, datestr(now));
+    %         end
 else
-        filenamex = regexprep(filename, ' ', '_');
-        assignin('base',filenamex,EVENTLIST);
-        disp(['EVENTLIST was added to WORKSPACE as ' filenamex] )
+    filenamex = regexprep(filename, ' ', '_');
+    assignin('base',filenamex,EVENTLIST);
+    disp(['EVENTLIST was added to WORKSPACE as ' filenamex] )
 end
 
 % get history from script. EEG
 switch shist
-        case 1 % from GUI
-                com = sprintf('%s %% GUI: %s', com, datestr(now));
-                %fprintf('%%Equivalent command:\n%s\n\n', com);
-                displayEquiComERP(com);
-        case 2 % from script
-                EEG = erphistory(EEG, [], com, 1);
-        case 3
-                % implicit
-                %EEG = erphistory(EEG, [], com, 1);
-                %fprintf('%%Equivalent command:\n%s\n\n', erpcom);
-        otherwise %off or none
-                com = '';
-                return
+    case 1 % from GUI
+        com = sprintf('%s %% GUI: %s', com, datestr(now));
+        %fprintf('%%Equivalent command:\n%s\n\n', com);
+        displayEquiComERP(com);
+    case 2 % from script
+        EEG = erphistory(EEG, [], com, 1);
+    case 3
+        % implicit
+        %EEG = erphistory(EEG, [], com, 1);
+        %fprintf('%%Equivalent command:\n%s\n\n', erpcom);
+    otherwise %off or none
+        com = '';
+        return
 end
 
 %

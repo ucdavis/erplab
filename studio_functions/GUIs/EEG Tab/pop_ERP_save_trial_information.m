@@ -129,21 +129,22 @@ for Numoferp = 1:numel(qERParray)
         fprintf(fileID,'%s\n\n\n',columName1{1,:});
         
         %%Table title
-        formatSpec2 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\n'];
-        columName2 = {'Bin', 'Included trials', 'Rejected trials', 'Invalid trials'};
+        formatSpec2 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\n'];
+        columName2 = {'Bin', 'Total trials','Included trials', 'Rejected trials', 'Invalid trials'};
         fprintf(fileID,formatSpec2,columName2{1,:});
         for ii = 1:length(qbinArray)
             try
-                data{1,1} = [num2str(qbinArray(ii)),'.',ERP.EVENTLIST.bdf(qbinArray(ii)).description];
-                data{1,2} =      [num2str(ERP.ntrials.accepted(qbinArray(ii))),];
-                data{1,3} =     [num2str(ERP.ntrials.rejected(qbinArray(ii)))];
-                data{1,4} =     [num2str(ERP.ntrials.invalid(qbinArray(ii)))];
+                data{1,1} = [num2str(qbinArray(ii)),'.',ERP.bindescr{qbinArray(ii)}];
+                 data{1,2} =      [num2str(ERP.ntrials.accepted(qbinArray(ii))+ERP.ntrials.rejected(qbinArray(ii))+ERP.ntrials.invalid(qbinArray(ii)))];
+                data{1,3} =      [num2str(ERP.ntrials.accepted(qbinArray(ii)))];
+                data{1,4} =     [num2str(ERP.ntrials.rejected(qbinArray(ii)))];
+                data{1,5} =     [num2str(ERP.ntrials.invalid(qbinArray(ii)))];
                 
             catch
                 data{1,1} = '';
-                data{1,2} = '';
                 data{1,3} = '';
                 data{1,4} = '';
+                data{1,5} = '';
             end
             fprintf(fileID,formatSpec2,data{1,:});
         end
@@ -153,7 +154,8 @@ for Numoferp = 1:numel(qERParray)
             data1{1,2} = '';
             data1{1,3} = '';
             data1{1,4} = '';
-            formatSpec3 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\n\n\n\n\n\n'];
+            data1{1,5} = '';
+            formatSpec3 =['%s\t',32,'%s\t',32,'%s\t',32,'%s\t',32,'%s\n\n\n\n\n\n'];
             fprintf(fileID,formatSpec3,data{1,:});
         end
     end
@@ -162,16 +164,18 @@ for Numoferp = 1:numel(qERParray)
     if write_spreadsheet==2
         data = [];
         binname =  '';
-        columName2 = {ERP.erpname,'Included trials', 'Rejected trials', 'Invalid trials'};
+        columName2 = {ERP.erpname,'Total trials','Included trials', 'Rejected trials', 'Invalid trials'};
         for ii = 1:length(qbinArray)
             try
-                data(ii,1) =      [ERP.ntrials.accepted(qbinArray(ii))];
-                data(ii,2) =     [ERP.ntrials.rejected(qbinArray(ii))];
-                data(ii,3) =     [ERP.ntrials.invalid(qbinArray(ii))];
+                data(ii,1) =      [ERP.ntrials.accepted(qbinArray(ii))+ERP.ntrials.rejected(qbinArray(ii))+ERP.ntrials.invalid(qbinArray(ii))];
+                data(ii,2) =      [ERP.ntrials.accepted(qbinArray(ii))];
+                data(ii,3) =     [ERP.ntrials.rejected(qbinArray(ii))];
+                data(ii,4) =     [ERP.ntrials.invalid(qbinArray(ii))];
             catch
                 data(ii,1) =     [];
                 data(ii,2) =     [];
                 data(ii,3) =     [];
+                data(ii,4) =     [];
             end
             try
                 binname{ii,1} = ERP.bindescr{qbinArray(ii)};

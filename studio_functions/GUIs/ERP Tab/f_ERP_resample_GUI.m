@@ -552,7 +552,7 @@ varargout{1} = box_erp_resample;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=15
+        if observe_ERPDAT.Count_currentERP~=8
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -612,7 +612,7 @@ varargout{1} = box_erp_resample;
         gui_erp_resample.Paras{3} = gui_erp_resample.nwtimewindow_checkbox.Value;
         gui_erp_resample.Paras{4} = str2num(gui_erp_resample.nwtimewindow_editleft.String);
         gui_erp_resample.Paras{5} = str2num(gui_erp_resample.nwtimewindow_editright.String);
-        observe_ERPDAT.Count_currentERP=16;
+        observe_ERPDAT.Count_currentERP=9;
     end
 
 

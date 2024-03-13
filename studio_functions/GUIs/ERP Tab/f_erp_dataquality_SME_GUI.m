@@ -102,7 +102,7 @@ drawui_erp_information(FonsizeDefault);
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=6
+        if observe_ERPDAT.Count_currentERP~=15
             return;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT')
@@ -113,7 +113,7 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
             gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
             gui_erp_DQSME.DQSME_option_measure.Enable = Enableflag;
-            observe_ERPDAT.Count_currentERP=7;
+            observe_ERPDAT.Count_currentERP=16;
             return;
         else
             Enableflag = 'on';
@@ -125,15 +125,31 @@ drawui_erp_information(FonsizeDefault);
         if ViewerFlag==1
             Enableflag = 'off';
         end
-        ERP_SME_summary = f_dq_summary(observe_ERPDAT.ERP);
+        try
+            ERP_SME_summary = f_dq_summary(observe_ERPDAT.ERP);
+        catch
+            ERP_SME_summary = cell(3,3);
+        end
         Median_tw =ERP_SME_summary{3,1};
-        Median_name = strcat(num2str(roundn(ERP_SME_summary{1,1},-2)),', chan.',num2str(ERP_SME_summary{2,1}),',',32,num2str(Median_tw(1)),'-',num2str(Median_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,1}));
+        try
+            Median_name = strcat(num2str(roundn(ERP_SME_summary{1,1},-2)),', chan.',num2str(ERP_SME_summary{2,1}),',',32,num2str(Median_tw(1)),'-',num2str(Median_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,1}));
+        catch
+            Median_name = '';
+        end
         gui_erp_DQSME.Median_sme_name.String = Median_name;
         Min_tw =ERP_SME_summary{3,2};
-        Min_name = strcat(num2str(roundn(ERP_SME_summary{1,2},-2)),', chan.',num2str(ERP_SME_summary{2,2}),',',32,num2str(Min_tw(1)),'-',num2str(Min_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,2}));
+        try
+            Min_name = strcat(num2str(roundn(ERP_SME_summary{1,2},-2)),', chan.',num2str(ERP_SME_summary{2,2}),',',32,num2str(Min_tw(1)),'-',num2str(Min_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,2}));
+        catch
+            Min_name = '';
+        end
         gui_erp_DQSME.min_sme_name.String = Min_name;
         Max_tw =ERP_SME_summary{3,3};
-        Max_name = strcat(num2str(roundn(ERP_SME_summary{1,3},-2)),', chan.',num2str(ERP_SME_summary{2,3}),',',32,num2str(Max_tw(1)),'-',num2str(Max_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,3}));
+        try
+            Max_name = strcat(num2str(roundn(ERP_SME_summary{1,3},-2)),', chan.',num2str(ERP_SME_summary{2,3}),',',32,num2str(Max_tw(1)),'-',num2str(Max_tw(2)),'ms, bin',32,num2str(ERP_SME_summary{4,3}));
+        catch
+            Max_name = '';
+        end
         gui_erp_DQSME.max_sme_name.String=Max_name;
         gui_erp_DQSME.DQSME_option_measure.Enable = Enableflag;
         
@@ -147,7 +163,7 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
         gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
-        observe_ERPDAT.Count_currentERP=7;
+        observe_ERPDAT.Count_currentERP=16;
     end
 
 

@@ -671,7 +671,7 @@ varargout{1} = ERP_basecorr_detrend_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=8
+        if observe_ERPDAT.Count_currentERP~=11
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -699,7 +699,7 @@ varargout{1} = ERP_basecorr_detrend_box;
             gui_erp_blc_dt.custom_edit.Enable = 'off';
         end
         if  isempty(observe_ERPDAT.ERP) || ~strcmp(observe_ERPDAT.ERP.datatype,'ERP')
-            observe_ERPDAT.Count_currentERP=9;
+            observe_ERPDAT.Count_currentERP=12;
             return;
         end
         Selected_erpset =  estudioworkingmemory('selectederpstudio');
@@ -727,7 +727,7 @@ varargout{1} = ERP_basecorr_detrend_box;
                 end
             end
         end
-        observe_ERPDAT.Count_currentERP=9;
+        observe_ERPDAT.Count_currentERP=12;
     end
 
 

@@ -315,12 +315,13 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
         end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -447,12 +448,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
         end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         observe_ERPDAT.Count_currentERP=1;
         erpworkingmemory('f_ERP_proces_messg','Edit/Delete Channels & Locations >  Rename selected chan');
         observe_ERPDAT.Process_messg =2;
@@ -557,12 +558,13 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             end
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
             assignin('base','ERP',observe_ERPDAT.ERP);
             assignin('base','CURRENTSET',observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERP',observe_ERPDAT.ALLERP);
         end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         observe_ERPDAT.Count_currentERP=1;
         observe_ERPDAT.Process_messg =2;
     end
@@ -570,7 +572,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
 
 %%--------Settting will be modified if the selected was changed------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP ~=7
+        if observe_ERPDAT.Count_currentERP ~=5
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -585,7 +587,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             ERP_tab_edit_chan.edit_chanlocs.Enable='off';
             ERP_tab_edit_chan.select_edit_chan.Enable='off';
             ERP_tab_edit_chan.browse_chan.Enable='off';
-            observe_ERPDAT.Count_currentERP=8;
+            observe_ERPDAT.Count_currentERP=6;
             return;
         end
         ERP_tab_edit_chan.mode_modify.Enable ='on';
@@ -595,7 +597,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ERP_tab_edit_chan.edit_chanlocs.Enable='on';
         ERP_tab_edit_chan.select_edit_chan.Enable='on';
         ERP_tab_edit_chan.browse_chan.Enable='on';
-        observe_ERPDAT.Count_currentERP=8;
+        observe_ERPDAT.Count_currentERP=6;
     end
 
 %%-------------------------------------------------------------------------

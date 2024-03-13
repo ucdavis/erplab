@@ -1413,7 +1413,7 @@ varargout{1} = erp_measurement_box;
 
 %%--------Settting if the current panel is active or not based on the selected ERPsets------------
     function  Count_currentERP_change(~,~)
-        if observe_ERPDAT.Count_currentERP~=12
+        if observe_ERPDAT.Count_currentERP~=14
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -1470,7 +1470,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.Enable = Enable_label;
         ERPMTops.apply.Enable = Enable_label;
         ERPMTops.m_t_value.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=13;
+        observe_ERPDAT.Count_currentERP=15;
     end
 
 %%-----------------------cancel--------------------------------------------

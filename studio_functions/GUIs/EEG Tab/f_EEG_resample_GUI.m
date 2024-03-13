@@ -85,11 +85,11 @@ varargout{1} = box_eeg_resample;
             'String','Current epoch','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.ctimewindow_editleft = uicontrol('Style','edit','Parent', gui_eeg_resample.ctimewindow_title,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
-        uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
+        gui_eeg_resample.currentunitleft = uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
             'String','ms, to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.ctimewindow_editright = uicontrol('Style','edit','Parent', gui_eeg_resample.ctimewindow_title,'String','',...
             'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
-        uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
+        gui_eeg_resample.currentunitright = uicontrol('Style', 'text','Parent',gui_eeg_resample.ctimewindow_title,...
             'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.ctimewindow_title,'Sizes',[90 55  40 55 25]);
         
@@ -103,13 +103,13 @@ varargout{1} = box_eeg_resample;
             'callback',@nwtimewindow_editleft,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.Paras{4} = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
         gui_eeg_resample.nwtimewindow_editleft.KeyPressFcn = @EEG_resample_presskey;
-        uicontrol('Style', 'text','Parent',gui_eeg_resample.nwtimewindow_title,...
+        gui_eeg_resample.nwwd_unitleft = uicontrol('Style', 'text','Parent',gui_eeg_resample.nwtimewindow_title,...
             'String','ms, to','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_eeg_resample.nwtimewindow_editright = uicontrol('Style','edit','Parent', gui_eeg_resample.nwtimewindow_title,'String','',...
             'callback',@nwtimewindow_editright,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def,'Enable','off'); % 2F
         gui_eeg_resample.Paras{5} = str2num(gui_eeg_resample.nwtimewindow_editright.String);
         gui_eeg_resample.nwtimewindow_editright.KeyPressFcn = @EEG_resample_presskey;
-        uicontrol('Style', 'text','Parent',gui_eeg_resample.nwtimewindow_title,...
+        gui_eeg_resample.nwwd_unitright = uicontrol('Style', 'text','Parent',gui_eeg_resample.nwtimewindow_title,...
             'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.nwtimewindow_title,'Sizes',[90 55  40 55 25]);
         
@@ -216,12 +216,20 @@ varargout{1} = box_eeg_resample;
             gui_eeg_resample.nwtimewindow_editleft.Enable ='on';
             gui_eeg_resample.nwtimewindow_editright.Enable = 'on';
             NewStart = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
-            if isempty(NewStart) || numel(NewStart)~=1 || any(NewStart>=observe_EEGDAT.EEG.times(end))
-                gui_eeg_resample.nwtimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+            if isempty(NewStart) || numel(NewStart)~=1
+                if observe_EEGDAT.EEG.trials>1
+                    gui_eeg_resample.nwtimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+                else
+                    gui_eeg_resample.nwtimewindow_editleft.String = num2str(observe_EEGDAT.EEG.xmin);
+                end
             end
             Newend = str2num(gui_eeg_resample.nwtimewindow_editright.String);
-            if isempty(Newend) || numel(Newend)~=1 || any(Newend<=observe_EEGDAT.EEG.times(1))
-                gui_eeg_resample.nwtimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+            if isempty(Newend) || numel(Newend)~=1
+                if observe_EEGDAT.EEG.trials>1
+                    gui_eeg_resample.nwtimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+                else
+                    gui_eeg_resample.nwtimewindow_editright.String = num2str(observe_EEGDAT.EEG.xmax);
+                end
             end
         else
             gui_eeg_resample.nwtimewindow_editleft.Enable ='off';
@@ -261,17 +269,30 @@ varargout{1} = box_eeg_resample;
             Source.String = '';
             return;
         end
-        if NewStart< observe_EEGDAT.EEG.times(1)
-            msgboxText=['Sampling Rate & Epoch: we will set 0 for the additional time range because the left edge for the new time window is smaller than',32,num2str(observe_EEGDAT.EEG.times(1)),'ms'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
+        
+        if observe_EEGDAT.EEG.trials==1
+            if NewStart< 0
+                msgboxText=['Sampling Rate & Epoch: Left edge for the new time window cannot  smaller than 0 ms'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                Source.String = '0';
+            end
+            
         end
-        if NewStart>= 0
-            msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than 0 ms'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
-            Source.String = '';
-            return;
+        
+        if observe_EEGDAT.EEG.trials>1
+            if NewStart< observe_EEGDAT.EEG.times(1)
+                msgboxText=['Sampling Rate & Epoch: we will set 0 for the additional time range because the left edge for the new time window is smaller than',32,num2str(observe_EEGDAT.EEG.times(1)),'ms'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+            if NewStart>= 0
+                msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than 0 ms'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                Source.String = '';
+                return;
+            end
         end
         
     end
@@ -309,10 +330,20 @@ varargout{1} = box_eeg_resample;
             Source.String = '';
             return;
         end
-        if Newend< observe_EEGDAT.EEG.times(end)
-            msgboxText=['Sampling Rate & Epoch: we will set 0 for the additional time range because the right edge for the new time window is larger than',32,num2str(observe_EEGDAT.EEG.times(end)),'ms'];
-            titlNamerro = 'Warning for EEG Tab';
-            estudio_warning(msgboxText,titlNamerro);
+        if observe_EEGDAT.EEG.trials==1
+            if Newend> observe_EEGDAT.EEG.times(end)
+                msgboxText=['Sampling Rate & Epoch: Right edge for the new time window is smaller than',32,num2str(observe_EEGDAT.EEG.times(end)),'ms'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
+        end
+        
+        if observe_EEGDAT.EEG.trials>1
+            if Newend< observe_EEGDAT.EEG.times(end)
+                msgboxText=['Sampling Rate & Epoch: we will set 0 for the additional time range because the right edge for the new time window is larger than',32,num2str(observe_EEGDAT.EEG.times(end)),'ms'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+            end
         end
         
         if Newend<=0
@@ -322,6 +353,7 @@ varargout{1} = box_eeg_resample;
             Source.String = '';
             return;
         end
+        
     end
 
 %%--------------------------cancel-----------------------------------------
@@ -343,8 +375,13 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.resample_cancel.ForegroundColor = [0 0 0];
         
         gui_eeg_resample.csrate_edit.String = num2str(observe_EEGDAT.EEG.srate);
-        gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
-        gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+        if observe_EEGDAT.EEG.trials>1
+            gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+            gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+        else
+            gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.xmin);
+            gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.xmax);
+        end
         %%------------------new sampling rate--------------------------
         nwsrate_checkboxValue = gui_eeg_resample.Paras{1};
         if isempty(nwsrate_checkboxValue) || numel(nwsrate_checkboxValue)~=1 || (nwsrate_checkboxValue~=0 && nwsrate_checkboxValue~=1)
@@ -425,12 +462,13 @@ varargout{1} = box_eeg_resample;
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            
-            if NewStart>=0
-                msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than 0 ms'];
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(msgboxText,titlNamerro);
-                return;
+            if observe_EEGDAT.EEG.trials>1
+                if NewStart>=0
+                    msgboxText=['Sampling Rate & Epoch: the left edge for the new time window should be smaller than 0 ms'];
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(msgboxText,titlNamerro);
+                    return;
+                end
             end
             
             Newend = str2num(gui_eeg_resample.nwtimewindow_editright.String);
@@ -497,14 +535,28 @@ varargout{1} = box_eeg_resample;
             if EEG.trials>1
                 [EEG, LASTCOM] = pop_resampleeg(EEG, 'Freq2resamp',Freq2resamp, 'TimeRange',TimeRange,...
                     'Saveas', 'off', 'History', 'gui');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
             else
-                [EEG, LASTCOM]= pop_resample( EEG, Freq2resamp);
+                [EEG,LASTCOM ]= pop_select( EEG, 'time',TimeRange/1000 );
                 EEG = eeg_checkset(EEG);
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+                
+                if Freq2resamp~=EEG.srate
+                    [EEG, LASTCOM]= pop_resample( EEG, Freq2resamp);
+                    EEG = eeg_checkset(EEG);
+                    EEG = eegh(LASTCOM, EEG);
+                    if Numofeeg==1
+                        eegh(LASTCOM);
+                    end
+                end
             end
-            EEG = eegh(LASTCOM, EEG);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
+            
             [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end
         if EEG.trials>1
@@ -568,8 +620,23 @@ varargout{1} = box_eeg_resample;
         end
         if ~isempty(observe_EEGDAT.EEG)
             gui_eeg_resample.csrate_edit.String = num2str(observe_EEGDAT.EEG.srate);
-            gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
-            gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+            if observe_EEGDAT.EEG.trials>1
+                gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+                gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+                gui_eeg_resample.currentunitleft.String = 'ms, to';
+                gui_eeg_resample.currentunitright.String = 'ms';
+                
+                gui_eeg_resample.nwwd_unitleft.String = 'ms, to';
+                gui_eeg_resample.nwwd_unitright.String = 'ms';
+            else
+                gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.xmin);
+                gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.xmax);
+                gui_eeg_resample.currentunitleft.String = 's, to';
+                gui_eeg_resample.currentunitright.String = 's';
+                
+                gui_eeg_resample.nwwd_unitleft.String = 's, to';
+                gui_eeg_resample.nwwd_unitright.String = 's';
+            end
         else
             gui_eeg_resample.csrate_edit.String = '';
             gui_eeg_resample.ctimewindow_editleft.String = '';
@@ -599,35 +666,29 @@ varargout{1} = box_eeg_resample;
             gui_eeg_resample.nwtimewindow_editright.Enable = 'on';
             NewStart = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
             if isempty(NewStart) || numel(NewStart)~=1 || any(NewStart>=observe_EEGDAT.EEG.times(end))
-                gui_eeg_resample.nwtimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+                if observe_EEGDAT.EEG.trials>1
+                    gui_eeg_resample.nwtimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+                else
+                    gui_eeg_resample.nwtimewindow_editleft.String = num2str(observe_EEGDAT.EEG.xmin);
+                end
             end
             Newend = str2num(gui_eeg_resample.nwtimewindow_editright.String);
             if isempty(Newend) || numel(Newend)~=1 || any(Newend<=observe_EEGDAT.EEG.times(1))
-                gui_eeg_resample.nwtimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+                if observe_EEGDAT.EEG.trials>1
+                    gui_eeg_resample.nwtimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+                else
+                    gui_eeg_resample.nwtimewindow_editright.String = num2str(observe_EEGDAT.EEG.xmax);
+                end
             end
         else
             gui_eeg_resample.nwtimewindow_editleft.Enable ='off';
             gui_eeg_resample.nwtimewindow_editright.Enable = 'off';
         end
-        
-        if ~isempty(observe_EEGDAT.EEG)
-            if observe_EEGDAT.EEG.trials==1
-                enableflag = 'off';
-                gui_eeg_resample.nwtimewindow_checkbox.Value=0;
-            else
-                enableflag = 'on';
-            end
-            gui_eeg_resample.nwtimewindow_checkbox.Enable=enableflag;
-            gui_eeg_resample.nwtimewindow_editleft.Enable=enableflag;
-            gui_eeg_resample.nwtimewindow_editright.Enable=enableflag;
-        end
-        
         gui_eeg_resample.Paras{1} = gui_eeg_resample.nwsrate_checkbox.Value;
         gui_eeg_resample.Paras{2} = str2num(gui_eeg_resample.nwsrate_edit.String);
         gui_eeg_resample.Paras{3} = gui_eeg_resample.nwtimewindow_checkbox.Value;
         gui_eeg_resample.Paras{4} = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
         gui_eeg_resample.Paras{5} = str2num(gui_eeg_resample.nwtimewindow_editright.String);
-        
         observe_EEGDAT.count_current_eeg=9;
     end
 
@@ -683,8 +744,23 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.resample_cancel.ForegroundColor = [0 0 0];
         if ~isempty(observe_EEGDAT.EEG)
             gui_eeg_resample.csrate_edit.String = num2str(observe_EEGDAT.EEG.srate);
-            gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
-            gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+            if observe_EEGDAT.EEG.trials>1
+                gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.times(1));
+                gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.times(end));
+                gui_eeg_resample.currentunitleft.String = 'ms, to';
+                gui_eeg_resample.currentunitright.String = 'ms';
+                
+                gui_eeg_resample.nwwd_unitleft.String = 'ms, to';
+                gui_eeg_resample.nwwd_unitright.String = 'ms';
+            else
+                gui_eeg_resample.ctimewindow_editleft.String = num2str(observe_EEGDAT.EEG.xmin);
+                gui_eeg_resample.ctimewindow_editright.String = num2str(observe_EEGDAT.EEG.xmax);
+                gui_eeg_resample.currentunitleft.String = 's, to';
+                gui_eeg_resample.currentunitright.String = 's';
+                
+                gui_eeg_resample.nwwd_unitleft.String = 's, to';
+                gui_eeg_resample.nwwd_unitright.String = 's';
+            end
         else
             gui_eeg_resample.csrate_edit.String = '';
             gui_eeg_resample.ctimewindow_editleft.String = '';
@@ -698,16 +774,7 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.nwtimewindow_checkbox.Value=0;
         gui_eeg_resample.nwtimewindow_editleft.String ='';
         gui_eeg_resample.nwtimewindow_editright.String = '';
-        if ~isempty(observe_EEGDAT.EEG)
-            if observe_EEGDAT.EEG.trials==1
-                enableflag = 'off';
-            else
-                enableflag = 'on';
-            end
-            gui_eeg_resample.nwtimewindow_checkbox.Enable=enableflag;
-            gui_eeg_resample.nwtimewindow_editleft.Enable=enableflag;
-            gui_eeg_resample.nwtimewindow_editright.Enable=enableflag;
-        end
+        
         observe_EEGDAT.Reset_EEG_paras_panel=8;
     end
 end

@@ -595,7 +595,7 @@ varargout{1} = box_erp_append;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=14
+        if observe_ERPDAT.Count_currentERP~=13
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -621,7 +621,7 @@ varargout{1} = box_erp_append;
         else
             gui_erp_append.erpset_edit.Enable = 'on';
         end
-        observe_ERPDAT.Count_currentERP=15;
+        observe_ERPDAT.Count_currentERP=14;
     end
 
 

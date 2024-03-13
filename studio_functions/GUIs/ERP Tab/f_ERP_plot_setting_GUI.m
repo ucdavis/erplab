@@ -2276,7 +2276,6 @@ varargout{1} = ERP_plotset_box;
             end
         end
         %%
-        
         observe_ERPDAT.Count_currentERP=4;
     end
 

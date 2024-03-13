@@ -2522,7 +2522,7 @@ varargout{1} = ERP_simulation_box;
 
 %%-------enable the panel for real data------------------------------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=17
+        if observe_ERPDAT.Count_currentERP~=18
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -2604,7 +2604,7 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
         end
         plot_erp_simulation();
-        observe_ERPDAT.Count_currentERP=18;
+        observe_ERPDAT.Count_currentERP=19;
     end
 
 %%-------execute "apply" before doing any change for other panels----------

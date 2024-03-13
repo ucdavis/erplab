@@ -188,7 +188,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         eegh(LASTCOM);
         
-        fprintf(['\n ICA was done for eeg dataset (No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n']);
+        fprintf(['\n ICA was done for eeg dataset (No.',num2str(EEGArray),'):',32,EEG.setname,'\n']);
         fprintf( ['\n',repmat('-',1,100) '\n']);
         
         observe_EEGDAT.ALLEEG = ALLEEG;

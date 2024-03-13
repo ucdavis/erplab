@@ -1296,7 +1296,7 @@ varargout{1} = ERP_filtering_box;
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=9
+        if observe_ERPDAT.Count_currentERP~=10
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
@@ -1314,7 +1314,7 @@ varargout{1} = ERP_filtering_box;
             gui_erp_filtering.all_bin_chan.Enable = 'off';
             gui_erp_filtering.Selected_bin_chan.Enable = 'off';
             gui_erp_filtering.cancel.Enable = 'off';
-            observe_ERPDAT.Count_currentERP=10;
+            observe_ERPDAT.Count_currentERP=11;
             return;
         else
             %             gui_erp_filtering.DC_remove.Enable = 'on';
@@ -1397,7 +1397,7 @@ varargout{1} = ERP_filtering_box;
                 gui_erp_filtering.all_bin_chan.Value = 1;
                 gui_erp_filtering.all_bin_chan.Enable = 'on';
             end
-            observe_ERPDAT.Count_currentERP=10;
+            observe_ERPDAT.Count_currentERP=11;
         end
     end
 

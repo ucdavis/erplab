@@ -251,23 +251,23 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
             SrateNum_mp(Numofselectederp,1)   =  ALLERPIN(ERPsetArray(Numofselectederp)).srate;
         end
         
-        ERPtooltype = erpgettoolversion('tooltype');
-        if strcmpi(ERPtooltype,'EStudio')
-            ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
-            try chan_bin =ERPTab_plotset_pars{10};catch chan_bin=1; end;
-            if isempty(chan_bin) || numel(chan_bin)~=1  || (chan_bin~=1 && chan_bin~=2)
-                chan_bin=1;
-            end
-            if chan_bin ==1
-                gui_erp_waviewer.ERPwaviewer.plot_org.Grid =2;
-                gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=1;
-                gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
-            elseif chan_bin==2
-                gui_erp_waviewer.ERPwaviewer.plot_org.Grid =1;
-                gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=2;
-                gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
-            end
-        end
+        %         ERPtooltype = erpgettoolversion('tooltype');
+        %         if strcmpi(ERPtooltype,'EStudio')
+        %             ERPTab_plotset_pars = estudioworkingmemory('ERPTab_plotset_pars');
+        %             try chan_bin =ERPTab_plotset_pars{7};catch chan_bin=1; end;
+        %             if isempty(chan_bin) || numel(chan_bin)~=1  || (chan_bin~=1 && chan_bin~=2)
+        %                 chan_bin=1;
+        %             end
+        %             if chan_bin ==1
+        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Grid =2;
+        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=1;
+        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
+        %             elseif chan_bin==2
+        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Grid =1;
+        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Overlay=2;
+        %                 gui_erp_waviewer.ERPwaviewer.plot_org.Pages=3;
+        %             end
+        %         end
         gui_erp_waviewer.ERPwaviewer.CURRENTERP = CurrentERP;
         gui_erp_waviewer.ERPwaviewer.ERP = gui_erp_waviewer.ERPwaviewer.ALLERP(CurrentERP);
         gui_erp_waviewer.ERPwaviewer.SelectERPIdx = ERPwaveview_erpsetops.butttons_datasets.Value;
@@ -422,11 +422,8 @@ drawui_erpsetbinchan_viewer(FonsizeDefault)
                     dsnames{Numofsub} =    char(strcat(num2str(cell2mat(ERPdatasets(Numofsub,2))),'.',32,ERPdatasets{Numofsub,1}));
                 end
                 ds_length = size(ERPdatasets,1);
-                if ds_length<=2
-                    ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
-                else
-                    ERPwaveview_erpsetops.butttons_datasets.Max = ds_length;
-                end
+                
+                ERPwaveview_erpsetops.butttons_datasets.Max = ds_length+1;
                 ERPwaveview_erpsetops.butttons_datasets.String = dsnames;
                 ERPwaveview_erpsetops.butttons_datasets.Value = ERPArray;
             else
