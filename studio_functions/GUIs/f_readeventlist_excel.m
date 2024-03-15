@@ -92,9 +92,17 @@ j      = 1;
 % end
 
 % EVENTLIST.info.flink = elfilename;
-
-EVENTLIST.trialsperbin    =EEG.EVENTLIST.trialsperbin;    % first check. Counter of captured eventcodes per bin
-EVENTLIST.bdf = EEG.EVENTLIST.bdf;
+try
+    EVENTLIST.trialsperbin    =EEG.EVENTLIST.trialsperbin;
+catch
+    EVENTLIST.trialsperbin = [];
+end
+% first check. Counter of captured eventcodes per bin
+try
+    EVENTLIST.bdf = EEG.EVENTLIST.bdf;
+catch
+    EVENTLIST.bdf =[];
+end
 
 
 % fseek(fid_bl, position, 'bof');
@@ -125,7 +133,7 @@ for k = 1:size(currentline,1)
         
         xbin = [xbin EVENTLIST.eventinfo(k).bini];
     end
-%     k = k+1;
+    %     k = k+1;
     
 end
 

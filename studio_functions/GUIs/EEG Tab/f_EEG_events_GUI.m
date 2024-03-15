@@ -504,7 +504,7 @@ varargout{1} = EStudio_eeg_events_box;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run pop_ command again with the inputs from the GUI
-            [filename,pathname] = uigetfile({'*.txt';'*.*'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
+            [filename,pathname] = uigetfile({'*.txt*'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
             ELfullname = fullfile(pathname, filename);
             
             if isequal(filename,0)
@@ -593,7 +593,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        [fname, pathname] = uiputfile({'*.txt';'*.*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
+        [fname, pathname] = uiputfile({'*.txt*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
             return
@@ -691,7 +691,7 @@ varargout{1} = EStudio_eeg_events_box;
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run pop_ command again with the inputs from the GUI
-            [filename,pathname] = uigetfile({'*.xls,*.xlsx','*.*'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
+            [filename,pathname] = uigetfile({'*.xls*';'*.xlsx*'},['Select a EVENTLIST file for eegset:',32,num2str(EEGArray(Numofeeg))]);
             ELfullname = fullfile(pathname, filename);
             
             if isequal(filename,0)
@@ -779,7 +779,7 @@ varargout{1} = EStudio_eeg_events_box;
             return;
         end
         
-        [fname, pathname] = uiputfile({'*.xls,*xlsx';'*.*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
+        [fname, pathname] = uiputfile({'*.xls*,*xlsx*'},'Save EVENTLIST file as (This will be suffix when using EStudio)');
         
         if isequal(fname,0)
             return
