@@ -1271,7 +1271,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
                 EStduio_gui_EEG_plotset.rem_DC.Enable='on';
             end
         else
-            EEG_plotset{6}=0;
+            EEG_plotset{6}=1;
         end
         EStduio_gui_EEG_plotset.rem_DC.Value=EEG_plotset{6};
         %%display event?

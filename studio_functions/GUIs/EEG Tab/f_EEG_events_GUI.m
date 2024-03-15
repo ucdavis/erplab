@@ -625,12 +625,16 @@ varargout{1} = EStudio_eeg_events_box;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if isempty(msgboxText)
-                filenameeg = EEG.filename;
-                [xpatheeg, filenameeg, exteeg] = fileparts(filenameeg);
-                if isempty(filenameeg)
-                    filenameeg = strcat(num2str(EEGArray(Numofeeg)),'_',suffixstr,'.txt');
+                if numel(EEGArray) >1
+                    filenameeg = EEG.filename;
+                    [xpatheeg, filenameeg, exteeg] = fileparts(filenameeg);
+                    if isempty(filenameeg)
+                        filenameeg = strcat(num2str(EEGArray(Numofeeg)),'_',suffixstr,'.txt');
+                    else
+                        filenameeg = strcat(filenameeg,'_',suffixstr,'.txt');
+                    end
                 else
-                    filenameeg = strcat(filenameeg,'_',suffixstr,'.txt');
+                    filenameeg = [suffixstr,'.txt'];
                 end
                 filenameeg = fullfile(pathname, filenameeg);
                 
@@ -807,13 +811,19 @@ varargout{1} = EStudio_eeg_events_box;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if isempty(msgboxText)
-                filenameeg = EEG.filename;
-                [xpatheeg, filenameeg, exteeg] = fileparts(filenameeg);
-                if isempty(filenameeg)
-                    filenameeg = strcat(num2str(EEGArray(Numofeeg)),'_',suffixstr,'.xls');
+                if numel(EEGArray)>1
+                    filenameeg = EEG.filename;
+                    [xpatheeg, filenameeg, exteeg] = fileparts(filenameeg);
+                    if isempty(filenameeg)
+                        filenameeg = strcat(num2str(EEGArray(Numofeeg)),'_',suffixstr,'.xls');
+                    else
+                        filenameeg = strcat(filenameeg,'_',suffixstr,'.xls');
+                    end
                 else
-                    filenameeg = strcat(filenameeg,'_',suffixstr,'.xls');
+                    filenameeg = [suffixstr,'.xls'];
                 end
+                
+                
                 filenameeg = fullfile(pathname, filenameeg);
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
@@ -1164,8 +1174,8 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.eeg_shuffle.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.vieweventlist.Enable=EnableFlag;
-             EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
-              EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
+            EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
+            EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
             observe_EEGDAT.count_current_eeg=10;
             return;
         end
@@ -1216,7 +1226,7 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.exp_rt.Enable=EnableFlag;
         %%Import and export eventlist
         EStduio_eegtab_EEG_events.imp_eventlist.Enable=EnableFlag;
-          EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
+        EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
         %%export evetnlist to text file
         if ~isempty(observe_EEGDAT.EEG)
             EStduio_eegtab_EEG_events.exp_eventlist.Enable='on';
@@ -1231,8 +1241,12 @@ varargout{1} = EStudio_eeg_events_box;
         EStduio_eegtab_EEG_events.transfer_event.Enable=EnableFlag;
         if isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
             EStduio_eegtab_EEG_events.vieweventlist.Enable='on';
+            EStduio_eegtab_EEG_events.exp_eventlist.Enable='on';
+            EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='on';
         else
             EStduio_eegtab_EEG_events.vieweventlist.Enable='off';
+            EStduio_eegtab_EEG_events.exp_eventlist.Enable='off';
+            EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
         end
         observe_EEGDAT.count_current_eeg=10;
     end

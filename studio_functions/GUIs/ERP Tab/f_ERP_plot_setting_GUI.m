@@ -740,6 +740,12 @@ varargout{1} = ERP_plotset_box;
             estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         
+        ERPTab_plotset_pars =  estudioworkingmemory('ERPTab_plotset_pars');
+        try OverlayFlag = ERPTab_plotset_pars{7};catch OverlayFlag =0;  end;
+        if isempty(OverlayFlag) || numel(OverlayFlag)~=1 || (OverlayFlag~=0 && OverlayFlag~=1)
+            OverlayFlag = 0;ERPTab_plotset_pars{7}=0;
+        end
+        
         if ERPTab_plotset.pagesel.Value==1
             nplot = numel(ChanArray);
             plotarray = ChanArray;
@@ -749,6 +755,21 @@ varargout{1} = ERP_plotset_box;
             plotarray = BinArray;
             labelsdef =observe_ERPDAT.ERP.bindescr;
         end
+        
+        if ERPTab_plotset.pagesel.Value ~=OverlayFlag+1
+            ERPTab_plotset.gridlayoutdef.Value =1;
+            ERPTab_plotset.gridlayout_custom.Value =0;
+            ERPTab_plotset.gridlayout_export.Enable = 'off';
+            ERPTab_plotset.gridlayout_import.Enable = 'off';
+            ERPTab_plotset.rowNum_set.Enable = 'off';
+            ERPTab_plotset.columns.Enable = 'off';
+            rowNum = ceil(sqrt(nplot));
+            ERPTab_plotset.rowNum_set.Value=rowNum;
+            ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
+        end
+        
+        
+        
         gridlayputarraydef = cell(ERPTab_plotset.rowNum_set.Value,ERPTab_plotset.columns.Value);
         count = 0;
         for ii = 1:ERPTab_plotset.rowNum_set.Value
@@ -765,6 +786,20 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.rowNum_set.Value=rowNum;
             ERPTab_plotset.columns.Value =ceil(nplot/rowNum);
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
+            
+            ERPTab_plotset.chanorder_number.Enable = 'on';
+            ERPTab_plotset.chanorder_front.Enable = 'on';
+            ERPTab_plotset.chanorder_custom.Enable = 'on';
+            ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
+            ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
+            if ERPTab_plotset.chanorder_custom.Value==0
+                ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+                ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+            else
+                ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
+                ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
+            end
+            
         end
         
     end
@@ -858,6 +893,19 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.chanorder_custom.Value=0;
         ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
         ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+        
+        
+        ERPTab_plotset.gridlayoutdef.Enable = 'on';
+        ERPTab_plotset.gridlayout_custom.Enable = 'on';
+        if ERPTab_plotset.gridlayoutdef.Value==1
+            EnableFlag = 'on';
+        else
+            EnableFlag = 'off';
+        end
+        ERPTab_plotset.gridlayout_export.Enable = EnableFlag;
+        ERPTab_plotset.gridlayout_import.Enable = EnableFlag;
+        ERPTab_plotset.rowNum_set.Enable = EnableFlag;
+        ERPTab_plotset.columns.Enable = EnableFlag;
     end
 
 %%-----------------channel order-front-back/left-right---------------------
@@ -931,6 +979,15 @@ varargout{1} = ERP_plotset_box;
             end
         end
         
+        ERPTab_plotset.gridlayoutdef.Enable = 'off';
+        ERPTab_plotset.gridlayout_custom.Enable = 'off';
+        ERPTab_plotset.gridlayoutdef.Value=1;
+        ERPTab_plotset.gridlayout_custom.Value=0;
+        EnableFlag = 'off';
+        ERPTab_plotset.gridlayout_export.Enable = EnableFlag;
+        ERPTab_plotset.gridlayout_import.Enable = EnableFlag;
+        ERPTab_plotset.rowNum_set.Enable = EnableFlag;
+        ERPTab_plotset.columns.Enable = EnableFlag;
     end
 
 %%----------------------channel order-custom-------------------------------
@@ -968,6 +1025,16 @@ varargout{1} = ERP_plotset_box;
             ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
             return;
         end
+        ERPTab_plotset.gridlayoutdef.Enable = 'off';
+        ERPTab_plotset.gridlayout_custom.Enable = 'off';
+        ERPTab_plotset.gridlayoutdef.Value=1;
+        ERPTab_plotset.gridlayout_custom.Value=0;
+        EnableFlag = 'off';
+        ERPTab_plotset.gridlayout_export.Enable = EnableFlag;
+        ERPTab_plotset.gridlayout_import.Enable = EnableFlag;
+        ERPTab_plotset.rowNum_set.Enable = EnableFlag;
+        ERPTab_plotset.columns.Enable = EnableFlag;
+        
     end
 
 %%---------------------export channel orders-------------------------------
@@ -1088,7 +1155,7 @@ varargout{1} = ERP_plotset_box;
         %%import data chan orders
         [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
         
-        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv;'}, ...
+        [erpfilename, erppathname, indxs] = uigetfile({'*.tsv*';'*.txt*'}, ...
             ['Import ERP channel order (for plotting only)'],...
             'MultiSelect', 'off');
         if isequal(erpfilename,0) || indxs~=1
@@ -1290,6 +1357,19 @@ varargout{1} = ERP_plotset_box;
             end
         end
         ERPTab_plotset.gridlayputarray = gridlayputarray;
+        
+        ERPTab_plotset.chanorder_number.Enable = 'on';
+        ERPTab_plotset.chanorder_front.Enable = 'on';
+        ERPTab_plotset.chanorder_custom.Enable = 'on';
+        ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
+        ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
+        if ERPTab_plotset.chanorder_custom.Value==0
+            ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+            ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+        else
+            ERPTab_plotset.chanorder_custom_exp.Enable = 'on';
+            ERPTab_plotset.chanorder_custom_imp.Enable = 'on';
+        end
     end
 
 %%-------------------custom layout-----------------------------------------
@@ -1316,6 +1396,19 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.gridlayout_import.Enable ='on';
         ERPTab_plotset.rowNum_set.Enable ='on';
         ERPTab_plotset.columns.Enable ='on';
+        
+        ERPTab_plotset.chanorder_number.Value=1;
+        ERPTab_plotset.chanorder_front.Value=0;
+        ERPTab_plotset.chanorder_custom.Value=0;
+        ERPTab_plotset.chanorder_number.Enable = 'off';
+        ERPTab_plotset.chanorder_front.Enable = 'off';
+        ERPTab_plotset.chanorder_custom.Enable = 'off';
+        ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+        ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+        ERPTab_plotset.chanorder_custom_exp.Enable = 'off';
+        ERPTab_plotset.chanorder_custom_imp.Enable = 'off';
+        
+        
     end
 
 %%---------------------export layout---------------------------------------
@@ -1411,11 +1504,9 @@ varargout{1} = ERP_plotset_box;
         ERPTab_plotset.plot_reset.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_plotset.plot_reset.ForegroundColor = [1 1 1];
         
-        [filename, filepath] = uigetfile('*.tsv', ...
-            'Plot Setting > Grid Layout > Import', ...
-            'MultiSelect', 'off');
+        [filename, filepath] = uigetfile({'*.txt*';'*.tsv*';'*.*'}, ...
+            'Plot Setting > Grid Layout > Import');
         if isequal(filename,0)
-            disp('User selected Cancel');
             return;
         end
         try
@@ -1792,7 +1883,6 @@ varargout{1} = ERP_plotset_box;
         else
             ERPTab_plotset_pars{11} = [0,ERPTab_plotset.SEM_custom.Value-1,(ERPTab_plotset.SEMtrans_custom.Value-1)/10];
         end
-        
         
         estudioworkingmemory('ERPTab_plotset_pars',ERPTab_plotset_pars);
         observe_ERPDAT.Process_messg =2;
@@ -2552,13 +2642,13 @@ end
 
 %%-----------------check if the channel location is empty------------------
 function SetFlags =  check_chanlocs(ALLERP)
-SetFlags = zeros(length(ALLERP),1);
+SetFlags = ones(length(ALLERP),1);
 
 for Numofset = 1:length(ALLERP)
     ERP = ALLERP(Numofset);
     try
         if ~isempty(ERP.chanlocs)
-            for Numofchan = 1:ERP.nbchan
+            for Numofchan = 1:ERP.nchan
                 if ~isempty(ERP.chanlocs(Numofchan).X)
                     SetFlags(Numofset)=1;
                 end

@@ -372,7 +372,11 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         EEG = eegh(LASTCOM, EEG);
         eegh(LASTCOM);
-        
+        try
+        EEG.setname = EEG.setname(1:end-16);
+        catch
+            
+        end
         fprintf(['\n',LASTCOM,'\n']);
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(EEG,1, '_rmic');
@@ -560,7 +564,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         eegh(LASTCOM);
         fprintf(['\n',LASTCOM,'\n']);
         Save_file_label = 0;
-        Answer = f_EEG_save_multi_file(EEG,1, '_trafweights');
+        Answer = f_EEG_save_multi_file(EEG,1, '_icaweights');
         if isempty(Answer)
             return;
         end

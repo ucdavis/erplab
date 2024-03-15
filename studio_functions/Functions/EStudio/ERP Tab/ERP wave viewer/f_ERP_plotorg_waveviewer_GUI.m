@@ -1729,7 +1729,6 @@ varargout{1} = box_erpwave_viewer_plotorg;
             gui_plotorg_waveviewer.apply.ForegroundColor = [0 0 0];
             gui_plotorg_waveviewer.cancel.BackgroundColor =  [1 1 1];
             gui_plotorg_waveviewer.cancel.ForegroundColor = [0 0 0];
-            disp('User selected cancel');
             return;
         end
         

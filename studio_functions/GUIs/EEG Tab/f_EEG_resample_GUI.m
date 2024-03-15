@@ -113,6 +113,13 @@ varargout{1} = box_eeg_resample;
             'String','ms','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_eeg_resample.nwtimewindow_title,'Sizes',[90 55  40 55 25]);
         
+        %%------------------------Trim Continuous data-----------------------------
+        gui_eeg_resample.Trimcont_title = uiextras.HBox('Parent',gui_eeg_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        gui_eeg_resample.Trimcont= uicontrol('Style', 'pushbutton','Parent',gui_eeg_resample.Trimcont_title,...
+            'String','Trim continuous data','callback',@Trimcont,'Enable','off','FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent', gui_eeg_resample.Trimcont_title);
+        set(gui_eeg_resample.Trimcont_title,'Sizes',[-1 120]);
+        
         %%------------------------cancel & apply-----------------------------
         gui_eeg_resample.advance_help_title = uiextras.HBox('Parent',gui_eeg_resample.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', gui_eeg_resample.advance_help_title);
@@ -124,7 +131,7 @@ varargout{1} = box_eeg_resample;
             'callback',@resample_run,'FontSize',FonsizeDefault,'Enable','off','BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', gui_eeg_resample.advance_help_title);
         set(gui_eeg_resample.advance_help_title,'Sizes',[15 105  30 105 15]);
-        set(gui_eeg_resample.DataSelBox,'Sizes',[30 30 30 30 30]);
+        set(gui_eeg_resample.DataSelBox,'Sizes',[30 30 30 30 30 30]);
         
         estudioworkingmemory('EEGTab_resample',0);
     end
@@ -354,6 +361,109 @@ varargout{1} = box_eeg_resample;
             return;
         end
         
+    end
+%%--------------------------Trim continuous data---------------------------
+    function Trimcont(~,~)
+        if isempty(observe_EEGDAT.EEG)
+            observe_EEGDAT.count_current_eeg=1;
+            return;
+        end
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
+        if ~isempty(messgStr) && eegpanelIndex~=18
+            observe_EEGDAT.eeg_two_panels  = observe_EEGDAT.eeg_two_panels +1;%%call the functions from the other panel
+        end
+        
+        EEGArray= estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
+            EEGArray = observe_EEGDAT.CURRENTSET;
+            estudioworkingmemory('EEGArray',EEGArray);
+        end
+        erpworkingmemory('f_EEG_proces_messg','Sampling Rate & Epoch>Trim continuous data');
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        
+        def    = erpworkingmemory('pop_eegtrim');
+        
+        %
+        % Call GUI
+        %
+        answer = gui_eegtrim(def);
+        if isempty(answer)
+            return
+        end
+        
+        presti  = answer{1};
+        poststi = answer{2};
+        erpworkingmemory('pop_eegtrim', {answer{1} answer{2}});
+        
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        ALLEEG_out = [];
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Sampling Rate & Epoch>Trim continuous data *',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            %% Run the pop_ command with the user input from the GUI
+            [EEG, LASTCOM] = pop_eegtrim(EEG, presti, poststi, 'History', 'implicit');
+            
+            if isempty(LASTCOM)
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            fprintf([LASTCOM,'\n']);
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        Save_file_label = 0;
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_trim');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG =    ALLEEG_out(Numofeeg);
+            %             checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        end
+        
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            Selected_EEG_afd = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',Selected_EEG_afd);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 %%--------------------------cancel-----------------------------------------
@@ -659,6 +769,11 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.nwtimewindow_checkbox.Enable = Enableflag;
         gui_eeg_resample.nwtimewindow_editleft.Enable = Enableflag;
         gui_eeg_resample.nwtimewindow_editright.Enable = Enableflag;
+        if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials==1
+            gui_eeg_resample.Trimcont.Enable = 'on';
+        else
+            gui_eeg_resample.Trimcont.Enable = 'off';
+        end
         gui_eeg_resample.resample_run.Enable = Enableflag;
         gui_eeg_resample.resample_cancel.Enable = Enableflag;
         if strcmp(Enableflag,'on') && gui_eeg_resample.nwtimewindow_checkbox.Value==1
@@ -774,7 +889,11 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.nwtimewindow_checkbox.Value=0;
         gui_eeg_resample.nwtimewindow_editleft.String ='';
         gui_eeg_resample.nwtimewindow_editright.String = '';
-        
+        if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials==1
+            gui_eeg_resample.Trimcont.Enable = 'on';
+        else
+            gui_eeg_resample.Trimcont.Enable = 'off';
+        end
         observe_EEGDAT.Reset_EEG_paras_panel=8;
     end
 end

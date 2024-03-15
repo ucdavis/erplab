@@ -80,8 +80,8 @@ varargout{1} = erp_measurement_box;
         
         %%-----------------------------Setting for second column---------------
         %%2A
-        mesurement_type = {'Mean amplitude between two fixed latencies','Local peak amplitude (Negative)','Local peak amplitude (Positive)','Local peak latency (Negative)',...
-            'Local peak latency (Positive)','Fractional peak latency (Negative)','Fractional peak latency (Positive)','Fractional area latency: Rectified area (negative values become positive)',...
+        mesurement_type = {'Mean amplitude between two fixed latencies','Peak amplitude (Negative)','Peak amplitude (Positive)','Peak latency (Negative)',...
+            'Peak latency (Positive)','Fractional peak latency (Negative)','Fractional peak latency (Positive)','Fractional area latency: Rectified area (negative values become positive)',...
             'Fractional area latency: Numrical integration (area for negatives substracted from area for positives)',...
             'Fractional area latency: Area for negative waveforms (positive values will be zeroed)','Fractional area latency: Area for positive waveforms (negative values will be zeroed)',...
             'Numerical integration/Area between two fixed latencies: Rectified area (Negative values become positive)',...
@@ -166,7 +166,7 @@ varargout{1} = erp_measurement_box;
         switch Measure%Find the label of the selected item, the defualt one is 1 (Mean amplitude between two fixed latencies)
             case 'meanbl'% Mean amplitude
                 set(ERPMTops.m_t_type,'Value',1);
-            case 'peakampbl'% Local peak amplitude (P vs. N)
+            case 'peakampbl'% Peak amplitude (P vs. N)
                 if strcmp(Polarity,'positive')
                     set(ERPMTops.m_t_type,'Value',3);
                 else
@@ -293,7 +293,7 @@ varargout{1} = erp_measurement_box;
             case 2
                 moption = 'peakampbl';
                 ERPMTops.def_erpvalue{12} = 'negative';
-            case 3 % Local peak amplitude (P vs. N)
+            case 3 % Peak amplitude (P vs. N)
                 moption = 'peakampbl';
                 ERPMTops.def_erpvalue{12} = 'positive';
             case  4
@@ -372,11 +372,11 @@ varargout{1} = erp_measurement_box;
         if strcmpi(Peakpolarity,'negative')
             polpeak    = 0;
         else
-            polpeak    = 1; % local peak positive polarity
+            polpeak    = 1; % Peak positive polarity
         end
         %%resolution
         try
-            sampeak    = ERPMTops.def_erpvalue{13}; % number of samples (one-side) for local peak detection criteria
+            sampeak    = ERPMTops.def_erpvalue{13}; % number of samples (one-side) for Peak detection criteria
         catch
             sampeak = 3;
         end
@@ -464,7 +464,7 @@ varargout{1} = erp_measurement_box;
         
         ERPMTops.def_erpvalue{13} = Answer{5};%%Neighborhood
         
-        locpeakrep = Answer{6};%%local peak replacement
+        locpeakrep = Answer{6};%%Peak replacement
         if locpeakrep==0
             ERPMTops.def_erpvalue{14} = 'NaN';
         else
@@ -524,7 +524,7 @@ varargout{1} = erp_measurement_box;
             if isempty(ERPsetArraydef) || any(ERPsetArraydef> length(observe_ERPDAT.ALLERP))
                 Source.String = '';
             else
-               ERPset =  vect2colon(ERPsetArraydef,'Sort','on');
+                ERPset =  vect2colon(ERPsetArraydef,'Sort','on');
                 ERPset = erase(ERPset,{'[',']'});
                 Source.String = ERPset;
             end
@@ -760,7 +760,7 @@ varargout{1} = erp_measurement_box;
                 moption = 'meanbl';% Mean amplitude
             case 2
                 moption = 'peakampbl';
-            case 3 % Local peak amplitude (P vs. N)
+            case 3 % Peak amplitude (P vs. N)
                 moption = 'peakampbl';
             case  4
                 moption= 'peaklatbl';
@@ -914,7 +914,7 @@ varargout{1} = erp_measurement_box;
         else
             FileFormat = 1;
         end
-        pathName_folder_default =  erpworkingmemory('ERP_save_folder');
+        pathName_folder_default =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName_folder_default)
             pathName_folder_default = cd;
         end
@@ -1063,7 +1063,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_mesuretool',0);
         
-        pathName_folder =  erpworkingmemory('ERP_save_folder');
+        pathName_folder =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName_folder)
             pathName_folder =  cd;
         end
@@ -1259,14 +1259,8 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_mesuretool',0);
         
-        pathName_folder =  erpworkingmemory('ERP_save_folder');
-        if isempty(pathName_folder)
-            pathName_folder =  cd;
-        end
-        ERPArraydef = estudioworkingmemory('selectederpstudio');
-        if isempty(ERPArraydef) || any(ERPArraydef> length(observe_ERPDAT.ALLERP))
-            ERPArraydef =  observe_ERPDAT.CURRENTERP;
-        end
+        
+        
         ERPsetArray =  str2num(ERPMTops.m_t_erpset.String);
         if isempty(ERPsetArray) || any(ERPsetArray>length(observe_ERPDAT.ALLERP))
             ERPsetArray =  ERPArraydef;
@@ -1404,7 +1398,9 @@ varargout{1} = erp_measurement_box;
             observe_ERPDAT.Count_currentERP=1;
             erpworkingmemory('f_ERP_proces_messg','Measurement Tool > Preview:The main ERPLAB Studio window will be frozen until you close the Viewer window for the Measurement Tool');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
-            f_erp_viewerGUI(observe_ERPDAT.ALLERP,observe_ERPDAT.CURRENTERP,binArray,chanArray);
+            
+            
+            f_erp_viewerGUI(observe_ERPDAT.ALLERP(ERPsetArray),1,binArray,chanArray);
         end
         erpworkingmemory('ViewerFlag', 0);
         observe_ERPDAT.Count_currentERP=1;
@@ -1422,36 +1418,9 @@ varargout{1} = erp_measurement_box;
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1
             Enable_label = 'off';
+            
         else
             Enable_label = 'on';
-        end
-        
-        if  ~isempty(observe_ERPDAT.ERP) && ~isempty(observe_ERPDAT.ALLERP)
-            ERPArray= estudioworkingmemory('selectederpstudio');
-            if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
-                ERPArray =  length(observe_ERPDAT.ALLERP);
-                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-                observe_ERPDAT.CURRENTERP = ERPArray;
-                estudioworkingmemory('selectederpstudio',ERPArray);
-            end
-            ERPMTops.m_t_erpset.String= vect2colon(ERPArray,'Sort','on');%%Dec 20 2022
-            BinArray = estudioworkingmemory('ERP_BinArray');
-            ChanArray =  estudioworkingmemory('ERP_ChanArray');
-            [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
-            if chk(1)==1
-                BinArray =  [1:observe_ERPDAT.ERP.nbin];
-            end
-            BinArray = vect2colon(BinArray,'Sort', 'on');
-            BinArray = erase(BinArray,{'[',']'});
-            ERPMTops.m_t_bin.String =BinArray;
-            
-            [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
-            if chk(2)==1
-                ChanArray =  [1:observe_ERPDAT.ERP.nchan];
-            end
-            ChanArray = vect2colon(ChanArray,'Sort', 'on');
-            ChanArray = erase(ChanArray,{'[',']'});
-            ERPMTops.m_t_chan.String = ChanArray;
         end
         ERPMTops.m_t_type.Enable = Enable_label;
         ERPMTops.m_t_type_ops.Enable = Enable_label;
@@ -1470,6 +1439,40 @@ varargout{1} = erp_measurement_box;
         ERPMTops.cancel.Enable = Enable_label;
         ERPMTops.apply.Enable = Enable_label;
         ERPMTops.m_t_value.Enable = Enable_label;
+        if strcmpi(Enable_label,'off')
+            observe_ERPDAT.Count_currentERP=15;
+            return;
+        end
+        
+        if  ~isempty(observe_ERPDAT.ERP) && ~isempty(observe_ERPDAT.ALLERP)
+            ERPArray= estudioworkingmemory('selectederpstudio');
+            if isempty(ERPArray) || any(ERPArray> length(observe_ERPDAT.ALLERP))
+                ERPArray =  length(observe_ERPDAT.ALLERP);
+                observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
+                observe_ERPDAT.CURRENTERP = ERPArray;
+                estudioworkingmemory('selectederpstudio',ERPArray);
+            end
+            ERPArray = vect2colon(ERPArray,'Sort','on');
+            ERPArray = erase(ERPArray,{'[',']'});
+            ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
+            BinArray = estudioworkingmemory('ERP_BinArray');
+            ChanArray =  estudioworkingmemory('ERP_ChanArray');
+            [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
+            if chk(1)==1
+                BinArray =  [1:observe_ERPDAT.ERP.nbin];
+            end
+            BinArray = vect2colon(BinArray,'Sort', 'on');
+            BinArray = erase(BinArray,{'[',']'});
+            ERPMTops.m_t_bin.String =BinArray;
+            
+            [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
+            if chk(2)==1
+                ChanArray =  [1:observe_ERPDAT.ERP.nchan];
+            end
+            ChanArray = vect2colon(ChanArray,'Sort', 'on');
+            ChanArray = erase(ChanArray,{'[',']'});
+            ERPMTops.m_t_chan.String = ChanArray;
+        end
         observe_ERPDAT.Count_currentERP=15;
     end
 

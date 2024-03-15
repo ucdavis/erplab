@@ -898,8 +898,9 @@ elseif ismember_bc2(indxmeaX,5)
 else
     meamenu = 1; % 'Instantaneous amplitude',...
 end
+mls = sprintf('%s\n%s',measurearray{meamenu},['Measurement Window:',32,num2str(handles.latency)]);
 
-set(handles.text_measure_type, 'String', measurearray{meamenu});
+set(handles.text_measure_type, 'String', mls);
 offset = f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
     positive_up,BinchanOverlay,rowNums,GridposArray,handles.erptabwaveiwer,handles.erptabwaveiwer_legend);
 % set(handles.erptabwaveiwer,'BackgroundColor',[1 1 1]);

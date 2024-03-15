@@ -503,7 +503,7 @@ varargout{1} = box_erpset_gui;
         
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Export');
         observe_ERPDAT.Process_messg =1;
-        pathName =  estudioworkingmemory('ERP_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
@@ -768,7 +768,7 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Save');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  estudioworkingmemory('ERP_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =  cd;
         end
@@ -882,7 +882,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName =  erpworkingmemory('EEG_save_folder');
+        pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
             pathName =cd;
         end
@@ -894,7 +894,7 @@ varargout{1} = box_erpset_gui;
         end
         userpath(sel_path1);
         cd(sel_path1);
-        erpworkingmemory('EEG_save_folder',sel_path1);
+        estudioworkingmemory('EEG_save_folder',sel_path1);
     end
 
 

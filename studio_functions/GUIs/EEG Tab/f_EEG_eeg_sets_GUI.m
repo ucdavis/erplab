@@ -798,19 +798,21 @@ estudioworkingmemory('Startimes',0);%%set default value
             
             FileName = EEG.filename;
             if isempty(FileName)
-                FileName =EEG.setname;
-                [pathstr, namedef, ext] = fileparts(FileName);
-                [FileName, pathName, indxs] = uiputfile({'*.set'}, ...
-                    ['Save "',EEG.setname,'" as'],...
-                    fullfile(pathName,namedef));
-                if isequal(FileName,0)
-                    fprintf( ['\n',repmat('-',1,100) '\n']);
-                    return
-                end
-                if isempty(FileName)
-                    FileName =EEG.setname;
-                end
+              FileName =EEG.setname;  
             end
+%                 FileName =EEG.setname;
+%                 [pathstr, namedef, ext] = fileparts(FileName);
+%                 [FileName, pathName, indxs] = uiputfile({'*.set'}, ...
+%                     ['Save "',EEG.setname,'" as'],...
+%                     fullfile(pathName,namedef));
+%                 if isequal(FileName,0)
+%                     fprintf( ['\n',repmat('-',1,100) '\n']);
+%                     return
+%                 end
+%                 if isempty(FileName)
+%                     FileName =EEG.setname;
+%                 end
+%             end
             [pathx, filename, ext] = fileparts(FileName);
             filename = [filename '.set'];
             checkfileindex = checkfilexists([pathName,filename]);

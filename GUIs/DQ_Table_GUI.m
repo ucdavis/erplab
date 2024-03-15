@@ -22,7 +22,7 @@ function varargout = DQ_Table_GUI(varargin)
 
 % Edit the above text to modify the response to pushbutton_help DQ_Table_GUI
 
-% Last Modified by GUIDE v2.5 26-Jan-2023 16:54:38
+% Last Modified by GUIDE v2.5 14-Mar-2024 12:22:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
@@ -1296,3 +1296,10 @@ handles.orig_data = table_data;
 guidata(hObject, handles);
 
 % Hint: get(hObject,'Value') returns toggle state of sdcorrection
+
+
+% --- Executes during object creation, after setting all properties.
+function checkbox_outliers_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to checkbox_outliers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
