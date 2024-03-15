@@ -879,13 +879,11 @@ estudioworkingmemory('Startimes',0);%%set default value
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
                 disp(['Saved to',32,erppathname,filename]);
                 fprintf(['\n',LASTCOM,'\n']);
-            else
-                disp(['User selected Cancel for saving',32,filename]);
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
-        
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.count_current_eeg =1;
         observe_EEGDAT.eeg_panel_message =2;
     end
 

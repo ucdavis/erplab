@@ -963,7 +963,7 @@ varargout{1} = erp_measurement_box;
         if isempty(Answer)
             return;
         end
-        if Answer{1}==1 % 1 means "long format"; 0 means "wide format"
+        if Answer{1}==0 % 0 means "long format"; 1 means "wide format"
             foutputstr = 'long';
         else
             foutputstr = 'wide';
@@ -991,55 +991,6 @@ varargout{1} = erp_measurement_box;
             ERPMTops.def_erpvalue{20} = 'off' ;
         end
         
-    end
-
-
-%%---------------Viewer:ON------------------------------
-    function m_t_viewer_on(~,~)
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=10
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
-        end
-        ERPMTops.m_t_value.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPMTops.m_t_value.ForegroundColor = [1 1 1];
-        erp_measurement_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        ERPMTops.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        ERPMTops.cancel.ForegroundColor = [1 1 1];
-        ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
-        set(ERPMTops.m_t_viewer_on,'Value',1);
-        set(ERPMTops.m_t_viewer_off,'Value',0);
-        ERPMTops.apply.Enable = 'on';
-    end
-
-%%---------------Viewer:Off------------------------------
-    function m_t_viewer_off(~,~)
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
-            return;
-        end
-        %%first checking if the changes on the other panels have been applied
-        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
-        if ~isempty(messgStr) && eegpanelIndex~=10
-            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
-        end
-        ERPMTops.m_t_value.BackgroundColor =  [ 0.5137    0.7569    0.9176];
-        ERPMTops.m_t_value.ForegroundColor = [1 1 1];
-        erp_measurement_box.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
-        ERPMTops.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
-        ERPMTops.cancel.ForegroundColor = [1 1 1];
-        ERPMTops.apply.BackgroundColor =  [0.5137    0.7569    0.9176];
-        ERPMTops.apply.ForegroundColor = [1 1 1];
-        estudioworkingmemory('ERPTab_mesuretool',1);
-        set(ERPMTops.m_t_viewer_off,'Value',1);
-        set(ERPMTops.m_t_viewer_on,'Value',0);
-        ERPMTops.apply.Enable = 'off';
     end
 
 

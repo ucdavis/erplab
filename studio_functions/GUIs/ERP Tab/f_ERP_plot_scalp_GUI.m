@@ -127,6 +127,9 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','2D','callback',@map_type_2d,'Value',1,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.map_type_2d.KeyPressFcn=  @erp_scalps_presskey;
         try map2d = ERPTab_plotscalp{3}; catch map2d=1;ERPTab_plotscalp{3} = 1;end
+        if isempty(map2d) || numel(map2d)~=1 || (map2d~=0 && map2d~=1)
+            map2d=1;
+        end
         gui_erp_scalp_map.map_type_2d.Value= map2d;
         
         gui_erp_scalp_map.map_type_3d = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.map_type,...
@@ -167,7 +170,6 @@ varargout{1} = ERP_plot_scalp_gui;
             'String','Custom (min max:e.g.uv)','callback',@bar_scale_custom_opt,'Value',0,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.custom_option.KeyPressFcn=  @erp_scalps_presskey;
         set(gui_erp_scalp_map.bar_scale ,'Sizes',[100 170]);
-        
         
         gui_erp_scalp_map.bar_scale_2 = uiextras.HBox('Parent',gui_erp_scalp_map.ERPscalpops,'BackgroundColor',ColorB_def);
         gui_erp_scalp_map.abs_max = uicontrol('Style', 'radiobutton','Parent', gui_erp_scalp_map.bar_scale_2,...

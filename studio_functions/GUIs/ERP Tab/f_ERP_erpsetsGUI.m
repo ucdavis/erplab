@@ -797,7 +797,6 @@ varargout{1} = box_erpset_gui;
             [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
         end
         observe_ERPDAT.Process_messg =2;
-        
     end
 
 
@@ -866,6 +865,7 @@ varargout{1} = box_erpset_gui;
                 'filepath',erppathname);
             [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM, ERPCOM);
         end
+        observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
     end
 
