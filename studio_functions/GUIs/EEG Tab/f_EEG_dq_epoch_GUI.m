@@ -538,26 +538,26 @@ varargout{1} = Eegtab_box_dq_epoch;
         end
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-            for Numofeeg = 1:numel(EEGArray)
-                setindex =EEGArray(Numofeeg);
-                EEG = ALLEEG(setindex);
-                fprintf( ['\n\n',repmat('-',1,100) '\n']);
-                fprintf(['*Data Quality Metrics (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
-                fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-                
-                %% Run the pop_ command with the user input from the GUI
-                [ERPpreavg, erpcom] = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
-                    'SEM', stdsstr, 'Saveas', 'off', 'Warning', 'off', 'ExcludeBoundary', excboundstr,...
-                    'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt,'DQ_custom_wins', DQcustom_wins, 'History', '');
-                ALLERP = [];
-                CURRENTPREAVG = 1;
-                ERPpreavg.erpname = ALLEEG(setindex).setname; %setname instead of erpname in DQ Table
-                DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1);
-                
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-            end%%end for loop of subjects
+        for Numofeeg = 1:numel(EEGArray)
+            setindex =EEGArray(Numofeeg);
+            EEG = ALLEEG(setindex);
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Data Quality Metrics (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
-            observe_EEGDAT.eeg_panel_message =2;
+            %% Run the pop_ command with the user input from the GUI
+            [ERPpreavg, erpcom] = pop_averager(ALLEEG, 'DSindex', setindex, 'Criterion', artcritestr,...
+                'SEM', stdsstr, 'Saveas', 'off', 'Warning', 'off', 'ExcludeBoundary', excboundstr,...
+                'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt,'DQ_custom_wins', DQcustom_wins, 'History', '');
+            ALLERP = [];
+            CURRENTPREAVG = 1;
+            ERPpreavg.erpname = ALLEEG(setindex).setname; %setname instead of erpname in DQ Table
+            DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1);
+            
+            fprintf( ['\n',repmat('-',1,100) '\n']);
+        end%%end for loop of subjects
+        
+        observe_EEGDAT.eeg_panel_message =2;
     end
 
 
@@ -566,7 +566,11 @@ varargout{1} = Eegtab_box_dq_epoch;
         if observe_EEGDAT.count_current_eeg ~=23
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1 || EEGUpdate==1
             EEG_dq_epoch.def_para.Enable= 'off';
             EEG_dq_epoch.custom_para.Enable= 'off';
             EEG_dq_epoch.custom_para_op.Enable = 'off';

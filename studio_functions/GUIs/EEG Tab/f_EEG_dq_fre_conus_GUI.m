@@ -461,7 +461,11 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if observe_EEGDAT.count_current_eeg ~=19
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || EEGUpdate==1
             EEG_dq_fre_conus.chans_edit.Enable= 'off';
             EEG_dq_fre_conus.chans_browse.Enable= 'off';
             EEG_dq_fre_conus.bandtable.Enable = 'off';

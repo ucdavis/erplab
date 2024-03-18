@@ -76,6 +76,9 @@ varargout{1} = box_erpset_gui;
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.suffix = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        ERPsetops.refresh_erpset = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Fresh',...
+            'Callback', @refresh_erpset,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
+        
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         ERPsetops.loadbutton = uicontrol('Parent', buttons3, 'Style', 'pushbutton', 'String', 'Load', ...
@@ -176,7 +179,6 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Rename');
         observe_ERPDAT.Process_messg =1;
         
@@ -185,7 +187,6 @@ varargout{1} = box_erpset_gui;
             SelectedERP = length(observe_ERPDAT.ALLERP);
             estudioworkingmemory('selectederpstudio',SelectedERP);
         end
-        
         app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(SelectedERP),SelectedERP);
         waitfor(app,'Finishbutton',1);
         try
@@ -246,9 +247,55 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Count_currentERP=1;
     end
 
+%%-------------------------------fresh ------------------------------------
+    function refresh_erpset(~,~)
+        %%first checking if the changes on the other panels have been applied
+        [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
+        if ~isempty(messgStr)
+            observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
+        end
+        
+        erpworkingmemory('f_ERP_proces_messg','ERPsets>Fresh');
+        observe_ERPDAT.Process_messg =1;
+        try
+            ALLERP = evalin('base', 'ALLERP');
+        catch
+            ALLERP = [];
+        end
+        try
+            ERP = evalin('base', 'ERP');
+        catch
+            ERP = [];
+        end
+        try
+            CURRENTERP = evalin('base', 'CURRENTERP');
+        catch
+            CURRENTERP = 1;
+        end
+        
+        if isempty(ALLERP) && ~isempty(ALLERP)
+            ALLERP = ERP;
+            CURRENTERP =1;
+        end
+        if ~isempty(ALLERP) && isempty(ERP)
+            if isempty(CURRENTERP) || numel(CURRENTERP)~=1 || any(CURRENTERP(:)>length(ALLERP))
+                CURRENTERP = length(ALLERP);
+            end
+        end
+        observe_ERPDAT.ALLERP= ALLERP;
+        observe_ERPDAT.ERP= observe_ERPDAT.ALLERP(CURRENTERP);
+        observe_ERPDAT.CURRENTERP= CURRENTERP;
+        estudioworkingmemory('selectederpstudio',CURRENTERP);
+        ERPlistName =  getERPsets();
+        ERPsetops.butttons_datasets.String = ERPlistName;
+        ERPsetops.butttons_datasets.Min = 1;
+        ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        ERPsetops.butttons_datasets.Value = CURRENTERP;
+        observe_ERPDAT.Count_currentERP=1;
+        observe_ERPDAT.Process_messg =2;
+    end
 
-
-%----------------------- Import-----------------------------------
+%----------------------- Import--------------------------------------------
     function imp_erp( ~, ~ )
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
@@ -466,12 +513,12 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         
-        
         ERPsetops.butttons_datasets.Value = length(observe_ERPDAT.ALLERP);
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= Edit_label;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
@@ -486,8 +533,6 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
-
-
 
 %-----------------------Export-----------------------------------
     function exp_erp( ~, ~ )
@@ -622,8 +667,6 @@ varargout{1} = box_erpset_gui;
         end
     end
 
-
-
 %%---------------------Load ERP--------------------------------------------
     function load(~,~)
         
@@ -674,6 +717,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= Edit_label;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
@@ -734,6 +778,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= Edit_label;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;
@@ -831,38 +876,27 @@ varargout{1} = box_erpset_gui;
             ALLERPCOM = [];
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
+        Answer = f_ERP_save_as_GUI(observe_ERPDAT.ALLERP,ERPArray,'',1,pathName);
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLERP_out = Answer{1};
+        end
+        
         for Numoferpset = 1:length(ERPArray)
-            if ERPArray(Numoferpset) > length(observe_ERPDAT.ALLERP)
-                disp('Index of selected ERP is lager than the length of ALLERP!!!');
-                return;
-            end
-            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
+            ERP = ALLERP_out(ERPArray(Numoferpset));
             if ~isempty(ERP.filename)
                 filename = ERP.filename;
             else
                 filename = [ERP.erpname,'.erp'];
             end
-            [pathstr, namedef, ext] = fileparts(filename);
-            [erpfilename, erppathname, indxs] = uiputfile({'*.erp','ERP (*.erp)';...
-                '*.mat','ERP (*.erp)'}, ...
-                ['Save "',ERP.erpname,'" as'],...
-                fullfile(pathName,namedef));
-            if isequal(erpfilename,0)
-                return
-            end
-            [pathx, filename, ext] = fileparts(erpfilename);
-            [pathstr, erpfilename, ext] = fileparts(erpfilename) ;
+            [pathstr, erpfilename, ext] = fileparts(filename);
+            ext = '.erp';
             
-            if indxs==1
-                ext = '.erp';
-            elseif indxs==2
-                ext = '.mat';
-            else
-                ext = '.erp';
-            end
             erpFilename = char(strcat(erpfilename,ext));
             [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
-                'filepath',erppathname);
+                'filepath',ERP.filepath);
             [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM, ERPCOM);
         end
         observe_ERPDAT.Count_currentERP = 1;
@@ -909,17 +943,12 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
-        %         erpworkingmemory('f_ERP_proces_messg','ERPsets-select ERPset(s)');
-        %         observe_ERPDAT.Process_messg =1;
-        
         Selected_ERPsetlabel = source.Value;
         estudioworkingmemory('selectederpstudio',Selected_ERPsetlabel);
         
         Current_ERP_selected=Selected_ERPsetlabel(1);
         observe_ERPDAT.CURRENTERP = Current_ERP_selected;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_ERP_selected);
-        %         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 2;
         if EStudio_gui_erp_totl.ERP_autoplot==1
             f_redrawERP();
@@ -974,6 +1003,7 @@ varargout{1} = box_erpset_gui;
         ERPsetops.dupeselected.Enable=Edit_label;
         ERPsetops.renameselected.Enable=Edit_label;
         ERPsetops.suffix.Enable= Edit_label;
+        ERPsetops.refresh_erpset.Enable= Edit_label;
         ERPsetops.clearselected.Enable=Edit_label;
         ERPsetops.savebutton.Enable= Edit_label;
         ERPsetops.saveasbutton.Enable=Edit_label;

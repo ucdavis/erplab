@@ -699,7 +699,11 @@ varargout{1} = EEG_chan_operation_gui;
         if observe_EEGDAT.count_current_eeg ~=6
             return;
         end
-        if isempty(observe_EEGDAT.EEG)
+         EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             Enable_label = 'off';
         end
         if ~isempty(observe_EEGDAT.EEG)
@@ -739,6 +743,9 @@ varargout{1} = EEG_chan_operation_gui;
                 gui_eegtab_chan_optn.edit_bineq.Data = dsnames;
                 set(gui_eegtab_chan_optn.edit_bineq,'ColumnEditable',true(1,1000),'ColumnWidth',{1000});
             end
+        end
+        if  EEGUpdate==1
+            Enable_label = 'off';
         end
         gui_eegtab_chan_optn.mode_modify.Enable=Enable_label;
         gui_eegtab_chan_optn.mode_create.Enable=Enable_label;

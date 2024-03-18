@@ -1058,7 +1058,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
         if observe_EEGDAT.count_current_eeg ~=3
             return;
         end
-        if isempty(observe_EEGDAT.EEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             Enableflag = 'off';
         else
             Enableflag = 'on';
@@ -1087,7 +1091,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plot_apply.Enable = Enableflag;
         EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = Enableflag;
         EEG_plotset=  estudioworkingmemory('EEG_plotset');
-        if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.EEG.icachansind)
+        if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.EEG.icachansind) && EEGUpdate==0
             EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
             EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = 'on';
         else
@@ -1107,7 +1111,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             EStduio_gui_EEG_plotset.chanorder_custom_exp.Enable = Enableflag;
             EStduio_gui_EEG_plotset.chanorder_custom_imp.Enable = Enableflag;
         end
-        if ~isempty(observe_EEGDAT.EEG)
+        if ~isempty(observe_EEGDAT.EEG) || EEGUpdate==0
             if observe_EEGDAT.EEG.trials>1
                 EStduio_gui_EEG_plotset.rem_DC.Enable = 'off';
                 EStduio_gui_EEG_plotset.rem_DC.Value=0;
@@ -1120,7 +1124,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
         end
         %%
-        if ~isempty(observe_EEGDAT.EEG)
+        if ~isempty(observe_EEGDAT.EEG) && EEGUpdate==0
             EEGArray= estudioworkingmemory('EEGArray');
             if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
                 EEGArray = observe_EEGDAT.CURRENTSET;

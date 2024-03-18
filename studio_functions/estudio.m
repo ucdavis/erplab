@@ -217,7 +217,9 @@ EStudio_gui_erp_totl = createInterface();
 EStudio_gui_erp_totl.EEG_transf = 0;%%reveaal if transfter continous EEG to epoched EEG or from epoched to continous EEG
 EStudio_gui_erp_totl.EEG_autoplot = 1; %%Automatic plotting for eegsets
 EStudio_gui_erp_totl.ERP_autoplot = 1; %%Automatic plotting for erpsets
-
+erpworkingmemory('EEGUpdate',0);%%For ICA  function---inspect/label ICs OR Classify IC by IClbale
+ 
+ 
 f_redrawERP();
 f_redrawEEG_Wave_Viewer();
 timeElapsed = toc;
@@ -570,7 +572,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
             end
         else
             if EStudio_gui_erp_totl.clear_allerp == 1
-                
                 observe_ERPDAT.ALLERP = [];
                 observe_ERPDAT.ERP = [];
                 observe_ERPDAT.CURRENTERP  = 1;

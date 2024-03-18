@@ -1399,7 +1399,11 @@ varargout{1} = Eegtab_box_art_det_conus;
         if observe_EEGDAT.count_current_eeg ~=16
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || EEGUpdate==1
             Eegtab_EEG_art_det_conus.chan_edit.Enable= 'off';
             Eegtab_EEG_art_det_conus.chan_browse.Enable= 'off';
             Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'off';

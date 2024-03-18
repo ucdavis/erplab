@@ -46,6 +46,25 @@ drawui_erp_information(FonsizeDefault);
         end
         gui_erp_information.DataSelBox = uiextras.VBox('Parent', Erp_information, 'Spacing',1,'BackgroundColor',ColorB_def);
         
+        %%ERP setname and file name
+        gui_erp_information.setfilename_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', gui_erp_information.setfilename_title,'String','Current ERP setname & file name',...
+            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+        
+        
+        gui_erp_information.setfilename_title2 = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+        end
+        gui_erp_information.table_setfilenames = uitable(  ...
+            'Parent'        , gui_erp_information.setfilename_title2,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {500}, ...
+            'ColumnName'    , {''}, ...
+            'RowName'       , {'ERP name','File name'},...
+            'ColumnEditable',[false]);
+        
         %%----------------------------Setting sampling rate---------------------
         gui_erp_information.samplingrate_title = uiextras.HBox('Parent',gui_erp_information.DataSelBox,'BackgroundColor',ColorB_def);
         ERP_time_resolution = strcat('Sampling: ');
@@ -117,7 +136,7 @@ drawui_erp_information(FonsizeDefault);
             'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
             'RowName'       , [],...
             'ColumnEditable',[false, false, false, false, false]);
-        set(gui_erp_information.DataSelBox,'Sizes',[20 20 20 20 20 20 30 20 100])
+        set(gui_erp_information.DataSelBox,'Sizes',[20 70 20 20 20 20 20 20 30 20 100])
     end
 
 
@@ -222,6 +241,16 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_information.total_rejected_percentage.Enable = Enable_label;
         gui_erp_information.total_rejected_option.Enable = Enable_label;
         gui_erp_information.total_rejected_option2.Enable = Enable_label;
+        
+        try
+            filesetname{1,1} = ERP.erpname;
+            filesetname{2,1} = ERP.filename;
+        catch
+            filesetname{1,1} = '';
+            filesetname{2,1} = '';
+        end
+        gui_erp_information.table_setfilenames.Data= filesetname;
+        
         observe_ERPDAT.Count_currentERP=8;
     end
 

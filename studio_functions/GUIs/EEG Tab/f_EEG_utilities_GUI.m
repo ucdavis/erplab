@@ -520,7 +520,11 @@ varargout{1} = Eegtab_box_art_sumop;
         if observe_EEGDAT.count_current_eeg ~=25
             return;
         end
-        if  isempty(observe_EEGDAT.EEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             Eegtab_EEG_utilities.epoch2continuous.Enable = 'off';
             Eegtab_EEG_utilities.event_byte.Enable = 'off';
             Eegtab_EEG_utilities.rm_eventcodes.Enable = 'off';

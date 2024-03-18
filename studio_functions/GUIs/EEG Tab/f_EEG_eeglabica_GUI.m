@@ -16,7 +16,6 @@ addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change)
 addlistener(observe_EEGDAT,'Reset_eeg_panel_change',@Reset_eeg_panel_change);
 
 %---------------------------Initialize parameters------------------------------------
-
 EStduio_eegtab_eeglab_ica = struct();
 
 %-----------------------------Name the title----------------------------------------------
@@ -64,7 +63,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             'String','Decompose data','callback',@icadecomp_eeg,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_eeglab_ica.inslabel_ics = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_ica.decomp_labelic_title,...
             'String','Inspect/label ICs','callback',@inslabel_ics,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        
         
         %%Edit eeg events and channel locations
         EStduio_eegtab_eeglab_ica.event_chanlocs_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -232,7 +230,8 @@ varargout{1} = EStudio_box_eeglab_ica;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-        
+        erpworkingmemory('EEGUpdate',1);
+        observe_EEGDAT.count_current_eeg=1;
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -243,6 +242,8 @@ varargout{1} = EStudio_box_eeglab_ica;
                 erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs:User selected cancel');
                 observe_EEGDAT.eeg_panel_message =4;
                 fprintf( ['\n',repmat('-',1,100) '\n']);
+                erpworkingmemory('EEGUpdate',0);
+                observe_EEGDAT.count_current_eeg=1;
                 return;
             end
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
@@ -252,10 +253,18 @@ varargout{1} = EStudio_box_eeglab_ica;
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-        assignin('base','EEG',observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)));
+        Output =  f_EEG_update_gui;
+        if ~isempty(Output) && Output==1
+            try  EEG = evalin('base', 'EEG');catch  EEG = []; end
+            if ~isempty(EEG)
+                observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG ;
+                observe_EEGDAT.EEG = EEG;
+            end
+        end
+        erpworkingmemory('EEGUpdate',0);
+        observe_EEGDAT.count_current_eeg=1;
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Inspect/label ICs');
         observe_EEGDAT.eeg_panel_message =2;
-        erpworkingmemory('eegicinspectFlag',1);
     end
 
 %%-----------------Classify ICs by ICLabel---------------------------------
@@ -281,6 +290,8 @@ varargout{1} = EStudio_box_eeglab_ica;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
+%         erpworkingmemory('EEGUpdate',1);
+%         observe_EEGDAT.count_current_eeg=1;
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -290,11 +301,24 @@ varargout{1} = EStudio_box_eeglab_ica;
             EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
             if isempty(EEG)
                 observe_EEGDAT.eeg_panel_message =4;
+                erpworkingmemory('EEGUpdate',0);
+                observe_EEGDAT.count_current_eeg=1;
                 return;
             end
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = EEG;
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG ;
+            observe_EEGDAT.EEG = EEG;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
+%         Output =  f_EEG_update_gui;
+%         if ~isempty(Output) && Output==1
+%             %             try  EEG = evalin('base', 'EEG');catch  EEG = []; end
+%             if ~isempty(EEG)
+%                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG ;
+%                 observe_EEGDAT.EEG = EEG;
+%             end
+%         end
+%         erpworkingmemory('EEGUpdate',0);
+        observe_EEGDAT.count_current_eeg=1;
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -373,7 +397,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         EEG = eegh(LASTCOM, EEG);
         eegh(LASTCOM);
         try
-        EEG.setname = EEG.setname(1:end-16);
+            EEG.setname = EEG.setname(1:end-16);
         catch
             
         end
@@ -532,7 +556,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         end
         if isempty(observe_EEGDAT.EEG.icachansind)
             msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: Please run ICA for the current EEG'];
-%             Source.String = '';
+            %             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -540,7 +564,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         
         if any(observe_EEGDAT.EEG.icachansind(:)> observe_EEGDAT.ALLEEG(TartgetEEG).nbchan) ||  observe_EEGDAT.ALLEEG(TartgetEEG).nbchan~= observe_EEGDAT.EEG.nbchan
             msgboxText = ['EEGLAB ICA > Transfer ICA weights > Transfer: The channels for target set donot match with the current EEG'];
-%             Source.String = '';
+            %             Source.String = '';
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
             return;
@@ -906,7 +930,11 @@ varargout{1} = EStudio_box_eeglab_ica;
         if observe_EEGDAT.count_current_eeg ~=12
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG) || EEGUpdate==1
             EStduio_eegtab_eeglab_ica.icadecomp_eeg.Enable  = 'off';
             EStduio_eegtab_eeglab_ica.inslabel_ics.Enable= 'off';
             EStduio_eegtab_eeglab_ica.classifyics_iclabel.Enable= 'off';

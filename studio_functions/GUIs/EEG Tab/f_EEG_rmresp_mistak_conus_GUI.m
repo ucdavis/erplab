@@ -59,7 +59,7 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         else
             EnableFlag = 'on';
         end
-       
+        
         %%"Stimulus" event types
         EEG_rmresp_mistak_conus.chan_title = uiextras.HBox('Parent', EEG_rmresp_mistak_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_rmresp_mistak_conus.chan_title,'HorizontalAlignment','left',...
@@ -495,7 +495,11 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
         if observe_EEGDAT.count_current_eeg ~=18
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event) || EEGUpdate==1
             EEG_rmresp_mistak_conus.Stimulus_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.response_edit.Enable= 'off';
             EEG_rmresp_mistak_conus.rmresp_mistake_run.Enable= 'off';
@@ -653,9 +657,9 @@ varargout{1} = Eegtab_box_rmresp_mistak_conus;
             for ii = 1:length(all_ev_unique)
                 ColumnNameStr{ii} = ['Ev.',32,num2str(ii)];
             end
-%             EEG_rmresp_mistak_conus.stimulusall.Data = all_ev_unique';
-%             EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
-%             EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
+            %             EEG_rmresp_mistak_conus.stimulusall.Data = all_ev_unique';
+            %             EEG_rmresp_mistak_conus.stimulusall.ColumnName = ColumnNameStr;
+            %             EEG_rmresp_mistak_conus.stimulusall.RowName = 'Ev. Names';
             EEG_rmresp_mistak_conus.all_ev_unique = all_ev_unique;
         end
         observe_EEGDAT.Reset_eeg_paras_panel=16;

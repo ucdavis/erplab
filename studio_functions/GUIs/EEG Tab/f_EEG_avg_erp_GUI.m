@@ -719,7 +719,11 @@ varargout{1} = Eegtab_box_avg_erp;
         if observe_EEGDAT.count_current_eeg ~=24
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1 || EEGUpdate==1
             EEG_avg_erp.def_para.Enable= 'off';
             EEG_avg_erp.custom_para.Enable= 'off';
             EEG_avg_erp.custom_para_op.Enable = 'off';

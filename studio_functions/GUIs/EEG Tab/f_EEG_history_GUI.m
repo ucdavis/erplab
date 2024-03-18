@@ -187,7 +187,11 @@ varargout{1} = box_eeg_history;
         if observe_EEGDAT.count_current_eeg ~=26
             return;
         end
-        if  isempty(observe_EEGDAT.EEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             gui_eeg_history.save_script.Enable = 'off';
             gui_eeg_history.eeg_h_all.Enable = 'off';
             gui_eeg_history.eeg_h_EEG.Enable = 'off';

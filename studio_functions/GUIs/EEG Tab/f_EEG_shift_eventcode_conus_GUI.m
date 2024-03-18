@@ -596,7 +596,11 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
         if observe_EEGDAT.count_current_eeg ~=17
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1 || isempty(observe_EEGDAT.EEG.event) || EEGUpdate==1
             EEG_shift_eventcode_conus.event_codes_edit.Enable= 'off';
             EEG_shift_eventcode_conus.event_codes_browse.Enable= 'off';
             EEG_shift_eventcode_conus.timeshift_edit.Enable= 'off';

@@ -74,9 +74,9 @@ varargout{1} = EStudio_box_eeglab_tool;
         EStduio_eegtab_eeglab_tool.edit_eegchanlocs = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.event_chanlocs_title,...
             'String','Chan locations','callback',@edit_eegchanlocs,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         
-%         EStduio_eegtab_eeglab_tool.edit_samplerate = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.event_chanlocs_title,...
-%             'String','Sampling rate','callback',@edit_samplerate,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-%         
+        %         EStduio_eegtab_eeglab_tool.edit_samplerate = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.event_chanlocs_title,...
+        %             'String','Sampling rate','callback',@edit_samplerate,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        %
         %%Reject data using Clean Rawdata and ASR
         EStduio_eegtab_eeglab_tool.eeg_ASR_title = uiextras.HBox('Parent', EStduio_eegtab_eeglab_tool.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         EStduio_eegtab_eeglab_tool.eeg_asr = uicontrol('Style', 'pushbutton','Parent',EStduio_eegtab_eeglab_tool.eeg_ASR_title,...
@@ -428,7 +428,7 @@ varargout{1} = EStudio_box_eeglab_tool;
 %         end
 %         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Sampling rate');
 %         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-%         
+%
 %         EEGArray =  estudioworkingmemory('EEGArray');
 %         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))  ||  any(EEGArray(:) <1)
 %             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
@@ -440,7 +440,7 @@ varargout{1} = EStudio_box_eeglab_tool;
 %             estudio_warning(msgboxText,titlNamerro);
 %             return;
 %         end
-%         
+%
 %         ALLEEG = observe_EEGDAT.ALLEEG;
 %         EEG = ALLEEG(EEGArray);
 %         fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -454,7 +454,7 @@ varargout{1} = EStudio_box_eeglab_tool;
 %         fprintf(LASTCOM,'\n');
 %         EEG = eegh(LASTCOM, EEG);
 %         eegh(LASTCOM);
-%         
+%
 %         Answer = f_EEG_save_multi_file(EEG,1,'');
 %         if isempty(Answer)
 %             return;
@@ -482,7 +482,7 @@ varargout{1} = EStudio_box_eeglab_tool;
 %         fprintf( ['\n',repmat('-',1,100) '\n']);
 %         eegh(LASTCOM);
 %         observe_EEGDAT.ALLEEG = ALLEEG;
-%         
+%
 %         try
 %             Selected_EEG_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
 %             observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
@@ -861,7 +861,11 @@ varargout{1} = EStudio_box_eeglab_tool;
         if observe_EEGDAT.count_current_eeg ~=11
             return;
         end
-        if  isempty(observe_EEGDAT.EEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             EStduio_eegtab_eeglab_tool.about_eegdata.Enable =  'off';
             EStduio_eegtab_eeglab_tool.edit_eeginfor.Enable=  'off';
             EStduio_eegtab_eeglab_tool.edit_eegevent.Enable=  'off';

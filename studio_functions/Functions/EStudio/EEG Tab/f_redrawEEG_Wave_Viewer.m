@@ -131,6 +131,19 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG) && EEG_autopl
     EStudio_gui_erp_totl.eegpageinfo_edit.Enable = 'off';
 end
 
+%%----Processing for label ICs or using IClabel
+EEGUpdate = erpworkingmemory('EEGUpdate');
+if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+    EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+end
+if EEGUpdate==1
+    Enableflag = 'off';
+    Enable_minus = 'off';
+    Enable_plus = 'off';
+    EStudio_gui_erp_totl.eegpageinfo_edit.Enable = 'off';
+end
+
+
 EStudio_gui_erp_totl.eegpageinfo_minus.Enable = Enable_minus;
 EStudio_gui_erp_totl.eegpageinfo_plus.Enable = Enable_plus;
 EStudio_gui_erp_totl.eegpageinfo_plus.ForegroundColor = Enable_plus_BackgroundColor;
@@ -995,6 +1008,7 @@ end
 if isempty(reset_paras)
     return;
 end
+erpworkingmemory('EEGUpdate',0);
 EStudio_gui_erp_totl.ERP_autoplot=1;
 EStudio_gui_erp_totl.EEG_autoplot = 1;
 

@@ -45,6 +45,25 @@ drawui_EEG_info(FonsizeDefault);
         end
         gui_EEG_info.DataSelBox = uiextras.VBox('Parent', EEG_info, 'Spacing',1,'BackgroundColor',ColorB_def);
         
+        %%EEG setname and file name
+        gui_EEG_info.setfilename_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
+        uicontrol('Style','text','Parent', gui_EEG_info.setfilename_title,'String','Current EEG setname & file name',...
+            'FontSize',FonsizeDefault,'FontWeight','bold','BackgroundColor',ColorB_def);
+        
+        
+        gui_EEG_info.setfilename_title2 = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+        end
+        gui_EEG_info.table_setfilenames = uitable(  ...
+            'Parent'        , gui_EEG_info.setfilename_title2,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {500}, ...
+            'ColumnName'    , {''}, ...
+            'RowName'       , {'Set name','File name'},...
+            'ColumnEditable',[false]);
+        
         %%----------------------------Setting sampling rate---------------------
         gui_EEG_info.samplingrate = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
         gui_EEG_info.samplingrate = uicontrol('Style','text','Parent', gui_EEG_info.samplingrate,'String','Sampling:','FontSize',FonsizeDefault);
@@ -103,29 +122,8 @@ drawui_EEG_info(FonsizeDefault);
         gui_EEG_info.total_rejected_option.Enable = 'off';
         uiextras.Empty('Parent', gui_EEG_info.total_rejected_show);
         set(gui_EEG_info.total_rejected_show,'Sizes',[150 250]);
-        
-        
-        %%---------------------Table---------------------------------------
-%         gui_EEG_info.bin_latency_title = uiextras.HBox('Parent', gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-%         uicontrol('Style', 'text','Parent', gui_EEG_info.bin_latency_title,...
-%             'String','Trials per Bin for current EEGset:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
-%         
-%         gui_EEG_info.table_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
-%         for ii = 1:100
-%             dsnames{ii,1} = [];
-%             dsnames{ii,2} = [];
-%             dsnames{ii,3} = [];
-%             dsnames{ii,4} = [];
-%             dsnames{ii,5} = [];
-%         end
-%         gui_EEG_info.table_event = uitable(  ...
-%             'Parent'        , gui_EEG_info.table_title,...
-%             'Data'          , dsnames, ...
-%             'ColumnWidth'   , {30,40,60,60,50}, ...
-%             'ColumnName'    , {'Bin','Total','Accepted','Rejected','invalid'}, ...
-%             'RowName'       , [],...
-%             'ColumnEditable',[false, false, false, false, false]);
-        set(gui_EEG_info.DataSelBox,'Sizes',[20 20 20 20 20 20 20 30 30]);% 20 100
+       
+        set(gui_EEG_info.DataSelBox,'Sizes',[20 70 20 20 20 20 20 20 20 30 30]);% 20 100
     end
 
 
@@ -137,6 +135,10 @@ drawui_EEG_info(FonsizeDefault);
     function count_current_eeg_change(~,~)
         if observe_EEGDAT.count_current_eeg~=7
             return;
+        end
+         EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
         end
         EEG = observe_EEGDAT.EEG;
         if ~isempty(EEG)
@@ -208,7 +210,7 @@ drawui_EEG_info(FonsizeDefault);
             dsnamesdef{ii,4} = [];
             dsnamesdef{ii,5} = [];
         end
-        if ~isempty(EEG) && EEG.trials>1
+        if ~isempty(EEG) && EEG.trials>1 
             gui_EEG_info.total_rejected_option.Enable = 'on';
             gui_EEG_info.numofepoch.String = ['Number of epochs:',32,num2str(EEG.trials)];
             gui_EEG_info.numofepoch.Enable = 'on';
@@ -226,17 +228,17 @@ drawui_EEG_info(FonsizeDefault);
             end
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,Total_rejected_trials];
             Enable_label = 'on';
-%             try
-%                 for ii = 1:numel(ERP.ntrials.accepted)
-%                     dsnames{ii,1} = ii;
-%                     dsnames{ii,2} = ERP.ntrials.accepted(ii)+ ERP.ntrials.rejected(ii)+ERP.ntrials.invalid(ii);
-%                     dsnames{ii,3} = ERP.ntrials.accepted(ii);
-%                     dsnames{ii,4} = ERP.ntrials.rejected(ii);
-%                     dsnames{ii,5} = ERP.ntrials.invalid(ii);
-%                 end
-%             catch
-%                 dsnames = dsnamesdef;
-%             end
+            %             try
+            %                 for ii = 1:numel(ERP.ntrials.accepted)
+            %                     dsnames{ii,1} = ii;
+            %                     dsnames{ii,2} = ERP.ntrials.accepted(ii)+ ERP.ntrials.rejected(ii)+ERP.ntrials.invalid(ii);
+            %                     dsnames{ii,3} = ERP.ntrials.accepted(ii);
+            %                     dsnames{ii,4} = ERP.ntrials.rejected(ii);
+            %                     dsnames{ii,5} = ERP.ntrials.invalid(ii);
+            %                 end
+            %             catch
+            %                 dsnames = dsnamesdef;
+            %             end
         else
             gui_EEG_info.total_rejected_percentage.String = ['Total rejected trials:',32,'0 (0%)'];
             gui_EEG_info.numofepoch.Enable = 'off';
@@ -244,9 +246,21 @@ drawui_EEG_info(FonsizeDefault);
             dsnames = dsnamesdef;
             gui_EEG_info.numofepoch.String = ['Number of epochs:'];
         end
-%         gui_EEG_info.table_event.Data = dsnames;
+        %         gui_EEG_info.table_event.Data = dsnames;
+        if EEGUpdate==1
+           Enable_label = 'off'; 
+        end
         gui_EEG_info.total_rejected_percentage.Enable = Enable_label;
         gui_EEG_info.total_rejected_option.Enable = Enable_label;
+        
+        try
+            filesetname{1,1} = EEG.setname;
+            filesetname{2,1} = EEG.filename;
+        catch
+            filesetname{1,1} = '';
+            filesetname{2,1} = '';
+        end
+        gui_EEG_info.table_setfilenames.Data= filesetname;
         observe_EEGDAT.count_current_eeg=8;
     end
 

@@ -1114,7 +1114,11 @@ varargout{1} = box_interpolate_chan_epoch;
         if observe_EEGDAT.count_current_eeg ~=5
             return;
         end
-        if  isempty(observe_EEGDAT.EEG)
+         EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || EEGUpdate==1
             Eegtab_EEG_interpolate_chan_epoch.mode_modify.Enable ='off';
             Eegtab_EEG_interpolate_chan_epoch.mode_create.Enable = 'off';
             Eegtab_EEG_interpolate_chan_epoch.interpolate_chan_edit.Enable= 'off';

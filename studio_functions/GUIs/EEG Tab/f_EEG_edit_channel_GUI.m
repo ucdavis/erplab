@@ -590,7 +590,11 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         if observe_EEGDAT.count_current_eeg ~=4
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || (~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.chanlocs))
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || (~isempty(observe_EEGDAT.EEG) && isempty(observe_EEGDAT.EEG.chanlocs)) || EEGUpdate==1
             EStduio_eegtab_EEG_edit_chan.mode_modify.Enable ='off';
             EStduio_eegtab_EEG_edit_chan.mode_create.Enable = 'off';
             EStduio_eegtab_EEG_edit_chan.delete_chan.Enable='off';

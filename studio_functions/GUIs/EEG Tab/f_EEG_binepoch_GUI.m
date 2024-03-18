@@ -751,7 +751,11 @@ varargout{1} = EEG_binepoch_box;
         if observe_EEGDAT.count_current_eeg ~=14
             return;
         end
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1 || EEGUpdate==1
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials~=1
                 EEG_binepoch_box.TitleColor= [0.7500    0.7500    0.75000];
             else

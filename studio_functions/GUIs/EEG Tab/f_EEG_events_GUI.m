@@ -1160,7 +1160,11 @@ varargout{1} = EStudio_eeg_events_box;
         if observe_EEGDAT.count_current_eeg ~=9
             return;
         end
-        if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.EEG.event) ||EEGUpdate==1
             EnableFlag = 'off';
             EStduio_eegtab_EEG_events.summarize_code.Enable=EnableFlag;
             %%Create and RTs

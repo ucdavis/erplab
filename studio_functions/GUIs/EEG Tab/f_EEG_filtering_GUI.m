@@ -1285,8 +1285,11 @@ varargout{1} = EEG_filtering_box;
         if observe_EEGDAT.count_current_eeg ~=10
             return;
         end
-        
-        if  isempty(observe_EEGDAT.EEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) ||EEGUpdate==1
             gui_eegtab_filtering.apply.Enable = 'off';
             gui_eegtab_filtering.advanced.Enable = 'off';
             gui_eegtab_filtering.roll_off.Enable = 'off';
@@ -1297,6 +1300,7 @@ varargout{1} = EEG_filtering_box;
             gui_eegtab_filtering.all_chan.Enable = 'off';
             gui_eegtab_filtering.Selected_chan.Enable = 'off';
             gui_eegtab_filtering.cancel.Enable = 'off';
+            gui_eegtab_filtering.DC_remove.Enable = 'off';
             observe_EEGDAT.count_current_eeg=11;
             return;
         else

@@ -722,8 +722,11 @@ varargout{1} = box_eeg_resample;
         if observe_EEGDAT.count_current_eeg~=8
             return;
         end
-        
-        if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG)
+        EEGUpdate = erpworkingmemory('EEGUpdate');
+        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
+            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+        end
+        if  isempty(observe_EEGDAT.EEG) || isempty(observe_EEGDAT.ALLEEG) ||EEGUpdate==1
             Enableflag = 'off';
         else
             Enableflag = 'on';
@@ -769,6 +772,7 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.nwtimewindow_checkbox.Enable = Enableflag;
         gui_eeg_resample.nwtimewindow_editleft.Enable = Enableflag;
         gui_eeg_resample.nwtimewindow_editright.Enable = Enableflag;
+      
         if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials==1
             gui_eeg_resample.Trimcont.Enable = 'on';
         else
@@ -799,6 +803,7 @@ varargout{1} = box_eeg_resample;
             gui_eeg_resample.nwtimewindow_editleft.Enable ='off';
             gui_eeg_resample.nwtimewindow_editright.Enable = 'off';
         end
+          gui_eeg_resample.Trimcont.Enable = Enableflag;
         gui_eeg_resample.Paras{1} = gui_eeg_resample.nwsrate_checkbox.Value;
         gui_eeg_resample.Paras{2} = str2num(gui_eeg_resample.nwsrate_edit.String);
         gui_eeg_resample.Paras{3} = gui_eeg_resample.nwtimewindow_checkbox.Value;
