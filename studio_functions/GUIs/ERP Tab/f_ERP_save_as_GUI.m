@@ -105,17 +105,17 @@ for Numoferpset = 1:numel(EEGArray)
     else
         DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix);
     end
-    try
-        DataString{Numoferpset,2} = strcat(ALLERP(EEGArray(Numoferpset)).filename);
-    catch
-        DataString{Numoferpset,2} = '';
+    if ERPIndex==1
+        DataString{Numoferpset,2} = [strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix),'.erp'];
+    else
+        DataString{Numoferpset,2} = [strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix),'.set'];
     end
 end
 
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
 set(handles.uitable1_erpset_table,'Enable','on');
-set(handles.checkbox3_filename_erpname,'Enable','on');
+set(handles.checkbox3_filename_erpname,'Enable','on','Value',1);
 set(handles.edit_path,'Enable','on','String',filepath);
 set(handles.pushbutton_path_browse,'Enable','on');
 
@@ -491,17 +491,17 @@ suffix = handles.suffix;
 ALLERP = handles.ALLERP;
 EEGArray = handles.EEGArray;
 ERPIndex = handles.ERPIndex;
-
+set(handles.checkbox3_filename_erpname,'Enable','on','Value',1);
 for Numoferpset = 1:numel(EEGArray)
     if ERPIndex==1
         DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix);
     else
         DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix);
     end
-    try
-        DataString{Numoferpset,2} = strcat(ALLERP(EEGArray(Numoferpset)).filename);
-    catch
-        DataString{Numoferpset,2} = '';
+    if ERPIndex==1
+        DataString{Numoferpset,2} = [strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix),'.erp'];
+    else
+        DataString{Numoferpset,2} = [strcat(ALLERP(EEGArray(Numoferpset)).setname,suffix),'.set'];
     end
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));

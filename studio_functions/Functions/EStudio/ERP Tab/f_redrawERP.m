@@ -4,7 +4,7 @@
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2022 & Oct-Nov 2023
+% 2022 -2024
 
 
 
@@ -928,13 +928,13 @@ else
 end
 [ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP,1,qPLOTORG,1);
 if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
-    bindata = ERPdatadef(ChanArray,:,BinArray,1);
-    bindataerror= ERPerrordatadef(ChanArray,:,BinArray,1);
+    bindata = ERPdatadef(sort(ChanArray),:,sort(BinArray),1);
+    bindataerror= ERPerrordatadef(sort(ChanArray),:,sort(BinArray),1);
     plotArray = ChanArray;
 elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
-    bindata = ERPdatadef(ChanArray,:,BinArray,1);
+    bindata = ERPdatadef(sort(ChanArray),:,sort(BinArray),1);
     bindata = permute(bindata,[3 2 1 4]);
-    bindataerror= ERPerrordatadef(ChanArray,:,BinArray,1);
+    bindataerror= ERPerrordatadef(sort(ChanArray),:,sort(BinArray),1);
     bindataerror = permute(bindataerror,[3 2 1 4]);
     plotArray = BinArray;
 end
@@ -953,7 +953,7 @@ end
 fs= ERP.srate;
 qYScales = yscale;
 Ypert =15;
-%%get y axis\
+%%get y axis
 ERP1 = ERP;
 ERP1.bindata = ERP.bindata(ChanArray,:,:);
 [def, minydef, maxydef] = default_amp_ticks(ERP1, BinArray);
@@ -1055,7 +1055,7 @@ for Numofrows = 1:size(GridposArray,1)
                 GridposArray(Numofrows,Numofcolumns) =0;
             else
                 [xpos,ypos]=  find(plotArray==SingleGridpos);
-                GridposArray(Numofrows,Numofcolumns) =ypos;
+                GridposArray(Numofrows,Numofcolumns) =plotArray(ypos);
             end
         end
     end
@@ -1071,14 +1071,14 @@ for Numofrows = 1:rowNums
         catch
             plotdatalabel = 0;
         end
-        
-        try
-            labelcbe = qplotArrayStr{plotdatalabel};
-            if isempty(labelcbe)
-                labelcbe  = 'No label';
-            end
-        catch
-            labelcbe = 'no';
+        if (qPLOTORG(1)==1 && qPLOTORG(2)==2) ||(qPLOTORG(1)==2 && qPLOTORG(2)==1)
+       plotArray1 = sort(plotArray);
+        else
+         plotArray1  = plotArray;  
+        end
+        [xpos,plotdatalabel] = find(plotArray1 == plotdatalabel);
+        if isempty(plotdatalabel)
+            plotdatalabel = 0;
         end
         try
             plotbindata =  bindata(plotdatalabel,:,:,:);
@@ -1088,6 +1088,15 @@ for Numofrows = 1:rowNums
         
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
+             try
+            labelcbe = qplotArrayStr{countPlot};
+            if isempty(labelcbe)
+                labelcbe  = 'No label';
+            end
+        catch
+            labelcbe = 'no';
+             end
+        
             if qPolarityWave==1
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else

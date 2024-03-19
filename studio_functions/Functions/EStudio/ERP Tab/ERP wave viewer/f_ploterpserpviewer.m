@@ -630,7 +630,7 @@ for Numofrows = 1:size(qGridposArray,1)
                 qGridposArray(Numofrows,Numofcolumns) =0;
             else
                 [xpos,ypos]=  find(plotArray==SingleGridpos);
-                qGridposArray(Numofrows,Numofcolumns) =ypos;
+                qGridposArray(Numofrows,Numofcolumns) =plotArray(ypos);
             end
         end
     end
@@ -715,8 +715,8 @@ if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
     if qCURRENTPLOT> numel(qERPArray)
         qCURRENTPLOT= length(qERPArray);
     end
-    bindata = ERPdatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
-    bindataerror = ERPerrordatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
+    bindata = ERPdatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
+    bindataerror = ERPerrordatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
     %     if isempty(timeRangedef)
     timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
     %     end
@@ -731,9 +731,9 @@ elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
     if qCURRENTPLOT> length(qERPArray)
         qCURRENTPLOT= length(qERPArray);
     end
-    bindata = ERPdatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
+    bindata = ERPdatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
     bindata = permute(bindata,[3 2 1 4]);
-    bindataerror = ERPerrordatadef(qchanArray,:,qbinArray,qCURRENTPLOT);
+    bindataerror = ERPerrordatadef(sort(qchanArray),:,qbinArray,qCURRENTPLOT);
     bindataerror = permute(bindataerror,[3 2 1 4]);
     if isempty(timeRangedef)
         timeRangedef = ALLERPBls(qERPArray(qCURRENTPLOT)).times;
@@ -764,9 +764,9 @@ elseif qPLOTORG(1)==3 && qPLOTORG(2)==1%%Grid is ERPsets; Overlay is channel
     if qCURRENTPLOT> numel(qbinArray)
         qCURRENTPLOT = numel(qbinArray);
     end
-    bindata = ERPdatadef(qchanArray,:,qbinArray(qCURRENTPLOT),:);
+    bindata = ERPdatadef(sort(qchanArray),:,qbinArray(qCURRENTPLOT),:);
     bindata = permute(bindata,[4 2 1 3]);
-    bindataerror = ERPerrordatadef(qchanArray,:,qbinArray(qCURRENTPLOT),:);
+    bindataerror = ERPerrordatadef(sort(qchanArray),:,qbinArray(qCURRENTPLOT),:);
     bindataerror = permute(bindataerror,[4 2 1 3]);
     try
         fs= ALLERPBls(qERPArray(end)).srate;
@@ -1054,14 +1054,14 @@ for Numofrows = 1:Numrows
         catch
             plotdatalabel = 0;
         end
-        
-        try
-            labelcbe = qplotArrayStr{plotdatalabel};
-            if isempty(labelcbe)
-                labelcbe  = 'Label varies across ERPsets';
-            end
-        catch
-            labelcbe = 'no';
+        if (qPLOTORG(1)==1 && qPLOTORG(2)==2) ||(qPLOTORG(1)==2 && qPLOTORG(2)==1)
+            plotArray1 = sort(plotArray);
+        else
+            plotArray1  = plotArray;
+        end
+        [~,plotdatalabel] = find(plotArray1 == plotdatalabel);
+        if isempty(plotdatalabel)
+           plotdatalabel = 0; 
         end
         try
             plotbindata =  bindata(plotdatalabel,:,:,:);
@@ -1071,6 +1071,14 @@ for Numofrows = 1:Numrows
         
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
+            try
+                labelcbe = qplotArrayStr{countPlot};
+                if isempty(labelcbe)
+                    labelcbe  = 'Label varies across ERPsets';
+                end
+            catch
+                labelcbe = 'no';
+            end
             if qPolarityWave
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else
@@ -1267,7 +1275,6 @@ for Numofrows = 1:Numrows
                 end
             end
             
-            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust x axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1363,7 +1370,6 @@ for Numofrows = 1:Numrows
                     end
                 end
             end
-            
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%------------------channel/bin/erpset label-----------------%%

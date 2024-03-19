@@ -68,9 +68,12 @@ end
 erplab_studio_default_values;
 version = erplabstudiover;
 
-set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Update EEG GUI'])
+set(handles.gui_chassis,'Name', ['Estudio ' version '   -   Inspect/Label ICs tool GUI'])
 % set(handles.edit_erpname, 'String', '_processed');
-handles.current_erp_label.String = 'Donot forget to click "Update" after the EEGset was changed';
+handles.current_erp_label.String = 'While you are using the Inspect/Label ICs tool, the main ERPLAB Studio window will be frozen. Click "Okay" when you have closed the Inspect/Label ICs tool.';
+
+handles.pushbutton4_okay.String = 'Okay';
+
 %
 % % Color GUI
 % %

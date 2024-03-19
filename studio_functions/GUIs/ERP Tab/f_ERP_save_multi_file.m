@@ -168,11 +168,11 @@ for Numoferpset = 1:numel(EEGArray)
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 % set(handles.uitable1_erpset_table,'ColumnWidth',{248 248});
-if handles.checkbox2_save_label.Value
-    set(handles.uitable1_erpset_table,'Enable','off');
-else
-    set(handles.uitable1_erpset_table,'Enable','on');
-end
+% if handles.checkbox2_save_label.Value
+%     set(handles.uitable1_erpset_table,'Enable','off');
+% else
+set(handles.uitable1_erpset_table,'Enable','on');
+% end
 
 
 

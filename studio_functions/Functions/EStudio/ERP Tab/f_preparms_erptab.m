@@ -41,37 +41,6 @@ if isempty(ChanArray) || any(ChanArray(:)>nbchan) ||  any(ChanArray(:)<=0)
     estudioworkingmemory('ERP_ChanArray',ChanArray);
 end
 
-ERP_chanorders = estudioworkingmemory('ERP_chanorders');
-ChanArray = reshape(ChanArray,1,[]);
-chanOrder = ERP_chanorders{1};
-if isempty(chanOrder) || any(chanOrder<=0) || numel(chanOrder)~=1 || (chanOrder~=1 && chanOrder~=2 && chanOrder~=3)
-    chanOrder=1;
-end
-try
-    if chanOrder==2
-        if isfield(ERP,'chanlocs') && ~isempty(ERP.chanlocs)
-            chanindexnew = f_estudio_chan_frontback_left_right(ERP.chanlocs(ChanArray));
-            if ~isempty(chanindexnew)
-                ChanArray = ChanArray(chanindexnew);
-            end
-        end
-    elseif chanOrder==3
-        [eloc, labels, theta, radius, indices] = readlocs(ERP.chanlocs);
-        chanorders =   ERP_chanorders{2};
-        chanorderindex = chanorders{1};
-        chanorderindex1 = unique(chanorderindex);
-        chanorderlabels = chanorders{2};
-        [C,IA]= ismember_bc2(chanorderlabels,labels);
-        Chanlanelsinst = labels(ChanArray);
-        if ~any(IA==0) && numel(chanorderindex1) == length(labels)
-            [C,IA1]= ismember_bc2(Chanlanelsinst,chanorderlabels);
-            [C,IA2]= ismember_bc2(Chanlanelsinst,labels);
-            ChanArray = IA1(IA2);
-        end
-    end
-catch
-end
-
 %
 %%bins
 BinArray=estudioworkingmemory('ERP_BinArray');
@@ -230,6 +199,11 @@ if isempty(Binchan_Overlay) || numel(Binchan_Overlay)~=1 || (Binchan_Overlay~=0 
     Binchan_Overlay=0;
 end
 
+try layoutDef = ERPTab_plotset_pars{9};catch layoutDef=1;end
+if layoutDef==1
+    ChanArray = sort(ChanArray);
+end
+
 if Binchan_Overlay==0
     rowNumdef = numel(ChanArray);
     plotArray = ChanArray;
@@ -243,18 +217,24 @@ else
     labelsdef =ERP.bindescr(BinArray);
     PLOTORG = [2 1 3];
     nplot = numel(ChanArray);
-    [~, chanlabels, ~, ~, ~] = readlocs(ERP.chanlocs(ChanArray));
+    [~, chanlabels, ~, ~, ~] = readlocs(ERP.chanlocs);
+    if layoutDef==2
+        try
+            chanindexnew = f_estudio_chan_frontback_left_right(ERP.chanlocs(sort(ChanArray)));
+            if ~isempty(chanindexnew)
+                ChanArray1=sort(ChanArray);
+                ChanArray = ChanArray1(chanindexnew);
+            end
+        catch
+            
+        end
+    end
     LegendName = chanlabels(ChanArray);
 end
 try rowNum = ERPTab_plotset_pars{8};catch rowNum=rowNumdef; end
 
 
-try layoutDef = ERPTab_plotset_pars{9};catch layoutDef=1;end
-% if layoutDef==1
-%     rowNum=rowNumdef;
-% end
 plotBox = [rowNum,columNum];
-
 
 GridposArraydef = zeros(rowNum,columNum);
 count = 0;
@@ -268,9 +248,37 @@ for Numofrow = 1:rowNum
         end
     end
 end
+if layoutDef==2 && Binchan_Overlay==0
+    try
+        if isfield(ERP,'chanlocs') && ~isempty(ERP.chanlocs)
+            chanindexnew = f_estudio_chan_frontback_left_right(ERP.chanlocs(sort(ChanArray)));
+            if ~isempty(chanindexnew)
+                ChanArray1 = sort(ChanArray);
+                ChanArray = ChanArray1(chanindexnew);
+            end
+            [~, chanlabels, ~, ~, ~] = readlocs(ERP.chanlocs);
+            labelsdef=chanlabels(ChanArray);
+        end
+        GridposArraydef = zeros(rowNum,columNum);
+        count = 0;
+        for Numofrow = 1:rowNum
+            for Numofcolumn = 1:columNum
+                count = count +1;
+                if count<= numel(plotArray)
+                    GridposArraydef(Numofrow,Numofcolumn)=  ChanArray(count);
+                else
+                    break;
+                end
+            end
+        end
+    catch
+    end
+end
+
+
 GridposArray =zeros(rowNum,columNum);
 try DataDf = ERPTab_plotset_pars{10};catch DataDf = [];end
-if layoutDef==1
+if layoutDef==1 || layoutDef==2
     GridposArray = GridposArraydef;
 else
     if isempty(DataDf) || size(DataDf,1)~=rowNum || size(DataDf,2)~=columNum
@@ -290,13 +298,10 @@ else
     end
 end
 
-
 figSize = estudioworkingmemory('egfigsize');
 if isempty(figSize)
     figSize = [];
 end
-
-
 
 LineColorspec = get_colors(nplot);
 LineWidthspec= ones(nplot,1);
@@ -310,7 +315,7 @@ FontSizeLeg = FonsizeDefault;
 CBEFontsize = FonsizeDefault;
 LabelsName = labelsdef;
 
-Gridspace = [1 15;1 10];
+Gridspace = [1 20;1 20];
 timeRange = [timeStart,timEnd];
 [timeticksdef stepX]= default_time_ticks_studio(ERP, timeRange);
 timeticksdef = str2num(char(timeticksdef));

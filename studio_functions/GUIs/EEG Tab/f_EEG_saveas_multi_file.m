@@ -93,13 +93,13 @@ handles.uitable1_erpset_table.ColumnEditable(1) = true;
 handles.uitable1_erpset_table.ColumnEditable(2) = true;
 for Numoferpset = 1:numel(EEGArray)
     DataString{Numoferpset,1} = strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix);
-    DataString{Numoferpset,2} = ALLEEG(EEGArray(Numoferpset)).filename;
+    DataString{Numoferpset,2} = [strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix),'.set'];
 end
 
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
 set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
 set(handles.uitable1_erpset_table,'Enable','on');
-set(handles.checkbox3_filename_setname,'Enable','on');
+set(handles.checkbox3_filename_setname,'Enable','on','Value',1);
 set(handles.pushbutton_path_browse,'Enable','on');
 
 
@@ -330,8 +330,6 @@ guidata(hObject, handles);
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-% beep;
-disp('User selected Cancel.');
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
@@ -473,12 +471,13 @@ function pushbutton_reset_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+set(handles.checkbox3_filename_setname,'Enable','on','Value',1);
 suffix = handles.suffix;
 ALLEEG = handles.ALLEEG;
 EEGArray = handles.EEGArray;
 for Numoferpset = 1:numel(EEGArray)
     DataString{Numoferpset,1} = strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix);
-    DataString{Numoferpset,2} = ALLEEG(EEGArray(Numoferpset)).filename;
+    DataString{Numoferpset,2} = [strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix),'.set'];
 end
 
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
