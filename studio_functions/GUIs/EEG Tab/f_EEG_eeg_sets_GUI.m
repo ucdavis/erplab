@@ -102,7 +102,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         EStduio_eegtab_EEG_set.suffix = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        EStduio_eegtab_EEG_set.refresh_eegset = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Fresh',...
+        EStduio_eegtab_EEG_set.refresh_eegset = uicontrol('Parent', EStduio_eegtab_EEG_set.buttons2, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_eegset,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         buttons3 = uiextras.HBox('Parent', vBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -392,7 +392,7 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','EEGsets>Fresh');
+        erpworkingmemory('f_EEG_proces_messg','EEGsets>Refresh');
         try
             ALLEEG = evalin('base', 'ALLEEG');
         catch

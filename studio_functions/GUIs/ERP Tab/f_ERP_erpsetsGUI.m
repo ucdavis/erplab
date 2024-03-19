@@ -76,7 +76,7 @@ varargout{1} = box_erpset_gui;
             'Callback', @renamedata,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         ERPsetops.suffix = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Add Suffix',...
             'Callback', @add_suffix,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        ERPsetops.refresh_erpset = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Fresh',...
+        ERPsetops.refresh_erpset = uicontrol('Parent', ERPsetops.buttons2, 'Style', 'pushbutton', 'String', 'Refresh',...
             'Callback', @refresh_erpset,'Enable',Edit_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
         
         
@@ -255,7 +255,7 @@ varargout{1} = box_erpset_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_ERP_proces_messg','ERPsets>Fresh');
+        erpworkingmemory('f_ERP_proces_messg','ERPsets>Refresh');
         observe_ERPDAT.Process_messg =1;
         try
             ALLERP = evalin('base', 'ALLERP');
