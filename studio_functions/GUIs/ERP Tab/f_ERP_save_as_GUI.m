@@ -163,17 +163,13 @@ ALLERP = handles.ALLERP;
 EEGArray = handles.EEGArray;
 suffix_edit = handles.edit_suffix_name.String;
 
-% if isempty(suffix_edit)
-%     msgboxText =  'You must enter a suffix at least!';
-%     title = 'EStudio: f_ERP_save_as_GUI() error';
-%     errorfound(msgboxText, title);
-%     return
-% end
-
-
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLERP(EEGArray(Numoferpset)).erpname,suffix_edit);
+    if isempty(char(DataString_before{Numoferpset,1}))
+        DataString_before{Numoferpset,1} = ALLERP(EEGArray(Numoferpset)).erpname;
+    end
+    
+    DataString{Numoferpset,1} = strcat( DataString_before{Numoferpset,1},suffix_edit);
     DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
@@ -340,9 +336,6 @@ guidata(hObject, handles);
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-% beep;
-disp('User selected Cancel.');
-% Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
 

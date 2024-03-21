@@ -296,7 +296,7 @@ varargout{1} = box_eeg_history;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=21
+        if observe_EEGDAT.Reset_eeg_paras_panel~=22
             return;
         end
         set(gui_eeg_history.eeg_h_all,'Value',1);

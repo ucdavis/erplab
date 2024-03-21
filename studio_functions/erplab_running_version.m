@@ -42,17 +42,7 @@ p.parse(varargin{:});
 
 p_location = which('o_ERPDAT');
 p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
-try
-    tooltype =  p.Results.tooltype;
-catch
-    tooltype =  'erplab';
-end
 
-try
-    version =  p.Results.version;
-catch
-    version =  1;
-end
 
 save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype','version');
 

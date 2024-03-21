@@ -50,7 +50,7 @@ else
     isERP = 0;
 end
 try
-ERPtooltype = varargin{1};
+ERPtooltype = varargin{1};%%GH 2024
 catch
   ERPtooltype = 'erplab';  
 end
@@ -222,9 +222,15 @@ if savepref == 1
         
         erpcom = 'pop_currentsourcedensity(EEG)';
     end
+    
+else%%GH Mar. 2024
+    if isERP
+        EEG.bindata = csd_data;
+        erpcom = sprintf('%s=pop_currentsourcedensity(%s, %s);', 'ERP','ERP', ['"',varargin{1},'"']);
+    else
+        EEG.data = csd_data;
+        erpcom = sprintf('%s=pop_currentsourcedensity(%s, %s);', 'EEG','EEG', ['"',varargin{1},'"']);
+    end
 end
 
-
-
 %eeglab redraw
-

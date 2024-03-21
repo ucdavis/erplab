@@ -204,7 +204,14 @@ end
 %
 % subroutine
 %
+%%GH Mar 2024
+[xpath, fname, ext] = fileparts(elname);
+
+if strcmpi(ext,'.txt')
 exporterpeventlist(ERP, indexel, elname);
+else
+    f_creaeventlist_excel(ERP, ERP.EVENTLIST, elname, 1);
+end
 erpcom = sprintf( 'pop_exporterpeventlist(%s, %s, ''%s'');', inputname(1), num2str(indexel), elname);
 % get history from script. ERP
 switch shist

@@ -194,6 +194,13 @@ drawui_erp_information(FonsizeDefault);
         catch
             gui_erp_information.numofbin.String=['Number of bins:',32,num2str(0)];
         end
+        for ii = 1:100
+            dsnamesdef{ii,1} = [];
+            dsnamesdef{ii,2} = [];
+            dsnamesdef{ii,3} = [];
+            dsnamesdef{ii,4} = [];
+            dsnamesdef{ii,5} = [];
+        end
         if ~isempty(ERP)
             gui_erp_information.trialinfor.String = ['Trial information for ERP:',32,num2str(observe_ERPDAT.CURRENTERP)];
             N_trials = ERP.ntrials;
@@ -206,13 +213,7 @@ drawui_erp_information(FonsizeDefault);
             end
             gui_erp_information.total_rejected_percentage.String = Total_rejected_trials;
             Enable_label = 'on';
-            for ii = 1:100
-                dsnamesdef{ii,1} = [];
-                dsnamesdef{ii,2} = [];
-                dsnamesdef{ii,3} = [];
-                dsnamesdef{ii,4} = [];
-                dsnamesdef{ii,5} = [];
-            end
+            
             try
                 for ii = 1:numel(ERP.ntrials.accepted)
                     dsnames{ii,1} = ii;

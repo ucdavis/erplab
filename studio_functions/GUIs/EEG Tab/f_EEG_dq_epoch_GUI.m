@@ -24,13 +24,13 @@ EEG_dq_epoch = struct();
 [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 if nargin == 0
     fig = figure(); % Parent figure
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Data Quality Metrics (Epoched EEG)',...
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', fig, 'Title', 'Compute Data Quality Metrics (Epoched EEG)',...
         'Padding', 5,'BackgroundColor',ColorB_def); % Create boxpanel
 elseif nargin == 1
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics (Epoched EEG)', ...
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Data Quality Metrics (Epoched EEG)', ...
         'Padding', 5,'BackgroundColor',ColorB_def);
 else
-    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Data Quality Metrics (Epoched EEG)',...
+    Eegtab_box_dq_epoch = uiextras.BoxPanel('Parent', varargin{1}, 'Title', 'Compute Data Quality Metrics (Epoched EEG)',...
         'Padding', 5, 'FontSize', varargin{2},'BackgroundColor',ColorB_def);%, 'HelpFcn', @dq_help
 end
 
@@ -345,7 +345,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if ~isempty(messgStr) && eegpanelIndex~=16
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Data Quality Metrics (Epoched EEG) > Cancel');
+        erpworkingmemory('f_EEG_proces_messg','Compute Data Quality Metrics (Epoched EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
@@ -415,7 +415,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if ~isempty(messgStr) && eegpanelIndex~=16
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        erpworkingmemory('f_EEG_proces_messg','Data Quality Metrics (Epoched EEG) > Shift events');
+        erpworkingmemory('f_EEG_proces_messg','Compute Data Quality Metrics (Epoched EEG) > Shift events');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
@@ -542,7 +542,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             setindex =EEGArray(Numofeeg);
             EEG = ALLEEG(setindex);
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Data Quality Metrics (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Compute Data Quality Metrics (Epoched EEG) > Apply*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             %% Run the pop_ command with the user input from the GUI
@@ -563,7 +563,7 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=23
+        if observe_EEGDAT.count_current_eeg ~=22
             return;
         end
         EEGUpdate = erpworkingmemory('EEGUpdate');
@@ -585,7 +585,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             else
                 Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=24;
+            observe_EEGDAT.count_current_eeg=23;
             return;
         end
         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
@@ -605,7 +605,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         if EEG_dq_epoch.def_para.Value==1
             EEG_dq_epoch.custom_para_op.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg=24;
+        observe_EEGDAT.count_current_eeg=23;
     end
 
 
@@ -650,7 +650,7 @@ varargout{1} = Eegtab_box_dq_epoch;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=19
+        if observe_EEGDAT.Reset_eeg_paras_panel~=18
             return;
         end
         estudioworkingmemory('EEGTab_dq_epoch',0);
@@ -666,7 +666,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         EEG_dq_epoch.all_marks.Value = 1;
         EEG_dq_epoch.excld_marks.Value = 0;
         EEG_dq_epoch.marked_epochs.Value = 0;
-        observe_EEGDAT.Reset_eeg_paras_panel=20;
+        observe_EEGDAT.Reset_eeg_paras_panel=19;
     end
 
 end

@@ -716,7 +716,7 @@ varargout{1} = Eegtab_box_avg_erp;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=24
+        if observe_EEGDAT.count_current_eeg ~=23
             return;
         end
         EEGUpdate = erpworkingmemory('EEGUpdate');
@@ -739,7 +739,7 @@ varargout{1} = Eegtab_box_avg_erp;
             else
                 Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=25;
+            observe_EEGDAT.count_current_eeg=24;
             return;
         end
         
@@ -762,7 +762,7 @@ varargout{1} = Eegtab_box_avg_erp;
         if EEG_avg_erp.def_para.Value==1
             EEG_avg_erp.custom_para_op.Enable = 'off';
         end
-        observe_EEGDAT.count_current_eeg=25;
+        observe_EEGDAT.count_current_eeg=24;
     end
 
 
@@ -807,7 +807,7 @@ varargout{1} = Eegtab_box_avg_erp;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=20
+        if observe_EEGDAT.Reset_eeg_paras_panel~=19
             return;
         end
         estudioworkingmemory('EEGTab_avg_erp',0);
@@ -824,6 +824,6 @@ varargout{1} = Eegtab_box_avg_erp;
         EEG_avg_erp.no_dq.Value=0;
         EEG_avg_erp.custom_para_op.Enable = 'off';
         EEG_avg_erp.invalidepoch.Value = 0;
-        observe_EEGDAT.Reset_eeg_paras_panel=21;
+        observe_EEGDAT.Reset_eeg_paras_panel=20;
     end
 end

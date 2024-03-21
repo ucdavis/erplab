@@ -119,17 +119,17 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Duplicate');
         observe_ERPDAT.Process_messg =1;
         
-        SelectedERP= ERPsetops.butttons_datasets.Value;
-        if isempty(SelectedERP)
-            SelectedERP = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',SelectedERP);
+        ERPArray= ERPsetops.butttons_datasets.Value;
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         ChanArray= estudioworkingmemory('ERP_ChanArray');
         BinArray= estudioworkingmemory('ERP_BinArray');
         
-        for Numofselecterp = 1:numel(SelectedERP)
-            New_ERP = observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp));
+        for Numofselecterp = 1:numel(ERPArray)
+            New_ERP = observe_ERPDAT.ALLERP(ERPArray(Numofselecterp));
             
             New_ERP.filename = '';
             New_ERP.erpname = char(strcat(New_ERP.erpname, '_Duplicated'));
@@ -151,17 +151,16 @@ varargout{1} = box_erpset_gui;
             ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
         end
         try
-            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1:length(observe_ERPDAT.ALLERP)];
+            Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
             ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
-            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(SelectedERP)+1;
+            observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;
         catch
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             ERPsetops.butttons_datasets.Value =  Selected_ERP_afd;
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-        SelectedERP =Selected_ERP_afd;
-        estudioworkingmemory('selectederpstudio',SelectedERP);
+        estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
@@ -182,12 +181,12 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Rename');
         observe_ERPDAT.Process_messg =1;
         
-        SelectedERP= ERPsetops.butttons_datasets.Value;
-        if isempty(SelectedERP) || any(SelectedERP>length(observe_ERPDAT.ALLERP))
-            SelectedERP = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',SelectedERP);
+        ERPArray= ERPsetops.butttons_datasets.Value;
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(SelectedERP),SelectedERP);
+        app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(ERPArray),ERPArray);
         waitfor(app,'Finishbutton',1);
         try
             ALLERP = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
@@ -200,7 +199,7 @@ varargout{1} = box_erpset_gui;
             return;
         end
         
-        observe_ERPDAT.ALLERP(SelectedERP) = ALLERP;
+        observe_ERPDAT.ALLERP(ERPArray) = ALLERP;
         ERPlistName =  getERPsets();
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Min = 1;
@@ -224,16 +223,16 @@ varargout{1} = box_erpset_gui;
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Add Suffix');
         observe_ERPDAT.Process_messg =1;
         
-        SelectedERP= ERPsetops.butttons_datasets.Value;
-        if isempty(SelectedERP)
-            SelectedERP = observe_ERPDAT.ALLERP;
-            estudioworkingmemory('selectederpstudio',SelectedERP);
+        ERPArray= ERPsetops.butttons_datasets.Value;
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         new = f_ERP_suffix_gui('Suffix');
         if ~isempty(new)
-            for Numofselecterp = 1:length(SelectedERP)
-                observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname = char(strcat( observe_ERPDAT.ALLERP(SelectedERP(Numofselecterp)).erpname,'_',new{1}));
+            for Numofselecterp = 1:length(ERPArray)
+                observe_ERPDAT.ALLERP(ERPArray(Numofselecterp)).erpname = char(strcat( observe_ERPDAT.ALLERP(ERPArray(Numofselecterp)).erpname,'_',new{1}));
             end
             observe_ERPDAT.Process_messg =2;
         else
@@ -281,10 +280,18 @@ varargout{1} = box_erpset_gui;
             if isempty(CURRENTERP) || numel(CURRENTERP)~=1 || any(CURRENTERP(:)>length(ALLERP))
                 CURRENTERP = length(ALLERP);
             end
+            try
+                ERP =  observe_ERPDAT.ALLERP(CURRENTERP);
+            catch
+                ERP = [];
+            end
         end
         observe_ERPDAT.ALLERP= ALLERP;
-        observe_ERPDAT.ERP= observe_ERPDAT.ALLERP(CURRENTERP);
+        observe_ERPDAT.ERP= ERP;
         observe_ERPDAT.CURRENTERP= CURRENTERP;
+        assignin('base','CURRENTERP',CURRENTERP);
+        assignin('base','ERP',ERP);
+        assignin('base','ALLERP',ALLERP);
         estudioworkingmemory('selectederpstudio',CURRENTERP);
         ERPlistName =  getERPsets();
         ERPsetops.butttons_datasets.String = ERPlistName;
@@ -526,8 +533,8 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
         
-        SelectedERP = observe_ERPDAT.CURRENTERP;
-        estudioworkingmemory('selectederpstudio',SelectedERP);
+        ERPArray = observe_ERPDAT.CURRENTERP;
+        estudioworkingmemory('selectederpstudio',ERPArray);
         ERPsetops.butttons_datasets.Min=1;
         ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
         observe_ERPDAT.Process_messg =2;
@@ -552,13 +559,13 @@ varargout{1} = box_erpset_gui;
         if isempty(pathName)
             pathName =  cd;
         end
-        Selected_erpset= ERPsetops.butttons_datasets.Value;
-        if isempty(Selected_erpset)
-            Selected_erpset = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',SelectedERP);
+        ERPArray= ERPsetops.butttons_datasets.Value;
+        if isempty(ERPArray)
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
-        checked_ERPset_Index_bin_chan = f_checkerpsets(observe_ERPDAT.ALLERP,Selected_erpset);
+        checked_ERPset_Index_bin_chan = f_checkerpsets(observe_ERPDAT.ALLERP,ERPArray);
         
         ChanArray= estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
@@ -587,15 +594,9 @@ varargout{1} = box_erpset_gui;
         end
         
         ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numoferpset = 1:length(Selected_erpset)
+        for Numoferpset = 1:length(ERPArray)
             
-            if Selected_erpset(Numoferpset) > length(observe_ERPDAT.ALLERP)
-                msgboxText =  ['ERPsets>Export: Index of selected ERP is lager than the length of ALLERP'];
-                erpworkingmemory('f_ERP_proces_messg',msgboxText);
-                observe_ERPDAT.Process_messg =4;
-                return;
-            end
-            ERP_export_erp = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
+            ERP_export_erp = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
             if checked_ERPset_Index_bin_chan(1) ==1 || checked_ERPset_Index_bin_chan(2) ==2
                 BinArray = [1:ERP_export_erp.nbin];
                 ChanArray = [1:ERP_export_erp.nchan];
@@ -817,10 +818,10 @@ varargout{1} = box_erpset_gui;
         if isempty(pathName)
             pathName =  cd;
         end
-        Selected_erpset= estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset) || any(Selected_erpset>length(observe_ERPDAT.ALLERP))
-            Selected_erpset = length(observe_ERPDAT.ALLERP);
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
+        ERPArray= estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
+            ERPArray = length(observe_ERPDAT.ALLERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         try
@@ -830,16 +831,16 @@ varargout{1} = box_erpset_gui;
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
         
-        for Numoferpset = 1:length(Selected_erpset)
-            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
+        for Numoferpset = 1:length(ERPArray)
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
             FileName = ERP.filename;
             if isempty(FileName)
                 FileName = ERP.erpname;
             end
             [pathx, filename, ext] = fileparts(FileName);
             filename = [filename '.erp'];
-            [observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
-            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset)), ALLERPCOM, ERPCOM);
+            [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
+            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM, ERPCOM);
         end
         observe_ERPDAT.Process_messg =2;
     end
@@ -866,7 +867,7 @@ varargout{1} = box_erpset_gui;
         end
         
         ERPArray= estudioworkingmemory('selectederpstudio');
-        if isempty(ERPArray)
+        if isempty(ERPArray) || any(ERPArray(:)>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
@@ -943,10 +944,10 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        Selected_ERPsetlabel = source.Value;
-        estudioworkingmemory('selectederpstudio',Selected_ERPsetlabel);
+        ERPArray = source.Value;
+        estudioworkingmemory('selectederpstudio',ERPArray);
         
-        Current_ERP_selected=Selected_ERPsetlabel(1);
+        Current_ERP_selected=ERPArray(1);
         observe_ERPDAT.CURRENTERP = Current_ERP_selected;
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(Current_ERP_selected);
         observe_ERPDAT.Count_currentERP = 2;
@@ -961,31 +962,31 @@ varargout{1} = box_erpset_gui;
             return;
         end
         if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP)
-            Selected_ERP= estudioworkingmemory('selectederpstudio');
-            if isempty(Selected_ERP)
-                Selected_ERP = length(observe_ERPDAT.ALLERP);
+            ERPArray= estudioworkingmemory('selectederpstudio');
+            if isempty(ERPArray)
+                ERPArray = length(observe_ERPDAT.ALLERP);
                 observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-                observe_ERPDAT.CURRENTERP = Selected_ERP;
-                estudioworkingmemory('selectederpstudio',Selected_ERP);
+                observe_ERPDAT.CURRENTERP = ERPArray;
+                estudioworkingmemory('selectederpstudio',ERPArray);
             end
             ERPlistName =  getERPsets();
             ERPsetops.butttons_datasets.String = ERPlistName;
-            ERPsetops.butttons_datasets.Value = Selected_ERP;
+            ERPsetops.butttons_datasets.Value = ERPArray;
             
             ERPsetops.butttons_datasets.Min=1;
             ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
-            estudioworkingmemory('selectederpstudio',Selected_ERP);
-            ERPsetops.butttons_datasets.Value = Selected_ERP;
+            estudioworkingmemory('selectederpstudio',ERPArray);
+            ERPsetops.butttons_datasets.Value = ERPArray;
             ERPsetops.butttons_datasets.Enable = 'on';
             Edit_label = 'on';
         else
             ERPlistName =  getERPsets();
-            Selected_ERP =1;
+            ERPArray =1;
             ERPsetops.butttons_datasets.String = ERPlistName;
-            ERPsetops.butttons_datasets.Value = Selected_ERP;
+            ERPsetops.butttons_datasets.Value = ERPArray;
             ERPsetops.butttons_datasets.Min=1;
             ERPsetops.butttons_datasets.Max=length(ERPlistName)+1;
-            estudioworkingmemory('selectederpstudio',Selected_ERP);
+            estudioworkingmemory('selectederpstudio',ERPArray);
             Edit_label = 'off';
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');

@@ -68,22 +68,22 @@ EStudio_gui_erp_totl.eegpanel{16} = f_EEG_arf_det_conus_GUI(EStudio_gui_erp_totl
 EStudio_gui_erp_totl.eegpanelSizes(16) = 440;
 EStudio_gui_erp_totl.eegpanel{17} = f_EEG_shift_eventcode_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(17) = 200;
-EStudio_gui_erp_totl.eegpanel{18} = f_EEG_rmresp_mistak_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(18) = 130;
-EStudio_gui_erp_totl.eegpanel{19} = f_EEG_dq_fre_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(19) = 290;
-EStudio_gui_erp_totl.eegpanel{20} = f_EEG_arf_det_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(20) = 330;
-EStudio_gui_erp_totl.eegpanel{21} = f_EEG_arf_sumop_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(21) = 190;
-EStudio_gui_erp_totl.eegpanel{22} = f_EEG_detrend_epoched_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(22) = 110;
-EStudio_gui_erp_totl.eegpanel{23} = f_EEG_dq_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(23) = 240;
-EStudio_gui_erp_totl.eegpanel{24} = f_EEG_avg_erp_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(24) = 300;
+EStudio_gui_erp_totl.eegpanel{18} = f_EEG_dq_fre_conus_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(18) = 290;
+EStudio_gui_erp_totl.eegpanel{19} = f_EEG_arf_det_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(19) = 330;
+EStudio_gui_erp_totl.eegpanel{20} = f_EEG_arf_sumop_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(20) = 190;
+EStudio_gui_erp_totl.eegpanel{21} = f_EEG_baselinecorr_detrend_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(21) = 220;
+EStudio_gui_erp_totl.eegpanel{22} = f_EEG_dq_epoch_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(22) = 240;
+EStudio_gui_erp_totl.eegpanel{23} = f_EEG_avg_erp_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(23) = 300;
+EStudio_gui_erp_totl.eegpanel{24} = f_EEG_CSD_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
+EStudio_gui_erp_totl.eegpanelSizes(24) = 190;
 EStudio_gui_erp_totl.eegpanel{25} = f_EEG_utilities_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
-EStudio_gui_erp_totl.eegpanelSizes(25) = 160;
+EStudio_gui_erp_totl.eegpanelSizes(25) = 190;
 EStudio_gui_erp_totl.eegpanel{26} = f_EEG_history_GUI(EStudio_gui_erp_totl.eegsettingLayout,EStudio_gui_erp_totl.eegpanel_fonts);
 EStudio_gui_erp_totl.eegpanelSizes(26) = 300;
 set(EStudio_gui_erp_totl.eegsettingLayout, 'Heights', EStudio_gui_erp_totl.eegpanelSizes);
@@ -116,7 +116,7 @@ set( EStudio_gui_erp_totl.eegpanel{23}, 'MinimizeFcn', {@nMinimize, 23} );
 set( EStudio_gui_erp_totl.eegpanel{24}, 'MinimizeFcn', {@nMinimize, 24} );
 set( EStudio_gui_erp_totl.eegpanel{25}, 'MinimizeFcn', {@nMinimize, 25} );
 set( EStudio_gui_erp_totl.eegpanel{26}, 'MinimizeFcn', {@nMinimize, 26} );
-%%shrinking Panels 4-24 to just their title-bar
+%%shrinking Panels 4-26 to just their title-bar
 whichpanel = [4:26];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.eegpanel{whichpanel(Numofpanel)}.IsMinimized;

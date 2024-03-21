@@ -64,8 +64,13 @@ try
 catch
 end
 
+%%running erplab%%GH 2024
+p_location = which('o_ERPDAT');
+p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
+tooltype =  'ERPLAB';
+save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
 
-erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+
 global observe_EEGDAT;
 observe_EEGDAT = o_EEGDATA;
 

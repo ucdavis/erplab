@@ -122,9 +122,9 @@ end
 
 
 %%linear detrend
-MyViewer_detectartepoch = estudioworkingmemory('EEGTab_detrend_epoch');
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_baseline_detrend');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
-    messgStr  = char( 'Changes on "Linear Detrend (Epoched EEG)" have not been applied');
+    messgStr  = char( 'Changes on "Baseline Correction & Linear Detrend (Epoched EEG)" have not been applied');
     eegpanelIndex =15;
 end
 
@@ -135,7 +135,6 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     eegpanelIndex =16;
 end
 
-
 %%compute averaged ERP
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_avg_erp');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
@@ -143,12 +142,19 @@ if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     eegpanelIndex =17;
 end
 
-
 %%compute averaged ERP
 MyViewer_detectartepoch = estudioworkingmemory('EEGTab_resample');
 if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
     messgStr  = char( 'Changes on "Sampling Rate & Epoch" have not been applied');
     eegpanelIndex =18;
+end
+
+
+
+MyViewer_detectartepoch = estudioworkingmemory('EEGTab_csd');
+if ~isempty(MyViewer_detectartepoch) && MyViewer_detectartepoch==1
+    messgStr  = char( 'Changes on "Convert voltage to CSD" have not been applied');
+    eegpanelIndex =19;
 end
 
 

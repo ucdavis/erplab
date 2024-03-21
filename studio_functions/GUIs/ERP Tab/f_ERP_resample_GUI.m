@@ -513,7 +513,7 @@ varargout{1} = box_erp_resample;
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         
-        Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_resample');
+        Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_resampled');
         if isempty(Answer)
             return;
         end

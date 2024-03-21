@@ -46,7 +46,7 @@ EStudio_gui_erp_totl.panelSizes(5) = 170;
 EStudio_gui_erp_totl.panel{6} = f_ERP_chanoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(6) = 330;
 EStudio_gui_erp_totl.panel{7} = f_erp_informtion_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(7) = 310;
+EStudio_gui_erp_totl.panelSizes(7) = 410;
 EStudio_gui_erp_totl.panel{8} = f_ERP_resample_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(8) = 190;
 EStudio_gui_erp_totl.panel{9} = f_ERP_binoperation_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
@@ -61,16 +61,18 @@ EStudio_gui_erp_totl.panel{13} = f_ERP_append_GUI(EStudio_gui_erp_totl.settingLa
 EStudio_gui_erp_totl.panelSizes(13) = 120;
 EStudio_gui_erp_totl.panel{14} = f_ERP_measurement_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
 EStudio_gui_erp_totl.panelSizes(14) = 230;
-EStudio_gui_erp_totl.panel{15} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(15) = 160;
-EStudio_gui_erp_totl.panel{16} = f_ERP_CSD_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(16) = 190;
-EStudio_gui_erp_totl.panel{17} = f_ERP_spectral_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(17) = 125;
-EStudio_gui_erp_totl.panel{18} = f_ERP_simulation_panel(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(18) = 820;
-EStudio_gui_erp_totl.panel{19} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
-EStudio_gui_erp_totl.panelSizes(19) = 280;
+EStudio_gui_erp_totl.panel{15} = f_ERP_events_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(15) = 100;
+EStudio_gui_erp_totl.panel{16} = f_erp_dataquality_SME_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(16) = 160;
+EStudio_gui_erp_totl.panel{17} = f_ERP_CSD_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(17) = 190;
+EStudio_gui_erp_totl.panel{18} = f_ERP_spectral_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(18) = 125;
+EStudio_gui_erp_totl.panel{19} = f_ERP_simulation_panel(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(19) = 820;
+EStudio_gui_erp_totl.panel{20} =  f_ERP_history_GUI(EStudio_gui_erp_totl.settingLayout,EStudio_gui_erp_totl.panel_fonts);
+EStudio_gui_erp_totl.panelSizes(20) = 280;
 set(EStudio_gui_erp_totl.settingLayout, 'Heights', EStudio_gui_erp_totl.panelSizes);
 EStudio_gui_erp_totl.panelscroll.Heights = sum(EStudio_gui_erp_totl.panelSizes);
 
@@ -94,8 +96,9 @@ set( EStudio_gui_erp_totl.panel{16}, 'MinimizeFcn', {@nMinimize, 16} );
 set( EStudio_gui_erp_totl.panel{17}, 'MinimizeFcn', {@nMinimize, 17} );
 set( EStudio_gui_erp_totl.panel{18}, 'MinimizeFcn', {@nMinimize, 18} );
 set( EStudio_gui_erp_totl.panel{19}, 'MinimizeFcn', {@nMinimize, 19} );
+set( EStudio_gui_erp_totl.panel{20}, 'MinimizeFcn', {@nMinimize, 20} );
 %%shrinking Panels 4-17 to just their title-bar
-whichpanel = [3:19];
+whichpanel = [3:20];
 for Numofpanel = 1:length(whichpanel)
     minned = EStudio_gui_erp_totl.panel{whichpanel(Numofpanel)}.IsMinimized;
     szs = get( EStudio_gui_erp_totl.settingLayout, 'Sizes' );

@@ -618,7 +618,6 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.Paras{4} = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
         gui_eeg_resample.Paras{5} = str2num(gui_eeg_resample.nwtimewindow_editright.String);
         
-        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray)
             EEGArray =  length(observe_EEGDAT.ALLEEG);
@@ -650,15 +649,16 @@ varargout{1} = box_eeg_resample;
                     eegh(LASTCOM);
                 end
             else
-                [EEG,LASTCOM ]= pop_select( EEG, 'time',TimeRange/1000 );
+                [EEG,LASTCOM ]= pop_select( EEG, 'time',TimeRange);
                 EEG = eeg_checkset(EEG);
                 EEG = eegh(LASTCOM, EEG);
                 if Numofeeg==1
                     eegh(LASTCOM);
                 end
-                
                 if Freq2resamp~=EEG.srate
+                    setnameold  = EEG.setname;
                     [EEG, LASTCOM]= pop_resample( EEG, Freq2resamp);
+                    EEG.setname = setnameold;
                     EEG = eeg_checkset(EEG);
                     EEG = eegh(LASTCOM, EEG);
                     if Numofeeg==1
@@ -666,15 +666,9 @@ varargout{1} = box_eeg_resample;
                     end
                 end
             end
-            
             [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end
-        if EEG.trials>1
-            suffixname = 'resampeled';
-        else
-            suffixname = '';
-        end
-        
+        suffixname = '_resampled';
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),suffixname);
         if isempty(Answer)
             return;

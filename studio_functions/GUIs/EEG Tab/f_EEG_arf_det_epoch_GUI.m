@@ -1189,7 +1189,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=20
+        if observe_EEGDAT.count_current_eeg ~=19
             return;
         end
         EEGUpdate = erpworkingmemory('EEGUpdate');
@@ -1220,7 +1220,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
             else
                 Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=21;
+            observe_EEGDAT.count_current_eeg=20;
             return;
         end
         
@@ -1367,7 +1367,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         Eegtab_EEG_art_det_epoch.mflag1.Enable = 'off';
-        observe_EEGDAT.count_current_eeg=21;
+        observe_EEGDAT.count_current_eeg=20;
     end
 
 %%--------------press return to execute "Apply"----------------------------
@@ -1410,7 +1410,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=17
+        if observe_EEGDAT.Reset_eeg_paras_panel~=16
             return;
         end
         estudioworkingmemory('EEGTab_detect_arts_epoch',0);
@@ -1460,7 +1460,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{6} = str2num(Eegtab_EEG_art_det_epoch.movewindow_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{7} = str2num(Eegtab_EEG_art_det_epoch.windowstep_edit.String);
         Eegtab_EEG_art_det_epoch.Paras{8}  = 1;
-        observe_EEGDAT.Reset_eeg_paras_panel=18;
+        observe_EEGDAT.Reset_eeg_paras_panel=17;
     end
 end
 

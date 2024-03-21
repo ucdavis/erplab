@@ -146,17 +146,13 @@ ALLEEG = handles.ALLEEG;
 EEGArray = handles.EEGArray;
 suffix_edit = handles.edit_suffix_name.String;
 
-% if isempty(suffix_edit)
-%     msgboxText =  'You must enter a suffix at least!';
-%     title = 'EStudio: f_EEG_saveas_multi_file() error';
-%     errorfound(msgboxText, title);
-%     return
-% end
-
 
 DataString_before = handles.uitable1_erpset_table.Data;
 for Numoferpset = 1:numel(EEGArray)
-    DataString{Numoferpset,1} = strcat(ALLEEG(EEGArray(Numoferpset)).setname,suffix_edit);
+    if isempty(char(DataString_before{Numoferpset,1}))
+      DataString_before{Numoferpset,1}  = [ALLEEG(EEGArray(Numoferpset)).setname];  
+    end
+    DataString{Numoferpset,1} = strcat(DataString_before{Numoferpset,1},suffix_edit);
     DataString{Numoferpset,2} = DataString_before{Numoferpset,2};
 end
 set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
@@ -185,8 +181,6 @@ if Value_filename_setname==1
     end
     
     set(handles.uitable1_erpset_table,'Data',cellstr(DataString));
-    % set(handles.uitable1_erpset_table,'ColumnWidth',{350 350});
-    
     handles.uitable1_erpset_table.ColumnEditable(1) = true;
     handles.uitable1_erpset_table.ColumnEditable(2) = true;
 end

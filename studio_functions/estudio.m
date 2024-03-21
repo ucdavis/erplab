@@ -91,8 +91,13 @@ try
     eeg_global;
 catch
 end
+%%running estudio
+p_location = which('o_ERPDAT');
+p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
+tooltype =  'estudio';
+save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
 
-erplab_running_version('Version',EStudioversion,'tooltype','estudio');
+
 try
     clearvars observe_EEGDAT;
     clearvars observe_ERPDAT;
@@ -583,8 +588,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
     end
 
 
-
-
     function about_estudio(~,~)
         abouterplabGUI;
     end
@@ -594,7 +597,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         
         
     end
-
 
     function erppanel_help(~,~)
         
@@ -631,7 +633,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         assignin('base','ERP',observe_ERPDAT.ERP);
     end
 
-
     function indexERP( ~, ~ )
         assignin('base','CURRENTERP',observe_ERPDAT.CURRENTERP);
         if ~strcmp(observe_ERPDAT.CURRENTERP,CURRENTERP)
@@ -643,7 +644,6 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
     function allErpChanged(~,~)
         assignin('base','ALLERP',observe_ERPDAT.ALLERP);
     end
-
 
     function Count_currentERPChanged(~,~)
         return;
@@ -720,7 +720,6 @@ end % end of the function
 %%-------------------------------------------------------------------------
 %%-------------------------------borrow from eeglab------------------------
 %%-------------------------------------------------------------------------
-
 % find a function path and add path if not present
 % ------------------------------------------------
 function myaddpath(estudiopath, functionname, pathtoadd)

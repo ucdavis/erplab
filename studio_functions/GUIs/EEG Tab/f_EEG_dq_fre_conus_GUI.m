@@ -458,7 +458,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 
 %%--------Settting will be modified if the selected was changed------------
     function count_current_eeg_change(~,~)
-        if observe_EEGDAT.count_current_eeg ~=19
+        if observe_EEGDAT.count_current_eeg ~=18
             return;
         end
         EEGUpdate = erpworkingmemory('EEGUpdate');
@@ -479,7 +479,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             else
                 Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
             end
-            observe_EEGDAT.count_current_eeg=20;
+            observe_EEGDAT.count_current_eeg=19;
             return;
         end
         
@@ -496,7 +496,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         EEG_dq_fre_conus.resetable.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_run.Enable= 'on';
         EEG_dq_fre_conus.dq_fre_cancel.Enable= 'on';
-        observe_EEGDAT.count_current_eeg=20;
+        observe_EEGDAT.count_current_eeg=19;
     end
 
 
@@ -540,7 +540,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
-        if observe_EEGDAT.Reset_eeg_paras_panel~=16
+        if observe_EEGDAT.Reset_eeg_paras_panel~=15
             return;
         end
         estudioworkingmemory('EEGTab_dq_fre_conus',0);
@@ -558,6 +558,6 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         fqlabels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'};
         data_tab = [fqlabels' num2cell(fqband)];
         EEG_dq_fre_conus.bandtable.Data=data_tab;
-        observe_EEGDAT.Reset_eeg_paras_panel=17;
+        observe_EEGDAT.Reset_eeg_paras_panel=16;
     end
 end

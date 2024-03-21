@@ -222,7 +222,20 @@ varargout{1} = ERP_CSD_gui;
         %%Loop for the selcted ERPsets
         for  Numoferp = 1:numel(ERPArray)
             ERP = ALLERP(ERPArray(Numoferp));
-            [ERP, ERPCOM] = pop_currentsourcedensity(ERP,'EStudio');
+            [eloc, labels, theta, radius, indices] = readlocs(ERP.chanlocs);
+            thetacheck= isnan(theta);
+            radiuscheck= isnan(radius);
+            [~,ypostheta] = find(thetacheck(:)==1);
+            [~,yposradius] = find(radiuscheck(:)==1);
+            if ~isempty(ypostheta) && ~isempty(yposradius)
+                msgboxText =  ['Current Source Density: Some electrodes for ERPset ',num2str(ERPArray(Numoferp)),32,'are missing electrode channel locations. Please check channel locations and try again.'];
+                titlNamerro = 'Warning for EEG Tab';
+                estudio_warning(msgboxText,titlNamerro);
+                return;
+            end
+            
+            ERP = pop_currentsourcedensity(ERP,'EStudio');
+            ERPCOM =  sprintf('%s=pop_currentsourcedensity(%s, %s);', 'ERP','ERP', '"EStudio"');
             if Numoferp==1
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
                 if isempty(ALLERPCOM)
@@ -301,7 +314,7 @@ varargout{1} = ERP_CSD_gui;
 
 %%--------Setting current ERPset/session history based on the current updated ERPset------------
     function Count_currentERPChanged(~,~)
-        if observe_ERPDAT.Count_currentERP~=16
+        if observe_ERPDAT.Count_currentERP~=17
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');%%when open advanced wave viewer
@@ -318,7 +331,7 @@ varargout{1} = ERP_CSD_gui;
         gui_erp_CSD.scl_num.Enable = Enable_label;
         gui_erp_CSD.hr_num.Enable = Enable_label;
         gui_erp_CSD.cancel.Enable = Enable_label;
-        observe_ERPDAT.Count_currentERP=17;
+        observe_ERPDAT.Count_currentERP=18;
     end
 
 

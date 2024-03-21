@@ -213,7 +213,9 @@ EEG = eeg_checkset(EEG, 'eventconsistency');
 % EEG = eeg_checkset(EEG,'epochconsist');
 %%resampling data based on eeglab routine
 if EEG.srate~=Freq2resamp
+    setnameold = EEG.setname;
     EEG = pop_resample( EEG, Freq2resamp);
+    EEG.setname = setnameold;
 end
 EEG = eeg_checkset(EEG);
 

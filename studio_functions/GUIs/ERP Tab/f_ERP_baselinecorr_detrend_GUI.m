@@ -57,7 +57,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         
         %%Baseline period: Pre, post whole custom
         gui_erp_blc_dt.blc_dt_baseline_period_title = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
-        uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_baseline_period_title,...
+        gui_erp_blc_dt.blc_dt_title = uicontrol('Style', 'text','Parent', gui_erp_blc_dt.blc_dt_baseline_period_title,...
             'String','Baseline Period:','FontWeight','bold','FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         
         gui_erp_blc_dt.blc_dt_bp_option = uiextras.HBox('Parent',  gui_erp_blc_dt.blc_dt,'Spacing',1,'BackgroundColor',ColorB_def);
@@ -77,7 +77,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         gui_erp_blc_dt.custom_edit = uicontrol('Style', 'edit','Parent', gui_erp_blc_dt.blc_dt_bp_option_cust,...
             'String','','callback',@custom_edit,'Enable',Enable_label,'FontSize',FonsizeDefault);
         gui_erp_blc_dt.custom_edit.KeyPressFcn= @erp_blcorrdetrend_presskey;
-        set(gui_erp_blc_dt.blc_dt_bp_option_cust, 'Sizes',[160  135]);
+        set(gui_erp_blc_dt.blc_dt_bp_option_cust, 'Sizes',[160  100]);
         if gui_erp_blc_dt.pre.Value==1
             gui_erp_blc_dt.ERPTab_baseline_detrend{2} = 1;
         elseif gui_erp_blc_dt.post.Value==1
@@ -140,6 +140,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.blc.Value =1;
         gui_erp_blc_dt.dt.Value = 0;
+        gui_erp_blc_dt.blc_dt_title.String = 'Baseline Period:';
     end
 
 %%--------------------------Setting for phase------------------------------
@@ -161,6 +162,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         estudioworkingmemory('ERPTab_baseline_detrend',1);
         gui_erp_blc_dt.dt.Value = 1;
         gui_erp_blc_dt.blc.Value =0;
+        gui_erp_blc_dt.blc_dt_title.String = 'Calculate Trend During:';
     end
 
 %%----------------Setting for "pre"----------------------------------------
@@ -599,7 +601,11 @@ varargout{1} = ERP_basecorr_detrend_box;
         end
         gui_erp_blc_dt.blc.Value =methodtype;
         gui_erp_blc_dt.dt.Value = ~methodtype;
-        
+        if gui_erp_blc_dt.blc.Value==1
+            gui_erp_blc_dt.blc_dt_title.String = 'Baseline Period:';
+        else
+            gui_erp_blc_dt.blc_dt_title.String = 'Calculate Trend During:';
+        end
         %%baseline period
         try
             bsperiod =   gui_erp_blc_dt.ERPTab_baseline_detrend{2};
@@ -791,6 +797,7 @@ varargout{1} = ERP_basecorr_detrend_box;
         gui_erp_blc_dt.custom_edit.String = '';
         gui_erp_blc_dt.all_bin_chan.Value = 1;
         gui_erp_blc_dt.Selected_bin_chan.Value = 0;
+        gui_erp_blc_dt.blc_dt_title.String = 'Baseline Period:';
         observe_ERPDAT.Reset_erp_paras_panel=7;
     end
 end
