@@ -1298,7 +1298,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
-%         erpworkingmemory('ERPTab_mtviewer',1);
+        erpworkingmemory('ERPTab_mtviewer',1);
         
         if ~isempty(latency)
             %%---------------save the applied parameters using erpworkingmemory function--------------------
@@ -1344,7 +1344,7 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
             erpworkingmemory('ViewerFlag', 1);
-%             observe_ERPDAT.Count_currentERP=1;
+            observe_ERPDAT.Count_currentERP=1;
             erpworkingmemory('f_ERP_proces_messg','Measurement Tool > Preview:The main ERPLAB Studio window will be frozen until you close the Viewer window for the Measurement Tool');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
 

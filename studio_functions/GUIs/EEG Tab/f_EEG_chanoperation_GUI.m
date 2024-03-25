@@ -161,8 +161,25 @@ varargout{1} = EEG_chan_operation_gui;
         else
             chanopGUI.emode=1;
         end
-        chanopGUI.hmode = 0;
-        chanopGUI.listname = [];
+        if isfield(chanopGUI,'hmode')
+            hmode = chanopGUI.hmode;
+            if isnumeric(hmode)
+                if numel(hmode)~=1 || (hmode~=0&& hmode~=1)
+                    chanopGUI.hmode = 0;
+                end
+            else
+                chanopGUI.hmode = 0;
+            end
+        else
+            chanopGUI.hmode = 0;
+        end
+        if isfield(chanopGUI,'listname')
+            if ~ischar(chanopGUI.listname)
+                chanopGUI.listname = '';
+            end
+        else
+            chanopGUI.listname = '';
+        end
         localInfor = gui_eegtab_chan_optn.locaInfor.Value;
         chanopGUI.keeplocs = localInfor;
         erpworkingmemory('chanopGUI',chanopGUI);
@@ -699,7 +716,7 @@ varargout{1} = EEG_chan_operation_gui;
         if observe_EEGDAT.count_current_eeg ~=6
             return;
         end
-         EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = erpworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
             EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
         end

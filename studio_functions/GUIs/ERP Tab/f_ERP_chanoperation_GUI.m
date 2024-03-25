@@ -158,8 +158,25 @@ varargout{1} = ERP_chan_operation_gui;
         else
             chanopGUI.emode=1;
         end
-        chanopGUI.hmode = 0;
-        chanopGUI.listname = '';
+        if isfield(chanopGUI,'hmode')
+            hmode = chanopGUI.hmode;
+            if isnumeric(hmode)
+                if numel(hmode)~=1 || (hmode~=0&& hmode~=1)
+                    chanopGUI.hmode = 0;
+                end
+            else
+                chanopGUI.hmode = 0;
+            end
+        else
+            chanopGUI.hmode = 0;
+        end
+        if isfield(chanopGUI,'listname')
+            if ~ischar(chanopGUI.listname)
+                chanopGUI.listname = '';
+            end
+        else
+            chanopGUI.listname = '';
+        end
         localInfor = gui_erp_chan_operation.locaInfor.Value;
         chanopGUI.keeplocs = localInfor;
         erpworkingmemory('chanopGUI',chanopGUI);
