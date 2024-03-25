@@ -24,7 +24,7 @@ function varargout = f_erp_viewerGUI(varargin)
 
 % Edit the above text to modify the response to help f_erp_viewerGUI
 
-% Last Modified by GUIDE v2.5 22-Nov-2023 18:16:00
+% Last Modified by GUIDE v2.5 21-Mar-2024 09:35:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -73,11 +73,19 @@ if ~isempty(ALLERP)
         CurrentERP=length(ALLERP);
         handles.CurrentERP=CurrentERP;
     end
+    ERP = ALLERP(CurrentERP);
     OutputViewerparerp = f_preparms_mtviewer_erptab(ALLERP(CurrentERP),0);
     handles.timeStart =OutputViewerparerp{3};
     handles.timEnd =OutputViewerparerp{4};
     handles.xtickstep=OutputViewerparerp{5};
-    handles.Yscale = [-OutputViewerparerp{6},OutputViewerparerp{6}];
+    bindata = [];
+    for Numoferp = 1:numel(CurrentERP)
+        ERP = ALLERP(CurrentERP);
+        bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
+    end
+    y_scale_def = [floor(1.1*min(bindata(:))),ceil(1.1*max(bindata(:)))];
+    
+    handles.Yscale = y_scale_def;
     handles.Min_vspacing = OutputViewerparerp{7};
     handles.Fillscreen = OutputViewerparerp{8};
     handles.positive_up = OutputViewerparerp{10};
@@ -88,11 +96,85 @@ if ~isempty(ALLERP)
     handles.Resolution =OutputViewerparerp{16};
     handles.Matlab_ver = OutputViewerparerp{22};
     handles.GridposArray = OutputViewerparerp{24};
+    ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
+    ChanArray11 = erase(ChanArray11,{'[',']'});
+    handles.edit_chans.String =  ChanArray11;
+    
+    BinArray1 = vect2colon(BinArray,'Sort', 'on');
+    BinArray1 = erase(BinArray1,{'[',']'});
+    handles.edit_bin.String = BinArray1;
+    
+    ERPArray1 = vect2colon(CurrentERP,'Sort', 'on');
+    ERPArray1 = erase(ERPArray1,{'[',']'});
+    handles.edit5_erpset.String = ERPArray1;
 end
+
+%%for bins
+handles.radiobutton_parbin.Value=1;
+handles.checkbox1_bin.Value=0;
+handles.edit_bin.Enable = 'on';
+handles.pushbutton_binsmall.Enable = 'on';
+handles.pushbutton_binlarge.Enable = 'on';
+handles.pushbutton_browse_bin.Enable = 'on';
+
+%%for chans
+handles.radiobutton_chanpor.Value=1;
+handles.checkbox_chan.Value=0;
+handles.edit_chans.Enable = 'on';
+handles.pushbutton8_chansmall.Enable = 'on';
+handles.pushbutton_chanlarge.Enable = 'on';
+handles.pushbutton_chanborwse.Enable = 'on';
+handles.radiobutton_chanoverlay.Value=1;
+handles.radiobutton_chan_separate.Value=0;
+
+%%erpsets
+handles.radiobutton_erppor.Value=1;
+handles.checkbox_erp.Value=0;
+handles.edit5_erpset.Enable = 'on';
+handles.pushbutton_erpsetsmall.Enable = 'on';
+handles.pushbutton_erpsetlarge.Enable = 'on';
+handles.pushbutton_erpset_browse.Enable = 'on';
+if ~isempty(ALLERP)
+    checkindex = checkerpsets(ALLERP);
+    if ~isempty(checkindex)
+        handles.checkbox_erp.Enable='off';
+        handles.text_warningmessage.String  = [checkindex,', and you therfore donot allow to select all for ERPsets'];
+    end
+end
+handles.ALLERP = ALLERP;
 
 handles= plot_wave_viewer(hObject,handles);
 
-handles.checkbox_erp.Enable = 'off';
+if ~isempty(ALLERP)
+    if numel(ChanArray) ==ERP.nchan
+        handles.radiobutton_chanpor.Value=0;
+        handles.checkbox_chan.Value=1;
+        handles.pushbutton8_chansmall.Enable = 'off';
+        handles.pushbutton_chanlarge.Enable = 'off';
+        handles.pushbutton_chanborwse.Enable = 'off';
+        handles.edit_chans.Enable = 'off';
+    end
+    
+    if numel(BinArray) == ERP.nbin
+        handles.checkbox1_bin.Value=1;
+        handles.radiobutton_parbin.Value=0;
+        handles.pushbutton_binsmall.Enable = 'off';
+        handles.pushbutton_binlarge.Enable = 'off';
+        handles.edit_bin.Enable = 'off';
+        handles.pushbutton_browse_bin.Enable = 'off';
+        handles.BinArray = 1:ERP.nbin;
+    end
+    if numel(CurrentERP)==length(ALLERP)
+        handles.checkbox_erp.Value=1;
+        handles.radiobutton_erppor.Value=0;
+        handles.edit5_erpset.Enable = 'off';
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+        handles.pushbutton_erpset_browse.Enable = 'off';
+    end
+end
+
+% handles.checkbox_erp.Enable = 'off';
 
 erplab_studio_default_values;
 version = erplabstudiover;
@@ -366,7 +448,13 @@ end
 
 % --- Executes on button press in checkbox1_bin.
 function checkbox1_bin_Callback(hObject, eventdata, handles)
-binbox = handles.checkbox1_bin.Value;
+
+handles.checkbox1_bin.Value=1;
+handles.radiobutton_parbin.Value=0;
+handles.pushbutton_binsmall.Enable = 'off';
+handles.pushbutton_binlarge.Enable = 'off';
+handles.edit_bin.Enable = 'off';
+handles.pushbutton_browse_bin.Enable = 'off';
 ALLERP = handles.ALLERP;
 try
     ERP = ALLERP(handles.CurrentERP);
@@ -376,14 +464,11 @@ end
 if isempty(ALLERP) || isempty(ERP)
     return;
 end
-if binbox==1
-    BinArray = vect2colon(1:ERP.nbin,'Sort', 'on');
-    BinArray = erase(BinArray,{'[',']'});
-    handles.edit_bin.String = BinArray;
-    handles.BinArray = 1:ERP.nbin;
-    handles.pushbutton_binsmall.Enable = 'off';
-    handles.pushbutton_binlarge.Enable = 'off';
-end
+BinArray = vect2colon(1:ERP.nbin,'Sort', 'on');
+BinArray = erase(BinArray,{'[',']'});
+handles.edit_bin.String = BinArray;
+handles.BinArray = 1:ERP.nbin;
+
 guidata(hObject, handles);
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -543,19 +628,19 @@ try
 catch
     ERP=[];
 end
+handles.radiobutton_chanpor.Value=0;
+handles.checkbox_chan.Value=1;
+handles.pushbutton8_chansmall.Enable = 'off';
+handles.pushbutton_chanlarge.Enable = 'off';
+handles.pushbutton_chanborwse.Enable = 'off';
+handles.edit_chans.Enable = 'off';
 if isempty(ALLERP) || isempty(ERP)
     return;
 end
-chanbox = handles.checkbox_chan.Value;
-if chanbox==1
-    ChanArray11 = vect2colon(1:ERP.nchan,'Sort', 'on');
-    ChanArray11 = erase(ChanArray11,{'[',']'});
-    handles.edit_chans.String = ChanArray11;
-    handles.ChanArray = 1:ERP.nchan;
-    handles.pushbutton8_chansmall.Enable = 'off';
-    handles.pushbutton_chanlarge.Enable = 'off';
-end
-guidata(hObject, handles);
+ChanArray11 = vect2colon(1:ERP.nchan,'Sort', 'on');
+ChanArray11 = erase(ChanArray11,{'[',']'});
+handles.edit_chans.String = ChanArray11;
+handles.ChanArray = 1:ERP.nchan;
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -592,7 +677,7 @@ else
     handles.pushbutton_erpsetlarge.Enable = 'on';
 end
 handles.CurrentERP = ERPArray_new;
-guidata(hObject, handles);
+handles.edit5_erpset.String = num2str(ERPArray_new);
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -626,8 +711,8 @@ else
     handles.pushbutton_erpsetsmall.Enable = 'on';
     handles.pushbutton_erpsetlarge.Enable = 'on';
 end
+handles.edit5_erpset.String = num2str(ERPArray_new);
 handles.CurrentERP = ERPArray_new;
-guidata(hObject, handles);
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -639,23 +724,47 @@ if isempty(ALLERP)
     return;
 end
 ERPArray = str2num(handles.edit5_erpset.String);
-if isempty(ERPArray) || numel(ERPArray)~=1 || any(ERPArray>length(ALLERP))
+if isempty(ERPArray) || any(ERPArray(:)>length(ALLERP)) || any(ERPArray(:)<1)
     handles.text_warningmessage.String  = ['Index of ERPset must be single value and not more than',32,num2str(length(ALLERP))];
     handles.edit5_erpset.String = num2str(handles.CurrentERP);
     return;
 end
 handles.CurrentERP = ERPArray;
-if ERPArray==1
-    handles.pushbutton_erpsetsmall.Enable = 'off';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
-elseif ERPArray==length(ALLERP)
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'off';
+if numel(ERPArray)==1
+    if ERPArray==1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    elseif ERPArray==length(ALLERP)
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    else
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    end
 else
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
+    handles.pushbutton_erpsetsmall.Enable = 'off';
+    handles.pushbutton_erpsetlarge.Enable = 'off';
 end
-guidata(hObject, handles);
+
+checkindex = checkerpsets(ALLERP(ERPArray));
+if ~isempty(checkindex)
+    handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
+    ERPArray = ERPArray(1);
+    handles.CurrentERP = ERPArray;
+    handles.edit5_erpset.String = str2num(ERPArray);
+    if ERPArray==1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    elseif ERPArray==length(ALLERP)
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    else
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    end
+    
+end
+
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -668,7 +777,105 @@ end
 
 % --- Executes on button press in checkbox_erp.
 function checkbox_erp_Callback(hObject, eventdata, handles)
-handles.checkbox_erp.Enable = 'off';
+handles.checkbox_erp.Value=1;
+handles.radiobutton_erppor.Value=0;
+handles.edit5_erpset.Enable = 'off';
+handles.pushbutton_erpsetsmall.Enable = 'off';
+handles.pushbutton_erpsetlarge.Enable = 'off';
+handles.pushbutton_erpset_browse.Enable = 'off';
+
+ALLERP = handles.ALLERP;
+if isempty(ALLERP)
+    return;
+end
+ERPArray = str2num(handles.edit5_erpset.String);
+if isempty(ERPArray) || any(ERPArray(:)>length(ALLERP))
+    ERPArray=1;
+    handles.edit5_erpset.String = '1';
+end
+checkindex = checkerpsets(ALLERP);
+
+if ~isempty(checkindex)
+    handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
+    handles.checkbox_erp.Value=0;
+    handles.radiobutton_erppor.Value=1;
+    handles.edit5_erpset.Enable = 'on';
+    handles.pushbutton_erpsetsmall.Enable = 'on';
+    handles.pushbutton_erpsetlarge.Enable = 'on';
+    handles.pushbutton_erpset_browse.Enable = 'on';
+    if isempty(ERPArray)
+        ERPArray=1;
+    else
+        ERPArray = ERPArray(1);
+    end
+    handles.edit5_erpset.String = num2str(ERPArray);
+    handles.CurrentERP = ERPArray;
+    if ERPArray==1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    elseif ERPArray==length(ALLERP)
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    else
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    end
+    return;
+end
+
+ERPArray = [1:length(ALLERP)];
+handles.edit5_erpset.String = num2str(ERPArray);
+ERPArray = vect2colon(ERPArray,'Sort', 'on');
+ERPArray = erase(ERPArray,{'[',']'});
+handles.edit5_erpset.String = ERPArray;
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+function checkindex = checkerpsets(ALLERP)
+if isempty(ALLERP)
+    return;
+end
+checkindex = '';
+
+for Numoferp = 1:length(ALLERP)
+    Numchan(Numoferp) = ALLERP(Numoferp).nchan;
+    Numbin(Numoferp) = ALLERP(Numoferp).nbin;
+    Numpnts(Numoferp) = ALLERP(Numoferp).pnts;
+    Numsrate(Numoferp) = ALLERP(Numoferp).srate;
+    Numxmin(Numoferp) = ALLERP(Numoferp).xmin;
+    Numxmax(Numoferp) = ALLERP(Numoferp).xmax;
+end
+if numel(unique(Numchan))~=1
+    checkindex  = 'Number of channels varies across ERPsets';
+    return;
+end
+
+if numel(unique(Numbin))~=1
+    checkindex  = 'Number of bins varies across ERPsets';
+    return;
+end
+
+if numel(unique(Numpnts))~=1
+    checkindex  = 'Number of sample points varies across ERPsets';
+    return;
+end
+
+if numel(unique(Numsrate))~=1
+    checkindex  = 'Sampling rate varies across ERPsets';
+    return;
+end
+
+if numel(unique(Numxmin))~=1
+    checkindex  = 'Minimal value of the epoch varies across ERPsets';
+    return;
+end
+
+if numel(unique(Numxmax))~=1
+    checkindex  = 'Maximal value of the epoch varies across ERPsets';
+    return;
+end
+
 
 
 % --- Executes on button press in pushbutton_matlabfig.
@@ -711,33 +918,50 @@ if isempty(ALLERP)
 end
 handles.ALLERP=ALLERP;
 %%current erp
-CurrentERP=handles.CurrentERP;
-if isempty(CurrentERP) || numel(CurrentERP)~=1 || any(CurrentERP> length(ALLERP))
-    CurrentERP = length(ALLERP);
-    handles.CurrentERP = CurrentERP;
+ERPArray=str2num(handles.edit5_erpset.String);
+if isempty(ERPArray)  || any(ERPArray(:)> length(ALLERP)) || any(ERPArray(:)<1)
+    ERPArray = 1;
+    handles.CurrentERP = ERPArray;
 end
-handles.edit5_erpset.String = num2str(CurrentERP);
-if CurrentERP==1
-    handles.pushbutton_erpsetsmall.Enable = 'off';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
-elseif CurrentERP==length(ALLERP)
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'off';
-else
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
+checkindex = checkerpsets(ALLERP(ERPArray));
+if ~isempty(checkindex)
+    handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
+    handles.checkbox_erp.Value=0;
+    handles.radiobutton_erppor.Value=1;
+    ERPArray = ERPArray(1);
 end
-%%channels
-ChanArray = handles.ChanArray;
-ERP = ALLERP(CurrentERP);
 
-handles.text_erpname.String = ERP.erpname;
+handles.edit5_erpset.String = num2str(ERPArray);
+if numel(ERPArray)==1
+    if ERPArray==1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    elseif ERPArray==length(ALLERP)
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    else
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    end
+else
+    handles.pushbutton_erpsetsmall.Enable = 'off';
+    handles.pushbutton_erpsetlarge.Enable = 'off';
+end
+ERP = ALLERP(ERPArray(1));
+if numel(ERPArray)==1
+    handles.text_erpname.String = ERP.erpname;
+else
+    handles.text_erpname.String = 'Multiple ERPsets were slected';
+end
+
+%%channels
+ChanArray = str2num(handles.edit_chans.String);
 nbchan = ERP.nchan;
 handles.ERP = ERP;
 if isempty(ChanArray) || any(ChanArray>nbchan) || any(ChanArray<=0)
     ChanArray = [1:nbchan];
-    handles.ChanArray = ChanArray;
 end
+handles.ChanArray = ChanArray;
 if numel(ChanArray)~=1
     handles.pushbutton8_chansmall.Enable = 'off';
     handles.pushbutton_chanlarge.Enable = 'off';
@@ -753,17 +977,21 @@ else
         handles.pushbutton_chanlarge.Enable = 'on';
     end
 end
+
+
 ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String =  ChanArray11;
 
+chanOverlay = handles.radiobutton_chanoverlay.Value;
+
 %%bin
 nbin = ERP.nbin;
-BinArray =handles.BinArray;
+BinArray =str2num(handles.edit_bin.String);
 if isempty(BinArray) || any(BinArray>nbin) || any(BinArray<=0)
     BinArray = [1:nbin];
-    handles.BinArray = BinArray;
 end
+handles.BinArray = BinArray;
 if numel(BinArray)~=1
     handles.pushbutton_binsmall.Enable = 'off';
     handles.pushbutton_binlarge.Enable = 'off';
@@ -779,6 +1007,7 @@ else
         handles.pushbutton_binlarge.Enable = 'on';
     end
 end
+
 BinArray1 = vect2colon(BinArray,'Sort', 'on');
 BinArray1 = erase(BinArray1,{'[',']'});
 handles.edit_bin.String = BinArray1;
@@ -828,8 +1057,12 @@ handles.edit1_time_range.String = num2str([timeStart,timEnd]);
 xtickstep=handles.xtickstep;
 [~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
 Yscale = handles.Yscale;
-bindata = ERP.bindata(ChanArray,:,BinArray);
-y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
+bindata = [];
+for Numoferp = 1:numel(ERPArray)
+    ERP = ALLERP(ERPArray(Numoferp));
+    bindata(:,:,:,Numoferp) = ERP.bindata(ChanArray,:,BinArray);
+end
+y_scale_def = [floor(1.1*min(bindata(:))),ceil(1.1*max(bindata(:)))];
 if isempty(Yscale) || numel(Yscale)~=2
     Yscale= y_scale_def;
     handles.Yscale=Yscale;
@@ -837,7 +1070,6 @@ end
 handles.edit2_yrange.String = num2str(Yscale);
 
 Min_vspacing = handles.Min_vspacing;
-Fillscreen = handles.Fillscreen;
 positive_up = handles.positive_up;
 moption= handles.moption;
 latency= handles.latency;
@@ -848,7 +1080,11 @@ intfactor =  handles.intfactor;
 Resolution =handles.Resolution;
 BinchanOverlay = 0;
 columNum=1;
-rowNums=numel(ChanArray);
+if chanOverlay==0
+    rowNums=numel(ChanArray);
+else
+    rowNums=1;
+end
 
 handles.GridposArray = zeros(rowNums,columNum);
 for ii = 1:rowNums
@@ -901,8 +1137,8 @@ end
 mls = sprintf('%s\n%s',measurearray{meamenu},['Measurement Window:',32,num2str(handles.latency)]);
 
 set(handles.text_measure_type, 'String', mls);
-offset = f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
-    positive_up,BinchanOverlay,rowNums,GridposArray,handles.erptabwaveiwer,handles.erptabwaveiwer_legend);
+offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
+    positive_up,chanOverlay,rowNums,GridposArray,handles.erptabwaveiwer,handles.erptabwaveiwer_legend);
 % set(handles.erptabwaveiwer,'BackgroundColor',[1 1 1]);
 Res = handles.ViewContainer.Position;
 handles.Res = Res;
@@ -911,7 +1147,7 @@ splot_n = numel(ChanArray);
 pb_height = Min_vspacing*Res(4);  %px
 
 ndata = BinArray;
-nplot = ChanArray;
+
 
 pnts    = ERP.pnts;
 timeor  = ERP.times; % original time vector
@@ -931,393 +1167,178 @@ end
 if tmax > numel(timex)
     tmax = numel(timex);
 end
+Plot_erp_data_TRAN = [];
+for Numofsub = 1:numel(ERPArray)
+    ERP1 = ALLERP(ERPArray(Numofsub));
+    if intfactor~=1
+        for Numoftwo = 1:size(ERP1.bindata,3)
+            for Numofone = 1:size(ERP1.bindata,1)
+                data = squeeze(ERP1.bindata(Numofone,:,Numoftwo));
+                data  = spline(timeor, data, timex); % re-sampled data
+                blv    = blvalue2(data, timex, blc);
+                data   = data - blv;
+                Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
+            end
+        end
+        Bindata(:,:,:,Numofsub) = Plot_erp_data_TRAN;
+    else
+        Bindata(:,:,:,Numofsub) = ERP1.bindata;
+    end
+end
 
-if intfactor~=1
-    Plot_erp_data_TRAN = [];
-    for Numoftwo = 1:size(ERP.bindata,3)
-        for Numofone = 1:size(ERP.bindata,1)
-            data = squeeze(ERP.bindata(Numofone,:,Numoftwo));
-            data  = spline(timeor, data, timex); % re-sampled data
-            blv    = blvalue2(data, timex, blc);
-            data   = data - blv;
-            Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
+plot_erp_data = nan(splot_n,tmax-tmin+1,numel(ndata));
+for Numofsub = 1:numel(ERPArray)
+    for i = 1:splot_n
+        for i_bin = 1:numel(ndata)
+            plot_erp_data(i,:,i_bin,Numofsub) = Bindata(ChanArray(i),tmin:tmax,BinArray(i_bin),Numofsub)'*positive_up; %
         end
     end
-    Bindata = Plot_erp_data_TRAN;
-else
-    Bindata = ERP.bindata;
 end
 
-
-plot_erp_data = nan(tmax-tmin+1,numel(ndata));
-for i = 1:splot_n
-    for i_bin = 1:numel(ndata)
-        plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i),tmin:tmax,BinArray(i_bin))'*positive_up; %
-    end
-end
-line_colors = get_colors(numel(ndata));
-
-line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
-[~,~,Num_plot] = size(plot_erp_data);
-for i = 1:Num_plot
-    plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
-end
-
-%
-%%%Mark the area/latency/amplitude of interest within the defined window.
-ERP_mark_area_latency(handles.erptabwaveiwer,timex(tmin:tmax),moption,plot_erp_data,latency,...
-    line_colors,offset,positive_up,ERP,ChanArray,BinArray,Yscale);%cwm = [0 0 0];% white: Background color for measurement window
-set(handles.erptabwaveiwer,'color',[1 1 1]);
-% %%%-------------------Display results obtained from "Measurement Tool" Panel---------------------------------
-[~,~,~,Amp,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
-RowName = {};
-for Numofbin = 1:numel(BinArray)
-    RowName{Numofbin} = strcat('Bin',num2str(BinArray(Numofbin)));%'<html><font size= >',':',32,observe_ERPDAT.ERP.bindescr{BinArray(Numofbin)}
-end
-ColumnName = {};
-for Numofsel_chan = 1:numel(ChanArray)
-    ColumnName{Numofsel_chan} = ['<html><font size= >',num2str(ChanArray(Numofsel_chan)),'.',32,chanLabels{ChanArray(Numofsel_chan)}];
-end
-line_colors_ldg = get_colors(numel(ndata));
-try
-    if ismember_bc2(moption, {'instabl','peaklatbl','fpeaklat','fareatlat','fninteglat','fareaplat','fareanlat','meanbl','peakampbl','areat','ninteg','areap','arean','ninteg','areazt','nintegz','areazp','areazn'})
-        Data_display = Amp(BinArray,ChanArray);
-    else
-        Data_display = Lat(BinArray,ChanArray);
-    end
-    if ismember_bc2(moption,{'arean','areazn'})
-        Data_display= -1.*Data_display;
-    end
-    Data_display_tra = {};
-    for Numofone = 1:size(Data_display,1)
-        for Numoftwo = 1:size(Data_display,2)
-            if ~isnan(Data_display(Numofone,Numoftwo))
-                if BinchanOverlay == 0
-                    Data_display_tra{Numofone,Numoftwo} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display(Numofone,Numoftwo));
-                else
-                    Data_display_tra{Numoftwo,Numofone} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display(Numofone,Numoftwo));
-                end
-            else
-                if BinchanOverlay == 0
-                    Data_display_tra{Numofone,Numoftwo} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
-                else
-                    Data_display_tra{Numoftwo,Numofone} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
-                end
+[Numchan,Numsamp,Numbin,Numerp] = size(plot_erp_data);
+if chanOverlay==1
+    %     plot_erp_data = permute(plot_erp_data,[2 1 3 4]);
+    %     plot_erp_data = reshape(plot_erp_data,1,Numsamp,Numchan*Numbin*Numerp);
+    plot_erp_data11 = [];
+    count = 0;
+    for Numoferp = 1:Numerp
+        for Numofchan = 1: Numchan
+            for Numofbin = 1:Numbin
+                count = count+1;
+                plot_erp_data11(1,:,count) = squeeze(plot_erp_data(Numofchan,:,Numofbin,Numoferp));
             end
         end
     end
-    handles.ERP_M_T_Viewer_table = uitable(handles.ERP_M_T_Viewer,'Data',Data_display_tra,'Units','Normalize');
-    if BinchanOverlay == 0
-        handles.ERP_M_T_Viewer_table.RowName = RowName;
-        handles.ERP_M_T_Viewer_table.ColumnName = ColumnName;
-    else
-        handles.ERP_M_T_Viewer_table.RowName = ColumnName;
-        handles.ERP_M_T_Viewer_table.ColumnName = RowName;
-    end
-    handles.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
-    
-    if size(Data_display_tra,2)<12
-        ColumnWidth = {};
-        for Numofchan =1:size(Data_display_tra,2)
-            ColumnWidth{Numofchan} = handles.ERP_M_T_Viewer.Position(3)/size(Data_display_tra,2);
-        end
-        handles.ERP_M_T_Viewer_table.ColumnWidth = ColumnWidth;
-    elseif size(Data_display_tra,2) ==1
-        handles.ERP_M_T_Viewer_table.ColumnWidth = {handles.ERP_M_T_Viewer.Position(3)};
-    end
-catch
-    for Numofbin = 1:ERP.nbin
-        Data_display(Numofbin,1) = [];
-    end
-    RowName = {};
-    for Numofbin = 1:ERP.nbin
-        RowName{Numofbin} = strcat('Bin',num2str((Numofbin)));
-    end
-    handles.ERP_M_T_Viewer_table = uitable(handles.ERP_M_T_Viewer,'Data',Data_display);
-    handles.ERP_M_T_Viewer_table.RowName = RowName;
-    handles.ERP_M_T_Viewer_table.ColumnName = {'No data are avalible'};
-    handles.ERP_M_T_Viewer_table.ColumnWidth = {handles.ERP_M_T_Viewer.Position(3)};
-    handles.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
-    handles.ERP_M_T_Viewer_table.ForegroundColor = [1 1 1];
-end
-handles.plotgrid.Heights(1) = 70; % set the first element (pageinfo) to 30px high
-handles.plotgrid.Heights(2) = -1; % set the second element (x axis) to 30px high
-handles.plotgrid.Heights(3) = 80;
-handles.plotgrid.Units = 'pixels';
-
-if splot_n*pb_height<(handles.plotgrid.Position(4)-handles.plotgrid.Heights(1))&&Fillscreen
-    pb_height = (handles.plotgrid.Position(4)-handles.plotgrid.Heights(1)-handles.plotgrid.Heights(2))/splot_n;
-end
-handles.ViewAxes.Heights = splot_n*pb_height;
-handles.ERP_M_T_Viewer_table.FontSize = FonsizeDefault;
-handles.text_warningmessage.String ='';
-guidata(hObject, handles);
-% uiresume(handles.figure1);
-
-
-
-function plot_wave_viewer_popup(hObject,handles)
-ALLERP = handles.ALLERP;
-
-if isempty(ALLERP)
-    return;
-end
-handles.ALLERP=ALLERP;
-%%current erp
-CurrentERP=handles.CurrentERP;
-if isempty(CurrentERP) || numel(CurrentERP)~=1 || any(CurrentERP> length(ALLERP))
-    CurrentERP = length(ALLERP);
-    handles.CurrentERP = CurrentERP;
-end
-handles.edit5_erpset.String = num2str(CurrentERP);
-if CurrentERP==1
-    handles.pushbutton_erpsetsmall.Enable = 'off';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
-elseif CurrentERP==length(ALLERP)
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'off';
+    plot_erp_data = plot_erp_data11;
 else
-    handles.pushbutton_erpsetsmall.Enable = 'on';
-    handles.pushbutton_erpsetlarge.Enable = 'on';
-end
-%%channels
-ChanArray = handles.ChanArray;
-ERP = ALLERP(CurrentERP);
-
-handles.text_erpname.String = ERP.erpname;
-nbchan = ERP.nchan;
-handles.ERP = ERP;
-if isempty(ChanArray) || any(ChanArray>nbchan) || any(ChanArray<=0)
-    ChanArray = [1:nbchan];
-    handles.ChanArray = ChanArray;
-end
-if numel(ChanArray)~=1
-    handles.pushbutton8_chansmall.Enable = 'off';
-    handles.pushbutton_chanlarge.Enable = 'off';
-else
-    if ChanArray==1
-        handles.pushbutton8_chansmall.Enable = 'off';
-        handles.pushbutton_chanlarge.Enable = 'on';
-    elseif ChanArray==nbchan
-        handles.pushbutton8_chansmall.Enable = 'on';
-        handles.pushbutton_chanlarge.Enable = 'off';
-    else
-        handles.pushbutton8_chansmall.Enable = 'on';
-        handles.pushbutton_chanlarge.Enable = 'on';
-    end
-end
-ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
-ChanArray11 = erase(ChanArray11,{'[',']'});
-handles.edit_chans.String =  ChanArray11;
-
-%%bin
-nbin = ERP.nbin;
-BinArray =handles.BinArray;
-if isempty(BinArray) || any(BinArray>nbin) || any(BinArray<=0)
-    BinArray = [1:nbin];
-    handles.BinArray = BinArray;
-end
-if numel(BinArray)~=1
-    handles.pushbutton_binsmall.Enable = 'off';
-    handles.pushbutton_binlarge.Enable = 'off';
-else
-    if BinArray==1
-        handles.pushbutton_binsmall.Enable = 'off';
-        handles.pushbutton_binlarge.Enable = 'on';
-    elseif BinArray == nbin
-        handles.pushbutton_binsmall.Enable = 'on';
-        handles.pushbutton_binlarge.Enable = 'off';
-    else
-        handles.pushbutton_binsmall.Enable = 'on';
-        handles.pushbutton_binlarge.Enable = 'on';
-    end
-end
-BinArray11 = vect2colon(BinArray,'Sort', 'on');
-BinArray11 = erase(BinArray11,{'[',']'});
-handles.edit_bin.String = BinArray11;
-
-%%-----------------------create the panel----------------------------------
-FonsizeDefault = f_get_default_fontsize();
-try
-    [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
-catch
-    ColorB_def = [0. 95 0.95 0.95];
-end
-if isempty(ColorB_def)
-    ColorB_def = [0. 95 0.95 0.95];
-end
-
-Position = handles.erptabwaveiwer.OuterPosition;
-Numrows = numel(ChanArray);
-
-FigureName= figure( 'Name',[ERP.erpname] , ...
-    'NumberTitle', 'off', ...
-    'MenuBar', 'none', ...
-    'Toolbar', 'none', ...
-    'HandleVisibility', 'off');
-FigureName.Position(3:4) = 0.9*Position(3:4);
-erptabwaveiwer_legend = subplot(ceil(Numrows*5)+1, 1, 1,'align');
-hbig = subplot(ceil(Numrows*5)+1,1,[2:ceil(Numrows*5)+1]);
-hold(hbig,'on');
-ax = hbig;
-outerpos = ax.OuterPosition;
-ti = ax.TightInset;
-left = outerpos(1) + ti(1);
-bottom = outerpos(2) + ti(2);
-ax_width = outerpos(3) - ti(1) - ti(3);
-ax_height = outerpos(4) - ti(2) - ti(4);
-ax.Position = [left bottom ax_width ax_height];
-
-timeStart =handles.timeStart;
-timEnd =handles.timEnd;
-if isempty(timeStart)|| numel(timeStart)~=1 || timeStart>=ERP.times(end)
-    timeStart=ERP.times(1);
-    timEnd = ERP.times(end);
-    handles.timeStart=timeStart;
-    handles.timEnd=timEnd;
-end
-if isempty(timEnd)|| numel(timEnd)~=1 || timEnd<=ERP.times(1)
-    timeStart=ERP.times(1);
-    timEnd = ERP.times(end);
-    handles.timeStart=timeStart;
-    handles.timEnd=timEnd;
-end
-handles.edit1_time_range.String = num2str([timeStart,timEnd]);
-
-xtickstep=handles.xtickstep;
-[~, chanLabels, ~, ~, ~] = readlocs(ERP.chanlocs);
-Yscale = handles.Yscale;
-bindata = ERP.bindata(ChanArray,:,BinArray);
-y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
-if isempty(Yscale) || numel(Yscale)~=2
-    Yscale= y_scale_def;
-    handles.Yscale=Yscale;
-end
-handles.edit2_yrange.String = num2str(Yscale);
-
-Min_vspacing = handles.Min_vspacing;
-Fillscreen = handles.Fillscreen;
-positive_up = handles.positive_up;
-moption= handles.moption;
-latency= handles.latency;
-Min_time = ERP.times(1);
-Max_time = ERP.times(end);
-blc = handles.blc;
-intfactor =  handles.intfactor;
-Resolution =handles.Resolution;
-BinchanOverlay = 0;
-columNum=1;
-rowNums=numel(ChanArray);
-
-handles.GridposArray = zeros(rowNums,columNum);
-for ii = 1:rowNums
-    handles.GridposArray(ii,1) =   ChanArray(ii);
-end
-GridposArray = handles.GridposArray;
-
-%%----------------------measurement name-----------------------------------
-measurearray = {'Instantaneous amplitude',...
-    'Mean amplitude between two fixed latencies',...
-    'Peak amplitude',...
-    'Peak latency',...
-    'Fractional Peak latency',...
-    'Numerical integration/Area between two fixed latencies',...
-    'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-    'Fractional Area latency'};
-meacodes    =      {'instabl', 'meanbl', 'peakampbl', 'peaklatbl', 'fpeaklat',...
-    'areat', 'areap', 'arean','areazt','areazp','areazn','fareatlat',...
-    'fareaplat','fninteglat','fareanlat', 'ninteg','nintegz' };
-
-[tfm, indxmeaX] = ismember_bc2({moption}, meacodes);
-
-if ismember_bc2(indxmeaX,[6 7 8 16])
-    meamenu = 6; %  'Numerical integration/Area between two fixed latencies',...
-elseif ismember_bc2(indxmeaX,[9 10 11 17])
-    meamenu = 7; %  'Numerical integration/Area between two (automatically detected) zero-crossing latencies'...
-elseif ismember_bc2(indxmeaX,[12 13 14 15])
-    meamenu = 8; %  'Fractional Area latency'
-elseif ismember_bc2(indxmeaX,1)
-    meamenu = 1; % 'Instantaneous amplitude',...
-elseif ismember_bc2(indxmeaX,2)
-    meamenu = 2; % 'mean amp
-elseif ismember_bc2(indxmeaX,3)
-    meamenu = 3; % 'peak amp',...
-elseif ismember_bc2(indxmeaX,4)
-    meamenu = 4; % 'peak lat',...
-elseif ismember_bc2(indxmeaX,5)
-    meamenu = 5; % 'Fractional Peak latency',..',...
-else
-    meamenu = 1; % 'Instantaneous amplitude',...
-end
-
-offset = f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
-    positive_up,BinchanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend);
-
-splot_n = numel(ChanArray);
-ndata = BinArray;
-nplot = ChanArray;
-
-pnts    = ERP.pnts;
-timeor  = ERP.times; % original time vector
-p1      = timeor(1);
-p2      = timeor(end);
-if intfactor~=1
-    timex = linspace(p1,p2,round(pnts*intfactor));
-else
-    timex = timeor;
-end
-[xxx, latsamp, latdiffms] = closest(timex, [Min_time Max_time]);
-tmin = latsamp(1);
-tmax = latsamp(2);
-if tmin < 1
-    tmin = 1;
-end
-if tmax > numel(timex)
-    tmax = numel(timex);
-end
-
-if intfactor~=1
-    Plot_erp_data_TRAN = [];
-    for Numoftwo = 1:size(ERP.bindata,3)
-        for Numofone = 1:size(ERP.bindata,1)
-            data = squeeze(ERP.bindata(Numofone,:,Numoftwo));
-            data  = spline(timeor, data, timex); % re-sampled data
-            blv    = blvalue2(data, timex, blc);
-            data   = data - blv;
-            Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
+    %     plot_erp_data = reshape(plot_erp_data,Numchan,Numsamp,Numbin*Numerp);
+    plot_erp_data11 = [];
+    count = 0;
+    for Numoferp = 1:Numerp
+        for Numofbin = 1:Numbin
+            count = count+1;
+            plot_erp_data11(:,:,count) = squeeze(plot_erp_data(:,:,Numofbin,Numoferp));
         end
     end
-    Bindata = Plot_erp_data_TRAN;
-else
-    Bindata = ERP.bindata;
+    plot_erp_data = plot_erp_data11;
 end
 
-
-plot_erp_data = nan(tmax-tmin+1,numel(ndata));
-for i = 1:splot_n
-    for i_bin = 1:numel(ndata)
-        plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i),tmin:tmax,BinArray(i_bin))'*positive_up; %
-    end
-end
-line_colors = get_colors(numel(ndata));
-
-line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
 [~,~,Num_plot] = size(plot_erp_data);
-for i = 1:Num_plot
-    plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
-end
+line_colors = get_colors(Num_plot);
 
+% line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
+% return;
+for i = 1:size(plot_erp_data,1)
+    plot_erp_data(i,:,:) = plot_erp_data(i,:,:) + ones(size(plot_erp_data(i,:,:)))*offset(i);
+end
+if chanOverlay==1
+    offset = zeros(size(plot_erp_data,3),1);
+end
 %
 %%%Mark the area/latency/amplitude of interest within the defined window.
 ERP_mark_area_latency(handles.erptabwaveiwer,timex(tmin:tmax),moption,plot_erp_data,latency,...
-    line_colors,offset,positive_up,ERP,ChanArray,BinArray,Yscale);%cwm = [0 0 0];% white: Background color for measurement window
+    line_colors,offset,positive_up,ERP,ChanArray,BinArray,Yscale,ALLERP,ERPArray,chanOverlay);%cwm = [0 0 0];% white: Background color for measurement window
+set(handles.erptabwaveiwer,'color',[1 1 1]);
+% %%%-------------------Display results obtained from "Measurement Tool" Panel---------------------------------
+offset1 = zeros(numel(ChanArray),1);
+for Numofsub = 1:numel(ERPArray)
+    ERP1 =  ALLERP(ERPArray(Numofsub));
+    [~,~,~,Amp1,Lat1]= f_ERP_plot_wav(ERP1,offset1,ChanArray,BinArray);
+    Amp(:,:,Numofsub) = Amp1;
+    Lat(:,:,Numofsub) = Lat1;
+end
+
+RowName = {};
+count = 0;
+for Numofsub = 1:numel(ERPArray)
+    for Numofbin = 1:numel(BinArray)
+        count = count+1;
+        RowName{count} = strcat('Set:',32,num2str(ERPArray(Numofsub)));
+    end
+end
+
+ColumnName{1} = '#Bin';
+for Numofsel_chan = 1:numel(ChanArray)
+    ColumnName{Numofsel_chan+1} = ['<html><font size= >',num2str(ChanArray(Numofsel_chan)),'.',32,chanLabels{ChanArray(Numofsel_chan)}];
+    
+end
+line_colors_ldg = get_colors(Num_plot);
+
+if ismember_bc2(moption, {'instabl','peaklatbl','fpeaklat','fareatlat','fninteglat','fareaplat','fareanlat','meanbl','peakampbl','areat','ninteg','areap','arean','ninteg','areazt','nintegz','areazp','areazn'})
+    Data_display = Amp(BinArray,ChanArray,:);
+else
+    Data_display = Lat(BinArray,ChanArray,:);
+end
+if ismember_bc2(moption,{'arean','areazn'})
+    Data_display= -1.*Data_display;
+end
+
+Data_display_tra = {};
+count = 0;
+for Numofsub = 1:numel(ERPArray)
+    for Numofbin = 1:numel(BinArray)
+        count = count+1;
+        Data_display1(count,:) = Data_display(Numofbin,:,Numofsub);
+        if chanOverlay==0
+            Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(0),'f'], BinArray(Numofbin));
+        else
+            Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(0),'f'], BinArray(Numofbin));
+        end
+    end
+end
+
+for Numofone = 1:size(Data_display1,1)
+    for Numoftwo = 1:size(Data_display1,2)
+        if ~isnan(Data_display1(Numofone,Numoftwo))
+            if chanOverlay==0
+                Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
+            else
+                Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
+            end
+        else
+            if chanOverlay==0
+                Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
+            else
+                Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="black">NaN'];
+            end
+        end
+    end
+end
+
+handles.ERP_M_T_Viewer_table = uitable(handles.ERP_M_T_Viewer,'Data',Data_display_tra,'Units','Normalize');
+handles.ERP_M_T_Viewer_table.RowName = RowName;
+handles.ERP_M_T_Viewer_table.ColumnName = ColumnName;
+if chanOverlay==0
+    handles.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
+end
+
+if numel(ChanArray)<12
+    ColumnWidth = {};
+    for Numofchan =1:numel(ChanArray)+1
+        ColumnWidth{Numofchan} = handles.ERP_M_T_Viewer.Position(3)/(numel(ChanArray)+1);
+    end
+    handles.ERP_M_T_Viewer_table.ColumnWidth = ColumnWidth;
+elseif numel(ChanArray) ==1
+    handles.ERP_M_T_Viewer_table.ColumnWidth = {handles.ERP_M_T_Viewer.Position(3)};
+end
 
 
+handles.plotgrid.Heights(1) = 70; % set the first element (pageinfo) to 30px high
+handles.plotgrid.Heights(2) = -1; % set the second element (x axis) to 30px high
+handles.plotgrid.Heights(3) = 100;
+handles.plotgrid.Units = 'pixels';
+
+if Num_plot*pb_height<(handles.plotgrid.Position(4)-handles.plotgrid.Heights(1))
+    pb_height = (handles.plotgrid.Position(4)-handles.plotgrid.Heights(1)-handles.plotgrid.Heights(2))/Num_plot;
+end
+handles.ViewAxes.Heights = Num_plot*pb_height;
+handles.ERP_M_T_Viewer_table.FontSize = FonsizeDefault;
+handles.text_warningmessage.String ='';
+guidata(hObject, handles);
 
 
-
-function OffSetY = f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,qYScales,columNum,...
-    positive_up,BinchanOverlay,rowNums,GridposArray,waveview,legendview)
+function OffSetY = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,qYScales,columNum,...
+    positive_up,chanOverlay,rowNums,GridposArray,waveview,legendview)
 OffSetY = [];
 FonsizeDefault = f_get_default_fontsize();
 %%matlab version
@@ -1325,25 +1346,37 @@ matlab_ver = version('-release');
 Matlab_ver = str2double(matlab_ver(1:4));
 
 qtimeRange = [timeStart timEnd];
-if BinchanOverlay==0
-    qPLOTORG = [1 2 3];
-    [~, qplotArrayStr, ~, ~, ~]  = readlocs(ERP.chanlocs(ChanArray));
-    qLegendName= ERP.bindescr(BinArray);
-else
-    qPLOTORG = [2 1 3];
-    [~, qLegendName, ~, ~, ~]  = readlocs(ERP.chanlocs(ChanArray));
-    qplotArrayStr = ERP.bindescr(BinArray);
-end
-[ERPdatadef,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP,1,qPLOTORG,1);
 
-if qPLOTORG(1)==1 && qPLOTORG(2)==2 %% Array is plotnum by samples by datanum
-    bindata = ERPdatadef(ChanArray,:,BinArray,1);
-    plotArray = ChanArray;
-elseif  qPLOTORG(1)==2 && qPLOTORG(2)==1
-    bindata = ERPdatadef(ChanArray,:,BinArray,1);
-    bindata = permute(bindata,[3 2 1 4]);
-    plotArray = BinArray;
+qPLOTORG = [1 2 3];
+[~, qplotArrayStr, ~, ~, ~]  = readlocs(ERP.chanlocs(ChanArray));
+qLegendName= ERP.bindescr(BinArray);
+for Numoferp = 1:numel(ERPArray)
+    ERP1 = ALLERP(ERPArray(Numoferp));
+    [ERPdatadef1,legendNamedef,ERPerrordatadef,timeRangedef] = f_geterpdata(ERP1,1,qPLOTORG,1);
+    ERPdatadef(:,:,:,Numoferp) = ERPdatadef1;
 end
+bindata = ERPdatadef(ChanArray,:,BinArray,:);
+[Numchan,Numsamp,Numbin,Numerp] = size(bindata);
+
+if chanOverlay==1
+    plotArray=1;
+    bindata = permute(bindata,[2 1 3 4]);
+    bindata = reshape(bindata,1,Numsamp,Numchan*Numbin*Numerp);
+    qplotArrayStr{1,1} = 'No label';
+else
+    plotArray = ChanArray;
+    bindata = reshape(bindata,Numchan,Numsamp,Numbin*Numerp);
+    count = 0;
+    for Numofsub = 1:numel(ERPArray)
+        for Numofbin = 1:numel(BinArray)
+            count = count+1;
+            qLegendName1{count} = ['ERPset',32,num2str(Numofsub),':',qLegendName{Numofbin}];
+        end
+    end
+    qLegendName = qLegendName1;
+end
+
+
 if isempty(timeRangedef)
     timeRangedef = ERP.times;
 end
@@ -1352,16 +1385,13 @@ fs= ERP.srate;
 Ypert =20;
 %%get y axis
 y_scale_def = [1.1*min(bindata(:)),1.1*max(bindata(:))];
-
-if numel(qYScales)==2
+if numel(qYScales)==2 && qYScales(1) <qYScales(2)
     yscaleall = qYScales(end)-qYScales(1);
 else
     yscaleall = 2*max(abs(qYScales));
     qYScales = [-max(abs(qYScales)),max(abs(qYScales))];
 end
-if yscaleall < y_scale_def(2)-y_scale_def(1)
-    yscaleall = y_scale_def(2)-y_scale_def(1);
-end
+
 for Numofrows = 1:rowNums
     OffSetY(Numofrows) = yscaleall*(rowNums-Numofrows)*(Ypert/100+1);
 end
@@ -1387,6 +1417,7 @@ StepXP = ceil(StepX/(1000/fs));
 qPolarityWave = positive_up;
 
 NumOverlay = size(bindata,3);
+
 isxaxislabel=1;
 
 %%line color
@@ -1418,17 +1449,21 @@ ax_height = outerpos(4) - ti(2) - ti(4);
 ax.Position = [left bottom ax_width ax_height];
 
 %%check elements in qGridposArray
-plotArray = reshape(plotArray,1,[]);
-for Numofrows = 1:size(GridposArray,1)
-    for Numofcolumns = 1:size(GridposArray,2)
-        SingleGridpos = GridposArray(Numofrows,Numofcolumns);
-        if SingleGridpos~=0
-            ExistGridops = f_existvector(plotArray,SingleGridpos);
-            if ExistGridops==1
-                GridposArray(Numofrows,Numofcolumns) =0;
-            else
-                [xpos,ypos]=  find(plotArray==SingleGridpos);
-                GridposArray(Numofrows,Numofcolumns) =ypos;
+if chanOverlay==1
+    GridposArray(1,1)=1;
+else
+    plotArray = reshape(plotArray,1,[]);
+    for Numofrows = 1:size(GridposArray,1)
+        for Numofcolumns = 1:size(GridposArray,2)
+            SingleGridpos = GridposArray(Numofrows,Numofcolumns);
+            if SingleGridpos~=0
+                ExistGridops = f_existvector(plotArray,SingleGridpos);
+                if ExistGridops==1
+                    GridposArray(Numofrows,Numofcolumns) =0;
+                else
+                    [xpos,ypos]=  find(plotArray==SingleGridpos);
+                    GridposArray(Numofrows,Numofcolumns) =ypos;
+                end
             end
         end
     end
@@ -1485,7 +1520,7 @@ for Numofrows = 1:rowNums
                 hplot(Numofoverlay) = plot(waveview,Xtimerangetrasf, bindatatrs,'LineWidth',1,...
                     'Color', qLineColorspec(Numofoverlay,:));
             end
-           
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust y axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1582,7 +1617,6 @@ for Numofrows = 1:rowNums
                     'Color',[0 0 0]);%
             end
             
-            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%----------------------Adjust x axis------------------------%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1676,16 +1710,23 @@ for Numofrows = 1:rowNums
     end
 end%% end of rows
 set(waveview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
+set(legendview, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none');
 if ~isempty(hplot)
-    NumColumns = ceil(sqrt(length(qLegendName)));
-    for Numofoverlay = 1:numel(hplot)
-        qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
-        LegendName{Numofoverlay} = char(strcat('\color[rgb]{',num2str([0 0 0]),'}',32,qLegendName{Numofoverlay}));
+    if chanOverlay==0
+        for Numofoverlay = 1:numel(hplot)
+            qLegendName{Numofoverlay} = strrep(qLegendName{Numofoverlay},'_','\_');
+        end
+        p  = get(legendview,'position');
+        h_legend = legend(legendview,hplot,qLegendName);
+        rowNumlg = ceil(sqrt(length(qLegendName)));
+        set(h_legend,'NumColumns',rowNumlg,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
+    else
+        qLegendName = {'There are no legend names becuase you selected "Overlay" for chans'};
+        text(legendview,0.5,0.8,qLegendName ,...
+            'FontSize',FonsizeDefault+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);
     end
-    p  = get(legendview,'position');
-    h_legend = legend(legendview,hplot,qLegendName);
-    set(h_legend,'NumColumns',1,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
 end
+
 % guidata(hObject, handles);
 
 function f_plot_wave_viewer_popup(hObject,handles)
@@ -1695,6 +1736,42 @@ if isempty(ALLERP)
     return;
 end
 handles.ALLERP=ALLERP;
+
+
+%%current erp
+ERPArray=str2num(handles.edit5_erpset.String);
+if isempty(ERPArray)  || any(ERPArray(:)> length(ALLERP)) || any(ERPArray(:)<1)
+    ERPArray = 1;
+    handles.CurrentERP = ERPArray;
+end
+checkindex = checkerpsets(ALLERP(ERPArray));
+if ~isempty(checkindex)
+    handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
+    handles.checkbox_erp.Value=0;
+    handles.radiobutton_erppor.Value=1;
+    ERPArray = ERPArray(1);
+end
+
+
+handles.edit5_erpset.String = num2str(ERPArray);
+if numel(ERPArray)==1
+    if ERPArray==1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    elseif ERPArray==length(ALLERP)
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    else
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    end
+else
+    handles.pushbutton_erpsetsmall.Enable = 'off';
+    handles.pushbutton_erpsetlarge.Enable = 'off';
+end
+
+
+
 %%current erp
 CurrentERP=handles.CurrentERP;
 if isempty(CurrentERP) || numel(CurrentERP)~=1 || any(CurrentERP> length(ALLERP))
@@ -1721,18 +1798,17 @@ nbchan = ERP.nchan;
 handles.ERP = ERP;
 if isempty(ChanArray) || any(ChanArray>nbchan) || any(ChanArray<=0)
     ChanArray = [1:nbchan];
-    handles.ChanArray = ChanArray;
+    
 end
-
+handles.ChanArray = ChanArray;
 
 %%bin
 nbin = ERP.nbin;
 BinArray =handles.BinArray;
 if isempty(BinArray) || any(BinArray>nbin) || any(BinArray<=0)
     BinArray = [1:nbin];
-    handles.BinArray = BinArray;
 end
-
+handles.BinArray = BinArray;
 
 %%-----------------------create the panel----------------------------------
 FonsizeDefault = f_get_default_fontsize();
@@ -1746,15 +1822,22 @@ if isempty(ColorB_def)
 end
 
 Position = handles.erptabwaveiwer.OuterPosition;
-Numrows = numel(ChanArray);
+chanOverlay = handles.radiobutton_chanoverlay.Value;
+
+if chanOverlay==0
+    rowNums=numel(ChanArray);
+else
+    rowNums=1;
+end
+
 
 FigureName= figure( 'Name',[ERP.erpname] , ...
     'NumberTitle', 'off','Color',[1 1 1]);
 FigureName.Position(3:4) = Position(3:4);
 
-erptabwaveiwer_legend = subplot(ceil(Numrows*5)+1, 1, 1,'align');
+erptabwaveiwer_legend = subplot(ceil(rowNums*5)+1, 1, 1,'align');
 
-hbig = subplot(ceil(Numrows*5)+1,1,[2:ceil(Numrows*5)+1]);
+hbig = subplot(ceil(rowNums*5)+1,1,[2:ceil(rowNums*5)+1]);
 hold(hbig,'on');
 set(erptabwaveiwer_legend, 'XTick', [], 'YTick', [],'Box','off', 'Color','none','xcolor','none','ycolor','none','box','off');
 ax = hbig;
@@ -1805,7 +1888,6 @@ intfactor =  handles.intfactor;
 Resolution =handles.Resolution;
 BinchanOverlay = 0;
 columNum=1;
-rowNums=numel(ChanArray);
 
 handles.GridposArray = zeros(rowNums,columNum);
 for ii = 1:rowNums
@@ -1848,12 +1930,14 @@ else
     meamenu = 1; % 'Instantaneous amplitude',...
 end
 
-offset = f_plotaberpwave(ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
-    positive_up,BinchanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend);
+offset = f_plotaberpwave(ALLERP,ERPArray,ERP,ChanArray,BinArray,timeStart,timEnd,xtickstep,Yscale,columNum,...
+    positive_up,chanOverlay,rowNums,GridposArray,hbig,erptabwaveiwer_legend);
 
 splot_n = numel(ChanArray);
+
+
 ndata = BinArray;
-nplot = ChanArray;
+
 
 pnts    = ERP.pnts;
 timeor  = ERP.times; % original time vector
@@ -1873,42 +1957,79 @@ end
 if tmax > numel(timex)
     tmax = numel(timex);
 end
+Plot_erp_data_TRAN = [];
+for Numofsub = 1:numel(ERPArray)
+    ERP1 = ALLERP(ERPArray(Numofsub));
+    if intfactor~=1
+        for Numoftwo = 1:size(ERP1.bindata,3)
+            for Numofone = 1:size(ERP1.bindata,1)
+                data = squeeze(ERP1.bindata(Numofone,:,Numoftwo));
+                data  = spline(timeor, data, timex); % re-sampled data
+                blv    = blvalue2(data, timex, blc);
+                data   = data - blv;
+                Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
+            end
+        end
+        Bindata(:,:,:,Numofsub) = Plot_erp_data_TRAN;
+    else
+        Bindata(:,:,:,Numofsub) = ERP1.bindata;
+    end
+end
 
-if intfactor~=1
-    Plot_erp_data_TRAN = [];
-    for Numoftwo = 1:size(ERP.bindata,3)
-        for Numofone = 1:size(ERP.bindata,1)
-            data = squeeze(ERP.bindata(Numofone,:,Numoftwo));
-            data  = spline(timeor, data, timex); % re-sampled data
-            blv    = blvalue2(data, timex, blc);
-            data   = data - blv;
-            Plot_erp_data_TRAN(Numofone,:,Numoftwo) = data;
+plot_erp_data = nan(splot_n,tmax-tmin+1,numel(ndata));
+for Numofsub = 1:numel(ERPArray)
+    for i = 1:splot_n
+        for i_bin = 1:numel(ndata)
+            plot_erp_data(i,:,i_bin,Numofsub) = Bindata(ChanArray(i),tmin:tmax,BinArray(i_bin),Numofsub)'*positive_up; %
         end
     end
-    Bindata = Plot_erp_data_TRAN;
-else
-    Bindata = ERP.bindata;
 end
 
-
-plot_erp_data = nan(tmax-tmin+1,numel(ndata));
-for i = 1:splot_n
-    for i_bin = 1:numel(ndata)
-        plot_erp_data(:,i_bin,i) = Bindata(ChanArray(i),tmin:tmax,BinArray(i_bin))'*positive_up; %
+[Numchan,Numsamp,Numbin,Numerp] = size(plot_erp_data);
+if chanOverlay==1
+    %     plot_erp_data = permute(plot_erp_data,[2 1 3 4]);
+    %     plot_erp_data = reshape(plot_erp_data,1,Numsamp,Numchan*Numbin*Numerp);
+    plot_erp_data11 = [];
+    count = 0;
+    for Numoferp = 1:Numerp
+        for Numofchan = 1: Numchan
+            for Numofbin = 1:Numbin
+                count = count+1;
+                plot_erp_data11(1,:,count) = squeeze(plot_erp_data(Numofchan,:,Numofbin,Numoferp));
+            end
+        end
     end
+    plot_erp_data = plot_erp_data11;
+else
+    %     plot_erp_data = reshape(plot_erp_data,Numchan,Numsamp,Numbin*Numerp);
+    plot_erp_data11 = [];
+    count = 0;
+    for Numoferp = 1:Numerp
+        for Numofbin = 1:Numbin
+            count = count+1;
+            plot_erp_data11(:,:,count) = squeeze(plot_erp_data(:,:,Numofbin,Numoferp));
+        end
+    end
+    plot_erp_data = plot_erp_data11;
 end
-line_colors = get_colors(numel(ndata));
 
-line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
 [~,~,Num_plot] = size(plot_erp_data);
-for i = 1:Num_plot
-    plot_erp_data(:,:,i) = plot_erp_data(:,:,i) + ones(size(plot_erp_data(:,:,i)))*offset(i);
+line_colors = get_colors(Num_plot);
+
+% line_colors = repmat(line_colors,[splot_n 1]); %repeat the colors once for every plot
+% return;
+if chanOverlay==1
+    offset = zeros(size(plot_erp_data,3),1);
+end
+
+for i = 1:size(plot_erp_data,1)
+    plot_erp_data(i,:,:) = plot_erp_data(i,:,:) + ones(size(plot_erp_data(i,:,:)))*offset(i);
 end
 
 %
 %%%Mark the area/latency/amplitude of interest within the defined window.
 ERP_mark_area_latency(hbig,timex(tmin:tmax),moption,plot_erp_data,latency,line_colors,offset,...
-    positive_up,ERP,ChanArray,BinArray,Yscale);%cwm = [0 0 0];% white: Background color for measurement window
+    positive_up,ERP,ChanArray,BinArray,Yscale,ALLERP,ERPArray,chanOverlay);%cwm = [0 0 0];% white: Background color for measurement window
 
 
 
@@ -1937,30 +2058,16 @@ end
 
 
 function ERP_mark_area_latency(r_ax,timex,moption,plot_erp_data,latency,line_colors,offset,...
-    positive_up,ERP,ChanArray,BinArray,Yscale)
-% try
-%     cwm_backgb   = erpworkingmemory('MWColor');
-% catch
-cwm_backgb=[0.7 0.7 0.7];
-% end
-% if isempty(cwm_backgb)
-%     cwm_backgb=[0.7 0.7 0.7];
-% end
+    positive_up,ERP,ChanArray,BinArray,Yscale,ALLERP,ERPArray,chanOverlay)
 
-% try
-%     cwm   = erpworkingmemory('MTLineColor');
-% catch
+cwm_backgb=[0.7 0.7 0.7];
 cwm  =[0 0 0];
-% end
-% if isempty(cwm)
-%     cwm=[0 0 0];
-% end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Plot area within the defined time-window%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Set area within the defined time-window for 1.Fractional area latency, 2. Numerical integration/Area between two fixed latencies
 mearea    = { 'areat', 'areap', 'arean','areazt','areazp','areazn', 'ninteg','nintegz'};
-
+plot_erp_data = permute(plot_erp_data,[2 1 3]);
 [~,Num_data,Num_plot] = size(plot_erp_data);
 
 if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareaplat','fninteglat','fareanlat'})
@@ -1968,7 +2075,9 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
         latx = latency;
         [xxx, latsamp] = closest(timex, latx);
         datax = plot_erp_data(latsamp(1):latsamp(2),:,:);
+        datax = permute(datax,[1 3 2]);
     end
+    
     Time_res = timex(2)-timex(1);
     
     if ismember_bc2(moption, {'areap', 'fareaplat'}) % positive area
@@ -2021,26 +2130,21 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                         inBetweenRegionX1 = [timexx(1:Check_isolated(1)),fliplr(timexx(1:Check_isolated(1)))];
                         inBetweenRegionY1 = [squeeze(dataxx(1:Check_isolated(1)))',fliplr(offset(Numofstione)*ones(1,numel(timexx(1:Check_isolated(1)))))];
                         fill(r_ax,inBetweenRegionX1, inBetweenRegionY1,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                        
                         inBetweenRegionX2 = [timexx(Check_isolated(1)+1:end),fliplr(timexx(Check_isolated(1)+1:end))];
                         inBetweenRegionY2 = [squeeze(dataxx(Check_isolated(1)+1:end))',fliplr(offset(Numofstione)*ones(1,numel(timexx(Check_isolated(1)+1:end))))];
                         fill(r_ax,inBetweenRegionX2, inBetweenRegionY2,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
                     elseif numel(Check_isolated) >1
                         for Numofrange = 1:numel(Check_isolated)-1
-                            
                             inBetweenRegionX = [timexx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)),fliplr(timexx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))];
                             inBetweenRegionY = [squeeze(dataxx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))',fliplr(offset(Numofstione)*ones(1,numel(timexx(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))))];
                             fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                            
                         end
                         inBetweenRegionX1 = [timexx(1:Check_isolated(1)),fliplr(timexx(1:Check_isolated(1)))];
                         inBetweenRegionY1 = [squeeze(dataxx(1:Check_isolated(1)))',fliplr(offset(Numofstione)*ones(1,numel(timexx(1:Check_isolated(1)))))];
                         fill(r_ax,inBetweenRegionX1, inBetweenRegionY1,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                        
                         inBetweenRegionX2 = [timexx(Check_isolated(Numofrange+1)+1:end),fliplr(timexx(Check_isolated(Numofrange+1)+1:end))];
                         inBetweenRegionY2 = [squeeze(dataxx(Check_isolated(Numofrange+1)+1:end))',fliplr(offset(Numofstione)*ones(1,numel(timexx(Check_isolated(Numofrange+1)+1:end))))];
                         fill(r_ax,inBetweenRegionX2, inBetweenRegionY2,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                        
                     else
                         inBetweenRegionX = [timexx,fliplr(timexx)];
                         inBetweenRegionY = [squeeze(dataxx)',fliplr(offset(Numofstione)*ones(1,numel(timexx)))];
@@ -2051,6 +2155,7 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
             end
             
         end
+        
     elseif ismember_bc2(moption, {'arean', 'fareanlat'}) % negative area
         for Numofstione = 1:size(datax,3)
             for Numofstitwo = 1:size(datax,2)
@@ -2127,7 +2232,6 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
             end
         end
         
-        
     elseif ismember_bc2(moption, {'ninteg', 'fninteglat'}) % integration(area for negative substracted from area for positive)
         for Numofstione = 1:size(datax,3)
             for Numofstitwo = 1:size(datax,2)
@@ -2191,11 +2295,9 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
                         fill(r_ax,inBetweenRegionXp2, inBetweenRegionYp2,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
                     elseif numel(Check_isolated) >1
                         for Numofrange = 1:numel(Check_isolated)-1
-                            
                             inBetweenRegionX = [timexxp(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)),fliplr(timexxp(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))];
                             inBetweenRegionY = [squeeze(dataxxp(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))',fliplr(offset(Numofstione)*ones(1,numel(timexxp(Check_isolated(Numofrange)+1:Check_isolated(Numofrange+1)))))];
                             fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                            
                         end
                         inBetweenRegionX1 = [timexxp(1:Check_isolated(1)),fliplr(timexxp(1:Check_isolated(1)))];
                         inBetweenRegionY1 = [squeeze(dataxxp(1:Check_isolated(1)))',fliplr(offset(Numofstione)*ones(1,numel(timexxp(1:Check_isolated(1)))))];
@@ -2284,137 +2386,168 @@ if ismember_bc2(moption, mearea)  || ismember_bc2(moption, {'fareatlat', 'fareap
         end
         
     elseif ismember_bc2(moption,  {'areazt','areazp','areazn', 'nintegz'})
-        [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
-        if strcmp(moption,'areazt')%% all area were included
-            
-            for Numofstione = 1:size(plot_erp_data,3)
-                for Numofstitwo = 1:size(plot_erp_data,2)
-                    latx = Lat{Numofstitwo,Numofstione};
-                    [xxx, latsamp] = closest(timex, latx);
-                    datax = plot_erp_data(latsamp(1):latsamp(2),:,:);
-                    timexx = timex(latsamp(1):latsamp(2));
-                    dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
-                    inBetweenRegionX = [timexx,fliplr(timexx)];
-                    inBetweenRegionY = [squeeze(dataxx)',fliplr(offset(Numofstione)*ones(1,numel(timexx)))];
-                    fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                end
-            end
-            
-        elseif strcmp(moption,'areazp')%% Only positive area was included
-            
-            for Numofstione = 1:size(plot_erp_data,3)
-                for Numofstitwo = 1:size(plot_erp_data,2)
-                    latx = Lat{Numofstitwo,Numofstione};
-                    [xxx, latsamp] = closest(timex, latx);
-                    datax = plot_erp_data(latsamp(1):latsamp(2),:,:);
-                    timexx = timex(latsamp(1):latsamp(2));
-                    timexx_unsl = timex(latsamp(1):latsamp(2));
-                    dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
-                    data_check_unsl = squeeze(datax(:,Numofstitwo,Numofstione));
-                    data_check  = dataxx -offset(Numofstione);
-                    if positive_up==1
-                        dataxx(data_check<0) = [];
-                        timexx(data_check<0) = [];
-                        data_check_unsl(data_check>0) =[];
-                        timexx_unsl(data_check>0) = [];
-                    elseif positive_up ==-1
-                        dataxx(data_check>0) = [];
-                        timexx(data_check>0) = [];
-                        data_check_unsl(data_check<0) =[];
-                        timexx_unsl(data_check<0) = [];
-                    else
-                        dataxx(data_check<0) = [];
-                        timexx(data_check<0) = [];
-                        data_check_unsl(data_check>0) =[];
-                        timexx_unsl(data_check>0) = [];
-                    end
-                    inBetweenRegionX = [timexx,fliplr(timexx)];
-                    inBetweenRegionY = [squeeze(dataxx)',fliplr(offset(Numofstione)*ones(1,numel(timexx)))];
-                    fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                    inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];
-                    inBetweenRegionY_unsl = [squeeze(data_check_unsl)',fliplr(offset(Numofstione)*ones(1,numel(timexx_unsl)))];
-                    fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,[1 1 1],'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                end
-            end
-            
-            
-        elseif strcmp(moption,'areazn')%% Only positive area was included
-            
-            for Numofstione = 1:size(plot_erp_data,3)
-                for Numofstitwo = 1:size(plot_erp_data,2)
-                    latx = Lat{Numofstitwo,Numofstione};
-                    [xxx, latsamp] = closest(timex, latx);
-                    datax = plot_erp_data(latsamp(1):latsamp(2),:,:);
-                    timexx = timex(latsamp(1):latsamp(2));
-                    timexx_unsl = timex(latsamp(1):latsamp(2));
-                    dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
-                    data_check_unsl = squeeze(datax(:,Numofstitwo,Numofstione));
-                    data_check  = dataxx -offset(Numofstione);
-                    if positive_up==1
-                        dataxx(data_check>0) = [];
-                        timexx(data_check>0) = [];
-                        data_check_unsl(data_check<0) =[];
-                        timexx_unsl(data_check<0) = [];
-                    elseif positive_up ==-1
-                        dataxx(data_check<0) = [];
-                        timexx(data_check<0) = [];
-                        data_check_unsl(data_check>0) =[];
-                        timexx_unsl(data_check>0) = [];
-                    else
-                        dataxx(data_check>0) = [];
-                        timexx(data_check>0) = [];
-                        data_check_unsl(data_check<0) =[];
-                        timexx_unsl(data_check<0) = [];
-                    end
-                    inBetweenRegionX = [timexx,fliplr(timexx)];
-                    inBetweenRegionY = [squeeze(dataxx)',fliplr(offset(Numofstione)*ones(1,numel(timexx)))];
-                    fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                    inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];
-                    inBetweenRegionY_unsl = [squeeze(data_check_unsl)',fliplr(offset(Numofstione)*ones(1,numel(timexx_unsl)))];
-                    fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,[1 1 1],'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                end
-            end
-            
-        elseif strcmp(moption,'nintegz')%% Only positive area was included
-            
-            for Numofstione = 1:size(plot_erp_data,3)
-                for Numofstitwo = 1:size(plot_erp_data,2)
-                    latx = Lat{Numofstitwo,Numofstione};
-                    [xxx, latsamp] = closest(timex, latx);
-                    datax = plot_erp_data(latsamp(1):latsamp(2),:,:);
-                    timexx = timex(latsamp(1):latsamp(2));
-                    timexx_unsl = timex(latsamp(1):latsamp(2));
-                    dataxx = squeeze(datax(:,Numofstitwo,Numofstione));
-                    data_check_unsl = squeeze(datax(:,Numofstitwo,Numofstione));
-                    data_check  = dataxx -offset(Numofstione);
-                    if positive_up==1
-                        dataxx(data_check<0) = [];
-                        timexx(data_check<0) = [];
-                        data_check_unsl(data_check>0) =[];
-                        timexx_unsl(data_check>0) = [];
-                    elseif positive_up ==-1
-                        dataxx(data_check>0) = [];
-                        timexx(data_check>0) = [];
-                        data_check_unsl(data_check<0) =[];
-                        timexx_unsl(data_check<0) = [];
-                    else
-                        dataxx(data_check<0) = [];
-                        timexx(data_check<0) = [];
-                        data_check_unsl(data_check>0) =[];
-                        timexx_unsl(data_check>0) = [];
-                    end
-                    inBetweenRegionX = [timexx,fliplr(timexx)];
-                    inBetweenRegionY = [squeeze(dataxx)',fliplr(offset(Numofstione)*ones(1,numel(timexx)))];
-                    fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(Numofstitwo,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                    inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];%
-                    inBetweenRegionY_unsl = [squeeze(data_check_unsl)',fliplr(offset(Numofstione)*ones(1,numel(timexx_unsl)))];
-                    fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,line_colors(Numofstitwo,:,:)*0.5,'FaceAlpha',0.3,'EdgeColor',line_colors(Numofstitwo,:,:));
-                end
-            end
+        if chanOverlay==1
+            offset = zeros(numel(ChanArray),1);
         end
+        countcolor=0;
+        for Numoferp = 1:numel(ERPArray)
+            ERP1 = ALLERP(ERPArray(Numoferp));
+            bindata = ERP1.bindata(ChanArray,:,BinArray);
+            [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP1,offset,ChanArray,BinArray);
+            
+            if strcmp(moption,'areazt')%% all area were included
+                for Numofbin = 1:numel(BinArray)
+                    if chanOverlay==0
+                        countcolor = countcolor+1;
+                    end
+                    for Numofchan = 1:numel(ChanArray)
+                        if chanOverlay==1
+                            countcolor = countcolor+1;
+                        end
+                        latx = Lat{Numofbin,Numofchan};
+                        [xxx, latsamp] = closest(timex, latx);
+                        
+                        timexx = timex(latsamp(1):latsamp(2));
+                        dataxx = squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        inBetweenRegionX = [timexx,fliplr(timexx)];
+                        inBetweenRegionY = [squeeze(dataxx),fliplr(offset(Numofchan)*ones(1,numel(timexx)))];
+                        fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(countcolor,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                    end
+                end
+                
+            elseif strcmp(moption,'areazp')%% Only positive area was included
+                for Numofbin = 1:numel(BinArray)
+                    if chanOverlay==0
+                        countcolor = countcolor+1;
+                    end
+                    for Numofchan = 1:numel(ChanArray)
+                        if chanOverlay==1
+                            countcolor = countcolor+1;
+                        end
+                        
+                        latx = Lat{Numofbin,Numofchan};
+                        [xxx, latsamp] = closest(timex, latx);
+                        datax = plot_erp_data(latsamp(1):latsamp(2),:,:);
+                        timexx = timex(latsamp(1):latsamp(2));
+                        timexx_unsl = timex(latsamp(1):latsamp(2));
+                        dataxx = squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        data_check_unsl = squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        data_check  = dataxx -offset(Numofchan);
+                        if positive_up==1
+                            dataxx(data_check<0) = [];
+                            timexx(data_check<0) = [];
+                            data_check_unsl(data_check>0) =[];
+                            timexx_unsl(data_check>0) = [];
+                        elseif positive_up ==-1
+                            dataxx(data_check>0) = [];
+                            timexx(data_check>0) = [];
+                            data_check_unsl(data_check<0) =[];
+                            timexx_unsl(data_check<0) = [];
+                        else
+                            dataxx(data_check<0) = [];
+                            timexx(data_check<0) = [];
+                            data_check_unsl(data_check>0) =[];
+                            timexx_unsl(data_check>0) = [];
+                        end
+                        inBetweenRegionX = [timexx,fliplr(timexx)];
+                        inBetweenRegionY = [squeeze(dataxx),fliplr(offset(Numofchan)*ones(1,numel(timexx)))];
+                        fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(countcolor,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                        inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];
+                        inBetweenRegionY_unsl = [squeeze(data_check_unsl),fliplr(offset(Numofchan)*ones(1,numel(timexx_unsl)))];
+                        fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,[1 1 1],'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                    end
+                end
+                
+            elseif strcmp(moption,'areazn')%% Only positive area was included
+                for Numofbin = 1:numel(BinArray)
+                    if chanOverlay==0
+                        countcolor = countcolor+1;
+                    end
+                    for Numofchan = 1:numel(ChanArray)
+                        if chanOverlay==1
+                            countcolor = countcolor+1;
+                        end
+                        
+                        latx = Lat{Numofbin,Numofchan};
+                        [xxx, latsamp] = closest(timex, latx);
+                        timexx = timex(latsamp(1):latsamp(2));
+                        timexx_unsl = timex(latsamp(1):latsamp(2));
+                        dataxx = squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        data_check_unsl = squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        data_check  = dataxx -offset(Numofchan);
+                        if positive_up==1
+                            dataxx(data_check>0) = [];
+                            timexx(data_check>0) = [];
+                            data_check_unsl(data_check<0) =[];
+                            timexx_unsl(data_check<0) = [];
+                        elseif positive_up ==-1
+                            dataxx(data_check<0) = [];
+                            timexx(data_check<0) = [];
+                            data_check_unsl(data_check>0) =[];
+                            timexx_unsl(data_check>0) = [];
+                        else
+                            dataxx(data_check>0) = [];
+                            timexx(data_check>0) = [];
+                            data_check_unsl(data_check<0) =[];
+                            timexx_unsl(data_check<0) = [];
+                        end
+                        inBetweenRegionX = [timexx,fliplr(timexx)];
+                        inBetweenRegionY = [squeeze(dataxx),fliplr(offset(Numofchan)*ones(1,numel(timexx)))];
+                        fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(countcolor,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                        inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];
+                        inBetweenRegionY_unsl = [squeeze(data_check_unsl),fliplr(offset(Numofchan)*ones(1,numel(timexx_unsl)))];
+                        fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,[1 1 1],'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                    end
+                end
+                
+            elseif strcmp(moption,'nintegz')%% Only positive area was included
+                for Numofbin = 1:numel(BinArray)
+                    if chanOverlay==0
+                        countcolor = countcolor+1;
+                    end
+                    for Numofchan = 1:numel(ChanArray)
+                        if chanOverlay==1
+                            countcolor = countcolor+1;
+                        end
+                        
+                        latx = Lat{Numofbin,Numofchan};
+                        [xxx, latsamp] = closest(timex, latx);
+                        timexx = timex(latsamp(1):latsamp(2));
+                        timexx_unsl = timex(latsamp(1):latsamp(2));
+                        dataxx =  squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        data_check_unsl =  squeeze(bindata(Numofchan,latsamp(1):latsamp(2),Numofbin))+offset(Numofchan);
+                        data_check  = dataxx -offset(Numofchan);
+                        if positive_up==1
+                            dataxx(data_check<0) = [];
+                            timexx(data_check<0) = [];
+                            data_check_unsl(data_check>0) =[];
+                            timexx_unsl(data_check>0) = [];
+                        elseif positive_up ==-1
+                            dataxx(data_check>0) = [];
+                            timexx(data_check>0) = [];
+                            data_check_unsl(data_check<0) =[];
+                            timexx_unsl(data_check<0) = [];
+                        else
+                            dataxx(data_check<0) = [];
+                            timexx(data_check<0) = [];
+                            data_check_unsl(data_check>0) =[];
+                            timexx_unsl(data_check>0) = [];
+                        end
+                        inBetweenRegionX = [timexx,fliplr(timexx)];
+                        inBetweenRegionY = [squeeze(dataxx),fliplr(offset(Numofchan)*ones(1,numel(timexx)))];
+                        fill(r_ax,inBetweenRegionX, inBetweenRegionY,line_colors(countcolor,:,:),'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                        inBetweenRegionX_unsl = [timexx_unsl,fliplr(timexx_unsl)];%
+                        inBetweenRegionY_unsl = [squeeze(data_check_unsl),fliplr(offset(Numofchan)*ones(1,numel(timexx_unsl)))];
+                        fill(r_ax,inBetweenRegionX_unsl, inBetweenRegionY_unsl,line_colors(countcolor,:,:)*0.5,'FaceAlpha',0.3,'EdgeColor',line_colors(countcolor,:,:));
+                    end
+                end
+            end
+        end%%loop for erpsets
+        
     end
 end
 
+% return;
 
 if length(latency)==1
     if ismember_bc2(moption,  {'areazt','areazp','areazn', 'nintegz'})%% Four options for Numerical integration/Area between two (automatically detected)zero-crossing latencies
@@ -2423,61 +2556,429 @@ if length(latency)==1
         xline(r_ax,latency, 'Color', cwm,'LineWidth' ,1);
     end
     if  ismember_bc2(moption, 'instabl')
-        [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
-        
-        for Numofstione = 1:Num_plot
-            for Numofstitwo = 1:Num_data
-                plot(r_ax,latency,squeeze(Amp_out(Numofstitwo,Numofstione)),'Color',line_colors(Numofstitwo,:,:),'LineWidth' ,1);
+        count111 = 0;
+        for Numoferp = 1:numel( ERPArray)
+            ERP1 = ALLERP(ERPArray(Numoferp));
+            if chanOverlay==1
+                offset = zeros(numel(ChanArray),1);
+            end
+            [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP1,offset,ChanArray,BinArray);
+            for Numofstitwo = 1:size(Amp_out,1)
+                count111 = count111+1;
+                for Numofstione = 1:size(Amp_out,2)
+                    plot(r_ax,latency,squeeze(Amp_out(Numofstitwo,Numofstione)),'Color',line_colors(count111,:,:),'LineWidth' ,1);
+                end
             end
         end
-        
     end
 elseif length(latency)==2
-    bindata = ERP.bindata(ChanArray,:,BinArray);
-    Max_values = 1.1*max(bindata(:))+offset(1);
+    countcolor = 0;
+    line_colors1 = [];
+    if chanOverlay==1
+        offset = zeros(numel(ChanArray),1);
+    end
+    
+    Max_values = 1.1*max([max(plot_erp_data(:)),Yscale(2)]);
     Min_values = 1.1*min([min((plot_erp_data(:))),Yscale(1)]);
     plot_area_up = area(r_ax,[latency latency(2) latency(1)],[Min_values,Max_values Min_values,Max_values]);
     plot_area_low = area(r_ax,[latency latency(2) latency(1)],[0,Min_values 0,Min_values]);
     set(plot_area_up,'FaceAlpha',0.2, 'EdgeAlpha', 0.1, 'EdgeColor', cwm,'FaceColor',cwm_backgb);
     set(plot_area_low,'FaceAlpha',0.2, 'EdgeAlpha', 0.1, 'EdgeColor', cwm,'FaceColor',cwm_backgb);
-    if ismember_bc2(moption, {'peakampbl'})%Local Peak amplitude
-        [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
-        for Numofstione = 1:Num_plot
-            for Numofstitwo = 1:Num_data
-                Amp_all = squeeze(plot_erp_data(:,Numofstitwo,Numofstione));
-                [xxx, latsamp, latdiffms] = closest(timex, Lat{Numofstitwo,Numofstione});
-                line(r_ax, [Lat{Numofstitwo,Numofstione} Lat{Numofstitwo,Numofstione}],[offset(Numofstione),Amp_all(latsamp)],'Color',line_colors(Numofstitwo,:,:),'LineWidth',1,'LineStyle','-.');
-            end
-        end
-    elseif ismember_bc2(moption, { 'fareatlat', 'fareaplat','fninteglat','fareanlat'})%fractional area latency
-        [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
-        for Numofstione = 1:Num_plot
-            for Numofstitwo = 1:Num_data
-                Amp_all = squeeze(plot_erp_data(:,Numofstitwo,Numofstione));
-                if ~isnan(Amp_out(Numofstitwo,Numofstione))
-                    [xxx, latsamp, latdiffms] = closest(timex, Amp_out(Numofstitwo,Numofstione));
-                    line(r_ax, [Amp_out(Numofstitwo,Numofstione) Amp_out(Numofstitwo,Numofstione)],[offset(Numofstione),Amp_all(latsamp)],'Color',line_colors(Numofstitwo,:,:),'LineWidth',1,'LineStyle','-.');
+    
+    for Numoferp = 1:numel(ERPArray)
+        ERP1 = ALLERP(ERPArray(Numoferp));
+        bindata = ERP1.bindata(ChanArray,:,BinArray);
+        [~, Amp_out,Lat]= f_ERP_plot_wav(ERP1,offset,ChanArray,BinArray);
+        %         Amp_out = Amp_out*positive_up;
+        if ismember_bc2(moption, {'peakampbl'})%Local Peak amplitude
+            for Numofbin = 1:numel(BinArray)
+                if chanOverlay==0
+                    countcolor = countcolor+1;
+                end
+                for Numofchan = 1:numel(ChanArray)
+                    if chanOverlay==1
+                        countcolor = countcolor+1;
+                    end
+                    Amp_all = squeeze(bindata(Numofchan,:,Numofbin))*positive_up +offset(Numofchan);
+                    [xxx, latsamp, latdiffms] = closest(timex, Lat{Numofbin,Numofchan});
+                    if ~isnan(Lat{Numofbin,Numofchan})
+                        line(r_ax, [Lat{Numofbin,Numofchan} Lat{Numofbin,Numofchan}],[offset(Numofchan),Amp_all(latsamp)],'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
+                    end
                 end
             end
-        end
-    elseif ismember_bc2(moption,  {'peaklatbl','fpeaklat'}) % fractional peak latency && Local peak latency
-        [new_erp_data, Amp_out,Lat]= f_ERP_plot_wav(ERP,offset,ChanArray,BinArray);
-        for Numofstione = 1:Num_plot
-            for Numofstitwo = 1:Num_data
-                Amp_all = squeeze(plot_erp_data(:,Numofstitwo,Numofstione));
-                if ~isnan(Amp_out(Numofstitwo,Numofstione))
-                    [xxx, latsamp, latdiffms] = closest(timex, Amp_out(Numofstitwo,Numofstione));
-                    line(r_ax, [Amp_out(Numofstitwo,Numofstione) Amp_out(Numofstitwo,Numofstione)],...
-                        [offset(Numofstione),Amp_all(latsamp)],'Color',line_colors(Numofstitwo,:,:),'LineWidth',1,'LineStyle','-.');
+        elseif ismember_bc2(moption, { 'fareatlat', 'fareaplat','fninteglat','fareanlat'})%fractional area latency
+            for Numofbin = 1:numel(BinArray)
+                if chanOverlay==0
+                    countcolor = countcolor+1;
+                end
+                for Numofchan = 1:numel(ChanArray)
+                    if chanOverlay==1
+                        countcolor = countcolor+1;
+                    end
+                    Amp_all = squeeze(bindata(Numofchan,:,Numofbin))*positive_up +offset(Numofchan);
+                    if ~isnan(Amp_out(Numofbin,Numofchan))
+                        [xxx, latsamp, latdiffms] = closest(timex, Amp_out(Numofbin,Numofchan));
+                        line(r_ax, [Amp_out(Numofbin,Numofchan) Amp_out(Numofbin,Numofchan)],sort([offset(Numofchan),Amp_all(latsamp)]),'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
+                    end
                 end
             end
+            
+        elseif ismember_bc2(moption,  {'peaklatbl','fpeaklat'}) % fractional peak latency && Local peak latency
+            for Numofbin = 1:numel(BinArray)
+                if chanOverlay==0
+                    countcolor = countcolor+1;
+                end
+                for Numofchan = 1:numel(ChanArray)
+                    if chanOverlay==1
+                        countcolor = countcolor+1;
+                    end
+                    Amp_all = squeeze(bindata(Numofchan,:,Numofbin))*positive_up +offset(Numofchan);
+                    if ~isnan(Amp_out(Numofbin,Numofchan))
+                        if ismember_bc2(moption,  {'fpeaklat'})
+                            [xxx, latsamp, latdiffms] = closest(timex,Lat{Numofbin,Numofchan});
+                            line(r_ax, [Lat{Numofbin,Numofchan} Lat{Numofbin,Numofchan}],sort([offset(Numofchan),Amp_all(latsamp)]),'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
+                        elseif ismember_bc2(moption,  {'peaklatbl'})
+                            [xxx, latsamp, latdiffms] = closest(timex,Amp_out(Numofbin,Numofchan));
+                            line(r_ax, [Amp_out(Numofbin,Numofchan) Amp_out(Numofbin,Numofchan)],sort([offset(Numofchan),Amp_all(latsamp)]),'Color',line_colors(countcolor,:,:),'LineWidth',1,'LineStyle','-.');
+                        end
+                        
+                    end
+                end
+            end
+            
         end
-        
     end
+    
 end
 
 
 % --- Executes when figure1 is resized.
 function figure1_SizeChangedFcn(hObject, eventdata, handles)
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+% --- Executes on button press in radiobutton_parbin.
+function radiobutton_parbin_Callback(hObject, eventdata, handles)
+handles.checkbox1_bin.Value=0;
+handles.radiobutton_parbin.Value=1;
+handles.pushbutton_binsmall.Enable = 'on';
+handles.pushbutton_binlarge.Enable = 'on';
+handles.edit_bin.Enable = 'on';
+handles.pushbutton_browse_bin.Enable = 'on';
+
+ALLERP = handles.ALLERP;
+try
+    ERP = ALLERP(handles.CurrentERP);
+catch
+    ERP=[];
+end
+if isempty(ALLERP) || isempty(ERP)
+    return;
+end
+
+BinArray = str2num(handles.edit_bin.String);
+if isempty(BinArray) || any(BinArray>ERP.nbin)
+    BinArray = [1:ERP.nbin];
+end
+
+if numel(BinArray)~=1
+    handles.pushbutton_binsmall.Enable = 'off';
+    handles.pushbutton_binlarge.Enable = 'off';
+else
+    if numel(BinArray)==1 && BinArray==1
+        handles.pushbutton_binsmall.Enable = 'off';
+        handles.pushbutton_binlarge.Enable = 'on';
+    elseif numel(BinArray)==1 && BinArray== ERP.nbin
+        handles.pushbutton_binsmall.Enable = 'on';
+        handles.pushbutton_binlarge.Enable = 'off';
+    end
+end
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+
+% --- Executes on button press in pushbutton_browse_bin.
+function pushbutton_browse_bin_Callback(hObject, eventdata, handles)
+ALLERP = handles.ALLERP;
+try
+    ERP = ALLERP(handles.CurrentERP);
+catch
+    ERP=[];
+end
+if isempty(ALLERP) || isempty(ERP)
+    return;
+end
+
+BinArray = str2num(handles.edit_bin.String);
+if isempty(BinArray) || any(BinArray>ERP.nbin)
+    BinArray = [1:ERP.nbin];
+end
+
+for Numofbin = 1:ERP.nbin
+    listname{Numofbin} = [num2str(Numofbin),'.',ERP.bindescr{Numofbin}];
+end
+
+indxlistb  =BinArray;
+titlename = 'Select bin(s):';
+bin_select = browsechanbinGUI(listname, indxlistb, titlename);
+if isempty(bin_select)
+    return;
+end
+if ~isempty(bin_select)
+    bin_select1 = vect2colon(bin_select,'Sort','on');
+    bin_select1 = erase(bin_select1,{'[',']'});
+    handles.edit_bin.String = bin_select1;
+    if numel(bin_select)~=1
+        handles.pushbutton_binsmall.Enable = 'off';
+        handles.pushbutton_binlarge.Enable = 'off';
+    else
+        if numel(bin_select)==1 && bin_select==1
+            handles.pushbutton_binsmall.Enable = 'off';
+            handles.pushbutton_binlarge.Enable = 'on';
+        elseif numel(bin_select)==1 && bin_select== ERP.nbin
+            handles.pushbutton_binsmall.Enable = 'on';
+            handles.pushbutton_binlarge.Enable = 'off';
+        end
+    end
+end
+
+if numel(bin_select) == ERP.nbin
+    handles.checkbox1_bin.Value=1;
+    handles.radiobutton_parbin.Value=0;
+    handles.pushbutton_binsmall.Enable = 'off';
+    handles.pushbutton_binlarge.Enable = 'off';
+    handles.edit_bin.Enable = 'off';
+    handles.pushbutton_browse_bin.Enable = 'off';
+    handles.BinArray = 1:ERP.nbin;
+end
+
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+% --- Executes on button press in radiobutton_chanpor.
+function radiobutton_chanpor_Callback(hObject, eventdata, handles)
+
+handles.radiobutton_chanpor.Value=1;
+handles.checkbox_chan.Value=0;
+handles.pushbutton8_chansmall.Enable = 'on';
+handles.pushbutton_chanlarge.Enable = 'on';
+handles.pushbutton_chanborwse.Enable = 'on';
+handles.edit_chans.Enable = 'on';
+% handles.radiobutton_chanoverlay.Enable = 'off';
+% handles.radiobutton_chan_separate.Enable = 'off';
+ALLERP = handles.ALLERP;
+try
+    ERP = ALLERP(handles.CurrentERP);
+catch
+    ERP=[];
+end
+if isempty(ALLERP) || isempty(ERP)
+    return;
+end
+chan_select = str2num(handles.edit_chans.String);
+if isempty(chan_select) || any(chan_select>ERP.nchan)
+    chan_select = [1:ERP.nchan];
+end
+if ~isempty(chan_select)
+    chan_select1 = vect2colon(chan_select,'Sort','on');
+    chan_select1 = erase(chan_select1,{'[',']'});
+    handles.edit_bin.String = chan_select1;
+    if numel(chan_select)~=1
+        handles.pushbutton_binsmall.Enable = 'off';
+        handles.pushbutton_binlarge.Enable = 'off';
+    else
+        if numel(chan_select)==1 && chan_select==1
+            handles.pushbutton8_chansmall.Enable = 'off';
+            handles.pushbutton_chanlarge.Enable = 'on';
+        elseif numel(chan_select)==1 && chan_select== ERP.nchan
+            handles.pushbutton8_chansmall.Enable = 'on';
+            handles.pushbutton_chanlarge.Enable = 'off';
+        end
+    end
+end
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+% --- Executes on button press in pushbutton_chanborwse.
+function pushbutton_chanborwse_Callback(hObject, eventdata, handles)
+ALLERP = handles.ALLERP;
+try
+    ERP = ALLERP(handles.CurrentERP);
+catch
+    ERP=[];
+end
+if isempty(ALLERP) || isempty(ERP)
+    return;
+end
+chanArray = str2num(handles.edit_chans.String);
+if isempty(chanArray) || any(chanArray>ERP.nchan)
+    chanArray = [1:ERP.nchan];
+end
+
+for Numofchan = 1:ERP.nchan
+    listname{Numofchan} = [num2str(Numofchan),'.',ERP.chanlocs(Numofchan).labels];
+end
+
+indxlistb  =chanArray;
+titlename = 'Select chan(s):';
+chan_select = browsechanbinGUI(listname, indxlistb, titlename);
+if isempty(chan_select)
+    return;
+end
+if ~isempty(chan_select)
+    chan_select1 = vect2colon(chan_select,'Sort','on');
+    chan_select1 = erase(chan_select1,{'[',']'});
+    handles.edit_chans.String = chan_select1;
+    if numel(chan_select)~=1
+        handles.pushbutton_binsmall.Enable = 'off';
+        handles.pushbutton_binlarge.Enable = 'off';
+    else
+        if numel(chan_select)==1 && chan_select==1
+            handles.pushbutton8_chansmall.Enable = 'off';
+            handles.pushbutton_chanlarge.Enable = 'on';
+        elseif numel(chan_select)==1 && chan_select== ERP.nchan
+            handles.pushbutton8_chansmall.Enable = 'on';
+            handles.pushbutton_chanlarge.Enable = 'off';
+        end
+    end
+end
+if numel(chan_select) ==ERP.nchan
+    handles.radiobutton_chanpor.Value=0;
+    handles.checkbox_chan.Value=1;
+    handles.pushbutton8_chansmall.Enable = 'off';
+    handles.pushbutton_chanlarge.Enable = 'off';
+    handles.pushbutton_chanborwse.Enable = 'off';
+    handles.edit_chans.Enable = 'off';
+end
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+
+
+
+% --- Executes on button press in radiobutton_chanoverlay.
+function radiobutton_chanoverlay_Callback(hObject, eventdata, handles)
+handles.radiobutton_chanoverlay.Value = 1;
+handles.radiobutton_chan_separate.Value = 0;
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+% --- Executes on button press in radiobutton_chan_separate.
+function radiobutton_chan_separate_Callback(hObject, eventdata, handles)
+handles.radiobutton_chanoverlay.Value = 0;
+handles.radiobutton_chan_separate.Value = 1;
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+% --- Executes on button press in pushbutton_erpset_browse.
+function pushbutton_erpset_browse_Callback(hObject, eventdata, handles)
+ALLERP = handles.ALLERP;
+if isempty(ALLERP)
+    return;
+end
+ERPArray = str2num(handles.edit5_erpset.String);
+if isempty(ERPArray) || any(ERPArray(:)>length(ALLERP))
+    ERPArray = length(ALLERP);
+end
+for Numoferp = 1:length(ALLERP)
+    listname{Numoferp} = ['ERPset:',32,num2str(Numoferp)];
+end
+
+indxlistb  =ERPArray;
+titlename = 'Select erpset(s):';
+erpset_select = browsechanbinGUI(listname, indxlistb, titlename);
+if isempty(erpset_select)
+    return;
+end
+if ~isempty(erpset_select)
+    checkindex = checkerpsets(ALLERP(erpset_select));
+    if ~isempty(checkindex)
+        handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
+        handles.checkbox_erp.Value=0;
+        handles.radiobutton_erppor.Value=1;
+        handles.edit5_erpset.Enable = 'on';
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+        handles.pushbutton_erpset_browse.Enable = 'on';
+        
+        ERPArray = erpset_select(1);
+        handles.edit5_erpset.String = num2str(ERPArray);
+        handles.CurrentERP = ERPArray;
+        if ERPArray==1
+            handles.pushbutton_erpsetsmall.Enable = 'off';
+            handles.pushbutton_erpsetlarge.Enable = 'on';
+        elseif ERPArray==length(ALLERP)
+            handles.pushbutton_erpsetsmall.Enable = 'on';
+            handles.pushbutton_erpsetlarge.Enable = 'off';
+        else
+            handles.pushbutton_erpsetsmall.Enable = 'on';
+            handles.pushbutton_erpsetlarge.Enable = 'on';
+        end
+        return;
+    end
+end
+
+if ~isempty(erpset_select)
+    erpset_select1 = vect2colon(erpset_select,'Sort','on');
+    erpset_select1 = erase(erpset_select1,{'[',']'});
+    handles.edit5_erpset.String = erpset_select1;
+    if numel(erpset_select)~=1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    else
+        if numel(erpset_select)==1 && erpset_select==1
+            handles.pushbutton_erpsetsmall.Enable = 'off';
+            handles.pushbutton_erpsetlarge.Enable = 'on';
+        elseif numel(erpset_select)==1 && erpset_select==length(ALLERP)
+            handles.pushbutton_erpsetsmall.Enable = 'on';
+            handles.pushbutton_erpsetlarge.Enable = 'off';
+        end
+    end
+end
+if numel(erpset_select)==length(ALLERP)
+    handles.checkbox_erp.Value=1;
+    handles.radiobutton_erppor.Value=0;
+    handles.edit5_erpset.Enable = 'off';
+    handles.pushbutton_erpsetsmall.Enable = 'off';
+    handles.pushbutton_erpsetlarge.Enable = 'off';
+    handles.pushbutton_erpset_browse.Enable = 'off';
+end
+
+handles= plot_wave_viewer(hObject,handles);
+guidata(hObject, handles);
+
+
+% --- Executes on button press in radiobutton_erppor.
+function radiobutton_erppor_Callback(hObject, eventdata, handles)
+handles.checkbox_erp.Value=0;
+handles.radiobutton_erppor.Value=1;
+handles.checkbox_erp.Enable = 'on';
+handles.edit5_erpset.Enable = 'on';
+handles.pushbutton_erpsetsmall.Enable = 'on';
+handles.pushbutton_erpsetlarge.Enable = 'on';
+handles.pushbutton_erpset_browse.Enable = 'on';
+ALLERP = handles.ALLERP;
+if isempty(ALLERP)
+    return;
+end
+
+ERPArray = str2num(handles.edit5_erpset.String);
+if numel(ERPArray)~=1
+    handles.pushbutton_erpsetsmall.Enable = 'off';
+    handles.pushbutton_erpsetlarge.Enable = 'off';
+else
+    if numel(ERPArray)==1 && ERPArray==1
+        handles.pushbutton_erpsetsmall.Enable = 'off';
+        handles.pushbutton_erpsetlarge.Enable = 'on';
+    elseif numel(ERPArray)==1 && ERPArray==length(ALLERP)
+        handles.pushbutton_erpsetsmall.Enable = 'on';
+        handles.pushbutton_erpsetlarge.Enable = 'off';
+    end
+end
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);

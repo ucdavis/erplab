@@ -584,12 +584,35 @@ varargout{1} = box_interpolate_chan_epoch;
             
             if ~isempty(ChanArrayig) && max(ChanArrayig(:)) <= EEG.nbchan
                 def{5} = ChanArrayig;
+            else
+                def{5} = [];
             end
             
             if isempty(def)
                 def = defx;
             else
-                def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
+                try
+                    def{3} = def{3}(ismember_bc2(def{3},1:EEG(1).nbchan));
+                catch
+                    def{3} = 1:EEG(1).nbchan;
+                end
+            end
+            try
+                aa = def{4};
+            catch
+                def{4} = [];
+            end
+            
+            try
+                aa = def{6};
+            catch
+                def{6} = [];
+            end
+            
+            try
+                aa = def{7};
+            catch
+                def{7} = 10;
             end
             
             try
@@ -1114,7 +1137,7 @@ varargout{1} = box_interpolate_chan_epoch;
         if observe_EEGDAT.count_current_eeg ~=5
             return;
         end
-         EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = erpworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
             EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
         end

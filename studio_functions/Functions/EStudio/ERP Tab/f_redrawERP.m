@@ -841,7 +841,7 @@ else
     end
 end
 
-
+erpworkingmemory('ViewerFlag', 0);
 %%---------------- -------------erp tab------------------------------------
 if reset_paras(4)==1
     EStudio_gui_erp_totl.clear_allerp = 1;
@@ -860,8 +860,8 @@ if reset_paras(3)==1
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
         estudioworkingmemory('selectederpstudio',1);
-        observe_ERPDAT.Count_currentERP = 1;
     end
+    
 else
     if EStudio_gui_erp_totl.clear_allerp == 1
         
@@ -869,9 +869,9 @@ else
         observe_ERPDAT.ERP = [];
         observe_ERPDAT.CURRENTERP  = 1;
         estudioworkingmemory('selectederpstudio',1);
-        observe_ERPDAT.Count_currentERP = 1;
     end
 end
+ observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg =2;
 end
 

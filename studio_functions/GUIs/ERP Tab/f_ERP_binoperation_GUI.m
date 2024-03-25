@@ -140,6 +140,8 @@ varargout{1} = ERP_bin_operation_gui;
         else
             binopGUI.emode =1;
         end
+        binopGUI.hmode = 0;
+        binopGUI.listname = '';
         erpworkingmemory('binopGUI',binopGUI);
         
         ERP = observe_ERPDAT.ERP;

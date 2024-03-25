@@ -123,7 +123,7 @@ varargout{1} = erp_measurement_box;
         if def_erpvalue{16}==0 % Fractional area latency replacement
             def_erpvalue{16} = 'NaN';
         else
-            if ismember_bc2({def_erpvalue{7}}, {'fareatlat', 'fninteglat','fareaplat','fareanlat'})
+            if ismember_bc2({def_erpvalue{7}}, {'fareatlat', 'fninteglat','fareanlat','fareaplat'})
                 def_erpvalue{16} = 'errormsg';
             else
                 def_erpvalue{16} = 'absolute';
@@ -186,7 +186,7 @@ varargout{1} = erp_measurement_box;
                 end
                 
             otherwise%if the measurement type comes from Advanced option
-                MeasureName_other = {'fareatlat','fninteglat','fareaplat','fareanlat',...
+                MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
                     'areat','ninteg','areap','arean',...
                     'areazt','nintegz','areazp','areazn',...
                     'instabl'};
@@ -309,7 +309,7 @@ varargout{1} = erp_measurement_box;
                 moption= 'fpeaklat';
                 ERPMTops.def_erpvalue{12} = 'positive';
             otherwise%if the measurement type comes from Advanced option
-                MeasureName_other = {'fareatlat','fninteglat','fareaplat','fareanlat',...
+                MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
                     'areat','ninteg','areap','arean',...
                     'areazt','nintegz','areazp','areazn',...
                     'instabl'};
@@ -477,7 +477,7 @@ varargout{1} = erp_measurement_box;
         if fracmearep==0 % Fractional area latency replacement
             ERPMTops.def_erpvalue{16} = 'NaN';
         else
-            if ismember_bc2({ERPMTops.def_erpvalue{7}}, {'fareatlat', 'fninteglat','fareaplat','fareanlat'})
+            if ismember_bc2({ERPMTops.def_erpvalue{7}}, {'fareatlat', 'fninteglat','fareanlat','fareaplat'})
                 ERPMTops.def_erpvalue{16} = 'errormsg';
             else
                 ERPMTops.def_erpvalue{16} = 'absolute';
@@ -771,7 +771,7 @@ varargout{1} = erp_measurement_box;
             case 7
                 moption= 'fpeaklat';
             otherwise%if the measurement type comes from Advanced option
-                MeasureName_other = {'fareatlat','fninteglat','fareaplat','fareanlat',...
+                MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
                     'areat','ninteg','areap','arean',...
                     'areazt','nintegz','areazp','areazn',...
                     'instabl'};
@@ -1027,7 +1027,7 @@ varargout{1} = erp_measurement_box;
             ERPsetArray =  ERPArraydef;
         end
         
-        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareaplat','fareanlat',...
+        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareanlat','fareaplat',...
             'areat','ninteg','areap','arean','areazt','nintegz','areazp','areazn','instabl'};
         [C,IA] = ismember_bc2({ERPMTops.def_erpvalue{7}}, MeasureName);
         if ~any(IA) || isempty(IA)
@@ -1210,14 +1210,12 @@ varargout{1} = erp_measurement_box;
         ERPMTops.apply.ForegroundColor = [0 0 0];
         estudioworkingmemory('ERPTab_mesuretool',0);
         
-        
-        
         ERPsetArray =  str2num(ERPMTops.m_t_erpset.String);
         if isempty(ERPsetArray) || any(ERPsetArray>length(observe_ERPDAT.ALLERP))
             ERPsetArray =  ERPArraydef;
         end
         
-        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareaplat','fareanlat',...
+        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareanlat','fareaplat',...
             'areat','ninteg','areap','arean','areazt','nintegz','areazp','areazn','instabl'};
         [C,IA] = ismember_bc2({ERPMTops.def_erpvalue{7}}, MeasureName);
         if ~any(IA) || isempty(IA)
@@ -1300,7 +1298,7 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
-        erpworkingmemory('ERPTab_mtviewer',1);
+%         erpworkingmemory('ERPTab_mtviewer',1);
         
         if ~isempty(latency)
             %%---------------save the applied parameters using erpworkingmemory function--------------------
@@ -1346,11 +1344,10 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
             erpworkingmemory('ViewerFlag', 1);
-            observe_ERPDAT.Count_currentERP=1;
+%             observe_ERPDAT.Count_currentERP=1;
             erpworkingmemory('f_ERP_proces_messg','Measurement Tool > Preview:The main ERPLAB Studio window will be frozen until you close the Viewer window for the Measurement Tool');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
-            
-            
+
             f_erp_viewerGUI(observe_ERPDAT.ALLERP(ERPsetArray),1,binArray,chanArray);
         end
         erpworkingmemory('ViewerFlag', 0);
@@ -1405,7 +1402,7 @@ varargout{1} = erp_measurement_box;
             end
             ERPArray = vect2colon(ERPArray,'Sort','on');
             ERPArray = erase(ERPArray,{'[',']'});
-            ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
+%             ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
             BinArray = estudioworkingmemory('ERP_BinArray');
             ChanArray =  estudioworkingmemory('ERP_ChanArray');
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
@@ -1414,7 +1411,7 @@ varargout{1} = erp_measurement_box;
             end
             BinArray = vect2colon(BinArray,'Sort', 'on');
             BinArray = erase(BinArray,{'[',']'});
-            ERPMTops.m_t_bin.String =BinArray;
+%             ERPMTops.m_t_bin.String =BinArray;
             
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
             if chk(2)==1
@@ -1422,7 +1419,7 @@ varargout{1} = erp_measurement_box;
             end
             ChanArray = vect2colon(ChanArray,'Sort', 'on');
             ChanArray = erase(ChanArray,{'[',']'});
-            ERPMTops.m_t_chan.String = ChanArray;
+%             ERPMTops.m_t_chan.String = ChanArray;
         end
         observe_ERPDAT.Count_currentERP=15;
     end

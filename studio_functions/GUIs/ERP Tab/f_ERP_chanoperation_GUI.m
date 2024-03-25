@@ -158,6 +158,8 @@ varargout{1} = ERP_chan_operation_gui;
         else
             chanopGUI.emode=1;
         end
+        chanopGUI.hmode = 0;
+        chanopGUI.listname = '';
         localInfor = gui_erp_chan_operation.locaInfor.Value;
         chanopGUI.keeplocs = localInfor;
         erpworkingmemory('chanopGUI',chanopGUI);

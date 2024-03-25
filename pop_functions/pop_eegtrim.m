@@ -111,7 +111,7 @@ end
 disp('Trimming data...')
 EEG = eeg_eegrej( EEG, [pre1 pre2;post1 post2]);
 
-skipfields = {'EEG', 'History'};
+skipfields = {'EEG', 'History','pre','post'};%%GH Mar. 2024
 fn  = fieldnames(p.Results);
 com = sprintf( '%s  = pop_eegtrim( %s, %g, %g ', inputname(1), inputname(1), pre, post);
 for q=1:length(fn)

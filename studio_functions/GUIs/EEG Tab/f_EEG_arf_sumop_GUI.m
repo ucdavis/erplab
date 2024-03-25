@@ -64,16 +64,16 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.clear_art_det = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.clear_art_det_title,...
             'String','Clear artifact detection marks on EEG','callback',@clear_art_det,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent',  Eegtab_EEG_art_sumop.clear_art_det_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.clear_art_det_title, 'Sizes',[15 -1 15]);
+        set(Eegtab_EEG_art_sumop.clear_art_det_title, 'Sizes',[13 -1 13]);
         
         
-        %%Syn. artifact info in EEG and EVENTLIST
+        %%Sync artifact info in EEG and EVENTLIST
         Eegtab_EEG_art_sumop.syn_arfinfo_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_sumop.syn_arfinfo = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.syn_arfinfo_title,...
-            'String','Syn. artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','Sync artifact info in EEG and EVENTLIST','callback',@syn_arfinfo,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.syn_arfinfo_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.syn_arfinfo_title, 'Sizes',[15 -1 15]);
+        set(Eegtab_EEG_art_sumop.syn_arfinfo_title, 'Sizes',[13 -1 13]);
         
         
         %%Summarize EEG artifact in one value
@@ -82,7 +82,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_onevalue = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_onevalue_title,...
             'String','Summarize EEG artifact in one value','callback',@art_onevalue,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_onevalue_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.art_onevalue_title, 'Sizes',[15 -1 15]);
+        set(Eegtab_EEG_art_sumop.art_onevalue_title, 'Sizes',[13 -1 13]);
         
         %%Summarize EEG artifact in a table
         Eegtab_EEG_art_sumop.art_table_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -90,7 +90,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_table = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_table_title,...
             'String','Summarize EEG artifact in a table','callback',@art_table,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_table_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.art_table_title, 'Sizes',[15 -1 15]);
+        set(Eegtab_EEG_art_sumop.art_table_title, 'Sizes',[13 -1 13]);
         
         %%Summarize EEG artifact in a graphic
         Eegtab_EEG_art_sumop.art_graphic_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -98,7 +98,7 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.art_graphic = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_graphic_title,...
             'String','Summarize EEG artifact in a graphic','callback',@art_graphic,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_graphic_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.art_graphic_title, 'Sizes',[15 -1 15]);
+        set(Eegtab_EEG_art_sumop.art_graphic_title, 'Sizes',[13 -1 13]);
         set(Eegtab_EEG_art_sumop.DataSelBox,'Sizes',[30 30 30 30 30]);
     end
 
@@ -220,7 +220,7 @@ varargout{1} = Eegtab_box_art_sumop;
     end
 
 
-%%------------Syn. artifact info in EEG and EVENTLIST----------------------
+%%------------Sync artifact info in EEG and EVENTLIST----------------------
     function syn_arfinfo(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
@@ -233,7 +233,7 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Syn. artifact info in EEG and EVENTLIST');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Sync artifact info in EEG and EVENTLIST');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
@@ -265,10 +265,10 @@ varargout{1} = Eegtab_box_art_sumop;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Syn. artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Sync artifact info in EEG and EVENTLIST*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Syn. artifact info in EEG and EVENTLIST: cannot work on a continuous EEG';
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Sync artifact info in EEG and EVENTLIST: cannot work on a continuous EEG';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
