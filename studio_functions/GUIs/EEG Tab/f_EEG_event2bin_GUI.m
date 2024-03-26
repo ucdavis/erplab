@@ -173,7 +173,11 @@ varargout{1} = EStudio_box_EEG_event2bin;
     end
 
 %%---------------------------Cancel----------------------------------------
-    function BDF_eeg_cancel(~,~)
+    function BDF_eeg_cancel(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -208,7 +212,11 @@ varargout{1} = EStudio_box_EEG_event2bin;
 
 
 %%--------------------------Advanced options-------------------------------
-    function event2bin_advanced(~,~)
+    function event2bin_advanced(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -383,7 +391,11 @@ varargout{1} = EStudio_box_EEG_event2bin;
     end
 
 %%---------------------------Run-----------------------------------------
-    function eeg_bdf_Run(~,~)
+    function eeg_bdf_Run(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=5
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -555,26 +567,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
         observe_EEGDAT.count_current_eeg=14;
     end
 
-%%-------------------------------------------------------------------------
-%%Automatically saving the changed parameters for the current panel if the
-%%user change parameters for the other panels.
-%%-------------------------------------------------------------------------
-%     function eeg_two_panels_change(~,~)
-%         if observe_EEGDAT.eeg_two_panels==0
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_event2bin');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         eeg_bdf_Run();
-%         estudioworkingmemory('EEGTab_event2bin',0);
-%         EStduio_eegtab_EEG_event2bin.bdf_Run.BackgroundColor =  [1 1 1];
-%         EStduio_eegtab_EEG_event2bin.bdf_Run.ForegroundColor = [0 0 0];
-%         EStudio_box_EEG_event2bin.TitleColor= [0.0500    0.2500    0.5000];
-%         EStduio_eegtab_EEG_event2bin.bdf_cancel.BackgroundColor =  [1 1 1];
-%         EStduio_eegtab_EEG_event2bin.bdf_cancel.ForegroundColor = [0 0 0];
-%     end
 
 %%--------------press return to execute "Run"----------------------------
     function eeg_event2bin_presskey(hObject, eventdata)

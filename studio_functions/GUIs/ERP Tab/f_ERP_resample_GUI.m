@@ -615,25 +615,6 @@ varargout{1} = box_erp_resample;
         observe_ERPDAT.Count_currentERP=9;
     end
 
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_resample');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         resample_run();
-%         estudioworkingmemory('ERPTab_resample',0);
-%         gui_erp_resample.resample_run.BackgroundColor =  [1 1 1];
-%         gui_erp_resample.resample_run.ForegroundColor = [0 0 0];
-%         box_erp_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_resample.resample_cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_resample.resample_cancel.ForegroundColor = [0 0 0];
-%     end
-
 %%--------------press return to execute "Apply"----------------------------
     function erp_resample_presskey(~,eventdata)
         keypress = eventdata.Key;

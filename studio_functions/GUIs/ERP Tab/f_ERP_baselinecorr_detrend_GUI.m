@@ -736,26 +736,6 @@ varargout{1} = ERP_basecorr_detrend_box;
         observe_ERPDAT.Count_currentERP=12;
     end
 
-
-%%-------execute "apply" before doing any cnages for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_baseline_detrend');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         apply_blc_dt();
-%         estudioworkingmemory('ERPTab_baseline_detrend',0);
-%         gui_erp_blc_dt.apply.BackgroundColor =  [ 1 1 1];
-%         gui_erp_blc_dt.apply.ForegroundColor = [0 0 0];
-%         ERP_basecorr_detrend_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_blc_dt.Cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_blc_dt.Cancel.ForegroundColor = [0 0 0];
-%     end
-
-
 %%--------------press return to execute "Apply"----------------------------
     function erp_blcorrdetrend_presskey(~,eventdata)
         keypress = eventdata.Key;

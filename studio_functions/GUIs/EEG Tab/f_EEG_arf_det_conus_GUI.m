@@ -202,7 +202,6 @@ varargout{1} = Eegtab_box_art_det_conus;
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
 
-
 %%----------------------edit chans-----------------------------------------
     function chan_edit(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ~=1
@@ -330,7 +329,6 @@ varargout{1} = Eegtab_box_art_det_conus;
                 return;
             end
         end
-        
     end
 
 
@@ -1069,9 +1067,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         fprintf(['*Reject Artifactual Time Segments (Continuous EEG) > Preview*',32,32,32,32,datestr(datetime('now')),'\n']);
         fprintf(['Your current EEGset(No.',num2str(EEGArray),'):',32,EEG.setname,'\n\n']);
         
-        %         [EEG,LASTCOM]= pop_continuousartdet( EEG , 'ampth',  Volthreshold, 'chanArray',  ChanArray, 'colorseg', colorseg,...
-        %             'firstdet', 'on', 'forder',  100,'numChanThreshold',  1, 'stepms',  windowStep, 'threshType', 'peak-to-peak',...
-        %             'winms',  WindowLength,'review','on','History','implicit' );
+        
         [EEG,LASTCOM]= pop_continuousartdet(EEG, 'chanArray'   , ChanArray    ...
             , 'ampth'       , Volthreshold        ...
             , 'winms'       , WindowLength        ...
@@ -1522,27 +1518,6 @@ varargout{1} = Eegtab_box_art_det_conus;
             return;
         end
     end
-
-%%-------------------Auomatically execute "apply"--------------------------
-%     function eeg_two_panels_change(~,~)
-%         if  isempty(observe_EEGDAT.EEG)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_detect_arts_conus');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         detectar_run();
-%         estudioworkingmemory('EEGTab_detect_arts_conus',0);
-%         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
-%         Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
-%         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
-%         Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
-%         Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
-%         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [1 1 1];
-%         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
-%     end
-
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)

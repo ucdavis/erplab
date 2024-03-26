@@ -294,7 +294,11 @@ varargout{1} = EEG_filtering_box;
 %%*************************************************************************
 
 %%----------------------all bin and all chan-------------------------------
-    function All_chan(~,~)
+    function All_chan(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3
@@ -311,7 +315,11 @@ varargout{1} = EEG_filtering_box;
     end
 
 %%----------------------selected bin and all chan-------------------------------
-    function Selected_chan(~,~)
+    function Selected_chan(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=3

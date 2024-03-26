@@ -183,6 +183,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%------------------------Display original data: on------------------------
     function disp_orgdata(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -203,6 +207,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%------------------------Display original data: off-----------------------
     function disp_IC(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -223,6 +231,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%--------------------Time range-------------------------------------------
     function WinLength_edit(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -246,16 +258,16 @@ varargout{1} = EStudio_box_EEG_plot_set;
             end
             if isempty(Winlength)|| Winlength<=0 ||  (Winlength>floor(Frames/multiplier_winleg))
                 Winlength = floor(Frames/multiplier_winleg);
-%                 msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
-%                 titlNamerro = 'Warning for EEG Tab';
-%                 estudio_warning(msgboxText,titlNamerro);
+                %                 msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
+                %                 titlNamerro = 'Warning for EEG Tab';
+                %                 estudio_warning(msgboxText,titlNamerro);
             end
         else
             if isempty(Winlength)|| Winlength<=0 || numel(Winlength)~=1
                 Winlength = 5;
-%                 msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
-%                 titlNamerro = 'Warning for EEG Tab';
-%                 estudio_warning(msgboxText,titlNamerro);
+                %                 msgboxText= char(strcat('Plot Setting > Time range:The input is invalid which should be a positive value and we therfore use the default one'));
+                %                 titlNamerro = 'Warning for EEG Tab';
+                %                 estudio_warning(msgboxText,titlNamerro);
             end
         end
         Source.String = num2str(Winlength);
@@ -263,6 +275,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%-----------------------------Vertical Scale for original data------------
     function vscale_edit(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -288,6 +304,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%-----------------------------Vertical Scale for ICs----------------------
     function vscale_edit_ic(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -311,7 +331,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 
 %%--------------------------Buffer at top and bottom-----------------------
-    function buffer_top_bom(~,~)
+    function buffer_top_bom(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -336,6 +360,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%------------------------Remove DC on-------------------------------------
     function rm_DC(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -352,6 +380,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%---------------------------Events:on-------------------------------------
     function disp_event(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -368,6 +400,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%--------------------------Stack: on--------------------------------------
     function disp_stack(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -385,6 +421,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 %%--------------------------Stack: off-------------------------------------
     function disp_norm(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -406,7 +446,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 %%----------------------channel order-number-------------------------------
-    function chanorder_number(~,~)
+    function chanorder_number(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -425,7 +469,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 %%-----------------channel order-Simple 10/20 order---------------------
-    function chanorder_front(~,~)
+    function chanorder_front(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -496,7 +544,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 %%----------------------channel order-custom-------------------------------
-    function chanorder_custom(~,~)
+    function chanorder_custom(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -528,7 +580,12 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 %%---------------------export channel orders-------------------------------
-    function chanorder_custom_exp(~,~)
+    function chanorder_custom_exp(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
+        
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -600,7 +657,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
     end
 
 %%-------------------------import channel orders---------------------------
-    function chanorder_custom_imp(~,~)
+    function chanorder_custom_imp(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -772,7 +833,11 @@ varargout{1} = EStudio_box_EEG_plot_set;
 
 
 %%-------------------Cancel------------------------------------------------
-    function plot_eeg_cancel(~,~)
+    function plot_eeg_cancel(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=2
@@ -846,7 +911,7 @@ varargout{1} = EStudio_box_EEG_plot_set;
         %%Buffer at top and bottom
         try buffer_top_bom =  EEG_plotset{12};catch buffer_top_bom =100; end
         if isempty(buffer_top_bom) || numel(buffer_top_bom)~=1 ||any(buffer_top_bom(:)<=0)
-           buffer_top_bom=100;  EEG_plotset{12} =100;
+            buffer_top_bom=100;  EEG_plotset{12} =100;
         end
         EStduio_gui_EEG_plotset.buffer_top_bom.String = num2str(buffer_top_bom);
         

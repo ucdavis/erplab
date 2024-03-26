@@ -290,11 +290,7 @@ varargout{1} = Eegtab_box_avg_erp;
         old_DQ_spec = EEG_avg_erp.DQ_spec;
         custom_DQ_spec = avg_data_quality(old_DQ_spec,timelimits);
         EEG_avg_erp.timelimits = timelimits;
-        if isempty(custom_DQ_spec)
-            disp('User cancelled custom DQ window')
-            %handles.DQ_spec = [];
-        else
-            % The DQ Custom window ran successfully, so write the new DQ spec
+        if ~isempty(custom_DQ_spec)
             EEG_avg_erp.DQ_spec = custom_DQ_spec;
         end
     end
@@ -781,28 +777,9 @@ varargout{1} = Eegtab_box_avg_erp;
             EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
             EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
             EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
-        else
-            return;
         end
     end
 
-%%-------------------Auomatically execute "apply"--------------------------
-%     function eeg_two_panels_change(~,~)
-%         if  isempty(observe_EEGDAT.EEG)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_avg_erp');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         avg_run();
-%         estudioworkingmemory('EEGTab_avg_erp',0);
-%         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
-%         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
-%         EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
-%         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];
-%         EEG_avg_erp.avg_run.ForegroundColor = [0 0 0];
-%     end
 
 
 %%--------------Reset this panel with the default parameters---------------
@@ -811,7 +788,6 @@ varargout{1} = Eegtab_box_avg_erp;
             return;
         end
         estudioworkingmemory('EEGTab_avg_erp',0);
-        %         Eegtab_box_avg_erp.TitleColor= [0.0500    0.2500    0.5000];
         EEG_avg_erp.avg_cancel.BackgroundColor =  [1 1 1];
         EEG_avg_erp.avg_cancel.ForegroundColor = [0 0 0];
         EEG_avg_erp.avg_run.BackgroundColor =  [ 1 1 1];

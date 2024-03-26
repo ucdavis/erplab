@@ -12,8 +12,6 @@
 function varargout = f_EEG_arf_sumop_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-% addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
 %---------------------------Initialize parameters------------------------------------
@@ -112,7 +110,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function clear_art_det(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -224,7 +221,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function syn_arfinfo(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         
@@ -243,12 +239,8 @@ varargout{1} = Eegtab_box_art_sumop;
         end
         %         try
         direction = synchroartifactsGUI;
-        %     direction = 1; % erplab to eeglab synchro
-        %     direction = 2; % eeglab to erplab synchro
-        %     direction = 3; % both
-        %     direction = 0; % none
+        
         if isempty(direction)
-            disp('User selected Cancel')
             return
         end
         if direction==1      % erplab to eeglab synchro
@@ -340,7 +332,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function art_onevalue(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -400,7 +391,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function art_table(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -462,7 +452,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function art_graphic(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();

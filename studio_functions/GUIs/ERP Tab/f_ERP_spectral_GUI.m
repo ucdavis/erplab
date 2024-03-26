@@ -587,8 +587,6 @@ varargout{1} = ERP_filtering_box;
         [ind,tf] = listdlg('ListString',{'".mat"','".csv"'},'SelectionMode','single','PromptString','Please select a type to export to...','Name','Export Spectrum for Selected ERPset to','OKString','Ok');
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
         if isempty(ind)
-            beep;
-            disp(['User selected cancel']);
             return;
         end
         for Numoferpset = 1:numel(Selected_erpset)
@@ -698,7 +696,6 @@ varargout{1} = ERP_filtering_box;
                 try
                     export2csv_spectranl_analysis(ERP_FFT,fullfile(pathx,filename), binArray,istime, electrodes,transpose,  decimal_num);
                 catch
-                    beep;
                     observe_ERPDAT.Process_messg =3;
                     disp('Fail to save selected ERPset as ".csv"!!!');
                     return;
@@ -770,8 +767,6 @@ varargout{1} = ERP_filtering_box;
         
         defaulpar1 = f_spectral_analysis_advance(ERP_d,def);
         if isempty(defaulpar1)
-            beep;
-            disp('User selected cancel!!!');
             return;
         end
         erpworkingmemory('f_spectral_analysis_adavance',defaulpar1);
@@ -796,8 +791,6 @@ varargout{1} = ERP_filtering_box;
             set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
             
             if isempty(ind)
-                beep;
-                disp(['User selected cancel']);
                 return;
             end
         end
@@ -970,7 +963,6 @@ varargout{1} = ERP_filtering_box;
                     [filenamei, pathname] = uiputfile({'*.mat';'*.*'},['Save',32,'"',ERP_FFT.erpname,'"', 32,'as'],fullfile(pathName_folder,figure_name));
                     
                     if isequal(filenamei,0)
-                        disp('User selected Cancel')
                         return
                     else
                         [pathx, filename, ext] = fileparts(filenamei);
@@ -995,8 +987,6 @@ varargout{1} = ERP_filtering_box;
                     answer_export = f_export2csvGUI(ERP_FFT,def);
                     erpworkingmemory('f_export2csvGUI',answer_export);
                     if isempty(answer_export)
-                        beep;
-                        disp('User selected cancel!!!');
                         return;
                     end
                     binArray = [1:ERP_FFT.nbin];
@@ -1077,28 +1067,6 @@ varargout{1} = ERP_filtering_box;
             end
         end
     end
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_spectral');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         spectral_plot();
-%         gui_erp_spectral.plot.BackgroundColor =  [1 1 1];
-%         gui_erp_spectral.plot.ForegroundColor = [0 0 0];
-%         ERP_filtering_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_spectral.save.BackgroundColor =  [1 1 1];
-%         gui_erp_spectral.save.ForegroundColor = [0 0 0];
-%         gui_erp_spectral.advanced.BackgroundColor =  [1 1 1];
-%         gui_erp_spectral.advanced.ForegroundColor = [0 0 0];
-%         gui_erp_spectral.cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_spectral.cancel.ForegroundColor = [0 0 0];
-%         estudioworkingmemory('ERPTab_spectral',0);
-%     end
 
 
 %%--------------press return to execute "Apply"----------------------------

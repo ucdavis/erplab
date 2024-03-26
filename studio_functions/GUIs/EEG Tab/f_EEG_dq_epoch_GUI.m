@@ -257,11 +257,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         old_DQ_spec = EEG_dq_epoch.DQ_spec;
         custom_DQ_spec = avg_data_quality(old_DQ_spec,timelimits);
         EEG_dq_epoch.timelimits = timelimits;
-        if isempty(custom_DQ_spec)
-            disp('User cancelled custom DQ window')
-            %handles.DQ_spec = [];
-        else
-            % The DQ Custom window ran successfully, so write the new DQ spec
+        if ~isempty(custom_DQ_spec)
             EEG_dq_epoch.DQ_spec = custom_DQ_spec;
         end
         
@@ -556,7 +552,6 @@ varargout{1} = Eegtab_box_dq_epoch;
             
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end for loop of subjects
-        
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -629,24 +624,6 @@ varargout{1} = Eegtab_box_dq_epoch;
         end
     end
 
-%%-------------------Auomatically execute "apply"--------------------------
-%     function eeg_two_panels_change(~,~)
-%         if  isempty(observe_EEGDAT.EEG)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_dq_epoch');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         dq_run();
-%         estudioworkingmemory('EEGTab_dq_epoch',0);
-%         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
-%         EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
-%         EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
-%         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];
-%         EEG_dq_epoch.dq_run.ForegroundColor = [0 0 0];
-%     end
-
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)
@@ -654,7 +631,6 @@ varargout{1} = Eegtab_box_dq_epoch;
             return;
         end
         estudioworkingmemory('EEGTab_dq_epoch',0);
-        %         Eegtab_box_dq_epoch.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_epoch.dq_cancel.BackgroundColor =  [1 1 1];
         EEG_dq_epoch.dq_cancel.ForegroundColor = [0 0 0];
         EEG_dq_epoch.dq_run.BackgroundColor =  [ 1 1 1];

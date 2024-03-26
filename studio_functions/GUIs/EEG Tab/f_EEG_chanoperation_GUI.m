@@ -329,6 +329,7 @@ varargout{1} = EEG_chan_operation_gui;
 
 %%-------------------Equation Clear---------------------------------------
     function eq_clear(~,~)
+        
         for ii = 1:1000
             dsnames{ii,1} = '';
         end

@@ -600,25 +600,6 @@ varargout{1} = ERP_bin_operation_gui;
         observe_ERPDAT.Count_currentERP=10;
     end
 
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_binop');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         apply_run();
-%         gui_erp_bin_operation.run.BackgroundColor =  [1 1 1];
-%         gui_erp_bin_operation.run.ForegroundColor = [0 0 0];
-%         ERP_bin_operation_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_bin_operation.cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_bin_operation.cancel.ForegroundColor = [0 0 0];
-%         estudioworkingmemory('ERPTab_binop',0);
-%     end
-
 %%--------------press return to execute "Apply"----------------------------
     function erp_binop_presskey(~,eventdata)
         keypress = eventdata.Key;

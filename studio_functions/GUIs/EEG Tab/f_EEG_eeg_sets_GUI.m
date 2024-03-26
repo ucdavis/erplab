@@ -133,8 +133,11 @@ estudioworkingmemory('Startimes',0);%%set default value
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%-----------------------continuous EEG------------------------------------
-    function continuous_eeg(~,~)
-        
+    function continuous_eeg(Source,~)
+         if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -197,7 +200,11 @@ estudioworkingmemory('Startimes',0);%%set default value
     end
 
 %%--------------------------epoched EEG--------------------------------------
-    function epoch_eeg(~,~)
+    function epoch_eeg(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -259,8 +266,11 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 
 %------------------duplicate the selected EEGsets--------------------------
-    function duplicateSelected(~,~)%%The defualt channels and bins that come from "bin and channel" panel but user can select bins and channels.
-        
+    function duplicateSelected(Source,~)%%The defualt channels and bins that come from "bin and channel" panel but user can select bins and channels.
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -319,7 +329,11 @@ estudioworkingmemory('Startimes',0);%%set default value
     end
 
 %%-------------------Rename the selcted files------------------------------
-    function renamedata(~,~)
+    function renamedata(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -356,7 +370,11 @@ estudioworkingmemory('Startimes',0);%%set default value
     end
 
 %%--------------------------------Add Suffix---------------------------------
-    function add_suffix(~,~)
+    function add_suffix(Source,~)
+         if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -384,7 +402,11 @@ estudioworkingmemory('Startimes',0);%%set default value
     end
 
 %%----------------------Refresh alleeg and eeg-----------------------------
-    function refresh_eegset(~,~)
+    function refresh_eegset(Source,~)
+         if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -874,7 +896,11 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 
 %-------------------------- Save selected EEGsets-------------------------------------------
-    function eegset_save(source,~)
+    function eegset_save(Source,~)
+         if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -923,7 +949,11 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 
 %------------------------- Save as-----------------------------------------
-    function eegset_saveas(~,~)
+    function eegset_saveas(Source,~)
+         if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
@@ -1002,6 +1032,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %-----------------select the ERPset of interest--------------------------
     function selectdata(source,~)
+        
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0

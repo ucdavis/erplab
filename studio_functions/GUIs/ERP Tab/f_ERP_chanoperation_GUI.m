@@ -131,9 +131,9 @@ varargout{1} = ERP_chan_operation_gui;
 %%**************************************************************************%%
 
 %%-------------------Equation editor---------------------------------------
-    function eq_advanced(Source_editor,~)
+    function eq_advanced(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -229,9 +229,9 @@ varargout{1} = ERP_chan_operation_gui;
     end
 
 %%-------------------Equation Load---------------------------------------
-    function eq_load(~,~)
+    function eq_load(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -271,9 +271,9 @@ varargout{1} = ERP_chan_operation_gui;
     end
 
 %%--------------------------Save equations to -----------------------------
-    function eq_save(~,~)
+    function eq_save(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         Eq_Data =  gui_erp_chan_operation.edit_bineq.Data;
@@ -319,9 +319,9 @@ varargout{1} = ERP_chan_operation_gui;
 
 
 %%-------------------Equation Clear---------------------------------------
-    function eq_clear(~,~)
+    function eq_clear(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -344,9 +344,9 @@ varargout{1} = ERP_chan_operation_gui;
     end
 
 %%-------------------Reference assist--------------------------------------
-    function ref_asst(~,~)
+    function ref_asst(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -418,9 +418,9 @@ varargout{1} = ERP_chan_operation_gui;
     end
 
 %%--------------------Preserve location information------------------------
-    function loca_infor(source,~)
+    function loca_infor(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -440,9 +440,9 @@ varargout{1} = ERP_chan_operation_gui;
 
 
 %%------------------Modify Existing ERPset---------------------------------------
-    function mode_modify(Source_editor,~)
+    function mode_modify(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -491,9 +491,9 @@ varargout{1} = ERP_chan_operation_gui;
     end
 
 %%------------------Create New ERPset---------------------------------------
-    function mode_create(Source_create,~)
+    function mode_create(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -544,9 +544,9 @@ varargout{1} = ERP_chan_operation_gui;
         end
     end
 %%------------------------------cancel-------------------------------------
-    function chanop_cancel(~,~)
+    function chanop_cancel(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -570,9 +570,9 @@ varargout{1} = ERP_chan_operation_gui;
 
 
 %%---------------------Run-------------------------------------------------
-    function apply_run(~,~)
+    function apply_run(Source,~)
         if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
+            Source.Enable= 'off';
             return;
         end
         %%first checking if the changes on the other panels have been applied
@@ -759,24 +759,6 @@ varargout{1} = ERP_chan_operation_gui;
         observe_ERPDAT.Count_currentERP=7;
     end
 
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_chanop');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         apply_run();
-%         estudioworkingmemory('ERPTab_chanop',0);
-%         gui_erp_chan_operation.run.BackgroundColor =  [1 1 1];
-%         gui_erp_chan_operation.run.ForegroundColor = [0 0 0];
-%         ERP_chan_operation_gui.TitleColor= [ 0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_chan_operation.cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_chan_operation.cancel.ForegroundColor = [0 0 0];
-%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function erp_chanop_presskey(~,eventdata)

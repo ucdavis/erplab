@@ -347,11 +347,7 @@ varargout{1} = EStudio_eeg_events_box;
 
 %%----------------Export reaction times to text file-----------------------
     function exp_rt(Source,~)
-        if isempty(observe_EEGDAT.EEG)
-            Source.Enable= 'off';
-            return;
-        end
-        if observe_EEGDAT.EEG.trials>1
+        if isempty(observe_EEGDAT.EEG)|| observe_EEGDAT.EEG.trials>1
             Source.Enable= 'off';
             return;
         end

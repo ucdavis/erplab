@@ -290,8 +290,8 @@ varargout{1} = EStudio_box_eeglab_ica;
             estudio_warning(msgboxText,titlNamerro);
             return;
         end
-%         erpworkingmemory('EEGUpdate',1);
-%         observe_EEGDAT.count_current_eeg=1;
+        %         erpworkingmemory('EEGUpdate',1);
+        %         observe_EEGDAT.count_current_eeg=1;
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
@@ -309,15 +309,6 @@ varargout{1} = EStudio_box_eeglab_ica;
             observe_EEGDAT.EEG = EEG;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
-%         Output =  f_EEG_update_gui;
-%         if ~isempty(Output) && Output==1
-%             %             try  EEG = evalin('base', 'EEG');catch  EEG = []; end
-%             if ~isempty(EEG)
-%                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) =EEG ;
-%                 observe_EEGDAT.EEG = EEG;
-%             end
-%         end
-%         erpworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg=1;
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > Classify IC by ICLabel');
         observe_EEGDAT.eeg_panel_message =2;

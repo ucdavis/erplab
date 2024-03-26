@@ -341,13 +341,8 @@ varargout{1} = ERP_grdavg_box_gui;
         ERP_grdavg_box_gui.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_grdavg.cancel.BackgroundColor =  [0.5137    0.7569    0.9176];
         gui_erp_grdavg.cancel.ForegroundColor = [1 1 1];
-%         GAv_combo_defaults.measures = [1, 2, 3]; % Use first 3 DQ measures
-%         GAv_combo_defaults.methods = [2, 2, 2]; % Use the 2nd combo method, Root-Mean Square, for each
-%         GAv_combo_defaults.measure_names = {'Baseline Measure - SD';'Point-wise SEM'; 'aSME'};
-%         GAv_combo_defaults.method_names = {'Pool ERPSETs, GrandAvg mean','Pool ERPSETs, GrandAvg RMS'};
-%         GAv_combo_defaults.str = {'Baseline Measure - SD, GrandAvg RMS';'Point-wise SEM, GrandAvg RMS'; 'aSME GrandAvg RMS'};
-%         
-          ERPArray= estudioworkingmemory('selectederpstudio');
+        
+        ERPArray= estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) || any(ERPArray>length(observe_ERPDAT.ALLERP))
             ERPArray = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
@@ -674,24 +669,6 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.cmpsd.Enable = Enable_label;
         observe_ERPDAT.Count_currentERP=13;
     end
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         apply_run();
-%         estudioworkingmemory('ERPTab_gravg',0);
-%         gui_erp_grdavg.run.BackgroundColor =  [1 1 1];
-%         gui_erp_grdavg.run.ForegroundColor = [0 0 0];
-%         ERP_grdavg_box_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_grdavg.cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
-%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function erp_graverage_presskey(~,eventdata)

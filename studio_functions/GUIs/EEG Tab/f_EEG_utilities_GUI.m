@@ -12,8 +12,6 @@
 function varargout = f_EEG_utilities_GUI(varargin)
 
 global observe_EEGDAT;
-% addlistener(observe_EEGDAT,'eeg_panel_change_message',@eeg_panel_change_message);
-% addlistener(observe_EEGDAT,'eeg_two_panels_change',@eeg_two_panels_change);
 addlistener(observe_EEGDAT,'count_current_eeg_change',@count_current_eeg_change);
 
 %---------------------------Initialize parameters------------------------------------
@@ -115,7 +113,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function epoch2continuous(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         
@@ -226,7 +223,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function rm_eventcodes(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -366,7 +362,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function rc_bdf(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -410,7 +405,6 @@ varargout{1} = Eegtab_box_art_sumop;
     function event_byte(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
-            disp('Current dataset is empty or continuous EEG.');
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();

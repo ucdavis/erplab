@@ -483,18 +483,7 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{16} = 'absolute';
             end
         end
-        %         send2ws = Answer{9};
-        %         if send2ws
-        %             ERPMTops.def_erpvalue{17} = 'on';
-        %         else
-        %             ERPMTops.def_erpvalue{17} = 'off';
-        %         end
-        %         inclate = Answer{10};
-        %         if inclate
-        %             ERPMTops.def_erpvalue{20} = 'on' ;
-        %         else
-        %             ERPMTops.def_erpvalue{20} = 'off' ;
-        %         end
+        
         ERPMTops.def_erpvalue{21} =Answer{11};
         ERPMTops.def_erpvalue{22} = Answer{12};
     end
@@ -1347,7 +1336,7 @@ varargout{1} = erp_measurement_box;
             observe_ERPDAT.Count_currentERP=1;
             erpworkingmemory('f_ERP_proces_messg','Measurement Tool > Preview:The main ERPLAB Studio window will be frozen until you close the Viewer window for the Measurement Tool');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
-
+            
             f_erp_viewerGUI(observe_ERPDAT.ALLERP(ERPsetArray),1,binArray,chanArray);
         end
         erpworkingmemory('ViewerFlag', 0);
@@ -1402,7 +1391,7 @@ varargout{1} = erp_measurement_box;
             end
             ERPArray = vect2colon(ERPArray,'Sort','on');
             ERPArray = erase(ERPArray,{'[',']'});
-%             ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
+            %             ERPMTops.m_t_erpset.String= ERPArray;%%Dec 20 2022
             BinArray = estudioworkingmemory('ERP_BinArray');
             ChanArray =  estudioworkingmemory('ERP_ChanArray');
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
@@ -1411,7 +1400,7 @@ varargout{1} = erp_measurement_box;
             end
             BinArray = vect2colon(BinArray,'Sort', 'on');
             BinArray = erase(BinArray,{'[',']'});
-%             ERPMTops.m_t_bin.String =BinArray;
+            %             ERPMTops.m_t_bin.String =BinArray;
             
             [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
             if chk(2)==1
@@ -1419,7 +1408,7 @@ varargout{1} = erp_measurement_box;
             end
             ChanArray = vect2colon(ChanArray,'Sort', 'on');
             ChanArray = erase(ChanArray,{'[',']'});
-%             ERPMTops.m_t_chan.String = ChanArray;
+            %             ERPMTops.m_t_chan.String = ChanArray;
         end
         observe_ERPDAT.Count_currentERP=15;
     end
@@ -1493,27 +1482,6 @@ varargout{1} = erp_measurement_box;
         try pathanme = ERPMTops.Paras{6}; catch pathanme=  ''; ERPMTops.Paras{6}='';end
         ERPMTops.m_t_file.String = pathanme;
     end
-
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_mesuretool');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         erp_m_t_view();
-%         ERPMTops.m_t_value.BackgroundColor =  [1 1 1];
-%         ERPMTops.m_t_value.ForegroundColor = [0 0 0];
-%         erp_measurement_box.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         ERPMTops.cancel.BackgroundColor =  [1 1 1];
-%         ERPMTops.cancel.ForegroundColor = [0 0 0];
-%         ERPMTops.apply.BackgroundColor =  [1 1 1];
-%         ERPMTops.apply.ForegroundColor = [0 0 0];
-%         estudioworkingmemory('ERPTab_mesuretool',0);
-%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function erp_mt_presskey(~,eventdata)

@@ -632,7 +632,11 @@ varargout{1} = EEG_binepoch_box;
 
 
 %%-----------------Setting for save option---------------------------------
-    function Cancel_binepoch(~,~)
+    function Cancel_binepoch(Source,~)
+        if isempty(observe_EEGDAT.EEG)
+            Source.Enable= 'off';
+            return;
+        end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=6
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
@@ -807,23 +811,6 @@ varargout{1} = EEG_binepoch_box;
         end
     end
 
-%%-------------------Auomatically execute "apply"--------------------------
-%     function eeg_two_panels_change(~,~)
-%         if  isempty(observe_EEGDAT.EEG)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_binepoch');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         apply_blc_dt();
-%         estudioworkingmemory('EEGTab_binepoch',0);
-%         gui_eegtab_binepoch.apply.BackgroundColor =  [1 1 1];
-%         gui_eegtab_binepoch.apply.ForegroundColor = [0 0 0];
-%         EEG_binepoch_box.TitleColor= [0.0500    0.2500    0.5000];
-%         gui_eegtab_binepoch.cancel.BackgroundColor =  [1 1 1];
-%         gui_eegtab_binepoch.cancel.ForegroundColor = [0 0 0];
-%     end
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)

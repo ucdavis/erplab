@@ -653,27 +653,6 @@ varargout{1} = box_erp_append;
         end
     end
 
-
-%%-------execute "apply" before doing any change for other panels----------
-%     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_append');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         append_run();
-%         estudioworkingmemory('ERPTab_append',0);
-%         gui_erp_append.append_run.BackgroundColor =  [1 1 1];
-%         gui_erp_append.append_run.ForegroundColor = [0 0 0];
-%         box_erp_append.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_append.append_cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_append.append_cancel.ForegroundColor = [0 0 0];
-%         gui_erp_append.append_advance.BackgroundColor =  [1 1 1];
-%         gui_erp_append.append_advance.ForegroundColor = [0 0 0];
-%     end
-
 %%--------------press return to execute "Apply"----------------------------
     function erp_append_presskey(~,eventdata)
         keypress = eventdata.Key;
