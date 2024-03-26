@@ -129,17 +129,27 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        %         try
         
+        app = feval('estudio_epoch2contn_gui',[1]);
+        waitfor(app,'Finishbutton',1);
+        try
+            RestoreEvent = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.1); %wait for app to leave
+        catch
+            return;
+        end
+        if isempty(RestoreEvent)
+            return;
+        end
         
-        
-        question = ['This tool converts an epoched dataset into a continuous one by concatenating all its epochs using boundary events.\n\n'...
-            'Would you like to proceed?'];
-        title    = 'Estudio: Convert to Continuous EEG > pop_epoch2continuous() ';
-        button   = askquest(sprintf(question), title);
-        
-        if ~strcmpi(button,'yes')
-            return
+        if isempty(RestoreEvent) || numel(RestoreEvent)~=1 || (RestoreEvent~=0 && RestoreEvent~=1)
+            RestoreEvent=1;
+        end
+        if RestoreEvent==1
+            RestoreEventStr = 'on';
+        else
+            RestoreEventStr = 'off';
         end
         
         
@@ -157,12 +167,13 @@ varargout{1} = Eegtab_box_art_sumop;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            [EEG, LASTCOM] = pop_epoch2continuous(EEG, 'History', 'implicit');
+            setname = EEG.setname;
+            [EEG, LASTCOM] = pop_epoch2continuous(EEG, 'RestoreEvent',RestoreEventStr, 'History', 'implicit');
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            
+            EEG.setname = setname;
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
@@ -174,7 +185,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 eegh(LASTCOM);
             end
         end%%end for loop of subjects
-        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'');
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_ep2con');
         if isempty(Answer)
             return;
         end
