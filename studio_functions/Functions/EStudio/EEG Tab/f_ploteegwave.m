@@ -605,7 +605,7 @@ DEFAULT_GRID_SPACING =Winlength/5;
 leftintv = [];
 %%Plot continuous EEG
 tmpcolor = [ 0 0 0.4 ];
-if ndims(EEG.data)==2
+if EEG.trials==1
     if ~isempty(data) && PlotNum~=0
         
         for ii = size(data,1):-1:1
@@ -637,7 +637,7 @@ isfreq = 0;
 Limits = [EEG.times(1),EEG.times(end)];
 Srate = EEG.srate;
 Freqlimits = [];
-if ndims(EEG.data)==3
+if EEG.trials>1
     if ~isempty(data) && PlotNum~=0
         
         % plot trial limits
@@ -726,12 +726,20 @@ if ndims(EEG.data)==3
                                 for kk = 1:numel(ypos1)
                                     dataChan = nan(1,size(dataplot,2));
                                     dataChan (Epochintv(jj,1):Epochintv(jj,2)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,2));
+                                    dataChan1= nan(1,size(dataplot,2));
+                                    dataChan1 (1,Epochintv(jj,1):Epochintv(jj,1)) = dataplot(ypos1(kk),Epochintv(jj,1):Epochintv(jj,1));
                                     try
                                         plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))', ...
                                             'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5);%%
+                                        plot(hbig, (dataChan1+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))' , ...
+                                            'color', Colorgbwave(ypos1(kk),:), 'clipping','on','LineWidth',1.5,'Marker' ,'s','MarkerSize',8,...
+                                            'MarkerEdgeColor',Colorgbwave(ypos1(kk),:),'MarkerFaceColor',Colorgbwave(ypos1(kk),:));%%
                                     catch
                                         plot(hbig, (dataChan+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))', ...
                                             'color', tmpcolor, 'clipping','on','LineWidth',1.5);%%
+                                        plot(hbig, (dataChan1+ Ampsc(size(dataplot,1)-ypos1(kk)+1)-meandata(ypos1(kk)))', ...
+                                            'color', tmpcolor, 'clipping','on','LineWidth',1.5,'Marker' ,'s','MarkerSize',8,...
+                                            'MarkerEdgeColor',Colorgbwave(ypos1(kk),:),'MarkerFaceColor',Colorgbwave(ypos1(kk),:));%%
                                     end
                                 end
                             end

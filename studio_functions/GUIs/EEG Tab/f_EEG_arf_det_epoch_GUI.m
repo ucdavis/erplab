@@ -174,15 +174,12 @@ varargout{1} = Eegtab_box_art_det_epoch;
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.detar_run_title);
         set(Eegtab_EEG_art_det_epoch.detar_run_title,'Sizes',[10,-1,30,-1,10]);
         
-        
         Eegtab_EEG_art_det_epoch.show_sumy_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.show_sumy_title);
         Eegtab_EEG_art_det_epoch.show_sumy_ar = uicontrol('Style', 'checkbox','Parent',Eegtab_EEG_art_det_epoch.show_sumy_title,'Value',1,...
             'String','Show summary window','callback',@show_sumy_ar,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         uiextras.Empty('Parent', Eegtab_EEG_art_det_epoch.show_sumy_title);
         set(Eegtab_EEG_art_det_epoch.show_sumy_title,'Sizes',[-1 180 -1]);
-        
-        
         
         Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         set(Eegtab_EEG_art_det_epoch.DataSelBox,'Sizes',[30 30 25 25 35 35 35 30 30 30 20]);
@@ -982,6 +979,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
             prefilter_editValue=30;
         end
         Eegtab_EEG_art_det_epoch.prefilter_edit.String = num2str(prefilter_editValue);
+        if Eegtab_EEG_art_det_epoch.prefilter_checkbox.Value==1
+            Eegtab_EEG_art_det_epoch.prefilter_edit.Enable = 'on';
+        else
+            Eegtab_EEG_art_det_epoch.prefilter_edit.Enable = 'off';
+        end
         
         Eegtab_EEG_art_det_epoch.Paras{1} = Eegtab_EEG_art_det_epoch.det_algo.Value;
         Eegtab_EEG_art_det_epoch.Paras{2} = str2num(Eegtab_EEG_art_det_epoch.chan_edit.String);

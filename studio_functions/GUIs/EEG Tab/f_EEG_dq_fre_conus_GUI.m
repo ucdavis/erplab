@@ -487,6 +487,12 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if isempty(chanOld)
             EEG_dq_fre_conus.chans_edit.String= vect2colon(1:observe_EEGDAT.EEG.nbchan);
         end
+      
+        data_tab = EEG_dq_fre_conus.bandtable.Data;
+        if (ischar(data_tab{8,1}) && strcmpi(data_tab{8,1},'broadband')) && data_tab{8,3}> observe_EEGDAT.EEG.srate/2
+            EEG_dq_fre_conus.bandtable.Data{8,3}= observe_EEGDAT.EEG.srate/2;
+        end
+        
         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
         EEG_dq_fre_conus.chans_edit.Enable= 'on';
         EEG_dq_fre_conus.chans_browse.Enable= 'on';
@@ -555,6 +561,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             EEG_dq_fre_conus.chans_edit.String = vect2colon([1:observe_EEGDAT.EEG.nbchan]);
         end
         fqband     =  [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 100]; %defaults
+        if ~isempty(observe_EEGDAT.EEG)
+          fqband(8,2) =  observe_EEGDAT.EEG.srate/2; 
+        end
         fqlabels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'};
         data_tab = [fqlabels' num2cell(fqband)];
         EEG_dq_fre_conus.bandtable.Data=data_tab;

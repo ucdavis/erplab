@@ -1180,6 +1180,14 @@ varargout{1} = EStudio_eeg_events_box;
             EStduio_eegtab_EEG_events.vieweventlist.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.imp_eventlist_exc.Enable=EnableFlag;
             EStduio_eegtab_EEG_events.exp_eventlist_exc.Enable='off';
+            for ii = 1:100
+                dsnames{ii,1} = '';
+                dsnames{ii,2} = '';
+            end
+            if isempty(observe_EEGDAT.EEG)
+                EStduio_eegtab_EEG_events.sumevent_name.String = 'Event Code Summary';
+                EStduio_eegtab_EEG_events.table_event.Data = dsnames;
+            end
             observe_EEGDAT.count_current_eeg=10;
             return;
         end

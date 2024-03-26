@@ -588,11 +588,11 @@ varargout{1} = eegtab_events_box;
         if observe_ERPDAT.Count_currentERP ~=15
             return;
         end
-        EEGUpdate = erpworkingmemory('EEGUpdate');
-        if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
-            EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
+      ViewerFlag=erpworkingmemory('ViewerFlag');
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+            ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
-        if isempty(observe_ERPDAT.ERP) || ~isfield(observe_ERPDAT.ERP,'EVENTLIST') || EEGUpdate==1
+        if isempty(observe_ERPDAT.ERP) || ~isfield(observe_ERPDAT.ERP,'EVENTLIST') || ViewerFlag==1
             EnableFlag = 'off';
             erptab_events.exp_rt.Enable=EnableFlag;
             erptab_events.imp_eventlist.Enable=EnableFlag;

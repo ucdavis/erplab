@@ -1726,7 +1726,36 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.latency_plot_edit.String = Latencystr;
         
         try map2d = ERPTab_plotscalp{3}; catch map2d=1;ERPTab_plotscalp{3} = 1;end
+        if isempty(map2d) || numel(map2d)~=1 || (map2d~=1 && map2d~=0)
+            map2d = 1;ERPTab_plotscalp{3}=1;
+        end
         gui_erp_scalp_map.map_type_2d.Value= map2d;
+        if map2d==1
+            set(gui_erp_scalp_map.map_type_2d_type,'Enable','on');
+            gui_erp_scalp_map.map_type_3d_spl.Enable = 'off';
+            gui_erp_scalp_map.map_extras_view_ops.Enable = 'off';
+            gui_erp_scalp_map.map_extras_view_ops.String = '+X';
+            gui_erp_scalp_map.map_extras_view_ops.Value =1;
+            gui_erp_scalp_map.map_extras_view_location.String = num2str([-180 30]);
+            gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+            gui_erp_scalp_map.map_type_2d_type_outside.Enable = 'on';
+        else
+            gui_erp_scalp_map.map_type_2d_type.Enable = 'off';
+            gui_erp_scalp_map.map_type_2d_type_outside.Enable = 'off';
+            morimenu = {'front', 'back', 'right', 'left', 'top',...
+                'frontleft', 'frontright', 'backleft', 'backright',...
+                'custom'};
+            %%for 2D
+            set(gui_erp_scalp_map.map_type_2d_type,'Enable','off');
+            set(gui_erp_scalp_map.map_type_2d_type_outside,'Enable','off','Value',0);
+            %%for 3D
+            set(gui_erp_scalp_map.map_extras_view_ops,'String', morimenu,'Enable','on','Value',1);
+            gui_erp_scalp_map.map_extras_view_location.String = num2str([-180 30]);
+            gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+        end
+        
+        gui_erp_scalp_map.map_type_3d.Value= ~map2d;
+        
         
         try twodtyep  = ERPTab_plotscalp{4}; catch twodtyep=1;ERPTab_plotscalp{4} = 1;end
         if isempty(twodtyep) || numel(twodtyep)~=1 || any(twodtyep>5) || any(twodtyep<1)
@@ -1847,6 +1876,8 @@ varargout{1} = ERP_plot_scalp_gui;
         gui_erp_scalp_map.map_extras_cmap_ops.Enable = Enable_lab;
         gui_erp_scalp_map.map_extras_cmapb_disp.Enable= Enable_lab;
         gui_erp_scalp_map.map_type_2d_type.Enable= Enable_lab;
+        set(gui_erp_scalp_map.map_type_2d_type_outside,'Enable',Enable_lab);
+        
         %%Run and advanced
         gui_erp_scalp_map.advanced.Enable= Enable_lab;
         gui_erp_scalp_map.run.Enable= Enable_lab;
@@ -1898,6 +1929,15 @@ varargout{1} = ERP_plot_scalp_gui;
             set(gui_erp_scalp_map.map_extras_view_ops,'String', morimenu,'Enable','on','Value',1);
             gui_erp_scalp_map.map_extras_view_location.String = num2str([-180 30]);
             gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+        else
+            set(gui_erp_scalp_map.map_type_2d_type,'Enable','on');
+            gui_erp_scalp_map.map_type_3d_spl.Enable = 'off';
+            gui_erp_scalp_map.map_extras_view_ops.Enable = 'off';
+            gui_erp_scalp_map.map_extras_view_ops.String = '+X';
+            gui_erp_scalp_map.map_extras_view_ops.Value =1;
+            gui_erp_scalp_map.map_extras_view_location.String = num2str([-180 30]);
+            gui_erp_scalp_map.map_extras_view_location.Enable = 'off';
+            gui_erp_scalp_map.map_type_2d_type_outside.Enable = 'on';
         end
         if  gui_erp_scalp_map.map_type_2d.Value==1%%%If select 2D
             gui_erp_scalp_map.map_type_3d.Value=0;
@@ -1917,22 +1957,6 @@ varargout{1} = ERP_plot_scalp_gui;
 
 %%-------execute "apply" before doing any cnages for other panels----------
 %     function erp_two_panels_change(~,~)
-%         if  isempty(observe_ERPDAT.ALLERP)|| isempty(observe_ERPDAT.ERP)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('ERPTab_topos');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         apply_run();
-%         estudioworkingmemory('ERPTab_topos',0);
-%         gui_erp_scalp_map.run.BackgroundColor =  [ 1 1 1];
-%         gui_erp_scalp_map.run.ForegroundColor = [0 0 0];
-%         ERP_plot_scalp_gui.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_erp_scalp_map.cancel.BackgroundColor =  [1 1 1];
-%         gui_erp_scalp_map.cancel.ForegroundColor = [0 0 0];
-%         gui_erp_scalp_map.advanced.BackgroundColor =  [1 1 1];
-%         gui_erp_scalp_map.advanced.ForegroundColor = [0 0 0];
 %     end
 
 

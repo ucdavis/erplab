@@ -2539,6 +2539,9 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.channelpopup.Enable = EnableFlag;
             gui_erp_simulation.binedit.Enable = EnableFlag;
             gui_erp_simulation.binpopup.Enable = EnableFlag;
+            gui_erp_simulation.newnoise_op.Enable = EnableFlag;
+            gui_erp_simulation.simulation_cancel.Enable = EnableFlag;
+            gui_erp_simulation.apply.Enable = EnableFlag;
         else
             gui_erp_simulation.realerp_check.Enable = 'on';
             if gui_erp_simulation.realerp_check.Value==1
@@ -2552,6 +2555,9 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.channelpopup.Enable = EnableFlag;
             gui_erp_simulation.binedit.Enable = EnableFlag;
             gui_erp_simulation.binpopup.Enable = EnableFlag;
+            gui_erp_simulation.newnoise_op.Enable = 'on';
+            gui_erp_simulation.simulation_cancel.Enable = 'on';
+            gui_erp_simulation.apply.Enable = 'on';
             if gui_erp_simulation.realerp_check.Value==1
                 EnableFlags = 'off';
             else
@@ -2602,8 +2608,8 @@ varargout{1} = ERP_simulation_box;
             gui_erp_simulation.Paras{25} = str2num(gui_erp_simulation.white_amp.String);
             gui_erp_simulation.Paras{26} = gui_erp_simulation.pink_op.Value;
             gui_erp_simulation.Paras{27} = str2num(gui_erp_simulation.pink_amp.String);
+            plot_erp_simulation();
         end
-        plot_erp_simulation();
         observe_ERPDAT.Count_currentERP=20;
     end
 

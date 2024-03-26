@@ -96,17 +96,22 @@ if ~isempty(ALLERP)
     handles.Resolution =OutputViewerparerp{16};
     handles.Matlab_ver = OutputViewerparerp{22};
     handles.GridposArray = OutputViewerparerp{24};
+    ChanArray = ChanArray(1);
     ChanArray11 = vect2colon(ChanArray,'Sort', 'on');
     ChanArray11 = erase(ChanArray11,{'[',']'});
     handles.edit_chans.String =  ChanArray11;
-    
+    BinArray = BinArray(1);
     BinArray1 = vect2colon(BinArray,'Sort', 'on');
     BinArray1 = erase(BinArray1,{'[',']'});
     handles.edit_bin.String = BinArray1;
-    
+    CurrentERP = CurrentERP(1);
     ERPArray1 = vect2colon(CurrentERP,'Sort', 'on');
     ERPArray1 = erase(ERPArray1,{'[',']'});
     handles.edit5_erpset.String = ERPArray1;
+    handles.CurrentERP=CurrentERP;
+    handles.BinArray=BinArray;
+    handles.ChanArray = ChanArray;
+    
 end
 
 %%for bins
@@ -124,9 +129,10 @@ handles.edit_chans.Enable = 'on';
 handles.pushbutton8_chansmall.Enable = 'on';
 handles.pushbutton_chanlarge.Enable = 'on';
 handles.pushbutton_chanborwse.Enable = 'on';
-handles.radiobutton_chanoverlay.Value=1;
-handles.radiobutton_chan_separate.Value=0;
-
+handles.radiobutton_chanoverlay.Value=0;
+handles.radiobutton_chan_separate.Value=1;
+handles.radiobutton_chanoverlay.Enable = 'off';
+handles.radiobutton_chan_separate.Enable = 'off';
 %%erpsets
 handles.radiobutton_erppor.Value=1;
 handles.checkbox_erp.Value=0;
@@ -145,34 +151,37 @@ handles.ALLERP = ALLERP;
 
 handles= plot_wave_viewer(hObject,handles);
 
-if ~isempty(ALLERP)
-    if numel(ChanArray) ==ERP.nchan
-        handles.radiobutton_chanpor.Value=0;
-        handles.checkbox_chan.Value=1;
-        handles.pushbutton8_chansmall.Enable = 'off';
-        handles.pushbutton_chanlarge.Enable = 'off';
-        handles.pushbutton_chanborwse.Enable = 'off';
-        handles.edit_chans.Enable = 'off';
-    end
-    
-    if numel(BinArray) == ERP.nbin
-        handles.checkbox1_bin.Value=1;
-        handles.radiobutton_parbin.Value=0;
-        handles.pushbutton_binsmall.Enable = 'off';
-        handles.pushbutton_binlarge.Enable = 'off';
-        handles.edit_bin.Enable = 'off';
-        handles.pushbutton_browse_bin.Enable = 'off';
-        handles.BinArray = 1:ERP.nbin;
-    end
-    if numel(CurrentERP)==length(ALLERP)
-        handles.checkbox_erp.Value=1;
-        handles.radiobutton_erppor.Value=0;
-        handles.edit5_erpset.Enable = 'off';
-        handles.pushbutton_erpsetsmall.Enable = 'off';
-        handles.pushbutton_erpsetlarge.Enable = 'off';
-        handles.pushbutton_erpset_browse.Enable = 'off';
-    end
-end
+% if ~isempty(ALLERP)
+%     if numel(ChanArray) ==ERP.nchan
+%         handles.radiobutton_chanpor.Value=0;
+%         handles.checkbox_chan.Value=1;
+%         handles.pushbutton8_chansmall.Enable = 'off';
+%         handles.pushbutton_chanlarge.Enable = 'off';
+%         handles.pushbutton_chanborwse.Enable = 'off';
+%         handles.edit_chans.Enable = 'on';
+%     end
+%
+%     if numel(BinArray) == ERP.nbin
+%         handles.checkbox1_bin.Value=1;
+%         handles.radiobutton_parbin.Value=0;
+%         handles.pushbutton_binsmall.Enable = 'off';
+%         handles.pushbutton_binlarge.Enable = 'off';
+%         handles.edit_bin.Enable = 'off';
+%         handles.pushbutton_browse_bin.Enable = 'off';
+%         handles.BinArray = 1:ERP.nbin;
+%     end
+%     if numel(CurrentERP)==length(ALLERP)
+%         handles.checkbox_erp.Value=1;
+%         handles.radiobutton_erppor.Value=0;
+%         handles.edit5_erpset.Enable = 'off';
+%         handles.pushbutton_erpsetsmall.Enable = 'off';
+%         handles.pushbutton_erpsetlarge.Enable = 'off';
+%         handles.pushbutton_erpset_browse.Enable = 'off';
+%     end
+%     handles.BinArray=BinArray;
+% handles.ChanArray = ChanArray;
+% handles.ERP =[];
+% end
 
 % handles.checkbox_erp.Enable = 'off';
 
@@ -453,7 +462,7 @@ handles.checkbox1_bin.Value=1;
 handles.radiobutton_parbin.Value=0;
 handles.pushbutton_binsmall.Enable = 'off';
 handles.pushbutton_binlarge.Enable = 'off';
-handles.edit_bin.Enable = 'off';
+handles.edit_bin.Enable = 'on';
 handles.pushbutton_browse_bin.Enable = 'off';
 ALLERP = handles.ALLERP;
 try
@@ -633,10 +642,13 @@ handles.checkbox_chan.Value=1;
 handles.pushbutton8_chansmall.Enable = 'off';
 handles.pushbutton_chanlarge.Enable = 'off';
 handles.pushbutton_chanborwse.Enable = 'off';
-handles.edit_chans.Enable = 'off';
+handles.edit_chans.Enable = 'on';
+handles.radiobutton_chanoverlay.Enable = 'on';
+handles.radiobutton_chan_separate.Enable = 'on';
 if isempty(ALLERP) || isempty(ERP)
     return;
 end
+
 ChanArray11 = vect2colon(1:ERP.nchan,'Sort', 'on');
 ChanArray11 = erase(ChanArray11,{'[',']'});
 handles.edit_chans.String = ChanArray11;
@@ -1279,28 +1291,28 @@ for Numofsub = 1:numel(ERPArray)
     for Numofbin = 1:numel(BinArray)
         count = count+1;
         Data_display1(count,:) = Data_display(Numofbin,:,Numofsub);
-        if chanOverlay==0
-            Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(0),'f'], BinArray(Numofbin));
-        else
-            Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(0),'f'], BinArray(Numofbin));
-        end
+        %         if chanOverlay==0
+        %             Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(0),'f'], BinArray(Numofbin));
+        %         else
+        Data_display_tra{count,1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(0),'f'], BinArray(Numofbin));
+        %         end
     end
 end
 
 for Numofone = 1:size(Data_display1,1)
     for Numoftwo = 1:size(Data_display1,2)
         if ~isnan(Data_display1(Numofone,Numoftwo))
-            if chanOverlay==0
-                Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
-            else
-                Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
-            end
+            %             if chanOverlay==0
+            %                 Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="white">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
+            %             else
+            Data_display_tra{Numofone,Numoftwo+1} = sprintf(['<html><tr><td align=center width=9999><FONT color="black">%.',num2str(Resolution),'f'], Data_display1(Numofone,Numoftwo));
+            %             end
         else
-            if chanOverlay==0
-                Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
-            else
-                Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="black">NaN'];
-            end
+            %             if chanOverlay==0
+            %                 Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="white">NaN'];
+            %             else
+            Data_display_tra{Numofone,Numoftwo+1} = ['<html><tr><td align=center width=9999><FONT color="black">NaN'];
+            %             end
         end
     end
 end
@@ -1308,9 +1320,9 @@ end
 handles.ERP_M_T_Viewer_table = uitable(handles.ERP_M_T_Viewer,'Data',Data_display_tra,'Units','Normalize');
 handles.ERP_M_T_Viewer_table.RowName = RowName;
 handles.ERP_M_T_Viewer_table.ColumnName = ColumnName;
-if chanOverlay==0
-    handles.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
-end
+% if chanOverlay==0
+%     handles.ERP_M_T_Viewer_table.BackgroundColor = line_colors_ldg;
+% end
 
 if numel(ChanArray)<12
     ColumnWidth = {};
@@ -1483,10 +1495,13 @@ for Numofrows = 1:rowNums
         try
             labelcbe = qplotArrayStr{plotdatalabel};
             if isempty(labelcbe)
-                labelcbe  = 'No label';
+                labelcbe  = '';
             end
         catch
             labelcbe = 'no';
+        end
+        if chanOverlay==1
+            labelcbe  = '';
         end
         try
             plotbindata =  bindata(plotdatalabel,:,:,:);
@@ -1721,9 +1736,9 @@ if ~isempty(hplot)
         rowNumlg = ceil(sqrt(length(qLegendName)));
         set(h_legend,'NumColumns',rowNumlg,'FontName', fontnames, 'Color', [1 1 1], 'position', p,'FontSize',FonsizeDefault,'box','off');
     else
-        qLegendName = {'There are no legend names becuase you selected "Overlay" for chans'};
-        text(legendview,0.5,0.8,qLegendName ,...
-            'FontSize',FonsizeDefault+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);
+        %         qLegendName = {'There are no legend names becuase you selected "Overlay" for chans'};
+        %         text(legendview,0.5,0.8,qLegendName ,...
+        %             'FontSize',FonsizeDefault+2,'HorizontalAlignment', 'center',  'Color', [1 0 0]);
     end
 end
 
@@ -2682,18 +2697,10 @@ if isempty(BinArray) || any(BinArray>ERP.nbin)
     BinArray = [1:ERP.nbin];
 end
 
-if numel(BinArray)~=1
-    handles.pushbutton_binsmall.Enable = 'off';
-    handles.pushbutton_binlarge.Enable = 'off';
-else
-    if numel(BinArray)==1 && BinArray==1
-        handles.pushbutton_binsmall.Enable = 'off';
-        handles.pushbutton_binlarge.Enable = 'on';
-    elseif numel(BinArray)==1 && BinArray== ERP.nbin
-        handles.pushbutton_binsmall.Enable = 'on';
-        handles.pushbutton_binlarge.Enable = 'off';
-    end
-end
+handles.pushbutton_binsmall.Enable = 'on';
+handles.pushbutton_binlarge.Enable = 'on';
+handles.edit_bin.String = num2str(BinArray(1));
+
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -2721,38 +2728,43 @@ for Numofbin = 1:ERP.nbin
 end
 
 indxlistb  =BinArray;
-titlename = 'Select bin(s):';
+titlename = 'Select one bin:';
 bin_select = browsechanbinGUI(listname, indxlistb, titlename);
 if isempty(bin_select)
     return;
 end
-if ~isempty(bin_select)
-    bin_select1 = vect2colon(bin_select,'Sort','on');
-    bin_select1 = erase(bin_select1,{'[',']'});
-    handles.edit_bin.String = bin_select1;
-    if numel(bin_select)~=1
-        handles.pushbutton_binsmall.Enable = 'off';
-        handles.pushbutton_binlarge.Enable = 'off';
-    else
-        if numel(bin_select)==1 && bin_select==1
-            handles.pushbutton_binsmall.Enable = 'off';
-            handles.pushbutton_binlarge.Enable = 'on';
-        elseif numel(bin_select)==1 && bin_select== ERP.nbin
-            handles.pushbutton_binsmall.Enable = 'on';
-            handles.pushbutton_binlarge.Enable = 'off';
-        end
-    end
-end
 
-if numel(bin_select) == ERP.nbin
-    handles.checkbox1_bin.Value=1;
-    handles.radiobutton_parbin.Value=0;
-    handles.pushbutton_binsmall.Enable = 'off';
-    handles.pushbutton_binlarge.Enable = 'off';
-    handles.edit_bin.Enable = 'off';
-    handles.pushbutton_browse_bin.Enable = 'off';
-    handles.BinArray = 1:ERP.nbin;
-end
+
+% if ~isempty(bin_select)
+%     bin_select1 = vect2colon(bin_select,'Sort','on');
+%     bin_select1 = erase(bin_select1,{'[',']'});
+%     handles.edit_bin.String = bin_select1;
+%     if numel(bin_select)~=1
+%         handles.pushbutton_binsmall.Enable = 'off';
+%         handles.pushbutton_binlarge.Enable = 'off';
+%     else
+%         if numel(bin_select)==1 && bin_select==1
+%             handles.pushbutton_binsmall.Enable = 'off';
+%             handles.pushbutton_binlarge.Enable = 'on';
+%         elseif numel(bin_select)==1 && bin_select== ERP.nbin
+%             handles.pushbutton_binsmall.Enable = 'on';
+%             handles.pushbutton_binlarge.Enable = 'off';
+%         end
+%     end
+% end
+handles.edit_bin.String = num2str(bin_select(1));
+handles.pushbutton_binsmall.Enable = 'on';
+handles.pushbutton_binlarge.Enable = 'on';
+
+% if numel(bin_select) == ERP.nbin
+%     handles.checkbox1_bin.Value=1;
+%     handles.radiobutton_parbin.Value=0;
+%     handles.pushbutton_binsmall.Enable = 'off';
+%     handles.pushbutton_binlarge.Enable = 'off';
+%     handles.edit_bin.Enable = 'off';
+%     handles.pushbutton_browse_bin.Enable = 'off';
+%     handles.BinArray = 1:ERP.nbin;
+% end
 
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -2782,23 +2794,28 @@ chan_select = str2num(handles.edit_chans.String);
 if isempty(chan_select) || any(chan_select>ERP.nchan)
     chan_select = [1:ERP.nchan];
 end
-if ~isempty(chan_select)
-    chan_select1 = vect2colon(chan_select,'Sort','on');
-    chan_select1 = erase(chan_select1,{'[',']'});
-    handles.edit_bin.String = chan_select1;
-    if numel(chan_select)~=1
-        handles.pushbutton_binsmall.Enable = 'off';
-        handles.pushbutton_binlarge.Enable = 'off';
-    else
-        if numel(chan_select)==1 && chan_select==1
-            handles.pushbutton8_chansmall.Enable = 'off';
-            handles.pushbutton_chanlarge.Enable = 'on';
-        elseif numel(chan_select)==1 && chan_select== ERP.nchan
-            handles.pushbutton8_chansmall.Enable = 'on';
-            handles.pushbutton_chanlarge.Enable = 'off';
-        end
-    end
-end
+% if ~isempty(chan_select)
+%     chan_select1 = vect2colon(chan_select,'Sort','on');
+%     chan_select1 = erase(chan_select1,{'[',']'});
+%     handles.edit_bin.String = chan_select1;
+%     if numel(chan_select)~=1
+%         handles.pushbutton_binsmall.Enable = 'off';
+%         handles.pushbutton_binlarge.Enable = 'off';
+%     else
+%         if numel(chan_select)==1 && chan_select==1
+%             handles.pushbutton8_chansmall.Enable = 'off';
+%             handles.pushbutton_chanlarge.Enable = 'on';
+%         elseif numel(chan_select)==1 && chan_select== ERP.nchan
+%             handles.pushbutton8_chansmall.Enable = 'on';
+%             handles.pushbutton_chanlarge.Enable = 'off';
+%         end
+%     end
+% end
+handles.edit_chans.String = num2str(chan_select(1));
+handles.radiobutton_chanoverlay.Value = 0;
+handles.radiobutton_chan_separate.Value = 1;
+handles.radiobutton_chanoverlay.Enable = 'off';
+handles.radiobutton_chan_separate.Enable = 'off';
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -2824,36 +2841,37 @@ for Numofchan = 1:ERP.nchan
 end
 
 indxlistb  =chanArray;
-titlename = 'Select chan(s):';
+titlename = 'Select one chan:';
 chan_select = browsechanbinGUI(listname, indxlistb, titlename);
 if isempty(chan_select)
     return;
 end
-if ~isempty(chan_select)
-    chan_select1 = vect2colon(chan_select,'Sort','on');
-    chan_select1 = erase(chan_select1,{'[',']'});
-    handles.edit_chans.String = chan_select1;
-    if numel(chan_select)~=1
-        handles.pushbutton_binsmall.Enable = 'off';
-        handles.pushbutton_binlarge.Enable = 'off';
-    else
-        if numel(chan_select)==1 && chan_select==1
-            handles.pushbutton8_chansmall.Enable = 'off';
-            handles.pushbutton_chanlarge.Enable = 'on';
-        elseif numel(chan_select)==1 && chan_select== ERP.nchan
-            handles.pushbutton8_chansmall.Enable = 'on';
-            handles.pushbutton_chanlarge.Enable = 'off';
-        end
-    end
-end
-if numel(chan_select) ==ERP.nchan
-    handles.radiobutton_chanpor.Value=0;
-    handles.checkbox_chan.Value=1;
-    handles.pushbutton8_chansmall.Enable = 'off';
-    handles.pushbutton_chanlarge.Enable = 'off';
-    handles.pushbutton_chanborwse.Enable = 'off';
-    handles.edit_chans.Enable = 'off';
-end
+% if ~isempty(chan_select)
+%     chan_select1 = vect2colon(chan_select,'Sort','on');
+%     chan_select1 = erase(chan_select1,{'[',']'});
+%     handles.edit_chans.String = chan_select1;
+%     if numel(chan_select)~=1
+%         handles.pushbutton_binsmall.Enable = 'off';
+%         handles.pushbutton_binlarge.Enable = 'off';
+%     else
+%         if numel(chan_select)==1 && chan_select==1
+%             handles.pushbutton8_chansmall.Enable = 'off';
+%             handles.pushbutton_chanlarge.Enable = 'on';
+%         elseif numel(chan_select)==1 && chan_select== ERP.nchan
+%             handles.pushbutton8_chansmall.Enable = 'on';
+%             handles.pushbutton_chanlarge.Enable = 'off';
+%         end
+%     end
+% end
+% if numel(chan_select) ==ERP.nchan
+%     handles.radiobutton_chanpor.Value=0;
+%     handles.checkbox_chan.Value=1;
+%     handles.pushbutton8_chansmall.Enable = 'off';
+%     handles.pushbutton_chanlarge.Enable = 'off';
+%     handles.pushbutton_chanborwse.Enable = 'off';
+%     handles.edit_chans.Enable = 'off';
+% end
+handles.edit_chans.String = num2str(chan_select(1));
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
 
@@ -2890,64 +2908,66 @@ for Numoferp = 1:length(ALLERP)
 end
 
 indxlistb  =ERPArray;
-titlename = 'Select erpset(s):';
+titlename = 'Select one erpset:';
 erpset_select = browsechanbinGUI(listname, indxlistb, titlename);
 if isempty(erpset_select)
     return;
 end
-if ~isempty(erpset_select)
-    checkindex = checkerpsets(ALLERP(erpset_select));
-    if ~isempty(checkindex)
-        handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
-        handles.checkbox_erp.Value=0;
-        handles.radiobutton_erppor.Value=1;
-        handles.edit5_erpset.Enable = 'on';
-        handles.pushbutton_erpsetsmall.Enable = 'on';
-        handles.pushbutton_erpsetlarge.Enable = 'on';
-        handles.pushbutton_erpset_browse.Enable = 'on';
-        
-        ERPArray = erpset_select(1);
-        handles.edit5_erpset.String = num2str(ERPArray);
-        handles.CurrentERP = ERPArray;
-        if ERPArray==1
-            handles.pushbutton_erpsetsmall.Enable = 'off';
-            handles.pushbutton_erpsetlarge.Enable = 'on';
-        elseif ERPArray==length(ALLERP)
-            handles.pushbutton_erpsetsmall.Enable = 'on';
-            handles.pushbutton_erpsetlarge.Enable = 'off';
-        else
-            handles.pushbutton_erpsetsmall.Enable = 'on';
-            handles.pushbutton_erpsetlarge.Enable = 'on';
-        end
-        return;
-    end
-end
+% if ~isempty(erpset_select)
+%     checkindex = checkerpsets(ALLERP(erpset_select));
+%     if ~isempty(checkindex)
+%         handles.text_warningmessage.String = [checkindex,'. You cannot display multiple ERPsets simultaneously'];
+%         handles.checkbox_erp.Value=0;
+%         handles.radiobutton_erppor.Value=1;
+%         handles.edit5_erpset.Enable = 'on';
+%         handles.pushbutton_erpsetsmall.Enable = 'on';
+%         handles.pushbutton_erpsetlarge.Enable = 'on';
+%         handles.pushbutton_erpset_browse.Enable = 'on';
 
-if ~isempty(erpset_select)
-    erpset_select1 = vect2colon(erpset_select,'Sort','on');
-    erpset_select1 = erase(erpset_select1,{'[',']'});
-    handles.edit5_erpset.String = erpset_select1;
-    if numel(erpset_select)~=1
-        handles.pushbutton_erpsetsmall.Enable = 'off';
-        handles.pushbutton_erpsetlarge.Enable = 'off';
-    else
-        if numel(erpset_select)==1 && erpset_select==1
-            handles.pushbutton_erpsetsmall.Enable = 'off';
-            handles.pushbutton_erpsetlarge.Enable = 'on';
-        elseif numel(erpset_select)==1 && erpset_select==length(ALLERP)
-            handles.pushbutton_erpsetsmall.Enable = 'on';
-            handles.pushbutton_erpsetlarge.Enable = 'off';
-        end
-    end
-end
-if numel(erpset_select)==length(ALLERP)
-    handles.checkbox_erp.Value=1;
-    handles.radiobutton_erppor.Value=0;
-    handles.edit5_erpset.Enable = 'off';
-    handles.pushbutton_erpsetsmall.Enable = 'off';
-    handles.pushbutton_erpsetlarge.Enable = 'off';
-    handles.pushbutton_erpset_browse.Enable = 'off';
-end
+%         ERPArray = erpset_select(1);
+%         handles.edit5_erpset.String = num2str(ERPArray);
+%         handles.CurrentERP = ERPArray;
+%         if ERPArray==1
+%             handles.pushbutton_erpsetsmall.Enable = 'off';
+%             handles.pushbutton_erpsetlarge.Enable = 'on';
+%         elseif ERPArray==length(ALLERP)
+%             handles.pushbutton_erpsetsmall.Enable = 'on';
+%             handles.pushbutton_erpsetlarge.Enable = 'off';
+%         else
+%             handles.pushbutton_erpsetsmall.Enable = 'on';
+%             handles.pushbutton_erpsetlarge.Enable = 'on';
+%         end
+%         return;
+%     end
+% end
+ERPArray = erpset_select(1);
+handles.edit5_erpset.String = num2str(ERPArray);
+handles.CurrentERP = ERPArray;
+% if ~isempty(erpset_select)
+%     erpset_select1 = vect2colon(erpset_select,'Sort','on');
+%     erpset_select1 = erase(erpset_select1,{'[',']'});
+%     handles.edit5_erpset.String = erpset_select1;
+%     if numel(erpset_select)~=1
+%         handles.pushbutton_erpsetsmall.Enable = 'off';
+%         handles.pushbutton_erpsetlarge.Enable = 'off';
+%     else
+%         if numel(erpset_select)==1 && erpset_select==1
+%             handles.pushbutton_erpsetsmall.Enable = 'off';
+%             handles.pushbutton_erpsetlarge.Enable = 'on';
+%         elseif numel(erpset_select)==1 && erpset_select==length(ALLERP)
+%             handles.pushbutton_erpsetsmall.Enable = 'on';
+%             handles.pushbutton_erpsetlarge.Enable = 'off';
+%         end
+%     end
+% end
+% if numel(erpset_select)==length(ALLERP)
+%     handles.checkbox_erp.Value=1;
+%     handles.radiobutton_erppor.Value=0;
+%     handles.edit5_erpset.Enable = 'off';
+%     handles.pushbutton_erpsetsmall.Enable = 'off';
+%     handles.pushbutton_erpsetlarge.Enable = 'off';
+%     handles.pushbutton_erpset_browse.Enable = 'off';
+% end
 
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);
@@ -2968,17 +2988,22 @@ if isempty(ALLERP)
 end
 
 ERPArray = str2num(handles.edit5_erpset.String);
-if numel(ERPArray)~=1
-    handles.pushbutton_erpsetsmall.Enable = 'off';
-    handles.pushbutton_erpsetlarge.Enable = 'off';
-else
-    if numel(ERPArray)==1 && ERPArray==1
-        handles.pushbutton_erpsetsmall.Enable = 'off';
-        handles.pushbutton_erpsetlarge.Enable = 'on';
-    elseif numel(ERPArray)==1 && ERPArray==length(ALLERP)
-        handles.pushbutton_erpsetsmall.Enable = 'on';
-        handles.pushbutton_erpsetlarge.Enable = 'off';
-    end
+if isempty(ERPArray) || any(ERPArray(:)>length(ALLERP))
+    ERPArray=1;
 end
+% if numel(ERPArray)~=1
+%     handles.pushbutton_erpsetsmall.Enable = 'off';
+%     handles.pushbutton_erpsetlarge.Enable = 'off';
+% else
+%     if numel(ERPArray)==1 && ERPArray==1
+%         handles.pushbutton_erpsetsmall.Enable = 'off';
+%         handles.pushbutton_erpsetlarge.Enable = 'on';
+%     elseif numel(ERPArray)==1 && ERPArray==length(ALLERP)
+%         handles.pushbutton_erpsetsmall.Enable = 'on';
+%         handles.pushbutton_erpsetlarge.Enable = 'off';
+%     end
+% end
+
+handles.edit5_erpset.String = num2str(ERPArray(1));
 handles= plot_wave_viewer(hObject,handles);
 guidata(hObject, handles);

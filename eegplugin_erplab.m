@@ -287,7 +287,7 @@ comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEv
 comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
 comRemoveResponseMistakes = [trystrs.no_check '[ALLEEG,EEG,LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,CURRENTSET);' catchstrs.new_and_hist];
 comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
-comDFT     = [trystrs.no_check '[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);' catchstrs.add_to_hist];
+comDFT     = ['[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);'];
 
 
 

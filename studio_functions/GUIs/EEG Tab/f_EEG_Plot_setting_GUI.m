@@ -1090,6 +1090,10 @@ varargout{1} = EStudio_box_EEG_plot_set;
         EStduio_gui_EEG_plotset.plotset_cancel.Enable = Enableflag;
         EStduio_gui_EEG_plotset.plot_apply.Enable = Enableflag;
         EStduio_gui_EEG_plotset.v_scale_edit_ic.Enable = Enableflag;
+        if isempty(observe_EEGDAT.EEG) || EEGUpdate==1
+            observe_EEGDAT.count_current_eeg=4;
+            return;
+        end
         EEG_plotset=  estudioworkingmemory('EEG_plotset');
         if ~isempty(observe_EEGDAT.EEG) && ~isempty(observe_EEGDAT.EEG.icachansind) && EEGUpdate==0
             EStduio_gui_EEG_plotset.disp_IC.Enable = 'on';
