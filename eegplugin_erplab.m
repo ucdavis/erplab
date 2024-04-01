@@ -105,6 +105,11 @@ catch
     fprintf('\nERPLAB''s folder does not show the current version number.\n')
 end
 
+%%running estudio
+p_location = which('o_ERPDAT');
+p_location = p_location(1:findstr(p_location,'o_ERPDAT.m')-1);
+tooltype = 'erplab';
+save(fullfile(p_location,'erplab_running_version.erpm'),'tooltype');
 
 %
 % CHECK EEGLAB Version
