@@ -1649,7 +1649,10 @@ end
 % -------------------------------------------------------------------------
 % ylims = [0 (PlotNum+1)*AmpScale];
 
-
+FonsizeDefault = f_get_default_fontsize();
+if isempty(FonsizeDefault) || numel(FonsizeDefault)~=1|| any(FonsizeDefault(:)<=0)
+    FonsizeDefault=10;
+end
 
 if EventOnset==1 && ~isempty(data) && PlotNum~=0
     MAXEVENTSTRING = 75;
@@ -1672,7 +1675,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
     for index = 1:length(event2plot)
         %Just repeat for the first one
         if index == 1
-            EVENTFONT = ' \fontsize{10} ';
+            EVENTFONT = [' \fontsize{',num2str(FonsizeDefault),'} '];
         end
         
         % draw latency line
@@ -1725,7 +1728,7 @@ if EventOnset==1 && ~isempty(data) && PlotNum~=0
             tmph2 = text(myeegviewer, [tmplat], ylims(2)-0.005, [EVENTFONT evntxt], ...
                 'color', Eventcolors{ event2plot(index) }, ...
                 'horizontalalignment', 'left',...
-                'rotation',90);
+                'rotation',90,'FontSize',FonsizeDefault);
         catch, end
         
         % draw duration is not 0
@@ -1819,7 +1822,7 @@ if EEG.trials>1
             end
             for ii = 1:numel(tagnum)
                 text(myeegviewer, [alltag1(ii)-lowlim+Trialstag/2],ylims(2)+1.1, [32,num2str(tagnum(ii))], ...
-                    'color', 'k', ...
+                    'color', 'k','FontSize',FonsizeDefault, ...
                     'horizontalalignment', 'left','rotation',90); %%
                 set(myeegviewer,'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)]);
             end
@@ -1860,6 +1863,12 @@ if EEG.trials>1
         
         %%-----------plot background color for trias with artifact---------
         %%highlight waves with labels
+        Value_adjust = floor(Startimes+1);
+        if Value_adjust<1
+            Value_adjust=1;
+        end
+        tagnum  = unique([Value_adjust,tagnum]);
+        
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
         try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
@@ -1986,7 +1995,7 @@ if EEG.trials>1
             'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)],...
             'XTick',xtickstr,...
             'FontWeight','normal',...
-            'xaxislocation', 'bottom');
+            'xaxislocation', 'bottom','FontSize',FonsizeDefault);
         
         %%
         %%-----------------plot scale------------------
@@ -2008,15 +2017,15 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         line(myeegviewer,[leftintv,rightintv],[ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(1) ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew+ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
-        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(myeegviewer,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
     end
     if EEGdispFlag~=0
         line(myeegviewer,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-AmpScale ylims(end)-AmpScale],'color','k','LineWidth',1, 'clipping','off');
         line(myeegviewer,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
-        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',myeegviewer.FontSize);
+        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(myeegviewer,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
     end
 end
 
@@ -2035,7 +2044,7 @@ if ~isempty(data) && PlotNum~=0
         'YColor','k',...
         'FontWeight','normal',...
         'TickDir', 'in',...
-        'LineWidth',0.5);%%,'HorizontalAlignment','center'
+        'LineWidth',0.5,'FontSize',FonsizeDefault);%%,'HorizontalAlignment','center'
     count=0;
     for ii = length(myeegviewer.YTickLabel):-1:2
         count = count+1;

@@ -115,15 +115,7 @@ drawui_EEG_info(FonsizeDefault);
         gui_EEG_info.total_rejected_percentage = uicontrol('Style','text','Parent', gui_EEG_info.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.total_rejected_percentage,'HorizontalAlignment','left');
         
-        %%------------totla rejected----------
-        gui_EEG_info.total_rejected_show = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_EEG_info.total_rejected_option  = uicontrol('Style','pushbutton','Parent', gui_EEG_info.total_rejected_show,'String','Artifact Summary',...
-            'callback',@total_reject_ops,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        gui_EEG_info.total_rejected_option.Enable = 'off';
-        uiextras.Empty('Parent', gui_EEG_info.total_rejected_show);
-        set(gui_EEG_info.total_rejected_show,'Sizes',[150 250]);
-       
-        set(gui_EEG_info.DataSelBox,'Sizes',[20 70 20 20 20 20 20 20 20 30 30]);% 20 100
+        set(gui_EEG_info.DataSelBox,'Sizes',[20 70 20 20 20 20 20 20 20 30]);% 20 100
     end
 
 
@@ -211,7 +203,6 @@ drawui_EEG_info(FonsizeDefault);
             dsnamesdef{ii,5} = [];
         end
         if ~isempty(EEG) && EEG.trials>1 
-            gui_EEG_info.total_rejected_option.Enable = 'on';
             gui_EEG_info.numofepoch.String = ['Number of epochs:',32,num2str(EEG.trials)];
             gui_EEG_info.numofepoch.Enable = 'on';
             [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
@@ -251,7 +242,6 @@ drawui_EEG_info(FonsizeDefault);
            Enable_label = 'off'; 
         end
         gui_EEG_info.total_rejected_percentage.Enable = Enable_label;
-        gui_EEG_info.total_rejected_option.Enable = Enable_label;
         
         try
             filesetname{1,1} = EEG.setname;
@@ -264,40 +254,5 @@ drawui_EEG_info(FonsizeDefault);
         observe_EEGDAT.count_current_eeg=8;
     end
 
-%%----------------Rejection option----------------------------------------
-    function total_reject_ops(~,~)
-        if isempty(observe_EEGDAT.ALLEEG) || isempty(observe_EEGDAT.EEG)
-            return;
-        end
-        %%--------Selected EEGsets-----------
-        EEGArray= estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
-            EEGArray = observe_EEGDAT.CURRENTSET;
-            estudioworkingmemory('EEGArray',EEGArray);
-        end
-        ALLERP = [];
-        try
-            for NumofEEG = 1:numel(EEGArray)
-                ERP    = buildERPstruct([]);
-                EEG  = observe_EEGDAT.ALLEEG(EEGArray(NumofEEG));
-                [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
-                ERP.erpname = EEG.setname;
-                ERP.ntrials.accepted = countbinOK;
-                ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
-                ERP.ntrials.invalid = countbinINV;
-                
-                if NumofEEG ==1
-                    ALLERP = ERP;
-                else
-                    ALLERP(length(ALLERP)+1)   = ERP;
-                end
-            end
-        catch
-            return;
-        end
-        if ~isempty(ALLERP)
-            feval('EEG_trial_rejection_sumr',ALLERP,[],1);
-        end
-    end
 
 end

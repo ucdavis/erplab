@@ -49,7 +49,7 @@ varargout{1} = box_erp_resample;
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
-            ColorB_def = [0.95 0.95 0.95];
+            ColorB_def = [0.702,0.77,0.85];
         end
         
         gui_erp_resample.DataSelBox = uiextras.VBox('Parent', box_erp_resample,'BackgroundColor',ColorB_def);

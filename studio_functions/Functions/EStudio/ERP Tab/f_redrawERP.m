@@ -17,10 +17,10 @@ FonsizeDefault = f_get_default_fontsize();
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;%%Get background color
 catch
-    ColorB_def = [0.95 0.95 0.95];
+    ColorB_def = [0.702,0.77,0.85];
 end
 if isempty(ColorB_def)
-    ColorB_def = [0.95 0.95 0.95];
+    ColorB_def = [0.702,0.77,0.85];
 end
 
 
@@ -114,6 +114,8 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_le
 %%waves
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
+%%note that needs to go to lines 487 and 491 of "uix.ScrollingPanel" if change the background color of scrollingbar or this toolbox is updated 
+
 
 EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
 uiextras.Empty('Parent', EStudio_gui_erp_totl.blank,'BackgroundColor',ColorB_def); % 1A
@@ -259,9 +261,9 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
             catch
             end
         end
-    end
-    
+    end  
 end
+EStudio_gui_erp_totl.ViewAxes.Children.Title.Color = [1 0 0];
 end
 
 %%-------------------------------------------------------------------------

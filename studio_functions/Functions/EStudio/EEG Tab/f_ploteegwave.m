@@ -493,7 +493,10 @@ end
 % -------------------------draw events if any------------------------------
 % -------------------------------------------------------------------------
 
-
+FonsizeDefault = f_get_default_fontsize();
+if isempty(FonsizeDefault) || numel(FonsizeDefault)~=1|| any(FonsizeDefault(:)<=0)
+    FonsizeDefault=10;
+end
 
 if EventOnset==1 && ~isempty(data)
     MAXEVENTSTRING = 75;
@@ -516,7 +519,7 @@ if EventOnset==1 && ~isempty(data)
     for index = 1:length(event2plot)
         %Just repeat for the first one
         if index == 1
-            EVENTFONT = ' \fontsize{10} ';
+            EVENTFONT = [' \fontsize{',num2str(FonsizeDefault),'} '];
         end
         
         % draw latency line
@@ -570,7 +573,7 @@ if EventOnset==1 && ~isempty(data)
             tmph2 = text(hbig, [tmplat], ylims(2)-0.005, [EVENTFONT evntxt], ...
                 'color', Eventcolors{ event2plot(index) }, ...
                 'horizontalalignment', 'left',...
-                'rotation',90);
+                'rotation',90,'FontSize',FonsizeDefault);
         catch, end
         
         % draw duration is not 0
@@ -622,7 +625,7 @@ if EEG.trials==1
         AmpScale = OldAmpScale;
         set(hbig, 'Xlim',[1 Winlength*multiplier+1],...
             'XTick',[1:multiplier*DEFAULT_GRID_SPACING:Winlength*multiplier+1]);
-        set(hbig, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'));
+        set(hbig, 'XTickLabel', num2str((Startimes:DEFAULT_GRID_SPACING:Startimes+Winlength)'),'FontSize',FonsizeDefault);
         %%
         %%-----------------plot scale------------------
         leftintv = Winlength*multiplier+1;
@@ -666,7 +669,7 @@ if EEG.trials>1
             % 		'XTick',alltag-lowlim+Trialstag/2, 'YTick',[],'xaxislocation', 'top');
             for ii = 1:numel(tagnum)
                 text(hbig, [alltag1(ii)-lowlim+Trialstag/2],ylims(2)+1.1, [32,num2str(tagnum(ii))], ...
-                    'color', 'k', ...
+                    'color', 'k','FontSize',FonsizeDefault, ...
                     'horizontalalignment', 'left','rotation',90); %%
                 set(hbig,'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)]);
             end
@@ -707,6 +710,12 @@ if EEG.trials>1
         
         %%-----------plot background color for trias with artifact---------
         %%highlight waves with labels
+        Value_adjust = floor(Startimes+1);
+        if Value_adjust<1
+            Value_adjust=1;
+        end
+        tagnum  = unique([Value_adjust,tagnum]);
+        
         try trialsMakrs = EEG.reject.rejmanual(tagnum);catch trialsMakrs = zeros(1,numel(tagnum)) ; end
         try trialsMakrschan = EEG.reject.rejmanualE(:,tagnum);catch trialsMakrschan = zeros(EEG.nbchan,numel(tagnum)) ; end
         tmpcolsbgc = [1 1 0.783];
@@ -832,7 +841,7 @@ if EEG.trials>1
             'Xlim',[1 (Winlength*multiplier+epochNum*GapSize)],...
             'XTick',xtickstr,...
             'FontWeight','normal',...
-            'xaxislocation', 'bottom');
+            'xaxislocation', 'bottom','FontSize',FonsizeDefault);
         %%
         %%-----------------plot scale------------------
         leftintv = (Winlength*multiplier+epochNum*GapSize);
@@ -851,15 +860,15 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         line(hbig,[leftintv,rightintv],[ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(1) ylims(1)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[AmpICNew+ylims(1) AmpICNew+ylims(1)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
-        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/43+AmpICNew+ylims(1)), [num2str(AmpIC),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(hbig,leftintv,((ylims(2)-ylims(1))/20+AmpICNew+ylims(1)), ['ICs'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
     end
     if EEGdispFlag~=0
         line(hbig,[leftintv,rightintv],[ylims(end)-AmpScale ylims(end)],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end)-AmpScale ylims(end)-AmpScale],'color','k','LineWidth',1, 'clipping','off');
         line(hbig,[leftintv-ytick_bottom,rightintv+ytick_bottom],[ylims(end) ylims(end)],'color','k','LineWidth',1, 'clipping','off');
-        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
-        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',hbig.FontSize);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/43+ylims(end), [num2str(AmpScale),32,'\muV'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
+        text(hbig,leftintv,(ylims(2)-ylims(1))/20+ylims(end), ['Chans'],'HorizontalAlignment', 'center','FontSize',FonsizeDefault);
     end
     
     
@@ -877,7 +886,7 @@ if ~isempty(data) && PlotNum~=0  && ~isempty(leftintv)
         'YColor','k',...
         'FontWeight','normal',...
         'TickDir', 'in',...
-        'LineWidth',0.5);%%,'HorizontalAlignment','center'
+        'LineWidth',0.5,'FontSize',FonsizeDefault);%%,'HorizontalAlignment','center'
     % try
     %     set(hbig, 'TickLabelInterpreter', 'none'); % for old Matlab 2011
     % catch

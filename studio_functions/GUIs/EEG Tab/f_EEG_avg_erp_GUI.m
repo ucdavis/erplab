@@ -161,7 +161,7 @@ varargout{1} = Eegtab_box_avg_erp;
         
         EEG_avg_erp.para_title1 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_avg_erp.para_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Data Quality Quatification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Data Quality Quantification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         %%Default Parameters
         EEG_avg_erp.para_title2 = uiextras.HBox('Parent', EEG_avg_erp.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_avg_erp.def_para = uicontrol('Style','radiobutton','Parent',EEG_avg_erp.para_title2,'HorizontalAlignment','left',...

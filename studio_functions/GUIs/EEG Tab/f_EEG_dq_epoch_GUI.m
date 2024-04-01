@@ -95,7 +95,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         
         EEG_dq_epoch.para_title1 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_epoch.para_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Data Quality Quatification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Data Quality Quantification:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         %%Default Parameters
         EEG_dq_epoch.para_title2 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         EEG_dq_epoch.def_para = uicontrol('Style','radiobutton','Parent',EEG_dq_epoch.para_title2,'HorizontalAlignment','left',...

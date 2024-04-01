@@ -74,30 +74,23 @@ varargout{1} = Eegtab_box_art_sumop;
         set(Eegtab_EEG_art_sumop.syn_arfinfo_title, 'Sizes',[13 -1 13]);
         
         
-        %%Summarize EEG artifact in one value
-        Eegtab_EEG_art_sumop.art_onevalue_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_onevalue_title,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_art_sumop.art_onevalue = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_onevalue_title,...
-            'String','Summarize EEG artifact in one value','callback',@art_onevalue,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_onevalue_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.art_onevalue_title, 'Sizes',[13 -1 13]);
+        %%Classic Artifact Summary
+        Eegtab_EEG_art_sumop.Classic_ar_sum_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.Classic_ar_sum_title,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_sumop.Classic_ar_sum = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.Classic_ar_sum_title,...
+            'String','Classic Artifact Summary','callback',@Classic_ar_sum,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.Classic_ar_sum_title,'BackgroundColor',ColorB_def);
+        set(Eegtab_EEG_art_sumop.Classic_ar_sum_title, 'Sizes',[13 -1 13]);
         
         %%Summarize EEG artifact in a table
-        Eegtab_EEG_art_sumop.art_table_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_table_title,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_art_sumop.art_table = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_table_title,...
-            'String','Summarize EEG artifact in a table','callback',@art_table,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_table_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.art_table_title, 'Sizes',[13 -1 13]);
+        Eegtab_EEG_art_sumop.total_reject_ops_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
+        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.total_reject_ops_title,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_sumop.total_reject_ops = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.total_reject_ops_title,...
+            'String','Artifact Summary','callback',@total_reject_ops,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.total_reject_ops_title,'BackgroundColor',ColorB_def);
+        set(Eegtab_EEG_art_sumop.total_reject_ops_title, 'Sizes',[13 -1 13]);
         
-        %%Summarize EEG artifact in a graphic
-        Eegtab_EEG_art_sumop.art_graphic_title = uiextras.HBox('Parent', Eegtab_EEG_art_sumop.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
-        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_graphic_title,'BackgroundColor',ColorB_def);
-        Eegtab_EEG_art_sumop.art_graphic = uicontrol('Style', 'pushbutton','Parent',Eegtab_EEG_art_sumop.art_graphic_title,...
-            'String','Summarize EEG artifact in a graphic','callback',@art_graphic,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', Eegtab_EEG_art_sumop.art_graphic_title,'BackgroundColor',ColorB_def);
-        set(Eegtab_EEG_art_sumop.art_graphic_title, 'Sizes',[13 -1 13]);
-        set(Eegtab_EEG_art_sumop.DataSelBox,'Sizes',[30 30 30 30 30]);
+        set(Eegtab_EEG_art_sumop.DataSelBox,'Sizes',[30 30 30 30]);
     end
 
 
@@ -328,8 +321,8 @@ varargout{1} = Eegtab_box_art_sumop;
     end
 
 
-%%-----------------Summarize EEG artifact in one value---------------------
-    function art_onevalue(Source,~)
+%%-----------------Classic Artifact Summary---------------------
+    function Classic_ar_sum(Source,~)
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
             Source.Enable = 'off';
             return;
@@ -339,42 +332,95 @@ varargout{1} = Eegtab_box_art_sumop;
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET; estudioworkingmemory('EEGArray',EEGArray);
         end
+        app = feval('estudio_classic_ar_summary_gui',[1 0 0]);
+        waitfor(app,'Finishbutton',1);
+        try
+            New_pos1 = app.output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            app.delete; %delete app from view
+            pause(0.01); %wait for app to leave
+        catch
+            return;
+        end
+        if isempty(New_pos1)
+            return;
+        end
         
         for Numofeeg = 1:numel(EEGArray)
             EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Summarize EEG artifact in one value*',32,32,32,32,datestr(datetime('now')),'\n']);
+            if New_pos1(1)==1
+                fprintf(['*Classic Artifact Summary>Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
+            elseif New_pos1(2)==1
+                fprintf(['*Classic Artifact Summary>Summarize EEG artifact in a table*',32,32,32,32,datestr(datetime('now')),'\n']);
+            elseif New_pos1(3)==1
+                fprintf(['*Classic Artifact Summary>Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
+            end
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             if EEG.trials==1
-                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: cannot work on a continuous EEG';
+                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary: cannot work on a continuous EEG';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            
-            %%check if epochs were marked as artifacts
-            histoflags = summary_rejectflags(EEG);
-            %check currently activated flags
-            flagcheck = sum(histoflags);
-            active_flags = (flagcheck>1);
-            
-            if isempty(active_flags)
-                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value: None of epochs was marked';
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(erroMessage,titlNamerro);
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
+            if New_pos1(1)==1
+                %%check if epochs were marked as artifacts
+                histoflags = summary_rejectflags(EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                active_flags = (flagcheck>1);
+                if isempty(active_flags)
+                    erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary: None of epochs was marked';
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(erroMessage,titlNamerro);
+                    fprintf( [repmat('-',1,100) '\n']);
+                    return;
+                end
+                [EEG, MPD, LASTCOM] = getardetection(EEG, 1);
+            elseif New_pos1(2)==1
+                %%check if epochs were marked as artifacts
+                histoflags = summary_rejectflags(EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                active_flags = (flagcheck>1);
+                if isempty(active_flags)
+                    erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: None of epochs was marked';
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(erroMessage,titlNamerro);
+                    fprintf( [repmat('-',1,100) '\n']);
+                    return;
+                end
+                [EEG, tprej, acce, rej, histoflags,LASTCOM ] = pop_summary_AR_eeg_detection(EEG);
+                if isempty(LASTCOM)
+                    fprintf( [repmat('-',1,100) '\n']);
+                    observe_EEGDAT.eeg_panel_message =2;
+                    return;
+                end
+            elseif New_pos1(3)==1
+                %%check if epochs were marked as artifacts
+                histoflags = summary_rejectflags(EEG);
+                %check currently activated flags
+                flagcheck = sum(histoflags);
+                active_flags = (flagcheck>1);
+                
+                if isempty(active_flags)
+                    erroMessage = 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: None of epochs was marked';
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(erroMessage,titlNamerro);
+                    fprintf( [repmat('-',1,100) '\n']);
+                    return;
+                end
+                [EEG, goodbad, histeEF, histoflags,  LASTCOM] = pop_summary_rejectfields(EEG);
             end
             
-            [EEG, MPD, LASTCOM] = getardetection(EEG, 1);
+            
             fprintf([LASTCOM,'\n']);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -383,128 +429,54 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf( [repmat('-',1,100) '\n']);
         end
         
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in one value');
+        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
-%%-------------------Summarize EEG artifact in a table---------------------
-    function art_table(Source,~)
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
-            Source.Enable = 'off';
+
+%%----------------Rejection option----------------------------------------
+    function total_reject_ops(~,~)
+        if isempty(observe_EEGDAT.ALLEEG) || isempty(observe_EEGDAT.EEG)
             return;
         end
-        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr)
-            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        %%--------Selected EEGsets-----------
+        EEGArray= estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
+            EEGArray = observe_EEGDAT.CURRENTSET;
+            estudioworkingmemory('EEGArray',EEGArray);
         end
-        
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table');
-        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
-        EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
+        ALLERP = [];
+        try
+            for NumofEEG = 1:numel(EEGArray)
+                EEG  = observe_EEGDAT.ALLEEG(EEGArray(NumofEEG));
+                if EEG.trials==1
+                    erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary: cannot work on a continuous EEG';
+                    titlNamerro = 'Warning for EEG Tab';
+                    estudio_warning(erroMessage,titlNamerro);
+                    fprintf( [repmat('-',1,100) '\n']);
+                    return;
+                end
+                ERP    = buildERPstruct([]);
+                [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
+                ERP.erpname = EEG.setname;
+                ERP.ntrials.accepted = countbinOK;
+                ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
+                ERP.ntrials.invalid = countbinINV;
+                
+                if NumofEEG ==1
+                    ALLERP = ERP;
+                else
+                    ALLERP(length(ALLERP)+1)   = ERP;
+                end
+            end
+        catch
+            return;
         end
-        
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Summarize EEG artifact in a table*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            if EEG.trials==1
-                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: cannot work on a continuous EEG';
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(erroMessage,titlNamerro);
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
-            end
-            
-            %%check if epochs were marked as artifacts
-            histoflags = summary_rejectflags(EEG);
-            %check currently activated flags
-            flagcheck = sum(histoflags);
-            active_flags = (flagcheck>1);
-            if isempty(active_flags)
-                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table: None of epochs was marked';
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(erroMessage,titlNamerro);
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
-            end
-            [EEG, tprej, acce, rej, histoflags,LASTCOM ] = pop_summary_AR_eeg_detection(EEG);
-            if isempty(LASTCOM)
-                fprintf( [repmat('-',1,100) '\n']);
-                observe_EEGDAT.eeg_panel_message =2;
-                return;
-            end
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-            fprintf( [repmat('-',1,100) '\n']);
+        if ~isempty(ALLERP)
+            feval('EEG_trial_rejection_sumr',ALLERP,[],1);
         end
-        
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a table');
-        observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
 
-%%-------------------Summarize EEG artifact in a graphic-------------------
-    function art_graphic(Source,~)
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
-            Source.Enable = 'off';
-            return;
-        end
-        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
-        if ~isempty(messgStr)
-            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
-        end
-        
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic');
-        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
-        EEGArray =  estudioworkingmemory('EEGArray');
-        if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
-            EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
-        end
-        
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Summarize EEG artifact in a graphic*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            if EEG.trials==1
-                erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: cannot work on a continuous EEG';
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(erroMessage,titlNamerro);
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
-            end
-            
-            %%check if epochs were marked as artifacts
-            histoflags = summary_rejectflags(EEG);
-            %check currently activated flags
-            flagcheck = sum(histoflags);
-            active_flags = (flagcheck>1);
-            
-            if isempty(active_flags)
-                erroMessage = 'Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic: None of epochs was marked';
-                titlNamerro = 'Warning for EEG Tab';
-                estudio_warning(erroMessage,titlNamerro);
-                fprintf( [repmat('-',1,100) '\n']);
-                return;
-            end
-            
-            [EEG, goodbad, histeEF, histoflags,  LASTCOM] = pop_summary_rejectfields(EEG);
-            fprintf([LASTCOM,'\n']);
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-            fprintf( [repmat('-',1,100) '\n']);
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
-        end
-        erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Summarize EEG artifact in a graphic');
-        observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
-    end
 
 
 %%--------Settting will be modified if the selected was changed------------
@@ -520,9 +492,8 @@ varargout{1} = Eegtab_box_art_sumop;
             Eegtab_EEG_art_sumop.clear_art_det.Enable = 'off';
             Eegtab_EEG_art_sumop.syn_arfinfo.Enable = 'off';
             Eegtab_EEG_art_sumop.art_interp.Enable = 'off';
-            Eegtab_EEG_art_sumop.art_onevalue.Enable = 'off';
-            Eegtab_EEG_art_sumop.art_table.Enable = 'off';
-            Eegtab_EEG_art_sumop.art_graphic.Enable= 'off';
+            Eegtab_EEG_art_sumop.Classic_ar_sum.Enable = 'off';
+            Eegtab_EEG_art_sumop.total_reject_ops.Enable = 'off';
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ==1
                 Eegtab_box_art_sumop.TitleColor= [0.7500    0.7500    0.75000];
             else
@@ -536,9 +507,8 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_EEG_art_sumop.clear_art_det.Enable = 'on';
         Eegtab_EEG_art_sumop.syn_arfinfo.Enable = 'on';
         Eegtab_EEG_art_sumop.art_interp.Enable = 'on';
-        Eegtab_EEG_art_sumop.art_onevalue.Enable = 'on';
-        Eegtab_EEG_art_sumop.art_table.Enable = 'on';
-        Eegtab_EEG_art_sumop.art_graphic.Enable= 'on';
+        Eegtab_EEG_art_sumop.Classic_ar_sum.Enable = 'on';
+        Eegtab_EEG_art_sumop.total_reject_ops.Enable = 'on';
         observe_EEGDAT.count_current_eeg=21;
     end
 end

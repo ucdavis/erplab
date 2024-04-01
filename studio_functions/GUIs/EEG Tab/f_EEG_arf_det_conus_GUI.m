@@ -62,6 +62,14 @@ varargout{1} = Eegtab_box_art_det_conus;
             EnableFlag = 'on';
         end
         
+        %%Manua rejection
+        Eegtab_EEG_art_det_conus.manuar_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.manuar_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_conus.manuar_title,'Value',0,...
+            'String','Manual rejection','callback',@manuar_checkbox,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+        Eegtab_EEG_art_det_conus.manuar_button = uicontrol('Style','pushbutton','Parent', Eegtab_EEG_art_det_conus.manuar_title,...
+            'String','View & Reject','callback',@manuar_button,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+        set( Eegtab_EEG_art_det_conus.manuar_title ,'Sizes',[120 -1]);
+        Eegtab_EEG_art_det_conus.manuar_checkbox_Value = 0;
         %%channels that detect artifact
         Eegtab_EEG_art_det_conus.chan_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_conus.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',Eegtab_EEG_art_det_conus.chan_title,...
@@ -178,7 +186,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             'String','Preview','callback',@detectar_preview,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         Eegtab_EEG_art_det_conus.detectar_run = uicontrol('Style','pushbutton','Parent',Eegtab_EEG_art_det_conus.detar_run_title,...
             'String','Finalize','callback',@detectar_run,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
-        set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 35 35 35 20 20 30 20 20 30 20 30 20 30 30]);
+        set(Eegtab_EEG_art_det_conus.DataSelBox,'Sizes',[30 30 35 35 35 20 20 30 20 20 30 20 30 20 30 30]);
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
         
         
@@ -201,6 +209,207 @@ varargout{1} = Eegtab_box_art_det_conus;
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
+
+%%----------------------checkbox for manual rejection----------------------
+    function manuar_checkbox(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials >1
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        Eegtab_box_art_det_conus.TitleColor= [0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [1 1 1];
+        estudioworkingmemory('EEGTab_detect_arts_conus',1);
+        
+        
+        if Eegtab_EEG_art_det_conus.manuar_checkbox.Value==0
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'off';
+            Eegtab_EEG_art_det_conus.chan_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.chan_browse.Enable= 'on';
+            Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_run.Enable= 'on';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'on';
+            if  Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'on';
+                Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'on';
+                Eegtab_EEG_art_det_conus.include_fre.Enable= 'on';
+                Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+                Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+                Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+                Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            end
+            
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            end
+            
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            end
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            end
+            
+        else
+            Eegtab_EEG_art_det_conus.chan_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.chan_browse.Enable= 'off';
+            Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_run.Enable= 'off';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'on';
+        end
+    end
+
+%%----------------------botton for manual rejection------------------------
+    function manuar_button(Source,~)
+        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials >1
+            Source.Enable= 'off';
+            return;
+        end
+        [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();%%execute the other panels if any parameter was changed
+        if ~isempty(messgStr) && eegpanelIndex~=10
+            observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
+        end
+        erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > View & reject');
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
+        Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_run.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_run.ForegroundColor = [0 0 0];
+        Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
+        Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
+        estudioworkingmemory('EEGTab_detect_arts_conus',0);
+        
+        %%--------Selected EEGsets-----------
+        EEGArray= estudioworkingmemory('EEGArray');
+        if isempty(EEGArray) || any(EEGArray(:) > length(observe_EEGDAT.ALLEEG))
+            EEGArray = observe_EEGDAT.CURRENTSET;
+            estudioworkingmemory('EEGArray',EEGArray);
+        end
+        
+        erpworkingmemory('EEGUpdate',1);
+        observe_EEGDAT.count_current_eeg=1;
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        ALLEEG_out = [];
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG(EEGArray(Numofeeg));
+            fprintf( ['\n\n',repmat('-',1,100) '\n']);
+            fprintf(['*Artifact Detection (Epoched EEG) > View & reject*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
+            
+            app = feval('EEG_select_segement_artifact_GUI',EEG,1);
+            waitfor(app,'Finishbutton',1);
+            try
+                EEG = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+                app.delete; %delete app from view
+                pause(0.1); %wait for app to leave
+            catch
+                erpworkingmemory('EEGUpdate',0);
+                observe_EEGDAT.count_current_eeg=1;
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
+            if isempty(EEG)
+                erpworkingmemory('EEGUpdate',0);
+                observe_EEGDAT.count_current_eeg=1;
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
+            
+            [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
+            fprintf( [repmat('-',1,100) '\n']);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+        end%%end for loop of subjects
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manar');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
+            checkfileindex = checkfilexists([EEG.filepath,filesep,EEG.filename]);
+            if Save_file_label && checkfileindex==1
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        end
+        
+        observe_EEGDAT.ALLEEG = ALLEEG;
+        try
+            EEGArray =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1;
+        catch
+            EEGArray = length(observe_EEGDAT.ALLEEG);
+            observe_EEGDAT.CURRENTSET = length(observe_EEGDAT.ALLEEG);
+        end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        estudioworkingmemory('EEGArray',EEGArray);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
+        assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        
+        erpworkingmemory('EEGUpdate',0);
+        observe_EEGDAT.count_current_eeg=1;
+        observe_EEGDAT.eeg_panel_message =2;
+        
+    end
+
+
+
+
 
 %%----------------------edit chans-----------------------------------------
     function chan_edit(Source,~)
@@ -842,6 +1051,74 @@ varargout{1} = Eegtab_box_art_det_conus;
         memoryCARTGUI.def{10} = shortseg;
         memoryCARTGUI.def{11} = winoffset;
         erpworkingmemory('continuousartifactGUI',memoryCARTGUI);
+        
+        try Eegtab_EEG_art_det_conus.manuar_checkbox.Value= Eegtab_EEG_art_det_conus.manuar_checkbox_Value;catch Eegtab_EEG_art_det_conus.manuar_checkbox.Value=0;end
+        if Eegtab_EEG_art_det_conus.manuar_checkbox.Value==0
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'off';
+            Eegtab_EEG_art_det_conus.chan_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.chan_browse.Enable= 'on';
+            Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_run.Enable= 'on';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'on';
+            if  Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'on';
+                Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'on';
+                Eegtab_EEG_art_det_conus.include_fre.Enable= 'on';
+                Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+                Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+                Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+                Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            end
+            
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            end
+            
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            end
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            end
+        else
+            Eegtab_EEG_art_det_conus.chan_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.chan_browse.Enable= 'off';
+            Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_run.Enable= 'off';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'on';
+        end
+        
+        
         erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > Cancel');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
@@ -1284,6 +1561,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 estudio_warning(msgboxText,titlNamerro);
             end
         end
+        Eegtab_EEG_art_det_conus.manuar_checkbox_Value = Eegtab_EEG_art_det_conus.manuar_checkbox.Value;
         
         fdet = 'off';
         forder =100;
@@ -1419,7 +1697,8 @@ varargout{1} = Eegtab_box_art_det_conus;
             Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
             Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'off';
             Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
-            
+            Eegtab_EEG_art_det_conus.manuar_checkbox.Enable = 'off';
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'off';
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials ~=1
                 Eegtab_box_art_det_conus.TitleColor= [0.75 0.75 0.75];
             else
@@ -1428,7 +1707,8 @@ varargout{1} = Eegtab_box_art_det_conus;
             observe_EEGDAT.count_current_eeg=17;
             return;
         end
-        
+        Eegtab_EEG_art_det_conus.manuar_checkbox.Enable = 'on';
+        Eegtab_EEG_art_det_conus.manuar_button.Enable = 'on';
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_conus.chan_edit.Enable= 'on';
         Eegtab_EEG_art_det_conus.chan_browse.Enable= 'on';
@@ -1492,6 +1772,72 @@ varargout{1} = Eegtab_box_art_det_conus;
         else
             Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
         end
+        
+        if Eegtab_EEG_art_det_conus.manuar_checkbox.Value==0
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'off';
+            Eegtab_EEG_art_det_conus.chan_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.chan_browse.Enable= 'on';
+            Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_run.Enable= 'on';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'on';
+            if  Eegtab_EEG_art_det_conus.filter_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'on';
+                Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'on';
+                Eegtab_EEG_art_det_conus.include_fre.Enable= 'on';
+                Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+                Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+                Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+                Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            end
+            
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.joinarseg_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            end
+            
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            end
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'on';
+            if Eegtab_EEG_art_det_conus.addtime_checkbox.Value==1
+                Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'on';
+            else
+                Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            end
+        else
+            Eegtab_EEG_art_det_conus.chan_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.chan_browse.Enable= 'off';
+            Eegtab_EEG_art_det_conus.voltage_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.movewindow_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.windowstep_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_cancel.Enable= 'on';
+            Eegtab_EEG_art_det_conus.detectar_preview.Enable= 'off';
+            Eegtab_EEG_art_det_conus.detectar_run.Enable= 'off';
+            Eegtab_EEG_art_det_conus.filter_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.lowfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.highfre_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.include_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.exclude_fre.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.unmarkarseg_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.joinarseg_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_checkbox.Enable= 'off';
+            Eegtab_EEG_art_det_conus.addtime_edit.Enable= 'off';
+            Eegtab_EEG_art_det_conus.manuar_button.Enable = 'on';
+        end
+        Eegtab_EEG_art_det_conus.manuar_checkbox_Value = Eegtab_EEG_art_det_conus.manuar_checkbox.Value;
         observe_EEGDAT.count_current_eeg=17;
     end
 
@@ -1540,6 +1886,9 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.movewindow_edit.String = '500';
         Eegtab_EEG_art_det_conus.windowstep_edit.String = '250';
         
+        Eegtab_EEG_art_det_conus.manuar_checkbox.Value=0;
+        Eegtab_EEG_art_det_conus.manuar_checkbox.Enable = 'off';
+        Eegtab_EEG_art_det_conus.manuar_button.Enable = 'off';
         Eegtab_EEG_art_det_conus.filter_checkbox.Value=0;
         Eegtab_EEG_art_det_conus.lowfre_edit.Enable = 'off';
         Eegtab_EEG_art_det_conus.lowfre_edit.String = '';
@@ -1556,6 +1905,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.addtime_checkbox.Value = 0;
         Eegtab_EEG_art_det_conus.addtime_edit.Enable = 'off';
         Eegtab_EEG_art_det_conus.addtime_edit.String = '';
+        Eegtab_EEG_art_det_conus.manuar_checkbox_Value = 0;
         observe_EEGDAT.Reset_eeg_paras_panel=14;
     end
 end
