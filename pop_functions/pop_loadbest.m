@@ -277,6 +277,7 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
+eegh(bestcom);
 
 switch shist
         case 1 % from GUI

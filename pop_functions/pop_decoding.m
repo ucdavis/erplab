@@ -68,6 +68,12 @@
 %                          faster. Uses as many available cores. Must have 'Parallel
 %                          Computing Toolbox' installed. 'on'/'off' (Def)
 %
+%        'BetaWeights'    - (optional) Save the raw beta weights that are
+%                           computed for every
+%                           timepoint/block/class/channel. This is by
+%                           default "off". Turning it "on" will increase
+%                           your outputted file size dramatically.
+%
 %
 % OUTPUTS  :
 %
@@ -78,7 +84,7 @@
 %  MVPC = pop_decoding(BEST,'Classes',[1:4],'Channels',[1:27 33:64], 'nIter', 10, 'nCrossblocks',3, ...
 %         'DecodeTimes',[-500,1496], 'Decode_Every_Npoint',5,'EqualizeTrials','classes',...
 %         'Method','SVM', 'classcoding','OneVsAll', ...
-%         'ParCompute','on');
+%         'ParCompute','on', 'BetaWeights', "off");
 %
 %
 % *** This function is part of ERPLAB Toolbox ***
@@ -206,9 +212,7 @@ if nargin == 1 %GUI
 
         %DEFUNCT = output filename (def = filename.mvpa in pwd) *DEFUNCT
         %DEFUNCT = output path (def = cd); *DEFUNCT 
-        
-       
-
+              
     else
         %if working memory is NOT empty 
         if ~isempty(ALLBEST)
@@ -221,18 +225,12 @@ if nargin == 1 %GUI
                 else
                     def{2} = bestset_list;
                 end
-            
-
-            
-            
+                                   
             end
         end
-        
-        
-        
+                       
     end
     
-
     %% Call GUI for decoding parameters parameters
     %app = feval('decodingGUI', ALLBEST, filename, filepath, cbesti); %cludgy way
     app = feval('decodingGUI', ALLBEST, def, cbesti); %cludgy way
@@ -267,13 +265,14 @@ if nargin == 1 %GUI
 %     file_out = decoding_res{13};
 %     path_out = decoding_res{14}; 
     ParCompute = decoding_res{14};
-    decodeClasses = decoding_res{15}; 
-    
+    decodeClasses = decoding_res{15};
+    BetaWeights = 0;
+
     %save in working memory
     %Steve decided that equalize trials should always be defaulted if using
     %the GUI
     
-    def = { inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
+    def = {inp1, indexBEST, relevantChans, nIter, nCrossBlocks, epoch_times, ...
         decodeTimes, decode_every_Npoint, 2, floorValue, ...
         selected_method, classcoding, ParCompute,decodeClasses}; 
     erpworkingmemory('pop_decoding',def); 
@@ -316,7 +315,13 @@ if nargin == 1 %GUI
     else
         spar = 'off';
     end
-        
+
+    if BetaWeights == 1
+        sbeta = 'on';
+    else
+        sbeta = 'off';
+    end
+
     if isempty(decodeClasses)
         %across all classes in BESTset(s)
         decodeClasses = 1:numel(ALLBEST(indexBEST(1)).binwise_data);
@@ -329,12 +334,10 @@ if nargin == 1 %GUI
        'nIter',nIter,'nCrossblocks',nCrossBlocks,  ...
    'DecodeTimes', decodeTimes, 'Decode_Every_Npoint',decode_every_Npoint,  ...
    'EqualizeTrials', seqtr, 'FloorValue',floorValue,'Method', smethod, ...
-   'classcoding',strcoding, 'Saveas','on', 'ParCompute',spar, 'History','gui'); 
+   'classcoding',strcoding, 'Saveas','on', 'ParCompute',spar, 'BetaWeights', sbeta, 'History','gui'); 
 
     pause(0.1);
     return
-
-
 
 end
     
@@ -363,6 +366,7 @@ p.addParamValue('Method','SVM',@ischar); %method (1:SVM/2:Crossnobis);
 p.addParamValue('classcoding','OneVsAll',@ischar); % SVMcoding(1:oneVsone/2:oneVsall); 
 p.addParamValue('Saveas','off',@ischar); 
 p.addParamValue('ParCompute','off', @ischar); %attempt parallization across CPU cores (def: false)
+p.addParamValue('BetaWeights', 'off', @ischar); %betaweight switch
 p.addParamValue('History','script'); 
 
 % Parsing
@@ -380,7 +384,8 @@ smethod = p.Results.Method;
 strcoding = p.Results.classcoding;
 % filename_out = p.Results.filename_out; 
 % pathname_out = p.Results.path_out; 
-sParCompute = p.Results.ParCompute; 
+sParCompute = p.Results.ParCompute;
+BetaWeights = p.Results.BetaWeights;
 
 
 %if user is scripting command
@@ -406,8 +411,6 @@ else
     ParCompute = 0;
 end
     
-    
-
 
 %% choose BESTsets
 if ~isempty(idx_bestset)  
@@ -445,11 +448,9 @@ if issaveas == 1
          % file_path = {ALLBEST.filepath}; 
          
          %after using the save multple files, 
-         %don't automaticaly assume they want to save
+         %don't automatically assume they want to save
 
 end
-
-
 
 %create/update the times field in each BESTset 
 
@@ -492,10 +493,8 @@ elseif checkw==2
     return
 end
 
-
 start_epoch = decodeTimes(1); %ms 
 end_epoch = decodeTimes(2);%ms  
-
 
 %check valid times and round to nearest time
 [startms,ind_start,latdiffms(1)] = closest(original_times,start_epoch); 
@@ -522,7 +521,6 @@ if ms2sample(latdiffms(1),fs)~=0 %JLC.10/16/2013
     
     start_epoch = original_times(decoding_times_index(1)); 
     
-
 end
 
 if ms2sample(latdiffms(2),fs)~=0 %JLC.10/16/2013
@@ -549,8 +547,6 @@ decodeTimes = [original_times(decoding_times_index(1)) original_times(decoding_t
 
 %decode_index = decoding_times_index; 
 ntimes = numel(decoding_times_index); 
-
-
 
 %% update ALLBEST.times & ALLBEST.binwisedata, ALLBEST.pnts, 
 
@@ -682,7 +678,7 @@ else
         fprintf('WARNING: You have disabled the option for equating the number of trials across classes. \n');
         fprintf('WARNING: This is almost always a very bad idea.  \n');
         fprintf('WARNING: Disabling this option will almost certainly artificially inflate the decoding accuracy, creating bogus effects.  \n');
-        fprintf('WARNING:In addition, you should report that you disabled it in your Method section, which will likely cause your paper to be rejected  \n');
+        fprintf('WARNING: In addition, you should report that you disabled it in your Method section, which will likely cause your paper to be rejected  \n');
         fprintf('%s\n\n', repmat('*',1,60));
     end
 end
@@ -724,7 +720,7 @@ end
 
 
 if method == 1 %SVM
-    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method);
+    [MVPC, ALLMVPC] = erp_decoding(ALLBEST,nIter,nCrossblocks,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method,BetaWeights);
 elseif method == 2 %crossnobis 
     [MVPC, ALLMVPC] = crossnobis(ALLBEST,nIter,0,decodeTimes,chanArray,classcoding,equalize_trials,ParWorkers,method);
 end
@@ -814,6 +810,7 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
+eegh(bestcom);
 
 
 

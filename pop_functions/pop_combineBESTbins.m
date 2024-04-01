@@ -247,7 +247,7 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
-
+eegh(bestcom);
 
 %% save function
 

@@ -1,10 +1,10 @@
-% Author: Aaron Matthew Simmons, Guanghui Zhang, David R Garrett
+% Author: Aaron Matthew Simmons, Guanghui Zhang, David R Garrett, 
 % Andrew X Stewart, Javier Lopez-Calderon & Steven Luck
 % Center for Mind and Brain
 % University of California, Davis,
 % Davis, CA
-% 2007-2023
-% Version 10.04
+% 2007-2024
+% Version 10.1
 
 %b8d3721ed219e65100184c6b95db209bb8d3721ed219e65100184c6b95db209b
 %
@@ -29,11 +29,11 @@
 
 function currvers = eegplugin_erplab(fig, trystrs, catchstrs)
 
-erplab_default_values % script
+erplab_default_values % script erplabver
 currvers  = ['erplab' erplabver];
 
 if nargin < 3
-        error('eegplugin_erplab requires 3 arguments');
+    error('eegplugin_erplab requires 3 arguments');
 end
 
 %
@@ -41,7 +41,7 @@ end
 %
 p = which('eegplugin_erplab','-all');
 if length(p)>1
-        fprintf('\nERPLAB WARNING: More than one ERPLAB folder was found.\n\n');
+    fprintf('\nERPLAB WARNING: More than one ERPLAB folder was found.\n\n');
 end
 p = p{1};
 p = p(1:findstr(p,'eegplugin_erplab.m')-1);
@@ -52,18 +52,35 @@ addpath(genpath(p))
 try
     clearvars observe_ERPDAT;
     clearvars v_ERPDAT;
-    
+    clearvars observe_EEGDAT;
 catch
 end
 
-erplab_default_values % script
-currvers  = ['erplab' erplabver];
 
-erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+%%close EStudio if it launched
+try
+    global EStudio_gui_erp_totl
+    close(EStudio_gui_erp_totl.Window);
+catch
+end
+
+
+%erplab_running_version('Version',erplabver,'tooltype','ERPLAB');%%GH,Mar 2023
+global observe_EEGDAT;
+observe_EEGDAT = o_EEGDATA;
+
+
+observe_EEGDAT.ALLEEG = [];
+observe_EEGDAT.CURRENTSET = 1;
+observe_EEGDAT.EEG = [];
+observe_EEGDAT.count_current_eeg = 0;
+observe_EEGDAT.eeg_panel_message = 0;
+observe_EEGDAT.eeg_two_panels = 0;
+
+
 %global needed for ERPLAB viewer
 global observe_ERPDAT;
 observe_ERPDAT = o_ERPDAT;
-observe_ERPDAT.Two_GUI = 0;
 observe_ERPDAT.ALLERP = [];
 observe_ERPDAT.CURRENTERP = [];
 observe_ERPDAT.ERP = [];
@@ -93,19 +110,19 @@ end
 % CHECK EEGLAB Version
 %
 if exist('memoryerp.erpm','file')==2
-        iserpmem = 1; % file for memory exists
+    iserpmem = 1; % file for memory exists
 else
-        iserpmem = 0; % does not exist file for memory
+    iserpmem = 0; % does not exist file for memory
 end
 egv = regexp(eeg_getversion,'^(\d+)\.+','tokens','ignorecase');
 eegversion = str2num(char(egv{:}));
 check_matlab_version;
 if eegversion==11
-        if iserpmem==1
-                warning('ERPLAB:Warning', 'ERPLAB is not compatible with EEGLAB 11. Please try either a newer or an older version of EEGLAB.')
-        else
-                warndlg(sprintf('ERPLAB is not compatible with EEGLAB 11.\nPlease try either a newer or an older version of EEGLAB.'),'!! Warning !!', 'modal')
-        end
+    if iserpmem==1
+        warning('ERPLAB:Warning', 'ERPLAB is not compatible with EEGLAB 11. Please try either a newer or an older version of EEGLAB.')
+    else
+        warndlg(sprintf('ERPLAB is not compatible with EEGLAB 11.\nPlease try either a newer or an older version of EEGLAB.'),'!! Warning !!', 'modal')
+    end
 end
 
 %
@@ -116,13 +133,13 @@ filst     = dir(dirBox);
 filenames = {filst.name};
 
 if length(filenames)>3    % '.'    '..'    'erplab_box_readme.md'
-        recycle on;
-        delete(fullfile(dirBox,'*'))
-        fprintf('\nERPLAB WARNING: Temporary files (from your last session) within erplab_Box folder were sent to recycle bin.\n\n')
-        
-        file_id = fopen(fullfile(dirBox, 'erplab_box_readme.md'), 'w');
-        fprintf(file_id, 'This is a placeholder file, so that git does not delete the `erplab_Box` folder.');
-        fclose(file_id);
+    recycle on;
+    delete(fullfile(dirBox,'*'))
+    fprintf('\nERPLAB WARNING: Temporary files (from your last session) within erplab_Box folder were sent to recycle bin.\n\n')
+    
+    file_id = fopen(fullfile(dirBox, 'erplab_box_readme.md'), 'w');
+    fprintf(file_id, 'This is a placeholder file, so that git does not delete the `erplab_Box` folder.');
+    fclose(file_id);
 end
 
 %
@@ -131,44 +148,44 @@ end
 
 % Check erpmem version matches current version
 if iserpmem
-                oldmem = load(fullfile(p,'memoryerp.erpm'), '-mat');
-                memver = oldmem.erplabver;
-                if strcmp(memver,erplabver) == 0
-                    disp('Updating erpmem with current version number')
-                    mshock = oldmem.mshock;
-                    save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
-                end
+    oldmem = load(fullfile(p,'memoryerp.erpm'), '-mat');
+    memver = oldmem.erplabver;
+    if strcmp(memver,erplabver) == 0
+        disp('Updating erpmem with current version number')
+        mshock = oldmem.mshock;
+        save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
+    end
 end
 
 
 if iserpmem==0
-        mshock = 0;
-        try
-                % saves memory file
-                %
-                % IMPORTANT: If this file (saved variables inside memoryerp.erpm) is modified then also must be modified the same line at erplabamnesia.m
-                %
-                save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
-        catch
-                % saves memory variable at workspace
-                msgboxText = ['\nERPLAB could not find a file for storing its GUI memory or \n'...
-                        'does not have permission for writting on it.\n\n'...
-                        'Therefore, ERPLAB''s memory will be stored at Matlab''s workspace and will last 1 session.\n\n'];
-                
-                % message on command window
-                fprintf('%s\n', repmat('*',1,50));
-                fprintf('"Houston, we''ve had a problem here": \n %s\n', sprintf(msgboxText));
-                bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
-                disp(bottomline)
-                fprintf('%s\n', repmat('*',1,50));
-                
-                %
-                % IMPORTANT: If this strucure (vmemoryerp) is modified then also must be modified the same line at erplabamnesia.m
-                %
-                vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,...
-                        'fontunitsGUI',fontunitsGUI,'mshock',mshock, 'errorColorF', errorColorF, 'errorColorB', errorColorB);
-                assignin('base','vmemoryerp',vmemoryerp);
-        end
+    mshock = 0;
+    try
+        % saves memory file
+        %
+        % IMPORTANT: If this file (saved variables inside memoryerp.erpm) is modified then also must be modified the same line at erplabamnesia.m
+        %
+        save(fullfile(p,'memoryerp.erpm'),'erplabrel','erplabver','ColorB','ColorF','errorColorB', 'errorColorF','fontsizeGUI','fontunitsGUI','mshock');
+    catch
+        % saves memory variable at workspace
+        msgboxText = ['\nERPLAB could not find a file for storing its GUI memory or \n'...
+            'does not have permission for writting on it.\n\n'...
+            'Therefore, ERPLAB''s memory will be stored at Matlab''s workspace and will last 1 session.\n\n'];
+        
+        % message on command window
+        fprintf('%s\n', repmat('*',1,50));
+        fprintf('"Houston, we''ve had a problem here": \n %s\n', sprintf(msgboxText));
+        bottomline = 'If you think this is a bug, please report the error to erplabtoolbox@gmail.com and not to the EEGLAB developers.';
+        disp(bottomline)
+        fprintf('%s\n', repmat('*',1,50));
+        
+        %
+        % IMPORTANT: If this strucure (vmemoryerp) is modified then also must be modified the same line at erplabamnesia.m
+        %
+        vmemoryerp = struct('erplabrel',erplabrel,'erplabver',erplabver,'ColorB',ColorB,'ColorF',ColorF,'fontsizeGUI',fontsizeGUI,...
+            'fontunitsGUI',fontunitsGUI,'mshock',mshock, 'errorColorF', errorColorF, 'errorColorB', errorColorB);
+        assignin('base','vmemoryerp',vmemoryerp);
+    end
 end
 
 %
@@ -178,21 +195,21 @@ end
 ERP              = [];  % Start ERP Structure on workspace
 ALLERPCOM        = [];
 CURRENTERP       = 0;
-BEST             = []; %Start BEST structure on workspace
-CURRENTBEST      = 0; 
+BEST             = [];  %Start BEST structure on workspace
+CURRENTBEST      = 0;
 plotset.ptime    = [];
 plotset.pscalp   = [];
 plotset.pfrequ   = [];
 MVPC             = [];
-CURRENTMVPC      = 0; 
+CURRENTMVPC      = 0;
 
 assignin('base','ERP',ERP);
 assignin('base','BEST',BEST);
-assignin('base','MVPC',MVPC); 
+assignin('base','MVPC',MVPC);
 assignin('base','ALLERPCOM', ALLERPCOM);
 assignin('base','CURRENTERP', CURRENTERP);
 assignin('base','CURRENTBEST', CURRENTBEST);
-assignin('base','CURRENTMVPC', CURRENTMVPC); 
+assignin('base','CURRENTMVPC', CURRENTMVPC);
 
 assignin('base','plotset', plotset);
 
@@ -203,6 +220,12 @@ global ALLMVPC
 try
     ALLERP   = evalin('base', 'ALLERP');
     ALLERP = [];
+    
+    ALLBEST   = evalin('base', 'ALLBEST');
+    ALLBEST = [];
+    
+    ALLMVPC   = evalin('base', 'ALLMVPC');
+    ALLMVPC = [];
 catch
 end
 %---------------------------------------------------------------------------------------------------
@@ -214,7 +237,7 @@ e_try        = 'try,';
 e_catch      = 'catch, eeglab_error; LASTCOM= ''''; clear EEGTMP ALLEEGTMP STUDYTMP; end;';
 nocheck      = e_try;
 storeallcall = [ 'if ~isempty(ALLEEG) & ~isempty(ALLEEG(1).data), ALLEEG = eeg_checkset(ALLEEG);' ...
-        'EEG = eeg_retrieve(ALLEEG, CURRENTSET); eegh(''ALLEEG = eeg_checkset(ALLEEG); EEG = eeg_retrieve(ALLEEG, CURRENTSET);''); end;' ];
+    'EEG = eeg_retrieve(ALLEEG, CURRENTSET); eegh(''ALLEEG = eeg_checkset(ALLEEG); EEG = eeg_retrieve(ALLEEG, CURRENTSET);''); end;' ];
 ifeeg            =  'if ~isempty(LASTCOM) & ~isempty(EEG),';
 e_storeall_nh    = [e_catch 'eegh(LASTCOM);' ifeeg storeallcall 'disp(''Done.''); end; eeglab(''redraw'');'];
 % cb_loaderplabset = [ nocheck '[ALLEEG EEG CURRENTSET LASTCOM] = pop_loadmerplabset(ALLEEG, EEG);' e_storeall_nh];
@@ -232,14 +255,14 @@ e_storeall_nh    = [e_catch 'eegh(LASTCOM);' ifeeg storeallcall 'disp(''Done.'')
 % ERPLAB NEST-MENU  (ERPLAB at the EEGLAB's Main Menu)
 %
 if ispc      % windows
-        wfactor1 = 1.20;
-        wfactor2 = 1.21;
+    wfactor1 = 1.20;
+    wfactor2 = 1.21;
 elseif ismac % Mac OSX
-        wfactor1 = 1.45;
-        wfactor2 = 1.46;
+    wfactor1 = 1.45;
+    wfactor2 = 1.46;
 else
-        wfactor1 = 1.30;
-        wfactor2 = 1.31;
+    wfactor1 = 1.30;
+    wfactor2 = 1.31;
 end
 posmainfig = get(gcf,'Position');
 hframe     = findobj('parent', gcf,'tag','Frame1');
@@ -265,8 +288,8 @@ comShiftEvents           = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabShiftEv
 comDeleteTimeSegments    = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabDeleteTimeSegments(EEG);'          catchstrs.new_and_hist];
 comRemoveResponseMistakes = [trystrs.no_check '[ALLEEG,EEG,LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,CURRENTSET);' catchstrs.new_and_hist];
 comInterpolateElectrodes = [trystrs.no_check '[EEG, LASTCOM] = pop_erplabInterpolateElectrodes(EEG);'  catchstrs.new_and_hist];
-comDFT     = [trystrs.no_check '[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);' catchstrs.add_to_hist];
-
+%comDFT     = [trystrs.no_check '[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);' catchstrs.add_to_hist];
+comDFT     = ['[EEG, fft_out, LASTCOM] = pop_continuousFFT(EEG);'];
 
 
 %
@@ -347,25 +370,25 @@ comDQQsummarize = ['dq_summary(ERP);'];
 comDQQsave = ['save_data_quality(ERP);'];
 comDQQprint = ['dataquality_measure = print_data_quality(ERP);'];
 comDQQinfo = ['erpset_summary;'];
-comDQQpreavg = ['pop_DQ_preavg(ALLEEG)']; 
+comDQQpreavg = ['pop_DQ_preavg(ALLEEG)'];
 
 
 %% BEST callbacks
-comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);']; 
-comCombineBest = ['[BEST] = pop_combineBESTbins(ALLBEST);']; 
+comExtractBest = ['[BEST] = pop_extractbest(ALLEEG);'];
+comCombineBest = ['[BEST] = pop_combineBESTbins(ALLBEST);'];
 comSaveBEST = ['[BEST] = pop_savemybest(BEST, ''gui'', ''saveas'',''History'',''gui'');'];
 comLoadBEST = ['[BEST, ALLBEST] = pop_loadbest('''');'];
 comDelBest = ['[ALLBEST] = pop_deletebestset(ALLBEST);'];
 
 %% MVPC callbacks
-comSpatDecode = ['[MVPC] = pop_decoding(ALLBEST);']; 
-comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');']; 
+comSpatDecode = ['[MVPC] = pop_decoding(ALLBEST);'];
+comLoadMVPC = ['[MVPC, ALLMVPC] = pop_loadmvpc('''');'];
 comSaveMVPC = ['[MVPC] = pop_savemymvpc(MVPC,''gui'',''saveas'');'];
 comAvgMVPC = ['[MVPC] = pop_mvpcaverager(ALLMVPC);'];
 comDelMVPC = ['[ALLMVPC] = pop_deletemvpcset(ALLMVPC);'];
 comViewMVPC = ['mvpcviewerGUI(ALLMVPC);'];
 comPlotCF  = ['pop_plotconfusions(ALLMVPC)'];
-comExportMVPC =['[MVPC] = pop_mvpc2text(MVPC);']; 
+comExportMVPC =['[MVPC] = pop_mvpc2text(MVPC);'];
 %comDelMVPC =
 
 
@@ -396,7 +419,7 @@ comCHOP2     = ['[ERP, ERPCOM] = pop_erpchanoperator(ERP);' '[ERP, ALLERPCOM] = 
 comPLOT      = ['[ERP, ERPCOM] = pop_ploterps(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comPLOTV      =['ERPLAB_ERP_Viewer(ALLERP,CURRENTERP);'];
 comSCALP     = ['[ERP, ERPCOM] = pop_scalplot(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
-comCHLOCTABLE= ['[ERP] = chanloc(ERP);'];
+comCHLOCTABLE= ['[ERP] = pop_editdatachanlocs(ALLERP,CURRENTERP);'];%%GH Sep 2023
 comCHLOC     = ['[ERP, ERPCOM] = pop_erpchanedit(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comCHLOCEEGLAB = ['[ERP ERPCOM] = pop_getChanInfoFromEeglab(ERP);' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
 comSAVE      = ['[ERP, issave ERPCOM] = pop_savemyerp(ERP,''gui'',''save'');' '[ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);'];
@@ -458,16 +481,16 @@ submenu = uimenu( menuERPLAB,'Label','ERPLAB','separator','on','tag','ERPLAB','u
 
 erpverMenu = uimenu( submenu,                              ...
     'Label'    , [' *** ERPLAB v' erplabver ' ***'],               ...
-    'tag'      , 'erpver',                 ... 
-    'separator', 'off',                                      ...  
+    'tag'      , 'erpver',                 ...
+    'separator', 'off',                                      ...
     'userdata' , 'startup:off;continuous:off;epoch:off;study:off;erpset:off');
 
 
 %% Continuous EEG Preprocessing Submenu
 preProcMenu = uimenu( submenu,                              ...
     'Label'    , 'Preprocess EEG',               ...
-    'tag'      , 'PreprocessContinuousEEG',                 ... 
-    'separator', 'on',                                      ...  
+    'tag'      , 'PreprocessContinuousEEG',                 ...
+    'separator', 'on',                                      ...
     'userdata' , [ ...
     'startup:on;'      ...
     'continuous:on;'    ...
@@ -489,7 +512,7 @@ uimenu( preProcMenu,                                        ...
     'userdata' , preProcFunctions_userdata);
 % Shift Event Codes
 uimenu( preProcMenu,                                        ...
-    'Label'   , 'Shift Event Codes (continuous EEG)',                        ... 
+    'Label'   , 'Shift Event Codes (continuous EEG)',                        ...
     'CallBack', comShiftEvents,                             ...
     'userdata', preProcFunctions_userdata);
 % Delete Time Segments
@@ -505,13 +528,13 @@ uimenu( preProcMenu, ...
 % Selective Electrode Interpolation
 uimenu( preProcMenu,                                        ...
     'Label'   , 'Selective Electrode Interpolation',        ...
-    'CallBack', comInterpolateElectrodes,         ...     
+    'CallBack', comInterpolateElectrodes,         ...
     'userdata', preProcFunctions_userdata);
 %Continuous Spectral EEG Data Quality
 uimenu( preProcMenu, ...
     'Label', 'Spectral Data Quality (continuous EEG)', ...
     'CallBack', comDFT, ...
-    'userdata', preProcFunctions_userdata); 
+    'userdata', preProcFunctions_userdata);
 
 
 
@@ -591,25 +614,25 @@ uimenu(submenu,'Label','Compute data quality metrics (without averaging)', 'Call
 mBEST = uimenu(submenu,'Label','Bin-Epoched Single Trial (BEST) Tools','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(mBEST,'Label','Extract Bin-Epoched Single Trial (BEST) Data','CallBack',comExtractBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(mBEST,'Label','Combine BESTset bins across trials','CallBack',comCombineBest,'separator','off','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
-uimenu(mBEST,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(mBEST,'Label','Load existing BESTset(s)','CallBack',comLoadBEST,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(mBEST,'Label','Clear BESTset(s)','CallBack',comDelBest,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
-uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on'); 
+uimenu(mBEST,'Label','Save current BESTset as','CallBack',comSaveBEST,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(mBEST,'Label','Currently Loaded BESTsets:','tag','bestsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on');
 
 %% Multivariate Pattern Analysis
 MVPCmenu = uimenu( submenu,'Label','Multivariate Patten Classification (MVPC) Tools (BETA)','separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:off;bestset:on;mvpcset:on');
-uimenu(MVPCmenu,'Label','ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Plot MVPC Results','CallBack',comViewMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Plot Confusion Matrix','CallBack',comPlotCF,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','ERP Decoding','CallBack',comSpatDecode,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Average across MVPCsets (Grand Average)','CallBack',comAvgMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Plot MVPC Results','CallBack',comViewMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Plot Confusion Matrix','CallBack',comPlotCF,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Load existing MVPCset(s)','CallBack',comLoadMVPC,'separator','on','userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
 uimenu(MVPCmenu,'Label','Clear MVPCset(s)','CallBack',comDelMVPC,'userdata','startup:on;continuous:on;epoch:on;study:off;erpset:on');
-uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Export MVPC results','CallBack',comExportMVPC,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on'); 
-uimenu(MVPCmenu,'Label','Currently Loaded MVPCsets:','tag','mvpcsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on'); 
+uimenu(MVPCmenu,'Label','Save current MVPCset as','CallBack',comSaveMVPC,'userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Export MVPC results','CallBack',comExportMVPC,'separator','on','userdata','startup:off;continuous:off;epoch:on;study:off;erpset:on;bestset:on;mvpcset:on');
+uimenu(MVPCmenu,'Label','Currently Loaded MVPCsets:','tag','mvpcsets', 'separator','on','foregroundcolor','#0072BD','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:off;bestset:on;mvpcset:on');
 
 
-set(MVPCmenu, 'enable','off'); 
+set(MVPCmenu, 'enable','off');
 
 
 
@@ -712,7 +735,7 @@ uimenu( mUTI,'Label','Recover bin descriptor file from ERP ','CallBack', comERPB
 uimenu( mUTI,'Label','Reset event code bytes','CallBack', comRECB,'separator','on','userdata','startup:off;continuous:on;epoch:off;study:off;erpset:off');
 uimenu( mUTI,'Label','Save current ERPset history for scripting','CallBack', comSaveH,'separator','on','userdata','startup:off;continuous:off;epoch:off;study:off;erpset:on');
 uimenu( mUTI,'Label','Find more here! (for scripting) ','CallBack','web(''https://github.com/lucklab/erplab/wiki/Scripting-Guide'',''-browser'');','separator','on',...
-        'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
+    'userdata','startup:on;continuous:on;epoch:on;study:on;erpset:on');
 uimenu( mUTI,'Label','Simulate EEG/ERP data  (alpha version)','CallBack',comESIM,'separator','on' );
 
 

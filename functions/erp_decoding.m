@@ -4,7 +4,7 @@
 %Original Algorithm Author: Gi-Yeul Bae (Arizona State University)
 
 
-function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,classcoding,equalT,ParWorkers,method)
+function [MVPC, ALLMVPC] = erp_decoding(ALLBEST, nIter, nCrossBlocks, DataTimes,relevantChans,classcoding,equalT,ParWorkers,method,BetaWeights)
 
 % Parallelization: This script utilizes Matlab parallelization ...
 % if cannot parallelize, ParWorkers = 0, or ParWorkers set to 0 by users. 
@@ -60,6 +60,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
     % grab EEG data from bin-list organized data 
     eegs = BEST.binwise_data;
     nPerBin = BEST.n_trials_per_bin;
+     
     
     % Preallocate Matrices
     svm_predict = nan(nIter,nBlocks, nSamps,nBins); % a matrix to save prediction from SVM
@@ -74,7 +75,18 @@ for s = 1:nSubs %decoding is performed within each subject independently
         %binary decoder 
         nDecoders = 1; 
     end
+
+    if strcmpi(BetaWeights, 'on') || strcmpi(BetaWeights, 'yes')
+        saveweights = 1;
+    else
+        saveweights = 0;
+    end
+
+    if saveweights == 1 %if user turns on betaweights
     BetaWeights_Raw = nan(nIter,nSamps,nBlocks,nDecoders,nElectrodes);
+    else
+    end
+
     %BetaWeights_Corr = BetaWeights_Raw;
     
     % create svmECOC.block structure to save block assignments
@@ -254,16 +266,20 @@ for s = 1:nSubs %decoding is performed within each subject independently
                 svm_predict(iter,i,t,:) = LabelPredicted;  % save predicted labels
                 
                 tst_target(iter,i,t,:) = tstl;             % save true target labels
-                
-                if nBins > 2      
-                    for d = 1:nDecoders
-                        BetaWeights_Raw(iter,t,i,d,:) = mdl.BinaryLearners{d}.Beta;% SVM weights uncorrected
-                    end  
-                else
-                    %binary decoder
-                    for d = 1:nDecoders
-                        BetaWeights_Raw(iter,t,i,d,:) = mdl.Beta;% SVM weights uncorrected
+
+                if saveweights == 1
+                    if nBins > 2
+                        for d = 1:nDecoders
+                            BetaWeights_Raw(iter,t,i,d,:) = mdl.BinaryLearners{d}.Beta;% SVM weights uncorrected
+                        end
+                    else
+                        %binary decoder
+                        for d = 1:nDecoders
+                            BetaWeights_Raw(iter,t,i,d,:) = mdl.Beta;% SVM weights uncorrected
+                        end
+
                     end
+                else
                 end
                 %BetaWeights_Corr(iter,t,i,:) = double(cov(trnD))*mdl.Beta;% SVM weights after correction
                 
@@ -278,8 +294,10 @@ for s = 1:nSubs %decoding is performed within each subject independently
     
     toc % stop timing the iteration loop
     
-   % mvpc.details.CodingMatrix = mdl.CodingMatrix; 
-    mvpc.details.BetaWeightsRaw =  BetaWeights_Raw;    
+   % mvpc.details.CodingMatrix = mdl.CodingMatrix;
+   if saveweights == 1
+    mvpc.details.BetaWeightsRaw =  BetaWeights_Raw;
+   end
     mvpc = rawscoreSVM(mvpc, tst_target, svm_predict); %compute raw method/decoder scores
     mvpc = averageSVM(mvpc,0); %average accuracy across runs, %no smoothing
     mvpc = avgconfusionSVM(mvpc,tst_target, svm_predict); 
@@ -289,10 +307,7 @@ for s = 1:nSubs %decoding is performed within each subject independently
      
     %create the MVPA output 
     %output decoding results in main svmECOC structure
-    
-
-    
-    
+ 
 %     mvpa.targets = tst_target;
 %     mvpa.modelPredict = svm_predict;    
    % mvpa.nBlocks = nBlocks;
@@ -311,6 +326,6 @@ for s = 1:nSubs %decoding is performed within each subject independently
         ALLMVPC(s) = mvpc; 
     end
     
-    
-    
+
+
 end % end of subject loop: Step 9: Decoding for each participant 

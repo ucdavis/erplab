@@ -76,7 +76,9 @@
 function [EEG, com] = pop_basicfilter( EEG, chanArray, varargin)
 com = '';
 if exist('filtfilt','file') ~= 2
-        msgboxText =  'cannot find the signal processing toolbox';
+        msgboxText =  ['ERPLAB''s filtering functions require the Matlab Signal Processing Toolbox.' ...
+            'You do not appear to have this toolbox installed. The Signal Processing Toolbox can be purchased from The Mathworks (but it may be included in your institution''s license for no additional cost).'...
+            'If you do not know how to obtain or install it, please contact your system administrator.'];
         title = 'ERPLAB: pop_basicfilter() error';
         errorfound(msgboxText, title);
         return

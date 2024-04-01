@@ -344,6 +344,7 @@ if ~isempty(pname)
     end
 end
 bestcom = sprintf('%s);', bestcom);
+eegh(bestcom);
 
 
 switch shist

@@ -290,6 +290,7 @@ for q=1:length(fn)
     end
 end
 mvpccom = sprintf( '%s );', mvpccom);
+eegh(mvpccom);
 
 switch shist
         case 1 % from GUI

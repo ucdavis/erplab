@@ -354,6 +354,7 @@ if ~isempty(filepathx)
     end
 end
 mvpccom = sprintf('%s);', mvpccom);
+eegh(mvpccom);
 
 %
 % Completion statement

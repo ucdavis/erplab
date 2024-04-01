@@ -320,6 +320,7 @@ for q=1:length(fn)
 end
 
 mvpccom = sprintf( '%s );', mvpccom);
+eegh(mvpccom);
 
 
 if issaveas

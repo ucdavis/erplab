@@ -196,6 +196,7 @@ if nargin ==1 %GUI case, ALLEEG is input
         'Criterion', crit, 'ExcludeBoundary',excbound,  ... 
         'Bandpass', bpfreq,'Saveas', 'on','History','gui');
     
+    
     pause(0.1)
     return
     
@@ -408,7 +409,7 @@ for q=1:length(fn)
     end
 end
 bestcom = sprintf( '%s );', bestcom);
-
+eegh(bestcom);
 
 
 switch shist
@@ -446,7 +447,7 @@ if issaveas
     else
         msgwrng = 'ERPLAB Warning: Your changes were not saved';
     end
-    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end ;
+    try cprintf([1 0.52 0.2], '%s\n\n', msgwrng); catch,fprintf('%s\n\n', msgwrng);end 
 end
 
 

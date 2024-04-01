@@ -64,6 +64,9 @@ if max(chanarray)>nchan
         error('ERPLAB says: error at delerpchan. Some specified channels do not exist!')
 end
 ERP.bindata(chanarray,:,:)=[];
+if ~isempty(ERP.binerror) %% GH March 2024
+    ERP.binerror(chanarray,:,:)=[];
+end
 ERP.nchan = size(ERP.bindata, 1);
 if isfield(ERP.chanlocs, 'labels')
         if ~isempty([ERP.chanlocs.labels])

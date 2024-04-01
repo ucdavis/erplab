@@ -226,7 +226,8 @@ for i=1:nepoch
         indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,
         flag  = cflag(indxtimelock);
         
-        if flag>0
+        %sum(bitget(flag, 1:8))>0;
+        if sum(bitget(flag, 1:8))>0
                 if EEG.reject.rejmanual(i)==0
                         EEG.reject.rejmanual(i) = 1; % marks epoch with artifact
                         %EEG.reject.rejmanualE(chanArray(ch), i) = 1; % marks channel with artifact
@@ -252,7 +253,7 @@ for i=1:nitem
         flag   = EEG.EVENTLIST.eventinfo(i).flag;
         bepoch = EEG.EVENTLIST.eventinfo(i).bepoch;
         if bepoch>0
-                if flag>0
+                if sum(bitget(flag, 1:8))>0
                         if EEG.reject.rejmanual(bepoch)==0
                                 EEG.reject.rejmanual(bepoch) = 1; % marks epoch with artifact
                                 iflag = find(bitget(flag,1:8));
@@ -390,7 +391,7 @@ for qEpoch=1:nepoch
         indxtimelock = find(laten == 0,1,'first'); % catch zero-time locked code position,
         flag  = cflag(indxtimelock);
         
-        if flag>0 && EEG.reject.rejmanual(qEpoch) == 0
+        if sum(bitget(flag, 1:8))>0 && EEG.reject.rejmanual(qEpoch) == 0
                 EEG.reject.rejmanual(qEpoch) = 1; % % marks epoch with artifact only if flag is marked (no unmarking)
                 %EEG.reject.rejmanualE(chanArray(ch), qEpoch) = 1; % marks channel with artifact
                 iflag = find(bitget(flag,1:8));
@@ -411,13 +412,13 @@ for qItem=1:nitem
     bepoch = EEG.EVENTLIST.eventinfo(qItem).bepoch;
     if bepoch>0
         if bepoch<=nepoch
-            if flag>0 && EEG.reject.rejmanual(bepoch) == 0
+            if sum(bitget(flag, 1:8))>0 && EEG.reject.rejmanual(bepoch) == 0
                 EEG.reject.rejmanual(bepoch) = 1; % marks epoch with artifact only if flag is marked (no unmarking)
                 iflag = find(bitget(flag,1:8));
                 fprintf('Epoch # %g was marked due to flag(s) # %s was(were) set for item # %g.\n',bepoch, num2str(iflag), qItem);
             end
         else
-            if flag>0
+            if sum(bitget(flag, 1:8))>0
                 warning('off', 'Epoch # %g containing item # %g does not longer exist in this dataset.\n',bepoch, qItem);
             end
         end

@@ -614,6 +614,7 @@ for q=1:length(fn)
     end
 end
 mvpccom = sprintf( '%s );', mvpccom);
+eegh(mvpccom);
 
 
 
