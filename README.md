@@ -66,7 +66,8 @@ ERPLAB should work with most modern OSs, Matlab versions, and EEGLAB releases. L
 ### ERPLAB v10.1 Release Notes
 Now Includes:
 Update to decoding toolbox. By default, beta weights will no longer be saved with MVPC files, dramatically reducing file size. 
-MVPCset and BESTset commands will now be saved into EEG history.
+
+MVPCset and BESTset commands will now be saved into EEG working memory history (shown when using the function eegh).
 
 Various quality of life changes and bug fixes across ERPLAB.
 
