@@ -1,4 +1,4 @@
-% Purpose: Outputs DQ Table on Epoched Dataset (not ERP) 
+% Purpose: Outputs DQ Table on Epoched Dataset (not ERP)
 %
 % Format :
 %
@@ -11,16 +11,16 @@
 %
 
 
-function pop_DQ_preavg(ALLEEG, varargin) 
+function pop_DQ_preavg(ALLEEG, varargin)
 
-%ERP = preloadERP; 
+%ERP = preloadERP;
 
 if nargin < 1
     help pop_DQ_preavg
     return
 end
 
-if isobject(ALLEEG) % eegobj 
+if isobject(ALLEEG) % eegobj
     whenEEGisanObject
     return
 end
@@ -36,16 +36,16 @@ if nargin == 1
     end
     
     % read values in memory for this function
-    def  = erpworkingmemory('pop_DQ_preavg');   
+    def  = erpworkingmemory('pop_DQ_preavg');
     % def{1} - dataset indx, def{2} - artcrit, def{3} - wavg, def{4} - stderror, def{5} - exclude boundaries,
     % def{6} - ERP type, def{7} - wintaper type, def{8} - wintaper function,
-    % def{9} - data quality flag, def{10} - DQ_spec_structure, 
+    % def{9} - data quality flag, def{10} - DQ_spec_structure,
     % def{11} - DQ pre-avg flag, def {12} - DQ_custom_wins
-   
     
-     if isempty(def) || numel(def)~=12
+    
+    if isempty(def) || numel(def)~=12
         % Should not be empty, and have exactly 12 elements. Else, fallback to:
-        def = {1 1 1 1 1 0 0 [] 1 [] 1 0}; 
+        def = {1 1 1 1 1 0 0 [] 1 [] 1 0};
         
     end
     
@@ -69,7 +69,7 @@ if nargin == 1
     answer = DQ_preavg(currdata, def, nepochperdata, timelimits);
     
     
-     
+    
     if isempty(answer)
         disp('User selected Cancel')
         return
@@ -78,10 +78,10 @@ if nargin == 1
     
     if numel(setindex) > 1
         disp('This tool cannot consider more than one .set file at a time!')
-        return 
+        return
     end
     
-   
+    
     
     %
     % Artifact rejection criteria for averaging
@@ -120,7 +120,7 @@ if nargin == 1
     % Write the analytic Standardized Measurment Error info
     DQ_flag = answer{9};
     DQ_spec = answer{10};
-    DQ_preavg_txt = answer{11}; 
+    DQ_preavg_txt = answer{11};
     DQcustom_wins = answer{12};
     
     % store setting in erplab working memory
@@ -150,28 +150,16 @@ if nargin == 1
         'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt,'DQ_custom_wins', DQcustom_wins, 'History', '');
     
     
-    pause(0.1); 
+    pause(0.1);
     
     
     %Here, pass hidden ERP struct to DQTableGUI
-    ALLERP = []; 
-    CURRENTPREAVG = 1; 
+    ALLERP = [];
+    CURRENTPREAVG = 1;
     ERPpreavg.erpname = ALLEEG(setindex).setname; %setname instead of erpname in DQ Table
     
-    DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1); 
+    DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1);
     
     
 end
-
-
-
-
-
-
-
-
-
-
-
-
-end 
+end

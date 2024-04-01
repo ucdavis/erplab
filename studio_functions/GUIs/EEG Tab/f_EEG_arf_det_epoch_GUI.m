@@ -63,9 +63,9 @@ varargout{1} = Eegtab_box_art_det_epoch;
         %%Manua rejection
         Eegtab_EEG_art_det_epoch.manuar_title = uiextras.HBox('Parent', Eegtab_EEG_art_det_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.manuar_checkbox = uicontrol('Style','checkbox','Parent', Eegtab_EEG_art_det_epoch.manuar_title,'Value',0,...
-            'String','Manual rejection','callback',@manuar_checkbox,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
+            'String','Manual detection','callback',@manuar_checkbox,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',ColorB_def);
         Eegtab_EEG_art_det_epoch.manuar_button = uicontrol('Style','pushbutton','Parent', Eegtab_EEG_art_det_epoch.manuar_title,...
-            'String','View & Reject','callback',@manuar_button,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
+            'String','View & Mark','callback',@manuar_button,'FontSize',FontSize_defualt,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         set( Eegtab_EEG_art_det_epoch.manuar_title ,'Sizes',[120 -1]);
         Eegtab_EEG_art_det_epoch.Paras{11} = Eegtab_EEG_art_det_epoch.manuar_checkbox.Value;
         
@@ -331,7 +331,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
                 eegh(LASTCOM);
             end
         end%%end for loop of subjects
-        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manar');
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manmark');
         if isempty(Answer)
             return;
         end

@@ -332,7 +332,7 @@ varargout{1} = Eegtab_box_art_det_conus;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Artifact Detection (Epoched EEG) > View & reject*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Artifact Detection (Continuous EEG) > View & reject*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             app = feval('EEG_select_segement_artifact_GUI',EEG,1);
@@ -360,7 +360,7 @@ varargout{1} = Eegtab_box_art_det_conus;
                 eegh(LASTCOM);
             end
         end%%end for loop of subjects
-        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manar');
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_manreject');
         if isempty(Answer)
             return;
         end

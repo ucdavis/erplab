@@ -387,14 +387,11 @@ switch shist
     case 1 % from GUI
         displayEquiComERP(eegcom);
     case 2 % from script
-        for i=1:length(EEG)
-            ALLEEG(i) = erphistory(ALLEEG(i), [], eegcom, 1);
-        end
+        EEG = eegh(eegcom, EEG);
     case 3
         % implicit
     case 4
         displayEquiComERP(eegcom);
-        
     otherwise %off or none
         eegcom = '';
         return

@@ -263,6 +263,7 @@ else
     OutputViewerpareeg{12} =Startimes;
     OutputViewerpareeg{13} = AmpScale_ic;
     OutputViewerpareeg{14} = buffer_topo_bottom;
+     OutputViewerpareeg{15} = figSize;
 end
 
 end

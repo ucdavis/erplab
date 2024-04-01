@@ -549,9 +549,17 @@ varargout{1} = Eegtab_box_dq_epoch;
             CURRENTPREAVG = 1;
             ERPpreavg.erpname = ALLEEG(setindex).setname; %setname instead of erpname in DQ Table
             DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1);
-            
+            LASTCOM =  'pop_DQ_preavg(EEG);';
+            disp(LASTCOM);
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end for loop of subjects
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        assignin('base','EEG',observe_EEGDAT.EEG);
+        observe_EEGDAT.count_current_eeg=1;
         observe_EEGDAT.eeg_panel_message =2;
     end
 

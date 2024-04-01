@@ -421,16 +421,16 @@ varargout{1} = ERP_filtering_box;
             
             if gui_erp_spectral.amplitude.Value
                 ERP_FFT.bindata  = abs(ERP_FFT.bindata);
-                figure_name = ['Spectral analysis: Amplitude for ',32,ERP_FFT.erpname];
+                figure_name = ['Spectral analysis - Amplitude for ',32,ERP_FFT.erpname];
             elseif gui_erp_spectral.phase.Value
                 ERP_FFT.bindata  = angle(ERP_FFT.bindata);
-                figure_name = ['Spectral analysis: Phase for ',32,ERP_FFT.erpname];
+                figure_name = ['Spectral analysis - Phase for ',32,ERP_FFT.erpname];
             elseif  gui_erp_spectral.power.Value
                 ERP_FFT.bindata  = abs(ERP_FFT.bindata).^2;
-                figure_name = ['Spectral analysis: Power for ',32,ERP_FFT.erpname];
+                figure_name = ['Spectral analysis - Power for ',32,ERP_FFT.erpname];
             elseif gui_erp_spectral.db.Value
                 ERP_FFT.bindata  = 20*log10(abs(ERP_FFT.bindata));
-                figure_name = ['Spectral analysis: dB for ',32,ERP_FFT.erpname];
+                figure_name = ['Spectral analysis - dB for ',32,ERP_FFT.erpname];
             end
             
             fig = figure('Name',figure_name);
