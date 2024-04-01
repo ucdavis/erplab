@@ -95,8 +95,8 @@ varargout{1} = EStudio_box_eeglab_ica;
         uiextras.Empty('Parent', EStduio_eegtab_eeglab_ica.DataSelGrid); % 1A
         EStduio_eegtab_eeglab_ica.traICAweight= uicontrol('Style','pushbutton','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Transfer',...
             'callback',@trans_weight,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
-        set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[30 90 20 80 50],'RowSizes',[20 30]);
-        
+        set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[30 90 15 76 -1],'RowSizes',[20 30]);
+
         
         %%Plot channel function
         EStduio_eegtab_eeglab_ica.plotic_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);

@@ -434,7 +434,7 @@ varargout{1} = ERP_filtering_box;
             end
             
             fig = figure('Name',figure_name);
-            set(fig,'outerposition',get(0,'screensize'));
+            %             set(fig,'outerposition',get(0,'screensize'));
             
             line_colors = erpworkingmemory('PWColor');
             if size(line_colors,1)~= ERP_FFT.nbin
@@ -459,13 +459,13 @@ varargout{1} = ERP_filtering_box;
             
             pbox = f_getrow_columnautowaveplot(ChanArray);
             try
-                RowNum = pbox(1);
+                RowNum = pbox(1)+1;
                 ColumnNum = pbox(2);
             catch
-                RowNum = numel(ChanArray);
+                RowNum = numel(ChanArray)+1;
                 ColumnNum = 1;
             end
-            
+            %              FonsizeDefault = f_get_default_fontsize();
             count = 0;
             for Numofcolumn = 1:ColumnNum
                 for Numofrow = 1: RowNum
@@ -477,7 +477,7 @@ varargout{1} = ERP_filtering_box;
                         break;
                     end
                     p_ax = subplot(RowNum,ColumnNum,count);
-                    set(gca,'fontsize',14);
+                    set(gca,'fontsize',FonsizeDefault);
                     hold on;
                     temp = squeeze(ERP_FFT.bindata);
                     for Numofplot  = 1:ERP_FFT.nbin
@@ -486,21 +486,19 @@ varargout{1} = ERP_filtering_box;
                     axis(p_ax,[floor(ERP_FFT.times(1)),ceil(ERP_FFT.times(end)), 1.1*min(temp(:)) 1.1*max(temp(:))]);
                     xticks(p_ax,FreqTick);
                     if count == 1
-                        title(p_ax,char(strrep(ERP_FFT.chanlocs(count).labels,'_','\_')),'FontSize',14,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
-                        legend(p_ax,ERP_FFT.bindescr,'FontSize',14);
-                        legend(p_ax,'boxoff');
+                        title(p_ax,char(strrep(ERP_FFT.chanlocs(count).labels,'_','\_')),'FontSize',10,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
                     else
-                        title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',14,'FontWeight','normal','Color','k','Interpreter','none');
+                        title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',FonsizeDefault,'FontWeight','normal','Color','k','Interpreter','none');
                     end
-                    xlabel(p_ax,'Frequency/Hz','FontSize',14,'FontWeight','normal','Color','k');
+                    xlabel(p_ax,'Frequency/Hz','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
                     if gui_erp_spectral.phase.Value
-                        ylabel(p_ax,'Angle/degree','FontSize',14,'FontWeight','normal','Color','k');
+                        ylabel(p_ax,'Angle/degree','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
                     elseif gui_erp_spectral.amplitude.Value
-                        ylabel(p_ax,'Amplitude/\muV','FontSize',14,'FontWeight','normal','Color','k');
+                        ylabel(p_ax,'Amplitude/\muV','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
                     elseif gui_erp_spectral.power.Value
-                        ylabel(p_ax,'Power/\muV^2','FontSize',14,'FontWeight','normal','Color','k');
+                        ylabel(p_ax,'Power/\muV^2','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
                     elseif gui_erp_spectral.db.Value
-                        ylabel(p_ax,'Decibels/dB','FontSize',14,'FontWeight','normal','Color','k');
+                        ylabel(p_ax,'Decibels/dB','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
                     end
                     for NUmoflabel = 1:length(ERP_FFT.times)
                         X_label{NUmoflabel} = [];
@@ -513,7 +511,17 @@ varargout{1} = ERP_filtering_box;
                         'ZColor','k');
                 end
             end
+            sh = subplot(RowNum+1, ColumnNum,[RowNum*ColumnNum+1:(RowNum+1)*ColumnNum],'align');
+            axis(sh,'off');
+            p  = get(sh,'position');
+            h_legend =  legend(sh,h_p,ERP_FFT.bindescr);
+            legend(sh,'boxoff');
+            set(h_legend, 'position', p);
+            qlegcolumns = ceil(sqrt(length(ERP_FFT.bindescr)));
+            set(h_legend,'NumColumns',qlegcolumns);
+            set(h_legend,'FontSize',FonsizeDefault);
             set(fig,'Color','w');
+            
         end%%end loop for ERPSET
     end
 
@@ -676,8 +684,6 @@ varargout{1} = ERP_filtering_box;
                 answer_export = f_export2csvGUI(ERP_FFT,def);
                 erpworkingmemory('f_export2csvGUI',answer_export);
                 if isempty(answer_export)
-                    beep;
-                    disp('User selected cancel!!!');
                     return;
                 end
                 binArray = [1:ERP_FFT.nbin];
@@ -805,7 +811,6 @@ varargout{1} = ERP_filtering_box;
             elseif strcmp(ERP_curret_s.datatype,'EFFT')
                 ERP_FFT = ERP_curret_s;
             else
-                disp(['Please selected ERPsets']);
                 return;
             end
             if isempty(ColumnNum)
@@ -880,7 +885,7 @@ varargout{1} = ERP_filtering_box;
             
             if ~Save_label
                 fig = figure('Name',figure_name);
-                set(fig,'outerposition',get(0,'screensize'));
+                %                 set(fig,'outerposition',get(0,'screensize'));
                 
                 line_colors = erpworkingmemory('PWColor');
                 if size(line_colors,1)~= ERP_FFT.nbin
@@ -1024,7 +1029,7 @@ varargout{1} = ERP_filtering_box;
             return;
         end
         ViewerFlag=erpworkingmemory('ViewerFlag');
-         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
+        if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
         if  isempty(observe_ERPDAT.ERP) || isempty(observe_ERPDAT.ALLERP) || strcmp(observe_ERPDAT.ERP.datatype,'EFFT') || ViewerFlag==1

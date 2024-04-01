@@ -522,6 +522,11 @@ varargout{1} = EStudio_box_EEG_event2bin;
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
             EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
         end
+        for ii = 1:100
+            dsnamesdef{ii,1} = '';
+            dsnamesdef{ii,2} = '';
+            dsnamesdef{ii,3} = '';
+        end
         if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials~=1 || EEGUpdate==1
             if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials~=1
                 EStudio_box_EEG_event2bin.TitleColor= [0.7500    0.7500    0.75000];
@@ -533,14 +538,29 @@ varargout{1} = EStudio_box_EEG_event2bin;
             EStduio_eegtab_EEG_event2bin.bdf_cancel.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.event2bin_advanced.Enable = 'off';
             EStduio_eegtab_EEG_event2bin.bdf_Run.Enable = 'off';
+            
+            if ~isempty(observe_EEGDAT.EEG)  && observe_EEGDAT.EEG.trials~=1 &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+                EEG = observe_EEGDAT.EEG;
+                for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
+                    try
+                        dsnames{ii,1} = num2str(ii);
+                        dsnames{ii,2} = EEG.EVENTLIST.bdf(ii).description;
+                        dsnames{ii,3} = num2str(EEG.EVENTLIST.trialsperbin(ii));
+                    catch
+                        dsnames{ii,1} = '';
+                        dsnames{ii,2} = '';
+                        dsnames{ii,3} ='';
+                    end
+                end
+            else
+                dsnames = dsnamesdef;
+            end
+            EStduio_eegtab_EEG_event2bin.table_event.Data = dsnames;
+            
             observe_EEGDAT.count_current_eeg=14;
             return;
         end
-        for ii = 1:100
-            dsnamesdef{ii,1} = '';
-            dsnamesdef{ii,2} = '';
-            dsnamesdef{ii,3} = '';
-        end
+        
         if ~isempty(observe_EEGDAT.EEG) &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
             EEG = observe_EEGDAT.EEG;
             for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)

@@ -57,7 +57,7 @@ varargout{1} = ERP_grdavg_box_gui;
         
         gui_erp_grdavg.excldnullbin_title = uiextras.HBox('Parent', gui_erp_grdavg.DataSelBox,'BackgroundColor',ColorB_def);
         gui_erp_grdavg.excldnullbin = uicontrol('Style','checkbox','Parent', gui_erp_grdavg.excldnullbin_title,...
-            'callback',@excldnullbin,'String','','Value',0,'Enable','off','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
+            'callback',@excldnullbin,'String','','Value',1,'Enable','off','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def); % 2F
         gui_erp_grdavg.excldnullbin.String =  '<html>Exclude any null bin from non-weighted <br />averaing (recommended)</html>';
         gui_erp_grdavg.excldnullbin.KeyPressFcn = @erp_graverage_presskey;
         gui_erp_grdavg.paras{2} = gui_erp_grdavg.excldnullbin.Value;
@@ -702,7 +702,7 @@ varargout{1} = ERP_grdavg_box_gui;
         gui_erp_grdavg.cancel.BackgroundColor =  [1 1 1];
         gui_erp_grdavg.cancel.ForegroundColor = [0 0 0];
         gui_erp_grdavg.weigavg.Value = 0;
-        gui_erp_grdavg.excldnullbin.Value = 0;
+        gui_erp_grdavg.excldnullbin.Value = 1;
         gui_erp_grdavg.jacknife.Value = 0;
         gui_erp_grdavg.warn.Value = 0;
         gui_erp_grdavg.cmpsd.Value = 1;

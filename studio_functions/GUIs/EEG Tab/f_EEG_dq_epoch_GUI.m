@@ -145,7 +145,7 @@ varargout{1} = Eegtab_box_dq_epoch;
         %%Round to arlier time sample (recommended)
         EEG_dq_epoch.movewindow_title1 = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);
         uicontrol('Style','text','Parent',EEG_dq_epoch.movewindow_title1,'HorizontalAlignment','center','FontWeight','bold',...
-            'String','Epochs to Include DQ metrics:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
+            'String','Epochs to Include in DQ metrics:','FontSize',FontSize_defualt,'BackgroundColor',ColorB_def,'Enable','on','BackgroundColor',ColorB_def); % 2F
         
         %%all epochs
         EEG_dq_epoch.movewindow_title = uiextras.HBox('Parent', EEG_dq_epoch.DataSelBox,'BackgroundColor',ColorB_def);

@@ -87,12 +87,7 @@ drawui_erp_information(FonsizeDefault);
         
         set(gui_erp_DQSME.DQSME_option_table,'Enable','off');
         set(gui_erp_DQSME.DQSME_option_file,'Enable','off');
-        gui_erp_DQSME.DQSME_option1 = uiextras.HBox('Parent',gui_erp_DQSME.DataSelBox,'BackgroundColor',ColorB_def);
-        gui_erp_DQSME.DQSME_option_measure  = uicontrol('Style','pushbutton','Parent', gui_erp_DQSME.DQSME_option1,'String','Show measures on Command Window',...
-            'callback',@DQSME_measures,'Enable',Enable_label,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1]);
-        uiextras.Empty('Parent', gui_erp_DQSME.DQSME_option1);
-        set(gui_erp_DQSME.DQSME_option1,'Sizes',[240 10]);
-        set(gui_erp_DQSME.DataSelBox,'Sizes',[20 20 20 30 30]);
+        set(gui_erp_DQSME.DataSelBox,'Sizes',[20 20 20 30]);
     end
 
 
@@ -112,7 +107,7 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_DQSME.max_sme_name.String='';
             gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
             gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
-            gui_erp_DQSME.DQSME_option_measure.Enable = Enableflag;
+          
             observe_ERPDAT.Count_currentERP=17;
             return;
         else
@@ -151,7 +146,7 @@ drawui_erp_information(FonsizeDefault);
             Max_name = '';
         end
         gui_erp_DQSME.max_sme_name.String=Max_name;
-        gui_erp_DQSME.DQSME_option_measure.Enable = Enableflag;
+
         
         try% check if the data for SMEs exsists or not
             data_quality = observe_ERPDAT.ERP.dataquality.data;
@@ -228,27 +223,6 @@ drawui_erp_information(FonsizeDefault);
             
         end
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
-        observe_ERPDAT.Process_messg =2;
-    end
-
-
-
-%-------------------Show which Data Quality measures are in each loaded ERPSET---------------------------
-    function DQSME_measures(~,~)
-        if isempty(observe_ERPDAT.ERP)
-            observe_ERPDAT.Count_currentERP=1;
-            return;
-        end
-        SelectedERP= estudioworkingmemory('selectederpstudio');
-        if isempty(SelectedERP) || any(SelectedERP> length(observe_ERPDAT.ALLERP))
-            SelectedERP =  length(observe_ERPDAT.ALLERP);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = SelectedERP;
-            estudioworkingmemory('selectederpstudio',SelectedERP);
-        end
-        erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show measures on Command Window');
-        observe_ERPDAT.Process_messg =1;
-        erpset_summary(observe_ERPDAT.ALLERP(SelectedERP));
         observe_ERPDAT.Process_messg =2;
     end
 

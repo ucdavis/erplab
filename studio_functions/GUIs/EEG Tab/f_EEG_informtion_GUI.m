@@ -115,7 +115,23 @@ drawui_EEG_info(FonsizeDefault);
         gui_EEG_info.total_rejected_percentage = uicontrol('Style','text','Parent', gui_EEG_info.total_rejected,'String',['Total rejected trials:',32,Total_rejected_trials],'FontSize',FonsizeDefault,'BackgroundColor',ColorB_def);
         set(gui_EEG_info.total_rejected_percentage,'HorizontalAlignment','left');
         
-        set(gui_EEG_info.DataSelBox,'Sizes',[20 70 20 20 20 20 20 20 20 30]);% 20 100
+        
+        %%---------------------Table---------------------------------------
+        gui_EEG_info.table_title = uiextras.HBox('Parent',gui_EEG_info.DataSelBox,'Spacing',1,'BackgroundColor',ColorB_def);
+        for ii = 1:100
+            dsnames{ii,1} = '';
+            dsnames{ii,2} = '';
+            dsnames{ii,3} = '';
+        end
+        gui_EEG_info.table_event = uitable(  ...
+            'Parent'        , gui_EEG_info.table_title,...
+            'Data'          , dsnames, ...
+            'ColumnWidth'   , {50,100,100}, ...
+            'ColumnName'    , {'Bin','Description','#Occurrences'}, ...
+            'RowName'       , [],...
+            'ColumnEditable',[false, false, false]);
+        
+        set(gui_EEG_info.DataSelBox,'Sizes',[20 70 20 20 20 20 20 20 20 30 100]);% 20 100
     end
 
 
@@ -128,7 +144,7 @@ drawui_EEG_info(FonsizeDefault);
         if observe_EEGDAT.count_current_eeg~=7
             return;
         end
-         EEGUpdate = erpworkingmemory('EEGUpdate');
+        EEGUpdate = erpworkingmemory('EEGUpdate');
         if isempty(EEGUpdate) || numel(EEGUpdate)~=1 || (EEGUpdate~=0 && EEGUpdate~=1)
             EEGUpdate = 0;  erpworkingmemory('EEGUpdate',0);
         end
@@ -202,7 +218,7 @@ drawui_EEG_info(FonsizeDefault);
             dsnamesdef{ii,4} = [];
             dsnamesdef{ii,5} = [];
         end
-        if ~isempty(EEG) && EEG.trials>1 
+        if ~isempty(EEG) && EEG.trials>1
             gui_EEG_info.numofepoch.String = ['Number of epochs:',32,num2str(EEG.trials)];
             gui_EEG_info.numofepoch.Enable = 'on';
             [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
@@ -239,7 +255,7 @@ drawui_EEG_info(FonsizeDefault);
         end
         %         gui_EEG_info.table_event.Data = dsnames;
         if EEGUpdate==1
-           Enable_label = 'off'; 
+            Enable_label = 'off';
         end
         gui_EEG_info.total_rejected_percentage.Enable = Enable_label;
         
@@ -251,8 +267,30 @@ drawui_EEG_info(FonsizeDefault);
             filesetname{2,1} = '';
         end
         gui_EEG_info.table_setfilenames.Data= filesetname;
+        
+        for ii = 1:100
+            dsnamesdef{ii,1} = '';
+            dsnamesdef{ii,2} = '';
+            dsnamesdef{ii,3} = '';
+        end
+        if ~isempty(observe_EEGDAT.EEG)  && observe_EEGDAT.EEG.trials~=1 &&  isfield(observe_EEGDAT.EEG,'EVENTLIST') && ~isempty(observe_EEGDAT.EEG.EVENTLIST)
+            EEG = observe_EEGDAT.EEG;
+            for ii = 1:length(observe_EEGDAT.EEG.EVENTLIST.trialsperbin)
+                try
+                    dsnames{ii,1} = num2str(ii);
+                    dsnames{ii,2} = EEG.EVENTLIST.bdf(ii).description;
+                    dsnames{ii,3} = num2str(EEG.EVENTLIST.trialsperbin(ii));
+                catch
+                    dsnames{ii,1} = '';
+                    dsnames{ii,2} = '';
+                    dsnames{ii,3} ='';
+                end
+            end
+        else
+            dsnames = dsnamesdef;
+        end
+        gui_EEG_info.table_event.Data = dsnames;
+        
         observe_EEGDAT.count_current_eeg=8;
     end
-
-
 end

@@ -803,27 +803,15 @@ varargout{1} = box_eeg_resample;
         gui_eeg_resample.Paras{3} = gui_eeg_resample.nwtimewindow_checkbox.Value;
         gui_eeg_resample.Paras{4} = str2num(gui_eeg_resample.nwtimewindow_editleft.String);
         gui_eeg_resample.Paras{5} = str2num(gui_eeg_resample.nwtimewindow_editright.String);
+        if ~isempty(observe_EEGDAT.EEG) && observe_EEGDAT.EEG.trials==1
+            gui_eeg_resample.Trimcont.Enable = 'on';
+        else
+            gui_eeg_resample.Trimcont.Enable = 'off';
+        end
         observe_EEGDAT.count_current_eeg=9;
     end
 
 
-%%-------execute "apply" before doing any change for other panels----------
-%     function EEG_two_panels_change(~,~)
-%         if  isempty(observe_EEGDAT.ALLEEG)|| isempty(observe_EEGDAT.EEG)
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_resample');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         resample_run();
-%         estudioworkingmemory('EEGTab_resample',0);
-%         gui_eeg_resample.resample_run.BackgroundColor =  [1 1 1];
-%         gui_eeg_resample.resample_run.ForegroundColor = [0 0 0];
-%         box_eeg_resample.TitleColor= [0.05,0.25,0.50];%% the default is [0.0500    0.2500    0.5000]
-%         gui_eeg_resample.resample_cancel.BackgroundColor =  [1 1 1];
-%         gui_eeg_resample.resample_cancel.ForegroundColor = [0 0 0];
-%     end
 
 %%--------------press return to execute "Apply"----------------------------
     function EEG_resample_presskey(~,eventdata)
