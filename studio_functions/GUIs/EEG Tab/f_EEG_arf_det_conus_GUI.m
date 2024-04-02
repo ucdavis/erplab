@@ -309,6 +309,9 @@ varargout{1} = Eegtab_box_art_det_conus;
         end
         erpworkingmemory('f_EEG_proces_messg','Reject Artifactual Time Segments (Continuous EEG) > View & reject');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        erpworkingmemory('f_EEG_proces_messg','The main ERPLAB Studio window will be fronzen when you are using "Reject Artifactual Time Segments (Continuous EEG) > View & reject" tool. Please click "Reject"');
+        observe_EEGDAT.eeg_panel_message =1;
+        
         Eegtab_box_art_det_conus.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_conus.detectar_preview.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_conus.detectar_preview.ForegroundColor = [0 0 0];
@@ -317,6 +320,16 @@ varargout{1} = Eegtab_box_art_det_conus;
         Eegtab_EEG_art_det_conus.detectar_cancel.BackgroundColor =  [ 1 1 1];
         Eegtab_EEG_art_det_conus.detectar_cancel.ForegroundColor = [0 0 0];
         estudioworkingmemory('EEGTab_detect_arts_conus',0);
+        
+        OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,0);
+        try EEGdisp = OutputViewereegpar{3}; catch EEGdisp=1; end
+        if EEGdisp==0
+            msgboxText=['Reject Artifactual Time Segments (Continuous EEG) > View & reject: "Display chans" should be active in the "Plot Settings panel" '];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
         
         %%--------Selected EEGsets-----------
         EEGArray= estudioworkingmemory('EEGArray');

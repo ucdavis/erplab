@@ -282,6 +282,11 @@ varargout{1} = Eegtab_box_art_det_epoch;
         if ~isempty(messgStr) && eegpanelIndex~=9
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
+        erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > View & Mark');
+        observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
+        
+        
+        
         
         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.detectar_cancel.BackgroundColor =  [1 1 1];
@@ -296,6 +301,19 @@ varargout{1} = Eegtab_box_art_det_epoch;
             estudioworkingmemory('EEGArray',EEGArray);
         end
         [~,Flagmarks] = find(Eegtab_EEG_art_det_epoch.mflag==1);
+        %%
+        OutputViewereegpar = f_preparms_eegwaviewer(observe_EEGDAT.EEG,0);
+        try EEGdisp = OutputViewereegpar{3}; catch EEGdisp=1; end
+        if EEGdisp==0
+            msgboxText=['Artifact Detection (Epoched EEG) > View & Mark: "Display chans" should be active in the "Plot Settings panel" '];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
+            return;
+        end
+        erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > View & Mark: The main ERPLAB Studio window will be fronzen until you close that window for marking epochs');
+        observe_EEGDAT.eeg_panel_message =1;
+        
         erpworkingmemory('EEGUpdate',1);
         observe_EEGDAT.count_current_eeg=1;
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -303,7 +321,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Artifact Detection (Epoched EEG) > View & reject*',32,32,32,32,datestr(datetime('now')),'\n']);
+            fprintf(['*Artifact Detection (Epoched EEG) > View & Mark*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
             app = feval('EEG_select_segement_artifact_GUI',EEG,1,Flagmarks);
@@ -399,6 +417,7 @@ varargout{1} = Eegtab_box_art_det_epoch;
         Eegtab_EEG_art_det_epoch.Paras{8} = Eegtab_EEG_art_det_epoch.show_sumy_ar.Value;
         erpworkingmemory('EEGUpdate',0);
         observe_EEGDAT.count_current_eeg=1;
+        erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > View & Mark');
         observe_EEGDAT.eeg_panel_message =2;
     end
 

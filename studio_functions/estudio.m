@@ -504,6 +504,11 @@ fprintf([32,'It took',32,num2str(timeElapsed),'s to launch estudio.\n\n']);
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;
         end
+        
+        erpworkingmemory('EEGUpdate',0);
+        observe_EEGDAT.count_current_eeg =1;
+        
+        
         if EStudio_gui_erp_totl.context_tabs.SelectedChild==1
             erpworkingmemory('f_EEG_proces_messg','Reset parameters for ALL panels');
             observe_EEGDAT.eeg_panel_message=1;

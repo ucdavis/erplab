@@ -185,18 +185,6 @@ if ~isempty(observe_EEGDAT.ALLEEG) && ~isempty(observe_EEGDAT.EEG) && EEG_autopl
             OutputViewereegpar{6},OutputViewereegpar{7},OutputViewereegpar{8},...
             OutputViewereegpar{9},OutputViewereegpar{10},OutputViewereegpar{11},...
             OutputViewereegpar{12},OutputViewereegpar{13},OutputViewereegpar{14},EStudio_gui_erp_totl);
-        ChanArray =  OutputViewereegpar{1};
-        if OutputViewereegpar{3}==0
-            ChanArray = [];
-        end
-        [~, LASTCOM] = pop_ploteegset(observe_EEGDAT.EEG,'ChanArray',ChanArray,'ICArray',OutputViewereegpar{2},'Winlength',OutputViewereegpar{5},...
-            'bufftobo',OutputViewereegpar{14},'Ampchan',OutputViewereegpar{6},'ChanLabel',OutputViewereegpar{7},'Submean',OutputViewereegpar{8},...
-            'EventOnset',OutputViewereegpar{9},'Ampic',OutputViewereegpar{13},...
-            'StackFlag',OutputViewereegpar{10},'NormFlag',OutputViewereegpar{11},...
-            'Startimes',OutputViewereegpar{12},'figureName','','figSize',OutputViewereegpar{15},'History','command');
-        eegh(LASTCOM);
-        observe_EEGDAT.EEG = eegh(LASTCOM, observe_EEGDAT.EEG);
-        observe_EEGDAT.count_current_eeg =26;
     else
         return;
     end
@@ -999,6 +987,11 @@ global observe_EEGDAT;
 global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 
+erpworkingmemory('EEGUpdate',0);
+observe_EEGDAT.count_current_eeg =1;
+
+erpworkingmemory('ViewerFlag', 0);
+observe_ERPDAT.Count_currentERP=1;
 
 %%first check if the changed parameters have been applied in any panels
 [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -1020,7 +1013,6 @@ end
 if isempty(reset_paras)
     return;
 end
-erpworkingmemory('EEGUpdate',0);
 EStudio_gui_erp_totl.ERP_autoplot=1;
 EStudio_gui_erp_totl.EEG_autoplot = 1;
 

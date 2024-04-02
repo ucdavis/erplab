@@ -1831,7 +1831,7 @@ varargout{1} = ERP_plotset_box;
             estudioworkingmemory('ERP_ChanArray',ChanArray);
         end
         if ERPTab_plotset.gridlayoutdef.Value==1
-           ChanArray = sort(ChanArray); 
+            ChanArray = sort(ChanArray);
         end
         ERP1 = observe_ERPDAT.ERP;
         ERP1.bindata = ERP1.bindata(ChanArray,:,:);
@@ -1936,18 +1936,21 @@ varargout{1} = ERP_plotset_box;
         end
         
         ERPTab_plotset_pars{9} = gridlayoutdef;%%default grid layout?
-        
-        try
-            [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
-            ERPTab_plotset.chanorderIndex = 2;
-            chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(sort(ChanArray)));
-            if ~isempty(chanindexnew)
-                ChanArray = sort(ChanArray);
-                chanindexnew =   ChanArray(chanindexnew);
-            else
+        if ERPTab_plotset.chanorder_front.Value==1
+            try
+                [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
+                ERPTab_plotset.chanorderIndex = 2;
+                chanindexnew = f_estudio_chan_frontback_left_right(observe_ERPDAT.ERP.chanlocs(sort(ChanArray)));
+                if ~isempty(chanindexnew)
+                    ChanArray = sort(ChanArray);
+                    chanindexnew =   ChanArray(chanindexnew);
+                else
+                    chanindexnew = ChanArray;
+                end
+            catch
                 chanindexnew = ChanArray;
             end
-        catch
+        else
             chanindexnew = ChanArray;
         end
         if ERPTab_plotset.chanorder_front.Value==1

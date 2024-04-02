@@ -268,7 +268,7 @@ varargout{1} = EStudio_box_bin_chan;
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end
-        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP) || ViewerFlag==1
+        if isempty(observe_ERPDAT.ALLERP) || isempty(observe_ERPDAT.ERP)
             Chanlist_name = 'No erpset is available';
             ERPTab_bin_chan.ElecRange.String = Chanlist_name;
             ERPTab_bin_chan.ElecRange.Value=1;
@@ -330,7 +330,9 @@ varargout{1} = EStudio_box_bin_chan;
             end
             ERPTab_bin_chan.ERPFlag = 1;
         end
-        
+        if ViewerFlag==1
+            Enableflag = 'off';
+        end
         ERPTab_bin_chan.ElecRange.Enable = Enableflag;
         ERPTab_bin_chan.BinRange.Enable = Enableflag;
         ERPTab_bin_chan.plot_reset.Enable = Enableflag;

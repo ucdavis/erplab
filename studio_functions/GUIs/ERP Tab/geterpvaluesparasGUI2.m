@@ -276,93 +276,32 @@ switch measure_option
         moption = 'instabl';
         fprintf('\nInstantaneous amplitude measurement in progress...\n');
     case 2  % meanbl
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+  
         moption = 'meanbl';
         fprintf('\nMean amplitude measurement in progress...\n');
     case 3  % peakampbl
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+
         moption = 'peakampbl';
         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
         
-        %         cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
-        %         ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
-        %         cc2    = time2sample(TimeOp, ccdiff, srate)>2;
-        %         cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
-        %         ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
-        %         cc4    = time2sample(TimeOp, ccdiff, srate)>2;
-        
-        %         if (cc1 && cc2) || (cc3 && cc4)
-        %             msgboxText =  msgboxText4peak;
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), title);
-        %             return
-        %         end
+     
         fprintf('\nLocal peak measurement in progress...\n');
     case 4  % peaklatbl
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+
         moption = 'peaklatbl';
         polpeak = 2-get(handles.popupmenu_pol_amp,'Value');
         sampeak = get(handles.popupmenu_samp_amp,'Value') - 1;
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
         
-        %         cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
-        %         ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
-        %         cc2    = time2sample(TimeOp, ccdiff, srate)>2;
-        %         cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
-        %         ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
-        %         cc4    = time2sample(TimeOp, ccdiff, srate)>2;
-        
-        %         if (cc1 && cc2) || (cc3 && cc4)
-        %             msgboxText =  msgboxText4peak;
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), kktime);
-        %             return
-        %         end
         if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
             fprintf('\nLocal peak frequency measurement in progress...\n');
         else
             fprintf('\nLocal peak latency measurement in progress...\n');
         end
     case 5  % fpeaklat
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+  
         set(handles.text_fraca,'String', 'Fractional Peak')
         moption = 'fpeaklat';
         frac    = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
@@ -371,35 +310,14 @@ switch measure_option
         locpeakrep = 2-get(handles.popupmenu_locpeakreplacement,'Value');
         fracmearep = 2-get(handles.popupmenu_fracreplacement,'Value');
         
-        %         cc1    = late(1)-sample2time(TimeOp, sampeak, srate) < xmin*kktime;
-        %         ccdiff = abs((late(1)-sample2time(TimeOp, sampeak, srate)) - xmin*kktime);
-        %         cc2    = time2sample(TimeOp, ccdiff, srate)>2;
-        %         cc3    = late(2)+sample2time(TimeOp, sampeak, srate)>xmax*kktime;
-        %         ccdiff = abs((late(2)+sample2time(TimeOp, sampeak, srate)) - xmax*kktime);
-        %         cc4    = time2sample(TimeOp, ccdiff, srate)>2;
-        
-        %         if (cc1 && cc2) || (cc3 && cc4)
-        %             msgboxText =  msgboxText4peak;
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText,sampeak, sampeak, sampeak, xmin*kktime, xmax*kktime, xmin*kktime+sample2time(TimeOp, sampeak,srate), xmax*kktime-sample2time(TimeOp, sampeak,srate)), title);
-        %             return
-        %         end
+      
         if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
             fprintf('\nFractional Peak Frequency measurement in progress...\n');
         else
             fprintf('\nFractional Peak Latency measurement in progress...\n');
         end
     case 6  % inte/area value (fixed latencies)
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+       
         switch areatype
             case 1
                 moption = 'areat';
@@ -422,16 +340,7 @@ switch measure_option
             errorfound(sprintf(msgboxText), title);
             return
         end
-        %         if nlate~=1
-        %             %if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %             %        msgboxText =  'You must define only one frequency';
-        %             %else
-        %             msgboxText =  'You must define only one latency';
-        %             %end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
+       
         switch areatype
             case 1
                 moption = 'areazt';
@@ -448,17 +357,7 @@ switch measure_option
         end
         
     case 8   % fractional inte/area latency
-        %         if nlate~=2
-        %             if strcmpi(datatype, 'TFFT') || strcmpi(datatype, 'EFFT') % Hz
-        %                 msgboxText =  'You must define two frequencies';
-        %             else
-        %                 msgboxText =  'You must define two latencies';
-        %             end
-        %             title = 'ERPLAB: measurement window';
-        %             errorfound(sprintf(msgboxText), title);
-        %             return
-        %         end
-        
+       
         set(handles.text_fraca,'String', 'Fractional Area')
         frac = (get(handles.popupmenu_fraca,'Value') - 1)/100; % 0 to 1
         if strcmpi(datatype, 'ERP')

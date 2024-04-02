@@ -80,19 +80,22 @@ varargout{1} = erp_measurement_box;
         
         %%-----------------------------Setting for second column---------------
         %%2A
-        mesurement_type = {'Mean amplitude between two fixed latencies','Peak amplitude (Negative)','Peak amplitude (Positive)','Peak latency (Negative)',...
-            'Peak latency (Positive)','Fractional peak latency (Negative)','Fractional peak latency (Positive)','Fractional area latency: Rectified area (negative values become positive)',...
-            'Fractional area latency: Numerical integration (area for negatives substracted from area for positives)',...
-            'Fractional area latency: Area for negative waveforms (positive values will be zeroed)','Fractional area latency: Area for positive waveforms (negative values will be zeroed)',...
-            'Numerical integration/Area between two fixed latencies: Rectified area (Negative values become positive)',...
-            'Numerical integration/Area between two fixed latencies: Numerical intergration (area for negative substracted from area for positive)',...
-            'Numerical integration/Area between two fixed latencies: Area for positive waveforms (negative values will be zeroed)',...
-            'Numerical integration/Area between two fixed latencies: Area for negative waveforms (positive values will be zeroed)',...
-            'Numerical integration/Area between two (automatically detected)zero-crossing latencies: Rectified area (Negative values become positive)',...
-            'Numerical integration/Area between two (automatically detected)zero-crossing latencies: Numerical intergration (area for negative substracted from area for positive)',...
-            'Numerical integration/Area between two (automatically detected)zero-crossing latencies: Area for negative waveforms (positive values will be zeroed)',...
-            'Numerical integration/Area between two (automatically detected)zero-crossing latencies: Area for positive waveforms (negative values will be zeroed)',...
-            'Instantaneous amplitude'};
+        mesurement_type = {'Mean Amp',...
+            'Positive Peak Amp',...
+            'Negative Peak Amp',...
+            'Positive Peak Lat',...
+            'Negative Peak Lat',...
+            'Pos Frac Peak Lat',...
+            'Neg Frac Peak Lat',...
+            'Frac Area Lat (Rectified)',...
+            'Frac Area Lat (Integral)',...
+            'Frac Area Lat (Neg Area)',...
+            'Frac Area Lat (Pos Area)',...
+            'Rectified Area',...
+            'Integral',...
+            'Positive Area',...
+            'Negative Area',...
+            'Instantaneous Amp'};
         ERPMTops.m_t_type = uicontrol('Style', 'popup','Parent',ERPMTops.measurement_type,'String',mesurement_type,...
             'callback',@Mesurement_type,'Enable',Enable_label,'FontSize',FonsizeDefault);
         %%Get the parameters for pop_geterpvalues used in the last time.
@@ -168,30 +171,28 @@ varargout{1} = erp_measurement_box;
                 set(ERPMTops.m_t_type,'Value',1);
             case 'peakampbl'% Peak amplitude (P vs. N)
                 if strcmp(Polarity,'positive')
-                    set(ERPMTops.m_t_type,'Value',3);
-                else
                     set(ERPMTops.m_t_type,'Value',2);
+                else
+                    set(ERPMTops.m_t_type,'Value',3);
                 end
             case  'peaklatbl'%Peak latency (P vs. N)
                 if strcmp(Polarity,'positive')
-                    set(ERPMTops.m_t_type,'Value',5);
-                elseif strcmp(Polarity,'negative')
                     set(ERPMTops.m_t_type,'Value',4);
+                elseif strcmp(Polarity,'negative')
+                    set(ERPMTops.m_t_type,'Value',5);
                 end
             case  'fpeaklat'%Fractional Peak latency (P vs. N)
                 if strcmp(Polarity,'positive')
-                    set(ERPMTops.m_t_type,'Value',7);
-                elseif strcmp(Polarity,'negative')
                     set(ERPMTops.m_t_type,'Value',6);
+                elseif strcmp(Polarity,'negative')
+                    set(ERPMTops.m_t_type,'Value',7);
                 end
                 
             otherwise%if the measurement type comes from Advanced option
                 MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
-                    'areat','ninteg','areap','arean',...
-                    'areazt','nintegz','areazp','areazn',...
-                    'instabl'};
+                    'areat','ninteg','areap','arean','instabl'};
                 [C,IA] = ismember_bc2({Measure}, MeasureName_other);
-                if any(IA) || isempty(IA)
+                if isempty(IA)
                     set(ERPMTops.m_t_type,'Value',1);
                 else
                     set(ERPMTops.m_t_type,'Value',IA+7);
@@ -292,27 +293,25 @@ varargout{1} = erp_measurement_box;
                 moption = 'meanbl';% Mean amplitude
             case 2
                 moption = 'peakampbl';
-                ERPMTops.def_erpvalue{12} = 'negative';
+                ERPMTops.def_erpvalue{12} = 'positive';
             case 3 % Peak amplitude (P vs. N)
                 moption = 'peakampbl';
-                ERPMTops.def_erpvalue{12} = 'positive';
+                ERPMTops.def_erpvalue{12} = 'negative';
             case  4
                 moption= 'peaklatbl';
-                ERPMTops.def_erpvalue{12} = 'negative';
+                ERPMTops.def_erpvalue{12} = 'positive';
             case 5
                 moption= 'peaklatbl';
-                ERPMTops.def_erpvalue{12} = 'positive';
+                ERPMTops.def_erpvalue{12} = 'negative';
             case  6
                 moption= 'fpeaklat';
-                ERPMTops.def_erpvalue{12} = 'negative';
+                ERPMTops.def_erpvalue{12} = 'positive';
             case 7
                 moption= 'fpeaklat';
-                ERPMTops.def_erpvalue{12} = 'positive';
+                ERPMTops.def_erpvalue{12} = 'negative';
             otherwise%if the measurement type comes from Advanced option
                 MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
-                    'areat','ninteg','areap','arean',...
-                    'areazt','nintegz','areazp','areazn',...
-                    'instabl'};
+                    'areat','ninteg','areap','arean','instabl'};
                 try
                     moption=  MeasureName_other{Measure-7};
                 catch
@@ -446,14 +445,42 @@ varargout{1} = erp_measurement_box;
         if isempty(Answer)
             return;
         end
-        
+        Measure = Answer{1};
+          switch Measure%Find the label of the selected item, the defualt one is 1 (Mean amplitude between two fixed latencies)
+            case 'meanbl'% Mean amplitude
+                set(ERPMTops.m_t_type,'Value',1);
+            case 'peakampbl'% Peak amplitude (P vs. N)
+                if strcmp(Polarity,'positive')
+                    set(ERPMTops.m_t_type,'Value',2);
+                else
+                    set(ERPMTops.m_t_type,'Value',3);
+                end
+            case  'peaklatbl'%Peak latency (P vs. N)
+                if strcmp(Polarity,'positive')
+                    set(ERPMTops.m_t_type,'Value',4);
+                elseif strcmp(Polarity,'negative')
+                    set(ERPMTops.m_t_type,'Value',5);
+                end
+            case  'fpeaklat'%Fractional Peak latency (P vs. N)
+                if strcmp(Polarity,'positive')
+                    set(ERPMTops.m_t_type,'Value',6);
+                elseif strcmp(Polarity,'negative')
+                    set(ERPMTops.m_t_type,'Value',7);
+                end
+            otherwise%if the measurement type comes from Advanced option
+                MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
+                    'areat','ninteg','areap','arean','instabl'};
+                [C,IA] = ismember_bc2({Measure}, MeasureName_other);
+                if  isempty(IA)
+                    set(ERPMTops.m_t_type,'Value',1);
+                    Measure = 'meanbl';
+                else
+                    set(ERPMTops.m_t_type,'Value',IA+7);
+                end
+          end
+        ERPMTops.def_erpvalue{7} = Measure;
+          
         ERPMTops.def_erpvalue{9} =Answer{2};
-        %         binlabop = Answer{3};%%Binlabel
-        %         if binlabop
-        %             ERPMTops.def_erpvalue{11} = 'on';
-        %         else
-        %             ERPMTops.def_erpvalue{11} = 'off';
-        %         end
         
         polpeak= Answer{4};%%polarity
         if polpeak==0
@@ -761,9 +788,7 @@ varargout{1} = erp_measurement_box;
                 moption= 'fpeaklat';
             otherwise%if the measurement type comes from Advanced option
                 MeasureName_other = {'fareatlat','fninteglat','fareanlat','fareaplat',...
-                    'areat','ninteg','areap','arean',...
-                    'areazt','nintegz','areazp','areazn',...
-                    'instabl'};
+                    'areat','ninteg','areap','arean','instabl'};
                 try
                     moption=  MeasureName_other{Measure-7};
                 catch
@@ -771,7 +796,7 @@ varargout{1} = erp_measurement_box;
                 end
         end
         latency = unique_bc2(str2num(source_tw.String));
-        if ismember_bc2({moption}, {'instabl', 'areazt','areazp','areazn', 'nintegz'})
+        if ismember_bc2({moption}, {'instabl'})
             if length(latency)~=1
                 msgboxText =  ['Measurement Tool -',32,moption ' only needs 1 latency value'];
                 titlNamerro = 'Warning for ERP Tab';
@@ -1016,8 +1041,8 @@ varargout{1} = erp_measurement_box;
             ERPsetArray =  ERPArraydef;
         end
         
-        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareanlat','fareaplat',...
-            'areat','ninteg','areap','arean','areazt','nintegz','areazp','areazn','instabl'};
+        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fpeaklat','fareatlat','fninteglat','fareanlat','fareaplat',...
+            'areat','ninteg','areap','arean','instabl'};
         [C,IA] = ismember_bc2({ERPMTops.def_erpvalue{7}}, MeasureName);
         if ~any(IA) || isempty(IA)
             IA =1;
@@ -1204,8 +1229,8 @@ varargout{1} = erp_measurement_box;
             ERPsetArray =  ERPArraydef;
         end
         
-        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fareatlat','fpeaklat','fninteglat','fareanlat','fareaplat',...
-            'areat','ninteg','areap','arean','areazt','nintegz','areazp','areazn','instabl'};
+        MeasureName = {'meanbl','peakampbl', 'peaklatbl','fpeaklat','fareatlat','fninteglat','fareanlat','fareaplat',...
+            'areat','ninteg','areap','arean','instabl'};
         [C,IA] = ismember_bc2({ERPMTops.def_erpvalue{7}}, MeasureName);
         if ~any(IA) || isempty(IA)
             IA =1;
@@ -1334,7 +1359,7 @@ varargout{1} = erp_measurement_box;
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
             erpworkingmemory('ViewerFlag', 1);
             observe_ERPDAT.Count_currentERP=1;
-            erpworkingmemory('f_ERP_proces_messg','Measurement Tool > Preview:The main ERPLAB Studio window will be frozen until you close the Viewer window for the Measurement Tool');
+            erpworkingmemory('f_ERP_proces_messg','Measurement Tool > Preview: The main ERPLAB Studio window will be frozen until you close the Viewer window for the Measurement Tool');
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             
             f_erp_viewerGUI(observe_ERPDAT.ALLERP(ERPsetArray),1,binArray,chanArray);

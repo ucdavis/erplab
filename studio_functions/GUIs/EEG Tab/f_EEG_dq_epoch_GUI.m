@@ -549,7 +549,7 @@ varargout{1} = Eegtab_box_dq_epoch;
             CURRENTPREAVG = 1;
             ERPpreavg.erpname = ALLEEG(setindex).setname; %setname instead of erpname in DQ Table
             DQ_Table_GUI(ERPpreavg,ALLERP,CURRENTPREAVG,1);
-            LASTCOM =  'pop_DQ_preavg(EEG);';
+            LASTCOM =  'pop_DQ_preavg(ALLEEG);';
             disp(LASTCOM);
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             if Numofeeg==1

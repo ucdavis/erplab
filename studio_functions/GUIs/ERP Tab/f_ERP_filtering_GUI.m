@@ -16,7 +16,7 @@ addlistener(observe_ERPDAT,'Reset_erp_panel_change',@Reset_erp_panel_change);
 try
     [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
 catch
-    ColorB_def = [0.95 0.95 0.95];
+    ColorB_def = [0.702,0.77,0.85];
 end
 if nargin == 0
     fig = figure(); % Parent figure
@@ -48,7 +48,7 @@ varargout{1} = ERP_filtering_box;
         try
             [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
         catch
-            ColorB_def = [0.95 0.95 0.95];
+            ColorB_def = [0.702,0.77,0.85];
         end
         
         Enable_label = 'off';

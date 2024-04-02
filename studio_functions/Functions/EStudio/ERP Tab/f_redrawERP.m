@@ -795,6 +795,7 @@ global observe_ERPDAT;
 global EStudio_gui_erp_totl;
 global observe_EEGDAT;
 
+erpworkingmemory('ViewerFlag', 0);
 
 MessageViewer= char(strcat('Reset parameters for ERP panels '));
 erpworkingmemory('f_ERP_proces_messg',MessageViewer);
@@ -843,7 +844,7 @@ else
     end
 end
 
-erpworkingmemory('ViewerFlag', 0);
+
 %%---------------- -------------erp tab------------------------------------
 if reset_paras(4)==1
     EStudio_gui_erp_totl.clear_allerp = 1;
