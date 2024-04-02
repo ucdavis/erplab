@@ -1169,12 +1169,14 @@ varargout{1} = ERP_plotset_box;
         end
         
         DataInput = DataInput(:,2:end);
-        [Griddata, checkflag ]= f_tranf_check_import_grid(DataInput,overlapindex);
+        [Griddata, checkflag,labelsIndex ]= f_tranf_check_import_grid(DataInput,overlapindex);
         if checkflag==0
             erpworkingmemory('f_ERP_proces_messg','Plot Settings > Grid Layout > Import is invalid or didnot match with existing labels');
             observe_ERPDAT.Process_messg =4;
             return;
         end
+        
+        
         ERPTab_plotset.rowNum_set.Value =size(Griddata,1);
         ERPTab_plotset.columns.Value =size(Griddata,2);
         ERPTab_plotset.gridlayputarray = Griddata;%%save the grid layout
@@ -1668,13 +1670,15 @@ varargout{1} = ERP_plotset_box;
         if checkflag==1
             if ERPTab_plotset.pagesel.Value==1
                 estudioworkingmemory('ERP_ChanArray',labelsIndex);
+                ChanArray = labelsIndex;
             else
                 estudioworkingmemory('ERP_BinArray',labelsIndex);
+                BinArray = labelsIndex;
             end
         else
             ERPTab_plotset.gridlayputarray = gridlayputarraydef;
         end
-        
+        if ERPTab_plotset.chanorder_front.Value==1
         try
             [eloc, labels, theta, radius, indices] = readlocs(observe_ERPDAT.ERP.chanlocs);
             ERPTab_plotset.chanorderIndex = 2;
@@ -1687,6 +1691,9 @@ varargout{1} = ERP_plotset_box;
             end
         catch
             chanindexnew = ChanArray;
+        end
+        else 
+          chanindexnew = ChanArray;   
         end
         if ERPTab_plotset.chanorder_front.Value==1
             gridlayputarraydef = cell(rowNum,columNum);

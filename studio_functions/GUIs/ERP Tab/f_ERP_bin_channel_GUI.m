@@ -294,7 +294,9 @@ varargout{1} = EStudio_box_bin_chan;
             if isempty(ChanArray) || any(ChanArray(:)<=0) || any(ChanArray(:) >length(Chanlist_name)-1) || numel(ChanArray) == length(Chanlist_name)-1
                 ERPTab_bin_chan.ElecRange.Value = 1;
                 ChanArray = [1:length(Chanlist_name)-1];
+                if numel(ChanArray) ~= length(Chanlist_name)-1
                 estudioworkingmemory('ERP_ChanArray',ChanArray);
+                end
             else
                 ERPTab_bin_chan.ElecRange.Value =ChanArray+1;
                 ChanArray = ChanArray;
@@ -324,7 +326,9 @@ varargout{1} = EStudio_box_bin_chan;
             if isempty(BinArray) || any(BinArray(:)<=0) || any(BinArray(:)>BinNum) || numel(BinArray) >= BinNum
                 BinArray = [1:BinNum];
                 ERPTab_bin_chan.BinRange.Value=1;
+                if numel(BinArray) ~= BinNum
                 estudioworkingmemory('ERP_BinArray',BinArray);
+                end
             else
                 ERPTab_bin_chan.BinRange.Value =BinArray+1;
             end
