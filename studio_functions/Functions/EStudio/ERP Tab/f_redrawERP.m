@@ -114,7 +114,7 @@ EStudio_gui_erp_totl.ViewAxes_legend = uix.ScrollingPanel( 'Parent', ViewAxes_le
 %%waves
 EStudio_gui_erp_totl.plot_wav_legend = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',[1 1 1]);
 EStudio_gui_erp_totl.ViewAxes = uix.ScrollingPanel( 'Parent', EStudio_gui_erp_totl.plot_wav_legend,'BackgroundColor',[1 1 1]);
-%%note that needs to go to lines 487 and 491 of "uix.ScrollingPanel" if change the background color of scrollingbar or this toolbox is updated 
+%%note that needs to go to lines 487,491, 495, 670,671 of "uix.ScrollingPanel" if change the background color of scrollingbar or this toolbox is updated
 
 
 EStudio_gui_erp_totl.blank = uiextras.HBox( 'Parent', EStudio_gui_erp_totl.plotgrid,'BackgroundColor',ColorB_def);%%%Message
@@ -261,7 +261,7 @@ if ~isempty(observe_ERPDAT.ALLERP) && ~isempty(observe_ERPDAT.ERP) && ERP_autopl
             catch
             end
         end
-    end  
+    end
 end
 EStudio_gui_erp_totl.ViewAxes.Children.Title.Color = [1 0 0];
 end
@@ -874,7 +874,7 @@ else
         estudioworkingmemory('selectederpstudio',1);
     end
 end
- observe_ERPDAT.Count_currentERP = 1;
+observe_ERPDAT.Count_currentERP = 1;
 observe_ERPDAT.Process_messg =2;
 end
 
@@ -1075,9 +1075,9 @@ for Numofrows = 1:rowNums
             plotdatalabel = 0;
         end
         if (qPLOTORG(1)==1 && qPLOTORG(2)==2) ||(qPLOTORG(1)==2 && qPLOTORG(2)==1)
-       plotArray1 = sort(plotArray);
+            plotArray1 = sort(plotArray);
         else
-         plotArray1  = plotArray;  
+            plotArray1  = plotArray;
         end
         [xpos,plotdatalabel] = find(plotArray1 == plotdatalabel);
         if isempty(plotdatalabel)
@@ -1091,15 +1091,15 @@ for Numofrows = 1:rowNums
         
         if plotdatalabel ~=0 && plotdatalabel<= numel(plotArray) && ~isempty(plotbindata)
             countPlot =countPlot +1;
-             try
-            labelcbe = qplotArrayStr{countPlot};
-            if isempty(labelcbe)
-                labelcbe  = 'No label';
+            try
+                labelcbe = qplotArrayStr{countPlot};
+                if isempty(labelcbe)
+                    labelcbe  = 'No label';
+                end
+            catch
+                labelcbe = 'no';
             end
-        catch
-            labelcbe = 'no';
-             end
-        
+            
             if qPolarityWave==1
                 data4plot = squeeze(bindata(plotdatalabel,:,:,1));
             else

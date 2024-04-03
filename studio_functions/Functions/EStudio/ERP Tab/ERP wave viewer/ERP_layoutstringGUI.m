@@ -712,6 +712,3 @@ handles.uitable1_layout.Data=Data;
 handles.listbox_Labels.Min = 0;
 handles.listbox_Labels.Max =1;
 handles.listbox_Labels.Value = 1;
-%
-
-

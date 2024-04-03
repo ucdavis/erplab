@@ -107,7 +107,7 @@ drawui_erp_information(FonsizeDefault);
             gui_erp_DQSME.max_sme_name.String='';
             gui_erp_DQSME.DQSME_option_table.Enable = Enableflag;
             gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
-          
+            
             observe_ERPDAT.Count_currentERP=17;
             return;
         else
@@ -146,7 +146,7 @@ drawui_erp_information(FonsizeDefault);
             Max_name = '';
         end
         gui_erp_DQSME.max_sme_name.String=Max_name;
-
+        
         
         try% check if the data for SMEs exsists or not
             data_quality = observe_ERPDAT.ERP.dataquality.data;
@@ -160,8 +160,6 @@ drawui_erp_information(FonsizeDefault);
         gui_erp_DQSME.DQSME_option_file.Enable = Enableflag;
         observe_ERPDAT.Count_currentERP=17;
     end
-
-
 
 %%---------------------Save SME to a table---------------------------------
     function DQSME_table(~,~)
@@ -178,13 +176,19 @@ drawui_erp_information(FonsizeDefault);
         end
         erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Show in a table');
         observe_ERPDAT.Process_messg =1;
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM=[];  end
         for Numoferp = 1:numel(SelectedERP)
             DQ_Table_GUI(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)),observe_ERPDAT.ALLERP,SelectedERP(Numoferp),1);
+            ERPCOM = [' DQ_Table_GUI(ERP,ALLERP,',num2str(Numoferp),',2);'];
+            [ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)), ALLERPCOM, ERPCOM,2);
+            observe_ERPDAT.ALLERP(SelectedERP(Numoferp)) = ERP;
         end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        observe_ERPDAT.Count_currentERP = 20;
         observe_ERPDAT.Process_messg =2;
     end
-
-
 
 %-----------------Save the SME to a file-----------------------------------
     function DQSME_file(~,~)
@@ -201,7 +205,8 @@ drawui_erp_information(FonsizeDefault);
         end
         erpworkingmemory('f_ERP_proces_messg','View Data Quality Metrics > Save to file');
         observe_ERPDAT.Process_messg =1;
-        
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM=[];  end
+        countr= 0;
         for Numoferp = 1:numel(SelectedERP)
             ERP =observe_ERPDAT.ALLERP(SelectedERP(Numoferp));
             try
@@ -213,7 +218,12 @@ drawui_erp_information(FonsizeDefault);
                     button      = questdlg(sprintf(question, msgboxText), title,'OK','OK');
                 else
                     save_data_quality(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)));
+                    ERPCOM = ['save_data_quality(ERP);'];
+                    [ERP, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(SelectedERP(Numoferp)), ALLERPCOM, ERPCOM,2);
+                    observe_ERPDAT.ALLERP(SelectedERP(Numoferp)) = ERP;
+                    countr=1;
                 end
+                
             catch
                 msgboxText =  ['No information for data quality is found!'];
                 question = [  'No information for data quality is found!'];
@@ -223,6 +233,12 @@ drawui_erp_information(FonsizeDefault);
             
         end
         set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
+        if countr==1
+            assignin('base','ALLERPCOM',ALLERPCOM);
+            assignin('base','ERPCOM',ERPCOM);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            observe_ERPDAT.Count_currentERP = 20;
+        end
         observe_ERPDAT.Process_messg =2;
     end
 

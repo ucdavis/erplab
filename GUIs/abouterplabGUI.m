@@ -294,7 +294,12 @@ end
 %if numfig==9
 %        namefig = 'logoerplab2010ny.jpg';
 %else
+ERPtooltype = handles.ERPtooltype;
+if strcmpi(ERPtooltype,'estudio')
+  namefig = ['EstudioLogo.jpg'];  
+else
 namefig = ['logoerplab' num2str(numfig) '.jpg'];
+end
 %end
 
 set(hObject, 'Units', 'pixels');
