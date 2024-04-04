@@ -520,9 +520,13 @@ varargout{1} = ERP_basecorr_detrend_box;
             else
                 [ERP ERPCOM]= pop_blcerp( ERP , 'Baseline', BaselineMethod, 'Saveas', 'off','History','gui');
             end
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            if Numoferp ==1
-                [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+            if isempty(ERPCOM)
+                return;
+            end
+            if  Numoferp ==numel(Selected_erpset)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
             
             %%Only the selected bin and chan were selected to remove baseline and detrending and others are remiained.
@@ -550,7 +554,12 @@ varargout{1} = ERP_basecorr_detrend_box;
             ERP = ALLERP_out(Numoferp);
             if Save_file_label==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                if  Numoferp ==numel(Selected_erpset)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             else
                 ERP.saved = 'no';
                 ERP.filepath = '';

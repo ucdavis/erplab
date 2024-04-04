@@ -575,7 +575,7 @@ varargout{1} = ERP_grdavg_box_gui;
             Weightedstr = 'off';
         end
         
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end;
         ALLERP = observe_ERPDAT.ALLERP;
         if jk==1 % Jackknife
             [ALLERP, ERPCOM]  = pop_jkgaverager(ALLERP, 'Erpsets', erpset, 'Criterion', artcrite,...
@@ -584,19 +584,29 @@ varargout{1} = ERP_grdavg_box_gui;
             if isempty(ERPCOM)
                 return;
             end
+            
             Selected_ERP_afd = setdiff([1:length(ALLERP)],[1:length(observe_ERPDAT.ALLERP)]);
-            observe_ERPDAT.ALLERP = ALLERP;
-            observe_ERPDAT.CURRENTERP = Selected_ERP_afd(1);
-            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
-            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
+            
+            for Numoferp = 1:numel(Selected_ERP_afd)
+                if Numoferp ==numel(Selected_ERP_afd)
+                    [ALLERP(Selected_ERP_afd(Numoferp)), ALLERPCOM] = erphistory(ALLERP(Selected_ERP_afd(Numoferp)), ALLERPCOM, ERPCOM,2);
+                else
+                    [ALLERP(Selected_ERP_afd(Numoferp)), ALLERPCOM] = erphistory(ALLERP(Selected_ERP_afd(Numoferp)), ALLERPCOM, ERPCOM,1);
+                end
+            end
+            
             if Save_file_label==1
                 for Numofselectederp =1:numel(Selected_ERP_afd)
                     ERP_save = observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp));
                     ERP_save.filepath = pathName_new;
-                    [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
+                    [observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
                 end
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                [observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(Selected_ERP_afd(Numofselectederp)), ALLERPCOM, ERPCOM,2);
             end
+            observe_ERPDAT.ALLERP = ALLERP;
+            observe_ERPDAT.CURRENTERP = Selected_ERP_afd(1);
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
         else
             [ERP, ERPCOM]  = pop_gaverager(ALLERP, 'Erpsets', erpset,'Criterion', artcrite, 'SEM', stdsstr,...
                 'ExcludeNullBin', excnullbinstr,'Weighted', Weightedstr, 'Saveas', 'off',...
@@ -607,16 +617,18 @@ varargout{1} = ERP_grdavg_box_gui;
             ERP.erpname = erpName_new;
             ERP.filename = fileName_new;
             ERP.filepath = pathName_new;
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            
+            if Save_file_label==1
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath,'History','implicit');
+                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            end
             observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
             Selected_ERP_afd = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
             estudioworkingmemory('selectederpstudio',Selected_ERP_afd);
-            if Save_file_label==1
-                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            end
         end
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);

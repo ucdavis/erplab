@@ -2071,11 +2071,10 @@ varargout{1} = ERP_simulation_box;
         ALLERP = [];
         [ERP, ERPCOM] =  pop_ERP_simulation(ALLERP,BasFuncName,'EpochStart',EpochStart,'EpochStop',EpochStop,'Srate',Srate,'BasPeakAmp',BasPeakAmp,'MeanLatencyOnset',MeanLatOnset,'SDOffset',SDOffset,...
             'ExGauTau',ExGauTau,'SinoiseAmp',SinoiseAmp,'SinoiseFre',SinoiseFre,'WhiteAmp',WhiteAmp,'PinkAmp',PinkAmp,'NewnoiseFlag',NewnoiseFlag,'Saveas', 'off','History', 'gui');
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
         
         Answer = f_ERP_save_single_file(strcat(ERP.erpname),ERP.filename,length(observe_ERPDAT.ALLERP)+1);
         if isempty(Answer)
-            beep;
             return;
         end
         if ~isempty(Answer)
@@ -2096,7 +2095,7 @@ varargout{1} = ERP_simulation_box;
                 ERP.filepath = pathstr;
                 %%----------save the current sdata as--------------------
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             end
         end
         assignin('base','ALLERPCOM',ALLERPCOM);
@@ -2112,8 +2111,6 @@ varargout{1} = ERP_simulation_box;
         erpworkingmemory('ERP_simulation',1);
         observe_ERPDAT.Count_currentERP = 1;
         observe_ERPDAT.Process_messg =2;
-        
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
     end
 
 

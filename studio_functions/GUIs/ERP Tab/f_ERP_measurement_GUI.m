@@ -446,7 +446,7 @@ varargout{1} = erp_measurement_box;
             return;
         end
         Measure = Answer{1};
-          switch Measure%Find the label of the selected item, the defualt one is 1 (Mean amplitude between two fixed latencies)
+        switch Measure%Find the label of the selected item, the defualt one is 1 (Mean amplitude between two fixed latencies)
             case 'meanbl'% Mean amplitude
                 set(ERPMTops.m_t_type,'Value',1);
             case 'peakampbl'% Peak amplitude (P vs. N)
@@ -477,9 +477,9 @@ varargout{1} = erp_measurement_box;
                 else
                     set(ERPMTops.m_t_type,'Value',IA+7);
                 end
-          end
+        end
         ERPMTops.def_erpvalue{7} = Measure;
-          
+        
         ERPMTops.def_erpvalue{9} =Answer{2};
         
         polpeak= Answer{4};%%polarity
@@ -1091,7 +1091,7 @@ varargout{1} = erp_measurement_box;
                 end
             end
         end
-        ALLERP = evalin('base','ALLERP');
+        
         binArray = str2num(ERPMTops.m_t_bin.String);
         [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, binArray, [],1);
         if chk(1)
@@ -1139,8 +1139,9 @@ varargout{1} = erp_measurement_box;
         ERPMTops.Paras{5} = str2num(ERPMTops.m_t_TW.String);
         ERPMTops.Paras{6} = ERPMTops.m_t_file.String;
         %         ERPMTops.Paras{7} = ERPMTops.m_t_viewer_on.Value;
+        ALLERP =observe_ERPDAT.ALLERP;
         if ~isempty(latency)
-            [ALLERP, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP, latency, binArray, chanArray,...
+            [~, Amp, Lat, erpcom] = pop_geterpvalues(ALLERP, latency, binArray, chanArray,...
                 'Erpsets', ERPsetArray, 'Measure',MeasureName{IA}, 'Component', ERPMTops.def_erpvalue{8},...
                 'Resolution', ERPMTops.def_erpvalue{9}, 'Baseline', ERPMTops.def_erpvalue{10}, 'Binlabel', ERPMTops.def_erpvalue{11},...
                 'Peakpolarity',ERPMTops.def_erpvalue{12}, 'Neighborhood', ERPMTops.def_erpvalue{13}, 'Peakreplace', ERPMTops.def_erpvalue{14},...
@@ -1149,10 +1150,17 @@ varargout{1} = erp_measurement_box;
                 'Fracreplace', ERPMTops.def_erpvalue{16},'IncludeLat',ERPMTops.def_erpvalue{20}, 'InterpFactor',ERPMTops.def_erpvalue{21},...
                 'PeakOnset',ERPMTops.def_erpvalue{22},'History', 'gui');
             %%%------------Save history to current session--------------
-            ALLERPCOM = evalin('base','ALLERPCOM');
-            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ERP, ALLERPCOM, erpcom);
+            try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
+            for Numoferp = 1:length(ERPsetArray)
+                if Numoferp ==length(ERPsetArray)
+                    [observe_ERPDAT.ALLERP(ERPsetArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPsetArray(Numoferp)), ALLERPCOM, erpcom,2);
+                else
+                    [observe_ERPDAT.ALLERP(ERPsetArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPsetArray(Numoferp)), ALLERPCOM, erpcom,1);
+                end
+            end
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
             assignin('base','ALLERPCOM',ALLERPCOM);
-            
+            assignin('base','ERPCOM',erpcom);
             %%---------------save the applied parameters using erpworkingmemory function--------------------
             Measure = MeasureName{IA};
             if strcmp(ERPMTops.def_erpvalue{11},'off')
@@ -1201,6 +1209,7 @@ varargout{1} = erp_measurement_box;
                 ERPMTops.def_erpvalue{15}, Fracreplace,SendtoWorkspace, FileFormat, ERPMTops.def_erpvalue{19},...
                 IncludeLat, ERPMTops.def_erpvalue{21}, ERPMTops.def_erpvalue{22}});
         end
+        observe_ERPDAT.Count_currentERP = 20;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -1363,6 +1372,14 @@ varargout{1} = erp_measurement_box;
             observe_ERPDAT.Process_messg =4; %%Marking for the procedure has been started.
             
             f_erp_viewerGUI(observe_ERPDAT.ALLERP(ERPsetArray),1,binArray,chanArray);
+            try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
+            ERPCOM = ['ERPArray=',vect2colon(ERPsetArray),';',32,...
+                'binArray=',vect2colon(binArray),';',32,...
+                'chanArray=',vect2colon(chanArray),';',32,...
+                'f_erp_viewerGUI(ALLERP(ERPsetArray),1,binArray,chanArray);'];
+            ALLERPCOM{end+1} = char(ERPCOM);
+            assignin('base','ALLERPCOM',ALLERPCOM);
+            assignin('base','ERPCOM',ERPCOM);
         end
         erpworkingmemory('ViewerFlag', 0);
         observe_ERPDAT.Count_currentERP=1;

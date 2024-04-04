@@ -421,171 +421,13 @@ varargout{1} = ERP_filtering_box;
         else
             iswindowed = 0;
         end
-        Selected_erpset =  estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
-            Selected_erpset =  length(observe_ERPDAT.ALLERP);
+        ERPArray =  estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = Selected_erpset;
+            observe_ERPDAT.CURRENTERP = ERPArray;
         end
         
-        defaulpar1 =  erpworkingmemory('f_ERP_spectral');
-        
-        BinArray = estudioworkingmemory('ERP_BinArray');
-        ChanArray =  estudioworkingmemory('ERP_ChanArray');
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
-        if chk(1)==1
-            BinArray =  [1:observe_ERPDAT.ERP.nbin];
-        end
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
-        if chk(2)==1
-            ChanArray =  [1:observe_ERPDAT.ERP.nchan];
-        end
-        FreqRange = str2num(gui_erp_spectral.frerange.String);
-        if isempty(FreqRange) || numel(FreqRange)~=2 || any(FreqRange(:)>floor(observe_ERPDAT.ERP.srate/2)) || any(FreqRange(:)<0)
-            FreqRange = [0 floor(observe_ERPDAT.ERP.srate/2)];
-            gui_erp_spectral.frerange.String = num2str(FreqRange);
-        end
-        gui_erp_spectral.Paras{3} =FreqRange;
-        
-        
-        %%Plot the spectrum for the selected ERPset
-        %                 try
-        for Numoferpset = 1:numel(Selected_erpset)
-            %%%
-            ERP_curret_s = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
-            if strcmp(ERP_curret_s.datatype,'ERP')
-                ERP_FFT = f_getFFTfromERP(ERP_curret_s,iswindowed);
-            elseif strcmp(ERP_curret_s.datatype,'EFFT')
-                ERP_FFT = ERP_curret_s;
-            end
-            
-            [xxx, latsamp, latdiffms] = closest(ERP_FFT.times, FreqRange);
-            tmin = latsamp(1);
-            tmax = latsamp(2);
-            
-            
-            if isempty(BinArray)
-                BinArray = [1:ERP_curret_s.nbin];
-            end
-            
-            if isempty(ChanArray)
-                ChanArray =  [1:ERP_curret_s.nchan];
-            end
-            
-            if max(BinArray(:))> ERP_FFT.nbin
-                BinArray = [1:ERP_FFT.nbin];
-            end
-            
-            if max(ChanArray(:))> ERP_FFT.nchan
-                ChanArray = [1:ERP_FFT.nchan];
-            end
-            
-            
-            if gui_erp_spectral.amplitude.Value
-                ERP_FFT.bindata  = abs(ERP_FFT.bindata);
-                figure_name = ['Spectral analysis - Amplitude for ',32,ERP_FFT.erpname];
-            elseif gui_erp_spectral.phase.Value
-                ERP_FFT.bindata  = angle(ERP_FFT.bindata);
-                figure_name = ['Spectral analysis - Phase for ',32,ERP_FFT.erpname];
-            elseif  gui_erp_spectral.power.Value
-                ERP_FFT.bindata  = abs(ERP_FFT.bindata).^2;
-                figure_name = ['Spectral analysis - Power for ',32,ERP_FFT.erpname];
-            elseif gui_erp_spectral.db.Value
-                ERP_FFT.bindata  = 20*log10(abs(ERP_FFT.bindata));
-                figure_name = ['Spectral analysis - dB for ',32,ERP_FFT.erpname];
-            end
-            
-            fig = figure('Name',figure_name);
-            %             set(fig,'outerposition',get(0,'screensize'));
-            
-            line_colors = erpworkingmemory('PWColor');
-            if size(line_colors,1)~= ERP_FFT.nbin
-                if ERP_FFT.nbin> size(line_colors,1)
-                    line_colors = get_colors(ERP_FFT.nbin);
-                else
-                    line_colors = line_colors(1:ERP_FFT.nbin,:,:);
-                end
-            end
-            
-            if isempty(line_colors)
-                line_colors = get_colors(ERP_FFT.nbin);
-            end
-            
-            FreqTick = default_time_ticks(ERP_FFT, FreqRange);
-            FreqTick = str2num(FreqTick{1});
-            ERP_FFT.bindata = ERP_FFT.bindata(ChanArray,tmin:tmax,BinArray);
-            ERP_FFT.nbin = numel(BinArray);
-            ERP_FFT.nchan = numel(ChanArray);
-            ERP_FFT.chanlocs =  ERP_FFT.chanlocs(ChanArray);
-            ERP_FFT.bindescr =  ERP_FFT.bindescr(BinArray);
-            ERP_FFT.times = ERP_FFT.times(tmin:tmax);
-            
-            pbox = f_getrow_columnautowaveplot(ChanArray);
-            try
-                RowNum = pbox(1)+1;
-                ColumnNum = pbox(2);
-            catch
-                RowNum = numel(ChanArray)+1;
-                ColumnNum = 1;
-            end
-            %              FonsizeDefault = f_get_default_fontsize();
-            count = 0;
-            for Numofcolumn = 1:ColumnNum
-                for Numofrow = 1: RowNum
-                    count = count+1;
-                    if ColumnNum*RowNum<5
-                        pause(1);
-                    end
-                    if count>ERP_FFT.nchan
-                        break;
-                    end
-                    p_ax = subplot(RowNum,ColumnNum,count);
-                    set(gca,'fontsize',FonsizeDefault);
-                    hold on;
-                    temp = squeeze(ERP_FFT.bindata);
-                    for Numofplot  = 1:ERP_FFT.nbin
-                        h_p(Numofplot) =  plot(p_ax,ERP_FFT.times,squeeze(ERP_FFT.bindata(count,:,Numofplot)),'LineWidth',1,'Color',line_colors(Numofplot,:,:));
-                    end
-                    axis(p_ax,[floor(ERP_FFT.times(1)),ceil(ERP_FFT.times(end)), 1.1*min(temp(:)) 1.1*max(temp(:))]);
-                    xticks(p_ax,FreqTick);
-                    if count == 1
-                        title(p_ax,char(strrep(ERP_FFT.chanlocs(count).labels,'_','\_')),'FontSize',10,'FontWeight','normal','Color','k','Interpreter','none'); %#ok<*NODEF>
-                    else
-                        title(p_ax,ERP_FFT.chanlocs(count).labels,'FontSize',FonsizeDefault,'FontWeight','normal','Color','k','Interpreter','none');
-                    end
-                    xlabel(p_ax,'Frequency/Hz','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
-                    if gui_erp_spectral.phase.Value
-                        ylabel(p_ax,'Angle/degree','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
-                    elseif gui_erp_spectral.amplitude.Value
-                        ylabel(p_ax,'Amplitude/\muV','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
-                    elseif gui_erp_spectral.power.Value
-                        ylabel(p_ax,'Power/\muV^2','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
-                    elseif gui_erp_spectral.db.Value
-                        ylabel(p_ax,'Decibels/dB','FontSize',FonsizeDefault,'FontWeight','normal','Color','k');
-                    end
-                    for NUmoflabel = 1:length(ERP_FFT.times)
-                        X_label{NUmoflabel} = [];
-                    end
-                    set(gca,'TickDir','out');
-                    set(gca,'LineWidth',1);
-                    set(gca,'Color','w',...
-                        'XColor','k',...
-                        'YColor','k',...
-                        'ZColor','k');
-                end
-            end
-            sh = subplot(RowNum+1, ColumnNum,[RowNum*ColumnNum+1:(RowNum+1)*ColumnNum],'align');
-            axis(sh,'off');
-            p  = get(sh,'position');
-            h_legend =  legend(sh,h_p,ERP_FFT.bindescr);
-            legend(sh,'boxoff');
-            set(h_legend, 'position', p);
-            qlegcolumns = ceil(sqrt(length(ERP_FFT.bindescr)));
-            set(h_legend,'NumColumns',qlegcolumns);
-            set(h_legend,'FontSize',FonsizeDefault);
-            set(fig,'Color','w');
-            
-        end%%end loop for ERPSET
         if gui_erp_spectral.phase.Value==1
             gui_erp_spectral.Paras{1}=2;
         elseif gui_erp_spectral.power.Value==1
@@ -595,6 +437,50 @@ varargout{1} = ERP_filtering_box;
         else
             gui_erp_spectral.Paras{1}=1;
         end
+        Amptypev = gui_erp_spectral.Paras{1};
+        if Amptypev==2
+            Amptype = 'phase';
+        elseif Amptypev==3
+            Amptype = 'power';
+        elseif Amptypev==4
+            Amptype = 'db';
+        else
+            Amptype = 'amp';
+        end
+        
+        freqrange = str2num(gui_erp_spectral.frerange.String);
+        if isempty(freqrange) || numel(freqrange)~=2 || any(freqrange(:)>floor(observe_ERPDAT.ERP.srate/2)) || any(freqrange(:)<0)
+            freqrange = [0 floor(observe_ERPDAT.ERP.srate/2)];
+            gui_erp_spectral.frerange.String = num2str(freqrange);
+        end
+        gui_erp_spectral.Paras{3} =freqrange;
+        
+        if iswindowed==1
+            TaperWindow = 'on';
+        else
+            TaperWindow = 'off';
+        end
+        
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
+        for Numoferpset = 1:numel(ERPArray)
+            %%%
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
+            if isempty(freqrange) || numel(freqrange)~=2 || any(freqrange(:)>floor(ERP.srate/2)) || any(freqrange(:)<0)
+                freqrange = [0 floor(ERP.srate/2)];
+            end
+            
+            [~, ERPCOM] = pop_ERP_spectralanalysis(ERP, 'Amptype',Amptype,'TaperWindow',TaperWindow,...
+                'freqrange',freqrange,'Plotwave','on','Saveas', 'off','History','gui');
+            if  Numoferpset == numel(ERPArray)
+                [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+        end%%end loop for ERPSET
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        observe_ERPDAT.Count_currentERP=20;
         gui_erp_spectral.Paras{2}=gui_erp_spectral.hamwin_on.Value;
     end
 
@@ -623,20 +509,17 @@ varargout{1} = ERP_filtering_box;
         erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
         observe_ERPDAT.Process_messg =1;
         
-        pathName =  erpworkingmemory('ERP_save_folder');
-        if isempty(pathName)
-            pathName =  cd;
-        end
+        
         if gui_erp_spectral.hamwin_on.Value
             iswindowed =1;
         else
             iswindowed = 0;
         end
-        Selected_erpset =  estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
-            Selected_erpset =  observe_ERPDAT.CURRENTERP;
+        ERPArray =  estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray =  observe_ERPDAT.CURRENTERP;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTERP = Selected_erpset;
+            observe_ERPDAT.CURRENTERP = ERPArray;
         end
         
         if gui_erp_spectral.phase.Value==1
@@ -648,158 +531,52 @@ varargout{1} = ERP_filtering_box;
         else
             gui_erp_spectral.Paras{1}=1;
         end
-        gui_erp_spectral.Paras{2}=gui_erp_spectral.hamwin_on.Value;
-        FreqRange = [];
-        FreqRange = str2num(gui_erp_spectral.frerange.String);
-        if isempty(FreqRange) || numel(FreqRange)~=2 || any(FreqRange(:)>floor(observe_ERPDAT.ERP.srate/2)) || any(FreqRange(:)<0)
-            FreqRange = [0 floor(observe_ERPDAT.ERP.srate/2)];
-            gui_erp_spectral.frerange.String = num2str(FreqRange);
+        Amptypev = gui_erp_spectral.Paras{1};
+        if Amptypev==2
+            Amptype = 'phase';
+        elseif Amptypev==3
+            Amptype = 'power';
+        elseif Amptypev==4
+            Amptype = 'db';
+        else
+            Amptype = 'amp';
         end
-        gui_erp_spectral.Paras{3} =FreqRange;
         
-        BinArray = estudioworkingmemory('ERP_BinArray');
-        ChanArray =  estudioworkingmemory('ERP_ChanArray');
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP, BinArray, [],1);
-        if chk(1)==1
-            BinArray =  [1:observe_ERPDAT.ERP.nbin];
+        freqrange = str2num(gui_erp_spectral.frerange.String);
+        if isempty(freqrange) || numel(freqrange)~=2 || any(freqrange(:)>floor(observe_ERPDAT.ERP.srate/2)) || any(freqrange(:)<0)
+            freqrange = [0 floor(observe_ERPDAT.ERP.srate/2)];
+            gui_erp_spectral.frerange.String = num2str(freqrange);
         end
-        [chk, msgboxText] = f_ERP_chckbinandchan(observe_ERPDAT.ERP,[], ChanArray,2);
-        if chk(2)==1
-            ChanArray =  [1:observe_ERPDAT.ERP.nchan];
+        gui_erp_spectral.Paras{3} =freqrange;
+        
+        if iswindowed==1
+            TaperWindow = 'on';
+        else
+            TaperWindow = 'off';
         end
-        try
-            ALLERPCOM = evalin('base','ALLERPCOM');
-        catch
-            ALLERPCOM = [];
-            assignin('base','ALLERPCOM',ALLERPCOM);
-        end
-        %%Plot the spectrum for the selected ERPset
-        %-----------Setting for import-------------------------------------
-        try
-            [version reldate,ColorB_def,ColorF_def,errorColorF_def] = geterplabstudiodef;
-        catch
-            ColorB_def = [0.7020 0.77 0.85];
-        end
-        oldcolor = get(0,'DefaultUicontrolBackgroundColor');
-        set(0,'DefaultUicontrolBackgroundColor',ColorB_def);
-        [ind,tf] = listdlg('ListString',{'".mat"','".csv"'},'SelectionMode','single','PromptString','Please select a type to export to...','Name','Export Spectrum for Selected ERPset to','OKString','Ok');
-        set(0,'DefaultUicontrolBackgroundColor',[1 1 1]);
-        if isempty(ind)
-            return;
-        end
-        for Numoferpset = 1:numel(Selected_erpset)
+        
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
+        for Numoferpset = 1:numel(ERPArray)
             %%%
-            ERP_curret_s = observe_ERPDAT.ALLERP(Selected_erpset(Numoferpset));
-            if  strcmp(ERP_curret_s.datatype,'ERP')
-                ERP_FFT = f_getFFTfromERP(ERP_curret_s,iswindowed);
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
+            if isempty(freqrange) || numel(freqrange)~=2 || any(freqrange(:)>floor(ERP.srate/2)) || any(freqrange(:)<0)
+                freqrange = [0 floor(ERP.srate/2)];
+            end
+            
+            [~, ERPCOM] = pop_ERP_spectralanalysis(ERP, 'Amptype',Amptype,'TaperWindow',TaperWindow,...
+                'freqrange',freqrange,'Plotwave','off','Saveas', 'csv','History','gui');
+            if  Numoferpset == numel(ERPArray)
+                [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             else
-                ERP_FFT = ERP_curret_s;
+                [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
-            if isempty(BinArray)
-                BinArray = [1:ERP_curret_s.nbin];
-            end
-            if isempty(ChanArray)
-                ChanArray =  [1:ERP_curret_s.nchan];
-            end
-            
-            if any(BinArray(:)> ERP_FFT.nbin)
-                BinArray = [1:ERP_FFT.nbin];
-            end
-            if any(ChanArray(:)> ERP_FFT.nchan)
-                ChanArray = [1:ERP_FFT.nchan];
-            end
-            
-            if isempty(FreqRange) || FreqRange(2)>ERP_FFT.times(end)
-                FreqRange=[ERP_FFT.times(1), ERP_FFT.times(end)];
-            end
-            [xxx, latsamp, latdiffms] = closest(ERP_FFT.times, FreqRange);
-            tmin = latsamp(1);
-            tmax = latsamp(2);
-            ERP_FFT.bindata = ERP_FFT.bindata(ChanArray,tmin:tmax,BinArray);
-            ERP_FFT.nbin = numel(BinArray);
-            ERP_FFT.nchan = numel(ChanArray);
-            ERP_FFT.chanlocs =  ERP_FFT.chanlocs(ChanArray);
-            ERP_FFT.bindescr =  ERP_FFT.bindescr(BinArray);
-            ERP_FFT.times = ERP_FFT.times(tmin:tmax);
-            
-            if  strcmp(ERP_curret_s.datatype,'ERP')
-                if gui_erp_spectral.amplitude.Value
-                    ERP_FFT.bindata  = abs(ERP_FFT.bindata);
-                    figure_name = [ERP_FFT.erpname,'_Spectrum_Amplitude'];
-                elseif gui_erp_spectral.phase.Value
-                    ERP_FFT.bindata  = angle(ERP_FFT.bindata);
-                    figure_name = [ERP_FFT.erpname,'_Spectrum_Phase'];
-                elseif  gui_erp_spectral.power.Value
-                    ERP_FFT.bindata  = abs(ERP_FFT.bindata).^2;
-                    figure_name = [ERP_FFT.erpname,'_Spectrum_Power'];
-                elseif gui_erp_spectral.db.Value
-                    ERP_FFT.bindata  = 20*log10(abs(ERP_FFT.bindata));
-                    figure_name = [ERP_FFT.erpname,'_Spectrum_ dB'];
-                end
-            else
-                if gui_erp_spectral.amplitude.Value
-                    figure_name = [ERP_FFT.erpname,'_Spectrum_amplitude'];
-                elseif gui_erp_spectral.phase.Value
-                    figure_name = [ERP_FFT.erpname,'_Spectrum_phase'];
-                elseif gui_erp_spectral.power.Value
-                    figure_name = strcat(ERP_FFT.erpname,'Spectrum_Power');
-                    
-                elseif gui_erp_spectral.db.Value
-                    figure_name = strcat(ERP_FFT.erpname,'_Spectrum_dB');
-                end
-            end
-            if ind==1
-                [filenamei, pathname] = uiputfile({'*.mat';'*.*'},['Save',32,'"',ERP_FFT.erpname,'"', 32,'as'],fullfile(pathName,figure_name));
-                if isequal(filenamei,0)
-                    disp('User selected Cancel')
-                    return
-                else
-                    [pathx, filename, ext] = fileparts(filenamei);
-                    ext = '.mat';
-                    filename = [filename ext];
-                end
-                
-                if strcmpi(ext,'.mat')
-                    [ERP_FFT, issave, ERPCOM] = pop_savemyerp(ERP_FFT, 'erpname', ERP_FFT.erpname, 'filename', filename, 'filepath',pathname);
-                    [~, ALLERPCOM] = erphistory(ERP_FFT, ALLERPCOM, ERPCOM);
-                end
-                
-                %%save as '.csv'
-            elseif ind==2
-                def  = erpworkingmemory('f_export2csvGUI');
-                if isempty(def)
-                    def = {1, 1, 1, 3, ''};
-                end
-                def{5} = fullfile(pathName,ERP_FFT.filename);
-                answer_export = f_export2csvGUI(ERP_FFT,def);
-                erpworkingmemory('f_export2csvGUI',answer_export);
-                if isempty(answer_export)
-                    return;
-                end
-                binArray = [1:ERP_FFT.nbin];
-                decimal_num = answer_export{4};
-                istime =answer_export{1} ;
-                electrodes=answer_export{2} ;
-                transpose=answer_export{3};
-                filenamei = answer_export{5};
-                [pathx, filename, ext] = fileparts(filenamei);
-                ext = '.csv';
-                if isempty(pathx)
-                    pathx =cd;
-                end
-                filename = [filename ext];
-                mkdir([pathx,filesep]);
-                try
-                    export2csv_spectranl_analysis(ERP_FFT,fullfile(pathx,filename), binArray,istime, electrodes,transpose,  decimal_num);
-                catch
-                    observe_ERPDAT.Process_messg =3;
-                    disp('Fail to save selected ERPset as ".csv"!!!');
-                    return;
-                end
-            end
-        end
-        erpworkingmemory('f_ERP_proces_messg','Spectral Analysis - Save');
-        observe_ERPDAT.Process_messg =2;
+        end%%end loop for ERPSET
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        observe_ERPDAT.Count_currentERP=20;
+        gui_erp_spectral.Paras{2}=gui_erp_spectral.hamwin_on.Value;
+        
     end
 
 %%-------------------Setting for the whole panel of fitering based on ALLERP and CURRENTERP--------------

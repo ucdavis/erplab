@@ -195,6 +195,11 @@ varargout{1} = box_erp_history;
                 set(gui_erp_history.uitable,'Data',ERP_history);
             end
         end
+        if isempty(observe_ERPDAT.ERP)
+            gui_erp_history.erp_h_all.String = 'Current ERPset';
+        else
+            gui_erp_history.erp_h_all.String = ['Current ERPset (',num2str(observe_ERPDAT.CURRENTERP),')'];
+        end
     end
 
 %%-------------show history to command window------------------------------
@@ -245,6 +250,12 @@ varargout{1} = box_erp_history;
             end
             fprintf( [repmat('-',1,100) '\n\n']);
         end
+        
+        if isempty(observe_ERPDAT.ERP)
+            gui_erp_history.erp_h_all.String = 'Current ERPset';
+        else
+            gui_erp_history.erp_h_all.String = ['Current ERPset (',num2str(observe_ERPDAT.CURRENTERP),')'];
+        end
         observe_ERPDAT.Process_messg=2;
     end
 
@@ -273,5 +284,10 @@ varargout{1} = box_erp_history;
             ERP_history_display = [ERP_history_display,strsplit(ERP_history(Numofrow,:), '\n')];
         end
         set(gui_erp_history.uitable,'Data', ERP_history_display');
+        if isempty(observe_ERPDAT.ERP)
+            gui_erp_history.erp_h_all.String = 'Current ERPset';
+        else
+            gui_erp_history.erp_h_all.String = ['Current ERPset (',num2str(observe_ERPDAT.CURRENTERP),')'];
+        end
     end
 end

@@ -101,7 +101,6 @@ varargout{1} = EStudio_box_bin_chan;
         if ~isempty(messgStr) && eegpanelIndex~=1
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         estudioworkingmemory('ERPTab_chanbin',1);
         ERPTab_bin_chan.plot_apply.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         ERPTab_bin_chan.plot_apply.ForegroundColor = [1 1 1];
@@ -150,7 +149,6 @@ varargout{1} = EStudio_box_bin_chan;
         else% 'All' is selected  and inlcuded
             ERPTab_bin_chan.BinRange.Value = 1;
         end
-        
     end
 
 

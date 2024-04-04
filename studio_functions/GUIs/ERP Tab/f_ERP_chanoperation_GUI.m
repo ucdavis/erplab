@@ -637,13 +637,20 @@ varargout{1} = ERP_chan_operation_gui;
         
         erpworkingmemory('f_ERP_proces_messg','ERP Bin Operations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         ALLERP =  observe_ERPDAT.ALLERP;
         ALLERP_out = [];
-        for Numofselectederp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
-            ERP = ALLERP(ERPArray(Numofselectederp));
+        for Numoferp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
+            ERP = ALLERP(ERPArray(Numoferp));
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, Formula_str, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if isempty(ERPCOM)
+               return; 
+            end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
             if isempty(ALLERP_out)
                 ALLERP_out = ERP;
             else
@@ -670,8 +677,13 @@ varargout{1} = ERP_chan_operation_gui;
                 ERP = ALLERP_out(Numoferp);
                 if Save_file_label==1
                     [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Numoferp).erpname,...
-                        'filename', ALLERP_out(ERPArray(Numofselectederp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                        'filename', ALLERP_out(ERPArray(Numoferp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
+                    ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                    if Numoferp ==numel(ERPArray)
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                    else
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    end
                 else
                     ERP.filename = '';
                     ERP.filepath = '';

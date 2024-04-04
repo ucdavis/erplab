@@ -1350,12 +1350,12 @@ varargout{1} = ERP_plot_scalp_gui;
         logstring = nonzeros(logstring)';
         mapleg    = strtrim(char(logstring));
         
-        Selected_erpset =  estudioworkingmemory('selectederpstudio');
-        if isempty(Selected_erpset)
-            Selected_erpset =  length(observe_ERPDAT.ALLERP);
+        ERPArray =  estudioworkingmemory('selectederpstudio');
+        if isempty(ERPArray)
+            ERPArray =  length(observe_ERPDAT.ALLERP);
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
-            observe_ERPDAT.CURRENTSET = Selected_erpset;
-            estudioworkingmemory('selectederpstudio',Selected_erpset);
+            observe_ERPDAT.CURRENTSET = ERPArray;
+            estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
         ERPTab_plotscalp{1}=str2num(gui_erp_scalp_map.bin_plot_edit.String);
@@ -1377,9 +1377,9 @@ varargout{1} = ERP_plot_scalp_gui;
         estudioworkingmemory('ERPTab_plotscalp',ERPTab_plotscalp);
         
         
-        ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numofselcerp = 1:numel(Selected_erpset)
-            ERP = observe_ERPDAT.ALLERP(Selected_erpset(Numofselcerp));
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch   ALLERPCOM = [];end
+        for Numoferp = 1:numel(ERPArray)
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             if strcmpi(mtype, '3d')
                 if isempty(ERP.splinefile) && isempty(splineinfo.path)
                     msgboxText =  ['Plot Scalp Maps -',ERP.erpname,' is not linked to any spline file.'...
@@ -1410,12 +1410,18 @@ varargout{1} = ERP_plot_scalp_gui;
                 'Colormap', cmap,'Animated', ismoviexx, 'AdjustFirstFrame', aff, 'FPS', FPS, 'Filename', fullgifname, 'Legend', mapleg, 'Electrodes', showelecx,...
                 'Position', posfig, 'Maptype', mtype, 'Mapstyle', smapstyle, 'Plotrad', mplotrad,'Mapview', mapview, 'Splinefile', splinefile,...
                 'Maximize', maxim, 'Electrodes3d', elec3D,'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            pause(0.1);
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
         end
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+        
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        observe_ERPDAT.Count_currentERP=20;
         observe_ERPDAT.Process_messg =2; %%Marking for the procedure has been started.
     end
 

@@ -130,9 +130,7 @@ varargout{1} = eegtab_events_box;
             arfilter = 'off';
         end
         erpworkingmemory('pop_rt2text', {fullfile(pathx, filename), listformat, headstr, arfilter, indexel});
-        ALLERPCOM = evalin('base','ALLERPCOM');
-        
-        
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         
         ERPArray =  estudioworkingmemory('selectederpstudio');
         if isempty(ERPArray) ||  any(ERPArray(:) > length(observe_ERPDAT.ALLERP)) ||  any(ERPArray(:) <1)
@@ -164,7 +162,11 @@ varargout{1} = eegtab_events_box;
                     'arfilter', arfilter, 'eventlist', indexel, 'History', 'gui');
                 
                 if ~isempty( values)
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    if Numoferp ==numel(ERPArray)
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                    else
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    end
                     observe_ERPDAT.ALLERP(ERPArray(Numoferp)) =ERP;
                 else
                     fprintf(2,['Cannot export reaction times for:',32,ERP.erpname,'\n']);
@@ -202,6 +204,19 @@ varargout{1} = eegtab_events_box;
         erpworkingmemory('f_ERP_proces_messg','EventList >  View EventList');
         observe_ERPDAT.Process_messg =1;
         feval('ERP_evenlist_gui',observe_ERPDAT.ALLERP(ERPArray));
+        
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
+        ERPCOM = ['ERPArray=',vect2colon(ERPArray),';',32,...
+            'feval("ERP_evenlist_gui",ALLERP(ERPArray));'];
+        for Numoferp = 1:numel(ERPArray)
+            if Numoferp ==length(ERPArray)
+                [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM, ERPCOM,2);
+            else
+                [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM, ERPCOM,1);
+            end
+        end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        observe_ERPDAT.Count_currentERP = 20;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -228,7 +243,7 @@ varargout{1} = eegtab_events_box;
             observe_ERPDAT.CURRENTERP = ERPArray;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = '';  end
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
         for Numoferp = 1:numel(ERPArray)
@@ -246,23 +261,20 @@ varargout{1} = eegtab_events_box;
             else
                 disp(['For read an EVENTLIST, user selected ', ELfullname])
             end
-            
             [ERP, ERPCOM] = pop_importerpeventlist( ERP, ELfullname , 'ReplaceEventList', 1 , 'Saveas', 'off', 'History', 'gui');
-            if Numoferp==1
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                if isempty(ALLERPCOM)
-                    ALLERPCOM = ERPCOM;
-                else
-                    ALLERPCOM{length(ALLERPCOM)+1}= ERPCOM;
-                end
+            end
+            
+            if Numoferp==1
                 ALLERP_out = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1) = ERP;
             end
             fprintf( ['\n',repmat('-',1,100) '\n\n']);
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
         
         Save_file_label = 0;
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray), '_impel');
@@ -278,7 +290,11 @@ varargout{1} = eegtab_events_box;
             ERP = ALLERP_out(Numoferp);
             if Save_file_label
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                if Numoferp ==numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             else
                 ERP.filename = '';
                 ERP.saved = 'no';
@@ -286,6 +302,9 @@ varargout{1} = eegtab_events_box;
             end
             ALLERP(length(ALLERP)+1) = ERP;
         end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        
         observe_ERPDAT.ALLERP = ALLERP;
         try
             Selected_EEG_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
@@ -296,7 +315,6 @@ varargout{1} = eegtab_events_box;
         end
         observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         estudioworkingmemory('selectederpstudio',Selected_EEG_afd);
-        
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
@@ -376,11 +394,11 @@ varargout{1} = eegtab_events_box;
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
                 [ERP, ERPCOM] = pop_exporterpeventlist( ERP , 'ELIndex', indexel, 'Filename', filenameeg,'History','gui');
-                if Numoferp==1
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                    assignin('base','ALLERPCOM',ALLERPCOM);
-                    assignin('base','ERPCOM',ERPCOM);
-                end
+                %                 if Numoferp==1
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                assignin('base','ALLERPCOM',ALLERPCOM);
+                assignin('base','ERPCOM',ERPCOM);
+                %                 end
                 observe_ERPDAT.ALLERP(ERPArray(Numoferp)) =ERP;
             else
                 titlNamerro = 'Warning for ERP Tab';
@@ -406,7 +424,7 @@ varargout{1} = eegtab_events_box;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-      
+        
         erpworkingmemory('f_ERP_proces_messg','EventList >  Import');
         observe_ERPDAT.Process_messg =1;
         
@@ -418,7 +436,7 @@ varargout{1} = eegtab_events_box;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch  ALLERPCOM = [];end
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
         for Numoferp = 1:numel(ERPArray)
@@ -438,21 +456,15 @@ varargout{1} = eegtab_events_box;
             end
             
             [ERP, ERPCOM] = pop_importerpeventlist( ERP, ELfullname , 'ReplaceEventList', 'replace' , 'Saveas', 'off', 'History', 'gui');
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
             if Numoferp==1
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                if isempty(ALLERPCOM)
-                    ALLERPCOM = ERPCOM;
-                else
-                    ALLERPCOM{length(ALLERPCOM)+1}= ERPCOM;
-                end
                 ALLERP_out = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1) = ERP;
             end
             fprintf( ['\n',repmat('-',1,100) '\n\n']);
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
+        
         
         Save_file_label = 0;
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray), '_impel');
@@ -468,7 +480,11 @@ varargout{1} = eegtab_events_box;
             ERP = ALLERP_out(Numoferp);
             if Save_file_label
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                if Numoferp ==numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             else
                 ERP.filename = '';
                 ERP.saved = 'no';
@@ -476,6 +492,8 @@ varargout{1} = eegtab_events_box;
             end
             ALLERP(length(ALLERP)+1) = ERP;
         end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ALLERP = ALLERP;
         try
             Selected_EEG_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
@@ -525,7 +543,7 @@ varargout{1} = eegtab_events_box;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         [xpath, suffixstr, ext] = fileparts(fname);
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         
         for Numoferp = 1:numel(ERPArray)
             ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
@@ -563,11 +581,11 @@ varargout{1} = eegtab_events_box;
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
                 [ERP, ERPCOM] = pop_exporterpeventlist( ERP , 'ELIndex', 1, 'Filename', filenameeg,'History','gui');
-                if Numoferp==1
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                    assignin('base','ALLERPCOM',ALLERPCOM);
-                    assignin('base','ERPCOM',ERPCOM);
-                end
+                %                 if Numoferp==1
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                assignin('base','ALLERPCOM',ALLERPCOM);
+                assignin('base','ERPCOM',ERPCOM);
+                %                 end
                 observe_ERPDAT.ALLERP(ERPArray(Numoferp)) =ERP;
             else
                 titlNamerro = 'Warning for ERP Tab';
@@ -588,7 +606,7 @@ varargout{1} = eegtab_events_box;
         if observe_ERPDAT.Count_currentERP ~=15
             return;
         end
-      ViewerFlag=erpworkingmemory('ViewerFlag');
+        ViewerFlag=erpworkingmemory('ViewerFlag');
         if isempty(ViewerFlag) || (ViewerFlag~=0 && ViewerFlag~=1)
             ViewerFlag=0;erpworkingmemory('ViewerFlag',0);
         end

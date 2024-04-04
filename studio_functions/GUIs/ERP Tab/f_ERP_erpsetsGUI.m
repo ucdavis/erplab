@@ -128,28 +128,70 @@ varargout{1} = box_erpset_gui;
         ChanArray= estudioworkingmemory('ERP_ChanArray');
         BinArray= estudioworkingmemory('ERP_BinArray');
         
-        for Numofselecterp = 1:numel(ERPArray)
-            New_ERP = observe_ERPDAT.ALLERP(ERPArray(Numofselecterp));
-            
-            New_ERP.filename = '';
-            New_ERP.erpname = char(strcat(New_ERP.erpname, '_Duplicated'));
-            if isempty(BinArray) || any(BinArray(:)>New_ERP.nbin) || any(BinArray<=0)
-                BinArray = [1:New_ERP.nbin];
-            end
-            if isempty(ChanArray) || any(ChanArray(:)>New_ERP.nchan) || any(ChanArray(:)<=0)
-                ChanArray  = [1:New_ERP.nchan];
-            end
-            New_ERP = f_ERP_duplicate(New_ERP,length(observe_ERPDAT.ALLERP),BinArray,ChanArray);
-            if isempty(New_ERP)
-                return;
-            end
-            observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = New_ERP;
-            ERPlistName =  getERPsets();
-            %%Reset the display in ERPset panel
-            ERPsetops.butttons_datasets.String = ERPlistName;
-            ERPsetops.butttons_datasets.Min = 1;
-            ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        def = f_ERP_duplicate(observe_ERPDAT.ERP,BinArray,ChanArray);
+        if isempty(def)
+            return;
         end
+        BinArray = def{1};
+        ChanArray =def{2};
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
+        
+        ALLERP_out = [];
+        ALLERP = observe_ERPDAT.ALLERP;
+        for Numoferp = 1:numel(ERPArray)
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
+            [ERP, ERPCOM] = pop_duplicaterp( ERP, 'ChanArray',ChanArray, 'BinArray',BinArray,...
+                'Saveas', 'off', 'History', 'gui');
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            if isempty(ALLERP_out)
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1)=ERP;
+            end
+        end
+        
+        Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_duplicate');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLERP_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numoferp =  1:length(ALLERP_out)
+            ERP = ALLERP_out(Numoferp);
+            if Save_file_label==1
+                [pathstr, file_name, ext] = fileparts(ERP.filename);
+                ERP.filename = [file_name,'.erp'];
+                [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
+                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                if Numoferp ==length(ALLERP_out)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
+            else
+                ERP.filename = '';
+                ERP.saved = 'no';
+                ERP.filepath = '';
+            end
+            ALLERP(length(ALLERP)+1) = ERP;
+        end
+        observe_ERPDAT.ALLERP = ALLERP;
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        erpworkingmemory('ERPfilter',1);
+        
+        ERPlistName =  getERPsets();
+        %%Reset the display in ERPset panel
+        ERPsetops.butttons_datasets.String = ERPlistName;
+        ERPsetops.butttons_datasets.Min = 1;
+        ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
+        
         try
             Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
             ERPsetops.butttons_datasets.Value = Selected_ERP_afd;
@@ -164,7 +206,6 @@ varargout{1} = box_erpset_gui;
         observe_ERPDAT.Process_messg =2;
         observe_ERPDAT.Count_currentERP = 1;
     end
-
 
 
 %%-------------------Rename the selcted files------------------------------
@@ -189,17 +230,43 @@ varargout{1} = box_erpset_gui;
         app = feval('ERP_Tab_rename_gui',observe_ERPDAT.ALLERP(ERPArray),ERPArray);
         waitfor(app,'Finishbutton',1);
         try
-            ALLERP = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            erpnames = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
             return;
         end
-        if isempty(ALLERP)
+        if isempty(erpnames)
             return;
         end
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         
-        observe_ERPDAT.ALLERP(ERPArray) = ALLERP;
+        ALLERP_out = [];
+        ALLERP = observe_ERPDAT.ALLERP(ERPArray);
+        [ALLERP, ERPCOM] = pop_renamerp( ALLERP, 'erpnames',erpnames,...
+            'Saveas', 'off', 'History', 'gui');
+        if isempty(ERPCOM)
+            return;
+        end
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(Numoferp);
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            if isempty(ALLERP_out)
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1)=ERP;
+            end
+        end
+        
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        erpworkingmemory('ERPfilter',1);
+        observe_ERPDAT.ALLERP(ERPArray) = ALLERP_out;
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         ERPlistName =  getERPsets();
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Min = 1;
@@ -229,21 +296,45 @@ varargout{1} = box_erpset_gui;
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         
-        new = f_ERP_suffix_gui('Suffix');
-        if ~isempty(new)
-            for Numofselecterp = 1:length(ERPArray)
-                observe_ERPDAT.ALLERP(ERPArray(Numofselecterp)).erpname = char(strcat( observe_ERPDAT.ALLERP(ERPArray(Numofselecterp)).erpname,'_',new{1}));
-            end
-            observe_ERPDAT.Process_messg =2;
-        else
-            observe_ERPDAT.Process_messg =4;
+        suffixstr = f_ERP_suffix_gui('Suffix');
+        if isempty(suffixstr)
             return;
         end
+        
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
+        
+        ALLERP_out = [];
+        ALLERP = observe_ERPDAT.ALLERP(ERPArray);
+        [ALLERP, ERPCOM] = pop_suffixerp( ALLERP, 'suffixstr',suffixstr,...
+            'Saveas', 'off', 'History', 'gui');
+        if isempty(ERPCOM)
+            return;
+        end
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(Numoferp);
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            if isempty(ALLERP_out)
+                ALLERP_out = ERP;
+            else
+                ALLERP_out(length(ALLERP_out)+1)=ERP;
+            end
+        end
+        
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        erpworkingmemory('ERPfilter',1);
+        observe_ERPDAT.ALLERP(ERPArray) = ALLERP_out;
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
         ERPlistName =  getERPsets();
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Min = 1;
         ERPsetops.butttons_datasets.Max = length(ERPlistName)+1;
-        observe_ERPDAT.Count_currentERP=1;
+        observe_ERPDAT.Process_messg =2;
+        observe_ERPDAT.Count_currentERP = 1;
     end
 
 %%-------------------------------fresh ------------------------------------
@@ -326,7 +417,7 @@ varargout{1} = box_erpset_gui;
         if isempty(ind)
             return;
         end
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         
         if tf%Import start
             %%-------------------------------------------------------------------------------
@@ -355,12 +446,11 @@ varargout{1} = box_erpset_gui;
                 end
                 
                 [ERP, ALLERP, ERPCOM] = pop_importerpss('Filename', fname, 'Format', dformatstr, 'Pointat', orienpoint, 'History', 'script');
-                ERP = erphistory(ERP, [], ERPCOM,1);
+                [ERP, ALLERPCOM]= erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 
                 try
                     Selected_erpset = [length(ALLERP)-length(fname)+1:length(ALLERP)];
                 catch
-                    beep;
                     disp('Fail to import the ERPsets, please try again or restart EStudio!');
                     return
                 end
@@ -375,10 +465,15 @@ varargout{1} = box_erpset_gui;
                     Save_file_label = Answer{2};
                 end
                 if Save_file_label==1
-                    for Numoferpset = 1:length(Selected_erpset)
-                        ERP = ALLERP_advance(Selected_erpset(Numoferpset));
+                    for Numoferp = 1:length(Selected_erpset)
+                        ERP = ALLERP_advance(Selected_erpset(Numoferp));
                         [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                        ERP = erphistory(ERP, [], ERPCOM,1);
+                        ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                        if Numoferp==length(Selected_erpset)
+                            [ERP,ALLERPCOM]= erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                        else
+                            [ERP,ALLERPCOM]= erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                        end
                     end
                 end
                 observe_ERPDAT.ALLERP=ALLERP_advance; clear ALLERP_advance;clear ALLERP
@@ -436,8 +531,6 @@ varargout{1} = box_erpset_gui;
                     [ERP, ERPCOM] = pop_importerp('Filename', filename, 'Filepath', filepath, 'Filetype', filetype, 'Time', inctimestr,...
                         'Timeunit', timeunit, 'Elabel', elabelstr, 'Pointat', orienpoint, 'Srate', fs, 'Xlim', xlim, 'Saveas', 'off',...
                         'History', 'gui');
-                    
-                    %                         [ERP, ERPCOM] = pop_importerp();
                     if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
                         Selected_erpset_indx = 1;
                     else
@@ -458,12 +551,10 @@ varargout{1} = box_erpset_gui;
                 elseif ind == 3  %%
                     [filename, filepath] = uigetfile({'*.avg';'Neuroscan average file (*.avg)'},'Select a file (Neuroscan)', 'MultiSelect', 'on');
                     if ~iscell(filename) && ~ischar(filename) && filename==0
-                        disp('User selected Cancel')
                         return
                     end
                     
                     [ERP, ERPCOM]= pop_importavg(filename, filepath, 'Saveas','off','History', 'gui');
-                    
                     [pathstr, file_name, ext] = fileparts(filename{1,1});
                     ERP.erpname = file_name;
                     if  length(observe_ERPDAT.ALLERP)==1 && strcmp(observe_ERPDAT.ALLERP(1).erpname,'No ERPset loaded')
@@ -472,7 +563,7 @@ varargout{1} = box_erpset_gui;
                         Selected_erpset_indx = length(observe_ERPDAT.ALLERP)+1;
                     end
                 end
-                ERP = erphistory(ERP, [], ERPCOM,1);
+                [ERP,ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                 
                 Answer = f_ERP_save_single_file(ERP.erpname,ERP.filename,Selected_erpset_indx);
                 if isempty(Answer)
@@ -488,7 +579,6 @@ varargout{1} = box_erpset_gui;
                     if isempty(fileName_full)
                         ERP.filename = ERP.erpname;
                     elseif ~isempty(fileName_full)
-                        
                         [pathstr, file_name, ext] = fileparts(fileName_full);
                         ext = '.erp';
                         if strcmp(pathstr,'')
@@ -498,14 +588,13 @@ varargout{1} = box_erpset_gui;
                         ERP.filepath = pathstr;
                         %%----------save the current sdata as--------------------
                         [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                        ERP = erphistory(ERP, [], ERPCOM,1);
+                        ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                        [ERP,ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
                     end
                 end
                 observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) =ERP;
             end
         end
-        
-        [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         
@@ -566,7 +655,6 @@ varargout{1} = box_erpset_gui;
         end
         
         checked_ERPset_Index_bin_chan = f_checkerpsets(observe_ERPDAT.ALLERP,ERPArray);
-        
         ChanArray= estudioworkingmemory('ERP_ChanArray');
         if isempty(ChanArray) || any(ChanArray<=0) || any(ChanArray>observe_ERPDAT.ERP.nchan)
             ChanArray = [1:observe_ERPDAT.ERP.nchan];
@@ -594,9 +682,9 @@ varargout{1} = box_erpset_gui;
         end
         
         ALLERPCOM = evalin('base','ALLERPCOM');
-        for Numoferpset = 1:length(ERPArray)
+        for Numoferp = 1:length(ERPArray)
             
-            ERP_export_erp = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
+            ERP_export_erp = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             if checked_ERPset_Index_bin_chan(1) ==1 || checked_ERPset_Index_bin_chan(2) ==2
                 BinArray = [1:ERP_export_erp.nbin];
                 ChanArray = [1:ERP_export_erp.nchan];
@@ -609,11 +697,15 @@ varargout{1} = box_erpset_gui;
                 end
                 ERP = Answer_erpss{1};
                 FileName = Answer_erpss{2};
-                
-                [observe_ERPDAT.ERP, ERPCOM] = pop_erp2asc(ERP,FileName,'History', 'gui');
-                [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+                [ERP, ERPCOM] = pop_erp2asc(ERP,FileName,'History', 'gui');
+                if Numoferp ==length(ERPArray)
+                    [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
                 assignin('base','ALLERPCOM',ALLERPCOM);
                 assignin('base','ERPCOM',ERPCOM);
+                observe_ERPDAT.Count_currentERP = 20;
                 observe_ERPDAT.Process_messg =2;
             elseif ind ==2
                 ERP_export_erp.filename =fullfile(pathName,ERP_export_erp.filename);
@@ -638,7 +730,6 @@ varargout{1} = box_erpset_gui;
                 islabeled = answer_export{3};
                 transpa   = answer_export{4};
                 prec      = answer_export{5};
-                
                 filename  = answer_export{6};
                 ERP = answer_export{7};
                 binArray  = [1:ERP.nbin];
@@ -659,18 +750,21 @@ varargout{1} = box_erpset_gui;
                 end
                 [ERP, ERPCOM] = pop_export2text(ERP, filename, binArray, 'time', time, 'timeunit', tunit, 'electrodes', elabel,...
                     'transpose', tra, 'precision', prec, 'History', 'gui');
-                [observe_ERPDAT.ERP, ALLERPCOM] = erphistory(ERP_export_erp, ALLERPCOM, ERPCOM);
+                if Numoferp ==length(ERPArray)
+                    [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [observe_ERPDAT.ALLERP(ERPArray(Numoferp)), ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
                 assignin('base','ALLERPCOM',ALLERPCOM);
                 assignin('base','ERPCOM',ERPCOM);
+                observe_ERPDAT.Count_currentERP = 20;
                 observe_ERPDAT.Process_messg =2;
-                
             end
         end
     end
 
 %%---------------------Load ERP--------------------------------------------
     function load(~,~)
-        
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_erptab_panelchanges();
         if ~isempty(messgStr)
@@ -689,23 +783,36 @@ varargout{1} = box_erpset_gui;
             return;
         end
         
-        if numel(findobj('tag', 'erpsets')) > 0
-            [ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
+        if ischar(filename)
+            [ERP, ~, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
                 'History', 'gui');
-        else
-            [ERP, observe_ERPDAT.ALLERP, ERPCOM] = pop_loaderp('filename', filename, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
-                'History', 'gui'); %If eeglab is not open, don't update
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            if isempty(observe_ERPDAT.ALLERP)
+                observe_ERPDAT.ALLERP = ERP;
+            else
+                observe_ERPDAT.ALLERP(length( observe_ERPDAT.ALLERP)+1)  =ERP;
+            end
+        elseif iscell(filename)
+            for numoferp = 1:length(filename)
+                [ERP, ~, ERPCOM] = pop_loaderp('filename', filename{numoferp}, 'filepath', filepath, 'Warning', 'on', 'UpdateMainGui', 'off', 'multiload', 'off',...
+                    'History', 'gui'); %If eeglab is not open, don't update
+                if numoferp ==length(filename)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
+                if isempty(observe_ERPDAT.ALLERP)
+                    observe_ERPDAT.ALLERP = ERP;
+                else
+                    observe_ERPDAT.ALLERP(length( observe_ERPDAT.ALLERP)+1)  =ERP;
+                end
+            end
         end
         assignin('base','ALLERP',observe_ERPDAT.ALLERP);
-        
-        
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
         assignin('base','ALLERPCOM',ALLERPCOM);
         assignin('base','ERPCOM',ERPCOM);
         
         ERPlistName =  getERPsets();
-        
         if isempty(observe_ERPDAT.ALLERP)
             Edit_label = 'off';
         else
@@ -736,8 +843,6 @@ varargout{1} = box_erpset_gui;
         end
     end
 
-
-
 %%----------------------Clear the selected ERPsets-------------------------
     function cleardata(source,~)
         if isempty(observe_ERPDAT.ERP)
@@ -749,31 +854,35 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Clear');
         observe_ERPDAT.Process_messg =1;
-        
         SelectedERP = ERPsetops.butttons_datasets.Value;
-        ERPset_remained = setdiff(1:length(observe_ERPDAT.ALLERP),SelectedERP);
-        
-        if isempty(ERPset_remained)
+        ALLERP = observe_ERPDAT.ALLERP;
+        [ALLERP,LASTCOM] = pop_deleterpset(ALLERP,'Erpsets', SelectedERP, 'Saveas', 'off','History', 'gui' );
+        if isempty(LASTCOM)
+            return;
+        end
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
+        ERP1 =  observe_ERPDAT.ERP;
+        [ERP1, ALLERPCOM] = erphistory(ERP1, ALLERPCOM, LASTCOM,2);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',LASTCOM);
+        if isempty(ALLERP)
             observe_ERPDAT.ALLERP = [];
             observe_ERPDAT.ERP = [];
             observe_ERPDAT.CURRENTERP  = 1;
             assignin('base','ERP',observe_ERPDAT.ERP)
         else
-            observe_ERPDAT.ALLERP = observe_ERPDAT.ALLERP(ERPset_remained);
+            observe_ERPDAT.ALLERP = ALLERP;
             observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(end);
             observe_ERPDAT.CURRENTERP  = length(observe_ERPDAT.ALLERP);
         end
-        
         ERPlistName =  getERPsets();
         if isempty(observe_ERPDAT.ALLERP)
             Edit_label = 'off';
         else
             Edit_label = 'on';
         end
-        
         ERPsetops.butttons_datasets.String = ERPlistName;
         ERPsetops.butttons_datasets.Value = observe_ERPDAT.CURRENTERP;
         ERPsetops.dupeselected.Enable=Edit_label;
@@ -788,7 +897,6 @@ varargout{1} = box_erpset_gui;
         ERPsetops.butttons_datasets.Max =length(ERPlistName)+1;
         ERPsetops.butttons_datasets.Enable = Edit_label;
         ERPsetops.export.Enable = Edit_label;
-        
         SelectedERP = observe_ERPDAT.CURRENTERP;
         estudioworkingmemory('selectederpstudio',SelectedERP);
         observe_ERPDAT.Process_messg =2;
@@ -823,7 +931,6 @@ varargout{1} = box_erpset_gui;
             ERPArray = length(observe_ERPDAT.ALLERP);
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
-        
         try
             ALLERPCOM = evalin('base','ALLERPCOM');
         catch
@@ -831,20 +938,29 @@ varargout{1} = box_erpset_gui;
             assignin('base','ALLERPCOM',ALLERPCOM);
         end
         
-        for Numoferpset = 1:length(ERPArray)
-            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferpset));
+        for Numoferp = 1:length(ERPArray)
+            ERP = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
             FileName = ERP.filename;
             if isempty(FileName)
                 FileName = ERP.erpname;
             end
             [pathx, filename, ext] = fileparts(FileName);
             filename = [filename '.erp'];
-            [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
-            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM, ERPCOM);
+            [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', filename, 'filepath',pathName);
+            ERPCOM = f_erp_save_history(ERP.erpname,filename,pathName);
+            if Numoferp == numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
         end
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.Count_currentERP = 20;
         observe_ERPDAT.Process_messg =2;
     end
-
 
 %------------------------- Save as-----------------------------------------
     function savecheckedas(~,~)
@@ -857,7 +973,6 @@ varargout{1} = box_erpset_gui;
         if ~isempty(messgStr)
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_ERP_proces_messg','ERPsets>Save As');
         observe_ERPDAT.Process_messg =1;
         
@@ -885,8 +1000,8 @@ varargout{1} = box_erpset_gui;
             ALLERP_out = Answer{1};
         end
         
-        for Numoferpset = 1:length(ERPArray)
-            ERP = ALLERP_out(ERPArray(Numoferpset));
+        for Numoferp = 1:length(ERPArray)
+            ERP = ALLERP_out(ERPArray(Numoferp));
             if ~isempty(ERP.filename)
                 filename = ERP.filename;
             else
@@ -894,13 +1009,21 @@ varargout{1} = box_erpset_gui;
             end
             [pathstr, erpfilename, ext] = fileparts(filename);
             ext = '.erp';
-            
             erpFilename = char(strcat(erpfilename,ext));
-            [observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
+            [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', erpFilename,...
                 'filepath',ERP.filepath);
-            [~, ALLERPCOM] = erphistory(observe_ERPDAT.ALLERP(ERPArray(Numoferpset)), ALLERPCOM, ERPCOM);
+            ERPCOM = f_erp_save_history(ERP.erpname,erpFilename,ERP.filepath);
+            if Numoferp == numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
         end
-        observe_ERPDAT.Count_currentERP = 1;
+        observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.Count_currentERP = 20;
         observe_ERPDAT.Process_messg =2;
     end
 
@@ -919,17 +1042,23 @@ varargout{1} = box_erpset_gui;
         
         pathName =  estudioworkingmemory('EEG_save_folder');
         if isempty(pathName)
-            pathName =cd;
+            pathName =[pwd,filesep];
         end
         title = 'Select one forlder for saving files in following procedures';
         sel_path1 = uigetdir(pathName,title);
-        
         if isequal(sel_path1,0)
             sel_path1 = cd;
         end
-        userpath(sel_path1);
+        
         cd(sel_path1);
+        erpcom  = sprintf('cd(%s',sel_path1);
+        erpcom = [erpcom,');'];
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
+        ERP = observe_ERPDAT.ERP;
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, erpcom,2);
+        assignin('base','ALLERPCOM',ALLERPCOM);
         estudioworkingmemory('EEG_save_folder',sel_path1);
+        observe_ERPDAT.Count_currentERP = 20;
     end
 
 

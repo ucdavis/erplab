@@ -124,10 +124,8 @@ varargout{1} = box_erp_resample;
         uiextras.Empty('Parent', gui_erp_resample.advance_help_title);
         set(gui_erp_resample.advance_help_title,'Sizes',[15 105  30 105 15]);
         set(gui_erp_resample.DataSelBox,'Sizes',[30 30 30 30 30]);
-        
         estudioworkingmemory('ERPTab_resample',0);
     end
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
@@ -181,7 +179,6 @@ varargout{1} = box_erp_resample;
         box_erp_resample.TitleColor= [ 0.5137    0.7569    0.9176];%% the default is [0.0500    0.2500    0.5000]
         gui_erp_resample.resample_cancel.BackgroundColor =  [ 0.5137    0.7569    0.9176];
         gui_erp_resample.resample_cancel.ForegroundColor = [1 1 1];
-        
         Newsrate = str2num(gui_erp_resample.nwsrate_edit.String);
         if isempty(Newsrate) || numel(Newsrate)~=1 ||any(Newsrate<=0)
             msgboxText='Sampling Rate & Epoch: New sampling rate must be a positive value';
@@ -410,7 +407,6 @@ varargout{1} = box_erp_resample;
             Freq2resamp = [];
         end
         
-        
         %%----------------------------check new time window----------------
         if gui_erp_resample.nwtimewindow_checkbox.Value==1
             NewStart = str2num(gui_erp_resample.nwtimewindow_editleft.String);
@@ -433,8 +429,6 @@ varargout{1} = box_erp_resample;
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            
-            
             Newend = str2num(gui_erp_resample.nwtimewindow_editright.String);
             if isempty(Newend) || numel(Newend)~=1
                 msgboxText='Sampling Rate & Epoch: the right edge for the new time window must be a single value';
@@ -455,7 +449,6 @@ varargout{1} = box_erp_resample;
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            
         else
             NewStart = [];
             Newend = [];
@@ -483,7 +476,7 @@ varargout{1} = box_erp_resample;
         
         erpworkingmemory('f_ERP_proces_messg','Sampling Rate & Epoch');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
         for Numoferp = 1:numel(ERPArray)
@@ -498,20 +491,20 @@ varargout{1} = box_erp_resample;
             end
             [ERP, ERPCOM] = pop_resamplerp(ERP, 'Freq2resamp',Freq2resamp, 'TimeRange',TimeRange,...
                 'Saveas', 'off', 'History', 'gui');
-            if Numoferp==1
+            if isempty(ERPCOM)
+               return; 
+            end
+            if Numoferp == numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                if isempty(ALLERPCOM)
-                    ALLERPCOM = ERPCOM;
-                else
-                    ALLERPCOM{length(ALLERPCOM)+1}= ERPCOM;
-                end
+            end
+            if Numoferp==1
                 ALLERP_out = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1) = ERP;
             end
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
         
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_resampled');
         if isempty(Answer)
@@ -525,7 +518,12 @@ varargout{1} = box_erp_resample;
             ERP = ALLERP_out(Numoferp);
             if Save_file_label
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                if Numoferp == numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             else
                 ERP.filename = '';
                 ERP.saved = 'no';
@@ -534,7 +532,8 @@ varargout{1} = box_erp_resample;
             ALLERP(length(ALLERP)+1) = ERP;
         end
         observe_ERPDAT.ALLERP = ALLERP;
-        
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
         try
             Selected_ERP_afd =  [length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1:length(observe_ERPDAT.ALLERP)];
             observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP)-numel(ERPArray)+1;

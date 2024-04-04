@@ -134,7 +134,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %%-----------------------continuous EEG------------------------------------
     function continuous_eeg(Source,~)
-         if isempty(observe_EEGDAT.EEG)
+        if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
             return;
         end
@@ -371,7 +371,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %%--------------------------------Add Suffix---------------------------------
     function add_suffix(Source,~)
-         if isempty(observe_EEGDAT.EEG)
+        if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
             return;
         end
@@ -403,7 +403,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %%----------------------Refresh alleeg and eeg-----------------------------
     function refresh_eegset(Source,~)
-         if isempty(observe_EEGDAT.EEG)
+        if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
             return;
         end
@@ -623,18 +623,42 @@ estudioworkingmemory('Startimes',0);%%set default value
         if isequal(filename,0)
             return;
         end
-        
-        [EEG,  Lastcom]= pop_loadset('filename',filename,'filepath',filepath);
-        EEG = eegh(Lastcom, EEG);
-        eegh(Lastcom);%%ALLCOM
-        if isempty(observe_EEGDAT.EEG)
-            OLDSET  =0;
+        if ischar(filename)
+            [EEG,  Lastcom]= pop_loadset('filename',filename,'filepath',filepath);
+            try
+                EEG.history = [ EEG.history 10 Lastcom ];
+            catch
+                EEG.history = strvcat(EEG.history, Lastcom);
+            end
+            eegh(Lastcom);%%ALLCOM
+            if isempty(observe_EEGDAT.EEG)
+                OLDSET  =0;
+            else
+                OLDSET = length(ALLEEG);
+            end
+            [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
+        elseif iscell(filename)
+            for Numofeeg = 1:length(filename)
+                
+                [EEG,  Lastcom]= pop_loadset('filename',filename{Numofeeg},'filepath',filepath);
+                try
+                    EEG.history = [ EEG.history 10 Lastcom ];
+                catch
+                    EEG.history = strvcat(EEG.history, Lastcom);
+                end
+                eegh(Lastcom);%%ALLCOM
+                if isempty(observe_EEGDAT.EEG)
+                    OLDSET  =0;
+                else
+                    OLDSET = length(ALLEEG);
+                end
+                [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
+            end
         else
-            OLDSET = length(ALLEEG);
+            return;
         end
-        [ALLEEG,~,~,LASTCOM] = pop_newset(ALLEEG, EEG, OLDSET,'study',0,'gui','off');
         
-        eegh(LASTCOM);
+        
         [~,EEGConts_epoch_Flag,EEGtypeFlag] =  getDatasets(ALLEEG);%%all EEGset
         %%Only continuous EEG
         if EEGConts_epoch_Flag(1)==1 && EEGConts_epoch_Flag(2)==0
@@ -897,7 +921,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %-------------------------- Save selected EEGsets-------------------------------------------
     function eegset_save(Source,~)
-         if isempty(observe_EEGDAT.EEG)
+        if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
             return;
         end
@@ -950,7 +974,7 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %------------------------- Save as-----------------------------------------
     function eegset_saveas(Source,~)
-         if isempty(observe_EEGDAT.EEG)
+        if isempty(observe_EEGDAT.EEG)
             Source.Enable= 'off';
             return;
         end

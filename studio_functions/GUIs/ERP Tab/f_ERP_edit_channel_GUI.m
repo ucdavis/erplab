@@ -241,11 +241,11 @@ varargout{1} = EStudio_erp_box_edit_chan;
         CreateERPFlag = ERP_tab_edit_chan.mode_create.Value; %%create new ERP dataset
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
-        ALLERPCOM = evalin('base','ALLERPCOM');
-        for NumofERP = 1:numel(ERPArray)
-            ERP = ALLERP(ERPArray(NumofERP));
+        try ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = []; end
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(ERPArray(Numoferp));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['Your current ERPset(No.',num2str(ERPArray(NumofERP)),'):',32,ERP.erpname,'\n\n']);
+            fprintf(['Your current ERPset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
             %%check the selected chans
             if any(ChanArray(:) > ERP.nchan)
                 msgboxText = ['Edit/Delete Channels & Locations >  Delete selected chan > Selected channel should be between 1 and ',32, num2str(ERP.nchan)];
@@ -266,7 +266,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
             Formula_str = strcat(['delerpchan(', vect2colon(ChanArray),')']);
             
             [ERP, ERPCOM] = pop_erpchanoperator(ERP, {Formula_str}, 'Warning', 'off', 'Saveas', 'off','ErrorMsg', 'command','KeepLocations',keeplocs, 'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+           if isempty(ERPCOM)
+              return; 
+           end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
             if isempty(ALLERP_out)
                 ALLERP_out  = ERP;
             else
@@ -274,8 +281,6 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             fprintf( [repmat('-',1,100) '\n']);
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
         if CreateERPFlag==1
             Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_delchan');
             if isempty(Answer)
@@ -297,7 +302,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
                     ERP.filename = [file_name,'.erp'];
                     [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                    if Numoferp==numel(ERPArray)
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                    else
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    end
                 else
                     ERP.filename = '';
                     ERP.saved = 'no';
@@ -306,6 +316,8 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 ALLERP(length(ALLERP)+1) = ERP;
             end
         end
+          assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ALLERP = ALLERP;
         if CreateERPFlag==1
             try
@@ -360,11 +372,11 @@ varargout{1} = EStudio_erp_box_edit_chan;
         ALLERP = observe_ERPDAT.ALLERP;
         ALLERP_out = [];
         ALLERPCOM = evalin('base','ALLERPCOM');
-        for NumofERP = 1:numel(ERPArray)
-            ERP = ALLERP(ERPArray(NumofERP));
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(ERPArray(Numoferp));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Rename selected chan*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current ERPset(No.',num2str(ERPArray(NumofERP)),'):',32,ERP.erpname,'\n\n']);
+            fprintf(['Your current ERPset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
             
             %%check the selected chans
             if any(ChanArray(:) > ERP.nchan)
@@ -379,7 +391,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 observe_ERPDAT.Process_messg =3;
                 return;
             end
-            CURRENTSET = ERPArray(NumofERP);
+            CURRENTSET = ERPArray(Numoferp);
             def =  erpworkingmemory('pop_rename2chan');
             if isempty(def)
                 def = Chanlabelsold;
@@ -395,7 +407,14 @@ varargout{1} = EStudio_erp_box_edit_chan;
             erpworkingmemory('pop_rename2chan',Chanlabelsnew);
             
             [ERP, ERPCOM] = pop_rename2chan(ALLERP,CURRENTSET,'ChanArray',ChanArray,'Chanlabels',Chanlabelsnew,'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if isempty(ERPCOM)
+               return; 
+            end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
             if isempty(ALLERP_out)
                 ALLERP_out  = ERP;
             else
@@ -403,8 +422,7 @@ varargout{1} = EStudio_erp_box_edit_chan;
             end
             fprintf( [repmat('-',1,100) '\n']);
         end
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
+        
         
         Save_file_label=0;
         if CreateERPFlag==0
@@ -429,7 +447,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
                     ERP.filename = [file_name,'.erp'];
                     [ERP, ~, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                    if Numoferp ==numel(ERPArray)
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                    else
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    end
                 else
                     ERP.filename = '';
                     ERP.saved = 'no';
@@ -438,6 +461,8 @@ varargout{1} = EStudio_erp_box_edit_chan;
                 ALLERP(length(ALLERP)+1) = ERP;
             end
         end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
         observe_ERPDAT.ALLERP = ALLERP;
         
         if CreateERPFlag==1
@@ -501,14 +526,22 @@ varargout{1} = EStudio_erp_box_edit_chan;
         Chanlocs = ERPoutput.chanlocs;
         ALLERPCOM = evalin('base','ALLERPCOM');
         ALLERP_out = [];
-        for NumofERP = 1:numel(ERPArray)
-            ERP = ALLERP(ERPArray(NumofERP));
+        for Numoferp = 1:numel(ERPArray)
+            ERP = ALLERP(ERPArray(Numoferp));
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Add or edit all  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current ERPset(No.',num2str(ERPArray(NumofERP)),'):',32,ERP.erpname,'\n\n']);
-            [ERP, ERPCOM] = pop_editdatachanlocs(ALLERP,ERPArray(NumofERP),...
+            fprintf(['Your current ERPset(No.',num2str(ERPArray(Numoferp)),'):',32,ERP.erpname,'\n\n']);
+            [ERP, ERPCOM] = pop_editdatachanlocs(ALLERP,ERPArray(Numoferp),...
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if isempty(ERPCOM)
+                return;
+            end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
+            
             if isempty(ALLERP_out)
                 ALLERP_out  = ERP;
             else
@@ -538,7 +571,12 @@ varargout{1} = EStudio_erp_box_edit_chan;
                     [pathstr, file_name, ext] = fileparts(ERP.filename);
                     ERP.filename = [file_name,'.erp'];
                     [ERP, ~, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                    if Numoferp ==numel(ERPArray)
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                    else
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    end
                 else
                     ERP.filename = '';
                     ERP.saved = 'no';

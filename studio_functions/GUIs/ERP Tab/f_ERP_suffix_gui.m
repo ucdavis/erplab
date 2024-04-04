@@ -69,7 +69,7 @@ erplab_studio_default_values;
 version = erplabstudiover;
 
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix GUI'])
-set(handles.edit_erpname, 'String', '_processed');
+set(handles.edit_erpname, 'String', erpname);
 
 set(handles.current_erp_label,'String', ['Enter suffix, which will be added onto the name of each selected ERPset'],...
     'FontWeight','Bold', 'FontSize', 16);
@@ -144,15 +144,8 @@ uiresume(handles.gui_chassis);
 function pushbutton4_okay_Callback(hObject, eventdata, handles)
 erpname = strtrim(get(handles.edit_erpname, 'String'));
 
-if isempty(erpname)
-    msgboxText =  'You must enter a suffix at least!';
-    title = 'EStudio: f_ERP_suffix_gui empty suffix.';
-    errorfound(msgboxText, title);
-    return
-end
 
-
-handles.output = {erpname};
+handles.output = erpname;
 % Update handles structure
 guidata(hObject, handles);
 

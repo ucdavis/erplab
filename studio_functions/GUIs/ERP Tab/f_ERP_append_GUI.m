@@ -405,7 +405,7 @@ varargout{1} = box_erp_append;
         if isempty(ERPCOM)
             return;
         end
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);%%SAVE the command
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
         pathName_def =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
@@ -417,8 +417,6 @@ varargout{1} = box_erp_append;
         
         Answer = f_ERP_save_single_file(strcat('append'),'',length(observe_ERPDAT.ALLERP)+1);
         if isempty(Answer)
-            beep;
-            disp('User selected Cancel.');
             return;
         end
         
@@ -432,7 +430,6 @@ varargout{1} = box_erp_append;
                 fileName_new = '';
                 Save_file_label =0;
             elseif ~isempty(fileName_full)
-                
                 [pathstr, file_name, ext] = fileparts(fileName_full);
                 ext = '.erp';
                 if strcmp(pathstr,'')
@@ -451,7 +448,8 @@ varargout{1} = box_erp_append;
             ERP_save =ERP;
             ERP_save.filepath = pathName_new;
             [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            ERPCOM = f_erp_save_history(ERP_save.erpname,ERP_save.filename,ERP_save.filepath);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
         end
         observe_ERPDAT.ALLERP(length(observe_ERPDAT.ALLERP)+1) = ERP;
         observe_ERPDAT.CURRENTERP = length(observe_ERPDAT.ALLERP);
@@ -468,7 +466,7 @@ varargout{1} = box_erp_append;
         gui_erp_append.erpset_custom.Value = ~OpValue;
         gui_erp_append.erpset_edit.String = num2str(answer{3});
         observe_ERPDAT.Count_currentERP = 1;
-        observe_ERPDAT.Two_GUI = observe_ERPDAT.Two_GUI+1;
+        
     end
 
 %%--------------------------Run--------------------------------------------
@@ -533,7 +531,7 @@ varargout{1} = box_erp_append;
         if isempty(ERPCOM)
             return;
         end
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);%%SAVE the command
+        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);%%SAVE the command
         pathName_def =  erpworkingmemory('ERP_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
@@ -574,7 +572,8 @@ varargout{1} = box_erp_append;
             ERP_save =ERP;
             ERP_save.filepath = pathName_new;
             [ERP, issave, ERPCOM] = pop_savemyerp(ERP_save, 'erpname', ERP_save.erpname, 'filename', ERP_save.erpname, 'filepath',ERP_save.filepath);
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            ERPCOM = f_erp_save_history(ERP_save.erpname,ERP_save.filename,ERP_save.filepath);
+            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
         else
             ERP.filename = '';
             ERP.filepath = '';

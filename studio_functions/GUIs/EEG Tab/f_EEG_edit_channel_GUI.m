@@ -401,11 +401,12 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 observe_EEGDAT.eeg_panel_message =4;
                 return
             end
+            EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
             fprintf([LASTCOM,'\n']);
-            EEG = eegh(LASTCOM, EEG);
+            
             fprintf( [repmat('-',1,100) '\n']);
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end

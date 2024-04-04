@@ -413,7 +413,7 @@ varargout{1} = ERP_bin_operation_gui;
             observe_ERPDAT.erp_two_panels = observe_ERPDAT.erp_two_panels+1;%%call the functions from the other panel
         end
         
-        pathName_def =  erpworkingmemory('ERP_save_folder');
+        pathName_def =  erpworkingmemory('EEG_save_folder');
         if isempty(pathName_def)
             pathName_def =cd;
         end
@@ -464,13 +464,20 @@ varargout{1} = ERP_bin_operation_gui;
         %%%Create a new ERPset for the bin-operated ERPsets
         erpworkingmemory('f_ERP_proces_messg','Bin Operations');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try  ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM =''; end;
         ALLERP =  observe_ERPDAT.ALLERP;
         ALLERP_out = [];
-        for Numofselectederp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
-            ERP = ALLERP(ERPArray(Numofselectederp));
+        for Numoferp = 1:numel(ERPArray)%%Bin Operations for each selected ERPset
+            ERP = ALLERP(ERPArray(Numoferp));
             [ERP ERPCOM]= pop_binoperator( ERP, Formula_str, 'Warning', 'on', 'ErrorMsg', 'command', 'Saveas', 'off', 'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            if isempty(ERPCOM)
+                return;
+            end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+            end
             if isempty(ALLERP_out)
                 ALLERP_out = ERP;
             else
@@ -496,8 +503,13 @@ varargout{1} = ERP_bin_operation_gui;
                 ERP = ALLERP_out(Numoferp);
                 if Save_file_label==1
                     [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ALLERP_out(Numoferp).erpname,...
-                        'filename', ALLERP_out(ERPArray(Numofselectederp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
-                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                        'filename', ALLERP_out(ERPArray(Numoferp)).filename, 'filepath',ALLERP_out(Numoferp).filepath);
+                     ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                    if Numoferp ==numel(ERPArray)
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                    else
+                        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                    end
                 else
                     ERP.filename = '';
                     ERP.filepath = '';

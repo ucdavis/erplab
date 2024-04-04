@@ -211,7 +211,7 @@ varargout{1} = ERP_CSD_gui;
         %%---------------------Compute CSD for each ERPset----------------
         erpworkingmemory('f_ERP_proces_messg','Convert Voltage to CSD');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try  ALLERPCOM = evalin('base','ALLERPCOM'); catch ALLERPCOM = [];  end
         %   Set names of slected ERPsets
         
         gui_erp_CSD.Para{1} = str2num(gui_erp_CSD.sif_num.String);
@@ -236,22 +236,17 @@ varargout{1} = ERP_CSD_gui;
             
             ERP = pop_currentsourcedensity(ERP,'EStudio');
             ERPCOM =  sprintf('%s=pop_currentsourcedensity(%s, %s);', 'ERP','ERP', '"EStudio"');
-            if Numoferp==1
+            if Numoferp == numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
                 [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-                if isempty(ALLERPCOM)
-                    ALLERPCOM = ERPCOM;
-                else
-                    ALLERPCOM{length(ALLERPCOM)+1}= ERPCOM;
-                end
+            end
+            if Numoferp==1
                 ALLERP_out = ERP;
             else
                 ALLERP_out(length(ALLERP_out)+1) = ERP;
             end
         end%%Loop for ERPsets end
-        [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
-        assignin('base','ALLERPCOM',ALLERPCOM);
-        assignin('base','ERPCOM',ERPCOM);
-        
         
         Save_file_label = 0;
         Answer = f_ERP_save_multi_file(ALLERP_out,1:numel(ERPArray),'_CSD');
@@ -266,7 +261,11 @@ varargout{1} = ERP_CSD_gui;
             ERP = ALLERP_out(Numoferp);
             if Save_file_label==1
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                if Numoferp ==numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             else
                 ERP.filename = '';
                 ERP.saved = 'no';
@@ -274,6 +273,9 @@ varargout{1} = ERP_CSD_gui;
             end
             ALLERP(length(ALLERP)+1) = ERP;
         end
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        
         observe_ERPDAT.ALLERP = ALLERP;
         erpworkingmemory('f_ERP_bin_opt',1);
         try

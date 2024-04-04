@@ -50,9 +50,8 @@ function f_ERP_duplicate_OpeningFcn(hObject, eventdata, handles, varargin)
 
 try
     ERP  = varargin{1};
-    currenterp = varargin{2};
-    binArray = varargin{3};
-    chanArray = varargin{4};
+    binArray = varargin{2};
+    chanArray = varargin{3};
 catch
     ERP.erpname  = 'No erp was imported';
     ERP.nbin  =1;
@@ -61,7 +60,6 @@ catch
     ERP.bindescr{1} = 'None';
     binArray = 1;
     chanArray = 1;
-    currenterp = [];
     ERP.bindata = zeros(1,10,1);
 end
 
@@ -72,15 +70,7 @@ handles.ERP = ERP;
 erplab_studio_default_values;
 version = erplabstudiover;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Duplicate ERPset GUI'])
-set(handles.edit_erpname, 'String', ERP.erpname);
 
-if isempty(currenterp)
-    set(handles.current_erp_label,'String', ['No active erpset was found'],...
-        'FontWeight','Bold', 'FontSize', 16);
-else
-    set(handles.current_erp_label,'String', ['Creat a new erpset # ' num2str(currenterp+1)],...
-        'FontWeight','Bold', 'FontSize', 16)
-end
 
 
 
@@ -98,6 +88,9 @@ end
 
 %%%set(handles.popupmenu_bins,'String', listb)
 handles.listb      = listb;
+if isempty(binArray) || any(binArray(:)>ERP.nbin) || any(binArray(:)<=0)
+  binArray = [1:ERP.nbin];  
+end
 handles.indxlistb  = binArray;
 
 
@@ -117,6 +110,11 @@ catch
     listch = '';
 end
 handles.listch     = listch;
+
+if isempty(chanArray) || any(chanArray(:)>ERP.nchan) || any(chanArray(:)<=0)
+    chanArray = [1:ERP.nchan];
+end
+
 handles.indxlistch = chanArray;
 
 set(handles.edit6_bin,'String', vect2colon(binArray, 'Delimiter', 'off'));
@@ -165,21 +163,9 @@ function radio_erpname_Callback(hObject, eventdata, handles)
 
 
 
-function edit_erpname_Callback(hObject, eventdata, handles)
-erpname = strtrim(get(handles.edit_erpname, 'String'));
-if isempty(erpname)
-    msgboxText =  'You must enter an erpname at least!';
-    title = 'EStudio: Duplicate ERPset GUI - empty erpname';
-    errorfound(msgboxText, title);
-    return
-end
 
 % --- Executes during object creation, after setting all properties.
-function edit_erpname_CreateFcn(hObject, eventdata, handles)
 
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 function edit6_bin_Callback(hObject, eventdata, handles)
 BinString = str2num(handles.edit6_bin.String);
@@ -268,7 +254,6 @@ if get(hObject, 'Value')
             % Update handles structure
             guidata(hObject, handles);
         else
-            disp('User selected Cancel')
             return
         end
     else
@@ -282,8 +267,6 @@ end
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-beep;
-disp('User selected Cancel')
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
@@ -291,14 +274,7 @@ uiresume(handles.gui_chassis);
 
 % --- Executes on button press in pushbutton4_okay.
 function pushbutton4_okay_Callback(hObject, eventdata, handles)
-erpname = strtrim(get(handles.edit_erpname, 'String'));
 
-if isempty(erpname)
-    msgboxText =  'You must enter an erpname at least!';
-    title = 'EStudio: Duplicate ERPset GUI - empty erpname';
-    errorfound(msgboxText, title);
-    return
-end
 
 
 BinArray = str2num(handles.edit6_bin.String);
@@ -324,20 +300,7 @@ if chk(2)
 end
 
 
-ERP.erpname = erpname;
-
-ERP.bindata = ERP.bindata(ChanArray,:,BinArray);
-ERP.nbin = numel(BinArray);
-ERP.nchan = numel(ChanArray);
-ERP.chanlocs = ERP.chanlocs(ChanArray);
-for Numofbin = 1:numel(BinArray)
-    Bindescr{Numofbin}  = ERP.bindescr{BinArray(Numofbin)};
-end
-ERP.bindescr = Bindescr;
-
-ERP.saved = 'no';
-ERP.filepath = '';
-handles.output = ERP;
+handles.output = {BinArray,ChanArray};
 % Update handles structure
 guidata(hObject, handles);
 

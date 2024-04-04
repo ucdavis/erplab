@@ -749,7 +749,7 @@ varargout{1} = ERP_filtering_box;
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_ERP_proces_messg','Filtering');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         
         estudioworkingmemory('ERPTab_filter',0);
         gui_erp_filtering.apply.BackgroundColor =  [1 1 1];
@@ -812,17 +812,19 @@ varargout{1} = ERP_filtering_box;
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
             [ERP, ERPCOM] = pop_filterp(ERP, chanArray, 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'Saveas', 'off', 'History', 'gui');
-            
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            if Numoferp==1
-                [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+            if isempty(ERPCOM)
+                return;
+            end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
             if ~isempty(BinArray)&& ~isempty(ChanArray)
                 try
                     ERP_AF.bindata(ChanArray,:,BinArray) = ERP.bindata(ChanArray,:,BinArray);
                     ERP.bindata = ERP_AF.bindata;
                 catch
-                    ERP = ERP;
                 end
             end
             if isempty(ALLERP_out)
@@ -846,7 +848,12 @@ varargout{1} = ERP_filtering_box;
                 [pathstr, file_name, ext] = fileparts(ERP.filename);
                 ERP.filename = [file_name,'.erp'];
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                if Numoferp ==length(ALLERP_out)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
             else
                 ERP.filename = '';
                 ERP.saved = 'no';
@@ -957,8 +964,6 @@ varargout{1} = ERP_filtering_box;
         %%call the GUI for advance option
         answer = f_basicfilterGUI2(observe_ERPDAT.ERP, def);
         if isempty(answer)
-            beep;
-            disp('User selected Cancel')
             return;
         end
         
@@ -1101,7 +1106,7 @@ varargout{1} = ERP_filtering_box;
         %%-------------loop start for filtering the selected ERPsets-----------------------------------
         erpworkingmemory('f_ERP_proces_messg','Filtering (Advanced)');
         observe_ERPDAT.Process_messg =1; %%Marking for the procedure has been started.
-        ALLERPCOM = evalin('base','ALLERPCOM');
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = []; end
         ALLERP_out = [];
         ALLERP = observe_ERPDAT.ALLERP;
         for Numoferp = 1:numel(ERPArray)
@@ -1138,9 +1143,13 @@ varargout{1} = ERP_filtering_box;
             
             [ERP, ERPCOM] = pop_filterp(ERP, [1:ERP.nchan], 'Filter',ftype, 'Design',  fdesign, 'Cutoff', cutoff, 'Order', filterorder, 'RemoveDC', rdc,...
                 'Saveas', 'off', 'History', 'gui');
-            [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
-            if Numoferp ==1
-                [~, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM);
+            if isempty(ERPCOM)
+                return;
+            end
+            if Numoferp ==numel(ERPArray)
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+            else
+                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
             end
             %%Only the slected bin and chan were selected to remove baseline and detrending and others are remiained.
             if ~isempty(BinArray) && ~isempty(ChanArray)
@@ -1170,7 +1179,13 @@ varargout{1} = ERP_filtering_box;
                 [pathstr, file_name, ext] = fileparts(ERP.filename);
                 ERP.filename = [file_name,'.erp'];
                 [ERP, issave, ERPCOM] = pop_savemyerp(ERP, 'erpname', ERP.erpname, 'filename', ERP.filename, 'filepath',ERP.filepath);
-                [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                ERPCOM = f_erp_save_history(ERP.erpname,ERP.filename,ERP.filepath);
+                if Numoferp ==numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
+                
             else
                 ERP.filename = '';
                 ERP.saved = 'no';

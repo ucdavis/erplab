@@ -251,7 +251,6 @@ drawui_erp_information(FonsizeDefault);
             filesetname{2,1} = '';
         end
         gui_erp_information.table_setfilenames.Data= filesetname;
-        
         observe_ERPDAT.Count_currentERP=8;
     end
 
@@ -268,6 +267,13 @@ drawui_erp_information(FonsizeDefault);
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         feval('dq_trial_rejection',observe_ERPDAT.ALLERP(ERPArray),[],0);
+        
+        try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
+        ERPCOM = ['ERPArray=',vect2colon(ERPArray),'; feval("dq_trial_rejection",ALLERP(ERPArray),[],0);'];
+        ALLERPCOM{end+1} = char(ERPCOM);
+        assignin('base','ALLERPCOM',ALLERPCOM);
+        assignin('base','ERPCOM',ERPCOM);
+        observe_ERPDAT.Count_currentERP = 20;
     end
 
 
@@ -284,10 +290,24 @@ drawui_erp_information(FonsizeDefault);
             estudioworkingmemory('selectederpstudio',ERPArray);
         end
         try
+            try ALLERPCOM = evalin('base','ALLERPCOM');catch ALLERPCOM = [];  end
             for Numoferp = 1:numel(ERPArray)
                 ERP  = observe_ERPDAT.ALLERP(ERPArray(Numoferp));
-                [ERP, acce, rej, histoflags, erpcom] = pop_summary_AR_erp_detection(ERP);
+                [ERP, acce, rej, histoflags, ERPCOM] = pop_summary_AR_erp_detection(ERP);
+                if isempty(ERPCOM)
+                    return;
+                end
+                if Numoferp ==numel(ERPArray)
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,2);
+                else
+                    [ERP, ALLERPCOM] = erphistory(ERP, ALLERPCOM, ERPCOM,1);
+                end
+                observe_ERPDAT.ALLERP(ERPArray(Numoferp)) = ERP;
             end
+            observe_ERPDAT.ERP = observe_ERPDAT.ALLERP(observe_ERPDAT.CURRENTERP);
+            assignin('base','ALLERPCOM',ALLERPCOM);
+            assignin('base','ERPCOM',ERPCOM);
+            observe_ERPDAT.Count_currentERP = 20;
         catch
             return;
         end
