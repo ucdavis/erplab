@@ -238,6 +238,11 @@ varargout{1} = box_eeg_history;
                 gui_eeg_history.save_script.Enable = 'off';
             end
         end
+        if ~isempty(observe_EEGDAT.EEG)
+            gui_eeg_history.eeg_h_all.String = ['Current EEGset (',num2str(observe_EEGDAT.CURRENTSET),')'];
+        else
+            gui_eeg_history.eeg_h_all.String = 'Current EEGset';
+        end
     end
 
 %%-------------show history to command window------------------------------
@@ -321,5 +326,10 @@ varargout{1} = box_eeg_history;
             eeg_history_display = [eeg_history_display,strsplit(eeg_history(Numofrow,:), '\n')];
         end
         set(gui_eeg_history.uitable,'Data', eeg_history_display');
+        if ~isempty(observe_EEGDAT.EEG)
+            gui_eeg_history.eeg_h_all.String = ['Current EEGset (',num2str(observe_EEGDAT.CURRENTSET),')'];
+        else
+            gui_eeg_history.eeg_h_all.String = 'Current EEGset';
+        end
     end
 end

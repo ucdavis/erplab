@@ -486,7 +486,6 @@ varargout{1} = Eegtab_box_dq_epoch;
         
         answer = {EEGArray(1), artcrite, wavg, stderror, excbound, compu2do, iswindowed, winparam,DQ_flag,DQ_spec,DQ_preavg_txt,DQ_customWins};
         
-        
         artcrite  = answer{2};
         if ~iscell(artcrite)
             if artcrite==0

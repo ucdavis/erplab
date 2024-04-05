@@ -288,27 +288,54 @@ estudioworkingmemory('Startimes',0);%%set default value
             EStduio_eegtab_EEG_set.butttons_datasets.Value=EEGArray;
         end
         ChanArray=estudioworkingmemory('EEG_ChanArray');
+        ChanArray = f_EEG_duplicate_GUI(observe_EEGDAT.EEG,ChanArray);
         
-        for Numofselecterp = 1:numel(EEGArray)
-            New_EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofselecterp));
-            New_EEG.filename = '';
-            New_EEG.setname = char(strcat(New_EEG.setname, '_Duplicated'));
-            if isempty(ChanArray) || any(ChanArray(:)>New_EEG.nbchan) || any(ChanArray(:)<=0)
-                ChanArray = [1:New_EEG.nbchan];
+        ALLEEG = observe_EEGDAT.ALLEEG;
+        ALLEEG_out = [];
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
+            
+            if isempty(ChanArray) || any(ChanArray(:)>EEG.nbchan) || any(ChanArray(:)<=0)
+                ChanArray = [1:EEG.nbchan];
                 estudioworkingmemory('EEG_ChanArray',ChanArray);
             end
-            New_EEG = f_EEG_duplicate_GUI(New_EEG,length(observe_EEGDAT.ALLEEG),ChanArray);
-            if isempty(New_EEG)
-                return;
-            end
+            [EEG, LASTCOM] = pop_duplicateeg( EEG, 'ChanArray',ChanArray,...
+                'Saveas', 'off', 'History', 'gui');
             
-            observe_EEGDAT.ALLEEG(length(observe_EEGDAT.ALLEEG)+1) = New_EEG;
-            EEGlistName =  getDatasets(observe_EEGDAT.ALLEEG);
-            %%Reset the display in ERPset panel
-            EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-            EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
-            EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            [ALLEEG_out,~,~] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end
+        
+        Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_duplicated');
+        if isempty(Answer)
+            return;
+        end
+        if ~isempty(Answer{1})
+            ALLEEG_out = Answer{1};
+            Save_file_label = Answer{2};
+        end
+        for Numofeeg = 1:numel(EEGArray)
+            EEG = ALLEEG_out(Numofeeg);
+            if Save_file_label
+                [pathstr, file_name, ext] = fileparts(EEG.filename);
+                EEG.filename = [file_name,'.set'];
+                [EEG, LASTCOM] = pop_saveset(EEG,'filename', EEG.filename, 'filepath',EEG.filepath,'check','on');
+                EEG = eegh(LASTCOM, EEG);
+                if Numofeeg==1
+                    eegh(LASTCOM);
+                end
+            else
+                EEG.filename = '';
+                EEG.saved = 'no';
+                EEG.filepath = '';
+            end
+            [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
+        end
+        observe_EEGDAT.ALLEEG = ALLEEG;
+
         try
             Selected_ERP_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
         catch
@@ -321,10 +348,8 @@ estudioworkingmemory('Startimes',0);%%set default value
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
         assignin('base','EEG',observe_EEGDAT.EEG);
         assignin('base','CURRENTSET',observe_EEGDAT.CURRENTSET);
-        if EStudio_gui_erp_totl.EEG_autoplot==1
-            f_redrawEEG_Wave_Viewer();
-        end
-        observe_EEGDAT.count_current_eeg=2;%%to channel & IC panel
+        
+        observe_EEGDAT.count_current_eeg=1;%%to channel & IC panel
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -347,16 +372,31 @@ estudioworkingmemory('Startimes',0);%%set default value
         app = feval('EEG_Tab_rename_gui',observe_EEGDAT.ALLEEG(SelectedEEG),SelectedEEG);
         waitfor(app,'Finishbutton',1);
         try
-            ALLEEG = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
+            setnames = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
             app.delete; %delete app from view
             pause(0.1); %wait for app to leave
         catch
             return;
         end
-        if isempty(ALLEEG)
+        if isempty(setnames)
             return;
         end
+        ALLEEG = observe_EEGDAT.ALLEEG(SelectedEEG);
+        [ALLEEG, LASTCOM] = pop_renameeg( ALLEEG, 'eegnames',setnames,...
+            'Saveas', 'off', 'History', 'gui');
+        if isempty(LASTCOM)
+            return;
+        end
+        for Numofeeg = 1:numel(SelectedEEG)
+            
+            ALLEEG(Numofeeg) = eegh(LASTCOM, ALLEEG(Numofeeg));
+            if Numofeeg ==numel(SelectedEEG)
+                eegh(LASTCOM);
+            end
+            
+        end
         observe_EEGDAT.ALLEEG(SelectedEEG) = ALLEEG;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         EEGlistName =  getDatasets();
         EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
         EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
@@ -383,18 +423,28 @@ estudioworkingmemory('Startimes',0);%%set default value
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Add Suffix');
         observe_EEGDAT.eeg_panel_message =1;
         SelectedEEG= EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        new = f_EEG_suffix_gui('Suffix');
-        if ~isempty(new)
-            for Numofselecterp = SelectedEEG
-                observe_EEGDAT.ALLEEG(1,Numofselecterp).setname = char(strcat(observe_EEGDAT.ALLEEG(1,Numofselecterp).setname,new{1}));
-                EEGlistName =  getDatasets();
-                EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
-                EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
-                EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
+        suffixstr = f_EEG_suffix_gui('Suffix');
+        if ~isempty(suffixstr)
+            ALLEEG =  observe_EEGDAT.ALLEEG(SelectedEEG);
+            [ALLEEG, LASTCOM] = pop_suffixeeg( ALLEEG, 'suffixstr',suffixstr,...
+                'Saveas', 'off', 'History', 'gui');
+            for Numofeeg = 1:length(SelectedEEG)
+                ALLEEG(Numofeeg)=eegh(LASTCOM, ALLEEG(Numofeeg));
+                if Numofeeg ==length(SelectedEEG)
+                    eegh(LASTCOM);
+                end
             end
+            observe_EEGDAT.ALLEEG(SelectedEEG) =ALLEEG;
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+            
+            EEGlistName =  getDatasets();
+            EStduio_eegtab_EEG_set.butttons_datasets.String = EEGlistName;
+            EStduio_eegtab_EEG_set.butttons_datasets.Min = 1;
+            EStduio_eegtab_EEG_set.butttons_datasets.Max = length(EEGlistName)+1;
             if EStudio_gui_erp_totl.EEG_autoplot==1
                 f_redrawEEG_Wave_Viewer();
             end
+            observe_EEGDAT.count_current_eeg=26;%%to channel & IC panel
             observe_EEGDAT.eeg_panel_message =2;
         else
             return;
@@ -836,9 +886,21 @@ estudioworkingmemory('Startimes',0);%%set default value
         observe_EEGDAT.eeg_panel_message =1;
         
         EEGArray = EStduio_eegtab_EEG_set.butttons_datasets.Value;
-        ERPset_remained = setdiff(1:length(EStduio_eegtab_EEG_set.butttons_datasets.String),EEGArray);
-        
-        if isempty(ERPset_remained)
+        if length(observe_EEGDAT.ALLEEG)==1 && numel(EEGArray) == length(observe_EEGDAT.ALLEEG)
+            ALLEEG = [];
+            LASTCOM = sprintf('ALLEEG = pop_delset( ALLEEG, [%s] );', int2str(1));
+        else
+            [ALLEEG,LASTCOM] = pop_delset( observe_EEGDAT.ALLEEG , EEGArray);
+            if  isempty(LASTCOM)
+                return;
+            end
+            ERPset_remained = setdiff([1:length(observe_EEGDAT.ALLEEG)],EEGArray);
+            if isempty(ERPset_remained)
+                ALLEEG = [];
+            end
+        end
+        eegh(LASTCOM);
+        if isempty(ALLEEG)
             observe_EEGDAT.ALLEEG = [];
             observe_EEGDAT.EEG = [];
             observe_EEGDAT.CURRENTSET  = 0;
@@ -960,14 +1022,18 @@ estudioworkingmemory('Startimes',0);%%set default value
             if checkfileindex==1
                 [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',pathName);
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-                eegh(LASTCOM);
-                disp(['Saved to',32,pathName,filename]);
+                if Numofeeg ==length(EEGArray)
+                    eegh(LASTCOM);
+                end
+                disp(['Saved to',32,pathName,filesep,filename]);
                 fprintf(['\n',LASTCOM,'\n']);
             else
                 disp(['User selected Cancel for saving',32,filename]);
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg =26;
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -1016,15 +1082,19 @@ estudioworkingmemory('Startimes',0);%%set default value
             filename = [filename '.set'];
             checkfileindex = checkfilexists([EEG.filepath,filename]);
             if checkfileindex==1
-                [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',EEG.filepath);
-                eegh(LASTCOM);
+                [EEG, LASTCOM] = pop_saveset( EEG, 'filename',filename,'filepath',[EEG.filepath,filesep]);
                 observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-                disp(['Saved to',32,EEG.filepath,filename]);
+                if Numofeeg ==length(EEGArray)
+                    eegh(LASTCOM);
+                end
+                
+                disp(['Saved as to',32,EEG.filepath,filesep,filename]);
                 fprintf(['\n',LASTCOM,'\n']);
             end
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end
         assignin('base','ALLEEG',observe_EEGDAT.ALLEEG);
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.count_current_eeg =1;
         observe_EEGDAT.eeg_panel_message =2;
     end
@@ -1056,7 +1126,6 @@ estudioworkingmemory('Startimes',0);%%set default value
 
 %-----------------select the ERPset of interest--------------------------
     function selectdata(source,~)
-        
         %%first checking if the changes on the other panels have been applied
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0

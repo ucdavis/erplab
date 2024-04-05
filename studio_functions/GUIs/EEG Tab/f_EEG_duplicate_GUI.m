@@ -50,8 +50,7 @@ function f_EEG_duplicate_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 try
     EEG  = varargin{1};
-    currentset = varargin{2};
-    chanArray = varargin{3};
+    chanArray = varargin{2};
 catch
     EEG.setname  = 'No erp was imported';
     EEG.nbchan = 1;
@@ -68,15 +67,7 @@ handles.EEG = EEG;
 erplab_studio_default_values;
 version = erplabstudiover;
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Duplicate EEGset GUI'])
-set(handles.edit_erpname, 'String', EEG.setname);
 
-if isempty(currentset)
-    set(handles.current_erp_label,'String', ['No active eegset was found'],...
-        'FontWeight','Bold', 'FontSize', 16);
-else
-    set(handles.current_erp_label,'String', ['Creat a new eegset # ' num2str(currentset+1)],...
-        'FontWeight','Bold', 'FontSize', 16)
-end
 
 nchan  = EEG.nbchan; % Total number of channels
 if ~isfield(EEG.chanlocs,'labels')
@@ -132,26 +123,8 @@ pause(0.1)
 
 
 
-% --- Executes on button press in radio_erpname.
-function radio_erpname_Callback(hObject, eventdata, handles)
 
 
-
-function edit_erpname_Callback(hObject, eventdata, handles)
-eegname = strtrim(get(handles.edit_erpname, 'String'));
-if isempty(eegname)
-    msgboxText =  'You must enter an eegname at least!';
-    title = 'EStudio: Duplicate EEGset GUI - empty eegname';
-    errorfound(msgboxText, title);
-    return
-end
-
-% --- Executes during object creation, after setting all properties.
-function edit_erpname_CreateFcn(hObject, eventdata, handles)
-
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 
 
@@ -205,8 +178,7 @@ end
 % --- Executes on button press in pushbutton_Cancel.
 function pushbutton_Cancel_Callback(hObject, eventdata, handles)
 handles.output = [];
-beep;
-disp('User selected Cancel')
+
 % Update handles structure
 guidata(hObject, handles);
 uiresume(handles.gui_chassis);
@@ -215,14 +187,6 @@ uiresume(handles.gui_chassis);
 % --- Executes on button press in pushbutton4_okay.
 function pushbutton4_okay_Callback(hObject, eventdata, handles)
 EEG = handles.EEG;
-eegname = strtrim(get(handles.edit_erpname, 'String'));
-if isempty(eegname)
-    msgboxText =  'You must enter an eegname at least!';
-    title = 'EStudio: Duplicate EEGset GUI - eegname';
-    errorfound(msgboxText, title);
-    return
-end
-EEG.setname = eegname;
 
 ChanArray = str2num(handles.edit7_chan.String);
 if isempty(ChanArray) || min(ChanArray(:)) > EEG.nbchan || max(ChanArray(:)) > EEG.nbchan
@@ -235,20 +199,8 @@ if  ~isempty(msgboxText)
     return;
 end
 
-EEG.saved = 'no';
-EEG.filepath = '';
-chanDelete = setdiff([1:EEG.nbchan],ChanArray);
-if ~isempty(chanDelete)
-    count = 0;
-    for ii = chanDelete
-        count = count+1;
-        ChanArrayStr{count}   = EEG.chanlocs(ii).labels;
-    end
-    EEG = pop_select( EEG, 'rmchannel', ChanArrayStr);
-    EEG = eeg_checkset(EEG);
-end
 
-handles.output = EEG;
+handles.output = ChanArray;
 % Update handles structure
 guidata(hObject, handles);
 
@@ -275,7 +227,6 @@ end
 
 function  msgboxText = f_EEG_chck_chan(EEG, chanArray)
 msgboxText = '';
-
 
 if isempty(chanArray)
     msgboxText =  'You have not specified any channel';

@@ -17,7 +17,7 @@ function EStudio_gui_erp_totl = EStudio_EEG_Tab(EStudio_gui_erp_totl,ColorB_def)
 if isempty(ColorB_def)
     ColorB_def = [0.7020 0.77 0.85];
 end
-FonsizeDefault = f_get_default_fontsize();
+
 %% Arrange the main interface for ERP panel (Tab3)
 EStudio_gui_erp_totl.eegViewBox = uix.VBox('Parent', EStudio_gui_erp_totl.tabEEG,'BackgroundColor',ColorB_def);
 EStudio_gui_erp_totl.eegViewPanel = uix.BoxPanel('Parent', EStudio_gui_erp_totl.eegViewBox,'TitleColor',ColorB_def,'ForegroundColor','k');%

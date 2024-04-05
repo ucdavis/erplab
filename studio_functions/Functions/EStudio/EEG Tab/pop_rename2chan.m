@@ -86,7 +86,6 @@ if nargin< 3
     Chanlabelsnew= f_change_chan_name_GUI(Chanlabelsold,def,titleName);
     
     if isempty(Chanlabelsnew)
-        disp('User selected Cancel')
         return
     end
     erpworkingmemory('pop_rename2chan',Chanlabelsnew);

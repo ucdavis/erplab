@@ -1,19 +1,19 @@
-% PURPOSE:  pop_suffixerp.m
-%           add suffix to ALLERP names
+% PURPOSE:  pop_suffixeeg.m
+%           add suffix to ALLEEG names
 %
 
 % FORMAT:
-% [ALLERP, erpcom] = pop_suffixerp( ALLERP, 'suffixstr',suffixstr,...
+% [ALLEEG, erpcom] = pop_suffixeeg( ALLEEG, 'suffixstr',suffixstr,...
 %         'Saveas', 'off', 'History', 'gui');
 
 % Inputs:
 %
-%ALLERP           -ALLERP structure
+%ALLEEG           -ALLEEG structure
 %suffixstr        -strings for erpsets
 
 
 
-% *** This function is part of ALLERPLAB Studio ***
+% *** This function is part of ALLEEGLAB Studio ***
 % Author: Guanghui Zhang & Steven Luck
 % ghzhang@ucdavis.edu, sjluck@ucdavis.edu
 % Center for Mind and Brain
@@ -24,37 +24,30 @@
 
 
 
-function [ALLERP, erpcom] = pop_suffixerp(ALLERP, varargin)
+function [ALLEEG, erpcom] = pop_suffixeeg(ALLEEG, varargin)
 erpcom = '';
 
 if nargin < 1
-    help pop_suffixerp
+    help pop_suffixeeg
     return
 end
-if isempty(ALLERP)
-    msgboxText =  'Cannot rename an empty ALLERPset';
-    title = 'ERPLAB: pop_suffixerp() error';
+if isempty(ALLEEG)
+    msgboxText =  'Cannot rename an empty EEGset';
+    title = 'ERPLAB: pop_suffixeeg() error';
     errorfound(msgboxText, title);
     return
 end
-if isempty(ALLERP(1).bindata)
-    msgboxText =  'Cannot rename an empty ALLERPset';
-    title = 'ERPLAB: pop_suffixerp() error';
+if isempty(ALLEEG(1).data)
+    msgboxText =  'Cannot rename an empty EEGset';
+    title = 'ERPLAB: pop_suffixeeg() error';
     errorfound(msgboxText, title);
     return
 end
 
-datatype = checkdatatype(ALLERP(1));
-if ~strcmpi(datatype, 'ERP')
-    msgboxText =  'Cannot rename Power Spectrum waveforms!';
-    title = 'ERPLAB: pop_suffixerp() error';
-    errorfound(msgboxText, title);
-    return
-end
 
 if nargin==1
     
-    suffixstr = f_ERP_suffix_gui('Suffix');
+    suffixstr = f_EEG_suffix_gui('Suffix');
     
     if isempty(suffixstr)
         return;
@@ -62,7 +55,7 @@ if nargin==1
     %
     % Somersault
     %
-    [ALLERP, erpcom] = pop_suffixerp( ALLERP, 'suffixstr',suffixstr,...
+    [ALLEEG, erpcom] = pop_suffixeeg( ALLEEG, 'suffixstr',suffixstr,...
         'Saveas', 'off', 'History', 'gui');
     return
 end
@@ -73,21 +66,21 @@ end
 p = inputParser;
 p.FunctionName  = mfilename;
 p.CaseSensitive = false;
-p.addRequired('ALLERP');
+p.addRequired('ALLEEG');
 % option(s)
 p.addParamValue('suffixstr', '',@ischar);
 p.addParamValue('Saveas', 'off', @ischar);
 p.addParamValue('History', 'script', @ischar); % history from scripting
 
-p.parse(ALLERP, varargin{:});
+p.parse(ALLEEG, varargin{:});
 
 
 
 suffixstr = p.Results.suffixstr;
 
-for Numoferp = 1:numel(ALLERP)
-    ALLERP(Numoferp).erpname = [ALLERP(Numoferp).erpname,'_',suffixstr];
-    ALLERP(Numoferp).saved  = 'no';
+for Numoferp = 1:numel(ALLEEG)
+    ALLEEG(Numoferp).setname = [ALLEEG(Numoferp).setname,'_',suffixstr];
+    ALLEEG(Numoferp).saved  = 'no';
     
 end
 
@@ -116,9 +109,9 @@ end
 % History
 %
 
-skipfields = {'ALLERP', 'Saveas','History'};
+skipfields = {'ALLEEG', 'Saveas','History'};
 fn     = fieldnames(p.Results);
-erpcom = sprintf( '%s = pop_suffixerp( %s ', inputname(1), inputname(1) );
+erpcom = sprintf( '%s = pop_suffixeeg( %s ', inputname(1), inputname(1) );
 for q=1:length(fn)
     fn2com = fn{q};
     if ~ismember_bc2(fn2com, skipfields)
@@ -145,23 +138,23 @@ end
 erpcom = sprintf( '%s );', erpcom);
 
 %
-% Save ALLERPset from GUI
+% Save ALLEEGset from GUI
 %
 if issaveas
-    for ii = 1:length(ALLERP)
-        [ALLERP(ii), issave, erpcom_save] = pop_savemyerp(ALLERP(ii),'gui','erplab', 'History', 'off');
+    for ii = 1:length(ALLEEG)
+        [ALLEEG(ii), ~] = pop_saveset( ALLEEG(ii), 'filename',ALLEEG(ii).filename,'filepath',[ALLEEG(ii).filepath,filesep]);
     end
 end
 
 
 
-% get history from script. ALLERP
+% get history from script. ALLEEG
 switch shist
     case 1 % from GUI
         displayEquiComERP(erpcom);
     case 2 % from script
-        for ii = 1:length(ALLERP)
-            ALLERP(ii) = erphistory(ALLERP(ii), [], erpcom, 1);
+        for ii = 1:length(ALLEEG)
+            ALLEEG(ii) = eegh(erpcom, ALLEEG(ii));
         end
     case 3
         % implicit

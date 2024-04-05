@@ -477,14 +477,12 @@ varargout{1} = EEG_basecorr_detrend_box;
         ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
-            
             if EEG.trials==1
                 msgboxText =  'Baseline Correction & Linear Detrend (Epoched EEG) cannot work for continous EEG';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 return;
             end
-            
             if gui_eeg_blc_dt.all_bin_chan.Value == 1
                 ChanArray = [1:EEG.nbchan];
             else
@@ -498,12 +496,15 @@ varargout{1} = EEG_basecorr_detrend_box;
             else
                 [EEG LASTCOM]= pop_blceeg( EEG , 'Baseline', BaselineMethod, 'Saveas', 'off','History','gui');
             end
+            if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
+                return;
+            end
             %%Only the selected bin and chan were selected to remove baseline and detrending and others are remiained.
             EEG_before_bl = ALLEEG(EEGArray(Numofeeg));
             EEG_before_bl.data(ChanArray,:,:) = EEG.data(ChanArray,:,:);
             EEG_before_bl.history = EEG.history;
             EEG = EEG_before_bl;
-            
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);

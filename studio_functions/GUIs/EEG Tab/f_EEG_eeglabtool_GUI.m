@@ -150,7 +150,8 @@ varargout{1} = EStudio_box_eeglab_tool;
         end
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > About this dataset');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
-        
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -627,11 +628,12 @@ varargout{1} = EStudio_box_eeglab_tool;
             LASTCOM = sprintf('pop_spectopo(EEG, %d, [%s], ''%s'' %s);', 1, num2str(timerange), processflag, options);
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             eegh(LASTCOM);
-            
+            observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
             fprintf(LASTCOM,'\n');
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -700,23 +702,24 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Chan properties*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-            for Numofchan = 1:numel(chanorcomp)
-                LASTCOM =  pop_prop( EEG, 1, chanorcomp(Numofchan), NaN, spec_opt);
-                set(gcf,'Name',['eegset',32,num2str(EEGArray(Numofeeg)),': Channel properties for',32,EEG.setname],'NumberTitle', 'off');
-            end
-            LASTCOM = sprintf('pop_prop( EEG, %d, %s, NaN, %s);', typecomp, ['[',num2str(chanorcomp),']'], vararg2str( { spec_opt } ) );
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-            fprintf(LASTCOM,'\n');
-            eegh(LASTCOM);
-            fprintf( ['\n',repmat('-',1,100) '\n']);
-        end%%end loop for subject
+        
+        EEG = observe_EEGDAT.ALLEEG(EEGArray);
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['*Chan properties*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
+        for Numofchan = 1:numel(chanorcomp)
+            LASTCOM =  pop_prop( EEG, 1, chanorcomp(Numofchan), NaN, spec_opt);
+            set(gcf,'Name',['eegset',32,num2str(EEGArray),': Channel properties for',32,EEG.setname],'NumberTitle', 'off');
+        end
+        LASTCOM = sprintf('pop_prop( EEG, %d, %s, NaN, %s);', typecomp, ['[',num2str(chanorcomp),']'], vararg2str( { spec_opt } ) );
+        observe_EEGDAT.ALLEEG(EEGArray) = eegh(LASTCOM, EEG);
+        fprintf(LASTCOM,'\n');
+        eegh(LASTCOM);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
+        observe_EEGDAT.EEG=observe_EEGDAT.ALLEEG(EEGArray);
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Chan properties');
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -745,28 +748,27 @@ varargout{1} = EStudio_box_eeglab_tool;
             return;
         end
         
-        for Numofeeg = 1:numel(EEGArray)
-            EEG = observe_EEGDAT.ALLEEG(EEGArray(Numofeeg));
-            fprintf( ['\n\n',repmat('-',1,100) '\n']);
-            fprintf(['*Chan time-frequency*',32,32,32,32,datestr(datetime('now')),'\n']);
-            fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-            LASTCOM =  pop_newtimef(EEG,1);
-            if isempty(LASTCOM)
-                observe_EEGDAT.eeg_panel_message =1;
-                fprintf( ['\n',repmat('-',1,100) '\n']);
-                return;
-            end
-            set(gcf,'Name',['eegset',32,num2str(EEGArray(Numofeeg)),': Time-frequency for',32,EEG.setname],'NumberTitle', 'off');
-            LASTCOM =LASTCOM(8:end);
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
-            fprintf(LASTCOM,'\n');
-            if Numofeeg==1
-                eegh(LASTCOM);
-            end
+        EEG = observe_EEGDAT.ALLEEG(EEGArray);
+        fprintf( ['\n\n',repmat('-',1,100) '\n']);
+        fprintf(['*Chan time-frequency*',32,32,32,32,datestr(datetime('now')),'\n']);
+        fprintf(['Your current data',32,num2str(EEGArray),':',EEG.setname,'\n']);
+        LASTCOM =  pop_newtimef(EEG,1);
+        if isempty(LASTCOM)
+            observe_EEGDAT.eeg_panel_message =1;
             fprintf( ['\n',repmat('-',1,100) '\n']);
-        end%%end loop for subject
+            return;
+        end
+        set(gcf,'Name',['eegset',32,num2str(EEGArray),': Time-frequency for',32,EEG.setname],'NumberTitle', 'off');
+        LASTCOM =LASTCOM(8:end);
+        observe_EEGDAT.ALLEEG(EEGArray) = eegh(LASTCOM, EEG);
+        fprintf(LASTCOM,'\n');
+        eegh(LASTCOM);
+        fprintf( ['\n',repmat('-',1,100) '\n']);
         erpworkingmemory('f_EEG_proces_messg','EEGLAB Tools > Time-frequency');
+        
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.EEG =  observe_EEGDAT.ALLEEG(EEGArray);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 

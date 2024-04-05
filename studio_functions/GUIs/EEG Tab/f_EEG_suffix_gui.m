@@ -69,7 +69,7 @@ erplab_studio_default_values;
 version = erplabstudiover;
 
 set(handles.gui_chassis,'Name', ['EStudio ' version '   -   Add Suffix to EEG GUI'])
-set(handles.edit_erpname, 'String', '_processed');
+set(handles.edit_erpname, 'String', erpname);
 
 set(handles.current_erp_label,'String', ['Enter suffix, which will be added onto the name of each selected EEGset'],...
     'FontWeight','Bold', 'FontSize', 16);
@@ -154,7 +154,7 @@ if isempty(erpname)
 end
 
 
-handles.output = {erpname};
+handles.output = erpname;
 % Update handles structure
 guidata(hObject, handles);
 

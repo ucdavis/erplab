@@ -655,6 +655,7 @@ varargout{1} = Eegtab_box_avg_erp;
                 'DQ_flag',DQ_flag,'DQ_spec',DQ_spec, 'DQ_preavg_txt', DQ_preavg_txt, 'DQ_custom_wins', DQcustom_wins, ...
                 'History', 'implicit','Saveas','off');
             if isempty(ERPCOM)
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end

@@ -578,7 +578,6 @@ varargout{1} = EEG_binepoch_box;
                 eegh(LASTCOM);
             end
             erpworkingmemory('Change2epocheeg',1);%%force the option to be Epoched EEG in "EEGsets" panel
-            
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             if Numofeeg==1
                 eegh(LASTCOM);

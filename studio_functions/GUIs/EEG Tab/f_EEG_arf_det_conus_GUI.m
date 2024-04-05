@@ -347,26 +347,18 @@ varargout{1} = Eegtab_box_art_det_conus;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Artifact Detection (Continuous EEG) > View & reject*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
-            app = feval('EEG_select_segement_artifact_GUI',EEG,1);
-            waitfor(app,'Finishbutton',1);
-            try
-                EEG = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-                app.delete; %delete app from view
-                pause(0.1); %wait for app to leave
-            catch
+            [EEG, LASTCOM] = f_ploteeg(EEG);
+            if isempty(EEG) || isempty(LASTCOM)
                 erpworkingmemory('EEGUpdate',0);
-                observe_EEGDAT.count_current_eeg=1;
                 observe_EEGDAT.eeg_panel_message =2;
+                fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            if isempty(EEG)
-                erpworkingmemory('EEGUpdate',0);
-                observe_EEGDAT.count_current_eeg=1;
-                observe_EEGDAT.eeg_panel_message =2;
-                return;
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
             end
-            
+            fprintf([LASTCOM,'\n']);
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1
@@ -1622,6 +1614,7 @@ varargout{1} = Eegtab_box_art_det_conus;
             
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             

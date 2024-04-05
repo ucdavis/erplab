@@ -436,11 +436,11 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                 fprintf(['We have changed chans as below:\n']);
                 fprintf(['Chans:',num2str(chanArray),'\n']);
             end
-            
             [EEG, ~, LASTCOM] = pop_continuousFFT(EEG, 'ChannelIndex',chanArray,'Frequencies',fqbands,'FrequencyLabel', ...
                 fqlabels, 'viewGUI','true','History', 'implicit');
-            
             if isempty(LASTCOM)
+                fprintf([LASTCOM,'\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if Numofeeg==1
@@ -450,7 +450,9 @@ varargout{1} = Eegtab_box_dq_fre_conus;
             observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
         end%%end for loop of subjects
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -485,10 +487,10 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         if isempty(chanOld)
             EEG_dq_fre_conus.chans_edit.String= vect2colon(1:observe_EEGDAT.EEG.nbchan);
         end
-      
+        
         data_tab = EEG_dq_fre_conus.bandtable.Data;
         if (ischar(data_tab{8,1}) && strcmpi(data_tab{8,1},'broadband')) && data_tab{8,3}> observe_EEGDAT.EEG.srate/2
-            EEG_dq_fre_conus.bandtable.Data{8,3}= observe_EEGDAT.EEG.srate/2;
+            EEG_dq_fre_conus.bandtable.Data{8,3}= floor(observe_EEGDAT.EEG.srate/2);
         end
         
         Eegtab_box_dq_fre_conus.TitleColor= [0.0500    0.2500    0.5000];
@@ -543,7 +545,7 @@ varargout{1} = Eegtab_box_dq_fre_conus;
         end
         fqband     =  [0 3;3 8;8 12;8 30;30 48;49 51;59 61; 0 100]; %defaults
         if ~isempty(observe_EEGDAT.EEG)
-          fqband(8,2) =  observe_EEGDAT.EEG.srate/2; 
+            fqband(8,2) =  floor(observe_EEGDAT.EEG.srate/2);
         end
         fqlabels = {'delta','theta','alpha','beta','gamma','50hz-noise','60hz-noise','broadband'};
         data_tab = [fqlabels' num2cell(fqband)];

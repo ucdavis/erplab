@@ -406,7 +406,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
                 eegh(LASTCOM);
             end
             fprintf([LASTCOM,'\n']);
-            
             fprintf( [repmat('-',1,100) '\n']);
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
         end
@@ -513,7 +512,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
             fprintf(['*Add or edit all  channel locations*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             ChanArray = [1:EEG.nbchan];
-            
             [EEG, LASTCOM] = pop_editdatachanlocs(ALLEEG,EEGArray(Numofeeg),...
                 'ChanArray',ChanArray,'Chanlocs',Chanlocs,'History', 'implicit');
             if isempty(LASTCOM)
@@ -615,23 +613,6 @@ varargout{1} = EStudio_eeg_box_edit_chan;
         EStduio_eegtab_EEG_edit_chan.browse_chan.Enable='on';
         observe_EEGDAT.count_current_eeg=5;
     end
-
-%%-------------------------------------------------------------------------
-%%Automatically saving the changed parameters for the current panel if the
-%%user change parameters for the other panels.
-%%-------------------------------------------------------------------------
-    function eeg_two_panels_change(~,~)
-        %         if observe_EEGDAT.eeg_two_panels==0
-        %             return;
-        %         end
-        %         ChangeFlag =  estudioworkingmemory('EEGTab_editchan');
-        %         if ChangeFlag~=1
-        %             return;
-        %         end
-        %         estudioworkingmemory('EEGTab_editchan',0);
-        %         EStudio_eeg_box_edit_chan.TitleColor= [0.0500    0.2500    0.5000];
-    end
-
 
 %%--------------Reset this panel with the default parameters---------------
     function Reset_eeg_panel_change(~,~)

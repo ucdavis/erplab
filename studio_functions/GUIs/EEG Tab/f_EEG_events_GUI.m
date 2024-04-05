@@ -464,6 +464,12 @@ varargout{1} = EStudio_eeg_events_box;
         erpworkingmemory('f_EEG_proces_messg','EventList >  View EventList');
         observe_EEGDAT.eeg_panel_message =1;
         feval('EEG_evenlist_gui',observe_EEGDAT.ALLEEG(EEGArray));
+        LASTCOM = ['ERPArray=',vect2colon(EEGArray),'; feval("EEG_evenlist_gui",ALLEEG(EEGArray));'];
+        
+        observe_EEGDAT.ALLEEG(EEGArray) = eegh(LASTCOM, observe_EEGDAT.ALLEEG(EEGArray));
+        eegh(LASTCOM);
+        observe_EEGDAT.EEG=observe_EEGDAT.ALLEEG(EEGArray);
+        observe_EEGDAT.count_current_eeg=26;
         observe_EEGDAT.eeg_panel_message =2;
     end
 
@@ -511,6 +517,9 @@ varargout{1} = EStudio_eeg_events_box;
             end
             
             [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
+            if isempty(LASTCOM)
+                return;
+            end
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -636,6 +645,9 @@ varargout{1} = EStudio_eeg_events_box;
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
                 [EEG, LASTCOM] = pop_exporteegeventlist( EEG , 'Filename', filenameeg,'History','gui');
+                if isempty(LASTCOM)
+                    return;
+                end
                 EEG = eegh(LASTCOM, EEG);
                 if Numofeeg==1
                     eegh(LASTCOM);
@@ -648,7 +660,7 @@ varargout{1} = EStudio_eeg_events_box;
                 fprintf( [repmat('-',1,100) '\n']);
             end
         end
-        
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;
@@ -698,6 +710,9 @@ varargout{1} = EStudio_eeg_events_box;
             end
             
             [EEG, LASTCOM] = pop_importeegeventlist( EEG, ELfullname , 'ReplaceEventList', 'on' );
+            if isempty(LASTCOM)
+                return;
+            end
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -819,7 +834,6 @@ varargout{1} = EStudio_eeg_events_box;
                     filenameeg = [suffixstr,'.xls'];
                 end
                 
-                
                 filenameeg = fullfile(pathname, filenameeg);
                 
                 disp(['For EVENTLIST output user selected ', filenameeg])
@@ -836,7 +850,7 @@ varargout{1} = EStudio_eeg_events_box;
                 fprintf( [repmat('-',1,100) '\n']);
             end
         end
-        
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
         erpworkingmemory('f_EEG_proces_messg','EventList >  Export eventlist to .xls file');
         observe_EEGDAT.eeg_panel_message =2;
         observe_EEGDAT.count_current_eeg=1;

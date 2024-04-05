@@ -512,7 +512,6 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             {Eventcodes, timeshift, rounding, displayEEG, displayFeedback});
         
         ALLEEG = observe_EEGDAT.ALLEEG;
-        
         ALLEEG_out = [];
         for Numofeeg = 1:numel(EEGArray)
             EEG = ALLEEG(EEGArray(Numofeeg));
@@ -530,15 +529,14 @@ varargout{1} = Eegtab_box_shift_eventcodes_conus;
             
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n\n']);
             if Numofeeg==1

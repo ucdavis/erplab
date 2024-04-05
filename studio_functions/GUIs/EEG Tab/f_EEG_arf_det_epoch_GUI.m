@@ -285,9 +285,6 @@ varargout{1} = Eegtab_box_art_det_epoch;
         erpworkingmemory('f_EEG_proces_messg','Artifact Detection (Epoched EEG) > View & Mark');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
         
-        
-        
-        
         Eegtab_box_art_det_epoch.TitleColor= [0.0500    0.2500    0.5000];
         Eegtab_EEG_art_det_epoch.detectar_cancel.BackgroundColor =  [1 1 1];
         Eegtab_EEG_art_det_epoch.detectar_cancel.ForegroundColor = [0 0 0];
@@ -324,25 +321,19 @@ varargout{1} = Eegtab_box_art_det_epoch;
             fprintf(['*Artifact Detection (Epoched EEG) > View & Mark*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
             
-            app = feval('EEG_select_segement_artifact_GUI',EEG,1,Flagmarks);
-            waitfor(app,'Finishbutton',1);
-            try
-                EEG = app.Output; %NO you don't want to output EEG with edited channel locations, you want to output the parameters to run decoding
-                app.delete; %delete app from view
-                pause(0.1); %wait for app to leave
-            catch
-                erpworkingmemory('EEGUpdate',0);
-                observe_EEGDAT.count_current_eeg=1;
-                observe_EEGDAT.eeg_panel_message =2;
-                return;
-            end
-            if isempty(EEG)
-                erpworkingmemory('EEGUpdate',0);
-                observe_EEGDAT.count_current_eeg=1;
-                observe_EEGDAT.eeg_panel_message =2;
-                return;
-            end
+            [EEG, LASTCOM] = f_ploteeg(EEG);
             
+            if isempty(EEG) || isempty(LASTCOM)
+                erpworkingmemory('EEGUpdate',0);
+                observe_EEGDAT.eeg_panel_message =2;
+                fprintf( [repmat('-',1,100) '\n']);
+                return;
+            end
+            EEG = eegh(LASTCOM, EEG);
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            fprintf([LASTCOM,'\n']);
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1
@@ -1478,16 +1469,15 @@ varargout{1} = Eegtab_box_art_det_epoch;
                     'LowPass',  lowcutoff, 'Threshold', Volthreshold, 'Twindow',Testperiod ,'Review', 'off', 'History', 'implicit');
             end
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
-            
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1

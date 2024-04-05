@@ -97,17 +97,12 @@ varargout{1} = Eegtab_box_art_sumop;
             'String','Delete Spurious Additional Responses','callback',@rmerrors,'FontSize',FonsizeDefault,'Enable',EnableFlag,'BackgroundColor',[1 1 1]);
         uiextras.Empty('Parent', Eegtab_utilities.rmerrors_title,'BackgroundColor',ColorB_def);
         set(Eegtab_utilities.rmerrors_title, 'Sizes',[15 -1 15]);
-        
-        
         set(Eegtab_utilities.DataSelBox,'Sizes',[30 30 30 30 30]);
     end
-
-
 
 %%**************************************************************************%%
 %%--------------------------Sub function------------------------------------%%
 %%**************************************************************************%%
-
 
 %%------------Convert to Continuous EEG----------------------
     function epoch2continuous(Source,~)
@@ -170,6 +165,7 @@ varargout{1} = Eegtab_box_art_sumop;
             setname = EEG.setname;
             [EEG, LASTCOM] = pop_epoch2continuous(EEG, 'RestoreEvent',RestoreEventStr, 'History', 'implicit');
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -275,6 +271,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 erroMessage= 'EEG Utilities >  Erase undesired event codes: cannot work on an epoched EEG';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -283,6 +280,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 erroMessage= 'EEG Utilities >  Erase undesired event codes: did not find EEG.event field';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -291,6 +289,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 erroMessage= 'EEG Utilities >  Erase undesired event codes: did not find EEG.event.type field';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -299,6 +298,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 erroMessage= 'EEG Utilities >  Erase undesired event codes: did not find EEG.event.latency field';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -307,6 +307,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 erroMessage= 'EEG Utilities >  Erase undesired event codes: only works with numeric event codes. We recommend to use Create EEG Eventlist - Basic first';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -393,9 +394,7 @@ varargout{1} = Eegtab_box_art_sumop;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Recover bin descriptor file from EEG*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current EEGset(No.',num2str(EEGArray(Numofeeg)),'):',32,EEG.setname,'\n\n']);
-            
             [EEG, LASTCOM] = pop_bdfrecovery(EEG);
-            
             if isempty(LASTCOM)
                 fprintf( [repmat('-',1,100) '\n']);
                 observe_EEGDAT.eeg_panel_message =2;
@@ -407,7 +406,8 @@ varargout{1} = Eegtab_box_art_sumop;
             end
             fprintf( [repmat('-',1,100) '\n']);
         end
-        
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
         erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Recover bin descriptor file from EEG');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
     end
@@ -422,10 +422,8 @@ varargout{1} = Eegtab_box_art_sumop;
         if ~isempty(messgStr)
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_EEG_proces_messg','EEG Utilities >  Reset Event Code Bytes');
         observe_EEGDAT.eeg_panel_message =1; %%Marking for the procedure has been started.
-        
         EEGArray =  estudioworkingmemory('EEGArray');
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
@@ -468,6 +466,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 erroMessage= 'EEG Utilities >  Reset Event Code Bytes: cannot work on a continuous EEG';
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 fprintf( [repmat('-',1,100) '\n']);
                 return;
             end
@@ -583,6 +582,7 @@ varargout{1} = Eegtab_box_art_sumop;
             msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Some of Stimulus event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -603,6 +603,7 @@ varargout{1} = Eegtab_box_art_sumop;
             msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Some of Stimulus event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         
@@ -635,6 +636,7 @@ varargout{1} = Eegtab_box_art_sumop;
             msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Some of Response event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         try
@@ -647,6 +649,7 @@ varargout{1} = Eegtab_box_art_sumop;
             msgboxText = ['EEG Utilities > Delete Spurious Additional Responses: Some of Response event types are invalid'];
             titlNamerro = 'Warning for EEG Tab';
             estudio_warning(msgboxText,titlNamerro);
+            observe_EEGDAT.eeg_panel_message =2;
             return;
         end
         ALLEEG = observe_EEGDAT.ALLEEG;
@@ -682,6 +685,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             try
@@ -695,19 +699,20 @@ varargout{1} = Eegtab_box_art_sumop;
                 fprintf( [repmat('-',1,100) '\n']);
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(msgboxText,titlNamerro);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
             [~,EEG, LASTCOM] = pop_remove_response_mistakes(ALLEEG,EEG,EEGArray(Numofeeg),stim_codes,resp_codes);
             if isempty(LASTCOM)
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
-            end
-            if Numofeeg==1
-                eegh(LASTCOM);
             end
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
-            
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
             [ALLEEG_out,~,~,LASTCOM] = pop_newset(ALLEEG_out, EEG, length(ALLEEG_out), 'gui', 'off');
             fprintf( [repmat('-',1,100) '\n']);
             if Numofeeg==1

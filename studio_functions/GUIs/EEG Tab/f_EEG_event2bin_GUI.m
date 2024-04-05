@@ -460,7 +460,6 @@ varargout{1} = EStudio_box_EEG_event2bin;
                 fprintf( ['\n\n',repmat('-',1,100) '\n']);
                 return;
             end
-            
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);

@@ -96,7 +96,7 @@ varargout{1} = EStudio_box_eeglab_ica;
         EStduio_eegtab_eeglab_ica.traICAweight= uicontrol('Style','pushbutton','Parent', EStduio_eegtab_eeglab_ica.DataSelGrid,'String','Transfer',...
             'callback',@trans_weight,'FontSize',FonsizeDefault,'BackgroundColor',[1 1 1],'Enable',EnableFlag); % 1B
         set( EStduio_eegtab_eeglab_ica.DataSelGrid, 'ColumnSizes',[30 90 15 76 -1],'RowSizes',[20 30]);
-
+        
         
         %%Plot channel function
         EStduio_eegtab_eeglab_ica.plotic_title1 = uiextras.HBox('Parent', EStduio_eegtab_eeglab_ica.DataSelBox, 'Spacing', 5,'BackgroundColor',ColorB_def);
@@ -297,8 +297,15 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n\n',repmat('-',1,100) '\n']);
             fprintf(['*Classify IC by ICLabel*',32,32,32,32,datestr(datetime('now')),'\n']);
             fprintf(['Your current data',32,num2str(EEGArray(Numofeeg)),':',EEG.setname,'\n']);
-            
             EEG = f_estudio_iclabel(EEG,EEGArray(Numofeeg));
+            LASTCOM = sprintf('EEG = f_estudio_iclabel(EEG, %d);', EEGArray);
+            fprintf(LASTCOM,'\n');
+            EEG = eegh(LASTCOM, EEG);
+            fprintf(LASTCOM,'\n');
+            if Numofeeg==1
+                eegh(LASTCOM);
+            end
+            
             if isempty(EEG)
                 observe_EEGDAT.eeg_panel_message =4;
                 erpworkingmemory('EEGUpdate',0);
@@ -390,7 +397,6 @@ varargout{1} = EStudio_box_eeglab_ica;
         try
             EEG.setname = EEG.setname(1:end-16);
         catch
-            
         end
         fprintf(['\n',LASTCOM,'\n']);
         Save_file_label = 0;
@@ -667,6 +673,8 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -716,6 +724,8 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -767,6 +777,8 @@ varargout{1} = EStudio_box_eeglab_ica;
             fprintf( ['\n',repmat('-',1,100) '\n']);
         end%%end loop for subject
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -863,6 +875,8 @@ varargout{1} = EStudio_box_eeglab_ica;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC properties');
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -913,7 +927,10 @@ varargout{1} = EStudio_box_eeglab_ica;
         end%%end loop for subject
         erpworkingmemory('f_EEG_proces_messg','EEGLAB ICA > IC Time-frequency');
         observe_EEGDAT.eeg_panel_message =2;
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
+
 
 
 %%--------Settting will be modified if the selected was changed------------

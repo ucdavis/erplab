@@ -147,11 +147,10 @@ varargout{1} = Eegtab_box_art_sumop;
             end
             [EEG, LASTCOM] = pop_resetrej(EEG, 'ResetArtifactFields', arjmstr, 'ArtifactFlag', arflag, 'UserFlag', usflag, 'History', 'implicit');
             if isempty(LASTCOM)
-                disp('User selected cancel or errors occur.');
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
-            
             fprintf([LASTCOM,'\n']);
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
@@ -230,9 +229,7 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        %         try
         direction = synchroartifactsGUI;
-        
         if isempty(direction)
             return
         end
@@ -261,8 +258,8 @@ varargout{1} = Eegtab_box_art_sumop;
             end
             [EEG, LASTCOM] = pop_syncroartifacts(EEG, 'Direction', dircom, 'History', 'implicit');
             if isempty(LASTCOM)
-                %                 disp('User selected cancel');
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             
@@ -368,6 +365,7 @@ varargout{1} = Eegtab_box_art_sumop;
                 titlNamerro = 'Warning for EEG Tab';
                 estudio_warning(erroMessage,titlNamerro);
                 fprintf( [repmat('-',1,100) '\n']);
+                observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
             if New_pos1(1)==1
@@ -381,6 +379,7 @@ varargout{1} = Eegtab_box_art_sumop;
                     titlNamerro = 'Warning for EEG Tab';
                     estudio_warning(erroMessage,titlNamerro);
                     fprintf( [repmat('-',1,100) '\n']);
+                    observe_EEGDAT.eeg_panel_message =2;
                     return;
                 end
                 [EEG, MPD, LASTCOM] = getardetection(EEG, 1);
@@ -395,6 +394,7 @@ varargout{1} = Eegtab_box_art_sumop;
                     titlNamerro = 'Warning for EEG Tab';
                     estudio_warning(erroMessage,titlNamerro);
                     fprintf( [repmat('-',1,100) '\n']);
+                    observe_EEGDAT.eeg_panel_message =2;
                     return;
                 end
                 [EEG, tprej, acce, rej, histoflags,LASTCOM ] = pop_summary_AR_eeg_detection(EEG);
@@ -419,18 +419,19 @@ varargout{1} = Eegtab_box_art_sumop;
                 end
                 [EEG, goodbad, histeEF, histoflags,  LASTCOM] = pop_summary_rejectfields(EEG);
             end
-            
-            
             fprintf([LASTCOM,'\n']);
+            
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
         end
         
         erpworkingmemory('f_EEG_proces_messg','Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary');
         observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 
@@ -445,36 +446,19 @@ varargout{1} = Eegtab_box_art_sumop;
             EEGArray = observe_EEGDAT.CURRENTSET;
             estudioworkingmemory('EEGArray',EEGArray);
         end
-        ALLERP = [];
-        try
-            for NumofEEG = 1:numel(EEGArray)
-                EEG  = observe_EEGDAT.ALLEEG(EEGArray(NumofEEG));
-                if EEG.trials==1
-                    erroMessage= 'Artifact Info & Tools (Epoched EEG) >  Classic Artifact Summary: cannot work on a continuous EEG';
-                    titlNamerro = 'Warning for EEG Tab';
-                    estudio_warning(erroMessage,titlNamerro);
-                    fprintf( [repmat('-',1,100) '\n']);
-                    return;
-                end
-                ERP    = buildERPstruct([]);
-                [ERP, EVENTLISTi, countbiORI, countbinINV, countbinOK, countflags, workfname] = averager(EEG, 1, 1, 1, 1, [], [],1);
-                ERP.erpname = EEG.setname;
-                ERP.ntrials.accepted = countbinOK;
-                ERP.ntrials.rejected = countbiORI-countbinINV-countbinOK;
-                ERP.ntrials.invalid = countbinINV;
-                
-                if NumofEEG ==1
-                    ALLERP = ERP;
-                else
-                    ALLERP(length(ALLERP)+1)   = ERP;
-                end
-            end
-        catch
+        ALLEEG =  observe_EEGDAT.ALLEEG(EEGArray);
+        LASTCOM = f_eeg_ar_summary(ALLEEG,EEGArray);
+        if isempty(LASTCOM)
             return;
         end
-        if ~isempty(ALLERP)
-            feval('EEG_trial_rejection_sumr',ALLERP,[],1);
+        for NumofEEG = 1:numel(EEGArray)
+            observe_EEGDAT.ALLEEG(EEGArray(NumofEEG)) = eegh(LASTCOM,observe_EEGDAT.ALLEEG(EEGArray(NumofEEG)));
+            if NumofEEG==1
+                eegh(LASTCOM);
+            end
         end
+        observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);
+        observe_EEGDAT.count_current_eeg=26;%%to history panel
     end
 
 
