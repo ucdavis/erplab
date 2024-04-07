@@ -372,8 +372,11 @@ varargout{1} = Eegtab_box_art_sumop;
 
 %%-------------------Recover bin descriptor file from EEG---------------------
     function rc_bdf(Source,~)
-        if  isempty(observe_EEGDAT.EEG) || observe_EEGDAT.EEG.trials ==1
+        if  isempty(observe_EEGDAT.EEG) || ~isfield(observe_EEGDAT.EEG,'EVENTLIST') || isempty(observe_EEGDAT.EEG.EVENTLIST)
             Source.Enable = 'off';
+             msgboxText = ['EEG Utilities > Recover bin descriptor file from EEG: Please check EVENTLIST for current EEG'];
+            titlNamerro = 'Warning for EEG Tab';
+            estudio_warning(msgboxText,titlNamerro);
             return;
         end
         [messgStr,eegpanelIndex] = f_check_eegtab_panelchanges();
@@ -547,7 +550,7 @@ varargout{1} = Eegtab_box_art_sumop;
         if isempty(EEGArray) ||  any(EEGArray(:) > length(observe_EEGDAT.ALLEEG)) ||  any(EEGArray(:) <1)
             EEGArray = observe_EEGDAT.CURRENTSET;estudioworkingmemory('EEGArray',EEGArray);
         end
-        [stim_codes, stim_codes] = gui_remove_response_mistakes(observe_EEGDAT.EEG);
+        [stim_codes, resp_codes] = gui_remove_response_mistakes(observe_EEGDAT.EEG);
         if isempty(stim_codes) && isempty(stim_codes)
             observe_EEGDAT.eeg_panel_message =2; %%Marking for the procedure has been started.
             return;
@@ -718,7 +721,6 @@ varargout{1} = Eegtab_box_art_sumop;
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            
         end%%end for loop of subjects
         Save_file_label = 0;
         Answer = f_EEG_save_multi_file(ALLEEG_out,1:numel(EEGArray),'_rmerr');
@@ -804,6 +806,34 @@ varargout{1} = Eegtab_box_art_sumop;
         Eegtab_utilities.rc_bdf.Enable = 'on';
         observe_EEGDAT.count_current_eeg=26;
     end
+
+
+%%--------------------------------check event codes------------------------
+    function [IA,resp_codes]= f_check_eventcodes(resp_codes,all_ev_unique)
+        IA = 0;
+        for ii = 1:length(resp_codes)
+            for kk = 1:length(all_ev_unique)
+                if isnumeric(resp_codes(ii)) && isnumeric(all_ev_unique(kk))
+                    if resp_codes(ii) == all_ev_unique(kk)
+                        IA = IA +1;
+                    end
+                elseif (ischar(resp_codes(ii)) || iscell(resp_codes(ii)) )&& (ischar(all_ev_unique(kk)) || iscell(all_ev_unique(kk)) )
+                    try
+                        stim_codesstr=erase(resp_codes{ii}," ");
+                        all_ev_uniquestr= erase(all_ev_unique{kk}, " ");
+                    catch
+                        stim_codesstr=resp_codes{ii};
+                        all_ev_uniquestr= all_ev_unique{kk};
+                    end
+                    if strcmpi(stim_codesstr,all_ev_uniquestr)
+                        resp_codes{ii} = all_ev_unique{kk};
+                        IA = IA +1;
+                    end
+                end
+            end
+        end
+    end
+
 end
 
 

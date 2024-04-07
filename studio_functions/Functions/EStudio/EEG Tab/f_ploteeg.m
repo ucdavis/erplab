@@ -1,9 +1,24 @@
 
+%%This function is to manually detect segememnts with artifats for
+%%continuous  or epoched EEG
+
+
+
+
+% *** This function is part of ALLERPLAB Studio ***
+% Author: Guanghui Zhang & Steven Luck
+% ghzhang@ucdavis.edu, sjluck@ucdavis.edu
+% Center for Mind and Brain
+% University of California, Davis,
+% Davis, CA
+% Apr. 2024
+
+
 
 
 function [EEG, eegcom] = f_ploteeg(EEG)
 eegcom = '';
-if nargin < 1
+if nargin ~= 1
     help f_ploteeg
     return
 end

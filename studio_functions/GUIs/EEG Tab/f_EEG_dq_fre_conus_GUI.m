@@ -443,11 +443,12 @@ varargout{1} = Eegtab_box_dq_fre_conus;
                 observe_EEGDAT.eeg_panel_message =2;
                 return;
             end
+           
+            fprintf([LASTCOM,'\n']);
+            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG); 
             if Numofeeg==1
                 eegh(LASTCOM);
             end
-            fprintf([LASTCOM,'\n']);
-            observe_EEGDAT.ALLEEG(EEGArray(Numofeeg)) = eegh(LASTCOM, EEG);
             fprintf( [repmat('-',1,100) '\n']);
         end%%end for loop of subjects
         observe_EEGDAT.EEG = observe_EEGDAT.ALLEEG(observe_EEGDAT.CURRENTSET);

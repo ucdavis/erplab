@@ -1396,29 +1396,6 @@ varargout{1} = EEG_filtering_box;
         observe_EEGDAT.count_current_eeg=11;
     end
 
-
-%%-------------------------------------------------------------------------
-%%Automatically saving the changed parameters for the current panel if the
-%%user change parameters for the other panels.
-%%-------------------------------------------------------------------------
-%     function eeg_two_panels_change(~,~)
-%         if observe_EEGDAT.eeg_two_panels==0
-%             return;
-%         end
-%         ChangeFlag =  estudioworkingmemory('EEGTab_filter');
-%         if ChangeFlag~=1
-%             return;
-%         end
-%         EEG_filter_apply();
-%         gui_eegtab_filtering.apply.BackgroundColor =  [1 1 1];
-%         gui_eegtab_filtering.apply.ForegroundColor = [0 0 0];
-%         EEG_filtering_box.TitleColor= [0.0500    0.2500    0.5000];
-%         gui_eegtab_filtering.cancel.BackgroundColor =  [1 1 1];
-%         gui_eegtab_filtering.cancel.ForegroundColor = [0 0 0];
-%     end
-
-
-
 %%--------------press return to execute "Apply"----------------------------
     function eeg_filter_presskey(hObject, eventdata)
         keypress = eventdata.Key;

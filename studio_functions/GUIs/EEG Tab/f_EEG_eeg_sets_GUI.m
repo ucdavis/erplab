@@ -301,7 +301,9 @@ estudioworkingmemory('Startimes',0);%%set default value
             end
             [EEG, LASTCOM] = pop_duplicateeg( EEG, 'ChanArray',ChanArray,...
                 'Saveas', 'off', 'History', 'gui');
-            
+            if isempty(LASTCOM)
+                return;
+            end
             EEG = eegh(LASTCOM, EEG);
             if Numofeeg==1
                 eegh(LASTCOM);
@@ -335,7 +337,7 @@ estudioworkingmemory('Startimes',0);%%set default value
             [ALLEEG,~,~] = pop_newset(ALLEEG, EEG, length(ALLEEG), 'gui', 'off');
         end
         observe_EEGDAT.ALLEEG = ALLEEG;
-
+        
         try
             Selected_ERP_afd =  [length(observe_EEGDAT.ALLEEG)-numel(EEGArray)+1:length(observe_EEGDAT.ALLEEG)];
         catch
@@ -870,7 +872,6 @@ estudioworkingmemory('Startimes',0);%%set default value
         end
     end
 
-
 %%----------------------Clear the selected EEGsets-------------------------
     function cleardata(source,~)
         if isempty(observe_EEGDAT.EEG)
@@ -881,10 +882,8 @@ estudioworkingmemory('Startimes',0);%%set default value
         if ~isempty(messgStr) && eegpanelIndex~=100 && eegpanelIndex~=0
             observe_EEGDAT.eeg_two_panels = observe_EEGDAT.eeg_two_panels+1;%%call the functions from the other panel
         end
-        
         erpworkingmemory('f_EEG_proces_messg','EEGsets>Clear');
         observe_EEGDAT.eeg_panel_message =1;
-        
         EEGArray = EStduio_eegtab_EEG_set.butttons_datasets.Value;
         if length(observe_EEGDAT.ALLEEG)==1 && numel(EEGArray) == length(observe_EEGDAT.ALLEEG)
             ALLEEG = [];
@@ -1118,9 +1117,13 @@ estudioworkingmemory('Startimes',0);%%set default value
         if isequal(select_path,0)
             select_path = cd;
         end
-        userpath(select_path);
+        
         cd(select_path);
+        erpcom  = sprintf('cd(%s',select_path);
+        erpcom = [erpcom,');'];
+        eegh(erpcom);
         estudioworkingmemory('EEG_save_folder',select_path);
+        observe_EEGDAT.count_current_eeg=26;
     end
 
 

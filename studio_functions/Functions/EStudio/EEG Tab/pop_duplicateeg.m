@@ -105,7 +105,7 @@ if ~isempty(ChanArray)
             ChanArrayStr{count}   = EEG.chanlocs(ii).labels;
         end
         EEG = pop_select( EEG, 'rmchannel', ChanArrayStr);
-        EEG = eeg_checkset(EEG);
+        %         EEG = eeg_checkset(EEG);
     end
 end
 
@@ -173,7 +173,7 @@ erpcom = sprintf( '%s );', erpcom);
 % Save ERPset from GUI
 %
 if issaveas
-[EEG, ~] = pop_saveset( EEG, 'filename',EEG.filename,'filepath',EEG.filepath);
+    [EEG, ~] = pop_saveset( EEG, 'filename',EEG.filename,'filepath',EEG.filepath);
 end
 
 
@@ -183,7 +183,7 @@ switch shist
     case 1 % from GUI
         displayEquiComERP(erpcom);
     case 2 % from script
-        ALLEEG(ii) = eegh(erpcom, ALLEEG(ii));
+        EEG = eegh(erpcom, EEG);
     case 3
         % implicit
     otherwise %off or none
